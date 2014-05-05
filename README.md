@@ -18,4 +18,4 @@ Tecnologias utilizadas hasta el momento:
 
 Si quiere aportar al desarrollo del proyecto, puede enviar una donación en bitcoin!
 
-Direccion Bitcoin: 13UJpSe771PyJDnXh5bP7kMh4unyX9PG47
+Direccion Bitcoin: 1E5RxrPiXsroUUhw2u2Jyh9r5ut2dsQGR3
