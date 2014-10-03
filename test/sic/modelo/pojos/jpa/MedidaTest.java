@@ -3,7 +3,6 @@ package sic.modelo.pojos.jpa;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Medida;
 import sic.modelo.Empresa;
-import java.sql.SQLException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -23,14 +22,14 @@ public class MedidaTest {
     private static EntityTransaction tx;
 
     @BeforeClass
-    public static void initEntityManager() throws Exception {
+    public static void initEntityManager() {
         emf = Persistence.createEntityManagerFactory("SIC-Test-PU");
         em = emf.createEntityManager();
 
     }
 
     @AfterClass
-    public static void closeEntityManager() throws SQLException {
+    public static void closeEntityManager() {
         em.close();
         emf.close();
     }
@@ -40,7 +39,7 @@ public class MedidaTest {
         tx = em.getTransaction();
     }
 
-    public Medida debeGuardarUnaMedida() {
+    public Medida guardarUnaMedida() {
         Empresa empresa = new Empresa();
         empresa.setNombre("Empresa de ejemplo");
         empresa.setLema("");
@@ -69,8 +68,8 @@ public class MedidaTest {
     }
 
     @Test
-    public void shouldExecuteQueryXXX() {
-        Medida medida = this.debeGuardarUnaMedida();
+    public void ejecutarConsultaBuscarPorNombre() {
+        Medida medida = this.guardarUnaMedida();
 
         TypedQuery<Medida> query = em.createNamedQuery("Medida.buscarPorNombre", Medida.class);
         query.setParameter("empresa", medida.getEmpresa());

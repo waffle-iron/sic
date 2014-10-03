@@ -6,7 +6,6 @@ import sic.modelo.Provincia;
 import sic.modelo.Pais;
 import sic.modelo.Localidad;
 import sic.modelo.Empresa;
-import java.sql.SQLException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -26,14 +25,14 @@ public class ProveedorTest {
     private static EntityTransaction tx;
 
     @BeforeClass
-    public static void initEntityManager() throws Exception {
+    public static void initEntityManager() {
         emf = Persistence.createEntityManagerFactory("SIC-Test-PU");
         em = emf.createEntityManager();
 
     }
 
     @AfterClass
-    public static void closeEntityManager() throws SQLException {
+    public static void closeEntityManager() {
         em.close();
         emf.close();
     }
@@ -42,13 +41,13 @@ public class ProveedorTest {
     public void initTransaction() {
         tx = em.getTransaction();
     }
-    
+
     public Proveedor guardarUnProveedor() {
         Proveedor proveedor = new Proveedor();
         proveedor.setCodigo("456");
         proveedor.setRazonSocial("Proveedor de ejemplo");
         proveedor.setDireccion("Calle 123");
-        
+
         //Condicion IVA
         CondicionIVA condicionIVA = new CondicionIVA();
         condicionIVA.setNombre("Monotributo");
@@ -60,7 +59,7 @@ public class ProveedorTest {
         proveedor.setContacto("");
         proveedor.setEmail("");
         proveedor.setWeb("");
-        
+
         //Pais
         Pais pais = new Pais();
         pais.setNombre("Argentina");
@@ -68,14 +67,14 @@ public class ProveedorTest {
         Provincia provincia = new Provincia();
         provincia.setNombre("Corrientes");
         provincia.setPais(pais);
-        
+
         //Localidad
         Localidad localidad = new Localidad();
         localidad.setNombre("Bella Vista");
         localidad.setCodigoPostal("3400");
         localidad.setProvincia(provincia);
         proveedor.setLocalidad(localidad);
-        
+
         //Empresa
         Empresa empresa = new Empresa();
         empresa.setNombre("Empresa de ejemplo");
@@ -85,20 +84,20 @@ public class ProveedorTest {
         empresa.setEmail("");
         empresa.setTelefono("");
         proveedor.setEmpresa(empresa);
-        
+
         tx.begin();
         em.persist(proveedor);
         tx.commit();
         return proveedor;
     }
-    
+
     @Test
-    public void shouldExecuteQueryXXX() {
+    public void ejecutarConsultaBuscarPorIdFiscal() {
         Proveedor prov = this.guardarUnProveedor();
         TypedQuery<Proveedor> query = em.createNamedQuery("Proveedor.buscarPorIdFiscal", Proveedor.class);
         query.setParameter("empresa", prov.getEmpresa());
         query.setParameter("idFiscal", "24");
-        List<Proveedor> resul = query.getResultList();
-        assertNotNull(resul);
-    }    
+        List<Proveedor> result = query.getResultList();
+        assertNotNull(result);
+    }
 }

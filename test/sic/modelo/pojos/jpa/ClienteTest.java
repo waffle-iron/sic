@@ -6,7 +6,6 @@ import sic.modelo.Provincia;
 import sic.modelo.Pais;
 import sic.modelo.Localidad;
 import sic.modelo.Empresa;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -27,14 +26,14 @@ public class ClienteTest {
     private static EntityTransaction tx;
 
     @BeforeClass
-    public static void initEntityManager() throws Exception {
+    public static void initEntityManager() {
         emf = Persistence.createEntityManagerFactory("SIC-Test-PU");
         em = emf.createEntityManager();
 
     }
 
     @AfterClass
-    public static void closeEntityManager() throws SQLException {
+    public static void closeEntityManager() {
         em.close();
         emf.close();
     }
@@ -93,7 +92,7 @@ public class ClienteTest {
     }
 
     @Test
-    public void shouldExecuteQueryBuscarTodos() {
+    public void ejecutarConsultaBuscarTodos() {
         tx.begin();
         Cliente cliente = this.crearUnCliente();
         em.persist(cliente);
@@ -106,7 +105,7 @@ public class ClienteTest {
     }
 
     @Test
-    public void shouldExecuteQueryBuscarPorId() {
+    public void ejecutarConsultaBuscarPorId() {
         tx.begin();
         Cliente cliente = this.crearUnCliente();
         em.persist(cliente);

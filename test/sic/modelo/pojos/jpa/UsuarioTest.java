@@ -1,7 +1,6 @@
 package sic.modelo.pojos.jpa;
 
 import sic.modelo.Usuario;
-import java.sql.SQLException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -21,14 +20,14 @@ public class UsuarioTest {
     private static EntityTransaction tx;
 
     @BeforeClass
-    public static void initEntityManager() throws Exception {
+    public static void initEntityManager() {
         emf = Persistence.createEntityManagerFactory("SIC-Test-PU");
         em = emf.createEntityManager();
 
     }
 
     @AfterClass
-    public static void closeEntityManager() throws SQLException {
+    public static void closeEntityManager() {
         em.close();
         emf.close();
     }
@@ -38,7 +37,6 @@ public class UsuarioTest {
         tx = em.getTransaction();
     }
 
-    
     public void guardarUnUsuario() {
         Usuario usuario = new Usuario();
         usuario.setNombre("miUsuario");
@@ -48,9 +46,9 @@ public class UsuarioTest {
         em.persist(usuario);
         tx.commit();
     }
-    
+
     @Test
-    public void shouldExecuteQueryXXX() {
+    public void ejecutarConsultaBuscarPorNombreContrasenia() {
         this.guardarUnUsuario();
         TypedQuery<Usuario> query = em.createNamedQuery("Usuario.buscarPorNombreContrasenia", Usuario.class);
         query.setParameter("nombre", "miUsuario");

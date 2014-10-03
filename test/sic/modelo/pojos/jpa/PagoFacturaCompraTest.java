@@ -2,7 +2,6 @@ package sic.modelo.pojos.jpa;
 
 import sic.modelo.PagoFacturaCompra;
 import sic.modelo.FacturaCompra;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -23,14 +22,14 @@ public class PagoFacturaCompraTest {
     private static EntityTransaction tx;
 
     @BeforeClass
-    public static void initEntityManager() throws Exception {
+    public static void initEntityManager() {
         emf = Persistence.createEntityManagerFactory("SIC-Test-PU");
         em = emf.createEntityManager();
 
     }
 
     @AfterClass
-    public static void closeEntityManager() throws SQLException {
+    public static void closeEntityManager() {
         em.close();
         emf.close();
     }
@@ -46,13 +45,13 @@ public class PagoFacturaCompraTest {
         fcompra.setFechaVencimiento(new Date());
         fcompra.setObservaciones("");
         fcompra.setTipoFactura('A');
-        
+
         PagoFacturaCompra pago = new PagoFacturaCompra();
         pago.setFecha(new Date());
         pago.setMonto(144);
         pago.setNota("");
         pago.setFacturaCompra(fcompra);
-        
+
         tx.begin();
         em.persist(pago);
         tx.commit();
@@ -60,7 +59,7 @@ public class PagoFacturaCompraTest {
     }
 
     @Test
-    public void shouldExecuteQueryXXX() {
+    public void ejecutarConsultaBuscarPorFactura() {
         PagoFacturaCompra pago = this.guardarUnPago();
         TypedQuery<PagoFacturaCompra> query = em.createNamedQuery("PagoFacturaCompra.buscarPorFactura", PagoFacturaCompra.class);
         query.setParameter("factura", pago.getFacturaCompra());

@@ -5,7 +5,6 @@ import sic.modelo.Provincia;
 import sic.modelo.Pais;
 import sic.modelo.Empresa;
 import sic.modelo.Localidad;
-import java.sql.SQLException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -25,14 +24,14 @@ public class EmpresaTest {
     private static EntityTransaction tx;
 
     @BeforeClass
-    public static void initEntityManager() throws Exception {
+    public static void initEntityManager() {
         emf = Persistence.createEntityManagerFactory("SIC-Test-PU");
         em = emf.createEntityManager();
 
     }
 
     @AfterClass
-    public static void closeEntityManager() throws SQLException {
+    public static void closeEntityManager() {
         em.close();
         emf.close();
     }
@@ -42,48 +41,48 @@ public class EmpresaTest {
         tx = em.getTransaction();
     }
 
-    public void debeGuardarUnaEmpresa() {
+    public void guardarUnaEmpresa() {
         Empresa empresa = new Empresa();
         empresa.setNombre("Empresa de ejemplo");
         empresa.setLema("");
         empresa.setDireccion("Calle 123");
         empresa.setCuip(123);
-        
+
         //Condicion IVA
         CondicionIVA condicionIVA = new CondicionIVA();
         condicionIVA.setNombre("Responsable Inscripto");
         condicionIVA.setDiscriminaIVA(true);
-        
-        empresa.setCondicionIVA(condicionIVA);        
+
+        empresa.setCondicionIVA(condicionIVA);
         empresa.setEmail("");
         empresa.setTelefono("");
-        
-         //Pais
+
+        //Pais
         Pais pais = new Pais();
         pais.setNombre("USA");
-        
+
         //Provincia
         Provincia provincia = new Provincia();
         provincia.setNombre("Texas");
         provincia.setPais(pais);
-        
+
         //Localidad
         Localidad localidad = new Localidad();
         localidad.setNombre("Dallas");
         localidad.setCodigoPostal("");
         localidad.setProvincia(provincia);
-        
+
         empresa.setLocalidad(localidad);
-        
+
         tx.begin();
         em.persist(empresa);
         tx.commit();
         assertNotNull("El Id de la empresa no debe ser nulo.", empresa.getId_Empresa());
     }
-    
+
     @Test
-    public void shouldExecuteQueryXXX() {
-        this.debeGuardarUnaEmpresa();
+    public void ejecutarConsultaBuscarPorCUIP() {
+        this.guardarUnaEmpresa();
 
         TypedQuery<Empresa> query = em.createNamedQuery("Empresa.buscarPorCUIP", Empresa.class);
         query.setParameter("cuip", 12L);

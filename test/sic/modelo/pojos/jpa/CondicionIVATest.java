@@ -1,7 +1,6 @@
 package sic.modelo.pojos.jpa;
 
 import sic.modelo.CondicionIVA;
-import java.sql.SQLException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -21,14 +20,14 @@ public class CondicionIVATest {
     private static EntityTransaction tx;
 
     @BeforeClass
-    public static void initEntityManager() throws Exception {
+    public static void initEntityManager() {
         emf = Persistence.createEntityManagerFactory("SIC-Test-PU");
         em = emf.createEntityManager();
 
     }
 
     @AfterClass
-    public static void closeEntityManager() throws SQLException {
+    public static void closeEntityManager() {
         em.close();
         emf.close();
     }
@@ -38,7 +37,7 @@ public class CondicionIVATest {
         tx = em.getTransaction();
     }
 
-    private CondicionIVA crearUnaCondicionIVA() {        
+    private CondicionIVA crearUnaCondicionIVA() {
         CondicionIVA condicionIVA = new CondicionIVA();
         condicionIVA.setNombre("Responsable Inscripto");
         condicionIVA.setDiscriminaIVA(true);
@@ -46,7 +45,7 @@ public class CondicionIVATest {
     }
 
     @Test
-    public void shouldExecuteQueryXXX() {
+    public void ejecutarConsultaBuscarPorNombre() {
         tx.begin();
         CondicionIVA condicion = this.crearUnaCondicionIVA();
         em.persist(condicion);
@@ -56,5 +55,5 @@ public class CondicionIVATest {
         query.setParameter("nombre", "Responsable Inscripto");
         List<CondicionIVA> resul = query.getResultList();
         assertNotNull(resul);
-    }    
+    }
 }

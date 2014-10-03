@@ -3,7 +3,6 @@ package sic.modelo.pojos.jpa;
 import sic.modelo.Rubro;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Empresa;
-import java.sql.SQLException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -23,14 +22,14 @@ public class RubroTest {
     private static EntityTransaction tx;
 
     @BeforeClass
-    public static void initEntityManager() throws Exception {
+    public static void initEntityManager() {
         emf = Persistence.createEntityManagerFactory("SIC-Test-PU");
         em = emf.createEntityManager();
 
     }
 
     @AfterClass
-    public static void closeEntityManager() throws SQLException {
+    public static void closeEntityManager() {
         em.close();
         emf.close();
     }
@@ -40,7 +39,7 @@ public class RubroTest {
         tx = em.getTransaction();
     }
 
-    public Rubro debeGuardarUnRubro() {
+    public Rubro guardarUnRubro() {
         Empresa empresa = new Empresa();
         empresa.setNombre("Empresa de ejemplo");
         empresa.setLema("");
@@ -69,8 +68,8 @@ public class RubroTest {
     }
 
     @Test
-    public void shouldExecuteQueryXXX() {
-        Rubro rubro = this.debeGuardarUnRubro();
+    public void ejecutarConsultaBuscarTodos() {
+        Rubro rubro = this.guardarUnRubro();
 
         TypedQuery<Rubro> query = em.createNamedQuery("Rubro.buscarTodos", Rubro.class);
         query.setParameter("empresa", rubro.getEmpresa());

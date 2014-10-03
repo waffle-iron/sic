@@ -5,7 +5,6 @@ import sic.modelo.Pais;
 import sic.modelo.Transportista;
 import sic.modelo.Localidad;
 import sic.modelo.Empresa;
-import java.sql.SQLException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -25,14 +24,14 @@ public class TransportistaTest {
     private static EntityTransaction tx;
 
     @BeforeClass
-    public static void initEntityManager() throws Exception {
+    public static void initEntityManager() {
         emf = Persistence.createEntityManagerFactory("SIC-Test-PU");
         em = emf.createEntityManager();
 
     }
 
     @AfterClass
-    public static void closeEntityManager() throws SQLException {
+    public static void closeEntityManager() {
         em.close();
         emf.close();
     }
@@ -42,30 +41,30 @@ public class TransportistaTest {
         tx = em.getTransaction();
     }
 
-    public Transportista debeGuardarUnTransportista() {
+    public Transportista guardarUnTransportista() {
         Transportista transportista = new Transportista();
         transportista.setNombre("Transportista de ejemplo");
-        transportista.setDireccion("Calle 123");        
-        
-         //Pais
+        transportista.setDireccion("Calle 123");
+
+        //Pais
         Pais pais = new Pais();
         pais.setNombre("USA");
-        
+
         //Provincia
         Provincia provincia = new Provincia();
         provincia.setNombre("Texas");
         provincia.setPais(pais);
-        
+
         //Localidad
         Localidad localidad = new Localidad();
         localidad.setNombre("Dallas");
         localidad.setCodigoPostal("");
         localidad.setProvincia(provincia);
-        
+
         transportista.setLocalidad(localidad);
         transportista.setWeb("");
         transportista.setTelefono("");
-        
+
         //Empresa
         Empresa empresa = new Empresa();
         empresa.setNombre("Empresa de ejemplo");
@@ -80,18 +79,13 @@ public class TransportistaTest {
         tx.commit();
         return transportista;
     }
-    
-    @Test
-    public void shouldExecuteQueryXXX() {
-       
-        Transportista trans = this.debeGuardarUnTransportista(); 
-        
 
+    @Test
+    public void ejecutarConsultaBuscarTodos() {
+        Transportista trans = this.guardarUnTransportista();
         TypedQuery<Transportista> query = em.createNamedQuery("Transportista.buscarTodos", Transportista.class);
         query.setParameter("empresa", trans.getEmpresa());
-    
-        
         List<Transportista> resul = query.getResultList();
         assertNotNull(resul);
-    }    
+    }
 }

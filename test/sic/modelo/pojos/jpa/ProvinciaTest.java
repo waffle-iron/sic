@@ -3,13 +3,11 @@ package sic.modelo.pojos.jpa;
 import sic.modelo.Provincia;
 import sic.modelo.Pais;
 import sic.modelo.Localidad;
-import java.sql.SQLException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -24,13 +22,13 @@ public class ProvinciaTest {
     private static EntityTransaction tx;
 
     @BeforeClass
-    public static void initEntityManager() throws Exception {
+    public static void initEntityManager() {
         emf = Persistence.createEntityManagerFactory("SIC-Test-PU");
         em = emf.createEntityManager();
     }
 
     @AfterClass
-    public static void closeEntityManager() throws SQLException {
+    public static void closeEntityManager() {
         em.close();
         emf.close();
     }
@@ -41,7 +39,7 @@ public class ProvinciaTest {
     }
 
     @Test
-    public void shouldCreateProvinciasWithSameNameInDifferentPaises() throws Exception {
+    public void crearProvinciasConElMismoNombreEnDiferentesPaises() {
         Pais pais1 = new Pais();
         pais1.setNombre("Paraguay");
 
@@ -67,7 +65,7 @@ public class ProvinciaTest {
     }
 
     @Test
-    public void shouldExecuteQueryXXX() {
+    public void ejecutarConsultaBuscarPorNombre() {
         tx.begin();
         Pais pais = new Pais();
         pais.setNombre("USA");
@@ -86,7 +84,6 @@ public class ProvinciaTest {
 
         //provincia.addLocalidad(localidad1);
         //provincia.addLocalidad(localidad2);
-
         em.persist(localidad1);
         em.persist(localidad2);
         tx.commit();

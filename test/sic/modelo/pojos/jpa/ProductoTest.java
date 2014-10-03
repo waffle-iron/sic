@@ -5,7 +5,6 @@ import sic.modelo.Proveedor;
 import sic.modelo.Medida;
 import sic.modelo.Producto;
 import sic.modelo.Empresa;
-import java.sql.SQLException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -25,14 +24,14 @@ public class ProductoTest {
     private static EntityTransaction tx;
 
     @BeforeClass
-    public static void initEntityManager() throws Exception {
+    public static void initEntityManager() {
         emf = Persistence.createEntityManagerFactory("SIC-Test-PU");
         em = emf.createEntityManager();
 
     }
 
     @AfterClass
-    public static void closeEntityManager() throws SQLException {
+    public static void closeEntityManager() {
         em.close();
         emf.close();
     }
@@ -41,14 +40,14 @@ public class ProductoTest {
     public void initTransaction() {
         tx = em.getTransaction();
     }
-    
+
     public Producto guardarUnProducto() {
         Producto producto = new Producto();
         producto.setCodigo("123");
         producto.setDescripcion("Producto de prueba.");
         producto.setCantidad(2);
         producto.setCantMinima(1);
-        
+
         //Medida
         Medida medida = new Medida();
         medida.setNombre("UNIDAD");
@@ -63,7 +62,7 @@ public class ProductoTest {
         producto.setImpuestoInterno_neto(0);
         producto.setPrecioLista(1331.6655);
         producto.setIlimitado(false);
-        
+
         //Rubro
         Rubro rubro = new Rubro();
         rubro.setNombre("VARIOS");
@@ -71,22 +70,22 @@ public class ProductoTest {
         producto.setFechaUltimaModificacion(new java.util.Date());
         producto.setEstanteria("");
         producto.setEstante("");
-        producto.setFechaAlta(new java.util.Date());    
-        
+        producto.setFechaAlta(new java.util.Date());
+
         //Proveedor
         Proveedor proveedor = new Proveedor();
         proveedor.setCodigo("");
         proveedor.setRazonSocial("Proveedor de ejemplo");
-        proveedor.setDireccion("Calle 123");        
+        proveedor.setDireccion("Calle 123");
         proveedor.setId_Fiscal("");
         proveedor.setTelPrimario("");
         proveedor.setTelSecundario("");
         proveedor.setContacto("");
         proveedor.setEmail("");
-        proveedor.setWeb("");        
+        proveedor.setWeb("");
         producto.setProveedor(proveedor);
-        producto.setNota("");       
-        
+        producto.setNota("");
+
         Empresa empresa = new Empresa();
         empresa.setNombre("Empresa de ejemplo");
         empresa.setLema("");
@@ -95,21 +94,21 @@ public class ProductoTest {
         empresa.setEmail("");
         empresa.setTelefono("");
         producto.setEmpresa(empresa);
-        
+
         tx.begin();
         em.persist(producto);
         tx.commit();
         return producto;
     }
-    
+
     @Test
-    public void shouldExecuteQueryXXX() {
-        Producto producto = this.guardarUnProducto();        
+    public void ejecutarConsultaBuscarPorProveedor() {
+        Producto producto = this.guardarUnProducto();
 
         TypedQuery<Producto> query = em.createNamedQuery("Producto.buscarPorProveedor", Producto.class);
         query.setParameter("proveedor", producto.getProveedor());
         query.setParameter("empresa", producto.getEmpresa());
         List<Producto> resul = query.getResultList();
         assertNotNull(resul);
-    }   
+    }
 }
