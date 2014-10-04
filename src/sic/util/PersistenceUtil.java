@@ -13,6 +13,7 @@ public class PersistenceUtil {
     private static EntityManagerFactory emf = null;
     private static final String username = "admin12345";
     private static final String password = "sic12345";
+    private static final String persistenceUnitName = "SIC-PU";
     private static final Logger log = Logger.getLogger(PersistenceUtil.class.getPackage().getName());
 
     public static EntityManager getEntityManager() {
@@ -23,7 +24,7 @@ public class PersistenceUtil {
             properties.put("javax.persistence.jdbc.user", username);
             properties.put("javax.persistence.jdbc.password", password);
             try {
-                emf = Persistence.createEntityManagerFactory("SIC-PU", properties);
+                emf = Persistence.createEntityManagerFactory(persistenceUnitName, properties);
             } catch (Exception ex) {
                 log.error(ex.getMessage() + " - " + ex.getCause().getMessage());
             }

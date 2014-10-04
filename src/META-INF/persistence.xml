@@ -1,30 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
-  <persistence-unit name="SIC-PU" transaction-type="RESOURCE_LOCAL">
-    <class>sic.modelo.Cliente</class>
-    <class>sic.modelo.FormaDePago</class>
-    <class>sic.modelo.Provincia</class>
-    <class>sic.modelo.Pais</class>
-    <class>sic.modelo.Factura</class>
-    <class>sic.modelo.CondicionIVA</class>
-    <class>sic.modelo.Proveedor</class>
-    <class>sic.modelo.Localidad</class>
-    <class>sic.modelo.Transportista</class>
-    <class>sic.modelo.Empresa</class>
-    <class>sic.modelo.Medida</class>
-    <class>sic.modelo.Producto</class>
-    <class>sic.modelo.PagoFacturaCompra</class>
-    <class>sic.modelo.FacturaCompra</class>
-    <class>sic.modelo.Rubro</class>
-    <class>sic.modelo.RenglonFactura</class>
-    <class>sic.modelo.Usuario</class>
-    <class>sic.modelo.FacturaVenta</class>
-    <properties> 
-      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
-      <!-- <property name="hibernate.hbm2ddl.auto" value="create"/> -->
-      <property name="hibernate.show_sql" value="false"/>
-      <property name="hibernate.format_sql" value="false"/>
-    </properties>
-  </persistence-unit>
+<persistence version="2.0" 
+             xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+    
+    <persistence-unit name="SIC-PU" transaction-type="RESOURCE_LOCAL">
+        <class>sic.modelo.Cliente</class>
+        <class>sic.modelo.FormaDePago</class>
+        <class>sic.modelo.Provincia</class>
+        <class>sic.modelo.Pais</class>
+        <class>sic.modelo.Factura</class>
+        <class>sic.modelo.CondicionIVA</class>
+        <class>sic.modelo.Proveedor</class>
+        <class>sic.modelo.Localidad</class>
+        <class>sic.modelo.Transportista</class>
+        <class>sic.modelo.Empresa</class>
+        <class>sic.modelo.Medida</class>
+        <class>sic.modelo.Producto</class>
+        <class>sic.modelo.PagoFacturaCompra</class>
+        <class>sic.modelo.FacturaCompra</class>
+        <class>sic.modelo.Rubro</class>
+        <class>sic.modelo.RenglonFactura</class>
+        <class>sic.modelo.Usuario</class>
+        <class>sic.modelo.FacturaVenta</class>
+        <properties> 
+            <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
+            <!-- <property name="hibernate.hbm2ddl.auto" value="create"/> -->
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="false"/>
+        </properties>
+    </persistence-unit>
+    
+    <persistence-unit name="SIC-Test-PU" transaction-type="RESOURCE_LOCAL">
+        <class>sic.modelo.Cliente</class>
+        <class>sic.modelo.FormaDePago</class>
+        <class>sic.modelo.Provincia</class>
+        <class>sic.modelo.Pais</class>
+        <class>sic.modelo.Factura</class>
+        <class>sic.modelo.CondicionIVA</class>
+        <class>sic.modelo.Proveedor</class>
+        <class>sic.modelo.Localidad</class>
+        <class>sic.modelo.Transportista</class>
+        <class>sic.modelo.Empresa</class>
+        <class>sic.modelo.Medida</class>
+        <class>sic.modelo.Producto</class>
+        <class>sic.modelo.PagoFacturaCompra</class>
+        <class>sic.modelo.FacturaCompra</class>
+        <class>sic.modelo.Rubro</class>
+        <class>sic.modelo.RenglonFactura</class>
+        <class>sic.modelo.Usuario</class>
+        <class>sic.modelo.FacturaVenta</class>
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/sic-test;create=true"/>
+            <property name="javax.persistence.jdbc.user" value="app"/>
+            <property name="javax.persistence.jdbc.password" value="app"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.DerbyTenSevenDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="create"/>
+        </properties>
+    </persistence-unit>
 </persistence>
