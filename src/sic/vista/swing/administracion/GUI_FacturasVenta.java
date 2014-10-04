@@ -24,10 +24,10 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
     private ModeloTabla modeloTablaFacturas;
     private List<FacturaVenta> facturas;
-    private FacturaService facturaService = new FacturaService();
-    private EmpresaService empresaService = new EmpresaService();
-    private ClienteService clienteService = new ClienteService();
-    private UsuarioService usuarioService = new UsuarioService();
+    private final FacturaService facturaService = new FacturaService();
+    private final EmpresaService empresaService = new EmpresaService();
+    private final ClienteService clienteService = new ClienteService();
+    private final UsuarioService usuarioService = new UsuarioService();
     private static final Logger log = Logger.getLogger(GUI_FacturasVenta.class.getPackage().getName());
 
     public GUI_FacturasVenta() {
@@ -42,8 +42,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
         //nombres de columnas
         String[] encabezados = new String[17];
-        encabezados[0] = "Tipo";
-        encabezados[1] = "Fecha Factura";
+        encabezados[0] = "Fecha Factura";
+        encabezados[1] = "Tipo";
         encabezados[2] = "Nº Factura";
         encabezados[3] = "Fecha Vencimiento";
         encabezados[4] = "Cliente";
@@ -64,8 +64,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaFacturas.getColumnCount()];
-        tipos[0] = String.class;
-        tipos[1] = Date.class;
+        tipos[0] = Date.class;
+        tipos[1] = String.class;
         tipos[2] = String.class;
         tipos[3] = Date.class;
         tipos[4] = String.class;
@@ -89,8 +89,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
         tbl_Resultados.setDefaultRenderer(Double.class, new RenderTabla());
 
         //Tamanios de columnas
-        tbl_Resultados.getColumnModel().getColumn(0).setPreferredWidth(60);
-        tbl_Resultados.getColumnModel().getColumn(1).setPreferredWidth(100);
+        tbl_Resultados.getColumnModel().getColumn(0).setPreferredWidth(100);
+        tbl_Resultados.getColumnModel().getColumn(1).setPreferredWidth(60);
         tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(150);
         tbl_Resultados.getColumnModel().getColumn(3).setPreferredWidth(130);
         tbl_Resultados.getColumnModel().getColumn(4).setPreferredWidth(200);
@@ -164,8 +164,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
         this.limpiarJTable();
         for (FacturaVenta factura : facturas) {
             Object[] fila = new Object[17];
-            fila[0] = String.valueOf(factura.getTipoFactura());
-            fila[1] = factura.getFecha();
+            fila[0] = factura.getFecha();
+            fila[1] = String.valueOf(factura.getTipoFactura());
             fila[2] = factura.getNumSerie() + " - " + factura.getNumFactura();
             fila[3] = factura.getFechaVencimiento();
             fila[4] = factura.getCliente().getNombre();

@@ -14,7 +14,6 @@ import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
-import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.util.Utilidades;
@@ -22,8 +21,8 @@ import sic.util.Validator;
 
 public class FacturaService {
 
-    private FacturaRepository modeloFactura = new FacturaRepository();
-    private ProductoService productoService = new ProductoService();
+    private final FacturaRepository modeloFactura = new FacturaRepository();
+    private final ProductoService productoService = new ProductoService();
 
     public char[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor) {
         //cuando la Empresa discrimina IVA
@@ -388,7 +387,7 @@ public class FacturaService {
     //**************************************************************************    
     //Division de Factura
     public List<FacturaVenta> dividirFactura(FacturaVenta factura) {
-        double mitad1 = 0;
+        double mitad1;
         double mitad2 = 0;
         RenglonDeFacturaService renglonService = new RenglonDeFacturaService();
         List<RenglonFactura> renglones = new ArrayList<>(factura.getRenglones());
