@@ -93,14 +93,6 @@ public class GUI_CerrarVenta extends JDialog {
     }
 
     private Factura guardarFactura(Factura facturaVenta) throws ServiceException {
-
-        if (facturaVenta.getTipoFactura() == 'Y') {
-            facturaVenta.setTipoFactura('X');
-            facturaVenta.setNumFactura(facturaService.calcularNumeroFactura(facturaVenta.getTipoFactura(), 1));
-            for (RenglonFactura renglon : facturaVenta.getRenglones()) {
-                renglon.setFactura(facturaVenta);
-            }
-        }
         facturaService.guardar(facturaVenta);
         return facturaService.getFacturaVentaPorTipoSerieNum(facturaVenta.getTipoFactura(), facturaVenta.getNumSerie(), facturaVenta.getNumFactura());
     }
