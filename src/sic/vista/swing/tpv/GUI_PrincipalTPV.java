@@ -326,8 +326,16 @@ public class GUI_PrincipalTPV extends JFrame {
         double impInterno_neto;
         double total;
         this.validarComponentesDeResultados();
-        //SubTotal        
-        subTotal = facturaService.calcularSubTotal(renglones);
+        //SubTotal    
+        List<RenglonFactura> nuevosRenglones = new ArrayList<>(renglones);
+        if (tipoDeFactura == 'Y') {
+            for (RenglonFactura renglon : nuevosRenglones) {
+                renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, renglon.getCantidad(), productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+            }
+            subTotal = facturaService.calcularSubTotal(nuevosRenglones);
+        } else {
+            subTotal = facturaService.calcularSubTotal(renglones);
+        }
         txt_Subtotal.setValue(subTotal);
 
         //Recargo
@@ -348,7 +356,12 @@ public class GUI_PrincipalTPV extends JFrame {
         txt_IVA21_neto.setValue(iva_21_neto);
 
         //Imp Interno neto
-        impInterno_neto = facturaService.calcularImpInterno_neto(tipoDeFactura, 0, recargo_porcentaje, renglones);
+        if (tipoDeFactura == 'Y') {
+            impInterno_neto = facturaService.calcularImpInterno_neto(tipoDeFactura, 0, recargo_porcentaje, nuevosRenglones);
+
+        } else {
+            impInterno_neto = facturaService.calcularImpInterno_neto(tipoDeFactura, 0, recargo_porcentaje, renglones);
+        }
         txt_ImpInterno_neto.setValue(impInterno_neto);
 
         //total

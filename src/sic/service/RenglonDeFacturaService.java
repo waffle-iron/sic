@@ -28,7 +28,7 @@ public class RenglonDeFacturaService {
     private double calcularDescuento_neto(double precioUnitario, double descuento_porcentaje) {
         double resultado;
         resultado = (precioUnitario * descuento_porcentaje) / 100;
-        return Math.round(resultado * 1000.0) / 1000.0;        
+        return Math.round(resultado * 1000.0) / 1000.0;
     }
 
     private double calcularIVA_neto(Movimiento movimiento, Producto producto, double descuento_neto) {
@@ -41,7 +41,7 @@ public class RenglonDeFacturaService {
         if (movimiento == Movimiento.VENTA) {
             resultado = ((producto.getPrecioVentaPublico() - descuento_neto) * producto.getIva_porcentaje()) / 100;
         }
-        return Math.round(resultado * 1000.0) / 1000.0;        
+        return Math.round(resultado * 1000.0) / 1000.0;
     }
 
     private double calcularImpInterno_neto(Movimiento movimiento, Producto producto, double descuento_neto) {
@@ -54,7 +54,7 @@ public class RenglonDeFacturaService {
         if (movimiento == Movimiento.VENTA) {
             resultado = ((producto.getPrecioVentaPublico() - descuento_neto) * producto.getImpuestoInterno_porcentaje()) / 100;
         }
-        return Math.round(resultado * 1000.0) / 1000.0;        
+        return Math.round(resultado * 1000.0) / 1000.0;
     }
 
     private double calcularPrecioUnitario(Movimiento movimiento, char tipoDeFactura, Producto producto) {
@@ -76,14 +76,18 @@ public class RenglonDeFacturaService {
             if (tipoDeFactura == 'A' || tipoDeFactura == 'X') {
                 resultado = producto.getPrecioVentaPublico();
             } else {
-                resultado = producto.getPrecioLista();
+                if (tipoDeFactura == 'Y') {
+                    resultado = producto.getPrecioVentaPublico() + producto.getPrecioVentaPublico() * ((producto.getIva_porcentaje() / 2) / 100);
+                } else {
+                    resultado = producto.getPrecioLista();
+                }
             }
         }
-        return Math.round(resultado * 1000.0) / 1000.0;        
+        return Math.round(resultado * 1000.0) / 1000.0;
     }
 
     private double calcularImporte(double cantidad, double precioUnitario, double descuento_neto) {
         double resultado = (precioUnitario - descuento_neto) * cantidad;
-        return Math.round(resultado * 1000.0) / 1000.0;        
+        return Math.round(resultado * 1000.0) / 1000.0;
     }
 }

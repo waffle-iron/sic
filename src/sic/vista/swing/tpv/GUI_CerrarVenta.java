@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import sic.modelo.Factura;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
-import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.service.*;
@@ -42,6 +41,9 @@ public class GUI_CerrarVenta extends JDialog {
         this.setIcon();
         this.setLocationRelativeTo(null);
         this.gui_tpv = (GUI_PrincipalTPV) parent;
+        if (gui_tpv.getTipoDeFactura() == 'Y' || gui_tpv.getTipoDeFactura() == 'X') {
+            ckb_DividirFactura.setEnabled(false);
+        }
         lbl_Vendedor.setText("");
         lbl_TotalAPagar.setValue(gui_tpv.getResultadosFactura().getTotal());
         lbl_Vuelto.setValue(0);
@@ -91,7 +93,14 @@ public class GUI_CerrarVenta extends JDialog {
     }
 
     private Factura guardarFactura(Factura facturaVenta) throws ServiceException {
-        
+
+        if (facturaVenta.getTipoFactura() == 'Y') {
+            facturaVenta.setTipoFactura('X');
+            facturaVenta.setNumFactura(facturaService.calcularNumeroFactura(facturaVenta.getTipoFactura(), 1));
+            for (RenglonFactura renglon : facturaVenta.getRenglones()) {
+                renglon.setFactura(facturaVenta);
+            }
+        }
         facturaService.guardar(facturaVenta);
         return facturaService.getFacturaVentaPorTipoSerieNum(facturaVenta.getTipoFactura(), facturaVenta.getNumSerie(), facturaVenta.getNumFactura());
     }
@@ -108,7 +117,7 @@ public class GUI_CerrarVenta extends JDialog {
             log.error(msjError + " - " + ex.getMessage());
         }
     }
-        
+
     private FacturaVenta construirFactura() {
         FacturaVenta facturaVenta = new FacturaVenta();
         facturaVenta.setFecha(new Date());
@@ -139,7 +148,7 @@ public class GUI_CerrarVenta extends JDialog {
         facturaVenta.setEliminada(false);
         facturaVenta.setCliente(gui_tpv.getCliente());
         facturaVenta.setUsuario(usuarioService.getUsuarioActivo().getUsuario());
-        
+
         return facturaVenta;
     }
 
@@ -368,17 +377,17 @@ public class GUI_CerrarVenta extends JDialog {
 
     private void btn_FinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FinalizarActionPerformed
         try {
-            if(ckb_DividirFactura.isSelected()){
+            if (ckb_DividirFactura.isEnabled() && ckb_DividirFactura.isSelected()) {
                 boolean pasoUnaVez = false;
-                for(Factura factura: facturaService.dividirFactura(this.construirFactura())){                    
-                    if(!pasoUnaVez || !factura.getRenglones().isEmpty()){
+                for (Factura factura : facturaService.dividirFactura(this.construirFactura())) {
+                    if (!pasoUnaVez || !factura.getRenglones().isEmpty()) {
                         this.lanzarReporteFactura(this.guardarFactura(factura));
                         pasoUnaVez = true;
                         exito = true;
                         this.dispose();
                     }
                 }
-            }else{
+            } else {
                 this.lanzarReporteFactura(this.guardarFactura(this.construirFactura()));
                 exito = true;
                 this.dispose();
@@ -421,9 +430,9 @@ public class GUI_CerrarVenta extends JDialog {
 
     private void ckb_DividirFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ckb_DividirFacturaActionPerformed
         // TODO add your handling code here:
-        if(ckb_DividirFactura.isSelected()){
+        if (ckb_DividirFactura.isSelected()) {
             this.lbl_TotalAPagar.setValue(facturaService.calcularTotalFacturas(facturaService.dividirFactura(this.construirFactura())));
-        }else{
+        } else {
             this.lbl_TotalAPagar.setValue(this.construirFactura().getTotal());
         }
     }//GEN-LAST:event_ckb_DividirFacturaActionPerformed
