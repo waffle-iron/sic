@@ -4,7 +4,6 @@ import java.awt.Frame;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -26,13 +25,13 @@ import sic.vista.swing.administracion.GUI_DetalleCliente;
 
 public class GUI_CerrarVenta extends JDialog {
 
-    private GUI_PrincipalTPV gui_tpv;
+    private final GUI_PrincipalTPV gui_tpv;
     private boolean exito;
-    private FormaDePagoService formaDePagoService = new FormaDePagoService();
-    private TransportistaService transportistaService = new TransportistaService();
-    private FacturaService facturaService = new FacturaService();
-    private UsuarioService usuarioService = new UsuarioService();
-    private HotKeysHandler keyHandler = new HotKeysHandler();
+    private final FormaDePagoService formaDePagoService = new FormaDePagoService();
+    private final TransportistaService transportistaService = new TransportistaService();
+    private final FacturaService facturaService = new FacturaService();
+    private final UsuarioService usuarioService = new UsuarioService();
+    private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_CerrarVenta.class.getPackage().getName());
 
     public GUI_CerrarVenta(Frame parent, boolean modal) {
@@ -119,7 +118,7 @@ public class GUI_CerrarVenta extends JDialog {
         facturaVenta.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
         facturaVenta.setFechaVencimiento(new Date());
         facturaVenta.setTransportista((Transportista) cmb_Transporte.getSelectedItem());
-        Set<RenglonFactura> lineasFactura = new HashSet<RenglonFactura>(gui_tpv.getRenglones());
+        Set<RenglonFactura> lineasFactura = new HashSet<>(gui_tpv.getRenglones());
         facturaVenta.setRenglones(lineasFactura);
         for (RenglonFactura renglon : lineasFactura) {
             renglon.setFactura(facturaVenta);
@@ -370,11 +369,10 @@ public class GUI_CerrarVenta extends JDialog {
     private void btn_FinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FinalizarActionPerformed
         try {
             if (ckb_DividirFactura.isEnabled() && ckb_DividirFactura.isSelected()) {
-                boolean pasoUnaVez = false;
-                for (Factura factura : facturaService.dividirFactura(this.construirFactura())) {
-                    if (!pasoUnaVez || !factura.getRenglones().isEmpty()) {
+                List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura());
+                for (Factura factura : facturasDivididas) {
+                    if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
                         this.lanzarReporteFactura(this.guardarFactura(factura));
-                        pasoUnaVez = true;
                         exito = true;
                         this.dispose();
                     }
@@ -421,7 +419,6 @@ public class GUI_CerrarVenta extends JDialog {
     }//GEN-LAST:event_txt_AbonaConFocusLost
 
     private void ckb_DividirFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ckb_DividirFacturaActionPerformed
-        // TODO add your handling code here:
         if (ckb_DividirFactura.isSelected()) {
             this.lbl_TotalAPagar.setValue(facturaService.calcularTotalFacturas(facturaService.dividirFactura(this.construirFactura())));
         } else {

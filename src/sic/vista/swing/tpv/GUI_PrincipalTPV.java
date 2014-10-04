@@ -31,21 +31,21 @@ public class GUI_PrincipalTPV extends JFrame {
     private Cliente cliente;
     private List<RenglonFactura> renglones;
     private ModeloTabla modeloTablaResultados;
-    private EmpresaService empresaService = new EmpresaService();
-    private ClienteService clienteService = new ClienteService();
-    private FormaDePagoService formaDePagoService = new FormaDePagoService();
-    private TransportistaService transportistaService = new TransportistaService();
-    private RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
-    private ProductoService productoService = new ProductoService();
-    private FacturaService facturaService = new FacturaService();
-    private UsuarioService usuarioService = new UsuarioService();
-    private HotKeysHandler keyHandler = new HotKeysHandler();
+    private final EmpresaService empresaService = new EmpresaService();
+    private final ClienteService clienteService = new ClienteService();
+    private final FormaDePagoService formaDePagoService = new FormaDePagoService();
+    private final TransportistaService transportistaService = new TransportistaService();
+    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
+    private final ProductoService productoService = new ProductoService();
+    private final FacturaService facturaService = new FacturaService();
+    private final UsuarioService usuarioService = new UsuarioService();
+    private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_PrincipalTPV.class.getPackage().getName());
 
     public GUI_PrincipalTPV() {
         this.initComponents();
         modeloTablaResultados = new ModeloTabla();
-        renglones = new ArrayList<RenglonFactura>();
+        renglones = new ArrayList<>();
         this.setSize(new Dimension(1050, 645));
         this.setLocationRelativeTo(null);
         this.setExtendedState(MAXIMIZED_BOTH);
@@ -220,11 +220,7 @@ public class GUI_PrincipalTPV extends JFrame {
                     disponibilidad -= renglon.getCantidad();
                 }
             }
-            if (disponibilidad >= cantRequerida) {
-                return true;
-            } else {
-                return false;
-            }
+            return disponibilidad >= cantRequerida;
         } else {
             return true;
         }
@@ -269,7 +265,7 @@ public class GUI_PrincipalTPV extends JFrame {
     }
 
     private void limpiarYRecargarComponentes() {
-        renglones = new ArrayList<RenglonFactura>();
+        renglones = new ArrayList<>();
         modeloTablaResultados = new ModeloTabla();
         this.setColumnas();
         txt_CodigoProducto.setText("");
@@ -326,16 +322,8 @@ public class GUI_PrincipalTPV extends JFrame {
         double impInterno_neto;
         double total;
         this.validarComponentesDeResultados();
-        //SubTotal    
-        List<RenglonFactura> nuevosRenglones = new ArrayList<>(renglones);
-        if (tipoDeFactura == 'Y') {
-            for (RenglonFactura renglon : nuevosRenglones) {
-                renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, renglon.getCantidad(), productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
-            }
-            subTotal = facturaService.calcularSubTotal(nuevosRenglones);
-        } else {
-            subTotal = facturaService.calcularSubTotal(renglones);
-        }
+        //SubTotal  
+        subTotal = facturaService.calcularSubTotal(renglones);
         txt_Subtotal.setValue(subTotal);
 
         //Recargo
@@ -356,12 +344,7 @@ public class GUI_PrincipalTPV extends JFrame {
         txt_IVA21_neto.setValue(iva_21_neto);
 
         //Imp Interno neto
-        if (tipoDeFactura == 'Y') {
-            impInterno_neto = facturaService.calcularImpInterno_neto(tipoDeFactura, 0, recargo_porcentaje, nuevosRenglones);
-
-        } else {
-            impInterno_neto = facturaService.calcularImpInterno_neto(tipoDeFactura, 0, recargo_porcentaje, renglones);
-        }
+        impInterno_neto = facturaService.calcularImpInterno_neto(tipoDeFactura, 0, recargo_porcentaje, renglones);
         txt_ImpInterno_neto.setValue(impInterno_neto);
 
         //total
@@ -373,11 +356,7 @@ public class GUI_PrincipalTPV extends JFrame {
         int respuesta = JOptionPane.showConfirmDialog(this,
                 "¿Esta seguro que desea salir?\nSe perderá la Venta que esta realizando.",
                 "Salir", JOptionPane.YES_NO_OPTION);
-        if (respuesta == JOptionPane.YES_OPTION) {
-            return true;
-        } else {
-            return false;
-        }
+        return respuesta == JOptionPane.YES_OPTION;
     }
 
     private void cargarTiposDeFacturaDisponibles() {
@@ -391,7 +370,7 @@ public class GUI_PrincipalTPV extends JFrame {
     private void recargarRenglonesSegunTipoDeFactura() {
         //resguardo de renglones
         List<RenglonFactura> resguardoRenglones = renglones;
-        renglones = new ArrayList<RenglonFactura>();
+        renglones = new ArrayList<>();
         for (RenglonFactura renglonFactura : resguardoRenglones) {
             Producto producto = productoService.getProductoPorId(renglonFactura.getId_ProductoItem());
             RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());

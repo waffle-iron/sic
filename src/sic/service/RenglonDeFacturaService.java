@@ -16,6 +16,9 @@ public class RenglonDeFacturaService {
         nuevoRenglon.setDescuento_porcentaje(descuento_porcentaje);
         nuevoRenglon.setDescuento_neto(this.calcularDescuento_neto(nuevoRenglon.getPrecioUnitario(), descuento_porcentaje));
         nuevoRenglon.setIva_porcentaje(producto.getIva_porcentaje());
+        if (tipoDeFactura == 'Y') {
+            nuevoRenglon.setIva_porcentaje(producto.getIva_porcentaje() / 2);
+        }
         nuevoRenglon.setIva_neto(this.calcularIVA_neto(movimiento, producto, nuevoRenglon.getDescuento_neto()));
         nuevoRenglon.setImpuesto_porcentaje(producto.getImpuestoInterno_porcentaje());
         nuevoRenglon.setImpuesto_neto(this.calcularImpInterno_neto(movimiento, producto, nuevoRenglon.getDescuento_neto()));
