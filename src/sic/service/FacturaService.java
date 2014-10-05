@@ -245,7 +245,11 @@ public class FacturaService {
     }
 
     public long calcularNumeroFactura(char tipoDeFactura, long serie) {
-        return modeloFactura.getMayorNumFacturaSegunTipo(tipoDeFactura, serie);
+        if (tipoDeFactura == 'Y') {
+            return modeloFactura.getMayorNumFacturaSegunTipo('X', serie);
+        } else {
+            return modeloFactura.getMayorNumFacturaSegunTipo(tipoDeFactura, serie);
+        }
     }
 
     public double calcularVuelto(double importeAPagar, double importeAbonado) {
