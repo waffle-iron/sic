@@ -80,7 +80,9 @@ public class RenglonDeFacturaService {
                 resultado = producto.getPrecioVentaPublico();
             } else {
                 if (tipoDeFactura == 'Y') {
-                    resultado = producto.getPrecioVentaPublico() + producto.getPrecioVentaPublico() * ((producto.getIva_porcentaje() / 2) / 100);
+                    iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje()/2) / 100;
+                    impInterno_resultado = (producto.getPrecioVentaPublico() * producto.getImpuestoInterno_porcentaje()) / 100;
+                    resultado = producto.getPrecioVentaPublico() + iva_resultado + impInterno_resultado;
                 } else {
                     resultado = producto.getPrecioLista();
                 }
