@@ -5,56 +5,45 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
-import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import sic.modelo.Cliente;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Empresa;
-import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
+import sic.modelo.Localidad;
 import sic.modelo.Medida;
 import sic.modelo.PagoFacturaCompra;
+import sic.modelo.Pais;
 import sic.modelo.Producto;
+import sic.modelo.Proveedor;
+import sic.modelo.Provincia;
 import sic.modelo.RenglonFactura;
+import sic.modelo.Rubro;
 import sic.modelo.Transportista;
+import sic.modelo.Usuario;
+import sic.modelo.XMLFileConfig;
+import sic.service.EmpresaService;
 import sic.service.FacturaService;
 import sic.service.Movimiento;
+import sic.service.ProductoService;
 import sic.service.RenglonDeFacturaService;
 
 public class FacturaTest {
 
-    private static EntityManagerFactory emf;
-    private static EntityManager em;
-    private static EntityTransaction tx;
-    private FacturaService facturaService;
-
-    @BeforeClass
-    public static void initEntityManager() {
-        emf = Persistence.createEntityManagerFactory("SIC-Test-PU");
-        em = emf.createEntityManager();
-
-    }
-
-    @AfterClass
-    public static void closeEntityManager() {
-        em.close();
-        emf.close();
-    }
+    private final FacturaService facturaService = new FacturaService();
+    private final ProductoService productoService = new ProductoService();
+    private final EmpresaService empresaService = new EmpresaService();
+    private final RenglonDeFacturaService renglonFacturaService = new RenglonDeFacturaService();
 
     @Before
-    public void initTransaction() {
-        tx = em.getTransaction();
-        facturaService = new FacturaService();
+    public void setDatosConexion() {
+        XMLFileConfig.setBdConexion("sic-test");
+        XMLFileConfig.setHostConexion("localhost");
+        XMLFileConfig.setPuertoConexion(3306);
     }
 
     @Test
@@ -104,19 +93,35 @@ public class FacturaTest {
         pago2.setMonto(122.15);
         //factura.addPagoFacturaCompra(pago2);
 
-        tx.begin();
-        em.persist(factura);
-        tx.commit();
     }
 
     @Test
     public void guardarUnaFacturaVentaTipoAconDivision() {
-        FacturaVenta facturaEsperada = new FacturaVenta();
-        facturaEsperada.setFecha(new Date());
-        facturaEsperada.setTipoFactura('A');
-        facturaEsperada.setNumSerie(1L);
-        facturaEsperada.setNumFactura(1L);
-        
+        FacturaVenta factura = new FacturaVenta();
+        factura.setFecha(new Date());
+        factura.setTipoFactura('A');
+        factura.setNumSerie(1L);
+        factura.setNumFactura(1L);
+
+        //Usuario
+        Usuario usuario = new Usuario();
+        usuario.setNombre("miUsuario");
+        usuario.setPassword("miPassword");
+        usuario.setPermisosAdministrador(true);
+
+        //Forma de Pago
+        FormaDePago formaDePago = new FormaDePago();
+        formaDePago.setNombre("Contado");
+        formaDePago.setAfectaCaja(true);
+        formaDePago.setPredeterminado(true);
+
+        //Transportista
+        Transportista transportista = new Transportista();
+        transportista.setNombre("Transportista de ejemplo");
+        transportista.setDireccion("Calle 123");
+        transportista.setTelefono("");
+        transportista.setWeb("");
+
         //Medida
         Medida medida = new Medida();
         medida.setNombre("Unidad");
@@ -131,13 +136,56 @@ public class FacturaTest {
         cliente.setNombre("Demonte");
         cliente.setDireccion("Calle 123");
         cliente.setCondicionIVA(condicionIVARespInscp);
-        facturaEsperada.setCliente(cliente);
-        
+        cliente.setTelPrimario("");
+        cliente.setTelSecundario("");
+        cliente.setContacto("");
+        cliente.setEmail("");
+        cliente.setId_Fiscal("");
+        cliente.setFechaAlta(new java.util.Date());
+
+        //Pais
+        Pais pais = new Pais();
+        pais.setNombre("USA");
+
+        //Provincia
+        Provincia provincia = new Provincia();
+        provincia.setNombre("Texas");
+        provincia.setPais(pais);
+
+        //Localidad
+        Localidad localidad = new Localidad();
+        localidad.setNombre("Dallas");
+        localidad.setCodigoPostal("");
+        localidad.setProvincia(provincia);
+
+        //Rubro
+        Rubro rubro = new Rubro();
+        rubro.setNombre("VARIOS");
+
         //Empresa
         Empresa empresa = new Empresa();
         empresa.setNombre("Empresa Prueba");
         empresa.setDireccion("Calle Prueba 456");
         empresa.setCondicionIVA(condicionIVARespInscp);
+        empresa.setEmail("");
+        empresa.setLocalidad(localidad);
+        empresa.setLema("");
+        empresa.setTelefono("");
+
+        empresaService.guardar(empresa);
+        empresa = empresaService.getEmpresaPorNombre(empresa.getNombre());
+
+        //Proveedor
+        Proveedor proveedor = new Proveedor();
+        proveedor.setCodigo("");
+        proveedor.setRazonSocial("Proveedor de ejemplo");
+        proveedor.setDireccion("Calle 123");
+        proveedor.setId_Fiscal("");
+        proveedor.setTelPrimario("");
+        proveedor.setTelSecundario("");
+        proveedor.setContacto("");
+        proveedor.setEmail("");
+        proveedor.setWeb("");
 
         //Producto
         Producto producto = new Producto();
@@ -152,6 +200,17 @@ public class FacturaTest {
         producto.setIva_neto(25.2);
         producto.setPrecioLista(145.2);
         producto.setMedida(medida);
+        producto.setRubro(rubro);
+        producto.setProveedor(proveedor);
+        producto.setEmpresa(empresa);
+        producto.setFechaUltimaModificacion(new java.util.Date());
+        producto.setEstanteria("");
+        producto.setEstante("");
+        producto.setFechaAlta(new java.util.Date());
+        producto.setNota("");
+
+        productoService.guardar(producto);
+        producto = productoService.getProductoPorCodigo(producto.getCodigo(), empresa);
 
         Producto producto2 = new Producto();
         producto2.setCodigo("45678");
@@ -165,128 +224,133 @@ public class FacturaTest {
         producto2.setIva_neto(27.3);
         producto2.setPrecioLista(287.3);
         producto2.setMedida(medida);
+        producto2.setRubro(rubro);
+        producto2.setProveedor(proveedor);
+        producto2.setEmpresa(empresa);
+        producto2.setFechaUltimaModificacion(new java.util.Date());
+        producto2.setEstanteria("");
+        producto2.setEstante("");
+        producto2.setFechaAlta(new java.util.Date());
+        producto2.setNota("");
+
+        productoService.guardar(producto2);
+        producto2 = productoService.getProductoPorCodigo(producto2.getCodigo(), empresa);
 
         //Renglones
-        RenglonDeFacturaService renglonFacturaService = new RenglonDeFacturaService();
         Set<RenglonFactura> renglones = new HashSet<>();
-        RenglonFactura renglon1 = renglonFacturaService.calcularRenglon(facturaEsperada.getTipoFactura(), Movimiento.VENTA, 8, producto, 0);
+        RenglonFactura renglon1 = renglonFacturaService.calcularRenglon(factura.getTipoFactura(), Movimiento.VENTA, 8, producto, 0);
+        renglon1.setFactura(factura);
         renglones.add(renglon1);
-        RenglonFactura renglon2 = renglonFacturaService.calcularRenglon(facturaEsperada.getTipoFactura(), Movimiento.VENTA, 8, producto2, 0);
+        RenglonFactura renglon2 = renglonFacturaService.calcularRenglon(factura.getTipoFactura(), Movimiento.VENTA, 8, producto2, 0);
+        renglon2.setFactura(factura);
         renglones.add(renglon2);
-
         List<RenglonFactura> renglonesList = new ArrayList<>(renglones);
 
-        facturaEsperada.setRenglones(renglones);
+        factura.setRenglones(renglones);
 
-        facturaEsperada.setSubTotal(facturaService.calcularSubTotal(renglonesList));
-        facturaEsperada.setDescuento_neto(facturaService.calcularDescuento_neto(facturaEsperada.getSubTotal(), facturaEsperada.getDescuento_porcentaje()));
-        facturaEsperada.setRecargo_neto(facturaService.calcularRecargo_neto(facturaEsperada.getSubTotal(), facturaEsperada.getRecargo_porcentaje()));
-        facturaEsperada.setSubTotal_neto(facturaService.calcularSubTotal_neto(facturaEsperada.getSubTotal(), facturaEsperada.getRecargo_neto(), facturaEsperada.getDescuento_neto()));
-        facturaEsperada.setIva_105_neto(facturaService.calcularIva_neto(facturaEsperada.getTipoFactura(), facturaEsperada.getDescuento_porcentaje(), facturaEsperada.getRecargo_porcentaje(), renglonesList, 10.5));
-        facturaEsperada.setIva_21_neto(facturaService.calcularIva_neto(facturaEsperada.getTipoFactura(), facturaEsperada.getDescuento_porcentaje(), facturaEsperada.getRecargo_porcentaje(), renglonesList, 21));
-        facturaEsperada.setImpuestoInterno_neto(facturaService.calcularImpInterno_neto(facturaEsperada.getTipoFactura(), facturaEsperada.getDescuento_porcentaje(), facturaEsperada.getRecargo_porcentaje(), renglonesList));
-        facturaEsperada.setTotal(facturaService.calcularTotal(facturaEsperada.getSubTotal(), facturaEsperada.getDescuento_neto(), facturaEsperada.getRecargo_neto(), facturaEsperada.getIva_105_neto(), facturaEsperada.getIva_21_neto(), facturaEsperada.getImpuestoInterno_neto()));
-        facturaEsperada.setObservaciones("");
-        facturaEsperada.setPagada(true);
-        facturaEsperada.setEliminada(true);
-        facturaEsperada.setEmpresa(empresa);
-        facturaEsperada.setCliente(cliente);
+        factura.setSubTotal(facturaService.calcularSubTotal(renglonesList));
+        factura.setDescuento_neto(facturaService.calcularDescuento_neto(factura.getSubTotal(), factura.getDescuento_porcentaje()));
+        factura.setRecargo_neto(facturaService.calcularRecargo_neto(factura.getSubTotal(), factura.getRecargo_porcentaje()));
+        factura.setSubTotal_neto(facturaService.calcularSubTotal_neto(factura.getSubTotal(), factura.getRecargo_neto(), factura.getDescuento_neto()));
+        factura.setIva_105_neto(facturaService.calcularIva_neto(factura.getTipoFactura(), factura.getDescuento_porcentaje(), factura.getRecargo_porcentaje(), renglonesList, 10.5));
+        factura.setIva_21_neto(facturaService.calcularIva_neto(factura.getTipoFactura(), factura.getDescuento_porcentaje(), factura.getRecargo_porcentaje(), renglonesList, 21));
+        factura.setImpuestoInterno_neto(facturaService.calcularImpInterno_neto(factura.getTipoFactura(), factura.getDescuento_porcentaje(), factura.getRecargo_porcentaje(), renglonesList));
+        factura.setTotal(facturaService.calcularTotal(factura.getSubTotal(), factura.getDescuento_neto(), factura.getRecargo_neto(), factura.getIva_105_neto(), factura.getIva_21_neto(), factura.getImpuestoInterno_neto()));
+        factura.setObservaciones("");
+        factura.setPagada(true);
+        factura.setEliminada(true);
+        factura.setEmpresa(empresa);
+        factura.setCliente(cliente);
+        factura.setTransportista(transportista);
+        factura.setFormaPago(formaDePago);
+        factura.setUsuario(usuario);
 
-        List<Factura> facturas = new ArrayList<Factura>(facturaService.dividirFactura(facturaEsperada));
+        //facturaService.guardar(factura);
 
-//        for (Factura factura : facturas) {
-//            facturaService.guardar(factura);
-//        }
-//        Factura facturaObtenida = facturaService.getFacturaVentaPorTipoSerieNum(facturaEsperada.getTipoFactura(), facturaEsperada.getNumSerie(), facturaEsperada.getNumFactura());
-//        Factura facturaObtenida2 = facturaService.getFacturaVentaPorTipoSerieNum(facturaEsperada.getTipoFactura(), facturaEsperada.getNumSerie(), facturaEsperada.getNumFactura());
-
-        Factura facturaObtenida = facturas.get(0);
-        Factura facturaObtenida2 = facturas.get(1);
-        
-        /************************* Facturas Divididas Esperadas ******************/
-        
         // Factura A
-        
-        FacturaVenta facturaEsperada1 = new FacturaVenta();
-        facturaEsperada1.setFecha(new Date());
-        facturaEsperada1.setTipoFactura('A');
-        facturaEsperada1.setNumSerie(1L);
-        facturaEsperada1.setNumFactura(1L);
-        
-        Set<RenglonFactura> renglonesEsperados1 = new HashSet<>();
-        RenglonFactura renglonEsperado1 = renglonFacturaService.calcularRenglon(facturaEsperada.getTipoFactura(), Movimiento.VENTA, 4, producto, 0);
-        renglonesEsperados1.add(renglonEsperado1);
-        RenglonFactura renglonEsperado2 = renglonFacturaService.calcularRenglon(facturaEsperada.getTipoFactura(), Movimiento.VENTA, 4, producto2, 0);
-        renglonesEsperados1.add(renglonEsperado2);
-        
-        List<RenglonFactura> renglonesListEsperados1 = new ArrayList<>(renglonesEsperados1);
+        FacturaVenta facturaA = new FacturaVenta();
+        facturaA.setFecha(factura.getFecha());
+        facturaA.setTipoFactura(factura.getTipoFactura());
+        facturaA.setNumSerie(1L);
+        facturaA.setNumFactura(1L);
 
-        facturaEsperada1.setRenglones(renglonesEsperados1);
-        
-        facturaEsperada1.setSubTotal(facturaService.calcularSubTotal(renglonesListEsperados1));
-        facturaEsperada1.setDescuento_neto(facturaService.calcularDescuento_neto(facturaEsperada1.getSubTotal(), facturaEsperada1.getDescuento_porcentaje()));
-        facturaEsperada1.setRecargo_neto(facturaService.calcularRecargo_neto(facturaEsperada1.getSubTotal(), facturaEsperada1.getRecargo_porcentaje()));
-        facturaEsperada1.setSubTotal_neto(facturaService.calcularSubTotal_neto(facturaEsperada1.getSubTotal(), facturaEsperada1.getRecargo_neto(), facturaEsperada1.getDescuento_neto()));
-        facturaEsperada1.setIva_105_neto(facturaService.calcularIva_neto(facturaEsperada1.getTipoFactura(), facturaEsperada1.getDescuento_porcentaje(), facturaEsperada1.getRecargo_porcentaje(), renglonesListEsperados1, 10.5));
-        facturaEsperada1.setIva_21_neto(facturaService.calcularIva_neto(facturaEsperada1.getTipoFactura(), facturaEsperada1.getDescuento_porcentaje(), facturaEsperada1.getRecargo_porcentaje(), renglonesListEsperados1, 21));
-        facturaEsperada1.setImpuestoInterno_neto(facturaService.calcularImpInterno_neto(facturaEsperada1.getTipoFactura(), facturaEsperada1.getDescuento_porcentaje(), facturaEsperada1.getRecargo_porcentaje(), renglonesListEsperados1));
-        facturaEsperada1.setTotal(facturaService.calcularTotal(facturaEsperada1.getSubTotal(), facturaEsperada1.getDescuento_neto(), facturaEsperada1.getRecargo_neto(), facturaEsperada1.getIva_105_neto(), facturaEsperada1.getIva_21_neto(), facturaEsperada1.getImpuestoInterno_neto()));
-        facturaEsperada1.setObservaciones("");
-        facturaEsperada1.setPagada(true);
-        facturaEsperada1.setEliminada(true);
-        facturaEsperada1.setEmpresa(empresa);
-        facturaEsperada1.setCliente(cliente);
-        
-        
-        // Factura X
-        
-        FacturaVenta facturaEsperada2 = new FacturaVenta();
-        facturaEsperada2.setFecha(new Date());
-        facturaEsperada2.setTipoFactura('A');
-        facturaEsperada2.setNumSerie(1L);
-        facturaEsperada2.setNumFactura(1L);
-        
-        Set<RenglonFactura> renglonesEsperados2 = new HashSet<>();
-        RenglonFactura renglonEsperado3 = renglonFacturaService.calcularRenglon(facturaEsperada.getTipoFactura(), Movimiento.VENTA, 4, producto, 0);
-        renglonesEsperados2.add(renglonEsperado3);
-        RenglonFactura renglonEsperado4 = renglonFacturaService.calcularRenglon(facturaEsperada.getTipoFactura(), Movimiento.VENTA, 4, producto2, 0);
-        renglonesEsperados2.add(renglonEsperado4);
-        
-        List<RenglonFactura> renglonesListEsperados2 = new ArrayList<>(renglonesEsperados2);
+        Set<RenglonFactura> renglonesA = new HashSet<>();
+        renglon1 = renglonFacturaService.calcularRenglon(facturaA.getTipoFactura(), Movimiento.VENTA, 4, producto, 0);
+        renglon1.setFactura(facturaA);
+        renglon2 = renglonFacturaService.calcularRenglon(facturaA.getTipoFactura(), Movimiento.VENTA, 4, producto2, 0);
+        renglon2.setFactura(facturaA);
+        renglonesA.add(renglon2);
+        renglonesA.add(renglon1);
 
-        facturaEsperada2.setRenglones(renglonesEsperados2);
-        
-        facturaEsperada2.setSubTotal(facturaService.calcularSubTotal(renglonesListEsperados2));
-        facturaEsperada2.setDescuento_neto(facturaService.calcularDescuento_neto(facturaEsperada2.getSubTotal(), facturaEsperada2.getDescuento_porcentaje()));
-        facturaEsperada2.setRecargo_neto(facturaService.calcularRecargo_neto(facturaEsperada2.getSubTotal(), facturaEsperada2.getRecargo_porcentaje()));
-        facturaEsperada2.setSubTotal_neto(facturaService.calcularSubTotal_neto(facturaEsperada2.getSubTotal(), facturaEsperada2.getRecargo_neto(), facturaEsperada2.getDescuento_neto()));
-        facturaEsperada2.setIva_105_neto(facturaService.calcularIva_neto(facturaEsperada2.getTipoFactura(), facturaEsperada2.getDescuento_porcentaje(), facturaEsperada2.getRecargo_porcentaje(), renglonesListEsperados2, 10.5));
-        facturaEsperada2.setIva_21_neto(facturaService.calcularIva_neto(facturaEsperada2.getTipoFactura(), facturaEsperada2.getDescuento_porcentaje(), facturaEsperada2.getRecargo_porcentaje(), renglonesListEsperados2, 21));
-        facturaEsperada2.setImpuestoInterno_neto(facturaService.calcularImpInterno_neto(facturaEsperada2.getTipoFactura(), facturaEsperada2.getDescuento_porcentaje(), facturaEsperada2.getRecargo_porcentaje(), renglonesListEsperados2));
-        facturaEsperada2.setTotal(facturaService.calcularTotal(facturaEsperada2.getSubTotal(), facturaEsperada2.getDescuento_neto(), facturaEsperada2.getRecargo_neto(), facturaEsperada2.getIva_105_neto(), facturaEsperada2.getIva_21_neto(), facturaEsperada2.getImpuestoInterno_neto()));
-        facturaEsperada2.setObservaciones("");
-        facturaEsperada2.setPagada(true);
-        facturaEsperada2.setEliminada(true);
-        facturaEsperada2.setEmpresa(empresa);
-        facturaEsperada2.setCliente(cliente);
-        
-        
-        
-        // Igualo los ID porque son autogenerados
-        facturaEsperada1.setId_Factura(facturaObtenida.getId_Factura());
-        facturaEsperada2.setId_Factura(facturaObtenida2.getId_Factura());
+        List<RenglonFactura> renglonesAList = new ArrayList<>(renglonesA);
 
-        assertEquals(facturaEsperada1, facturaObtenida);
-        assertEquals(facturaEsperada2, facturaObtenida2);
+        facturaA.setRenglones(renglonesA);
+
+        facturaA.setSubTotal(facturaService.calcularSubTotal(renglonesAList));
+        facturaA.setDescuento_neto(facturaService.calcularDescuento_neto(facturaA.getSubTotal(), facturaA.getDescuento_porcentaje()));
+        facturaA.setRecargo_neto(facturaService.calcularRecargo_neto(facturaA.getSubTotal(), facturaA.getRecargo_porcentaje()));
+        facturaA.setSubTotal_neto(facturaService.calcularSubTotal_neto(facturaA.getSubTotal(), facturaA.getRecargo_neto(), facturaA.getDescuento_neto()));
+        facturaA.setIva_105_neto(facturaService.calcularIva_neto(facturaA.getTipoFactura(), facturaA.getDescuento_porcentaje(), facturaA.getRecargo_porcentaje(), renglonesAList, 10.5));
+        facturaA.setIva_21_neto(facturaService.calcularIva_neto(facturaA.getTipoFactura(), facturaA.getDescuento_porcentaje(), facturaA.getRecargo_porcentaje(), renglonesAList, 21));
+        facturaA.setImpuestoInterno_neto(facturaService.calcularImpInterno_neto(facturaA.getTipoFactura(), facturaA.getDescuento_porcentaje(), facturaA.getRecargo_porcentaje(), renglonesAList));
+        facturaA.setTotal(facturaService.calcularTotal(facturaA.getSubTotal(), facturaA.getDescuento_neto(), facturaA.getRecargo_neto(), facturaA.getIva_105_neto(), facturaA.getIva_21_neto(), facturaA.getImpuestoInterno_neto()));
+        facturaA.setObservaciones("");
+        facturaA.setPagada(true);
+        facturaA.setEliminada(true);
+        facturaA.setEmpresa(empresa);
+        facturaA.setCliente(cliente);
+        facturaA.setTransportista(transportista);
+        facturaA.setFormaPago(formaDePago);
+        facturaA.setUsuario(usuario);
+
+        //facturaService.guardar(facturaA);
+
+        //FacturaX
+        FacturaVenta facturaX = new FacturaVenta();
+        facturaX.setFecha(factura.getFecha());
+        facturaX.setTipoFactura('X');
+        facturaX.setNumSerie(1L);
+        facturaX.setNumFactura(1L);
+
+        Set<RenglonFactura> renglonesX = new HashSet<>();
+        renglon1 = renglonFacturaService.calcularRenglon(facturaX.getTipoFactura(), Movimiento.VENTA, 4, producto, 0);
+        renglon1.setFactura(facturaX);
+        renglon2 = renglonFacturaService.calcularRenglon(facturaX.getTipoFactura(), Movimiento.VENTA, 4, producto2, 0);
+        renglon2.setFactura(facturaX);
+        renglonesX.add(renglon2);
+        renglonesX.add(renglon1);
+
+        List<RenglonFactura> renglonesXList = new ArrayList<>(renglonesX);
+
+        facturaX.setRenglones(renglonesX);
+
+        facturaX.setSubTotal(facturaService.calcularSubTotal(renglonesXList));
+        facturaX.setDescuento_neto(facturaService.calcularDescuento_neto(facturaX.getSubTotal(), facturaX.getDescuento_porcentaje()));
+        facturaX.setRecargo_neto(facturaService.calcularRecargo_neto(facturaX.getSubTotal(), facturaX.getRecargo_porcentaje()));
+        facturaX.setSubTotal_neto(facturaService.calcularSubTotal_neto(facturaX.getSubTotal(), facturaX.getRecargo_neto(), facturaX.getDescuento_neto()));
+        facturaX.setIva_105_neto(facturaService.calcularIva_neto(facturaX.getTipoFactura(), facturaX.getDescuento_porcentaje(), facturaX.getRecargo_porcentaje(), renglonesXList, 10.5));
+        facturaX.setIva_21_neto(facturaService.calcularIva_neto(facturaX.getTipoFactura(), facturaX.getDescuento_porcentaje(), facturaX.getRecargo_porcentaje(), renglonesXList, 21));
+        facturaX.setImpuestoInterno_neto(facturaService.calcularImpInterno_neto(facturaX.getTipoFactura(), facturaX.getDescuento_porcentaje(), facturaX.getRecargo_porcentaje(), renglonesXList));
+        facturaX.setTotal(facturaService.calcularTotal(facturaX.getSubTotal(), facturaX.getDescuento_neto(), facturaX.getRecargo_neto(), facturaX.getIva_105_neto(), facturaX.getIva_21_neto(), facturaX.getImpuestoInterno_neto()));
+        facturaX.setObservaciones("");
+        facturaX.setPagada(true);
+        facturaX.setEliminada(true);
+        facturaX.setEmpresa(empresa);
+        facturaX.setCliente(cliente);
+        facturaX.setTransportista(transportista);
+        facturaX.setFormaPago(formaDePago);
+        facturaX.setUsuario(usuario);
+
+       // facturaService.guardar(facturaX);
+        
+        FacturaVenta facturaXObtenida = facturaService.dividirFactura(factura).get(1);
+        facturaXObtenida.setFecha(factura.getFecha());
+        
+        FacturaVenta facturaAObtenida = facturaService.dividirFactura(factura).get(0);
+        facturaAObtenida.setFecha(factura.getFecha());
+
+        assertEquals("La factura X no es la esperada", facturaX, facturaService.dividirFactura(factura).get(0));
+        assertEquals("La factura A no es la esperada", facturaA, facturaService.dividirFactura(factura).get(1));
+
     }
-
-    @Test
-    public void ejecutarConsultaTopMasVendidos() {
-        //cargar facturas antes
-        TypedQuery<Object[]> query = (TypedQuery<Object[]>) em.createNamedQuery("Factura.buscarTopProductosMasVendidosPorAnio");
-        query.setParameter("anio", 2013);
-        List<Object[]> resul = query.getResultList();
-        assertNotNull(resul);
-    }
-
 }
