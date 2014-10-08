@@ -18,13 +18,13 @@ import sic.service.*;
 public class GUI_DetalleCliente extends JDialog {
 
     private Cliente clienteModificar;
-    private TipoDeOperacion operacion;
-    private CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
-    private PaisService paisService = new PaisService();
-    private ProvinciaService provinciaService = new ProvinciaService();
-    private LocalidadService localidadService = new LocalidadService();
-    private ClienteService clienteService = new ClienteService();
-    private EmpresaService empresaService = new EmpresaService();
+    private final TipoDeOperacion operacion;
+    private final CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
+    private final PaisService paisService = new PaisService();
+    private final ProvinciaService provinciaService = new ProvinciaService();
+    private final LocalidadService localidadService = new LocalidadService();
+    private final ClienteService clienteService = new ClienteService();
+    private final EmpresaService empresaService = new EmpresaService();
     private static final Logger log = Logger.getLogger(GUI_DetalleCliente.class.getPackage().getName());
 
     public GUI_DetalleCliente() {
@@ -70,7 +70,7 @@ public class GUI_DetalleCliente extends JDialog {
         txt_TelSecundario.setText("");
         txt_Contacto.setText("");
         txt_Email.setText("");
-        dc_FechaAlta.setDate(null);
+        dc_FechaAlta.setDate(new Date());
 
         try {
             this.cargarComboBoxCondicionesIVA();
