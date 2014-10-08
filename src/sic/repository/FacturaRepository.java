@@ -82,6 +82,10 @@ public class FacturaRepository {
         if (criteria.isBuscaCliente() == true) {
             query += " AND f.cliente = " + criteria.getCliente().getId_Cliente();
         }
+        //Tipo de Factura
+        if (criteria.isBuscaPorTipoFactura() == true) {
+            query += " AND f.tipoFactura = '" + criteria.getTipoFactura() + "'";
+        }
         //Usuario
         if (criteria.isBuscaUsuario() == true) {
             query += " AND f.usuario = " + criteria.getUsuario().getId_Usuario();

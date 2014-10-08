@@ -98,6 +98,23 @@ public class FacturaService {
         }
     }
 
+    public char[] getTiposFacturaSegunEmpresa(Empresa empresa) {
+        if (empresa.getCondicionIVA().isDiscriminaIVA()) {
+            char[] tiposPermitidos = new char[4];
+            tiposPermitidos[0] = 'A';
+            tiposPermitidos[1] = 'B';
+            tiposPermitidos[2] = 'X';
+            tiposPermitidos[3] = 'Y';
+            return tiposPermitidos;
+        } else {
+            char[] tiposPermitidos = new char[3];
+            tiposPermitidos[0] = 'C';
+            tiposPermitidos[1] = 'X';
+            tiposPermitidos[2] = 'Y';
+            return tiposPermitidos;
+        }
+    }
+
     public List<RenglonFactura> getRenglonesDeLaFactura(Factura factura) {
         return modeloFactura.getRenglonesDeLaFactura(factura);
     }

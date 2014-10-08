@@ -13,6 +13,8 @@ public class BusquedaFacturaVentaCriteria {
     private Date fechaHasta;
     private boolean buscaCliente;
     private Cliente cliente;
+    private boolean buscaPorTipoFactura;
+    private char tipoFactura;
     private boolean buscaUsuario;
     private Usuario usuario;
     private boolean buscaPorNumeroFactura;
@@ -25,12 +27,18 @@ public class BusquedaFacturaVentaCriteria {
     public BusquedaFacturaVentaCriteria() {
     }
 
-    public BusquedaFacturaVentaCriteria(boolean buscaPorFecha, Date fechaDesde, Date fechaHasta, boolean buscaCliente, Cliente cliente, boolean buscaUsuario, Usuario usuario, boolean buscaPorNumeroFactura, int numSerie, int numFactura, boolean buscaSoloInpagas, Empresa empresa, int cantRegistros) {
+    public BusquedaFacturaVentaCriteria(boolean buscaPorFecha, Date fechaDesde, Date fechaHasta,
+            boolean buscaCliente, Cliente cliente, boolean buscaPorTipoFactura, char tipoFactura,
+            boolean buscaUsuario, Usuario usuario, boolean buscaPorNumeroFactura, int numSerie, int numFactura,
+            boolean buscaSoloInpagas, Empresa empresa, int cantRegistros) {
+
         this.buscaPorFecha = buscaPorFecha;
         this.fechaDesde = fechaDesde;
         this.fechaHasta = fechaHasta;
         this.buscaCliente = buscaCliente;
         this.cliente = cliente;
+        this.buscaPorTipoFactura = buscaPorTipoFactura;
+        this.tipoFactura = tipoFactura;
         this.buscaUsuario = buscaUsuario;
         this.usuario = usuario;
         this.buscaPorNumeroFactura = buscaPorNumeroFactura;
@@ -79,6 +87,22 @@ public class BusquedaFacturaVentaCriteria {
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+    }
+
+    public boolean isBuscaPorTipoFactura() {
+        return buscaPorTipoFactura;
+    }
+
+    public void setBuscaPorTipoFactura(boolean buscaPorTipoFactura) {
+        this.buscaPorTipoFactura = buscaPorTipoFactura;
+    }
+
+    public char getTipoFactura() {
+        return tipoFactura;
+    }
+
+    public void setTipoFactura(char tipoFactura) {
+        this.tipoFactura = tipoFactura;
     }
 
     public boolean isBuscaUsuario() {
