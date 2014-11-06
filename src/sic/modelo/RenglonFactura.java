@@ -180,4 +180,82 @@ public class RenglonFactura implements Serializable {
     public void setIva_porcentaje(double iva_porcentaje) {
         this.iva_porcentaje = iva_porcentaje;
     }
+    
+    @Override
+    public boolean equals(final Object object){
+        if (this == object) return true;
+        if (!(object instanceof RenglonFactura)){
+            return false;
+        }
+        final RenglonFactura renglon = (RenglonFactura) object;
+        
+        if(this.getCantidad()==renglon.getCantidad()){
+            return true;
+        }
+        
+        if(this.getCodigoItem().equals(renglon.getCodigoItem())){
+            return true;
+        }
+        
+        if(this.getDescripcionItem().equals(renglon.getDescripcionItem())){
+            return true;
+        }
+        
+        if(this.getDescuento_neto()==renglon.getDescuento_neto()){
+            return true;
+        }
+        
+        if(this.getDescuento_porcentaje()==renglon.getDescuento_porcentaje()){
+            return true;
+        }
+        
+        if(this.getGanancia_neto()==renglon.getGanancia_neto()){
+            return true;
+        }
+        
+        if(this.getGanancia_porcentaje()==renglon.getGanancia_porcentaje()){
+            return true;
+        }
+        
+        if(this.getId_ProductoItem()==renglon.getId_ProductoItem()){
+            return true;
+        }
+        
+        if(this.getImporte()==renglon.getImporte()){
+            return true;
+        }
+        
+        if(this.getImpuesto_neto()==renglon.getImpuesto_neto()){
+            return true;
+        }
+        
+        if(this.getImpuesto_porcentaje()==renglon.getImpuesto_porcentaje()){
+            return true;
+        }
+        
+        if(this.getIva_neto()==renglon.getIva_neto()){
+            return true;
+        }
+        
+        if(this.getIva_porcentaje()==renglon.getIva_porcentaje()){
+            return true;
+        }
+        
+        if(this.getMedidaItem().equals(renglon.getMedidaItem())){
+            return true;
+        }
+        
+        if(this.getPrecioUnitario()==renglon.getPrecioUnitario()){
+            return true;
+        }            
+        
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashcode = (int) (((int) (this.getId_ProductoItem() * 1000000000)) + this.getImporte());
+        
+        return hashcode;
+    }
 }

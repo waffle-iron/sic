@@ -102,7 +102,7 @@ public class FacturaTest {
         factura.setTipoFactura('A');
         factura.setNumSerie(1L);
         factura.setNumFactura(1L);
-
+        
         //Usuario
         Usuario usuario = new Usuario();
         usuario.setNombre("miUsuario");
@@ -191,12 +191,12 @@ public class FacturaTest {
         Producto producto = new Producto();
         producto.setCodigo("12345");
         producto.setDescripcion("Producto de pruebas ABC");
-        producto.setCantidad(100);
-        producto.setPrecioCosto(100);
-        producto.setGanancia_porcentaje(20);
-        producto.setPrecioVentaPublico(120);
-        producto.setIva_porcentaje(21);
-        producto.setGanancia_neto(20);
+        producto.setCantidad(100.0);
+        producto.setPrecioCosto(100.0);
+        producto.setGanancia_porcentaje(20.0);
+        producto.setPrecioVentaPublico(120.0);
+        producto.setIva_porcentaje(21.0);
+        producto.setGanancia_neto(20.0);
         producto.setIva_neto(25.2);
         producto.setPrecioLista(145.2);
         producto.setMedida(medida);
@@ -215,12 +215,12 @@ public class FacturaTest {
         Producto producto2 = new Producto();
         producto2.setCodigo("45678");
         producto2.setDescripcion("Producto de pruebas DEF");
-        producto2.setCantidad(100);
-        producto2.setPrecioCosto(200);
-        producto2.setGanancia_porcentaje(30);
-        producto2.setPrecioVentaPublico(260);
+        producto2.setCantidad(100.0);
+        producto2.setPrecioCosto(200.0);
+        producto2.setGanancia_porcentaje(30.0);
+        producto2.setPrecioVentaPublico(260.0);
         producto2.setIva_porcentaje(10.5);
-        producto2.setGanancia_neto(60);
+        producto2.setGanancia_neto(60.0);
         producto2.setIva_neto(27.3);
         producto2.setPrecioLista(287.3);
         producto2.setMedida(medida);
@@ -303,7 +303,7 @@ public class FacturaTest {
         facturaA.setFormaPago(formaDePago);
         facturaA.setUsuario(usuario);
 
-        //facturaService.guardar(facturaA);
+        facturaService.guardar(facturaA);
 
         //FacturaX
         FacturaVenta facturaX = new FacturaVenta();
@@ -313,12 +313,12 @@ public class FacturaTest {
         facturaX.setNumFactura(1L);
 
         Set<RenglonFactura> renglonesX = new HashSet<>();
-        renglon1 = renglonFacturaService.calcularRenglon(facturaX.getTipoFactura(), Movimiento.VENTA, 4, producto, 0);
-        renglon1.setFactura(facturaX);
-        renglon2 = renglonFacturaService.calcularRenglon(facturaX.getTipoFactura(), Movimiento.VENTA, 4, producto2, 0);
+        renglon2 = renglonFacturaService.calcularRenglon(facturaX.getTipoFactura(), Movimiento.VENTA, 4, producto, 0);
         renglon2.setFactura(facturaX);
-        renglonesX.add(renglon2);
+        renglon1 = renglonFacturaService.calcularRenglon(facturaX.getTipoFactura(), Movimiento.VENTA, 4, producto2, 0);
+        renglon1.setFactura(facturaX);
         renglonesX.add(renglon1);
+        renglonesX.add(renglon2);
 
         List<RenglonFactura> renglonesXList = new ArrayList<>(renglonesX);
 
@@ -340,17 +340,19 @@ public class FacturaTest {
         facturaX.setTransportista(transportista);
         facturaX.setFormaPago(formaDePago);
         facturaX.setUsuario(usuario);
-
-       // facturaService.guardar(facturaX);
         
         FacturaVenta facturaXObtenida = facturaService.dividirFactura(factura).get(1);
         facturaXObtenida.setFecha(factura.getFecha());
+        facturaXObtenida.setNumSerie(1L);
+        facturaXObtenida.setNumFactura(1L);
         
         FacturaVenta facturaAObtenida = facturaService.dividirFactura(factura).get(0);
         facturaAObtenida.setFecha(factura.getFecha());
+        facturaAObtenida.setNumSerie(1L);
+        facturaAObtenida.setNumFactura(1L);
 
-        assertEquals("La factura X no es la esperada", facturaX, facturaService.dividirFactura(factura).get(0));
-        assertEquals("La factura A no es la esperada", facturaA, facturaService.dividirFactura(factura).get(1));
+        assertEquals("La factura X no es la esperada", facturaX, facturaXObtenida);
+        assertEquals("La factura A no es la esperada", facturaA, facturaAObtenida);
 
     }
 }
