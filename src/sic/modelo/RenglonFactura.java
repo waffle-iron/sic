@@ -189,73 +189,74 @@ public class RenglonFactura implements Serializable {
         }
         final RenglonFactura renglon = (RenglonFactura) object;
         
-        if(this.getCantidad()==renglon.getCantidad()){
-            return true;
+        if(this.getCantidad()!=renglon.getCantidad()){
+            return false;
         }
         
-        if(this.getCodigoItem().equals(renglon.getCodigoItem())){
-            return true;
+        if(!this.getCodigoItem().equals(renglon.getCodigoItem())){
+            return false;
         }
         
-        if(this.getDescripcionItem().equals(renglon.getDescripcionItem())){
-            return true;
+        if(!this.getDescripcionItem().equals(renglon.getDescripcionItem())){
+            return false;
         }
         
-        if(this.getDescuento_neto()==renglon.getDescuento_neto()){
-            return true;
+        if(this.getDescuento_neto()!=renglon.getDescuento_neto()){
+            return false;
         }
         
-        if(this.getDescuento_porcentaje()==renglon.getDescuento_porcentaje()){
-            return true;
+        if(this.getDescuento_porcentaje()!=renglon.getDescuento_porcentaje()){
+            return false;
         }
         
-        if(this.getGanancia_neto()==renglon.getGanancia_neto()){
-            return true;
+        if(this.getGanancia_neto()!=renglon.getGanancia_neto()){
+            return false;
         }
         
-        if(this.getGanancia_porcentaje()==renglon.getGanancia_porcentaje()){
-            return true;
+        if(this.getGanancia_porcentaje()!=renglon.getGanancia_porcentaje()){
+            return false;
         }
         
-        if(this.getId_ProductoItem()==renglon.getId_ProductoItem()){
-            return true;
+        if(this.getId_ProductoItem()!=renglon.getId_ProductoItem()){
+            return false;
         }
         
-        if(this.getImporte()==renglon.getImporte()){
-            return true;
+        if(this.getImporte()!=renglon.getImporte()){
+            return false;
         }
         
-        if(this.getImpuesto_neto()==renglon.getImpuesto_neto()){
-            return true;
+        if(this.getImpuesto_neto()!=renglon.getImpuesto_neto()){
+            return false;
         }
         
-        if(this.getImpuesto_porcentaje()==renglon.getImpuesto_porcentaje()){
-            return true;
+        if(this.getImpuesto_porcentaje()!=renglon.getImpuesto_porcentaje()){
+            return false;
         }
         
-        if(this.getIva_neto()==renglon.getIva_neto()){
-            return true;
+        if(this.getIva_neto()!=renglon.getIva_neto()){
+            return false;
         }
         
-        if(this.getIva_porcentaje()==renglon.getIva_porcentaje()){
-            return true;
+        if(this.getIva_porcentaje()!=renglon.getIva_porcentaje()){
+            return false;
         }
         
-        if(this.getMedidaItem().equals(renglon.getMedidaItem())){
-            return true;
+        if(!this.getMedidaItem().equals(renglon.getMedidaItem())){
+            return false;
         }
         
-        if(this.getPrecioUnitario()==renglon.getPrecioUnitario()){
-            return true;
+        if(this.getPrecioUnitario()!=renglon.getPrecioUnitario()){
+            return false;
         }            
         
-        return false;
+        return true;
     }
 
     @Override
     public int hashCode() {
-        int hashcode = (int) (((int) (this.getId_ProductoItem() * 1000000000)) + this.getImporte());
+        int hash = 0;
+        hash = (int) (89 * hash + this.id_RenglonFactura);
         
-        return hashcode;
+        return hash;
     }
 }
