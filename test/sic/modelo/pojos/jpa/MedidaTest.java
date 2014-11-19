@@ -26,7 +26,7 @@ public class MedidaTest {
     }
 
     @Test
-    public void guardarUnaMedida() {
+    public void deberiaGuardarUnaMedida() {
         //Empresa
         Empresa empresa = new Empresa();
         empresa.setNombre("SIC Corporation");
@@ -35,38 +35,31 @@ public class MedidaTest {
         empresa.setCuip(123);
         empresa.setEmail("");
         empresa.setTelefono("");
-
         //Condicion IVA
         CondicionIVA condicionIVA = new CondicionIVA();
         condicionIVA.setNombre("Responsable Inscripto");
         condicionIVA.setDiscriminaIVA(true);
         empresa.setCondicionIVA(condicionIVA);
-
         //Pais
         Pais pais = new Pais();
         pais.setNombre("USA");
-
         //Provincia
         Provincia provincia = new Provincia();
         provincia.setNombre("Texas");
         provincia.setPais(pais);
-
         //Localidad
         Localidad localidad = new Localidad();
         localidad.setNombre("Dallas");
         localidad.setCodigoPostal("");
         localidad.setProvincia(provincia);
         empresa.setLocalidad(localidad);
-
         empresaService.guardar(empresa);
-
         //Medida
         Medida medida = new Medida();
         medida.setNombre("DOCENA");
         medida.setEliminada(false);
         empresa = empresaService.getEmpresaPorNombre(empresa.getNombre());
         medida.setEmpresa(empresa);
-
         medidaService.guardar(medida);
         assertNotNull("El id de la medida no debe ser null.", medidaService.getMedidaPorNombre("DOCENA", empresa));
     }

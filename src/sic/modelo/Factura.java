@@ -2,6 +2,7 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -246,42 +247,45 @@ public abstract class Factura implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) {
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof Factura)) {
+        if (getClass() != obj.getClass()) {
             return false;
         }
-
-        Factura factura = (Factura) o;
-        if (id_Factura != factura.id_Factura) {
+        final Factura other = (Factura) obj;
+        if (this.id_Factura != other.id_Factura) {
             return false;
         }
-
-        String idCompuesto = factura.getTipoFactura() + String.valueOf(factura.getNumSerie()) + String.valueOf(factura.getNumFactura());
-        if (this.getIdCompuesto() != null ? !this.getIdCompuesto().equals(idCompuesto) : idCompuesto != null) {
+        if (!Objects.equals(this.fecha, other.fecha)) {
             return false;
         }
-
+        if (this.tipoFactura != other.tipoFactura) {
+            return false;
+        }
+        if (this.numSerie != other.numSerie) {
+            return false;
+        }
+        if (this.numFactura != other.numFactura) {
+            return false;
+        }
+        if (!Objects.equals(this.renglones, other.renglones)) {
+            return false;
+        }
         return true;
-    }
-
-    private String getIdCompuesto() {
-        return tipoFactura + String.valueOf(numSerie) + String.valueOf(numFactura);
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash = (int) (89 * hash + this.id_Factura);
-        hash = 89 * hash + (this.getIdCompuesto() != null ? this.getIdCompuesto().hashCode() : 0);
-
+        int hash = 3;
+        hash = 29 * hash + (int) (this.id_Factura ^ (this.id_Factura >>> 32));
+        hash = 29 * hash + Objects.hashCode(this.fecha);
+        hash = 29 * hash + this.tipoFactura;
+        hash = 29 * hash + (int) (this.numSerie ^ (this.numSerie >>> 32));
+        hash = 29 * hash + (int) (this.numFactura ^ (this.numFactura >>> 32));
+        hash = 29 * hash + Objects.hashCode(this.renglones);
         return hash;
     }
+
 }

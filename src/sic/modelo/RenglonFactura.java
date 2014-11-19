@@ -1,6 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -180,83 +181,87 @@ public class RenglonFactura implements Serializable {
     public void setIva_porcentaje(double iva_porcentaje) {
         this.iva_porcentaje = iva_porcentaje;
     }
-    
+
     @Override
-    public boolean equals(final Object object){
-        if (this == object) return true;
-        if (!(object instanceof RenglonFactura)){
+    public boolean equals(Object obj) {
+        if (obj == null) {
             return false;
         }
-        final RenglonFactura renglon = (RenglonFactura) object;
-        
-        if(this.getCantidad()!=renglon.getCantidad()){
+        if (getClass() != obj.getClass()) {
             return false;
         }
-        
-        if(!this.getCodigoItem().equals(renglon.getCodigoItem())){
+        final RenglonFactura other = (RenglonFactura) obj;
+        if (this.id_RenglonFactura != other.id_RenglonFactura) {
             return false;
         }
-        
-        if(!this.getDescripcionItem().equals(renglon.getDescripcionItem())){
+        if (this.id_ProductoItem != other.id_ProductoItem) {
             return false;
         }
-        
-        if(this.getDescuento_neto()!=renglon.getDescuento_neto()){
+        if (!Objects.equals(this.codigoItem, other.codigoItem)) {
             return false;
         }
-        
-        if(this.getDescuento_porcentaje()!=renglon.getDescuento_porcentaje()){
+        if (!Objects.equals(this.descripcionItem, other.descripcionItem)) {
             return false;
         }
-        
-        if(this.getGanancia_neto()!=renglon.getGanancia_neto()){
+        if (!Objects.equals(this.medidaItem, other.medidaItem)) {
             return false;
         }
-        
-        if(this.getGanancia_porcentaje()!=renglon.getGanancia_porcentaje()){
+        if (Double.doubleToLongBits(this.cantidad) != Double.doubleToLongBits(other.cantidad)) {
             return false;
         }
-        
-        if(this.getId_ProductoItem()!=renglon.getId_ProductoItem()){
+        if (Double.doubleToLongBits(this.precioUnitario) != Double.doubleToLongBits(other.precioUnitario)) {
             return false;
         }
-        
-        if(this.getImporte()!=renglon.getImporte()){
+        if (Double.doubleToLongBits(this.descuento_porcentaje) != Double.doubleToLongBits(other.descuento_porcentaje)) {
             return false;
         }
-        
-        if(this.getImpuesto_neto()!=renglon.getImpuesto_neto()){
+        if (Double.doubleToLongBits(this.descuento_neto) != Double.doubleToLongBits(other.descuento_neto)) {
             return false;
         }
-        
-        if(this.getImpuesto_porcentaje()!=renglon.getImpuesto_porcentaje()){
+        if (Double.doubleToLongBits(this.iva_porcentaje) != Double.doubleToLongBits(other.iva_porcentaje)) {
             return false;
         }
-        
-        if(this.getIva_neto()!=renglon.getIva_neto()){
+        if (Double.doubleToLongBits(this.iva_neto) != Double.doubleToLongBits(other.iva_neto)) {
             return false;
         }
-        
-        if(this.getIva_porcentaje()!=renglon.getIva_porcentaje()){
+        if (Double.doubleToLongBits(this.impuesto_porcentaje) != Double.doubleToLongBits(other.impuesto_porcentaje)) {
             return false;
         }
-        
-        if(!this.getMedidaItem().equals(renglon.getMedidaItem())){
+        if (Double.doubleToLongBits(this.impuesto_neto) != Double.doubleToLongBits(other.impuesto_neto)) {
             return false;
         }
-        
-        if(this.getPrecioUnitario()!=renglon.getPrecioUnitario()){
+        if (Double.doubleToLongBits(this.ganancia_porcentaje) != Double.doubleToLongBits(other.ganancia_porcentaje)) {
             return false;
-        }            
-        
+        }
+        if (Double.doubleToLongBits(this.ganancia_neto) != Double.doubleToLongBits(other.ganancia_neto)) {
+            return false;
+        }
+        if (Double.doubleToLongBits(this.importe) != Double.doubleToLongBits(other.importe)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash = (int) (89 * hash + this.id_RenglonFactura);
-        
+        int hash = 7;
+        hash = 89 * hash + (int) (this.id_RenglonFactura ^ (this.id_RenglonFactura >>> 32));
+        hash = 89 * hash + (int) (this.id_ProductoItem ^ (this.id_ProductoItem >>> 32));
+        hash = 89 * hash + Objects.hashCode(this.codigoItem);
+        hash = 89 * hash + Objects.hashCode(this.descripcionItem);
+        hash = 89 * hash + Objects.hashCode(this.medidaItem);
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.cantidad) ^ (Double.doubleToLongBits(this.cantidad) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.precioUnitario) ^ (Double.doubleToLongBits(this.precioUnitario) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.descuento_porcentaje) ^ (Double.doubleToLongBits(this.descuento_porcentaje) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.descuento_neto) ^ (Double.doubleToLongBits(this.descuento_neto) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.iva_porcentaje) ^ (Double.doubleToLongBits(this.iva_porcentaje) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.iva_neto) ^ (Double.doubleToLongBits(this.iva_neto) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.impuesto_porcentaje) ^ (Double.doubleToLongBits(this.impuesto_porcentaje) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.impuesto_neto) ^ (Double.doubleToLongBits(this.impuesto_neto) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.ganancia_porcentaje) ^ (Double.doubleToLongBits(this.ganancia_porcentaje) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.ganancia_neto) ^ (Double.doubleToLongBits(this.ganancia_neto) >>> 32));
+        hash = 89 * hash + (int) (Double.doubleToLongBits(this.importe) ^ (Double.doubleToLongBits(this.importe) >>> 32));
         return hash;
     }
+
 }

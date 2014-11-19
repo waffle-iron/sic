@@ -11,12 +11,10 @@ import org.junit.Test;
 import sic.modelo.Cliente;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Empresa;
-import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Localidad;
 import sic.modelo.Medida;
-import sic.modelo.PagoFacturaCompra;
 import sic.modelo.Pais;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
@@ -47,90 +45,35 @@ public class FacturaTest {
     }
 
     @Test
-    public void guardarUnaFacturaCompra() {
-        FacturaCompra factura = new FacturaCompra();
-        factura.setFecha(new Date());
-        factura.setTipoFactura('A');
-
-        //Forma de Pago
-        FormaDePago formaDePago = new FormaDePago();
-        formaDePago.setNombre("Contado");
-
-        factura.setFormaPago(formaDePago);
-
-        //Transportista
-        Transportista transportista = new Transportista();
-        transportista.setNombre("Demonte");
-        transportista.setDireccion("Calle 123");
-        transportista.setTelefono("");
-        transportista.setWeb("");
-
-        factura.setTransportista(transportista);
-
-        //Renglones
-        RenglonFactura renglon1 = new RenglonFactura();
-        renglon1.setCodigoItem("123");
-        renglon1.setDescripcionItem("Producto de pruebas");
-        renglon1.setMedidaItem("Unidad");
-        //factura.addRenglonFactura(renglon1);
-
-        RenglonFactura renglon2 = new RenglonFactura();
-        renglon2.setCodigoItem("321");
-        renglon2.setDescripcionItem("Descripcion de prueba");
-        renglon2.setMedidaItem("Docena");
-        factura.setObservaciones("");
-        //factura.addRenglonFactura(renglon2);
-
-        PagoFacturaCompra pago1 = new PagoFacturaCompra();
-        pago1.setFecha(new Date());
-        pago1.setNota("");
-        pago1.setMonto(122.15);
-        //factura.addPagoFacturaCompra(pago1);
-
-        PagoFacturaCompra pago2 = new PagoFacturaCompra();
-        pago2.setFecha(new Date());
-        pago2.setNota("");
-        pago2.setMonto(122.15);
-        //factura.addPagoFacturaCompra(pago2);
-
-    }
-
-    @Test
-    public void guardarUnaFacturaVentaTipoAconDivision() {
+    public void deberiaDividirFacturaVentaTipoA() {
         FacturaVenta factura = new FacturaVenta();
         factura.setFecha(new Date());
         factura.setTipoFactura('A');
         factura.setNumSerie(1L);
         factura.setNumFactura(1L);
-        
         //Usuario
         Usuario usuario = new Usuario();
         usuario.setNombre("miUsuario");
         usuario.setPassword("miPassword");
         usuario.setPermisosAdministrador(true);
-
         //Forma de Pago
         FormaDePago formaDePago = new FormaDePago();
         formaDePago.setNombre("Contado");
         formaDePago.setAfectaCaja(true);
         formaDePago.setPredeterminado(true);
-
         //Transportista
         Transportista transportista = new Transportista();
         transportista.setNombre("Transportista de ejemplo");
         transportista.setDireccion("Calle 123");
         transportista.setTelefono("");
         transportista.setWeb("");
-
         //Medida
         Medida medida = new Medida();
         medida.setNombre("Unidad");
-
         //Condicion IVA
         CondicionIVA condicionIVARespInscp = new CondicionIVA();
         condicionIVARespInscp.setNombre("Responsable Inscripto");
         condicionIVARespInscp.setDiscriminaIVA(true);
-
         //Cliente
         Cliente cliente = new Cliente();
         cliente.setNombre("Demonte");
@@ -142,26 +85,21 @@ public class FacturaTest {
         cliente.setEmail("");
         cliente.setId_Fiscal("");
         cliente.setFechaAlta(new java.util.Date());
-
         //Pais
         Pais pais = new Pais();
         pais.setNombre("USA");
-
         //Provincia
         Provincia provincia = new Provincia();
         provincia.setNombre("Texas");
         provincia.setPais(pais);
-
         //Localidad
         Localidad localidad = new Localidad();
         localidad.setNombre("Dallas");
         localidad.setCodigoPostal("");
         localidad.setProvincia(provincia);
-
         //Rubro
         Rubro rubro = new Rubro();
         rubro.setNombre("VARIOS");
-
         //Empresa
         Empresa empresa = new Empresa();
         empresa.setNombre("Empresa Prueba");
@@ -171,10 +109,8 @@ public class FacturaTest {
         empresa.setLocalidad(localidad);
         empresa.setLema("");
         empresa.setTelefono("");
-
         empresaService.guardar(empresa);
         empresa = empresaService.getEmpresaPorNombre(empresa.getNombre());
-
         //Proveedor
         Proveedor proveedor = new Proveedor();
         proveedor.setCodigo("");
@@ -186,32 +122,29 @@ public class FacturaTest {
         proveedor.setContacto("");
         proveedor.setEmail("");
         proveedor.setWeb("");
-
         //Producto
-        Producto producto = new Producto();
-        producto.setCodigo("12345");
-        producto.setDescripcion("Producto de pruebas ABC");
-        producto.setCantidad(100.0);
-        producto.setPrecioCosto(100.0);
-        producto.setGanancia_porcentaje(20.0);
-        producto.setPrecioVentaPublico(120.0);
-        producto.setIva_porcentaje(21.0);
-        producto.setGanancia_neto(20.0);
-        producto.setIva_neto(25.2);
-        producto.setPrecioLista(145.2);
-        producto.setMedida(medida);
-        producto.setRubro(rubro);
-        producto.setProveedor(proveedor);
-        producto.setEmpresa(empresa);
-        producto.setFechaUltimaModificacion(new java.util.Date());
-        producto.setEstanteria("");
-        producto.setEstante("");
-        producto.setFechaAlta(new java.util.Date());
-        producto.setNota("");
-
-        productoService.guardar(producto);
-        producto = productoService.getProductoPorCodigo(producto.getCodigo(), empresa);
-
+        Producto producto1 = new Producto();
+        producto1.setCodigo("12345");
+        producto1.setDescripcion("Producto de pruebas ABC");
+        producto1.setCantidad(100.0);
+        producto1.setPrecioCosto(100.0);
+        producto1.setGanancia_porcentaje(20.0);
+        producto1.setPrecioVentaPublico(120.0);
+        producto1.setIva_porcentaje(21.0);
+        producto1.setGanancia_neto(20.0);
+        producto1.setIva_neto(25.2);
+        producto1.setPrecioLista(145.2);
+        producto1.setMedida(medida);
+        producto1.setRubro(rubro);
+        producto1.setProveedor(proveedor);
+        producto1.setEmpresa(empresa);
+        producto1.setFechaUltimaModificacion(new java.util.Date());
+        producto1.setEstanteria("");
+        producto1.setEstante("");
+        producto1.setFechaAlta(new java.util.Date());
+        producto1.setNota("");
+        productoService.guardar(producto1);
+        producto1 = productoService.getProductoPorCodigo(producto1.getCodigo(), empresa);
         Producto producto2 = new Producto();
         producto2.setCodigo("45678");
         producto2.setDescripcion("Producto de pruebas DEF");
@@ -232,22 +165,18 @@ public class FacturaTest {
         producto2.setEstante("");
         producto2.setFechaAlta(new java.util.Date());
         producto2.setNota("");
-
         productoService.guardar(producto2);
         producto2 = productoService.getProductoPorCodigo(producto2.getCodigo(), empresa);
-
         //Renglones
         Set<RenglonFactura> renglones = new HashSet<>();
-        RenglonFactura renglon1 = renglonFacturaService.calcularRenglon(factura.getTipoFactura(), Movimiento.VENTA, 8, producto, 0);
+        RenglonFactura renglon1 = renglonFacturaService.calcularRenglon(factura.getTipoFactura(), Movimiento.VENTA, 8, producto1, 0);
         renglon1.setFactura(factura);
         renglones.add(renglon1);
         RenglonFactura renglon2 = renglonFacturaService.calcularRenglon(factura.getTipoFactura(), Movimiento.VENTA, 8, producto2, 0);
         renglon2.setFactura(factura);
         renglones.add(renglon2);
         List<RenglonFactura> renglonesList = new ArrayList<>(renglones);
-
         factura.setRenglones(renglones);
-
         factura.setSubTotal(facturaService.calcularSubTotal(renglonesList));
         factura.setDescuento_neto(facturaService.calcularDescuento_neto(factura.getSubTotal(), factura.getDescuento_porcentaje()));
         factura.setRecargo_neto(facturaService.calcularRecargo_neto(factura.getSubTotal(), factura.getRecargo_porcentaje()));
@@ -265,27 +194,21 @@ public class FacturaTest {
         factura.setFormaPago(formaDePago);
         factura.setUsuario(usuario);
 
-        //facturaService.guardar(factura);
-
         // Factura A
         FacturaVenta facturaA = new FacturaVenta();
         facturaA.setFecha(factura.getFecha());
         facturaA.setTipoFactura(factura.getTipoFactura());
         facturaA.setNumSerie(1L);
         facturaA.setNumFactura(1L);
-
         Set<RenglonFactura> renglonesA = new HashSet<>();
-        renglon1 = renglonFacturaService.calcularRenglon(facturaA.getTipoFactura(), Movimiento.VENTA, 4, producto, 0);
+        renglon1 = renglonFacturaService.calcularRenglon(facturaA.getTipoFactura(), Movimiento.VENTA, 4, producto1, 0);
         renglon1.setFactura(facturaA);
         renglon2 = renglonFacturaService.calcularRenglon(facturaA.getTipoFactura(), Movimiento.VENTA, 4, producto2, 0);
         renglon2.setFactura(facturaA);
         renglonesA.add(renglon2);
         renglonesA.add(renglon1);
-
         List<RenglonFactura> renglonesAList = new ArrayList<>(renglonesA);
-
         facturaA.setRenglones(renglonesA);
-
         facturaA.setSubTotal(facturaService.calcularSubTotal(renglonesAList));
         facturaA.setDescuento_neto(facturaService.calcularDescuento_neto(facturaA.getSubTotal(), facturaA.getDescuento_porcentaje()));
         facturaA.setRecargo_neto(facturaService.calcularRecargo_neto(facturaA.getSubTotal(), facturaA.getRecargo_porcentaje()));
@@ -303,27 +226,21 @@ public class FacturaTest {
         facturaA.setFormaPago(formaDePago);
         facturaA.setUsuario(usuario);
 
-        facturaService.guardar(facturaA);
-
         //FacturaX
         FacturaVenta facturaX = new FacturaVenta();
         facturaX.setFecha(factura.getFecha());
         facturaX.setTipoFactura('X');
         facturaX.setNumSerie(1L);
         facturaX.setNumFactura(1L);
-
         Set<RenglonFactura> renglonesX = new HashSet<>();
-        renglon2 = renglonFacturaService.calcularRenglon(facturaX.getTipoFactura(), Movimiento.VENTA, 4, producto, 0);
-        renglon2.setFactura(facturaX);
-        renglon1 = renglonFacturaService.calcularRenglon(facturaX.getTipoFactura(), Movimiento.VENTA, 4, producto2, 0);
+        renglon1 = renglonFacturaService.calcularRenglon(facturaX.getTipoFactura(), Movimiento.VENTA, 4, producto1, 0);
         renglon1.setFactura(facturaX);
+        renglon2 = renglonFacturaService.calcularRenglon(facturaX.getTipoFactura(), Movimiento.VENTA, 4, producto2, 0);
+        renglon2.setFactura(facturaX);        
         renglonesX.add(renglon1);
         renglonesX.add(renglon2);
-
         List<RenglonFactura> renglonesXList = new ArrayList<>(renglonesX);
-
         facturaX.setRenglones(renglonesX);
-
         facturaX.setSubTotal(facturaService.calcularSubTotal(renglonesXList));
         facturaX.setDescuento_neto(facturaService.calcularDescuento_neto(facturaX.getSubTotal(), facturaX.getDescuento_porcentaje()));
         facturaX.setRecargo_neto(facturaService.calcularRecargo_neto(facturaX.getSubTotal(), facturaX.getRecargo_porcentaje()));
@@ -340,19 +257,18 @@ public class FacturaTest {
         facturaX.setTransportista(transportista);
         facturaX.setFormaPago(formaDePago);
         facturaX.setUsuario(usuario);
-        
-        FacturaVenta facturaXObtenida = facturaService.dividirFactura(factura).get(1);
-        facturaXObtenida.setFecha(factura.getFecha());
-        facturaXObtenida.setNumSerie(1L);
-        facturaXObtenida.setNumFactura(1L);
-        
-        FacturaVenta facturaAObtenida = facturaService.dividirFactura(factura).get(0);
+
+        List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(factura);
+        FacturaVenta facturaAObtenida = facturasDivididas.get(0);
         facturaAObtenida.setFecha(factura.getFecha());
         facturaAObtenida.setNumSerie(1L);
         facturaAObtenida.setNumFactura(1L);
+        FacturaVenta facturaXObtenida = facturasDivididas.get(1);
+        facturaXObtenida.setFecha(factura.getFecha());
+        facturaXObtenida.setNumSerie(1L);
+        facturaXObtenida.setNumFactura(1L);
 
-        assertEquals("La factura X no es la esperada", facturaX, facturaXObtenida);
-        assertEquals("La factura A no es la esperada", facturaA, facturaAObtenida);
-
+        assertEquals("La factura A no es la esperada luego de la division", facturaA, facturaAObtenida);
+        assertEquals("La factura X no es la esperada luego de la division", facturaX, facturaXObtenida);
     }
 }
