@@ -407,6 +407,11 @@ public class GUI_BusquedaProductos extends JDialog {
                 cmb_CantidadMostrarItemStateChanged(evt);
             }
         });
+        cmb_CantidadMostrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmb_CantidadMostrarActionPerformed(evt);
+            }
+        });
 
         lbl_CantidadMostrar.setText("Cantidad a mostrar:");
 
@@ -564,6 +569,10 @@ public class GUI_BusquedaProductos extends JDialog {
             tbl_Resultados.setRowSelectionInterval(0, 0);
         }
     }//GEN-LAST:event_tbl_ResultadosFocusGained
+
+    private void cmb_CantidadMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_CantidadMostrarActionPerformed
+        this.buscar();
+    }//GEN-LAST:event_cmb_CantidadMostrarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Buscar;
