@@ -19,34 +19,34 @@ import sic.service.*;
 import sic.util.RenderTabla;
 import sic.vista.swing.ModeloTabla;
 
-public class GUI_DetalleFacturaCompra extends JDialog {
+public class GUI_FormFacturaCompra extends JDialog {
 
     private ModeloTabla modeloTablaRenglones = new ModeloTabla();
     private List<RenglonFactura> renglones;
-    private FacturaCompra facturaParaMostrar;
-    private ProveedorService proveedorService = new ProveedorService();
-    private EmpresaService empresaService = new EmpresaService();
-    private TransportistaService transportistaService = new TransportistaService();
-    private FacturaService facturaService = new FacturaService();
-    private ProductoService productoService = new ProductoService();
-    private RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
+    private final FacturaCompra facturaParaMostrar;
+    private final ProveedorService proveedorService = new ProveedorService();
+    private final EmpresaService empresaService = new EmpresaService();
+    private final TransportistaService transportistaService = new TransportistaService();
+    private final FacturaService facturaService = new FacturaService();
+    private final ProductoService productoService = new ProductoService();
+    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
     private char tipoDeFactura;
-    private boolean operacionAlta;
-    private static final Logger log = Logger.getLogger(GUI_DetalleFacturaCompra.class.getPackage().getName());
+    private final boolean operacionAlta;
+    private static final Logger log = Logger.getLogger(GUI_FormFacturaCompra.class.getPackage().getName());
 
-    public GUI_DetalleFacturaCompra() {
+    public GUI_FormFacturaCompra() {
         this.initComponents();
         this.setIcon();
-        renglones = new ArrayList<RenglonFactura>();
+        renglones = new ArrayList<>();
         facturaParaMostrar = new FacturaCompra();
         operacionAlta = true;
         this.prepararComponentes();
     }
 
-    public GUI_DetalleFacturaCompra(FacturaCompra facturaCompra) {
+    public GUI_FormFacturaCompra(FacturaCompra facturaCompra) {
         this.initComponents();
         this.setIcon();
-        renglones = new ArrayList<RenglonFactura>();        
+        renglones = new ArrayList<>();        
         tipoDeFactura = facturaCompra.getTipoFactura();
         this.prepararComponentes();
         this.setTitle("Factura Compra");
@@ -92,7 +92,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
     }
 
     private void prepararComponentes() {
-        this.setSize(1000, 500);
+        this.setSize(1000, 600);
         txt_SerieFactura.setValue(new Long("0"));
         txt_NumeroFactura.setValue(new Long("0"));
         txt_SubTotal.setValue(new Double("0.0"));
@@ -112,7 +112,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                     "Ya esta cargado el producto \"" + producto.getDescripcion()
                     + "\" en los renglones de la factura.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            GUI_RenglonFacturaCompra gui_Renglon = new GUI_RenglonFacturaCompra(producto, tipoDeFactura);
+            GUI_RenglonFactura gui_Renglon = new GUI_RenglonFactura(producto, tipoDeFactura, Movimiento.COMPRA);
             gui_Renglon.setModal(true);
             gui_Renglon.setLocationRelativeTo(this);
             gui_Renglon.setVisible(true);
@@ -192,7 +192,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         facturaCompra.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
         facturaCompra.setFechaVencimiento(dc_FechaVencimiento.getDate());
         facturaCompra.setTransportista((Transportista) cmb_Transportista.getSelectedItem());
-        Set<RenglonFactura> lineasFactura = new HashSet<RenglonFactura>(renglones);
+        Set<RenglonFactura> lineasFactura = new HashSet<>(renglones);
         facturaCompra.setRenglones(lineasFactura);
         for (RenglonFactura renglon : lineasFactura) {
             renglon.setFactura(facturaCompra);
@@ -216,7 +216,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
     }
 
     private void limpiarYRecargarComponentes() {
-        renglones = new ArrayList<RenglonFactura>();
+        renglones = new ArrayList<>();
         modeloTablaRenglones = new ModeloTabla();
         this.setColumnas();
         dc_FechaFactura.setDate(new Date());
@@ -386,7 +386,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         txt_IVA_21.setValue(facturaParaMostrar.getIva_21_neto());
         txt_ImpInterno_Neto.setValue(facturaParaMostrar.getRecargo_neto());
         txt_Total.setValue(facturaParaMostrar.getTotal());
-        facturaParaMostrar.setRenglones(new HashSet<RenglonFactura>(facturaService.getRenglonesDeLaFactura(facturaParaMostrar)));
+        facturaParaMostrar.setRenglones(new HashSet<>(facturaService.getRenglonesDeLaFactura(facturaParaMostrar)));
         for (RenglonFactura renglon : facturaParaMostrar.getRenglones()) {
             this.agregarRenglon(renglon);
         }
@@ -404,7 +404,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
     private void recargarRenglonesSegunTipoDeFactura() {
         //resguardo de renglones
         List<RenglonFactura> resguardoRenglones = renglones;
-        renglones = new ArrayList<RenglonFactura>();
+        renglones = new ArrayList<>();
         modeloTablaRenglones = new ModeloTabla();
         this.setColumnas();
         for (RenglonFactura renglon : resguardoRenglones) {
@@ -535,8 +535,8 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                     .addComponent(lbl_Proveedor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbl_FormaDePago, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
                     .addComponent(lbl_Transporte, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panelDatosComprobanteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelDatosComprobanteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cmb_Transportista, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cmb_Proveedor, 0, 195, Short.MAX_VALUE)
                     .addComponent(cmb_FormaDePago, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -545,7 +545,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                     .addComponent(btn_NuevoFormaDePago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btn_NuevoProveedor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btn_NuevoTransportista, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         panelDatosComprobanteLayout.setVerticalGroup(
             panelDatosComprobanteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -578,6 +578,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
 
             }
         ));
+        tbl_Renglones.setFocusable(false);
         tbl_Renglones.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tbl_Renglones.getTableHeader().setReorderingAllowed(false);
         sp_Renglones.setViewportView(tbl_Renglones);
@@ -939,13 +940,10 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                             .addComponent(panelMisc, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(panelRenglones, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(panelDatosComprobante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(panelResultados, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(panelDatosComprobante, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(panelResultados, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -1027,7 +1025,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         try {
             this.guardarFactura();
             int respuesta = JOptionPane.showConfirmDialog(this,
-                    "La Factura se guardo correctamente!\n¿Desea dar de alta otra Factura?",
+                    "La Factura se guardó correctamente!\n¿Desea dar de alta otra Factura?",
                     "Aviso", JOptionPane.YES_NO_OPTION);
             this.limpiarYRecargarComponentes();
             if (respuesta == JOptionPane.NO_OPTION) {

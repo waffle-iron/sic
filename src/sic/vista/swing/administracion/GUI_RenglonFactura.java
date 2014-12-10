@@ -3,6 +3,7 @@ package sic.vista.swing.administracion;
 import java.text.ParseException;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import sic.modelo.Producto;
@@ -10,28 +11,25 @@ import sic.modelo.RenglonFactura;
 import sic.service.Movimiento;
 import sic.service.RenglonDeFacturaService;
 
-public class GUI_RenglonFacturaCompra extends JDialog {
+public class GUI_RenglonFactura extends JDialog {
 
     private RenglonFactura renglon;
-    private Producto producto;
+    private final Producto producto;
     private boolean cargarRenglon;
-    private char tipoDeFactura;
-    private RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
-    private static final Logger log = Logger.getLogger(GUI_RenglonFacturaCompra.class.getPackage().getName());
+    private final char tipoDeFactura;
+    private final Movimiento movimiento;
+    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
+    private static final Logger log = Logger.getLogger(GUI_RenglonFactura.class.getPackage().getName());
 
-    public GUI_RenglonFacturaCompra(Producto producto, char tipoDeFactura) {
+    public GUI_RenglonFactura(Producto producto, char tipoDeFactura, Movimiento movimiento) {
         this.initComponents();
         this.setIcon();
         renglon = new RenglonFactura();
         this.prepararComponentes();
         this.producto = producto;
         this.tipoDeFactura = tipoDeFactura;
+        this.movimiento = movimiento;
         cargarRenglon = false;
-    }
-
-    private void setIcon() {
-        ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-        this.setIconImage(iconoVentana.getImage());
     }
 
     public boolean debeCargarRenglon() {
@@ -42,9 +40,14 @@ public class GUI_RenglonFacturaCompra extends JDialog {
         return renglon;
     }
 
+    private void setIcon() {
+        ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+        this.setIconImage(iconoVentana.getImage());
+    }
+
     private void prepararComponentes() {
         txt_Cantidad.setValue(new Double("1.0"));
-        txt_PrecioCosto.setValue(new Double("0.0"));
+        txt_Precio.setValue(new Double("0.0"));
         txt_Descuento_porcentaje.setValue(new Double("0.0"));
     }
 
@@ -61,8 +64,24 @@ public class GUI_RenglonFacturaCompra extends JDialog {
 
     private void actualizarCampos() {
         this.validarComponentes();
-        renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.COMPRA, Double.parseDouble(txt_Cantidad.getValue().toString()),
+        renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, movimiento, Double.parseDouble(txt_Cantidad.getValue().toString()),
                 producto, Double.parseDouble(txt_Descuento_porcentaje.getValue().toString()));
+    }
+
+    private boolean existeStockDisponible(double cantRequerida, Producto producto) {
+        if (producto.isIlimitado() == false) {
+            if (cantRequerida > producto.getCantidad()) {
+                JOptionPane.showMessageDialog(this,
+                        "La cantidad ingresada es mayor a la disponible para el producto seleccionado.\n"
+                        + "La cantidad disponible es de " + producto.getCantidad() + " unidades.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -70,22 +89,22 @@ public class GUI_RenglonFacturaCompra extends JDialog {
     private void initComponents() {
 
         panel1 = new javax.swing.JPanel();
-        lbl_Indicaciones = new javax.swing.JLabel();
         lbl_Cantidad = new javax.swing.JLabel();
         lbl_Unidad = new javax.swing.JLabel();
         lbl_Descuento = new javax.swing.JLabel();
         lbl_Descripcion = new javax.swing.JLabel();
         txt_Descripcion = new javax.swing.JTextField();
         lbl_Codigo = new javax.swing.JLabel();
-        lbl_PrecioCosto = new javax.swing.JLabel();
+        lbl_Precio = new javax.swing.JLabel();
         txt_Cantidad = new javax.swing.JFormattedTextField();
         txt_Descuento_porcentaje = new javax.swing.JFormattedTextField();
-        txt_PrecioCosto = new javax.swing.JFormattedTextField();
+        txt_Precio = new javax.swing.JFormattedTextField();
         txt_Codigo = new javax.swing.JTextField();
         btn_Agregar = new javax.swing.JButton();
+        lbl_Indicaciones = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Renglon de Factura de Compra");
+        setTitle("Renglon de Factura");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -93,8 +112,6 @@ public class GUI_RenglonFacturaCompra extends JDialog {
         });
 
         panel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-
-        lbl_Indicaciones.setText("<html>Ingrese los datos para el renglon de la Factura:</html>");
 
         lbl_Cantidad.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Cantidad.setText("Cantidad:");
@@ -112,14 +129,9 @@ public class GUI_RenglonFacturaCompra extends JDialog {
 
         lbl_Codigo.setText("Código:");
 
-        lbl_PrecioCosto.setText("Precio de Costo:");
+        lbl_Precio.setText("XXXXXXXXXXXXX");
 
         txt_Cantidad.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
-        txt_Cantidad.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_CantidadActionPerformed(evt);
-            }
-        });
         txt_Cantidad.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_CantidadFocusGained(evt);
@@ -128,13 +140,13 @@ public class GUI_RenglonFacturaCompra extends JDialog {
                 txt_CantidadFocusLost(evt);
             }
         });
-
-        txt_Descuento_porcentaje.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
-        txt_Descuento_porcentaje.addActionListener(new java.awt.event.ActionListener() {
+        txt_Cantidad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_Descuento_porcentajeActionPerformed(evt);
+                txt_CantidadActionPerformed(evt);
             }
         });
+
+        txt_Descuento_porcentaje.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
         txt_Descuento_porcentaje.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_Descuento_porcentajeFocusGained(evt);
@@ -143,10 +155,15 @@ public class GUI_RenglonFacturaCompra extends JDialog {
                 txt_Descuento_porcentajeFocusLost(evt);
             }
         });
+        txt_Descuento_porcentaje.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_Descuento_porcentajeActionPerformed(evt);
+            }
+        });
 
-        txt_PrecioCosto.setEditable(false);
-        txt_PrecioCosto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
-        txt_PrecioCosto.setFocusable(false);
+        txt_Precio.setEditable(false);
+        txt_Precio.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_Precio.setFocusable(false);
 
         txt_Codigo.setEditable(false);
         txt_Codigo.setFocusable(false);
@@ -155,11 +172,10 @@ public class GUI_RenglonFacturaCompra extends JDialog {
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lbl_Indicaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
             .addGroup(panel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lbl_PrecioCosto)
+                    .addComponent(lbl_Precio)
                     .addComponent(lbl_Codigo)
                     .addComponent(lbl_Descripcion)
                     .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -167,21 +183,20 @@ public class GUI_RenglonFacturaCompra extends JDialog {
                         .addComponent(lbl_Descuento)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_Descripcion, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                    .addComponent(txt_Descripcion, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                     .addGroup(panel1Layout.createSequentialGroup()
                         .addComponent(txt_Cantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbl_Unidad, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
-                    .addComponent(txt_Descuento_porcentaje, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
-                    .addComponent(txt_PrecioCosto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
-                    .addComponent(txt_Codigo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE))
+                        .addComponent(lbl_Unidad, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE))
+                    .addComponent(txt_Descuento_porcentaje, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                    .addComponent(txt_Precio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                    .addComponent(txt_Codigo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panel1Layout.setVerticalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
-                .addComponent(lbl_Indicaciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addContainerGap()
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_Codigo)
                     .addComponent(txt_Codigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -196,8 +211,8 @@ public class GUI_RenglonFacturaCompra extends JDialog {
                     .addComponent(txt_Cantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbl_PrecioCosto)
-                    .addComponent(txt_PrecioCosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lbl_Precio)
+                    .addComponent(txt_Precio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_Descuento)
@@ -214,21 +229,28 @@ public class GUI_RenglonFacturaCompra extends JDialog {
             }
         });
 
+        lbl_Indicaciones.setText("<html>Ingrese los datos para el renglon de la Factura:</html>");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btn_Agregar)
-                    .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_Indicaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 431, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btn_Agregar)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(lbl_Indicaciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_Agregar)
@@ -239,8 +261,20 @@ public class GUI_RenglonFacturaCompra extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_AgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AgregarActionPerformed
-        cargarRenglon = true;
-        this.dispose();
+        if (renglon.getCantidad() > 0) {
+            if (movimiento == Movimiento.VENTA) {
+                if (this.existeStockDisponible(renglon.getCantidad(), producto)) {
+                    cargarRenglon = true;
+                    this.dispose();
+                }
+            } else {
+                cargarRenglon = true;
+                this.dispose();
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "La cantidad ingresada debe ser mayor a 0.",
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btn_AgregarActionPerformed
 
     private void txt_CantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_CantidadActionPerformed
@@ -282,7 +316,13 @@ public class GUI_RenglonFacturaCompra extends JDialog {
         txt_Descripcion.setText(producto.getDescripcion());
         txt_Cantidad.setValue(txt_Cantidad.getValue());
         lbl_Unidad.setText(producto.getMedida().getNombre());
-        txt_PrecioCosto.setValue(producto.getPrecioCosto());
+        if (movimiento == Movimiento.COMPRA) {
+            lbl_Precio.setText("Precio de Costo:");
+            txt_Precio.setValue(producto.getPrecioCosto());
+        } else {
+            lbl_Precio.setText("Precio de Lista:");
+            txt_Precio.setValue(producto.getPrecioLista());
+        }
         this.actualizarCampos();
     }//GEN-LAST:event_formWindowOpened
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -292,13 +332,13 @@ public class GUI_RenglonFacturaCompra extends JDialog {
     private javax.swing.JLabel lbl_Descripcion;
     private javax.swing.JLabel lbl_Descuento;
     private javax.swing.JLabel lbl_Indicaciones;
-    private javax.swing.JLabel lbl_PrecioCosto;
+    private javax.swing.JLabel lbl_Precio;
     private javax.swing.JLabel lbl_Unidad;
     private javax.swing.JPanel panel1;
     private javax.swing.JFormattedTextField txt_Cantidad;
     private javax.swing.JTextField txt_Codigo;
     private javax.swing.JTextField txt_Descripcion;
     private javax.swing.JFormattedTextField txt_Descuento_porcentaje;
-    private javax.swing.JFormattedTextField txt_PrecioCosto;
+    private javax.swing.JFormattedTextField txt_Precio;
     // End of variables declaration//GEN-END:variables
 }
