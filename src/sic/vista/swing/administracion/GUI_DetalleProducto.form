@@ -3,6 +3,7 @@
 <Form version="1.5" maxVersion="1.6" type="org.netbeans.modules.form.forminfo.JDialogFormInfo">
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
+    <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -125,11 +126,11 @@
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="txt_Descripcion" alignment="0" max="32767" attributes="2"/>
-                              <Component id="cmb_Rubro" alignment="0" max="32767" attributes="2"/>
-                              <Component id="cmb_Proveedor" alignment="0" max="32767" attributes="2"/>
-                              <Component id="cmb_Medida" alignment="0" max="32767" attributes="0"/>
-                              <Component id="txt_Codigo" max="32767" attributes="2"/>
+                              <Component id="txt_Descripcion" alignment="0" min="-2" pref="258" max="-2" attributes="2"/>
+                              <Component id="cmb_Rubro" alignment="0" min="-2" pref="258" max="-2" attributes="2"/>
+                              <Component id="cmb_Proveedor" alignment="0" min="-2" pref="258" max="-2" attributes="2"/>
+                              <Component id="cmb_Medida" alignment="0" min="-2" pref="258" max="-2" attributes="0"/>
+                              <Component id="txt_Codigo" min="-2" pref="258" max="-2" attributes="2"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
@@ -683,10 +684,10 @@
                                       </Group>
                                   </Group>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="dc_Vencimiento" alignment="0" pref="280" max="32767" attributes="1"/>
-                                      <Component id="txt_Estanteria" alignment="0" pref="280" max="32767" attributes="3"/>
-                                      <Component id="txt_Estante" alignment="0" pref="280" max="32767" attributes="3"/>
-                                      <Component id="jScrollPane1" pref="280" max="32767" attributes="0"/>
+                                      <Component id="dc_Vencimiento" alignment="0" min="-2" pref="280" max="-2" attributes="1"/>
+                                      <Component id="txt_Estanteria" alignment="0" min="-2" pref="280" max="-2" attributes="3"/>
+                                      <Component id="txt_Estante" alignment="0" min="-2" pref="280" max="-2" attributes="3"/>
+                                      <Component id="jScrollPane1" min="-2" pref="280" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
@@ -696,8 +697,8 @@
                                   </Group>
                                   <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="lbl_FechaAlta" pref="281" max="32767" attributes="1"/>
-                                      <Component id="lbl_FechaUltimaModificacion" alignment="0" pref="281" max="32767" attributes="1"/>
+                                      <Component id="lbl_FechaAlta" min="-2" pref="284" max="-2" attributes="1"/>
+                                      <Component id="lbl_FechaUltimaModificacion" alignment="0" min="-2" pref="284" max="-2" attributes="1"/>
                                   </Group>
                               </Group>
                           </Group>
