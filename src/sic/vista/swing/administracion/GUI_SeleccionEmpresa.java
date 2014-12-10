@@ -14,7 +14,7 @@ import sic.service.EmpresaService;
 public class GUI_SeleccionEmpresa extends JDialog {
 
     private Empresa empresaSeleccionada;
-    private EmpresaService empresaService = new EmpresaService();
+    private final EmpresaService empresaService = new EmpresaService();
     private static final Logger log = Logger.getLogger(GUI_SeleccionEmpresa.class.getPackage().getName());
 
     public GUI_SeleccionEmpresa(Frame parent, boolean modal) {
@@ -61,6 +61,7 @@ public class GUI_SeleccionEmpresa extends JDialog {
 
         btn_Aceptar.setForeground(java.awt.Color.blue);
         btn_Aceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/ArrowRight_16x16.png"))); // NOI18N
+        btn_Aceptar.setText("Aceptar");
         btn_Aceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_AceptarActionPerformed(evt);
@@ -128,7 +129,7 @@ public class GUI_SeleccionEmpresa extends JDialog {
     }//GEN-LAST:event_btn_AceptarActionPerformed
 
     private void cmb_EmpresasKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmb_EmpresasKeyPressed
-        //tecla ENTER
+        //ENTER
         if (evt.getKeyCode() == 10) {
             btn_AceptarActionPerformed(null);
         }
