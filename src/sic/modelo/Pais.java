@@ -1,6 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,10 +22,13 @@ public class Pais implements Serializable {
     @Id
     @GeneratedValue
     private long id_Pais;
+
     @Column(nullable = false)
     private String nombre;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "pais")
     private Set<Provincia> provincias;
+
     private boolean eliminado = false;
 
     public Pais() {
@@ -68,37 +72,29 @@ public class Pais implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof Pais)) {
-            return false;
-        }
-
-        Pais pais = (Pais) o;
-        if (id_Pais != pais.id_Pais) {
-            return false;
-        }
-
-        if (nombre != null ? !nombre.equals(pais.nombre) : pais.nombre != null) {
-            return false;
-        }
-
-        return true;
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + (int) (this.id_Pais ^ (this.id_Pais >>> 32));
+        hash = 59 * hash + Objects.hashCode(this.nombre);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash = (int) (89 * hash + this.id_Pais);
-        hash = 89 * hash + (this.nombre != null ? this.nombre.hashCode() : 0);
-
-        return hash;
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Pais other = (Pais) obj;
+        if (this.id_Pais != other.id_Pais) {
+            return false;
+        }
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        return true;
     }
+
 }

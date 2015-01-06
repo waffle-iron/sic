@@ -24,23 +24,32 @@ public abstract class Factura implements Serializable {
     @Id
     @GeneratedValue
     private long id_Factura;
+
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
+
     @Column(nullable = false)
     private char tipoFactura;
+
     private long numSerie;
+
     private long numFactura;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_FormaDePago", referencedColumnName = "id_FormaDePago")
     private FormaDePago formaPago;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaVencimiento;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Transportista", referencedColumnName = "id_Transportista")
     private Transportista transportista;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura")
     private Set<RenglonFactura> renglones;
+
     private double subTotal;
     private double recargo_porcentaje;
     private double recargo_neto;
@@ -51,12 +60,16 @@ public abstract class Factura implements Serializable {
     private double iva_21_neto;
     private double impuestoInterno_neto;
     private double total;
+
     @Column(nullable = false)
     private String observaciones;
+
     private boolean pagada;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
+
     private boolean eliminada;
 
     public Factura() {
@@ -287,5 +300,4 @@ public abstract class Factura implements Serializable {
         hash = 29 * hash + Objects.hashCode(this.renglones);
         return hash;
     }
-
 }

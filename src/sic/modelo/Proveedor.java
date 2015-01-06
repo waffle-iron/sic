@@ -1,6 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -25,37 +26,52 @@ public class Proveedor implements Serializable {
     @Id
     @GeneratedValue
     private long id_Proveedor;
+
     @Column(nullable = false)
     private String codigo;
+
     @Column(nullable = false)
     private String razonSocial;
+
     @Column(nullable = false)
     private String direccion;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_CondicionIVA", referencedColumnName = "id_CondicionIVA")
     private CondicionIVA condicionIVA;
+
     @Column(nullable = false)
     private String id_Fiscal;
+
     @Column(nullable = false)
     private String telPrimario;
+
     @Column(nullable = false)
     private String telSecundario;
+
     @Column(nullable = false)
     private String contacto;
+
     @Column(nullable = false)
     private String email;
+
     @Column(nullable = false)
     private String web;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Localidad", referencedColumnName = "id_Localidad")
     private Localidad localidad;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "proveedor")
     private Set<Producto> productos;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "proveedor")
     private Set<FacturaCompra> facturasCompra;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
+
     private boolean eliminado;
 
     public Proveedor() {
@@ -195,37 +211,29 @@ public class Proveedor implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof Proveedor)) {
-            return false;
-        }
-
-        Proveedor prov = (Proveedor) o;
-        if (id_Proveedor != prov.id_Proveedor) {
-            return false;
-        }
-
-        if (razonSocial != null ? !razonSocial.equals(prov.razonSocial) : prov.razonSocial != null) {
-            return false;
-        }
-
-        return true;
+    public int hashCode() {
+        int hash = 7;
+        hash = 79 * hash + (int) (this.id_Proveedor ^ (this.id_Proveedor >>> 32));
+        hash = 79 * hash + Objects.hashCode(this.razonSocial);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash = (int) (89 * hash + this.id_Proveedor);
-        hash = 89 * hash + (this.razonSocial != null ? this.razonSocial.hashCode() : 0);
-
-        return hash;
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Proveedor other = (Proveedor) obj;
+        if (this.id_Proveedor != other.id_Proveedor) {
+            return false;
+        }
+        if (!Objects.equals(this.razonSocial, other.razonSocial)) {
+            return false;
+        }
+        return true;
     }
+
 }

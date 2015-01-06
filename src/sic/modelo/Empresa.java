@@ -2,6 +2,7 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -29,44 +30,64 @@ public class Empresa implements Serializable {
     @Id
     @GeneratedValue
     private long id_Empresa;
+
     @Column(nullable = false)
     private String nombre;
+
     @Column(nullable = false)
     private String lema;
+
     @Column(nullable = false)
     private String direccion;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_CondicionIVA", referencedColumnName = "id_CondicionIVA")
     private CondicionIVA condicionIVA;
+
     private long cuip;
+
     private long ingresosBrutos;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaInicioActividad;
+
     @Column(nullable = false)
     private String email;
+
     @Column(nullable = false)
     private String telefono;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Localidad", referencedColumnName = "id_Localidad")
     private Localidad localidad;
+
     @Lob
     private byte[] logo;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
     private Set<Producto> productos;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
     private Set<Proveedor> proveedores;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
     private Set<Factura> facturas;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
     private Set<Transportista> transportistas;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
     private Set<Cliente> clientes;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
     private Set<FormaDePago> formasDePago;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
     private Set<Medida> medidas;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
     private Set<Rubro> rubros;
+
     private boolean eliminada;
 
     public Empresa() {
@@ -246,37 +267,28 @@ public class Empresa implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof Empresa)) {
-            return false;
-        }
-
-        Empresa emp = (Empresa) o;
-        if (id_Empresa != emp.id_Empresa) {
-            return false;
-        }
-
-        if (nombre != null ? !nombre.equals(emp.nombre) : emp.nombre != null) {
-            return false;
-        }
-
-        return true;
+    public int hashCode() {
+        int hash = 3;
+        hash = 47 * hash + (int) (this.id_Empresa ^ (this.id_Empresa >>> 32));
+        hash = 47 * hash + Objects.hashCode(this.nombre);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash = (int) (89 * hash + this.id_Empresa);
-        hash = 89 * hash + (this.nombre != null ? this.nombre.hashCode() : 0);
-
-        return hash;
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Empresa other = (Empresa) obj;
+        if (this.id_Empresa != other.id_Empresa) {
+            return false;
+        }
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        return true;
     }
 }

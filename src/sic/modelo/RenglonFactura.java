@@ -21,16 +21,22 @@ public class RenglonFactura implements Serializable {
     @Id
     @GeneratedValue
     private long id_RenglonFactura;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Factura", referencedColumnName = "id_Factura")
     private Factura factura;
+
     private long id_ProductoItem;
+
     @Column(nullable = false)
     private String codigoItem;
+
     @Column(nullable = false)
     private String descripcionItem;
+
     @Column(nullable = false)
     private String medidaItem;
+
     private double cantidad;
     private double precioUnitario;
     private double descuento_porcentaje;

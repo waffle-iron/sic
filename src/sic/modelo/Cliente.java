@@ -2,6 +2,7 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -30,34 +31,48 @@ public class Cliente implements Serializable {
     @Id
     @GeneratedValue
     private long id_Cliente;
+
     @Column(nullable = false)
     private String nombre;
+
     @Column(nullable = false)
     private String direccion;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_CondicionIVA", referencedColumnName = "id_CondicionIVA")
     private CondicionIVA condicionIVA;
+
     @Column(nullable = false)
     private String id_Fiscal;
+
     @Column(nullable = false)
     private String email;
+
     @Column(nullable = false)
     private String telPrimario;
+
     @Column(nullable = false)
     private String telSecundario;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Localidad", referencedColumnName = "id_Localidad")
     private Localidad localidad;
+
     @Column(nullable = false)
     private String contacto;
+
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaAlta;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
+
     private boolean eliminado;
+
     private boolean predeterminado;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "cliente")
     private Set<FacturaVenta> facturasVenta;
 
@@ -190,37 +205,28 @@ public class Cliente implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof Cliente)) {
-            return false;
-        }
-
-        Cliente cliente = (Cliente) o;
-        if (id_Cliente != cliente.id_Cliente) {
-            return false;
-        }
-
-        if (nombre != null ? !nombre.equals(cliente.nombre) : cliente.nombre != null) {
-            return false;
-        }
-
-        return true;
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + (int) (this.id_Cliente ^ (this.id_Cliente >>> 32));
+        hash = 97 * hash + Objects.hashCode(this.nombre);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash = (int) (89 * hash + this.id_Cliente);
-        hash = 89 * hash + (this.nombre != null ? this.nombre.hashCode() : 0);
-
-        return hash;
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Cliente other = (Cliente) obj;
+        if (this.id_Cliente != other.id_Cliente) {
+            return false;
+        }
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        return true;
     }
 }

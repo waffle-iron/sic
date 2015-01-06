@@ -1,6 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -23,13 +24,17 @@ public class Provincia implements Serializable {
     @Id
     @GeneratedValue
     private long id_Provincia;
+
     @Column(nullable = false)
     private String nombre;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Pais", referencedColumnName = "id_Pais")
     private Pais pais;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "provincia")
     private Set<Localidad> localidades;
+
     private boolean eliminada = false;
 
     public Provincia() {
@@ -81,37 +86,29 @@ public class Provincia implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof Provincia)) {
-            return false;
-        }
-
-        Provincia provincia = (Provincia) o;
-        if (id_Provincia != provincia.id_Provincia) {
-            return false;
-        }
-
-        if (nombre != null ? !nombre.equals(provincia.nombre) : provincia.nombre != null) {
-            return false;
-        }
-
-        return true;
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + (int) (this.id_Provincia ^ (this.id_Provincia >>> 32));
+        hash = 97 * hash + Objects.hashCode(this.nombre);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash = (int) (89 * hash + this.id_Provincia);
-        hash = 89 * hash + (this.nombre != null ? this.nombre.hashCode() : 0);
-
-        return hash;
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Provincia other = (Provincia) obj;
+        if (this.id_Provincia != other.id_Provincia) {
+            return false;
+        }
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        return true;
     }
+
 }

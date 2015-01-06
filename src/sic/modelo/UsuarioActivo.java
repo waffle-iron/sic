@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class UsuarioActivo {
 
-    private static UsuarioActivo INSTANCE = new UsuarioActivo();
+    private static final UsuarioActivo INSTANCE = new UsuarioActivo();
     private Usuario usuario;
     private Date fechaHoraIngreso;
 

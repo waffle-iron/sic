@@ -1,6 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -25,15 +26,21 @@ public class FormaDePago implements Serializable {
     @Id
     @GeneratedValue
     private long id_FormaDePago;
+
     @Column(nullable = false)
     private String nombre;
+
     private boolean afectaCaja;
+
     private boolean predeterminado;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "formaPago")
     private Set<Factura> facturas;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
+
     private boolean eliminada;
 
     public FormaDePago() {
@@ -101,37 +108,28 @@ public class FormaDePago implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof FormaDePago)) {
-            return false;
-        }
-
-        FormaDePago formaDePago = (FormaDePago) o;
-        if (id_FormaDePago != formaDePago.id_FormaDePago) {
-            return false;
-        }
-
-        if (nombre != null ? !nombre.equals(formaDePago.nombre) : formaDePago.nombre != null) {
-            return false;
-        }
-
-        return true;
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + (int) (this.id_FormaDePago ^ (this.id_FormaDePago >>> 32));
+        hash = 59 * hash + Objects.hashCode(this.nombre);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash = (int) (89 * hash + this.id_FormaDePago);
-        hash = 89 * hash + (this.nombre != null ? this.nombre.hashCode() : 0);
-
-        return hash;
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FormaDePago other = (FormaDePago) obj;
+        if (this.id_FormaDePago != other.id_FormaDePago) {
+            return false;
+        }
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        return true;
     }
 }

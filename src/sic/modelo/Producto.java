@@ -2,6 +2,7 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,15 +28,21 @@ public class Producto implements Serializable {
     @Id
     @GeneratedValue
     private long id_Producto;
+
     @Column(nullable = false)
     private String codigo;
+
     @Column(nullable = false)
     private String descripcion;
+
     private double cantidad;
+
     private double cantMinima;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Medida", referencedColumnName = "id_Medida")
     private Medida medida;
+
     private double precioCosto;
     private double ganancia_porcentaje;
     private double ganancia_neto;
@@ -45,30 +52,41 @@ public class Producto implements Serializable {
     private double impuestoInterno_porcentaje;
     private double impuestoInterno_neto;
     private double precioLista;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Rubro", referencedColumnName = "id_Rubro")
     private Rubro rubro;
+
     private boolean ilimitado;
+
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaUltimaModificacion;
+
     @Column(nullable = false)
     private String estanteria;
+
     @Column(nullable = false)
     private String estante;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Proveedor", referencedColumnName = "id_Proveedor")
     private Proveedor proveedor;
+
     @Column(nullable = false)
     private String nota;
+
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaAlta;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaVencimiento;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
+
     private boolean eliminado;
 
     public Producto() {
@@ -288,37 +306,29 @@ public class Producto implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof Producto)) {
-            return false;
-        }
-
-        Producto prod = (Producto) o;
-        if (id_Producto != prod.id_Producto) {
-            return false;
-        }
-
-        if (descripcion != null ? !descripcion.equals(prod.descripcion) : prod.descripcion != null) {
-            return false;
-        }
-
-        return true;
+    public int hashCode() {
+        int hash = 5;
+        hash = 59 * hash + (int) (this.id_Producto ^ (this.id_Producto >>> 32));
+        hash = 59 * hash + Objects.hashCode(this.descripcion);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash = (int) (89 * hash + this.id_Producto);
-        hash = 89 * hash + (this.descripcion != null ? this.descripcion.hashCode() : 0);
-
-        return hash;
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Producto other = (Producto) obj;
+        if (this.id_Producto != other.id_Producto) {
+            return false;
+        }
+        if (!Objects.equals(this.descripcion, other.descripcion)) {
+            return false;
+        }
+        return true;
     }
+
 }

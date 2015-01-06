@@ -1,6 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -21,15 +22,21 @@ public class CondicionIVA implements Serializable {
     @Id
     @GeneratedValue
     private long id_CondicionIVA;
+
     @Column(nullable = false)
     private String nombre;
+
     private boolean discriminaIVA;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "condicionIVA")
     private Set<Proveedor> proveedores;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "condicionIVA")
     private Set<Empresa> empresas;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "condicionIVA")
     private Set<Cliente> clientes;
+
     private boolean eliminada;
 
     public CondicionIVA() {
@@ -101,37 +108,28 @@ public class CondicionIVA implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof CondicionIVA)) {
-            return false;
-        }
-
-        CondicionIVA condicionIVA = (CondicionIVA) o;
-        if (id_CondicionIVA != condicionIVA.id_CondicionIVA) {
-            return false;
-        }
-
-        if (nombre != null ? !nombre.equals(condicionIVA.nombre) : condicionIVA.nombre != null) {
-            return false;
-        }
-
-        return true;
+    public int hashCode() {
+        int hash = 5;
+        hash = 47 * hash + (int) (this.id_CondicionIVA ^ (this.id_CondicionIVA >>> 32));
+        hash = 47 * hash + Objects.hashCode(this.nombre);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash = (int) (89 * hash + this.id_CondicionIVA);
-        hash = 89 * hash + (this.nombre != null ? this.nombre.hashCode() : 0);
-
-        return hash;
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final CondicionIVA other = (CondicionIVA) obj;
+        if (this.id_CondicionIVA != other.id_CondicionIVA) {
+            return false;
+        }
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        return true;
     }
 }

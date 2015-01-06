@@ -23,15 +23,20 @@ public class PagoFacturaCompra implements Serializable {
     @Id
     @GeneratedValue
     private long id_PagoFacturaCompra;
+    
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
+    
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Factura", referencedColumnName = "id_Factura")
     private FacturaCompra facturaCompra;
+    
     private double monto;
+    
     @Column(nullable = false)
     private String nota;
+    
     private boolean eliminado;
 
     public PagoFacturaCompra() {

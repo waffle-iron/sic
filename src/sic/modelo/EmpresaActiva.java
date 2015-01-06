@@ -2,7 +2,7 @@ package sic.modelo;
 
 public class EmpresaActiva {
 
-    private static EmpresaActiva INSTANCE = new EmpresaActiva();
+    private static final EmpresaActiva INSTANCE = new EmpresaActiva();
     private Empresa empresa;
 
     private EmpresaActiva() {

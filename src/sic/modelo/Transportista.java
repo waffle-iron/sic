@@ -1,6 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -23,22 +24,30 @@ public class Transportista implements Serializable {
     @Id
     @GeneratedValue
     private long id_Transportista;
+
     @Column(nullable = false)
     private String nombre;
+
     @Column(nullable = false)
     private String direccion;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Localidad", referencedColumnName = "id_Localidad")
     private Localidad localidad;
+
     @Column(nullable = false)
     private String web;
+
     @Column(nullable = false)
     private String telefono;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "transportista")
     private Set<Factura> facturas;
+
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
+
     private boolean eliminado;
 
     public Transportista() {
@@ -66,11 +75,6 @@ public class Transportista implements Serializable {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    @Override
-    public String toString() {
-        return nombre;
     }
 
     public String getDireccion() {
@@ -122,37 +126,34 @@ public class Transportista implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof Transportista)) {
-            return false;
-        }
-
-        Transportista trans = (Transportista) o;
-        if (id_Transportista != trans.id_Transportista) {
-            return false;
-        }
-
-        if (nombre != null ? !nombre.equals(trans.nombre) : trans.nombre != null) {
-            return false;
-        }
-
-        return true;
+    public String toString() {
+        return nombre;
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash = (int) (89 * hash + this.id_Transportista);
-        hash = 89 * hash + (this.nombre != null ? this.nombre.hashCode() : 0);
-
+        int hash = 5;
+        hash = 13 * hash + (int) (this.id_Transportista ^ (this.id_Transportista >>> 32));
+        hash = 13 * hash + Objects.hashCode(this.nombre);
         return hash;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Transportista other = (Transportista) obj;
+        if (this.id_Transportista != other.id_Transportista) {
+            return false;
+        }
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        return true;
+    }
+
 }

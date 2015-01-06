@@ -1,6 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -23,13 +24,18 @@ public class Usuario implements Serializable {
     @Id
     @GeneratedValue
     private long id_Usuario;
+
     @Column(nullable = false)
     private String nombre;
+
     @Column(nullable = false)
     private String password;
+
     private boolean permisosAdministrador;
+
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "usuario")
     private Set<FacturaVenta> facturasVenta;
+
     private boolean eliminado;
 
     public Usuario() {
@@ -89,37 +95,29 @@ public class Usuario implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-
-        if (this == o) {
-            return true;
-        }
-
-        if (!(o instanceof Usuario)) {
-            return false;
-        }
-
-        Usuario usuario = (Usuario) o;
-        if (id_Usuario != usuario.id_Usuario) {
-            return false;
-        }
-
-        if (nombre != null ? !nombre.equals(usuario.nombre) : usuario.nombre != null) {
-            return false;
-        }
-
-        return true;
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + (int) (this.id_Usuario ^ (this.id_Usuario >>> 32));
+        hash = 97 * hash + Objects.hashCode(this.nombre);
+        return hash;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash = (int) (89 * hash + this.id_Usuario);
-        hash = 89 * hash + (this.nombre != null ? this.nombre.hashCode() : 0);
-
-        return hash;
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Usuario other = (Usuario) obj;
+        if (this.id_Usuario != other.id_Usuario) {
+            return false;
+        }
+        if (!Objects.equals(this.nombre, other.nombre)) {
+            return false;
+        }
+        return true;
     }
+
 }
