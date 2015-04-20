@@ -65,6 +65,7 @@ public class GUI_Principal extends JFrame {
         mnuItm_Usuarios = new javax.swing.JMenuItem();
         mnuItm_CambiarUser = new javax.swing.JMenuItem();
         Separador2 = new javax.swing.JPopupMenu.Separator();
+        mnuItm_Configuracion = new javax.swing.JMenuItem();
         mnuItm_Salir = new javax.swing.JMenuItem();
         mnu_Compras = new javax.swing.JMenu();
         mnuItm_FacturasCompra = new javax.swing.JMenuItem();
@@ -155,6 +156,15 @@ public class GUI_Principal extends JFrame {
         });
         mnu_Sistema.add(mnuItm_CambiarUser);
         mnu_Sistema.add(Separador2);
+
+        mnuItm_Configuracion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Gears_16x16.png"))); // NOI18N
+        mnuItm_Configuracion.setText("Configuración");
+        mnuItm_Configuracion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuItm_ConfiguracionActionPerformed(evt);
+            }
+        });
+        mnu_Sistema.add(mnuItm_Configuracion);
 
         mnuItm_Salir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/LogOut_16x16.png"))); // NOI18N
         mnuItm_Salir.setText("Salir");
@@ -499,6 +509,15 @@ public class GUI_Principal extends JFrame {
             }
         }
     }//GEN-LAST:event_mnuItm_TopProductosActionPerformed
+
+    private void mnuItm_ConfiguracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_ConfiguracionActionPerformed
+        GUI_ConfiguracionDelSistema gui_ConfiguracionDelSistema = new GUI_ConfiguracionDelSistema();
+        gui_ConfiguracionDelSistema.setModal(true);
+        gui_ConfiguracionDelSistema.setLocationRelativeTo(this);
+        gui_ConfiguracionDelSistema.setVisible(true);
+        Utilidades.cerrarTodasVentanas(dp_Escritorio);
+    }//GEN-LAST:event_mnuItm_ConfiguracionActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator Separador1;
     private javax.swing.JPopupMenu.Separator Separador2;
@@ -511,6 +530,7 @@ public class GUI_Principal extends JFrame {
     private javax.swing.JMenuItem mnuItm_CambiarEmpresa;
     private javax.swing.JMenuItem mnuItm_CambiarUser;
     private javax.swing.JMenuItem mnuItm_Clientes;
+    private javax.swing.JMenuItem mnuItm_Configuracion;
     private javax.swing.JMenuItem mnuItm_Empresas;
     private javax.swing.JMenuItem mnuItm_FacturasCompra;
     private javax.swing.JMenuItem mnuItm_FacturasVenta;

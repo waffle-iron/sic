@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,11 +27,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import sic.modelo.ConfiguracionDelSistema;
+import sic.modelo.Empresa;
 import sic.modelo.XMLFileConfig;
+import sic.util.PersistenceUtil;
 
-public class ConfiguracionRepository {
+public class ConfiguracionDelSistemaRepository {
 
-    private String pathConexionConfig = System.getProperty("user.home") + "/conexionConfig.xml";
+    private final String pathConexionConfig = System.getProperty("user.home") + "/conexionConfig.xml";
     private static final String mensaje_ErrorTransformerConfigurationException = ResourceBundle.getBundle("Mensajes").getString("mensaje_ErrorTransformerConfigurationException");
     private static final String mensaje_ErrorTransformerException = ResourceBundle.getBundle("Mensajes").getString("mensaje_ErrorTransformerException");
     private static final String mensaje_ErrorParserConfigurationException = ResourceBundle.getBundle("Mensajes").getString("mensaje_ErrorParserConfigurationException");
@@ -35,7 +42,7 @@ public class ConfiguracionRepository {
     private static final String mensaje_ErrorSAXException = ResourceBundle.getBundle("Mensajes").getString("mensaje_ErrorSAXException");
     private static final String mensaje_ErrorIOException = ResourceBundle.getBundle("Mensajes").getString("mensaje_ErrorIOException");
     private static final String mensaje_ErrorFileNotFoundException = ResourceBundle.getBundle("Mensajes").getString("mensaje_ErrorFileNotFoundException");
-    private static final Logger log = Logger.getLogger(ConfiguracionRepository.class.getPackage().getName());
+    private static final Logger log = Logger.getLogger(ConfiguracionDelSistemaRepository.class.getPackage().getName());
 
     private void contruirXMLconDOM() throws XMLException {
 
@@ -104,7 +111,6 @@ public class ConfiguracionRepository {
 
             // Buscamos una etiqueta mediante XPath.
             // Implementacion de XPath por defecto en Java
-
             //CONEXION
             Node etiqueta = (Node) (XPathFactory.newInstance().newXPath().evaluate(
                     "/CONFIGURACION/CONEXION/HOST", doc, XPathConstants.NODE));
@@ -194,4 +200,49 @@ public class ConfiguracionRepository {
             throw new XMLException(mensaje_ErrorXPathExpressionException, ex);
         }
     }
+
+    public ConfiguracionDelSistema getConfiguracionDelSistemaPorId(long id_ConfiguracionDelSistema) {
+        EntityManager em = PersistenceUtil.getEntityManager();
+        TypedQuery<ConfiguracionDelSistema> typedQuery = em.createNamedQuery("ConfiguracionDelSistema.buscarPorId", ConfiguracionDelSistema.class);
+        typedQuery.setParameter("id", id_ConfiguracionDelSistema);
+        List<ConfiguracionDelSistema> configuraciones = typedQuery.getResultList();
+        em.close();
+        if (configuraciones.isEmpty()) {
+            return null;
+        } else {
+            return configuraciones.get(0);
+        }
+    }
+
+    public ConfiguracionDelSistema getConfiguracionDelSistemaPorEmpresa(Empresa empresa) {
+        EntityManager em = PersistenceUtil.getEntityManager();
+        TypedQuery<ConfiguracionDelSistema> typedQuery = em.createNamedQuery("ConfiguracionDelSistema.buscarPorEmpresa", ConfiguracionDelSistema.class);
+        typedQuery.setParameter("empresa", empresa);
+        List<ConfiguracionDelSistema> configuraciones = typedQuery.getResultList();
+        em.close();
+        if (configuraciones.isEmpty()) {
+            return null;
+        } else {
+            return configuraciones.get(0);
+        }
+    }
+
+    public void guardar(ConfiguracionDelSistema cds) {
+        EntityManager em = PersistenceUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        em.persist(em.merge(cds));
+        tx.commit();
+        em.close();
+    }
+
+    public void actualizar(ConfiguracionDelSistema cds) {
+        EntityManager em = PersistenceUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        em.merge(cds);
+        tx.commit();
+        em.close();
+    }
+
 }

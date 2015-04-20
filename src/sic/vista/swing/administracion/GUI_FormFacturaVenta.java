@@ -937,12 +937,18 @@ public class GUI_FormFacturaVenta extends JDialog {
     }//GEN-LAST:event_btn_NuevoProductoActionPerformed
 
     private void btn_BuscarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarProductoActionPerformed
-        GUI_BusquedaProductos gui_BusquedaProductos = new GUI_BusquedaProductos();
-        gui_BusquedaProductos.setModal(true);
-        gui_BusquedaProductos.setLocationRelativeTo(this);
-        gui_BusquedaProductos.setVisible(true);
-        if (gui_BusquedaProductos.getProdSeleccionado() != null) {
-            this.llamarVentanaRenglonFactura(gui_BusquedaProductos.getProdSeleccionado());
+        if (facturaService.validarCantidadMaximaDeRenglones(renglones.size())) {
+            GUI_BusquedaProductos gui_BusquedaProductos = new GUI_BusquedaProductos();
+            gui_BusquedaProductos.setModal(true);
+            gui_BusquedaProductos.setLocationRelativeTo(this);
+            gui_BusquedaProductos.setVisible(true);
+            if (gui_BusquedaProductos.getProdSeleccionado() != null) {
+                this.llamarVentanaRenglonFactura(gui_BusquedaProductos.getProdSeleccionado());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    ResourceBundle.getBundle("Mensajes").getString("mensaje_maxima_cantidad_de_renglones"),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_BuscarProductoActionPerformed
 

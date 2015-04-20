@@ -10,6 +10,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import sic.repository.FacturaRepository;
 import sic.modelo.Cliente;
+import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
@@ -21,8 +22,12 @@ import sic.util.Validator;
 
 public class FacturaService {
 
-    private final FacturaRepository modeloFactura = new FacturaRepository();
+    private final FacturaRepository facturaRepository = new FacturaRepository();
     private final ProductoService productoService = new ProductoService();
+    private final ConfiguracionDelSistemaService configuracionDelSistemaService = new ConfiguracionDelSistemaService();
+    private final EmpresaService EmpresaService = new EmpresaService();
+    private final ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
+            EmpresaService.getEmpresaActiva().getEmpresa());
 
     public char[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor) {
         //cuando la Empresa discrimina IVA
@@ -116,11 +121,11 @@ public class FacturaService {
     }
 
     public List<RenglonFactura> getRenglonesDeLaFactura(Factura factura) {
-        return modeloFactura.getRenglonesDeLaFactura(factura);
+        return facturaRepository.getRenglonesDeLaFactura(factura);
     }
 
     public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {
-        return modeloFactura.getFacturaVentaPorTipoSerieNum(tipo, serie, num);
+        return facturaRepository.getFacturaVentaPorTipoSerieNum(tipo, serie, num);
     }
 
     public List<FacturaCompra> buscarFacturaCompra(BusquedaFacturaCompraCriteria criteria) {
@@ -147,7 +152,7 @@ public class FacturaService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_proveedor_vacio"));
         }
-        return modeloFactura.buscarFacturasCompra(criteria);
+        return facturaRepository.buscarFacturasCompra(criteria);
     }
 
     public List<FacturaVenta> buscarFacturaVenta(BusquedaFacturaVentaCriteria criteria) {
@@ -179,18 +184,18 @@ public class FacturaService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
         }
-        return modeloFactura.buscarFacturasVenta(criteria);
+        return facturaRepository.buscarFacturasVenta(criteria);
     }
 
     public void guardar(Factura factura) {
         this.validarFactura(factura);
-        modeloFactura.guardar(factura);
+        facturaRepository.guardar(factura);
         productoService.actualizarStock(factura);
     }
 
     public void eliminar(Factura factura) {
         factura.setEliminada(true);
-        modeloFactura.actualizar(factura);
+        facturaRepository.actualizar(factura);
     }
 
     private void validarFactura(Factura factura) {
@@ -263,9 +268,9 @@ public class FacturaService {
 
     public long calcularNumeroFactura(char tipoDeFactura, long serie) {
         if (tipoDeFactura == 'Y') {
-            return modeloFactura.getMayorNumFacturaSegunTipo('X', serie);
+            return facturaRepository.getMayorNumFacturaSegunTipo('X', serie);
         } else {
-            return modeloFactura.getMayorNumFacturaSegunTipo(tipoDeFactura, serie);
+            return facturaRepository.getMayorNumFacturaSegunTipo(tipoDeFactura, serie);
         }
     }
 
@@ -275,6 +280,11 @@ public class FacturaService {
         } else {
             return importeAbonado - importeAPagar;
         }
+    }
+
+    public boolean validarCantidadMaximaDeRenglones(int cantidad) {
+        int max = cds.getCantidadMaximaDeRenglonesEnFactura();
+        return cantidad < max;
     }
 
     //**************************************************************************
@@ -388,7 +398,7 @@ public class FacturaService {
     //**************************************************************************
     //Estadisticas
     public List<Object[]> listarProductosMasVendidosPorAnio(int anio) {
-        return modeloFactura.listarProductosMasVendidosPorAnio(anio);
+        return facturaRepository.listarProductosMasVendidosPorAnio(anio);
     }
 
     //**************************************************************************
@@ -397,6 +407,7 @@ public class FacturaService {
         ClassLoader classLoader = FacturaService.class.getClassLoader();
         InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/FacturaVenta.jasper");
         Map params = new HashMap();
+        params.put("preImpresa", cds.usarFacturaVentaPreImpresa());
         params.put("facturaVenta", factura);
         params.put("nroComprobante", factura.getNumSerie() + "-" + factura.getNumFactura());
         params.put("logo", Utilidades.convertirByteArrayIntoImage(factura.getEmpresa().getLogo()));

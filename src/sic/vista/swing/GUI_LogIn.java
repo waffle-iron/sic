@@ -13,7 +13,7 @@ import sic.modelo.DatosConexion;
 import sic.modelo.XMLFileConfig;
 import sic.modelo.Usuario;
 import sic.service.ConexionService;
-import sic.service.ConfiguracionService;
+import sic.service.ConfiguracionDelSistemaService;
 import sic.service.ServiceException;
 import sic.service.UsuarioService;
 import sic.util.Validator;
@@ -25,7 +25,7 @@ public class GUI_LogIn extends JFrame {
     private boolean configDesplegada;
     private Usuario usuario;
     private UsuarioService usuarioService = new UsuarioService();
-    private ConfiguracionService configuracionService = new ConfiguracionService();
+    private ConfiguracionDelSistemaService configuracionService = new ConfiguracionDelSistemaService();
     private ConexionService conexionService = new ConexionService();
     private static final Logger log = Logger.getLogger(GUI_LogIn.class.getPackage().getName());
 

@@ -88,6 +88,9 @@ public class Empresa implements Serializable {
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
     private Set<Rubro> rubros;
 
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
+    private Set<ConfiguracionDelSistema> configuraciones;
+
     private boolean eliminada;
 
     public Empresa() {
@@ -251,6 +254,14 @@ public class Empresa implements Serializable {
 
     public void setRubros(Set<Rubro> rubros) {
         this.rubros = rubros;
+    }
+
+    public Set<ConfiguracionDelSistema> getConfiguraciones() {
+        return configuraciones;
+    }
+
+    public void setConfiguraciones(Set<ConfiguracionDelSistema> configuraciones) {
+        this.configuraciones = configuraciones;
     }
 
     public boolean isEliminada() {

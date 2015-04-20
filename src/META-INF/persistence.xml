@@ -23,13 +23,13 @@
         <class>sic.modelo.RenglonFactura</class>
         <class>sic.modelo.Usuario</class>
         <class>sic.modelo.FacturaVenta</class>
-        <properties> 
+        <class>sic.modelo.ConfiguracionDelSistema</class>
+        <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
             <!-- <property name="hibernate.hbm2ddl.auto" value="create"/> -->
             <property name="hibernate.show_sql" value="false"/>
             <property name="hibernate.format_sql" value="false"/>
         </properties>
-    </persistence-unit>    
-    
+    </persistence-unit>
 </persistence>

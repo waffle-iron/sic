@@ -32,6 +32,7 @@ public class GUI_BusquedaProductos extends JDialog {
     public GUI_BusquedaProductos() {
         this.initComponents();
         this.setIcon();
+        this.setSize(1000, 550);
         modeloTablaResultados = new ModeloTabla();
     }
 

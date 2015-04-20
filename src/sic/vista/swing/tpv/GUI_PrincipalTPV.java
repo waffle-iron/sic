@@ -275,12 +275,18 @@ public class GUI_PrincipalTPV extends JFrame {
     }
 
     private void buscarProductoConVentanaAuxiliar() {
-        GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones);
-        GUI_buscarProducto.setVisible(true);
-        if (GUI_buscarProducto.debeCargarRenglon()) {
-            this.agregarRenglon(GUI_buscarProducto.getRenglon());
-            this.cargarRenglonesAlTable();
-            this.calcularResultados();
+        if (facturaService.validarCantidadMaximaDeRenglones(renglones.size())) {
+            GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones);
+            GUI_buscarProducto.setVisible(true);
+            if (GUI_buscarProducto.debeCargarRenglon()) {
+                this.agregarRenglon(GUI_buscarProducto.getRenglon());
+                this.cargarRenglonesAlTable();
+                this.calcularResultados();
+            }
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    ResourceBundle.getBundle("Mensajes").getString("mensaje_maxima_cantidad_de_renglones"),
+                    "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
