@@ -17,13 +17,13 @@ import sic.service.*;
 public class GUI_DetalleProveedor extends JDialog {
 
     private Proveedor proveedorModificar;
-    private TipoDeOperacion operacion;
-    private CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
-    private PaisService paisService = new PaisService();
-    private ProvinciaService provinciaService = new ProvinciaService();
-    private LocalidadService localidadService = new LocalidadService();
-    private ProveedorService proveedorService = new ProveedorService();
-    private EmpresaService empresaService = new EmpresaService();
+    private final TipoDeOperacion operacion;
+    private final CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
+    private final PaisService paisService = new PaisService();
+    private final ProvinciaService provinciaService = new ProvinciaService();
+    private final LocalidadService localidadService = new LocalidadService();
+    private final ProveedorService proveedorService = new ProveedorService();
+    private final EmpresaService empresaService = new EmpresaService();
     private static final Logger log = Logger.getLogger(GUI_DetalleProveedor.class.getPackage().getName());
 
     public GUI_DetalleProveedor() {

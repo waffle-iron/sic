@@ -11,7 +11,7 @@ import sic.util.Validator;
 
 public class UsuarioService {
 
-    private UsuarioRepository modeloUsuario = new UsuarioRepository();
+    private final UsuarioRepository modeloUsuario = new UsuarioRepository();
 
     public List<Usuario> getUsuarios() {
         return modeloUsuario.getUsuarios();

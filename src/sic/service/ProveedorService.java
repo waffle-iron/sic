@@ -10,7 +10,7 @@ import sic.util.Validator;
 
 public class ProveedorService {
 
-    private ProveedorRepository modeloProveedor = new ProveedorRepository();
+    private final ProveedorRepository modeloProveedor = new ProveedorRepository();
 
     public List<Proveedor> getProveedores(Empresa empresa) {
         return modeloProveedor.getProveedores(empresa);

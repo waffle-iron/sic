@@ -9,7 +9,7 @@ import sic.util.Validator;
 
 public class RubroService {
 
-    private RubroRepository modeloRubro = new RubroRepository();
+    private final RubroRepository modeloRubro = new RubroRepository();
 
     public List<Rubro> getRubros(Empresa empresa) {
         return modeloRubro.getRubros(empresa);

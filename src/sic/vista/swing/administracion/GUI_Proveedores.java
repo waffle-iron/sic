@@ -21,11 +21,11 @@ public class GUI_Proveedores extends JInternalFrame {
     private ModeloTabla modeloTablaResultados;
     private List<Proveedor> proveedores;
     private Proveedor provSeleccionado;
-    private PaisService paisService = new PaisService();
-    private ProvinciaService provinciaService = new ProvinciaService();
-    private LocalidadService localidadService = new LocalidadService();
-    private ProveedorService proveedorService = new ProveedorService();
-    private EmpresaService empresaService = new EmpresaService();
+    private final PaisService paisService = new PaisService();
+    private final ProvinciaService provinciaService = new ProvinciaService();
+    private final LocalidadService localidadService = new LocalidadService();
+    private final ProveedorService proveedorService = new ProveedorService();
+    private final EmpresaService empresaService = new EmpresaService();
     private static final Logger log = Logger.getLogger(GUI_Proveedores.class.getPackage().getName());
 
     public GUI_Proveedores() {

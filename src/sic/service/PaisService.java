@@ -8,7 +8,7 @@ import sic.util.Validator;
 
 public class PaisService {
 
-    private PaisRepository modeloPais = new PaisRepository();
+    private final PaisRepository modeloPais = new PaisRepository();
 
     public List<Pais> getPaises() {
         return modeloPais.getPaises();

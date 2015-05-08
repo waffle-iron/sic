@@ -16,12 +16,12 @@ import sic.service.*;
 public class GUI_DetalleTransportista extends JDialog {
 
     private Transportista transportistaModificar;
-    private TipoDeOperacion operacion;
-    private PaisService paisService = new PaisService();
-    private ProvinciaService provinciaService = new ProvinciaService();
-    private LocalidadService localidadService = new LocalidadService();
-    private TransportistaService transportistaService = new TransportistaService();
-    private EmpresaService empresaService = new EmpresaService();
+    private final TipoDeOperacion operacion;
+    private final PaisService paisService = new PaisService();
+    private final ProvinciaService provinciaService = new ProvinciaService();
+    private final LocalidadService localidadService = new LocalidadService();
+    private final TransportistaService transportistaService = new TransportistaService();
+    private final EmpresaService empresaService = new EmpresaService();
     private static final Logger log = Logger.getLogger(GUI_DetalleTransportista.class.getPackage().getName());
 
     public GUI_DetalleTransportista() {

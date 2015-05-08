@@ -21,13 +21,13 @@ import sic.vista.swing.administracion.GUI_DetalleCliente;
 
 public class GUI_BuscarClientes extends JDialog {
 
-    private GUI_PrincipalTPV gui_PrincipalTPV;
+    private final GUI_PrincipalTPV gui_PrincipalTPV;
     private ModeloTabla modeloTablaResultados = new ModeloTabla();
     private List<Cliente> clientes;
     private Cliente cliSeleccionado;
-    private ClienteService clienteService = new ClienteService();
-    private EmpresaService empresaService = new EmpresaService();
-    private HotKeysHandler keyHandler = new HotKeysHandler();
+    private final ClienteService clienteService = new ClienteService();
+    private final EmpresaService empresaService = new EmpresaService();
+    private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_BuscarClientes.class.getPackage().getName());
 
     public GUI_BuscarClientes(Frame parent, boolean modal) {
@@ -68,7 +68,7 @@ public class GUI_BuscarClientes extends JDialog {
                 clientes = clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa());
             } else {
                 Cliente cli = clienteService.getClientePorIdFiscal(txt_TextoBusqueda.getText().trim(), empresaService.getEmpresaActiva().getEmpresa());
-                clientes = new ArrayList<Cliente>();
+                clientes = new ArrayList<>();
                 if (cli != null) {
                     clientes.add(cli);
                 }

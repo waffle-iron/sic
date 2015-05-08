@@ -18,7 +18,7 @@ import sic.service.FacturaService;
 
 public class GUI_TopProductos extends JInternalFrame {
 
-    private FacturaService facturaService = new FacturaService();
+    private final FacturaService facturaService = new FacturaService();
     private static final Logger log = Logger.getLogger(GUI_TopProductos.class.getPackage().getName());
 
     public GUI_TopProductos() {

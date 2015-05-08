@@ -21,11 +21,11 @@ public class GUI_Clientes extends JInternalFrame {
 
     private List<Cliente> clientes;
     private ModeloTabla modeloTablaDeResultados = new ModeloTabla();
-    private ProvinciaService provinciaService = new ProvinciaService();
-    private PaisService paisService = new PaisService();
-    private LocalidadService localidadService = new LocalidadService();
-    private ClienteService clienteService = new ClienteService();
-    private EmpresaService empresaService = new EmpresaService();
+    private final ProvinciaService provinciaService = new ProvinciaService();
+    private final PaisService paisService = new PaisService();
+    private final LocalidadService localidadService = new LocalidadService();
+    private final ClienteService clienteService = new ClienteService();
+    private final EmpresaService empresaService = new EmpresaService();
     private static final Logger log = Logger.getLogger(GUI_Clientes.class.getPackage().getName());
 
     public GUI_Clientes() {

@@ -8,7 +8,7 @@ import sic.util.Validator;
 
 public class CondicionDeIVAService {
 
-    private CondicionIVARepository modeloCondicionIVA = new CondicionIVARepository();
+    private final CondicionIVARepository modeloCondicionIVA = new CondicionIVARepository();
 
     public List<CondicionIVA> getCondicionesIVA() {
         return modeloCondicionIVA.getCondicionesIVA();

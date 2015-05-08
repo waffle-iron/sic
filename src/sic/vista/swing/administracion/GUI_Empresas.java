@@ -20,15 +20,15 @@ import sic.util.Validator;
 
 public class GUI_Empresas extends JDialog {
 
-    private DefaultListModel modeloListEmpresas = new DefaultListModel();
+    private final DefaultListModel modeloListEmpresas = new DefaultListModel();
     private Empresa empresaSeleccionada;
     private TipoDeOperacion tipoDeOperacion;
     private byte[] logo = null;
-    private CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
-    private PaisService paisService = new PaisService();
-    private ProvinciaService provinciaService = new ProvinciaService();
-    private LocalidadService localidadService = new LocalidadService();
-    private EmpresaService empresaService = new EmpresaService();
+    private final CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
+    private final PaisService paisService = new PaisService();
+    private final ProvinciaService provinciaService = new ProvinciaService();
+    private final LocalidadService localidadService = new LocalidadService();
+    private final EmpresaService empresaService = new EmpresaService();
     private static final Logger log = Logger.getLogger(GUI_Empresas.class.getPackage().getName());
 
     public GUI_Empresas() {

@@ -23,8 +23,8 @@ import sic.util.Validator;
 
 public class ProductoService {
 
-    private ProductoRepository modeloProducto = new ProductoRepository();
-    private EmpresaService empresaService = new EmpresaService();
+    private final ProductoRepository modeloProducto = new ProductoRepository();
+    private final EmpresaService empresaService = new EmpresaService();
 
     private void validarOperacion(TipoDeOperacion operacion, Producto producto) {
         //Entrada de Datos

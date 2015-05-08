@@ -9,7 +9,7 @@ import sic.util.Validator;
 
 public class FormaDePagoService {
 
-    private FormaDePagoRepository modeloFormaDePago = new FormaDePagoRepository();
+    private final FormaDePagoRepository modeloFormaDePago = new FormaDePagoRepository();
 
     public List<FormaDePago> getFormasDePago(Empresa empresa) {
         return modeloFormaDePago.getFormasDePago(empresa);

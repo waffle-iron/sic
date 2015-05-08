@@ -15,13 +15,13 @@ import sic.service.ServiceException;
 
 public class GUI_DetalleLocalidad extends JDialog {
 
-    private DefaultListModel modeloList = new DefaultListModel();
-    private DefaultComboBoxModel modeloComboPaises = new DefaultComboBoxModel();
-    private DefaultComboBoxModel modeloComboProvincias = new DefaultComboBoxModel();
-    private DefaultComboBoxModel modeloComboProvinciasBusqueda = new DefaultComboBoxModel();
-    private LocalidadService localidadService = new LocalidadService();
-    private ProvinciaService provinciaService = new ProvinciaService();
-    private PaisService paisService = new PaisService();
+    private final DefaultListModel modeloList = new DefaultListModel();
+    private final DefaultComboBoxModel modeloComboPaises = new DefaultComboBoxModel();
+    private final DefaultComboBoxModel modeloComboProvincias = new DefaultComboBoxModel();
+    private final DefaultComboBoxModel modeloComboProvinciasBusqueda = new DefaultComboBoxModel();
+    private final LocalidadService localidadService = new LocalidadService();
+    private final ProvinciaService provinciaService = new ProvinciaService();
+    private final PaisService paisService = new PaisService();
     private Localidad localidadSeleccionada;
     private static final Logger log = Logger.getLogger(GUI_DetalleLocalidad.class.getPackage().getName());
 

@@ -21,8 +21,8 @@ public class GUI_Pagos extends JDialog {
 
     private ModeloTabla modeloTablaResultados;
     private List<PagoFacturaCompra> pagos;
-    private FacturaCompra facturaRelacionada;
-    private PagoFacturaDeCompraService pagoFacturaDeCompraService = new PagoFacturaDeCompraService();
+    private final FacturaCompra facturaRelacionada;
+    private final PagoFacturaDeCompraService pagoFacturaDeCompraService = new PagoFacturaDeCompraService();
     private static final Logger log = Logger.getLogger(GUI_Pagos.class.getPackage().getName());
 
     public GUI_Pagos(FacturaCompra factura) {

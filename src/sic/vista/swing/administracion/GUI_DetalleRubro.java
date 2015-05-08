@@ -16,10 +16,10 @@ import sic.util.Utilidades;
 
 public class GUI_DetalleRubro extends JDialog {
 
-    private DefaultListModel modeloList = new DefaultListModel();
+    private final DefaultListModel modeloList = new DefaultListModel();
     private Rubro rubroSeleccionado;
-    private RubroService rubroService = new RubroService();
-    private EmpresaService empresaService = new EmpresaService();
+    private final RubroService rubroService = new RubroService();
+    private final EmpresaService empresaService = new EmpresaService();
     private static final Logger log = Logger.getLogger(GUI_DetalleRubro.class.getPackage().getName());
 
     public GUI_DetalleRubro() {

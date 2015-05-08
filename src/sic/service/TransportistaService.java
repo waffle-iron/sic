@@ -10,7 +10,7 @@ import sic.util.Validator;
 
 public class TransportistaService {
 
-    private TransportistaRepository modeloTransportista = new TransportistaRepository();
+    private final TransportistaRepository modeloTransportista = new TransportistaRepository();
 
     public List<Transportista> getTransportistas(Empresa empresa) {
         return modeloTransportista.getTransportistas(empresa);

@@ -31,10 +31,10 @@ public class GUI_Productos extends JInternalFrame {
     private List<Producto> productos;
     private boolean listarSoloFaltantes;
     private int cantidadResultadosParaMostrar = 500;
-    private RubroService rubroService = new RubroService();
-    private EmpresaService empresaService = new EmpresaService();
-    private ProveedorService proveedorService = new ProveedorService();
-    private ProductoService productoService = new ProductoService();
+    private final RubroService rubroService = new RubroService();
+    private final EmpresaService empresaService = new EmpresaService();
+    private final ProveedorService proveedorService = new ProveedorService();
+    private final ProductoService productoService = new ProductoService();
     private static final Logger log = Logger.getLogger(GUI_Productos.class.getPackage().getName());
 
     public GUI_Productos() {
@@ -272,7 +272,7 @@ public class GUI_Productos extends JInternalFrame {
                     JOptionPane.showInternalMessageDialog(getParent(), ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
                 }
 
-                productos = new ArrayList<Producto>();
+                productos = new ArrayList<>();
                 return productos;
             }
 
@@ -307,7 +307,7 @@ public class GUI_Productos extends JInternalFrame {
     }
 
     private List<Producto> getSeleccionMultipleDeProductos(int[] indices) {
-        List<Producto> productosSeleccionados = new ArrayList<Producto>();
+        List<Producto> productosSeleccionados = new ArrayList<>();
         for (int i = 0; i < indices.length; i++) {
             productosSeleccionados.add(productos.get(indices[i]));
         }

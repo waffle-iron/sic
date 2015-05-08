@@ -15,9 +15,9 @@ import sic.vista.swing.tpv.GUI_PrincipalTPV;
 
 public class GUI_Principal extends JFrame {
 
-    private JLabel lbl_Fondo;
-    private EmpresaService empresaService = new EmpresaService();
-    private UsuarioService usuarioService = new UsuarioService();
+    private final JLabel lbl_Fondo;
+    private final EmpresaService empresaService = new EmpresaService();
+    private final UsuarioService usuarioService = new UsuarioService();
     private static final Logger log = Logger.getLogger(GUI_Principal.class.getPackage().getName());
 
     public GUI_Principal() {
@@ -26,6 +26,8 @@ public class GUI_Principal extends JFrame {
         this.setIconImage(iconoVentana.getImage());
         lbl_Fondo = new JLabel();
         dp_Escritorio.add(lbl_Fondo);
+        this.setTitle("S.I.C. Sistema de Información Comercial "
+                + ResourceBundle.getBundle("Mensajes").getString("version"));
         this.setSize(new Dimension(1000, 720));
         this.setExtendedState(MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
@@ -82,7 +84,6 @@ public class GUI_Principal extends JFrame {
         mnuItm_TopProductos = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("S.I.C. Sistema de Información Comercial");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);

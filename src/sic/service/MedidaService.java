@@ -9,7 +9,7 @@ import sic.util.Validator;
 
 public class MedidaService {
 
-    private MedidaRepository modeloMedida = new MedidaRepository();
+    private final MedidaRepository modeloMedida = new MedidaRepository();
 
     public List<Medida> getUnidadMedidas(Empresa empresa) {
         return modeloMedida.getUnidadMedidas(empresa);

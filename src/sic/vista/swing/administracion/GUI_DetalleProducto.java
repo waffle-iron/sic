@@ -22,12 +22,12 @@ import sic.util.FormatterFechaHora;
 public class GUI_DetalleProducto extends JDialog {
 
     private Producto productoModificar;
-    private TipoDeOperacion operacion;
-    private MedidaService medidaService = new MedidaService();
-    private EmpresaService empresaService = new EmpresaService();
-    private RubroService rubroService = new RubroService();
-    private ProveedorService proveedorService = new ProveedorService();
-    private ProductoService productoService = new ProductoService();
+    private final TipoDeOperacion operacion;
+    private final MedidaService medidaService = new MedidaService();
+    private final EmpresaService empresaService = new EmpresaService();
+    private final RubroService rubroService = new RubroService();
+    private final ProveedorService proveedorService = new ProveedorService();
+    private final ProductoService productoService = new ProductoService();
     private static final Logger log = Logger.getLogger(GUI_DetalleProducto.class.getPackage().getName());
 
     public GUI_DetalleProducto() {
@@ -667,16 +667,16 @@ public class GUI_DetalleProducto extends JDialog {
     }
 
     private void prepararComponentes() {
-        txt_Cantidad.setValue(new Double(0.0));
-        txt_CantMinima.setValue(new Double(0.0));
-        txt_PrecioCosto.setValue(new Double(0.0));
-        txt_PVP.setValue(new Double(0.0));
-        txt_IVA_Neto.setValue(new Double(0.0));
-        txt_ImpuestoInterno.setValue(new Double(0.0));
-        txt_ImpuestoInterno_Neto.setValue(new Double(0.0));
-        txt_Ganancia.setValue(new Double(0.0));
-        txt_Ganancia_Neto.setValue(new Double(0.0));
-        txt_PrecioLista.setValue(new Double(0.0));
+        txt_Cantidad.setValue(0.0);
+        txt_CantMinima.setValue(0.0);
+        txt_PrecioCosto.setValue(0.0);
+        txt_PVP.setValue(0.0);
+        txt_IVA_Neto.setValue(0.0);
+        txt_ImpuestoInterno.setValue(0.0);
+        txt_ImpuestoInterno_Neto.setValue(0.0);
+        txt_Ganancia.setValue(0.0);
+        txt_Ganancia_Neto.setValue(0.0);
+        txt_PrecioLista.setValue(0.0);
     }
 
     private void validarComponentesDePrecios() {
@@ -723,9 +723,9 @@ public class GUI_DetalleProducto extends JDialog {
 
     private void cargarComboBoxIVA() {
         cmb_IVA.removeAllItems();
-        cmb_IVA.addItem(new Double(0));
-        cmb_IVA.addItem(new Double(10.5));
-        cmb_IVA.addItem(new Double(21));
+        cmb_IVA.addItem((double) 0);
+        cmb_IVA.addItem(10.5);
+        cmb_IVA.addItem((double) 21);
     }
 
     private void limpiarYRecargarComponentes() {

@@ -21,11 +21,11 @@ public class GUI_Transportistas extends JInternalFrame {
     private ModeloTabla modeloTablaResultados;
     private List<Transportista> transportistas;
     private Transportista transSeleccionado;
-    private PaisService paisService = new PaisService();
-    private ProvinciaService provinciaService = new ProvinciaService();
-    private LocalidadService localidadService = new LocalidadService();
-    private TransportistaService transportistaService = new TransportistaService();
-    private EmpresaService empresaService = new EmpresaService();
+    private final PaisService paisService = new PaisService();
+    private final ProvinciaService provinciaService = new ProvinciaService();
+    private final LocalidadService localidadService = new LocalidadService();
+    private final TransportistaService transportistaService = new TransportistaService();
+    private final EmpresaService empresaService = new EmpresaService();
     private static final Logger log = Logger.getLogger(GUI_Transportistas.class.getPackage().getName());
 
     public GUI_Transportistas() {

@@ -10,7 +10,7 @@ import sic.util.Validator;
 
 public class ClienteService {
 
-    private ClienteRepository modeloCliente = new ClienteRepository();
+    private final ClienteRepository modeloCliente = new ClienteRepository();
 
     public Cliente getClientePorId(long id_Cliente) {
         return modeloCliente.getClientePorId(id_Cliente);

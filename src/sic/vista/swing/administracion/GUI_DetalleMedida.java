@@ -16,10 +16,10 @@ import sic.util.Utilidades;
 
 public class GUI_DetalleMedida extends JDialog {
 
-    private DefaultListModel modeloList = new DefaultListModel();
+    private final DefaultListModel modeloList = new DefaultListModel();
     private Medida medidaSeleccionada;
-    private MedidaService medidaService = new MedidaService();
-    private EmpresaService empresaService = new EmpresaService();
+    private final MedidaService medidaService = new MedidaService();
+    private final EmpresaService empresaService = new EmpresaService();
     private static final Logger log = Logger.getLogger(GUI_DetalleMedida.class.getPackage().getName());
 
     public GUI_DetalleMedida() {

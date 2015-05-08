@@ -27,17 +27,17 @@ import sic.vista.swing.administracion.GUI_DetalleCliente;
 
 public class GUI_BuscarProductos extends JDialog {
 
-    private GUI_PrincipalTPV gui_PrincipalTPV;
+    private final GUI_PrincipalTPV gui_PrincipalTPV;
     private ModeloTabla modeloTablaResultados = new ModeloTabla();
     private List<Producto> productos;
-    private List<RenglonFactura> renglonesFactura;
+    private final List<RenglonFactura> renglonesFactura;
     private Producto prodSeleccionado;
     private RenglonFactura renglon;
     private boolean debeCargarRenglon;
-    private ProductoService productoService = new ProductoService();
-    private EmpresaService empresaService = new EmpresaService();
-    private RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
-    private HotKeysHandler keyHandler = new HotKeysHandler();
+    private final ProductoService productoService = new ProductoService();
+    private final EmpresaService empresaService = new EmpresaService();
+    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
+    private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_BuscarProductos.class.getPackage().getName());
 
     public GUI_BuscarProductos(Frame parent, boolean modal, List<RenglonFactura> renglones) {
@@ -76,8 +76,8 @@ public class GUI_BuscarProductos extends JDialog {
     }
 
     private void prepararComponentes() {
-        txt_Cantidad.setValue(new Double(1.00));
-        txt_PorcentajeDescuento.setValue(new Double(0.0));
+        txt_Cantidad.setValue(1.00);
+        txt_PorcentajeDescuento.setValue(0.0);
     }
 
     private void buscar() throws ServiceException {

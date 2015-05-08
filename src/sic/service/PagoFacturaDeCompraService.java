@@ -9,8 +9,8 @@ import sic.modelo.PagoFacturaCompra;
 
 public class PagoFacturaDeCompraService {
 
-    private PagoFacturaCompraRepository modeloPagoFacturaCompra = new PagoFacturaCompraRepository();
-    private FacturaRepository modeloFactura = new FacturaRepository();
+    private final PagoFacturaCompraRepository modeloPagoFacturaCompra = new PagoFacturaCompraRepository();
+    private final FacturaRepository modeloFactura = new FacturaRepository();
 
     public List<PagoFacturaCompra> getPagosDeLaFactura(FacturaCompra facturaCompra) {
         return modeloPagoFacturaCompra.getPagosDeLaFactura(facturaCompra);

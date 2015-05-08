@@ -17,8 +17,8 @@ public class GUI_FormasDePago extends JDialog {
 
     private ModeloTabla modeloTablaResultados = new ModeloTabla();
     private List<FormaDePago> formasDePago;
-    private FormaDePagoService formaDePagoService = new FormaDePagoService();
-    private EmpresaService empresaService = new EmpresaService();
+    private final FormaDePagoService formaDePagoService = new FormaDePagoService();
+    private final EmpresaService empresaService = new EmpresaService();
     private static final Logger log = Logger.getLogger(GUI_FormasDePago.class.getPackage().getName());
 
     public GUI_FormasDePago() {

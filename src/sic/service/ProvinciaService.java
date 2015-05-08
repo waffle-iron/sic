@@ -9,7 +9,7 @@ import sic.util.Validator;
 
 public class ProvinciaService {
 
-    private ProvinciaRepository modeloProvincia = new ProvinciaRepository();
+    private final ProvinciaRepository modeloProvincia = new ProvinciaRepository();
 
     public List<Provincia> getProvinciasDelPais(Pais pais) {
         return modeloProvincia.getProvinciasDelPais(pais);

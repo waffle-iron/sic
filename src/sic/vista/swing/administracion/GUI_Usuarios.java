@@ -16,11 +16,11 @@ import sic.service.UsuarioService;
 
 public class GUI_Usuarios extends JDialog {
 
-    private DefaultListModel modeloList = new DefaultListModel();
+    private final DefaultListModel modeloList = new DefaultListModel();
     private Usuario usuarioSeleccionado;
     private TipoDeOperacion operacion;
     private boolean mismoUsuarioActivo = false;
-    private UsuarioService usuarioService = new UsuarioService();
+    private final UsuarioService usuarioService = new UsuarioService();
     private static final Logger log = Logger.getLogger(GUI_Usuarios.class.getPackage().getName());
 
     public GUI_Usuarios() {

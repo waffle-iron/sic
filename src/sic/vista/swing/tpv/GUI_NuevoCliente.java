@@ -22,13 +22,13 @@ import sic.vista.swing.administracion.GUI_DetalleCliente;
 public class GUI_NuevoCliente extends JDialog {
 
     private Cliente clienteDadoDeAlta;
-    private ProvinciaService provinciaService = new ProvinciaService();
-    private LocalidadService localidadService = new LocalidadService();
-    private CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
-    private PaisService paisService = new PaisService();
-    private ClienteService clienteService = new ClienteService();
-    private EmpresaService empresaService = new EmpresaService();
-    private HotKeysHandler keyHandler = new HotKeysHandler();
+    private final ProvinciaService provinciaService = new ProvinciaService();
+    private final LocalidadService localidadService = new LocalidadService();
+    private final CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
+    private final PaisService paisService = new PaisService();
+    private final ClienteService clienteService = new ClienteService();
+    private final EmpresaService empresaService = new EmpresaService();
+    private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_NuevoCliente.class.getPackage().getName());
 
     public GUI_NuevoCliente(java.awt.Frame parent, boolean modal) {

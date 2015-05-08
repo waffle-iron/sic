@@ -8,7 +8,7 @@ import sic.util.Validator;
 
 public class ConexionService {
 
-    private ConexionRepository modeloConexion = new ConexionRepository();
+    private final ConexionRepository modeloConexion = new ConexionRepository();
 
     private void validar(DatosConexion datosConexion) {
         //Requeridos

@@ -3,13 +3,16 @@ package sic.service;
 import sic.modelo.EmpresaActiva;
 import java.util.List;
 import java.util.ResourceBundle;
+import sic.modelo.ConfiguracionDelSistema;
 import sic.repository.EmpresaRepository;
 import sic.modelo.Empresa;
+import sic.repository.ConfiguracionDelSistemaRepository;
 import sic.util.Validator;
 
 public class EmpresaService {
 
-    private EmpresaRepository modeloEmpresa = new EmpresaRepository();
+    private final EmpresaRepository modeloEmpresa = new EmpresaRepository();
+    private final ConfiguracionDelSistemaRepository configuracionDelSistemaRepository = new ConfiguracionDelSistemaRepository();
 
     public List<Empresa> getEmpresas() {
         return modeloEmpresa.getEmpresas();
@@ -82,9 +85,18 @@ public class EmpresaService {
         }
     }
 
+    private void crearConfiguracionDelSistema(Empresa empresa) {
+        ConfiguracionDelSistema cds = new ConfiguracionDelSistema();
+        cds.setCantidadMaximaDeRenglonesEnFactura(28);
+        cds.setUsarFacturaVentaPreImpresa(false);
+        cds.setEmpresa(getEmpresaPorNombre(empresa.getNombre()));
+        configuracionDelSistemaRepository.guardar(cds);
+    }
+
     public void guardar(Empresa empresa) {
         validarOperacion(TipoDeOperacion.ALTA, empresa);
         modeloEmpresa.guardar(empresa);
+        crearConfiguracionDelSistema(empresa);
     }
 
     public void actualizar(Empresa empresa) {

@@ -15,8 +15,8 @@ import sic.service.ServiceException;
 public class GUI_DetalleCondicionIVA extends JDialog {
 
     private CondicionIVA condicionIVASeleccionada;
-    private DefaultListModel modeloList = new DefaultListModel();
-    private CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
+    private final DefaultListModel modeloList = new DefaultListModel();
+    private final CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
     private static final Logger log = Logger.getLogger(GUI_DetalleCondicionIVA.class.getPackage().getName());
 
     public GUI_DetalleCondicionIVA() {

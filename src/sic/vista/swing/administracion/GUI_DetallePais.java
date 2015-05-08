@@ -14,9 +14,9 @@ import sic.service.ServiceException;
 
 public class GUI_DetallePais extends JDialog {
 
-    private DefaultListModel modeloList = new DefaultListModel();
+    private final DefaultListModel modeloList = new DefaultListModel();
     private Pais paisSeleccionado;
-    private PaisService paisService = new PaisService();
+    private final PaisService paisService = new PaisService();
     private static final Logger log = Logger.getLogger(GUI_DetallePais.class.getPackage().getName());
 
     public GUI_DetallePais() {
