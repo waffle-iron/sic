@@ -814,17 +814,22 @@ public class GUI_PrincipalTPV extends JFrame {
         txt_Recargo_porcentaje.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
         txt_Recargo_porcentaje.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txt_Recargo_porcentaje.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
-        txt_Recargo_porcentaje.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_Recargo_porcentajeActionPerformed(evt);
-            }
-        });
         txt_Recargo_porcentaje.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_Recargo_porcentajeFocusGained(evt);
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
                 txt_Recargo_porcentajeFocusLost(evt);
+            }
+        });
+        txt_Recargo_porcentaje.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_Recargo_porcentajeActionPerformed(evt);
+            }
+        });
+        txt_Recargo_porcentaje.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_Recargo_porcentajeKeyTyped(evt);
             }
         });
 
@@ -1174,6 +1179,13 @@ public class GUI_PrincipalTPV extends JFrame {
             tbl_Resultado.setRowSelectionInterval(0, 0);
         }
     }//GEN-LAST:event_tbl_ResultadoFocusGained
+
+    private void txt_Recargo_porcentajeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_Recargo_porcentajeKeyTyped
+          char c = evt.getKeyChar();
+        if((c<'0' || c>'9') && (c!=',') && (c!='.'))
+        { evt.consume();}
+    }//GEN-LAST:event_txt_Recargo_porcentajeKeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AddComment;
     private javax.swing.JButton btn_BuscarCliente;
