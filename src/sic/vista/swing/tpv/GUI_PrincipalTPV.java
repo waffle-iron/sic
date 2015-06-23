@@ -121,8 +121,10 @@ public class GUI_PrincipalTPV extends JFrame {
         if (empresaService.getEmpresaActiva().getEmpresa() == null) {
             System.exit(0);
         } else {
-            empresa = empresaService.getEmpresaActiva().getEmpresa();
-            this.setTitle("S.I.C. - T.P.V. - " + empresa.getNombre());
+            empresa = empresaService.getEmpresaActiva().getEmpresa();            
+            this.setTitle("S.I.C. Punto de Venta "
+                    + ResourceBundle.getBundle("Mensajes").getString("version")
+                    + " - " + empresa.getNombre());
         }
     }
 
@@ -473,7 +475,7 @@ public class GUI_PrincipalTPV extends JFrame {
         btn_Continuar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        setTitle("S.I.C. - T.P.V.");
+        setTitle("S.I.C. Punto de Venta");
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
