@@ -4,3 +4,4 @@ build.xml
 log/
 manifest.mf
 nbproject/
+target/
