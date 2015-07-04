@@ -15,7 +15,7 @@ Tecnologias utilizadas hasta el momento:
 - Jasper Reports
 - JFreeChart
 - Log4j
-- JUnit
+- Maven
 
 Puede aportar al desarrollo del proyecto, enviando una donación en bitcoin!
 
