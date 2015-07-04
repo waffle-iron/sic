@@ -121,7 +121,7 @@ public class GUI_PrincipalTPV extends JFrame {
         if (empresaService.getEmpresaActiva().getEmpresa() == null) {
             System.exit(0);
         } else {
-            empresa = empresaService.getEmpresaActiva().getEmpresa();            
+            empresa = empresaService.getEmpresaActiva().getEmpresa();
             this.setTitle("S.I.C. Punto de Venta "
                     + ResourceBundle.getBundle("Mensajes").getString("version")
                     + " - " + empresa.getNombre());
@@ -1183,9 +1183,10 @@ public class GUI_PrincipalTPV extends JFrame {
     }//GEN-LAST:event_tbl_ResultadoFocusGained
 
     private void txt_Recargo_porcentajeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_Recargo_porcentajeKeyTyped
-          char c = evt.getKeyChar();
-        if((c<'0' || c>'9') && (c!=',') && (c!='.'))
-        { evt.consume();}
+        char c = evt.getKeyChar();
+        if ((c < '0' || c > '9') && (c != ',') && (c != '.')) {
+            evt.consume();
+        }
     }//GEN-LAST:event_txt_Recargo_porcentajeKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
