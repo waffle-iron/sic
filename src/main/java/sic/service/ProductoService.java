@@ -137,15 +137,35 @@ public class ProductoService {
         modeloProducto.actualizar(producto);
     }
 
-    public void actualizarStock(Factura factura) {
+    public void actualizarStock(Factura factura, TipoDeOperacion operacion) {
         for (RenglonFactura renglon : factura.getRenglones()) {
             Producto producto = modeloProducto.getProductoPorId(renglon.getId_ProductoItem());
             if (producto.isIlimitado() == false) {
+
                 if (renglon.getFactura() instanceof FacturaVenta) {
-                    producto.setCantidad(producto.getCantidad() - renglon.getCantidad());
+                    if (operacion == TipoDeOperacion.ALTA) {
+                        producto.setCantidad(producto.getCantidad() - renglon.getCantidad());
+                    }
+
+                    if (operacion == TipoDeOperacion.ELIMINACION) {
+                        producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
+                    }
                 } else if (renglon.getFactura() instanceof FacturaCompra) {
-                    producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
+                    if (operacion == TipoDeOperacion.ALTA) {
+                        producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
+                    }
+
+                    if (operacion == TipoDeOperacion.ELIMINACION) {
+                        double result = producto.getCantidad() - renglon.getCantidad();
+                        if (result < 0) {
+                            //logging
+                            result = 0;
+                        }
+                        producto.setCantidad(result);
+                        
+                    }
                 }
+
                 modeloProducto.actualizar(producto);
             }
         }

@@ -190,12 +190,13 @@ public class FacturaService {
     public void guardar(Factura factura) {
         this.validarFactura(factura);
         facturaRepository.guardar(factura);
-        productoService.actualizarStock(factura);
+        productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
     }
 
     public void eliminar(Factura factura) {
         factura.setEliminada(true);
         facturaRepository.actualizar(factura);
+        productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);
     }
 
     private void validarFactura(Factura factura) {

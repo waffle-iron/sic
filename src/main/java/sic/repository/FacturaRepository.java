@@ -40,7 +40,7 @@ public class FacturaRepository {
     }
 
     public List<FacturaCompra> buscarFacturasCompra(BusquedaFacturaCompraCriteria criteria) {
-        String query = "SELECT f FROM FacturaCompra f WHERE f.empresa = :empresa AND f.eliminada = false";
+        String query = "SELECT f FROM FacturaCompra f JOIN FETCH f.renglones WHERE f.empresa = :empresa AND f.eliminada = false";
         //Fecha Factura
         if (criteria.isBuscaPorFecha() == true) {
             FormatterFechaHora formateadorFecha = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_INTERNACIONAL);
@@ -72,7 +72,7 @@ public class FacturaRepository {
     }
 
     public List<FacturaVenta> buscarFacturasVenta(BusquedaFacturaVentaCriteria criteria) {
-        String query = "SELECT f FROM FacturaVenta f WHERE f.empresa = :empresa AND f.eliminada = false";
+        String query = "SELECT f FROM FacturaVenta f JOIN FETCH f.renglones WHERE f.empresa = :empresa AND f.eliminada = false";
         //Fecha
         if (criteria.isBuscaPorFecha() == true) {
             FormatterFechaHora formateadorFecha = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_INTERNACIONAL);
