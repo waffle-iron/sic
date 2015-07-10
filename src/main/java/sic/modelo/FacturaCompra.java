@@ -1,7 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -16,16 +16,16 @@ public class FacturaCompra extends Factura implements Serializable {
     private Proveedor proveedor;
     
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "facturaCompra")
-    private Set<PagoFacturaCompra> pagosFacturaCompra;
+    private List<PagoFacturaCompra> pagosFacturaCompra;
 
     public FacturaCompra() {
     }
 
-    public Set<PagoFacturaCompra> getPagosFacturaCompra() {
+    public List<PagoFacturaCompra> getPagosFacturaCompra() {
         return pagosFacturaCompra;
     }
 
-    public void setPagosFacturaCompra(Set<PagoFacturaCompra> pagosFacturaCompra) {
+    public void setPagosFacturaCompra(List<PagoFacturaCompra> pagosFacturaCompra) {
         this.pagosFacturaCompra = pagosFacturaCompra;
     }
 

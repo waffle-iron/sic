@@ -168,7 +168,7 @@ public class GUI_FormFacturaVenta extends JDialog {
         facturaVenta.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
         facturaVenta.setFechaVencimiento(dc_FechaVencimiento.getDate());
         facturaVenta.setTransportista((Transportista) cmb_Transportista.getSelectedItem());
-        Set<RenglonFactura> lineasFactura = new HashSet<>(renglones);
+         List<RenglonFactura> lineasFactura = new ArrayList<>(renglones);
         facturaVenta.setRenglones(lineasFactura);
         for (RenglonFactura renglon : lineasFactura) {
             renglon.setFactura(facturaVenta);

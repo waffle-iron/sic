@@ -3,7 +3,7 @@ package sic.modelo;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
-import java.util.Set;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,7 +48,7 @@ public abstract class Factura implements Serializable {
     private Transportista transportista;
 
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura")
-    private Set<RenglonFactura> renglones;
+    private List<RenglonFactura> renglones;
 
     private double subTotal;
     private double recargo_porcentaje;
@@ -75,11 +75,11 @@ public abstract class Factura implements Serializable {
     public Factura() {
     }
 
-    public Set<RenglonFactura> getRenglones() {
+    public List<RenglonFactura> getRenglones() {
         return renglones;
     }
 
-    public void setRenglones(Set<RenglonFactura> renglones) {
+    public void setRenglones(List<RenglonFactura> renglones) {
         this.renglones = renglones;
     }
 

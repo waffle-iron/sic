@@ -192,7 +192,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         facturaCompra.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
         facturaCompra.setFechaVencimiento(dc_FechaVencimiento.getDate());
         facturaCompra.setTransportista((Transportista) cmb_Transportista.getSelectedItem());
-        Set<RenglonFactura> lineasFactura = new HashSet<>(renglones);
+        List<RenglonFactura> lineasFactura = new ArrayList<>(renglones);
         facturaCompra.setRenglones(lineasFactura);
         for (RenglonFactura renglon : lineasFactura) {
             renglon.setFactura(facturaCompra);
@@ -386,7 +386,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         txt_IVA_21.setValue(facturaParaMostrar.getIva_21_neto());
         txt_ImpInterno_Neto.setValue(facturaParaMostrar.getRecargo_neto());
         txt_Total.setValue(facturaParaMostrar.getTotal());
-        facturaParaMostrar.setRenglones(new HashSet<>(facturaService.getRenglonesDeLaFactura(facturaParaMostrar)));
+        facturaParaMostrar.setRenglones(new ArrayList<>(facturaService.getRenglonesDeLaFactura(facturaParaMostrar)));
         for (RenglonFactura renglon : facturaParaMostrar.getRenglones()) {
             this.agregarRenglon(renglon);
         }

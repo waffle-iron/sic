@@ -4,11 +4,11 @@ import java.awt.Frame;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
 import javax.persistence.PersistenceException;
 import javax.swing.*;
 import net.sf.jasperreports.engine.JRException;
@@ -118,7 +118,7 @@ public class GUI_CerrarVenta extends JDialog {
         facturaVenta.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
         facturaVenta.setFechaVencimiento(new Date());
         facturaVenta.setTransportista((Transportista) cmb_Transporte.getSelectedItem());
-        Set<RenglonFactura> lineasFactura = new HashSet<>(gui_tpv.getRenglones());
+        List<RenglonFactura> lineasFactura = new ArrayList<>(gui_tpv.getRenglones());
         facturaVenta.setRenglones(lineasFactura);
         for (RenglonFactura renglon : lineasFactura) {
             renglon.setFactura(facturaVenta);
