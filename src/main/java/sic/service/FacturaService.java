@@ -465,7 +465,7 @@ public class FacturaService {
                 renglonesSinIVA.add(nuevoRenglonSinIVA);
             }
         }
-        Set<RenglonFactura> setRenglonesSinIVA = new HashSet<>(renglonesSinIVA);
+        List<RenglonFactura> listRenglonesSinIVA = new ArrayList<>(renglonesSinIVA);
         facturaSinIVA.setFecha(factura.getFecha());
         facturaSinIVA.setTipoFactura('X');
         facturaSinIVA.setNumSerie(factura.getNumSerie());
@@ -473,7 +473,7 @@ public class FacturaService {
         facturaSinIVA.setFormaPago(factura.getFormaPago());
         facturaSinIVA.setFechaVencimiento(factura.getFechaVencimiento());
         facturaSinIVA.setTransportista(factura.getTransportista());
-        facturaSinIVA.setRenglones(setRenglonesSinIVA);
+        facturaSinIVA.setRenglones(listRenglonesSinIVA);
         facturaSinIVA.setSubTotal(this.calcularSubTotal(renglonesSinIVA));
         facturaSinIVA.setDescuento_neto(this.calcularDescuento_neto(facturaSinIVA.getSubTotal(), facturaSinIVA.getDescuento_porcentaje()));
         facturaSinIVA.setRecargo_neto(this.calcularRecargo_neto(facturaSinIVA.getSubTotal(), facturaSinIVA.getRecargo_porcentaje()));
@@ -487,7 +487,7 @@ public class FacturaService {
         facturaSinIVA.setEmpresa(factura.getEmpresa());
         facturaSinIVA.setEliminada(factura.isEliminada());
 
-        Set<RenglonFactura> setRenglonesConIVA = new HashSet<>(renglonesConIVA);
+        List<RenglonFactura> listRenglonesConIVA = new ArrayList<>(renglonesConIVA);
         facturaConIVA.setFecha(factura.getFecha());
         facturaConIVA.setTipoFactura(factura.getTipoFactura());
         facturaConIVA.setNumSerie(factura.getNumSerie());
@@ -495,7 +495,7 @@ public class FacturaService {
         facturaConIVA.setFormaPago(factura.getFormaPago());
         facturaConIVA.setFechaVencimiento(factura.getFechaVencimiento());
         facturaConIVA.setTransportista(factura.getTransportista());
-        facturaConIVA.setRenglones(setRenglonesConIVA);
+        facturaConIVA.setRenglones(listRenglonesConIVA);
         facturaConIVA.setSubTotal(this.calcularSubTotal(renglonesConIVA));
         facturaConIVA.setDescuento_neto(this.calcularDescuento_neto(facturaConIVA.getSubTotal(), facturaConIVA.getDescuento_porcentaje()));
         facturaConIVA.setRecargo_neto(this.calcularRecargo_neto(facturaConIVA.getSubTotal(), facturaConIVA.getRecargo_porcentaje()));
