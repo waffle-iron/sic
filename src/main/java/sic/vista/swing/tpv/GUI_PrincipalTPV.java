@@ -395,15 +395,15 @@ public class GUI_PrincipalTPV extends JFrame {
 
         @Override
         public void keyPressed(KeyEvent evt) {
-            if (evt.getKeyCode() == KeyEvent.VK_F3) {
+            if (evt.getKeyCode() == KeyEvent.VK_F5) {
                 btn_NuevoClienteActionPerformed(null);
             }
 
-            if (evt.getKeyCode() == KeyEvent.VK_F4) {
+            if (evt.getKeyCode() == KeyEvent.VK_F2) {
                 btn_BuscarClienteActionPerformed(null);
             }
 
-            if (evt.getKeyCode() == KeyEvent.VK_F5) {
+            if (evt.getKeyCode() == KeyEvent.VK_F4) {
                 btn_BuscarProductosActionPerformed(null);
             }
 
@@ -513,7 +513,7 @@ public class GUI_PrincipalTPV extends JFrame {
 
         btn_BuscarCliente.setForeground(java.awt.Color.blue);
         btn_BuscarCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Client_16x16.png"))); // NOI18N
-        btn_BuscarCliente.setText("Buscar Cliente (F4)");
+        btn_BuscarCliente.setText("Buscar Cliente (F2)");
         btn_BuscarCliente.setFocusable(false);
         btn_BuscarCliente.setPreferredSize(new java.awt.Dimension(200, 30));
         btn_BuscarCliente.addActionListener(new java.awt.event.ActionListener() {
@@ -524,7 +524,7 @@ public class GUI_PrincipalTPV extends JFrame {
 
         btn_NuevoCliente.setForeground(java.awt.Color.blue);
         btn_NuevoCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddClient_16x16.png"))); // NOI18N
-        btn_NuevoCliente.setText("Nuevo Cliente (F3)");
+        btn_NuevoCliente.setText("Nuevo Cliente (F5)");
         btn_NuevoCliente.setFocusable(false);
         btn_NuevoCliente.setPreferredSize(new java.awt.Dimension(200, 30));
         btn_NuevoCliente.addActionListener(new java.awt.event.ActionListener() {
@@ -664,7 +664,7 @@ public class GUI_PrincipalTPV extends JFrame {
 
         btn_BuscarProductos.setForeground(java.awt.Color.blue);
         btn_BuscarProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Product_16x16.png"))); // NOI18N
-        btn_BuscarProductos.setText("Buscar Producto (F5)");
+        btn_BuscarProductos.setText("Buscar Producto (F4)");
         btn_BuscarProductos.setFocusable(false);
         btn_BuscarProductos.setPreferredSize(new java.awt.Dimension(200, 30));
         btn_BuscarProductos.addActionListener(new java.awt.event.ActionListener() {
