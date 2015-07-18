@@ -158,7 +158,6 @@ public class ProductoService {
                     if (operacion == TipoDeOperacion.ELIMINACION) {
                         double result = producto.getCantidad() - renglon.getCantidad();
                         if (result < 0) {
-                            //logging
                             result = 0;
                         }
                         producto.setCantidad(result);

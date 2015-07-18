@@ -12,12 +12,14 @@ public class PersistenceUtil {
 
     private static EntityManagerFactory emf = null;
     private static final String username = "admin12345";
-    private static final String password = "sic12345";    
+    private static final String password = "sic12345";
     private static final Logger log = Logger.getLogger(PersistenceUtil.class.getPackage().getName());
 
     public static EntityManager getEntityManager() {
         if (emf == null) {
-            String url = "jdbc:mysql://" + XMLFileConfig.getHostConexion() + ":" + XMLFileConfig.getPuertoConexion() + "/" + XMLFileConfig.getBdConexion();
+            String url = "jdbc:mysql://" + XMLFileConfig.getHostConexion()
+                    + ":" + XMLFileConfig.getPuertoConexion()
+                    + "/" + XMLFileConfig.getBdConexion();
             Map properties = new HashMap();
             properties.put("javax.persistence.jdbc.url", url);
             properties.put("javax.persistence.jdbc.user", username);
