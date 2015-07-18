@@ -664,6 +664,7 @@ public class GUI_Productos extends JInternalFrame {
         try {
             this.cargarComboBoxProveedores();
             this.cargarComboBoxRubros();
+            this.buscar();
 
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
@@ -713,11 +714,10 @@ public class GUI_Productos extends JInternalFrame {
                 modificarProducto.setVisible(true);
             }
 
-            buscar();
-
             try {
                 this.cargarComboBoxProveedores();
                 this.cargarComboBoxRubros();
+                this.buscar();
 
             } catch (PersistenceException ex) {
                 log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
