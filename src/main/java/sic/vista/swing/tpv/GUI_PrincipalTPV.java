@@ -1160,11 +1160,11 @@ public class GUI_PrincipalTPV extends JFrame {
 
     private void btn_EliminarEntradaProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarEntradaProductoActionPerformed
         if (Utilidades.getSelectedRowsModelIndices(tbl_Resultado).length != 0) {
-            ArrayList<RenglonFactura> ObjetosAQuitar = new ArrayList<>();
+            ArrayList<RenglonFactura> renglonesPorRemover = new ArrayList<>();
             for (int i : Utilidades.getSelectedRowsModelIndices(tbl_Resultado)) {
-                ObjetosAQuitar.add(renglones.get(i));
+                renglonesPorRemover.add(renglones.get(i));
             }
-            for (RenglonFactura r : ObjetosAQuitar) {
+            for (RenglonFactura r : renglonesPorRemover) {
                 renglones.remove(r);
             }
             this.cargarRenglonesAlTable();

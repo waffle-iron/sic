@@ -118,17 +118,19 @@ public class GUI_FormFacturaVenta extends JDialog {
                     "¿Esta seguro que desea eliminar el renglon de factura seleccionado?",
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
-                List<Integer> indices = new ArrayList<>();
+                int indices[] = new int[Utilidades.getSelectedRowsModelIndices(tbl_Renglones).length];
+                int b = 0;
                 for (int a : Utilidades.getSelectedRowsModelIndices(tbl_Renglones)) {
-                    indices.add(a);
+                    indices[b] = a;
+                    b++;
                 }
-                int cantidad = indices.size();
-                for (int i = 0; i < cantidad; i++) {
+                int cantidadTotal = indices.length;
+                for (int i = 0; i < cantidadTotal; i++) {
 
-                    modeloTablaRenglones.removeRow(indices.get(i));
-                    renglones.remove(indices.get(i));
-                    for (int e = 0; e < cantidad; e++) {
-                        indices.set(e, (indices.get(e) - 1));
+                    modeloTablaRenglones.removeRow(indices[i]);
+                    renglones.remove(indices[i]);
+                    for (int e = 0; e < cantidadTotal; e++) {
+                        indices[e] = indices[e] - 1;
 
                     }
 
