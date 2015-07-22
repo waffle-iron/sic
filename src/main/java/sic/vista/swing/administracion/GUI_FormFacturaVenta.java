@@ -4,10 +4,8 @@ import java.awt.Point;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
 import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -35,6 +33,7 @@ import sic.service.ServiceException;
 import sic.service.TransportistaService;
 import sic.service.UsuarioService;
 import sic.util.RenderTabla;
+import sic.util.Utilidades;
 import sic.vista.swing.ModeloTabla;
 
 public class GUI_FormFacturaVenta extends JDialog {
@@ -117,9 +116,16 @@ public class GUI_FormFacturaVenta extends JDialog {
                     "¿Esta seguro que desea eliminar el renglon de factura seleccionado?",
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
-                int fila = tbl_Renglones.getSelectedRow();
-                modeloTablaRenglones.removeRow(fila);
-                renglones.remove(fila);
+                int[] elementosSeleccionados = Utilidades.getSelectedRowsModelIndices(tbl_Renglones);
+                int cantidadTotal = elementosSeleccionados.length;
+                for (int i = 0; i < cantidadTotal; i++) {
+                    modeloTablaRenglones.removeRow(elementosSeleccionados[i]);
+                    renglones.remove(elementosSeleccionados[i]);
+                    //actualiza los elementos seleccionados debido al corrimiento
+                    for (int e = 0; e < cantidadTotal; e++) {
+                        elementosSeleccionados[e] = elementosSeleccionados[e] - 1;
+                    }
+                }
                 this.calcularResultados();
             }
         }
@@ -168,7 +174,7 @@ public class GUI_FormFacturaVenta extends JDialog {
         facturaVenta.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
         facturaVenta.setFechaVencimiento(dc_FechaVencimiento.getDate());
         facturaVenta.setTransportista((Transportista) cmb_Transportista.getSelectedItem());
-         List<RenglonFactura> lineasFactura = new ArrayList<>(renglones);
+        List<RenglonFactura> lineasFactura = new ArrayList<>(renglones);
         facturaVenta.setRenglones(lineasFactura);
         for (RenglonFactura renglon : lineasFactura) {
             renglon.setFactura(facturaVenta);
@@ -532,7 +538,7 @@ public class GUI_FormFacturaVenta extends JDialog {
             }
         ));
         tbl_Renglones.setFocusable(false);
-        tbl_Renglones.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tbl_Renglones.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         tbl_Renglones.getTableHeader().setReorderingAllowed(false);
         sp_Renglones.setViewportView(tbl_Renglones);
 

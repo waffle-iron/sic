@@ -19,6 +19,7 @@ import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
 import sic.service.*;
 import sic.util.RenderTabla;
+import sic.util.Utilidades;
 import sic.vista.swing.GUI_LogIn;
 import sic.vista.swing.ModeloTabla;
 import sic.vista.swing.administracion.GUI_Principal;
@@ -654,7 +655,7 @@ public class GUI_PrincipalTPV extends JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tbl_Resultado.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tbl_Resultado.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         tbl_Resultado.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tbl_ResultadoFocusGained(evt);
@@ -1158,8 +1159,14 @@ public class GUI_PrincipalTPV extends JFrame {
     }//GEN-LAST:event_btn_ContinuarActionPerformed
 
     private void btn_EliminarEntradaProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarEntradaProductoActionPerformed
-        if (tbl_Resultado.getSelectedRow() != -1) {
-            renglones.remove(tbl_Resultado.getSelectedRow());
+        if (Utilidades.getSelectedRowsModelIndices(tbl_Resultado).length != 0) {
+            ArrayList<RenglonFactura> renglonesPorRemover = new ArrayList<>();
+            for (int i : Utilidades.getSelectedRowsModelIndices(tbl_Resultado)) {
+                renglonesPorRemover.add(renglones.get(i));
+            }
+            for (RenglonFactura r : renglonesPorRemover) {
+                renglones.remove(r);
+            }
             this.cargarRenglonesAlTable();
             this.calcularResultados();
         }
