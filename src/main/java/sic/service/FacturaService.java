@@ -26,8 +26,6 @@ public class FacturaService {
     private final ProductoService productoService = new ProductoService();
     private final ConfiguracionDelSistemaService configuracionDelSistemaService = new ConfiguracionDelSistemaService();
     private final EmpresaService EmpresaService = new EmpresaService();
-    private final ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
-            EmpresaService.getEmpresaActiva().getEmpresa());
 
     public char[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor) {
         //cuando la Empresa discrimina IVA
@@ -284,6 +282,8 @@ public class FacturaService {
     }
 
     public boolean validarCantidadMaximaDeRenglones(int cantidad) {
+        ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
+                EmpresaService.getEmpresaActiva().getEmpresa());
         int max = cds.getCantidadMaximaDeRenglonesEnFactura();
         return cantidad < max;
     }
@@ -408,6 +408,8 @@ public class FacturaService {
         ClassLoader classLoader = FacturaService.class.getClassLoader();
         InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/FacturaVenta.jasper");
         Map params = new HashMap();
+        ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
+                EmpresaService.getEmpresaActiva().getEmpresa());
         params.put("preImpresa", cds.usarFacturaVentaPreImpresa());
         params.put("facturaVenta", factura);
         params.put("nroComprobante", factura.getNumSerie() + "-" + factura.getNumFactura());
