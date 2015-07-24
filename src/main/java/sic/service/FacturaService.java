@@ -421,13 +421,26 @@ public class FacturaService {
 
     //**************************************************************************    
     //Division de Factura
-    public List<FacturaVenta> dividirFactura(FacturaVenta factura) {
+    public List<FacturaVenta> dividirFactura(FacturaVenta factura, int[] indices) {
         double mitad1;
         double mitad2 = 0;
         RenglonDeFacturaService renglonService = new RenglonDeFacturaService();
         List<RenglonFactura> renglones = new ArrayList<>(factura.getRenglones());
         List<RenglonFactura> renglonesConIVA = new ArrayList<>();
         List<RenglonFactura> renglonesSinIVA = new ArrayList<>();
+        List<RenglonFactura> renglonesADividir = new ArrayList<>();
+        List<RenglonFactura> renglonesANoDividir = new ArrayList();
+        for (int i = 0; i >= renglones.size(); i++) {
+            int j = 0;
+            if (indices[j] == i) {
+                renglonesADividir.add(renglones.get(j));
+                j++;
+            }
+            else{
+                renglonesANoDividir.add(renglones.get(i));
+            }
+
+        }
 
         FacturaVenta facturaSinIVA = new FacturaVenta();
         facturaSinIVA.setCliente(factura.getCliente());
@@ -436,7 +449,13 @@ public class FacturaService {
         facturaConIVA.setCliente(factura.getCliente());
         facturaConIVA.setUsuario(factura.getUsuario());
 
-        for (RenglonFactura renglon : renglones) {
+        for (RenglonFactura renglon : renglonesANoDividir) {
+            RenglonFactura nuevoRenglonConIVA = renglonService.calcularRenglon(factura.getTipoFactura(), Movimiento.VENTA, renglon.getCantidad(), productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+            nuevoRenglonConIVA.setFactura(facturaConIVA);
+            renglonesConIVA.add(nuevoRenglonConIVA);
+        }
+
+        for (RenglonFactura renglon : renglonesADividir) {
             if (renglon.getCantidad() < 1) {
                 mitad1 = renglon.getCantidad();
             } else {

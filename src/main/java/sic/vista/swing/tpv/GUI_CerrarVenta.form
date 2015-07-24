@@ -76,8 +76,7 @@
                           </Group>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="ckb_DividirFactura" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           <Component id="btn_Finalizar" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -124,10 +123,7 @@
                       <Component id="lbl_Vuelto" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="19" max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="btn_Finalizar" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="ckb_DividirFactura" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="btn_Finalizar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -255,14 +251,6 @@
               <Font name="Arial" size="15" style="0"/>
             </Property>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="ckb_DividirFactura">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Dividir Factura"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ckb_DividirFacturaActionPerformed"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>
