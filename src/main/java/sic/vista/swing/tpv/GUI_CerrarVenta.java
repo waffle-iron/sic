@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
@@ -40,9 +39,6 @@ public class GUI_CerrarVenta extends JDialog {
         this.setIcon();
         this.setLocationRelativeTo(null);
         this.gui_tpv = (GUI_PrincipalTPV) parent;
-        if (gui_tpv.getTipoDeFactura() == 'Y' || gui_tpv.getTipoDeFactura() == 'X') {
-            ckb_DividirFactura.setEnabled(false);
-        }
         lbl_Vendedor.setText("");
         lbl_TotalAPagar.setValue(gui_tpv.getResultadosFactura().getTotal());
         lbl_Vuelto.setValue(0);
@@ -180,7 +176,6 @@ public class GUI_CerrarVenta extends JDialog {
         btn_Finalizar = new javax.swing.JButton();
         lbl_TotalAPagar = new javax.swing.JFormattedTextField();
         lbl_Vuelto = new javax.swing.JFormattedTextField();
-        ckb_DividirFactura = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cerrar Venta");
@@ -253,13 +248,6 @@ public class GUI_CerrarVenta extends JDialog {
         lbl_Vuelto.setFocusable(false);
         lbl_Vuelto.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
 
-        ckb_DividirFactura.setText("Dividir Factura");
-        ckb_DividirFactura.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ckb_DividirFacturaActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
@@ -291,8 +279,7 @@ public class GUI_CerrarVenta extends JDialog {
                             .addComponent(lbl_Vuelto)
                             .addComponent(lbl_TotalAPagar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                        .addComponent(ckb_DividirFactura)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btn_Finalizar)))
                 .addContainerGap())
         );
@@ -328,9 +315,7 @@ public class GUI_CerrarVenta extends JDialog {
                     .addComponent(lbl_Devolucion)
                     .addComponent(lbl_Vuelto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_Finalizar)
-                    .addComponent(ckb_DividirFactura))
+                .addComponent(btn_Finalizar)
                 .addContainerGap())
         );
 
@@ -368,8 +353,19 @@ public class GUI_CerrarVenta extends JDialog {
 
     private void btn_FinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FinalizarActionPerformed
         try {
-            if (ckb_DividirFactura.isEnabled() && ckb_DividirFactura.isSelected()) {
-                List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura());
+            boolean bandera;
+            bandera = false;
+            if (gui_tpv.getIndicesMarcadosParaDividir().length != 0) {
+                bandera = true;
+            }
+            if (!bandera) {
+                FacturaVenta factura = this.construirFactura();
+                Factura aux = this.guardarFactura(factura);
+                this.lanzarReporteFactura(aux);
+                exito = true;
+                this.dispose();
+            } else {
+                List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), gui_tpv.getIndicesMarcadosParaDividir());
                 for (Factura factura : facturasDivididas) {
                     if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
                         this.lanzarReporteFactura(this.guardarFactura(factura));
@@ -377,10 +373,6 @@ public class GUI_CerrarVenta extends JDialog {
                         this.dispose();
                     }
                 }
-            } else {
-                this.lanzarReporteFactura(this.guardarFactura(this.construirFactura()));
-                exito = true;
-                this.dispose();
             }
 
         } catch (ServiceException ex) {
@@ -418,17 +410,8 @@ public class GUI_CerrarVenta extends JDialog {
         this.calcularVuelto();
     }//GEN-LAST:event_txt_AbonaConFocusLost
 
-    private void ckb_DividirFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ckb_DividirFacturaActionPerformed
-        if (ckb_DividirFactura.isSelected()) {
-            this.lbl_TotalAPagar.setValue(facturaService.calcularTotalFacturas(facturaService.dividirFactura(this.construirFactura())));
-        } else {
-            this.lbl_TotalAPagar.setValue(this.construirFactura().getTotal());
-        }
-    }//GEN-LAST:event_ckb_DividirFacturaActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Finalizar;
-    private javax.swing.JCheckBox ckb_DividirFactura;
     private javax.swing.JComboBox cmb_FormaDePago;
     private javax.swing.JComboBox cmb_Transporte;
     private javax.swing.JLabel lbl_Cambio;
