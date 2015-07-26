@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
@@ -42,7 +43,6 @@ public class GUI_PrincipalTPV extends JFrame {
     private final UsuarioService usuarioService = new UsuarioService();
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_PrincipalTPV.class.getPackage().getName());
-    private int[] SeleccionADividir;
 
     public GUI_PrincipalTPV() {
         this.initComponents();
@@ -103,8 +103,8 @@ public class GUI_PrincipalTPV extends JFrame {
         return resultados;
     }
 
-    public int[] getIndicesMarcadosParaDividir() {
-        return this.SeleccionADividir;
+    public ModeloTabla getModeloTabla() {
+        return this.modeloTablaResultados;
     }
 
     private void prepararComponentes() {
@@ -259,19 +259,24 @@ public class GUI_PrincipalTPV extends JFrame {
     }
 
     private void cargarRenglonesAlTable() {
-        int cantidadDeFilas = tbl_Resultado.getRowCount();
-        //tengo que salvar más de la tabla, ya que en esto dos metodos de abajo se la limpia;
+        TableModel copiaDatosJTable = tbl_Resultado.getModel(); // para copiar los datos del JTable
+        int cantidadDeFilas = copiaDatosJTable.getRowCount();
         modeloTablaResultados = new ModeloTabla();
         this.setColumnas();
+        int indiceParaMarcar = 0;
         for (RenglonFactura renglon : renglones) {
-            int indiceParaMarcar = 0;
             Object[] fila = new Object[8];
-            if (cantidadDeFilas != 0) {
-                boolean marca = (boolean) tbl_Resultado.getModel().getValueAt(indiceParaMarcar, 0);
-                fila[0] = marca;
-            } else {
+            try {
+                if (cantidadDeFilas != 0) {
+                    boolean marca = (boolean) copiaDatosJTable.getValueAt(indiceParaMarcar, 0);
+                    fila[0] = marca;
+                } else {
+                    fila[0] = false;
+                }
+            } catch (ArrayIndexOutOfBoundsException renglonNuevo) {
                 fila[0] = false;
             }
+
             indiceParaMarcar++;
             fila[1] = renglon.getCodigoItem();
             fila[2] = renglon.getDescripcionItem();
@@ -1236,7 +1241,7 @@ public class GUI_PrincipalTPV extends JFrame {
         if (Utilidades.getSelectedRowsModelIndices(tbl_Resultado).length != 0) {
             boolean test;
             test = (Boolean) tbl_Resultado.getValueAt(0, 0);
-            SeleccionADividir = Utilidades.getSelectedRowsModelIndices(tbl_Resultado);
+           // SeleccionADividir = Utilidades.getSelectedRowsModelIndices(tbl_Resultado);
             for (int i : Utilidades.getSelectedRowsModelIndices(tbl_Resultado)) {
                 tbl_Resultado.setValueAt(!(Boolean) (tbl_Resultado.getValueAt(i, 0)), i, 0);
             }

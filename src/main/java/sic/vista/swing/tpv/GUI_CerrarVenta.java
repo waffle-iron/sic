@@ -20,6 +20,7 @@ import sic.modelo.FormaDePago;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.service.*;
+import sic.vista.swing.ModeloTabla;
 import sic.vista.swing.administracion.GUI_DetalleCliente;
 
 public class GUI_CerrarVenta extends JDialog {
@@ -355,7 +356,16 @@ public class GUI_CerrarVenta extends JDialog {
         try {
             boolean bandera;
             bandera = false;
-            if (gui_tpv.getIndicesMarcadosParaDividir().length != 0) {
+            ModeloTabla tablaDeTPV = gui_tpv.getModeloTabla();
+            int[] indicesParaDividir = new int[tablaDeTPV.getRowCount()];
+            int j = 0;
+            for (int i = 0; i < tablaDeTPV.getRowCount(); i++) {
+                if ((boolean) tablaDeTPV.getValueAt(i, 0)) {
+                    indicesParaDividir[j] = i;
+                    j++;
+                }
+            }
+            if (0 != indicesParaDividir.length) {
                 bandera = true;
             }
             if (!bandera) {
@@ -365,8 +375,10 @@ public class GUI_CerrarVenta extends JDialog {
                 exito = true;
                 this.dispose();
             } else {
-                List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), gui_tpv.getIndicesMarcadosParaDividir());
+                List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), indicesParaDividir);
                 for (Factura factura : facturasDivididas) {
+                    //codigo de prueba
+                    boolean test = factura.getRenglones().isEmpty();
                     if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
                         this.lanzarReporteFactura(this.guardarFactura(factura));
                         exito = true;
