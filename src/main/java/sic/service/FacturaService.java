@@ -430,17 +430,12 @@ public class FacturaService {
         List<RenglonFactura> renglonesSinIVA = new ArrayList<>();
         List<RenglonFactura> renglonesADividir = new ArrayList<>();
         List<RenglonFactura> renglonesANoDividir = new ArrayList();
-        for (int i = 0; i >= renglones.size(); i++) {
-            int j = 0;
-            if (indices[j] == i) {
-                renglonesADividir.add(renglones.get(j));
-                j++;
-            }
-            else{
-                renglonesANoDividir.add(renglones.get(i));
-            }
-
+        for (int i = 0; i < indices.length; i++) {
+            renglonesADividir.add(renglones.get(indices[i]));
+            renglones.remove(renglones.get(indices[i]));
         }
+
+        renglonesANoDividir.addAll(renglones);
 
         FacturaVenta facturaSinIVA = new FacturaVenta();
         facturaSinIVA.setCliente(factura.getCliente());
