@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -47,7 +48,7 @@ public abstract class Factura implements Serializable {
     @JoinColumn(name = "id_Transportista", referencedColumnName = "id_Transportista")
     private Transportista transportista;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura")
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura", fetch = FetchType.EAGER)
     private List<RenglonFactura> renglones;
 
     private double subTotal;
