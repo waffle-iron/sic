@@ -831,6 +831,11 @@ public class GUI_FormFacturaVenta extends JDialog {
                 cmb_TipoFacturaItemStateChanged(evt);
             }
         });
+        cmb_TipoFactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmb_TipoFacturaActionPerformed(evt);
+            }
+        });
 
         lbl_Fecha.setForeground(java.awt.Color.red);
         lbl_Fecha.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -1115,8 +1120,6 @@ public class GUI_FormFacturaVenta extends JDialog {
 
     private void marcarDesmarcarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_marcarDesmarcarActionPerformed
         if (Utilidades.getSelectedRowsModelIndices(tbl_Renglones).length != 0) {
-            boolean test;
-            test = (Boolean) tbl_Renglones.getValueAt(0, 0);
             // SeleccionADividir = Utilidades.getSelectedRowsModelIndices(tbl_Resultado);
             for (int i : Utilidades.getSelectedRowsModelIndices(tbl_Renglones)) {
                 tbl_Renglones.setValueAt(!(Boolean) (tbl_Renglones.getValueAt(i, 0)), i, 0);
@@ -1128,7 +1131,7 @@ public class GUI_FormFacturaVenta extends JDialog {
     }//GEN-LAST:event_marcarDesmarcarActionPerformed
 
     private void tbl_RenglonesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_RenglonesMouseClicked
-        if (tipoDeFactura != 'Y' || tipoDeFactura != 'X') {
+        if (tipoDeFactura == 'A' || tipoDeFactura == 'B') {
 
             int fila = tbl_Renglones.getSelectedRow();
             int columna = tbl_Renglones.getSelectedColumn();
@@ -1137,6 +1140,17 @@ public class GUI_FormFacturaVenta extends JDialog {
             }
         }
     }//GEN-LAST:event_tbl_RenglonesMouseClicked
+
+    private void cmb_TipoFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_TipoFacturaActionPerformed
+        if (tipoDeFactura == 'Y' || tipoDeFactura == 'X') {
+            for (int i = 0; i < tbl_Renglones.getRowCount(); i++) {
+                tbl_Renglones.setValueAt(false, i, 0);
+            }
+            this.marcarDesmarcar.setEnabled(false);
+        } else {
+            this.marcarDesmarcar.setEnabled(true);
+        }
+    }//GEN-LAST:event_cmb_TipoFacturaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_BuscarProducto;
