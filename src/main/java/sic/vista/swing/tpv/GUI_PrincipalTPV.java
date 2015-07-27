@@ -199,7 +199,7 @@ public class GUI_PrincipalTPV extends JFrame {
         tipos[0] = Boolean.class;
         tipos[1] = String.class;
         tipos[2] = String.class;
-        tipos[3] = String.class;
+        tipos[3] = Double.class;
         tipos[4] = Double.class;
         tipos[5] = Double.class;
         tipos[6] = Double.class;
@@ -1258,6 +1258,9 @@ public class GUI_PrincipalTPV extends JFrame {
 
     private void cmb_TipoFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_TipoFacturaActionPerformed
         if (this.getTipoDeFactura() == 'Y' || this.getTipoDeFactura() == 'X') {
+            for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
+                tbl_Resultado.setValueAt(false, i, 0);
+            }
             this.marcarDesmarcar.setEnabled(false);
         } else {
             this.marcarDesmarcar.setEnabled(true);
@@ -1265,7 +1268,7 @@ public class GUI_PrincipalTPV extends JFrame {
     }//GEN-LAST:event_cmb_TipoFacturaActionPerformed
 
     private void tbl_ResultadoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_ResultadoMouseClicked
-        if (this.getTipoDeFactura() != 'Y' || this.getTipoDeFactura() != 'X') {
+        if (this.getTipoDeFactura() == 'A' || this.getTipoDeFactura() == 'B') {
 
             int fila = tbl_Resultado.getSelectedRow();
             int columna = tbl_Resultado.getSelectedColumn();

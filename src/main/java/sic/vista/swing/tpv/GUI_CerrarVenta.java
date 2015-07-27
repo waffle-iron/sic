@@ -377,8 +377,6 @@ public class GUI_CerrarVenta extends JDialog {
             } else {
                 List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), indicesParaDividir);
                 for (Factura factura : facturasDivididas) {
-                    //codigo de prueba
-                    boolean test = factura.getRenglones().isEmpty();
                     if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
                         this.lanzarReporteFactura(this.guardarFactura(factura));
                         exito = true;
