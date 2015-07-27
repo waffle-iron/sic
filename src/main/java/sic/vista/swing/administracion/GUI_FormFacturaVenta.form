@@ -253,6 +253,8 @@
                   <Component id="btn_NuevoProducto" linkSize="7" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                   <Component id="btn_QuitarDeLista" linkSize="7" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="marcarDesmarcar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -269,6 +271,7 @@
                       <Component id="btn_BuscarProducto" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_NuevoProducto" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_QuitarDeLista" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="marcarDesmarcar" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -298,6 +301,9 @@
                   <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tbl_RenglonesMouseClicked"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
@@ -352,6 +358,17 @@
         <Component class="javax.swing.JTextField" name="txt_CodigoProducto">
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_CodigoProductoActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="marcarDesmarcar">
+          <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="cc" green="33" red="0" type="rgb"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Marcar/Desmarcar Selecci&#xf3;n"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="marcarDesmarcarActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
@@ -684,8 +701,7 @@
                       <Component id="dc_FechaFactura" alignment="0" max="32767" attributes="1"/>
                       <Group type="102" attributes="0">
                           <Component id="cmb_TipoFactura" min="-2" max="-2" attributes="1"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="ckb_DividirFactura" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="97" max="-2" attributes="0"/>
                       </Group>
                       <Component id="dc_FechaVencimiento" max="32767" attributes="1"/>
                   </Group>
@@ -700,7 +716,6 @@
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_TipoFactura" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="cmb_TipoFactura" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="ckb_DividirFactura" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
@@ -763,11 +778,6 @@
         <Component class="com.toedter.calendar.JDateChooser" name="dc_FechaVencimiento">
           <Properties>
             <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="ckb_DividirFactura">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Dividir Factura"/>
           </Properties>
         </Component>
       </SubComponents>

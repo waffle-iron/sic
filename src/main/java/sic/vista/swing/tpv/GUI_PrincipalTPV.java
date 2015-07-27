@@ -690,6 +690,11 @@ public class GUI_PrincipalTPV extends JFrame {
                 tbl_ResultadoFocusGained(evt);
             }
         });
+        tbl_Resultado.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_ResultadoMouseClicked(evt);
+            }
+        });
         sp_Resultado.setViewportView(tbl_Resultado);
 
         btn_BuscarProductos.setForeground(java.awt.Color.blue);
@@ -1241,7 +1246,7 @@ public class GUI_PrincipalTPV extends JFrame {
         if (Utilidades.getSelectedRowsModelIndices(tbl_Resultado).length != 0) {
             boolean test;
             test = (Boolean) tbl_Resultado.getValueAt(0, 0);
-           // SeleccionADividir = Utilidades.getSelectedRowsModelIndices(tbl_Resultado);
+            // SeleccionADividir = Utilidades.getSelectedRowsModelIndices(tbl_Resultado);
             for (int i : Utilidades.getSelectedRowsModelIndices(tbl_Resultado)) {
                 tbl_Resultado.setValueAt(!(Boolean) (tbl_Resultado.getValueAt(i, 0)), i, 0);
             }
@@ -1258,6 +1263,18 @@ public class GUI_PrincipalTPV extends JFrame {
             this.marcarDesmarcar.setEnabled(true);
         }
     }//GEN-LAST:event_cmb_TipoFacturaActionPerformed
+
+    private void tbl_ResultadoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_ResultadoMouseClicked
+        if (this.getTipoDeFactura() != 'Y' || this.getTipoDeFactura() != 'X') {
+
+            int fila = tbl_Resultado.getSelectedRow();
+            int columna = tbl_Resultado.getSelectedColumn();
+            if (columna == 0) {
+                tbl_Resultado.setValueAt(!(boolean) tbl_Resultado.getValueAt(fila, columna), fila, columna);
+            }
+        }
+
+    }//GEN-LAST:event_tbl_ResultadoMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AddComment;
