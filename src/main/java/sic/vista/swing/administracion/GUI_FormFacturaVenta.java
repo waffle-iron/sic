@@ -327,7 +327,7 @@ public class GUI_FormFacturaVenta extends JDialog {
         tipos[0] = Boolean.class;
         tipos[1] = String.class;
         tipos[2] = String.class;
-        tipos[3] = String.class;
+        tipos[3] = Double.class;
         tipos[4] = Double.class;
         tipos[5] = Double.class;
         tipos[6] = Double.class;
