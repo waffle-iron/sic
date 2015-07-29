@@ -177,6 +177,7 @@ public class GUI_CerrarVenta extends JDialog {
         btn_Finalizar = new javax.swing.JButton();
         lbl_TotalAPagar = new javax.swing.JFormattedTextField();
         lbl_Vuelto = new javax.swing.JFormattedTextField();
+        condicionDividir = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cerrar Venta");
@@ -249,6 +250,8 @@ public class GUI_CerrarVenta extends JDialog {
         lbl_Vuelto.setFocusable(false);
         lbl_Vuelto.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
 
+        condicionDividir.setText("Dividir");
+
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
@@ -280,7 +283,9 @@ public class GUI_CerrarVenta extends JDialog {
                             .addComponent(lbl_Vuelto)
                             .addComponent(lbl_TotalAPagar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(11, 11, 11)
+                        .addComponent(condicionDividir)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btn_Finalizar)))
                 .addContainerGap())
         );
@@ -316,7 +321,9 @@ public class GUI_CerrarVenta extends JDialog {
                     .addComponent(lbl_Devolucion)
                     .addComponent(lbl_Vuelto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
-                .addComponent(btn_Finalizar)
+                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_Finalizar)
+                    .addComponent(condicionDividir))
                 .addContainerGap())
         );
 
@@ -354,21 +361,24 @@ public class GUI_CerrarVenta extends JDialog {
 
     private void btn_FinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FinalizarActionPerformed
         try {
-            boolean bandera;
-            bandera = false;
-            ModeloTabla tablaDeTPV = gui_tpv.getModeloTabla();
-            int[] indicesParaDividir = new int[tablaDeTPV.getRowCount()];
-            int j = 0;
-            for (int i = 0; i < tablaDeTPV.getRowCount(); i++) {
-                if ((boolean) tablaDeTPV.getValueAt(i, 0)) {
-                    indicesParaDividir[j] = i;
-                    j++;
+            boolean dividir;
+            dividir = false;
+            int[] indicesParaDividir = null;
+            if (condicionDividir.isSelected() && (gui_tpv.getTipoDeFactura() == 'A' || gui_tpv.getTipoDeFactura() == 'B')) {
+                ModeloTabla modeloTablaPuntoDeVenta = gui_tpv.getModeloTabla();
+                indicesParaDividir = new int[modeloTablaPuntoDeVenta.getRowCount()];
+                int j = 0;
+                for (int i = 0; i < modeloTablaPuntoDeVenta.getRowCount(); i++) {
+                    if ((boolean) modeloTablaPuntoDeVenta.getValueAt(i, 0)) {
+                        indicesParaDividir[j] = i;
+                        j++;
+                    }
+                }
+                if (0 != indicesParaDividir.length) {
+                    dividir = true;
                 }
             }
-            if (0 != indicesParaDividir.length) {
-                bandera = true;
-            }
-            if (!bandera) {
+            if (!dividir) {
                 FacturaVenta factura = this.construirFactura();
                 Factura aux = this.guardarFactura(factura);
                 this.lanzarReporteFactura(aux);
@@ -424,6 +434,7 @@ public class GUI_CerrarVenta extends JDialog {
     private javax.swing.JButton btn_Finalizar;
     private javax.swing.JComboBox cmb_FormaDePago;
     private javax.swing.JComboBox cmb_Transporte;
+    private javax.swing.JCheckBox condicionDividir;
     private javax.swing.JLabel lbl_Cambio;
     private javax.swing.JLabel lbl_Devolucion;
     private javax.swing.JLabel lbl_FormaDePago;
