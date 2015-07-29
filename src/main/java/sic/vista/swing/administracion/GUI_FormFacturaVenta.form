@@ -92,7 +92,7 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="cmb_Transportista" max="32767" attributes="2"/>
-                      <Component id="cmb_Cliente" pref="195" max="32767" attributes="2"/>
+                      <Component id="cmb_Cliente" pref="221" max="32767" attributes="2"/>
                       <Component id="cmb_FormaDePago" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
@@ -253,8 +253,6 @@
                   <Component id="btn_NuevoProducto" linkSize="7" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                   <Component id="btn_QuitarDeLista" linkSize="7" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="marcarDesmarcar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -271,7 +269,6 @@
                       <Component id="btn_BuscarProducto" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_NuevoProducto" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_QuitarDeLista" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="marcarDesmarcar" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -295,7 +292,7 @@
                 </Property>
                 <Property name="focusable" type="boolean" value="false"/>
                 <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
-                  <JTableSelectionModel selectionMode="2"/>
+                  <JTableSelectionModel selectionMode="0"/>
                 </Property>
                 <Property name="tableHeader" type="javax.swing.table.JTableHeader" editor="org.netbeans.modules.form.editors2.JTableHeaderEditor">
                   <TableHeader reorderingAllowed="false" resizingAllowed="true"/>
@@ -358,17 +355,6 @@
         <Component class="javax.swing.JTextField" name="txt_CodigoProducto">
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_CodigoProductoActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="marcarDesmarcar">
-          <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="cc" green="33" red="0" type="rgb"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Marcar/Desmarcar Selecci&#xf3;n"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="marcarDesmarcarActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
@@ -705,7 +691,9 @@
                       </Group>
                       <Component id="dc_FechaVencimiento" max="32767" attributes="1"/>
                   </Group>
-                  <EmptySpace pref="135" max="32767" attributes="0"/>
+                  <EmptySpace pref="34" max="32767" attributes="0"/>
+                  <Component id="condicionDividir" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -716,6 +704,7 @@
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_TipoFactura" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="cmb_TipoFactura" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="condicionDividir" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
@@ -779,6 +768,11 @@
         <Component class="com.toedter.calendar.JDateChooser" name="dc_FechaVencimiento">
           <Properties>
             <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="condicionDividir">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Dividir"/>
           </Properties>
         </Component>
       </SubComponents>

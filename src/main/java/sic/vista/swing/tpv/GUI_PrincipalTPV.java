@@ -183,7 +183,7 @@ public class GUI_PrincipalTPV extends JFrame {
     private void setColumnas() {
         //nombres de columnas
         String[] encabezados = new String[8];
-        encabezados[0] = "--";
+        encabezados[0] = " ";
         encabezados[1] = "Codigo";
         encabezados[2] = "Descripcion";
         encabezados[3] = "Unidad";
@@ -212,7 +212,7 @@ public class GUI_PrincipalTPV extends JFrame {
         tbl_Resultado.setDefaultRenderer(Double.class, new RenderTabla());
 
         //tamanios de columnas
-        tbl_Resultado.getColumnModel().getColumn(0).setPreferredWidth(80);
+        tbl_Resultado.getColumnModel().getColumn(0).setPreferredWidth(20);
         tbl_Resultado.getColumnModel().getColumn(1).setPreferredWidth(170);
         tbl_Resultado.getColumnModel().getColumn(2).setPreferredWidth(580);
         tbl_Resultado.getColumnModel().getColumn(3).setPreferredWidth(120);
@@ -258,7 +258,7 @@ public class GUI_PrincipalTPV extends JFrame {
         sp_Resultado.getViewport().setViewPosition(p);
     }
 
-    private void cargarRenglonesAlTable() {
+    private void cargarRenglonesAlTable(boolean eliminar) {
         TableModel copiaDatosJTable = tbl_Resultado.getModel(); // para copiar los datos del JTable
         int cantidadDeFilas = copiaDatosJTable.getRowCount();
         modeloTablaResultados = new ModeloTabla();
@@ -267,7 +267,7 @@ public class GUI_PrincipalTPV extends JFrame {
         for (RenglonFactura renglon : renglones) {
             Object[] fila = new Object[8];
             try {
-                if (cantidadDeFilas != 0) {
+                if (cantidadDeFilas != 0 && (eliminar == false)) {
                     boolean marca = (boolean) copiaDatosJTable.getValueAt(indiceParaMarcar, 0);
                     fila[0] = marca;
                 } else {
@@ -306,7 +306,7 @@ public class GUI_PrincipalTPV extends JFrame {
             GUI_buscarProducto.setVisible(true);
             if (GUI_buscarProducto.debeCargarRenglon()) {
                 this.agregarRenglon(GUI_buscarProducto.getRenglon());
-                this.cargarRenglonesAlTable();
+                this.cargarRenglonesAlTable(false);
                 this.calcularResultados();
             }
         } else {
@@ -325,7 +325,7 @@ public class GUI_PrincipalTPV extends JFrame {
             if (this.existeStockDisponible(1, producto)) {
                 RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
                 this.agregarRenglon(renglon);
-                this.cargarRenglonesAlTable();
+                this.cargarRenglonesAlTable(false);
                 this.calcularResultados();
                 txt_CodigoProducto.setText("");
             } else {
@@ -408,7 +408,7 @@ public class GUI_PrincipalTPV extends JFrame {
             RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());
             this.agregarRenglon(renglon);
         }
-        this.cargarRenglonesAlTable();
+        this.cargarRenglonesAlTable(false);
         this.calcularResultados();
     }
 
@@ -473,7 +473,6 @@ public class GUI_PrincipalTPV extends JFrame {
         btn_EliminarEntradaProducto = new javax.swing.JButton();
         txt_CodigoProducto = new javax.swing.JTextField();
         btn_BuscarPorCodigoProducto = new javax.swing.JButton();
-        marcarDesmarcar = new javax.swing.JButton();
         panelObservaciones = new javax.swing.JPanel();
         lbl_Observaciones = new javax.swing.JLabel();
         btn_AddComment = new javax.swing.JButton();
@@ -684,7 +683,7 @@ public class GUI_PrincipalTPV extends JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tbl_Resultado.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        tbl_Resultado.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tbl_Resultado.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tbl_ResultadoFocusGained(evt);
@@ -734,14 +733,6 @@ public class GUI_PrincipalTPV extends JFrame {
             }
         });
 
-        marcarDesmarcar.setForeground(new java.awt.Color(0, 51, 255));
-        marcarDesmarcar.setText("Marcar/Desmarcar Seleccion");
-        marcarDesmarcar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                marcarDesmarcarActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout panelRenglonesLayout = new javax.swing.GroupLayout(panelRenglones);
         panelRenglones.setLayout(panelRenglonesLayout);
         panelRenglonesLayout.setHorizontalGroup(
@@ -758,8 +749,6 @@ public class GUI_PrincipalTPV extends JFrame {
                         .addComponent(btn_BuscarProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(btn_EliminarEntradaProducto)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(marcarDesmarcar)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -770,14 +759,12 @@ public class GUI_PrincipalTPV extends JFrame {
             panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelRenglonesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                        .addComponent(txt_CodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_BuscarPorCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btn_BuscarProductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btn_EliminarEntradaProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(marcarDesmarcar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(txt_CodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_BuscarPorCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_BuscarProductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_EliminarEntradaProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sp_Resultado, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                 .addContainerGap())
@@ -1205,17 +1192,26 @@ public class GUI_PrincipalTPV extends JFrame {
     }//GEN-LAST:event_btn_ContinuarActionPerformed
 
     private void btn_EliminarEntradaProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarEntradaProductoActionPerformed
-        if (Utilidades.getSelectedRowsModelIndices(tbl_Resultado).length != 0) {
-            ArrayList<RenglonFactura> renglonesPorRemover = new ArrayList<>();
-            for (int i : Utilidades.getSelectedRowsModelIndices(tbl_Resultado)) {
-                renglonesPorRemover.add(renglones.get(i));
+        int[] indicesParaEliminar = new int[tbl_Resultado.getRowCount()];
+        int punteroIndices = 0;
+        int cantidadAEliminar = 0;
+        for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
+            if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
+                indicesParaEliminar[punteroIndices] = i;
+                punteroIndices++;
+                cantidadAEliminar++;
             }
-            for (RenglonFactura r : renglonesPorRemover) {
-                renglones.remove(r);
-            }
-            this.cargarRenglonesAlTable();
-            this.calcularResultados();
         }
+        List<RenglonFactura> paraBorrar = new ArrayList<>();
+        for (int i = 0; i < cantidadAEliminar; i++) {
+            paraBorrar.add(renglones.get(indicesParaEliminar[i]));
+        }
+        for (RenglonFactura renglon : paraBorrar) {
+            renglones.remove(renglon);
+        }
+        this.cargarRenglonesAlTable(true);
+        this.calcularResultados();
+
     }//GEN-LAST:event_btn_EliminarEntradaProductoActionPerformed
 
     private void btn_BuscarProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarProductosActionPerformed
@@ -1242,41 +1238,18 @@ public class GUI_PrincipalTPV extends JFrame {
         }
     }//GEN-LAST:event_txt_Recargo_porcentajeKeyTyped
 
-    private void marcarDesmarcarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_marcarDesmarcarActionPerformed
-        if (Utilidades.getSelectedRowsModelIndices(tbl_Resultado).length != 0) {
-            boolean test;
-            test = (Boolean) tbl_Resultado.getValueAt(0, 0);
-            // SeleccionADividir = Utilidades.getSelectedRowsModelIndices(tbl_Resultado);
-            for (int i : Utilidades.getSelectedRowsModelIndices(tbl_Resultado)) {
-                tbl_Resultado.setValueAt(!(Boolean) (tbl_Resultado.getValueAt(i, 0)), i, 0);
-            }
-
-            this.cargarRenglonesAlTable();
-            this.calcularResultados();
-        }
-    }//GEN-LAST:event_marcarDesmarcarActionPerformed
-
     private void cmb_TipoFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_TipoFacturaActionPerformed
-        if (this.getTipoDeFactura() == 'Y' || this.getTipoDeFactura() == 'X') {
-            for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
-                tbl_Resultado.setValueAt(false, i, 0);
-            }
-            this.marcarDesmarcar.setEnabled(false);
-        } else {
-            this.marcarDesmarcar.setEnabled(true);
+        for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
+            tbl_Resultado.setValueAt((boolean) tbl_Resultado.getValueAt(i, 0), i, 0);
         }
     }//GEN-LAST:event_cmb_TipoFacturaActionPerformed
 
     private void tbl_ResultadoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_ResultadoMouseClicked
-        if (this.getTipoDeFactura() == 'A' || this.getTipoDeFactura() == 'B') {
-
-            int fila = tbl_Resultado.getSelectedRow();
-            int columna = tbl_Resultado.getSelectedColumn();
-            if (columna == 0) {
-                tbl_Resultado.setValueAt(!(boolean) tbl_Resultado.getValueAt(fila, columna), fila, columna);
-            }
+        int fila = tbl_Resultado.getSelectedRow();
+        int columna = tbl_Resultado.getSelectedColumn();
+        if (columna == 0) {
+            tbl_Resultado.setValueAt(!(boolean) tbl_Resultado.getValueAt(fila, columna), fila, columna);
         }
-
     }//GEN-LAST:event_tbl_ResultadoMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1306,7 +1279,6 @@ public class GUI_PrincipalTPV extends JFrame {
     private javax.swing.JLabel lbl_SubTotalNeto;
     private javax.swing.JLabel lbl_TipoFactura;
     private javax.swing.JLabel lbl_Total;
-    private javax.swing.JButton marcarDesmarcar;
     private javax.swing.JPanel panelCliente;
     private javax.swing.JPanel panelEncabezado;
     private javax.swing.JPanel panelGeneral;
