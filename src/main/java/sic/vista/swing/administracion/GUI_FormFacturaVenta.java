@@ -989,12 +989,12 @@ public class GUI_FormFacturaVenta extends JDialog {
 
     private void btn_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_GuardarActionPerformed
         try {
-            boolean bandera;
-            bandera = false;
+            boolean dividir;
+            dividir = false;
             int[] indicesParaDividir = null;
             ModeloTabla tablaDeTPV = (ModeloTabla) tbl_Renglones.getModel();
             FacturaVenta factura = this.construirFactura();
-            if (condicionDividir.isSelected() && (factura.getTipoFactura() == 'A' || factura.getTipoFactura() == 'B')) {
+            if (condicionDividir.isSelected() && (factura.getTipoFactura() == 'A' || factura.getTipoFactura() == 'B' || factura.getTipoFactura() == 'C')) {
                 indicesParaDividir = new int[tablaDeTPV.getRowCount()];
                 int j = 0;
                 for (int i = 0; i < tablaDeTPV.getRowCount(); i++) {
@@ -1004,10 +1004,10 @@ public class GUI_FormFacturaVenta extends JDialog {
                     }
                 }
                 if (0 != indicesParaDividir.length) {
-                    bandera = true;
+                    dividir = true;
                 }
             }
-            if (!bandera) {
+            if (!dividir) {
                 //FacturaVenta factura = this.construirFactura();
                 Factura aux = this.guardarFactura(factura);
                 this.lanzarReporteFactura(aux);
@@ -1122,9 +1122,7 @@ public class GUI_FormFacturaVenta extends JDialog {
     }//GEN-LAST:event_tbl_RenglonesMouseClicked
 
     private void cmb_TipoFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_TipoFacturaActionPerformed
-        /*            for (int i = 0; i < tbl_Renglones.getRowCount(); i++) {
-         tbl_Renglones.setValueAt(false, i, 0);          
-         } */
+      
     }//GEN-LAST:event_cmb_TipoFacturaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
