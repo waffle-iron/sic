@@ -178,6 +178,7 @@ public class GUI_CerrarVenta extends JDialog {
         lbl_TotalAPagar = new javax.swing.JFormattedTextField();
         lbl_Vuelto = new javax.swing.JFormattedTextField();
         chk_condicionDividir = new javax.swing.JCheckBox();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cerrar Venta");
         setResizable(false);
@@ -248,7 +249,9 @@ public class GUI_CerrarVenta extends JDialog {
         lbl_Vuelto.setText("0.00");
         lbl_Vuelto.setFocusable(false);
         lbl_Vuelto.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
-        chk_condicionDividir.setText("Dividir");
+
+        chk_condicionDividir.setText("Dividir Factura");
+
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
@@ -360,7 +363,7 @@ public class GUI_CerrarVenta extends JDialog {
             boolean dividir;
             dividir = false;
             int[] indicesParaDividir = null;
-            if (chk_condicionDividir.isSelected() && (gui_tpv.getTipoDeFactura() == 'A' || gui_tpv.getTipoDeFactura() == 'B' || gui_tpv.getTipoDeFactura() == 'C' )) {
+            if (chk_condicionDividir.isSelected() && (gui_tpv.getTipoDeFactura() == 'A' || gui_tpv.getTipoDeFactura() == 'B' || gui_tpv.getTipoDeFactura() == 'C')) {
                 ModeloTabla modeloTablaPuntoDeVenta = gui_tpv.getModeloTabla();
                 indicesParaDividir = new int[modeloTablaPuntoDeVenta.getRowCount()];
                 int j = 0;
@@ -431,7 +434,6 @@ public class GUI_CerrarVenta extends JDialog {
     private javax.swing.JCheckBox chk_condicionDividir;
     private javax.swing.JComboBox cmb_FormaDePago;
     private javax.swing.JComboBox cmb_Transporte;
-    private javax.swing.JCheckBox condicionDividir;
     private javax.swing.JLabel lbl_Cambio;
     private javax.swing.JLabel lbl_Devolucion;
     private javax.swing.JLabel lbl_FormaDePago;
