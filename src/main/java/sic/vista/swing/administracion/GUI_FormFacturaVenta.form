@@ -91,7 +91,12 @@
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
+<<<<<<< HEAD
                       <Component id="cmb_Transportista" pref="181" max="32767" attributes="2"/>
+=======
+                      <Component id="cmb_Transportista" max="32767" attributes="2"/>
+                      <Component id="cmb_Cliente" pref="221" max="32767" attributes="2"/>
+>>>>>>> ee5b09fcb931764269538700c86a2def4f081dfc
                       <Component id="cmb_FormaDePago" max="32767" attributes="0"/>
                       <Component id="cmb_Cliente" alignment="0" max="32767" attributes="2"/>
                   </Group>
@@ -687,12 +692,22 @@
                       <Component id="dc_FechaFactura" alignment="0" pref="172" max="32767" attributes="1"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="cmb_TipoFactura" min="-2" max="-2" attributes="1"/>
+<<<<<<< HEAD
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="chk_condicionDividir" max="32767" attributes="0"/>
                       </Group>
                       <Component id="dc_FechaVencimiento" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace pref="109" max="32767" attributes="0"/>
+=======
+                          <EmptySpace min="-2" pref="97" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="dc_FechaVencimiento" max="32767" attributes="1"/>
+                  </Group>
+                  <EmptySpace pref="34" max="32767" attributes="0"/>
+                  <Component id="condicionDividir" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+>>>>>>> ee5b09fcb931764269538700c86a2def4f081dfc
               </Group>
           </Group>
         </DimensionLayout>
@@ -703,7 +718,11 @@
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_TipoFactura" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="cmb_TipoFactura" alignment="2" min="-2" max="-2" attributes="0"/>
+<<<<<<< HEAD
                       <Component id="chk_condicionDividir" alignment="2" min="-2" max="-2" attributes="0"/>
+=======
+                      <Component id="condicionDividir" alignment="2" min="-2" max="-2" attributes="0"/>
+>>>>>>> ee5b09fcb931764269538700c86a2def4f081dfc
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
@@ -769,9 +788,13 @@
             <Property name="dateFormatString" type="java.lang.String" value="dd/MM/yyyy"/>
           </Properties>
         </Component>
+<<<<<<< HEAD
         <Component class="javax.swing.JCheckBox" name="chk_condicionDividir">
+=======
+        <Component class="javax.swing.JCheckBox" name="condicionDividir">
+>>>>>>> ee5b09fcb931764269538700c86a2def4f081dfc
           <Properties>
-            <Property name="text" type="java.lang.String" value="Dividir Factura"/>
+            <Property name="text" type="java.lang.String" value="Dividir"/>
           </Properties>
         </Component>
       </SubComponents>

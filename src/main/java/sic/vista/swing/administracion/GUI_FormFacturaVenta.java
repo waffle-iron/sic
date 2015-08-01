@@ -91,6 +91,7 @@ public class GUI_FormFacturaVenta extends JDialog {
         }
     }
 
+
     private void agregarRenglon(RenglonFactura renglon, boolean marcado) {
         Object[] lineaDeFactura = new Object[8];
         lineaDeFactura[0] = marcado;
@@ -349,6 +350,7 @@ public class GUI_FormFacturaVenta extends JDialog {
         tbl_Renglones.setDefaultRenderer(Double.class, new RenderTabla());
 
         //Tamanios de columnas
+
         tbl_Renglones.getColumnModel().getColumn(0).setPreferredWidth(25);
         tbl_Renglones.getColumnModel().getColumn(1).setPreferredWidth(170);
         tbl_Renglones.getColumnModel().getColumn(2).setPreferredWidth(580);
@@ -448,6 +450,7 @@ public class GUI_FormFacturaVenta extends JDialog {
         lbl_FechaVto = new javax.swing.JLabel();
         dc_FechaVencimiento = new com.toedter.calendar.JDateChooser();
         chk_condicionDividir = new javax.swing.JCheckBox();
+
 
         setTitle("Nueva Factura de Venta");
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -852,7 +855,9 @@ public class GUI_FormFacturaVenta extends JDialog {
 
         dc_FechaVencimiento.setDateFormatString("dd/MM/yyyy");
 
+
         chk_condicionDividir.setText("Dividir Factura");
+
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -869,10 +874,12 @@ public class GUI_FormFacturaVenta extends JDialog {
                     .addComponent(dc_FechaFactura, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(chk_condicionDividir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(dc_FechaVencimiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(109, Short.MAX_VALUE))
+
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1147,6 +1154,7 @@ public class GUI_FormFacturaVenta extends JDialog {
     private javax.swing.JComboBox cmb_FormaDePago;
     private javax.swing.JComboBox cmb_TipoFactura;
     private javax.swing.JComboBox cmb_Transportista;
+    private javax.swing.JCheckBox condicionDividir;
     private com.toedter.calendar.JDateChooser dc_FechaFactura;
     private com.toedter.calendar.JDateChooser dc_FechaVencimiento;
     private javax.swing.JPanel jPanel1;

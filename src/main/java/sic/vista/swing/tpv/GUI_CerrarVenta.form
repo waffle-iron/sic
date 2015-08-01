@@ -76,7 +76,12 @@
                           </Group>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
+<<<<<<< HEAD
                           <Component id="chk_condicionDividir" min="-2" max="-2" attributes="0"/>
+=======
+                          <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+                          <Component id="condicionDividir" min="-2" max="-2" attributes="0"/>
+>>>>>>> ee5b09fcb931764269538700c86a2def4f081dfc
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="btn_Finalizar" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -126,7 +131,11 @@
                   <EmptySpace pref="19" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="btn_Finalizar" alignment="3" min="-2" max="-2" attributes="0"/>
+<<<<<<< HEAD
                       <Component id="chk_condicionDividir" alignment="3" min="-2" max="-2" attributes="0"/>
+=======
+                      <Component id="condicionDividir" alignment="3" min="-2" max="-2" attributes="0"/>
+>>>>>>> ee5b09fcb931764269538700c86a2def4f081dfc
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -256,7 +265,11 @@
             </Property>
           </Properties>
         </Component>
+<<<<<<< HEAD
         <Component class="javax.swing.JCheckBox" name="chk_condicionDividir">
+=======
+        <Component class="javax.swing.JCheckBox" name="condicionDividir">
+>>>>>>> ee5b09fcb931764269538700c86a2def4f081dfc
           <Properties>
             <Property name="text" type="java.lang.String" value="Dividir"/>
           </Properties>
