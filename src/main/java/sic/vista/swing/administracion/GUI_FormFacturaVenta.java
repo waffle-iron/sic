@@ -380,9 +380,9 @@ public class GUI_FormFacturaVenta extends JDialog {
         //resguardo de renglones
         List<RenglonFactura> resguardoRenglones = renglones;
         renglones = new ArrayList<>();
-        boolean[] marcas = new boolean[modeloTablaRenglones.getRowCount()];
+        boolean[] marcasIndices = new boolean[modeloTablaRenglones.getRowCount()];
         for (int i = 0; i < modeloTablaRenglones.getRowCount(); i++) {
-            marcas[i] = (boolean) modeloTablaRenglones.getValueAt(i, 0);
+            marcasIndices[i] = (boolean) modeloTablaRenglones.getValueAt(i, 0);
         }
         modeloTablaRenglones = new ModeloTabla();
         this.setColumnas();
@@ -390,7 +390,7 @@ public class GUI_FormFacturaVenta extends JDialog {
         for (RenglonFactura renglon : resguardoRenglones) {
             Producto producto = productoService.getProductoPorId(renglon.getId_ProductoItem());
             RenglonFactura nuevoRenglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, renglon.getCantidad(), producto, renglon.getDescuento_porcentaje());
-            this.agregarRenglon(nuevoRenglon, marcas[indiceParaMarcas]);
+            this.agregarRenglon(nuevoRenglon, marcasIndices[indiceParaMarcas]);
             indiceParaMarcas++;
         }
     }
@@ -835,11 +835,6 @@ public class GUI_FormFacturaVenta extends JDialog {
                 cmb_TipoFacturaItemStateChanged(evt);
             }
         });
-        cmb_TipoFactura.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmb_TipoFacturaActionPerformed(evt);
-            }
-        });
 
         lbl_Fecha.setForeground(java.awt.Color.red);
         lbl_Fecha.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -1018,7 +1013,6 @@ public class GUI_FormFacturaVenta extends JDialog {
                 }
             }
             if (!dividir) {
-                //FacturaVenta factura = this.construirFactura();
                 Factura aux = this.guardarFactura(factura);
                 this.lanzarReporteFactura(aux);
                 this.dispose();
@@ -1130,10 +1124,6 @@ public class GUI_FormFacturaVenta extends JDialog {
             tbl_Renglones.setValueAt(!(boolean) tbl_Renglones.getValueAt(fila, columna), fila, columna);
         }
     }//GEN-LAST:event_tbl_RenglonesMouseClicked
-
-    private void cmb_TipoFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_TipoFacturaActionPerformed
-
-    }//GEN-LAST:event_cmb_TipoFacturaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_BuscarProducto;
