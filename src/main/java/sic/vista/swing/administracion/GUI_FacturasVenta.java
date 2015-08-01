@@ -140,7 +140,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
             criteria.setBuscaSoloInpagas(chk_Inpagas.isSelected());
             criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
             criteria.setCantRegistros(0);
-
             facturas = facturaService.buscarFacturaVenta(criteria);
             this.cargarResultadosAlTable();
 
@@ -242,7 +241,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
         panelFiltros = new javax.swing.JPanel();
         chk_Fecha = new javax.swing.JCheckBox();
         chk_Cliente = new javax.swing.JCheckBox();
@@ -275,7 +273,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
         txt_ResultGananciaTotal = new javax.swing.JFormattedTextField();
         txt_ResultTotalIVAVenta = new javax.swing.JFormattedTextField();
         btn_Nueva = new javax.swing.JButton();
-
         setClosable(true);
         setMaximizable(true);
         setResizable(true);
@@ -358,26 +355,20 @@ public class GUI_FacturasVenta extends JInternalFrame {
         });
 
         cmb_Usuario.setEnabled(false);
-
         txt_SerieFactura.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         txt_SerieFactura.setText("0");
         txt_SerieFactura.setEnabled(false);
-
         txt_NroFactura.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         txt_NroFactura.setText("0");
         txt_NroFactura.setEnabled(false);
-
         lbl_CantRegistrosEncontrados.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-
         chk_TipoFactura.setText("Tipo de Factura:");
         chk_TipoFactura.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 chk_TipoFacturaItemStateChanged(evt);
             }
         });
-
         cmb_TipoFactura.setEnabled(false);
-
         javax.swing.GroupLayout panelFiltrosLayout = new javax.swing.GroupLayout(panelFiltros);
         panelFiltros.setLayout(panelFiltrosLayout);
         panelFiltrosLayout.setHorizontalGroup(
@@ -456,7 +447,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
         );
 
         panelResultados.setBorder(javax.swing.BorderFactory.createTitledBorder("Resultados"));
-
         tbl_Resultados.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -471,7 +461,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
         tbl_Resultados.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         tbl_Resultados.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         sp_Resultados.setViewportView(tbl_Resultados);
-
         btn_VerDetalle.setForeground(java.awt.Color.blue);
         btn_VerDetalle.setText("Ver Detalle");
         btn_VerDetalle.addActionListener(new java.awt.event.ActionListener() {
@@ -489,26 +478,20 @@ public class GUI_FacturasVenta extends JInternalFrame {
         });
 
         lbl_TotalFacturado.setText("Total Facturado:");
-
         lbl_GananciaTotal.setText("Ganancia Total:");
-
         lbl_TotalIVAVenta.setText("Total IVA Venta:");
-
         txt_ResultTotalFacturado.setEditable(false);
         txt_ResultTotalFacturado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
         txt_ResultTotalFacturado.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txt_ResultTotalFacturado.setText("$0.0");
-
         txt_ResultGananciaTotal.setEditable(false);
         txt_ResultGananciaTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
         txt_ResultGananciaTotal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txt_ResultGananciaTotal.setText("$0.0");
-
         txt_ResultTotalIVAVenta.setEditable(false);
         txt_ResultTotalIVAVenta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
         txt_ResultTotalIVAVenta.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txt_ResultTotalIVAVenta.setText("$0.0");
-
         javax.swing.GroupLayout panelNumerosLayout = new javax.swing.GroupLayout(panelNumeros);
         panelNumeros.setLayout(panelNumerosLayout);
         panelNumerosLayout.setHorizontalGroup(
@@ -564,7 +547,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
         );
 
         panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_VerDetalle});
-
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
@@ -579,7 +561,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
         );
 
         panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_VerDetalle});
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -599,7 +580,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
     private void chk_FechaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_FechaItemStateChanged
         if (chk_Fecha.isSelected() == true) {
             dc_FechaDesde.setEnabled(true);
@@ -614,7 +594,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
             lbl_Hasta.setEnabled(false);
         }
 }//GEN-LAST:event_chk_FechaItemStateChanged
-
     private void chk_ClienteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_ClienteItemStateChanged
         if (chk_Cliente.isSelected() == true) {
             cmb_Cliente.setEnabled(true);
@@ -623,12 +602,10 @@ public class GUI_FacturasVenta extends JInternalFrame {
             cmb_Cliente.setEnabled(false);
         }
 }//GEN-LAST:event_chk_ClienteItemStateChanged
-
     private void btn_BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarActionPerformed
         this.buscar();
         this.calcularResultados();
 }//GEN-LAST:event_btn_BuscarActionPerformed
-
     private void btn_VerDetalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerDetalleActionPerformed
         try {
             this.lanzarReporteFactura();
@@ -643,7 +620,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
             JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
 }//GEN-LAST:event_btn_VerDetalleActionPerformed
-
     private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarActionPerformed
         if (tbl_Resultados.getSelectedRow() != -1) {
             int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);

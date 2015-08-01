@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 import javax.swing.*;
+import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
@@ -102,6 +103,10 @@ public class GUI_PrincipalTPV extends JFrame {
         return resultados;
     }
 
+    public ModeloTabla getModeloTabla() {
+        return this.modeloTablaResultados;
+    }
+
     private void prepararComponentes() {
         txt_Subtotal.setValue(new Double("0.0"));
         txt_Recargo_porcentaje.setValue(new Double("0.0"));
@@ -177,26 +182,28 @@ public class GUI_PrincipalTPV extends JFrame {
 
     private void setColumnas() {
         //nombres de columnas
-        String[] encabezados = new String[7];
-        encabezados[0] = "Codigo";
-        encabezados[1] = "Descripcion";
-        encabezados[2] = "Unidad";
-        encabezados[3] = "Cantidad";
-        encabezados[4] = "P. Unitario";
-        encabezados[5] = "% Descuento";
-        encabezados[6] = "Importe";
+        String[] encabezados = new String[8];
+        encabezados[0] = " ";
+        encabezados[1] = "Codigo";
+        encabezados[2] = "Descripcion";
+        encabezados[3] = "Unidad";
+        encabezados[4] = "Cantidad";
+        encabezados[5] = "P. Unitario";
+        encabezados[6] = "% Descuento";
+        encabezados[7] = "Importe";
         modeloTablaResultados.setColumnIdentifiers(encabezados);
         tbl_Resultado.setModel(modeloTablaResultados);
 
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaResultados.getColumnCount()];
-        tipos[0] = String.class;
+        tipos[0] = Boolean.class;
         tipos[1] = String.class;
         tipos[2] = String.class;
-        tipos[3] = Double.class;
+        tipos[3] = String.class;
         tipos[4] = Double.class;
         tipos[5] = Double.class;
         tipos[6] = Double.class;
+        tipos[7] = Double.class;
         modeloTablaResultados.setClaseColumnas(tipos);
         tbl_Resultado.getTableHeader().setReorderingAllowed(false);
         tbl_Resultado.getTableHeader().setResizingAllowed(true);
@@ -205,13 +212,14 @@ public class GUI_PrincipalTPV extends JFrame {
         tbl_Resultado.setDefaultRenderer(Double.class, new RenderTabla());
 
         //tamanios de columnas
-        tbl_Resultado.getColumnModel().getColumn(0).setPreferredWidth(170);
-        tbl_Resultado.getColumnModel().getColumn(1).setPreferredWidth(580);
-        tbl_Resultado.getColumnModel().getColumn(2).setPreferredWidth(120);
+        tbl_Resultado.getColumnModel().getColumn(0).setPreferredWidth(25);
+        tbl_Resultado.getColumnModel().getColumn(1).setPreferredWidth(170);
+        tbl_Resultado.getColumnModel().getColumn(2).setPreferredWidth(580);
         tbl_Resultado.getColumnModel().getColumn(3).setPreferredWidth(120);
         tbl_Resultado.getColumnModel().getColumn(4).setPreferredWidth(120);
         tbl_Resultado.getColumnModel().getColumn(5).setPreferredWidth(120);
         tbl_Resultado.getColumnModel().getColumn(6).setPreferredWidth(120);
+        tbl_Resultado.getColumnModel().getColumn(7).setPreferredWidth(120);
     }
 
     private boolean existeStockDisponible(double cantRequerida, Producto producto) {
@@ -250,18 +258,33 @@ public class GUI_PrincipalTPV extends JFrame {
         sp_Resultado.getViewport().setViewPosition(p);
     }
 
-    private void cargarRenglonesAlTable() {
+    private void cargarRenglonesAlTable(boolean eliminar) {
+        TableModel copiaDatosJTable = tbl_Resultado.getModel(); // para copiar los datos del JTable
+        int cantidadDeFilas = copiaDatosJTable.getRowCount();
         modeloTablaResultados = new ModeloTabla();
         this.setColumnas();
+        int indiceParaMarcar = 0;
         for (RenglonFactura renglon : renglones) {
-            Object[] fila = new Object[7];
-            fila[0] = renglon.getCodigoItem();
-            fila[1] = renglon.getDescripcionItem();
-            fila[2] = renglon.getMedidaItem();
-            fila[3] = renglon.getCantidad();
-            fila[4] = renglon.getPrecioUnitario();
-            fila[5] = renglon.getDescuento_porcentaje();
-            fila[6] = renglon.getImporte();
+            Object[] fila = new Object[8];
+            try {
+                if (cantidadDeFilas != 0 && (eliminar == false)) {
+                    boolean marcado = (boolean) copiaDatosJTable.getValueAt(indiceParaMarcar, 0);
+                    fila[0] = marcado;
+                } else {
+                    fila[0] = false;
+                }
+            } catch (ArrayIndexOutOfBoundsException renglonNuevo) {
+                fila[0] = false;
+            }
+
+            indiceParaMarcar++;
+            fila[1] = renglon.getCodigoItem();
+            fila[2] = renglon.getDescripcionItem();
+            fila[3] = renglon.getMedidaItem();
+            fila[4] = renglon.getCantidad();
+            fila[5] = renglon.getPrecioUnitario();
+            fila[6] = renglon.getDescuento_porcentaje();
+            fila[7] = renglon.getImporte();
             modeloTablaResultados.addRow(fila);
         }
         tbl_Resultado.setModel(modeloTablaResultados);
@@ -283,7 +306,7 @@ public class GUI_PrincipalTPV extends JFrame {
             GUI_buscarProducto.setVisible(true);
             if (GUI_buscarProducto.debeCargarRenglon()) {
                 this.agregarRenglon(GUI_buscarProducto.getRenglon());
-                this.cargarRenglonesAlTable();
+                this.cargarRenglonesAlTable(false);
                 this.calcularResultados();
             }
         } else {
@@ -302,7 +325,7 @@ public class GUI_PrincipalTPV extends JFrame {
             if (this.existeStockDisponible(1, producto)) {
                 RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
                 this.agregarRenglon(renglon);
-                this.cargarRenglonesAlTable();
+                this.cargarRenglonesAlTable(false);
                 this.calcularResultados();
                 txt_CodigoProducto.setText("");
             } else {
@@ -385,7 +408,7 @@ public class GUI_PrincipalTPV extends JFrame {
             RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());
             this.agregarRenglon(renglon);
         }
-        this.cargarRenglonesAlTable();
+        this.cargarRenglonesAlTable(false);
         this.calcularResultados();
     }
 
@@ -597,6 +620,11 @@ public class GUI_PrincipalTPV extends JFrame {
                 cmb_TipoFacturaItemStateChanged(evt);
             }
         });
+        cmb_TipoFactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmb_TipoFacturaActionPerformed(evt);
+            }
+        });
 
         btn_CambiarUserEmpresa.setForeground(java.awt.Color.blue);
         btn_CambiarUserEmpresa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/GroupArrow_16x16.png"))); // NOI18N
@@ -655,10 +683,15 @@ public class GUI_PrincipalTPV extends JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tbl_Resultado.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        tbl_Resultado.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tbl_Resultado.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tbl_ResultadoFocusGained(evt);
+            }
+        });
+        tbl_Resultado.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_ResultadoMouseClicked(evt);
             }
         });
         sp_Resultado.setViewportView(tbl_Resultado);
@@ -1081,7 +1114,7 @@ public class GUI_PrincipalTPV extends JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void cmb_TipoFacturaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_TipoFacturaItemStateChanged
-        //para evitar que pase null cuando esta recargando el comboBox
+//para evitar que pase null cuando esta recargando el comboBox
         try {
             if (cmb_TipoFactura.getSelectedItem() != null) {
                 tipoDeFactura = cmb_TipoFactura.getSelectedItem().toString().charAt(0);
@@ -1159,17 +1192,26 @@ public class GUI_PrincipalTPV extends JFrame {
     }//GEN-LAST:event_btn_ContinuarActionPerformed
 
     private void btn_EliminarEntradaProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarEntradaProductoActionPerformed
-        if (Utilidades.getSelectedRowsModelIndices(tbl_Resultado).length != 0) {
-            ArrayList<RenglonFactura> renglonesPorRemover = new ArrayList<>();
-            for (int i : Utilidades.getSelectedRowsModelIndices(tbl_Resultado)) {
-                renglonesPorRemover.add(renglones.get(i));
+        int[] indicesParaEliminar = new int[tbl_Resultado.getRowCount()];
+        int punteroIndices = 0;
+        int cantidadAEliminar = 0;
+        for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
+            if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
+                indicesParaEliminar[punteroIndices] = i;
+                punteroIndices++;
+                cantidadAEliminar++;
             }
-            for (RenglonFactura r : renglonesPorRemover) {
-                renglones.remove(r);
-            }
-            this.cargarRenglonesAlTable();
-            this.calcularResultados();
         }
+        List<RenglonFactura> paraBorrar = new ArrayList<>();
+        for (int i = 0; i < cantidadAEliminar; i++) {
+            paraBorrar.add(renglones.get(indicesParaEliminar[i]));
+        }
+        for (RenglonFactura renglon : paraBorrar) {
+            renglones.remove(renglon);
+        }
+        this.cargarRenglonesAlTable(true);
+        this.calcularResultados();
+
     }//GEN-LAST:event_btn_EliminarEntradaProductoActionPerformed
 
     private void btn_BuscarProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarProductosActionPerformed
@@ -1195,6 +1237,20 @@ public class GUI_PrincipalTPV extends JFrame {
             evt.consume();
         }
     }//GEN-LAST:event_txt_Recargo_porcentajeKeyTyped
+
+    private void cmb_TipoFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_TipoFacturaActionPerformed
+        for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
+            tbl_Resultado.setValueAt((boolean) tbl_Resultado.getValueAt(i, 0), i, 0);
+        }
+    }//GEN-LAST:event_cmb_TipoFacturaActionPerformed
+
+    private void tbl_ResultadoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_ResultadoMouseClicked
+        int fila = tbl_Resultado.getSelectedRow();
+        int columna = tbl_Resultado.getSelectedColumn();
+        if (columna == 0) {
+            tbl_Resultado.setValueAt(!(boolean) tbl_Resultado.getValueAt(fila, columna), fila, columna);
+        }
+    }//GEN-LAST:event_tbl_ResultadoMouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AddComment;

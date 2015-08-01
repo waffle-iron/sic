@@ -33,7 +33,6 @@ import sic.service.ServiceException;
 import sic.service.TransportistaService;
 import sic.service.UsuarioService;
 import sic.util.RenderTabla;
-import sic.util.Utilidades;
 import sic.vista.swing.ModeloTabla;
 
 public class GUI_FormFacturaVenta extends JDialog {
@@ -87,20 +86,21 @@ public class GUI_FormFacturaVenta extends JDialog {
             gui_Renglon.setLocationRelativeTo(this);
             gui_Renglon.setVisible(true);
             if (gui_Renglon.debeCargarRenglon()) {
-                this.agregarRenglon(gui_Renglon.getRenglon());
+                this.agregarRenglon(gui_Renglon.getRenglon(), false);
             }
         }
     }
 
-    private void agregarRenglon(RenglonFactura renglon) {
-        Object[] lineaDeFactura = new Object[7];
-        lineaDeFactura[0] = renglon.getCodigoItem();
-        lineaDeFactura[1] = renglon.getDescripcionItem();
-        lineaDeFactura[2] = renglon.getMedidaItem();
-        lineaDeFactura[3] = renglon.getCantidad();
-        lineaDeFactura[4] = renglon.getPrecioUnitario();
-        lineaDeFactura[5] = renglon.getDescuento_porcentaje();
-        lineaDeFactura[6] = renglon.getImporte();
+    private void agregarRenglon(RenglonFactura renglon, boolean marcado) {
+        Object[] lineaDeFactura = new Object[8];
+        lineaDeFactura[0] = marcado;
+        lineaDeFactura[1] = renglon.getCodigoItem();
+        lineaDeFactura[2] = renglon.getDescripcionItem();
+        lineaDeFactura[3] = renglon.getMedidaItem();
+        lineaDeFactura[4] = renglon.getCantidad();
+        lineaDeFactura[5] = renglon.getPrecioUnitario();
+        lineaDeFactura[6] = renglon.getDescuento_porcentaje();
+        lineaDeFactura[7] = renglon.getImporte();
         modeloTablaRenglones.addRow(lineaDeFactura);
         renglones.add(renglon);
         this.calcularResultados();
@@ -111,20 +111,30 @@ public class GUI_FormFacturaVenta extends JDialog {
     }
 
     private void quitarRenglonFactura() {
-        if (tbl_Renglones.getSelectedRow() != -1) {
+        int[] indicesParaEliminar = new int[tbl_Renglones.getRowCount()];
+        int punteroIndices = 0;
+        int cantidadAEliminar = 0;
+        for (int i = 0; i < tbl_Renglones.getRowCount(); i++) {
+            if ((boolean) tbl_Renglones.getValueAt(i, 0)) {
+                indicesParaEliminar[punteroIndices] = i;
+                punteroIndices++;
+                cantidadAEliminar++;
+            }
+        }
+        if (cantidadAEliminar != 0) {
             int respuesta = JOptionPane.showConfirmDialog(this,
                     "¿Esta seguro que desea eliminar el renglon de factura seleccionado?",
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
-                int[] elementosSeleccionados = Utilidades.getSelectedRowsModelIndices(tbl_Renglones);
-                int cantidadTotal = elementosSeleccionados.length;
-                for (int i = 0; i < cantidadTotal; i++) {
-                    modeloTablaRenglones.removeRow(elementosSeleccionados[i]);
-                    renglones.remove(elementosSeleccionados[i]);
-                    //actualiza los elementos seleccionados debido al corrimiento
-                    for (int e = 0; e < cantidadTotal; e++) {
-                        elementosSeleccionados[e] = elementosSeleccionados[e] - 1;
-                    }
+                List<RenglonFactura> paraBorrar = new ArrayList<>();
+                int corrimientoRenglones = 0;
+                for (int i = 0; i < cantidadAEliminar; i++) {
+                    paraBorrar.add(renglones.get(indicesParaEliminar[i]));
+                    modeloTablaRenglones.removeRow(indicesParaEliminar[i] - corrimientoRenglones);
+                    corrimientoRenglones++;
+                }
+                for (RenglonFactura renglon : paraBorrar) {
+                    renglones.remove(renglon);
                 }
                 this.calcularResultados();
             }
@@ -309,26 +319,28 @@ public class GUI_FormFacturaVenta extends JDialog {
 
     private void setColumnas() {
         //nombres de columnas
-        String[] encabezados = new String[7];
-        encabezados[0] = "Codigo";
-        encabezados[1] = "Descripcion";
-        encabezados[2] = "Unidad";
-        encabezados[3] = "Cantidad";
-        encabezados[4] = "P. Unitario";
-        encabezados[5] = "% Descuento";
-        encabezados[6] = "Importe";
+        String[] encabezados = new String[8];
+        encabezados[0] = " ";
+        encabezados[1] = "Codigo";
+        encabezados[2] = "Descripcion";
+        encabezados[3] = "Unidad";
+        encabezados[4] = "Cantidad";
+        encabezados[5] = "P. Unitario";
+        encabezados[6] = "% Descuento";
+        encabezados[7] = "Importe";
         modeloTablaRenglones.setColumnIdentifiers(encabezados);
         tbl_Renglones.setModel(modeloTablaRenglones);
 
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaRenglones.getColumnCount()];
-        tipos[0] = String.class;
+        tipos[0] = Boolean.class;
         tipos[1] = String.class;
         tipos[2] = String.class;
-        tipos[3] = Double.class;
+        tipos[3] = String.class;
         tipos[4] = Double.class;
         tipos[5] = Double.class;
         tipos[6] = Double.class;
+        tipos[7] = Double.class;
         modeloTablaRenglones.setClaseColumnas(tipos);
         tbl_Renglones.getTableHeader().setReorderingAllowed(false);
         tbl_Renglones.getTableHeader().setResizingAllowed(true);
@@ -337,13 +349,14 @@ public class GUI_FormFacturaVenta extends JDialog {
         tbl_Renglones.setDefaultRenderer(Double.class, new RenderTabla());
 
         //Tamanios de columnas
-        tbl_Renglones.getColumnModel().getColumn(0).setPreferredWidth(200);
-        tbl_Renglones.getColumnModel().getColumn(1).setPreferredWidth(400);
-        tbl_Renglones.getColumnModel().getColumn(2).setPreferredWidth(200);
-        tbl_Renglones.getColumnModel().getColumn(3).setPreferredWidth(150);
-        tbl_Renglones.getColumnModel().getColumn(4).setPreferredWidth(150);
-        tbl_Renglones.getColumnModel().getColumn(5).setPreferredWidth(180);
+        tbl_Renglones.getColumnModel().getColumn(0).setPreferredWidth(25);
+        tbl_Renglones.getColumnModel().getColumn(1).setPreferredWidth(170);
+        tbl_Renglones.getColumnModel().getColumn(2).setPreferredWidth(580);
+        tbl_Renglones.getColumnModel().getColumn(3).setPreferredWidth(120);
+        tbl_Renglones.getColumnModel().getColumn(4).setPreferredWidth(120);
+        tbl_Renglones.getColumnModel().getColumn(5).setPreferredWidth(120);
         tbl_Renglones.getColumnModel().getColumn(6).setPreferredWidth(120);
+        tbl_Renglones.getColumnModel().getColumn(7).setPreferredWidth(120);
     }
 
     private boolean existeProductoCargado(Producto producto) {
@@ -367,12 +380,18 @@ public class GUI_FormFacturaVenta extends JDialog {
         //resguardo de renglones
         List<RenglonFactura> resguardoRenglones = renglones;
         renglones = new ArrayList<>();
+        boolean[] marcasIndices = new boolean[modeloTablaRenglones.getRowCount()];
+        for (int i = 0; i < modeloTablaRenglones.getRowCount(); i++) {
+            marcasIndices[i] = (boolean) modeloTablaRenglones.getValueAt(i, 0);
+        }
         modeloTablaRenglones = new ModeloTabla();
         this.setColumnas();
+        int indiceParaMarcas = 0;
         for (RenglonFactura renglon : resguardoRenglones) {
             Producto producto = productoService.getProductoPorId(renglon.getId_ProductoItem());
             RenglonFactura nuevoRenglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, renglon.getCantidad(), producto, renglon.getDescuento_porcentaje());
-            this.agregarRenglon(nuevoRenglon);
+            this.agregarRenglon(nuevoRenglon, marcasIndices[indiceParaMarcas]);
+            indiceParaMarcas++;
         }
     }
 
@@ -428,7 +447,7 @@ public class GUI_FormFacturaVenta extends JDialog {
         dc_FechaFactura = new com.toedter.calendar.JDateChooser();
         lbl_FechaVto = new javax.swing.JLabel();
         dc_FechaVencimiento = new com.toedter.calendar.JDateChooser();
-        ckb_DividirFactura = new javax.swing.JCheckBox();
+        chk_condicionDividir = new javax.swing.JCheckBox();
 
         setTitle("Nueva Factura de Venta");
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -497,8 +516,8 @@ public class GUI_FormFacturaVenta extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelDatosComprobanteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cmb_Transportista, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cmb_Cliente, 0, 195, Short.MAX_VALUE)
-                    .addComponent(cmb_FormaDePago, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cmb_FormaDePago, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cmb_Cliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(6, 6, 6)
                 .addGroup(panelDatosComprobanteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btn_NuevoFormaDePago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -538,8 +557,13 @@ public class GUI_FormFacturaVenta extends JDialog {
             }
         ));
         tbl_Renglones.setFocusable(false);
-        tbl_Renglones.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        tbl_Renglones.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tbl_Renglones.getTableHeader().setReorderingAllowed(false);
+        tbl_Renglones.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_RenglonesMouseClicked(evt);
+            }
+        });
         sp_Renglones.setViewportView(tbl_Renglones);
 
         lbl_CodigoProducto.setText("Código Producto:");
@@ -823,7 +847,7 @@ public class GUI_FormFacturaVenta extends JDialog {
 
         dc_FechaVencimiento.setDateFormatString("dd/MM/yyyy");
 
-        ckb_DividirFactura.setText("Dividir Factura");
+        chk_condicionDividir.setText("Dividir Factura");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -836,14 +860,14 @@ public class GUI_FormFacturaVenta extends JDialog {
                     .addComponent(lbl_FechaVto, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
                     .addComponent(lbl_TipoFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(dc_FechaFactura, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(dc_FechaFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ckb_DividirFactura))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(chk_condicionDividir))
                     .addComponent(dc_FechaVencimiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(135, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -852,7 +876,7 @@ public class GUI_FormFacturaVenta extends JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_TipoFactura)
                     .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ckb_DividirFactura))
+                    .addComponent(chk_condicionDividir))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_Fecha)
@@ -879,10 +903,12 @@ public class GUI_FormFacturaVenta extends JDialog {
                             .addComponent(panelMisc, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(panelRenglones, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(panelResultados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 64, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(panelDatosComprobante, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(panelResultados, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -968,15 +994,36 @@ public class GUI_FormFacturaVenta extends JDialog {
 
     private void btn_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_GuardarActionPerformed
         try {
-            if (ckb_DividirFactura.isEnabled() && ckb_DividirFactura.isSelected()) {
-                List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura());
-                for (Factura factura : facturasDivididas) {
-                    if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
-                        this.lanzarReporteFactura(this.guardarFactura(factura));
+            boolean dividir;
+            dividir = false;
+            int[] indicesParaDividir = null;
+            ModeloTabla tablaDeTPV = (ModeloTabla) tbl_Renglones.getModel();
+            FacturaVenta factura = this.construirFactura();
+            if (chk_condicionDividir.isSelected() && (factura.getTipoFactura() == 'A' || factura.getTipoFactura() == 'B' || factura.getTipoFactura() == 'C')) {
+                indicesParaDividir = new int[tablaDeTPV.getRowCount()];
+                int j = 0;
+                for (int i = 0; i < tablaDeTPV.getRowCount(); i++) {
+                    if ((boolean) tablaDeTPV.getValueAt(i, 0)) {
+                        indicesParaDividir[j] = i;
+                        j++;
                     }
                 }
+                if (0 != indicesParaDividir.length) {
+                    dividir = true;
+                }
+            }
+            if (!dividir) {
+                Factura aux = this.guardarFactura(factura);
+                this.lanzarReporteFactura(aux);
+                this.dispose();
             } else {
-                this.lanzarReporteFactura(this.guardarFactura(this.construirFactura()));
+                List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), indicesParaDividir);
+                for (Factura facturaDividida : facturasDivididas) {
+                    if (facturasDivididas.size() == 2 && !facturaDividida.getRenglones().isEmpty()) {
+                        this.lanzarReporteFactura(this.guardarFactura(facturaDividida));
+                        this.dispose();
+                    }
+                }
             }
 
             int respuesta = JOptionPane.showConfirmDialog(this,
@@ -1047,13 +1094,6 @@ public class GUI_FormFacturaVenta extends JDialog {
             if (cmb_TipoFactura.getSelectedItem() != null) {
                 tipoDeFactura = cmb_TipoFactura.getSelectedItem().toString().charAt(0);
                 this.recargarRenglonesSegunTipoDeFactura();
-
-                if (tipoDeFactura == 'X' || tipoDeFactura == 'Y') {
-                    ckb_DividirFactura.setEnabled(false);
-                    ckb_DividirFactura.setSelected(false);
-                } else {
-                    ckb_DividirFactura.setEnabled(true);
-                }
             }
 
         } catch (PersistenceException ex) {
@@ -1076,6 +1116,15 @@ public class GUI_FormFacturaVenta extends JDialog {
             this.dispose();
         }
     }//GEN-LAST:event_formWindowOpened
+
+    private void tbl_RenglonesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_RenglonesMouseClicked
+        int fila = tbl_Renglones.getSelectedRow();
+        int columna = tbl_Renglones.getSelectedColumn();
+        if (columna == 0) {
+            tbl_Renglones.setValueAt(!(boolean) tbl_Renglones.getValueAt(fila, columna), fila, columna);
+        }
+    }//GEN-LAST:event_tbl_RenglonesMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_BuscarProducto;
     private javax.swing.JButton btn_Guardar;
@@ -1085,7 +1134,7 @@ public class GUI_FormFacturaVenta extends JDialog {
     private javax.swing.JButton btn_NuevoProducto;
     private javax.swing.JButton btn_NuevoTransportista;
     private javax.swing.JButton btn_QuitarDeLista;
-    private javax.swing.JCheckBox ckb_DividirFactura;
+    private javax.swing.JCheckBox chk_condicionDividir;
     private javax.swing.JComboBox cmb_Cliente;
     private javax.swing.JComboBox cmb_FormaDePago;
     private javax.swing.JComboBox cmb_TipoFactura;
