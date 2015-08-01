@@ -199,7 +199,7 @@ public class GUI_PrincipalTPV extends JFrame {
         tipos[0] = Boolean.class;
         tipos[1] = String.class;
         tipos[2] = String.class;
-        tipos[3] = Double.class;
+        tipos[3] = String.class;
         tipos[4] = Double.class;
         tipos[5] = Double.class;
         tipos[6] = Double.class;
@@ -212,7 +212,7 @@ public class GUI_PrincipalTPV extends JFrame {
         tbl_Resultado.setDefaultRenderer(Double.class, new RenderTabla());
 
         //tamanios de columnas
-        tbl_Resultado.getColumnModel().getColumn(0).setPreferredWidth(20);
+        tbl_Resultado.getColumnModel().getColumn(0).setPreferredWidth(25);
         tbl_Resultado.getColumnModel().getColumn(1).setPreferredWidth(170);
         tbl_Resultado.getColumnModel().getColumn(2).setPreferredWidth(580);
         tbl_Resultado.getColumnModel().getColumn(3).setPreferredWidth(120);

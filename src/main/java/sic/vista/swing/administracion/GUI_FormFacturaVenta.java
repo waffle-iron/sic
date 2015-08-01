@@ -33,7 +33,6 @@ import sic.service.ServiceException;
 import sic.service.TransportistaService;
 import sic.service.UsuarioService;
 import sic.util.RenderTabla;
-import sic.util.Utilidades;
 import sic.vista.swing.ModeloTabla;
 
 public class GUI_FormFacturaVenta extends JDialog {
@@ -337,7 +336,7 @@ public class GUI_FormFacturaVenta extends JDialog {
         tipos[0] = Boolean.class;
         tipos[1] = String.class;
         tipos[2] = String.class;
-        tipos[3] = Double.class;
+        tipos[3] = String.class;
         tipos[4] = Double.class;
         tipos[5] = Double.class;
         tipos[6] = Double.class;
@@ -350,7 +349,7 @@ public class GUI_FormFacturaVenta extends JDialog {
         tbl_Renglones.setDefaultRenderer(Double.class, new RenderTabla());
 
         //Tamanios de columnas
-        tbl_Renglones.getColumnModel().getColumn(0).setPreferredWidth(20);
+        tbl_Renglones.getColumnModel().getColumn(0).setPreferredWidth(25);
         tbl_Renglones.getColumnModel().getColumn(1).setPreferredWidth(170);
         tbl_Renglones.getColumnModel().getColumn(2).setPreferredWidth(580);
         tbl_Renglones.getColumnModel().getColumn(3).setPreferredWidth(120);
