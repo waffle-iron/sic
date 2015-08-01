@@ -48,11 +48,11 @@ public class ClienteRepository {
         }
     }
 
-    public List<Cliente> getClientesPorNombreQueContenga(String nombre, Empresa empresa) {
+    public List<Cliente> getClientesQueContengaNombreContactoIdFiscal(String criteria, Empresa empresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarPorNombreQueContenga", Cliente.class);
+        TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarPorNombreYContactoQueContenga", Cliente.class);
         typedQuery.setParameter("empresa", empresa);
-        typedQuery.setParameter("nombre", "%" + nombre + "%");
+        typedQuery.setParameter("criteria", "%" + criteria + "%");
         List<Cliente> clientes = typedQuery.getResultList();
         em.close();
         return clientes;

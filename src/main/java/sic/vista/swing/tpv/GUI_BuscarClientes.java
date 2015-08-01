@@ -39,8 +39,7 @@ public class GUI_BuscarClientes extends JDialog {
         this.setLocationRelativeTo(parent);
         this.setColumnas();
 
-        //listeners
-        cmb_CriterioBusqueda.addKeyListener(keyHandler);
+        //listeners        
         txt_TextoBusqueda.addKeyListener(keyHandler);
         tbl_Resultado.addKeyListener(keyHandler);
     }
@@ -59,21 +58,8 @@ public class GUI_BuscarClientes extends JDialog {
     }
 
     private void Buscar() {
-        if (cmb_CriterioBusqueda.getModel().getSelectedItem().equals("NOMBRE")) {
-            clientes = clienteService.getClientesPorNombreQueContenga(txt_TextoBusqueda.getText().trim(), empresaService.getEmpresaActiva().getEmpresa());
-        }
-
-        if (cmb_CriterioBusqueda.getModel().getSelectedItem().equals("ID FISCAL")) {
-            if (txt_TextoBusqueda.getText().trim().length() == 0) {
-                clientes = clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa());
-            } else {
-                Cliente cli = clienteService.getClientePorIdFiscal(txt_TextoBusqueda.getText().trim(), empresaService.getEmpresaActiva().getEmpresa());
-                clientes = new ArrayList<>();
-                if (cli != null) {
-                    clientes.add(cli);
-                }
-            }
-        }
+        clientes = clienteService.getClientesQueContengaNombreContactoIdFiscal(
+                txt_TextoBusqueda.getText().trim(), empresaService.getEmpresaActiva().getEmpresa());
         this.cargarResultadosAlTable();
     }
 
@@ -82,11 +68,11 @@ public class GUI_BuscarClientes extends JDialog {
         String[] encabezados = new String[12];
         encabezados[0] = "ID Fiscal";
         encabezados[1] = "Nombre";
-        encabezados[2] = "Direccion";
-        encabezados[3] = "Condicion IVA";
-        encabezados[4] = "Tel. Primario";
-        encabezados[5] = "Tel. Secundario";
-        encabezados[6] = "Contacto";
+        encabezados[2] = "Contacto";
+        encabezados[3] = "Direccion";
+        encabezados[4] = "Condicion IVA";
+        encabezados[5] = "Tel. Primario";
+        encabezados[6] = "Tel. Secundario";
         encabezados[7] = "Email";
         encabezados[8] = "Fecha Alta";
         encabezados[9] = "Localidad";
@@ -115,14 +101,14 @@ public class GUI_BuscarClientes extends JDialog {
 
         //Tamanios de columnas
         tbl_Resultado.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tbl_Resultado.getColumnModel().getColumn(1).setPreferredWidth(350);
-        tbl_Resultado.getColumnModel().getColumn(2).setPreferredWidth(350);
+        tbl_Resultado.getColumnModel().getColumn(1).setPreferredWidth(250);
+        tbl_Resultado.getColumnModel().getColumn(2).setPreferredWidth(250);
         tbl_Resultado.getColumnModel().getColumn(3).setPreferredWidth(250);
         tbl_Resultado.getColumnModel().getColumn(4).setPreferredWidth(180);
         tbl_Resultado.getColumnModel().getColumn(5).setPreferredWidth(180);
         tbl_Resultado.getColumnModel().getColumn(6).setPreferredWidth(200);
         tbl_Resultado.getColumnModel().getColumn(7).setPreferredWidth(250);
-        tbl_Resultado.getColumnModel().getColumn(8).setPreferredWidth(200);
+        tbl_Resultado.getColumnModel().getColumn(8).setPreferredWidth(100);
         tbl_Resultado.getColumnModel().getColumn(9).setPreferredWidth(200);
         tbl_Resultado.getColumnModel().getColumn(10).setPreferredWidth(200);
         tbl_Resultado.getColumnModel().getColumn(11).setPreferredWidth(200);
@@ -134,11 +120,11 @@ public class GUI_BuscarClientes extends JDialog {
             Object[] fila = new Object[12];
             fila[0] = cliente.getId_Fiscal();
             fila[1] = cliente.getNombre();
-            fila[2] = cliente.getDireccion();
-            fila[3] = cliente.getCondicionIVA();
-            fila[4] = cliente.getTelPrimario();
-            fila[5] = cliente.getTelSecundario();
-            fila[6] = cliente.getContacto();
+            fila[2] = cliente.getContacto();
+            fila[3] = cliente.getDireccion();
+            fila[4] = cliente.getCondicionIVA();
+            fila[5] = cliente.getTelPrimario();
+            fila[6] = cliente.getTelSecundario();
             fila[7] = cliente.getEmail();
             fila[8] = cliente.getFechaAlta();
             fila[9] = cliente.getLocalidad();
@@ -186,7 +172,6 @@ public class GUI_BuscarClientes extends JDialog {
         txt_TextoBusqueda = new javax.swing.JTextField();
         btn_Buscar = new javax.swing.JButton();
         btn_Aceptar = new javax.swing.JButton();
-        cmb_CriterioBusqueda = new javax.swing.JComboBox();
         sp_Resultado = new javax.swing.JScrollPane();
         tbl_Resultado = new javax.swing.JTable();
 
@@ -232,15 +217,6 @@ public class GUI_BuscarClientes extends JDialog {
             }
         });
 
-        cmb_CriterioBusqueda.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
-        cmb_CriterioBusqueda.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "NOMBRE", "ID FISCAL" }));
-        cmb_CriterioBusqueda.setFocusable(false);
-        cmb_CriterioBusqueda.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmb_CriterioBusquedaItemStateChanged(evt);
-            }
-        });
-
         tbl_Resultado.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -273,14 +249,14 @@ public class GUI_BuscarClientes extends JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFondoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(sp_Resultado, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 776, Short.MAX_VALUE)
+                    .addComponent(sp_Resultado, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 797, Short.MAX_VALUE)
+                    .addComponent(btn_Buscar)
                     .addGroup(panelFondoLayout.createSequentialGroup()
-                        .addComponent(cmb_CriterioBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txt_TextoBusqueda, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)
-                        .addComponent(btn_Buscar))
-                    .addComponent(btn_Aceptar))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btn_Aceptar))
+                    .addGroup(panelFondoLayout.createSequentialGroup()
+                        .addComponent(txt_TextoBusqueda)
+                        .addGap(55, 55, 55)))
                 .addContainerGap())
         );
         panelFondoLayout.setVerticalGroup(
@@ -289,8 +265,7 @@ public class GUI_BuscarClientes extends JDialog {
                 .addContainerGap()
                 .addGroup(panelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txt_TextoBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_Buscar)
-                    .addComponent(cmb_CriterioBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btn_Buscar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sp_Resultado, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -298,7 +273,7 @@ public class GUI_BuscarClientes extends JDialog {
                 .addContainerGap())
         );
 
-        panelFondoLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Buscar, cmb_CriterioBusqueda, txt_TextoBusqueda});
+        panelFondoLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Buscar, txt_TextoBusqueda});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -361,16 +336,6 @@ public class GUI_BuscarClientes extends JDialog {
         }
     }//GEN-LAST:event_txt_TextoBusquedaKeyReleased
 
-    private void cmb_CriterioBusquedaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_CriterioBusquedaItemStateChanged
-        try {
-            this.Buscar();
-
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_cmb_CriterioBusquedaItemStateChanged
-
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
             this.Buscar();
@@ -391,7 +356,6 @@ public class GUI_BuscarClientes extends JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Aceptar;
     private javax.swing.JButton btn_Buscar;
-    private javax.swing.JComboBox cmb_CriterioBusqueda;
     private javax.swing.JPanel panelFondo;
     private javax.swing.JScrollPane sp_Resultado;
     private javax.swing.JTable tbl_Resultado;

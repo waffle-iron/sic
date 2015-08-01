@@ -8,6 +8,7 @@
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
+    <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
   <Events>
     <EventHandler event="windowOpened" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowOpened"/>
@@ -45,15 +46,16 @@
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="sp_Resultado" alignment="0" pref="776" max="32767" attributes="0"/>
+                      <Component id="sp_Resultado" alignment="0" pref="797" max="32767" attributes="0"/>
+                      <Component id="btn_Buscar" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="cmb_CriterioBusqueda" min="-2" pref="181" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="txt_TextoBusqueda" pref="555" max="32767" attributes="0"/>
-                          <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                          <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="btn_Aceptar" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="btn_Aceptar" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="txt_TextoBusqueda" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -66,7 +68,6 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="txt_TextoBusqueda" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_Buscar" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_CriterioBusqueda" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="sp_Resultado" pref="437" max="32767" attributes="0"/>
@@ -116,23 +117,6 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_AceptarActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JComboBox" name="cmb_CriterioBusqueda">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="DejaVu Sans" size="17" style="0"/>
-            </Property>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="2">
-                <StringItem index="0" value="NOMBRE"/>
-                <StringItem index="1" value="ID FISCAL"/>
-              </StringArray>
-            </Property>
-            <Property name="focusable" type="boolean" value="false"/>
-          </Properties>
-          <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cmb_CriterioBusquedaItemStateChanged"/>
           </Events>
         </Component>
         <Container class="javax.swing.JScrollPane" name="sp_Resultado">

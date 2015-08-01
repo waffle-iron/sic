@@ -21,7 +21,9 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = "Cliente.buscarTodos", query = "SELECT c FROM Cliente c WHERE c.empresa = :empresa AND c.eliminado = false ORDER BY c.nombre ASC"),
     @NamedQuery(name = "Cliente.buscarPorId", query = "SELECT c FROM Cliente c WHERE c.id_Cliente = :id AND c.eliminado = false"),
-    @NamedQuery(name = "Cliente.buscarPorNombreQueContenga", query = "SELECT c FROM Cliente c WHERE c.nombre like :nombre AND c.empresa = :empresa AND c.eliminado = false ORDER BY c.nombre ASC"),
+    @NamedQuery(name = "Cliente.buscarPorNombreYContactoQueContenga", query = "SELECT c FROM Cliente c "
+            + "WHERE c.nombre like :criteria OR c.contacto like :criteria OR c.id_Fiscal like :criteria AND c.empresa = :empresa AND c.eliminado = false "
+            + "ORDER BY c.nombre ASC"),
     @NamedQuery(name = "Cliente.buscarPorNombre", query = "SELECT c FROM Cliente c WHERE c.nombre = :nombre AND c.empresa = :empresa AND c.eliminado = false ORDER BY c.nombre ASC"),
     @NamedQuery(name = "Cliente.buscarPorIdFiscal", query = "SELECT c FROM Cliente c WHERE c.id_Fiscal = :id_Fiscal AND c.eliminado = false AND c.empresa = :empresa"),
     @NamedQuery(name = "Cliente.buscarPredeterminado", query = "SELECT c FROM Cliente c WHERE c.predeterminado = true AND c.eliminado = false AND c.empresa = :empresa")

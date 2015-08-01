@@ -20,8 +20,8 @@ public class ClienteService {
         return modeloCliente.getClientes(empresa);
     }
 
-    public List<Cliente> getClientesPorNombreQueContenga(String nombre, Empresa empresa) {
-        return modeloCliente.getClientesPorNombreQueContenga(nombre, empresa);
+    public List<Cliente> getClientesQueContengaNombreContactoIdFiscal(String criteria, Empresa empresa) {
+        return modeloCliente.getClientesQueContengaNombreContactoIdFiscal(criteria, empresa);
     }
 
     public Cliente getClientePorNombre(String nombre, Empresa empresa) {
