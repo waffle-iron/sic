@@ -177,7 +177,7 @@ public class GUI_CerrarVenta extends JDialog {
         btn_Finalizar = new javax.swing.JButton();
         lbl_TotalAPagar = new javax.swing.JFormattedTextField();
         lbl_Vuelto = new javax.swing.JFormattedTextField();
-        condicionDividir = new javax.swing.JCheckBox();
+        chk_condicionDividir = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cerrar Venta");
@@ -250,7 +250,7 @@ public class GUI_CerrarVenta extends JDialog {
         lbl_Vuelto.setFocusable(false);
         lbl_Vuelto.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
 
-        condicionDividir.setText("Dividir");
+        chk_condicionDividir.setText("Dividir");
 
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
@@ -283,8 +283,7 @@ public class GUI_CerrarVenta extends JDialog {
                             .addComponent(lbl_Vuelto)
                             .addComponent(lbl_TotalAPagar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
-                        .addComponent(condicionDividir)
+                        .addComponent(chk_condicionDividir)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btn_Finalizar)))
                 .addContainerGap())
@@ -323,7 +322,7 @@ public class GUI_CerrarVenta extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 19, Short.MAX_VALUE)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_Finalizar)
-                    .addComponent(condicionDividir))
+                    .addComponent(chk_condicionDividir))
                 .addContainerGap())
         );
 
@@ -364,7 +363,7 @@ public class GUI_CerrarVenta extends JDialog {
             boolean dividir;
             dividir = false;
             int[] indicesParaDividir = null;
-            if (condicionDividir.isSelected() && (gui_tpv.getTipoDeFactura() == 'A' || gui_tpv.getTipoDeFactura() == 'B')) {
+            if (chk_condicionDividir.isSelected() && (gui_tpv.getTipoDeFactura() == 'A' || gui_tpv.getTipoDeFactura() == 'B' || gui_tpv.getTipoDeFactura() == 'C' )) {
                 ModeloTabla modeloTablaPuntoDeVenta = gui_tpv.getModeloTabla();
                 indicesParaDividir = new int[modeloTablaPuntoDeVenta.getRowCount()];
                 int j = 0;
@@ -432,9 +431,9 @@ public class GUI_CerrarVenta extends JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Finalizar;
+    private javax.swing.JCheckBox chk_condicionDividir;
     private javax.swing.JComboBox cmb_FormaDePago;
     private javax.swing.JComboBox cmb_Transporte;
-    private javax.swing.JCheckBox condicionDividir;
     private javax.swing.JLabel lbl_Cambio;
     private javax.swing.JLabel lbl_Devolucion;
     private javax.swing.JLabel lbl_FormaDePago;

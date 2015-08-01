@@ -268,8 +268,8 @@ public class GUI_PrincipalTPV extends JFrame {
             Object[] fila = new Object[8];
             try {
                 if (cantidadDeFilas != 0 && (eliminar == false)) {
-                    boolean marca = (boolean) copiaDatosJTable.getValueAt(indiceParaMarcar, 0);
-                    fila[0] = marca;
+                    boolean marcado = (boolean) copiaDatosJTable.getValueAt(indiceParaMarcar, 0);
+                    fila[0] = marcado;
                 } else {
                     fila[0] = false;
                 }

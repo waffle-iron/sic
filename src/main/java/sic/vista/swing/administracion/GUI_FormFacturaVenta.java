@@ -92,9 +92,9 @@ public class GUI_FormFacturaVenta extends JDialog {
         }
     }
 
-    private void agregarRenglon(RenglonFactura renglon, boolean marca) {
+    private void agregarRenglon(RenglonFactura renglon, boolean marcado) {
         Object[] lineaDeFactura = new Object[8];
-        lineaDeFactura[0] = marca;
+        lineaDeFactura[0] = marcado;
         lineaDeFactura[1] = renglon.getCodigoItem();
         lineaDeFactura[2] = renglon.getDescripcionItem();
         lineaDeFactura[3] = renglon.getMedidaItem();
@@ -112,20 +112,30 @@ public class GUI_FormFacturaVenta extends JDialog {
     }
 
     private void quitarRenglonFactura() {
-        if (tbl_Renglones.getSelectedRow() != -1) {
+        int[] indicesParaEliminar = new int[tbl_Renglones.getRowCount()];
+        int punteroIndices = 0;
+        int cantidadAEliminar = 0;
+        for (int i = 0; i < tbl_Renglones.getRowCount(); i++) {
+            if ((boolean) tbl_Renglones.getValueAt(i, 0)) {
+                indicesParaEliminar[punteroIndices] = i;
+                punteroIndices++;
+                cantidadAEliminar++;
+            }
+        }
+        if (cantidadAEliminar != 0) {
             int respuesta = JOptionPane.showConfirmDialog(this,
                     "¿Esta seguro que desea eliminar el renglon de factura seleccionado?",
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
-                int[] elementosSeleccionados = Utilidades.getSelectedRowsModelIndices(tbl_Renglones);
-                int cantidadTotal = elementosSeleccionados.length;
-                for (int i = 0; i < cantidadTotal; i++) {
-                    modeloTablaRenglones.removeRow(elementosSeleccionados[i]);
-                    renglones.remove(elementosSeleccionados[i]);
-                    //actualiza los elementos seleccionados debido al corrimiento
-                    for (int e = 0; e < cantidadTotal; e++) {
-                        elementosSeleccionados[e] = elementosSeleccionados[e] - 1;
-                    }
+                List<RenglonFactura> paraBorrar = new ArrayList<>();
+                int corrimientoRenglones = 0;
+                for (int i = 0; i < cantidadAEliminar; i++) {
+                    paraBorrar.add(renglones.get(indicesParaEliminar[i]));
+                    modeloTablaRenglones.removeRow(indicesParaEliminar[i] - corrimientoRenglones);
+                    corrimientoRenglones++;
+                }
+                for (RenglonFactura renglon : paraBorrar) {
+                    renglones.remove(renglon);
                 }
                 this.calcularResultados();
             }
@@ -438,7 +448,7 @@ public class GUI_FormFacturaVenta extends JDialog {
         dc_FechaFactura = new com.toedter.calendar.JDateChooser();
         lbl_FechaVto = new javax.swing.JLabel();
         dc_FechaVencimiento = new com.toedter.calendar.JDateChooser();
-        condicionDividir = new javax.swing.JCheckBox();
+        chk_condicionDividir = new javax.swing.JCheckBox();
 
         setTitle("Nueva Factura de Venta");
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -506,9 +516,9 @@ public class GUI_FormFacturaVenta extends JDialog {
                     .addComponent(lbl_Transporte, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelDatosComprobanteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmb_Transportista, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cmb_Cliente, 0, 221, Short.MAX_VALUE)
-                    .addComponent(cmb_FormaDePago, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cmb_Transportista, 0, 181, Short.MAX_VALUE)
+                    .addComponent(cmb_FormaDePago, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cmb_Cliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(6, 6, 6)
                 .addGroup(panelDatosComprobanteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btn_NuevoFormaDePago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -843,7 +853,7 @@ public class GUI_FormFacturaVenta extends JDialog {
 
         dc_FechaVencimiento.setDateFormatString("dd/MM/yyyy");
 
-        condicionDividir.setText("Dividir");
+        chk_condicionDividir.setText("Dividir Factura");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -857,14 +867,13 @@ public class GUI_FormFacturaVenta extends JDialog {
                     .addComponent(lbl_TipoFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(dc_FechaFactura, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addComponent(dc_FechaFactura, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(97, 97, 97))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(chk_condicionDividir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(dc_FechaVencimiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                .addComponent(condicionDividir)
-                .addGap(20, 20, 20))
+                .addContainerGap(109, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -873,7 +882,7 @@ public class GUI_FormFacturaVenta extends JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_TipoFactura)
                     .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(condicionDividir))
+                    .addComponent(chk_condicionDividir))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_Fecha)
@@ -994,7 +1003,7 @@ public class GUI_FormFacturaVenta extends JDialog {
             int[] indicesParaDividir = null;
             ModeloTabla tablaDeTPV = (ModeloTabla) tbl_Renglones.getModel();
             FacturaVenta factura = this.construirFactura();
-            if (condicionDividir.isSelected() && (factura.getTipoFactura() == 'A' || factura.getTipoFactura() == 'B' || factura.getTipoFactura() == 'C')) {
+            if (chk_condicionDividir.isSelected() && (factura.getTipoFactura() == 'A' || factura.getTipoFactura() == 'B' || factura.getTipoFactura() == 'C')) {
                 indicesParaDividir = new int[tablaDeTPV.getRowCount()];
                 int j = 0;
                 for (int i = 0; i < tablaDeTPV.getRowCount(); i++) {
@@ -1122,7 +1131,7 @@ public class GUI_FormFacturaVenta extends JDialog {
     }//GEN-LAST:event_tbl_RenglonesMouseClicked
 
     private void cmb_TipoFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_TipoFacturaActionPerformed
-      
+
     }//GEN-LAST:event_cmb_TipoFacturaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1134,11 +1143,11 @@ public class GUI_FormFacturaVenta extends JDialog {
     private javax.swing.JButton btn_NuevoProducto;
     private javax.swing.JButton btn_NuevoTransportista;
     private javax.swing.JButton btn_QuitarDeLista;
+    private javax.swing.JCheckBox chk_condicionDividir;
     private javax.swing.JComboBox cmb_Cliente;
     private javax.swing.JComboBox cmb_FormaDePago;
     private javax.swing.JComboBox cmb_TipoFactura;
     private javax.swing.JComboBox cmb_Transportista;
-    private javax.swing.JCheckBox condicionDividir;
     private com.toedter.calendar.JDateChooser dc_FechaFactura;
     private com.toedter.calendar.JDateChooser dc_FechaVencimiento;
     private javax.swing.JPanel jPanel1;
