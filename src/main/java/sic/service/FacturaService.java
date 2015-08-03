@@ -422,8 +422,8 @@ public class FacturaService {
     //**************************************************************************    
     //Division de Factura
     public List<FacturaVenta> dividirFactura(FacturaVenta factura, int[] indices) {
-        double mitad1;
-        double mitad2 = 0;
+        double ABC = 0;
+        double X = 0;
         RenglonDeFacturaService renglonService = new RenglonDeFacturaService();
         List<RenglonFactura> renglonesConIVA = new ArrayList<>();
         List<RenglonFactura> renglonesSinIVA = new ArrayList<>();
@@ -439,30 +439,22 @@ public class FacturaService {
         for (RenglonFactura renglon : factura.getRenglones()) {
             if (numeroDeRenglon == indices[renglonMarcado]) {
                 if (renglon.getCantidad() < 1) {
-                    mitad1 = renglon.getCantidad();
+                    ABC = renglon.getCantidad();
                 } else {
-                    if (renglon.getCantidad() / 2 < 1) {
-                        mitad1 = 1;
-                        mitad2 = renglon.getCantidad() - 1;
-                    } else {// si es entero
-                        if (renglon.getCantidad() % 1 == 0) {
-                            if (renglon.getCantidad() / 2 % 1 == 0) {
-                                mitad1 = renglon.getCantidad() / 2;
-                                mitad2 = renglon.getCantidad() / 2;
-                            } else {
-                                mitad1 = Math.ceil(renglon.getCantidad() / 2);
-                                mitad2 = Math.floor(renglon.getCantidad() / 2);
-                            }
-                        } else {
-                            mitad1 = Math.ceil(renglon.getCantidad() / 2);
-                            mitad2 = Math.rint(renglon.getCantidad() - mitad1);
-                        }
+                    ABC = Math.ceil(ABC);
+                    if ((ABC % 2) == 0) {
+                        ABC = ABC / 2;
+                        X = renglon.getCantidad() - ABC;
+                        X = (double) Math.round(X * 100) / 100;
+                    } else {
+                        ABC = Math.floor(renglon.getCantidad()) / 2;
+                        X = renglon.getCantidad() - ABC;
                     }
                 }
-                RenglonFactura nuevoRenglonConIVA = renglonService.calcularRenglon(factura.getTipoFactura(), Movimiento.VENTA, mitad1, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+                RenglonFactura nuevoRenglonConIVA = renglonService.calcularRenglon(factura.getTipoFactura(), Movimiento.VENTA, ABC, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
                 nuevoRenglonConIVA.setFactura(facturaConIVA);
                 renglonesConIVA.add(nuevoRenglonConIVA);
-                RenglonFactura nuevoRenglonSinIVA = renglonService.calcularRenglon('X', Movimiento.VENTA, mitad2, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+                RenglonFactura nuevoRenglonSinIVA = renglonService.calcularRenglon('X', Movimiento.VENTA, X, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
                 nuevoRenglonSinIVA.setFactura(facturaSinIVA);
                 if (nuevoRenglonSinIVA.getCantidad() != 0) {
                     renglonesSinIVA.add(nuevoRenglonSinIVA);
