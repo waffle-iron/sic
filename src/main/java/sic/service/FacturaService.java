@@ -441,7 +441,7 @@ public class FacturaService {
                 if (renglon.getCantidad() < 1) {
                     ABC = renglon.getCantidad();
                 } else {
-                    ABC = Math.ceil(ABC);
+                    ABC = Math.ceil(renglon.getCantidad());
                     if ((ABC % 2) == 0) {
                         ABC = ABC / 2;
                         X = renglon.getCantidad() - ABC;
