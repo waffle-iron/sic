@@ -353,8 +353,10 @@
                   <Group type="102" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="sp_Resultado" alignment="1" max="32767" attributes="0"/>
+                          <Component id="sp_Resultado" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
+                              <Component id="marcarDesmarcar" min="-2" pref="29" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="txt_CodigoProducto" min="-2" pref="149" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                               <Component id="btn_BuscarPorCodigoProducto" min="-2" pref="23" max="-2" attributes="0"/>
@@ -380,6 +382,7 @@
                               <Component id="btn_BuscarProductos" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="btn_EliminarEntradaProducto" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                           </Group>
+                          <Component id="marcarDesmarcar" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="sp_Resultado" pref="200" max="32767" attributes="0"/>
@@ -499,6 +502,11 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_BuscarPorCodigoProductoActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JToggleButton" name="marcarDesmarcar">
+              <Events>
+                <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="marcarDesmarcarStateChanged"/>
               </Events>
             </Component>
           </SubComponents>

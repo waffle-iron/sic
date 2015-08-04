@@ -54,6 +54,7 @@ public class GUI_FormFacturaVenta extends JDialog {
         this.setIcon();
         renglones = new ArrayList<>();
         this.prepararComponentes();
+
     }
 
     private void setIcon() {
@@ -73,6 +74,9 @@ public class GUI_FormFacturaVenta extends JDialog {
         txt_Total.setValue(new Double("0.0"));
         dc_FechaFactura.setDate(new Date());
         dc_FechaVencimiento.setDate(new Date());
+        ImageIcon iconoNoMarcado = new ImageIcon(getClass().getResource("/sic/icons/chkNoMarcado_16x16.png"));
+        this.marcarDesmarcar.setIcon(iconoNoMarcado);
+
     }
 
     private void llamarVentanaRenglonFactura(Producto producto) {
@@ -418,6 +422,7 @@ public class GUI_FormFacturaVenta extends JDialog {
         btn_NuevoProducto = new javax.swing.JButton();
         btn_QuitarDeLista = new javax.swing.JButton();
         txt_CodigoProducto = new javax.swing.JTextField();
+        marcarDesmarcar = new javax.swing.JToggleButton();
         panelResultados = new javax.swing.JPanel();
         lbl_SubTotal = new javax.swing.JLabel();
         lbl_Total = new javax.swing.JLabel();
@@ -605,13 +610,20 @@ public class GUI_FormFacturaVenta extends JDialog {
             }
         });
 
+        marcarDesmarcar.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                marcarDesmarcarStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelRenglonesLayout = new javax.swing.GroupLayout(panelRenglones);
         panelRenglones.setLayout(panelRenglonesLayout);
         panelRenglonesLayout.setHorizontalGroup(
             panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(sp_Renglones)
             .addGroup(panelRenglonesLayout.createSequentialGroup()
-                .addContainerGap()
+                .addComponent(marcarDesmarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lbl_CodigoProducto)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txt_CodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -623,7 +635,7 @@ public class GUI_FormFacturaVenta extends JDialog {
                 .addComponent(btn_NuevoProducto)
                 .addGap(0, 0, 0)
                 .addComponent(btn_QuitarDeLista)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(265, Short.MAX_VALUE))
         );
 
         panelRenglonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_BuscarProducto, btn_NuevoProducto, btn_QuitarDeLista});
@@ -639,7 +651,8 @@ public class GUI_FormFacturaVenta extends JDialog {
                     .addComponent(lbl_CodigoProducto)
                     .addComponent(btn_BuscarProducto)
                     .addComponent(btn_NuevoProducto)
-                    .addComponent(btn_QuitarDeLista)))
+                    .addComponent(btn_QuitarDeLista)
+                    .addComponent(marcarDesmarcar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         panelRenglonesLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_IngresarCodigoProducto, txt_CodigoProducto});
@@ -1125,6 +1138,23 @@ public class GUI_FormFacturaVenta extends JDialog {
         }
     }//GEN-LAST:event_tbl_RenglonesMouseClicked
 
+    private void marcarDesmarcarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_marcarDesmarcarStateChanged
+        int cantidadDeFilas = tbl_Renglones.getRowCount();
+        if (this.marcarDesmarcar.isSelected()) {
+            ImageIcon iconoMarcado = new ImageIcon(getClass().getResource("/sic/icons/chkMarca_16x16.png"));
+            this.marcarDesmarcar.setIcon(iconoMarcado);
+            for (int i = 0; i < cantidadDeFilas; i++) {
+                tbl_Renglones.setValueAt(true, i, 0);
+            }
+        } else {
+            ImageIcon iconoNoMarcado = new ImageIcon(getClass().getResource("/sic/icons/chkNoMarcado_16x16.png"));
+            this.marcarDesmarcar.setIcon(iconoNoMarcado);
+            for (int i = 0; i < cantidadDeFilas; i++) {
+                tbl_Renglones.setValueAt(false, i, 0);
+            }
+        }
+    }//GEN-LAST:event_marcarDesmarcarStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_BuscarProducto;
     private javax.swing.JButton btn_Guardar;
@@ -1159,6 +1189,7 @@ public class GUI_FormFacturaVenta extends JDialog {
     private javax.swing.JLabel lbl_TipoFactura;
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_Transporte;
+    private javax.swing.JToggleButton marcarDesmarcar;
     private javax.swing.JPanel panelDatosComprobante;
     private javax.swing.JPanel panelMisc;
     private javax.swing.JPanel panelRenglones;

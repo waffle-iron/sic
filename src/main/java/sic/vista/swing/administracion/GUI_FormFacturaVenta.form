@@ -243,8 +243,9 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Component id="sp_Renglones" max="32767" attributes="0"/>
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
+              <Group type="102" attributes="0">
+                  <Component id="marcarDesmarcar" min="-2" pref="27" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="lbl_CodigoProducto" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="txt_CodigoProducto" min="-2" pref="89" max="-2" attributes="0"/>
@@ -256,7 +257,7 @@
                   <Component id="btn_NuevoProducto" linkSize="7" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                   <Component id="btn_QuitarDeLista" linkSize="7" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="265" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -272,6 +273,7 @@
                       <Component id="btn_BuscarProducto" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_NuevoProducto" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_QuitarDeLista" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="marcarDesmarcar" alignment="1" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -358,6 +360,11 @@
         <Component class="javax.swing.JTextField" name="txt_CodigoProducto">
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_CodigoProductoActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JToggleButton" name="marcarDesmarcar">
+          <Events>
+            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="marcarDesmarcarStateChanged"/>
           </Events>
         </Component>
       </SubComponents>
