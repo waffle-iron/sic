@@ -53,7 +53,7 @@ public class GUI_PrincipalTPV extends JFrame {
         ImageIcon iconoVentana = new ImageIcon(GUI_PrincipalTPV.class.getResource("/sic/icons/SIC_24_square.png"));
         this.setIconImage(iconoVentana.getImage());
         ImageIcon iconoNoMarcado = new ImageIcon(getClass().getResource("/sic/icons/chkNoMarcado_16x16.png"));
-        this.marcarDesmarcar.setIcon(iconoNoMarcado);
+        this.tbtn_marcarDesmarcar.setIcon(iconoNoMarcado);
 
         //listeners        
         cmb_TipoFactura.addKeyListener(keyHandler);
@@ -474,7 +474,7 @@ public class GUI_PrincipalTPV extends JFrame {
         btn_EliminarEntradaProducto = new javax.swing.JButton();
         txt_CodigoProducto = new javax.swing.JTextField();
         btn_BuscarPorCodigoProducto = new javax.swing.JButton();
-        marcarDesmarcar = new javax.swing.JToggleButton();
+        tbtn_marcarDesmarcar = new javax.swing.JToggleButton();
         panelObservaciones = new javax.swing.JPanel();
         lbl_Observaciones = new javax.swing.JLabel();
         btn_AddComment = new javax.swing.JButton();
@@ -735,9 +735,9 @@ public class GUI_PrincipalTPV extends JFrame {
             }
         });
 
-        marcarDesmarcar.addChangeListener(new javax.swing.event.ChangeListener() {
+        tbtn_marcarDesmarcar.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                marcarDesmarcarStateChanged(evt);
+                tbtn_marcarDesmarcarStateChanged(evt);
             }
         });
 
@@ -750,7 +750,7 @@ public class GUI_PrincipalTPV extends JFrame {
                 .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sp_Resultado)
                     .addGroup(panelRenglonesLayout.createSequentialGroup()
-                        .addComponent(marcarDesmarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tbtn_marcarDesmarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txt_CodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
@@ -775,7 +775,7 @@ public class GUI_PrincipalTPV extends JFrame {
                     .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btn_BuscarProductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btn_EliminarEntradaProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(marcarDesmarcar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(tbtn_marcarDesmarcar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sp_Resultado, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                 .addContainerGap())
@@ -1263,22 +1263,22 @@ public class GUI_PrincipalTPV extends JFrame {
         }
     }//GEN-LAST:event_tbl_ResultadoMouseClicked
 
-    private void marcarDesmarcarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_marcarDesmarcarStateChanged
+    private void tbtn_marcarDesmarcarStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_tbtn_marcarDesmarcarStateChanged
         int cantidadDeFilas = tbl_Resultado.getRowCount();
-        if (this.marcarDesmarcar.isSelected()) {
+        if (this.tbtn_marcarDesmarcar.isSelected()) {
             ImageIcon iconoMarcado = new ImageIcon(getClass().getResource("/sic/icons/chkMarca_16x16.png"));
-            this.marcarDesmarcar.setIcon(iconoMarcado);
+            this.tbtn_marcarDesmarcar.setIcon(iconoMarcado);
             for (int i = 0; i < cantidadDeFilas; i++) {
                 tbl_Resultado.setValueAt(true, i, 0);
             }
         } else {
             ImageIcon iconoNoMarcado = new ImageIcon(getClass().getResource("/sic/icons/chkNoMarcado_16x16.png"));
-            this.marcarDesmarcar.setIcon(iconoNoMarcado);
+            this.tbtn_marcarDesmarcar.setIcon(iconoNoMarcado);
             for (int i = 0; i < cantidadDeFilas; i++) {
                 tbl_Resultado.setValueAt(false, i, 0);
             }
         }
-    }//GEN-LAST:event_marcarDesmarcarStateChanged
+    }//GEN-LAST:event_tbtn_marcarDesmarcarStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AddComment;
@@ -1307,7 +1307,6 @@ public class GUI_PrincipalTPV extends JFrame {
     private javax.swing.JLabel lbl_SubTotalNeto;
     private javax.swing.JLabel lbl_TipoFactura;
     private javax.swing.JLabel lbl_Total;
-    private javax.swing.JToggleButton marcarDesmarcar;
     private javax.swing.JPanel panelCliente;
     private javax.swing.JPanel panelEncabezado;
     private javax.swing.JPanel panelGeneral;
@@ -1316,6 +1315,7 @@ public class GUI_PrincipalTPV extends JFrame {
     private javax.swing.JPanel panelResultados;
     private javax.swing.JScrollPane sp_Resultado;
     private javax.swing.JTable tbl_Resultado;
+    private javax.swing.JToggleButton tbtn_marcarDesmarcar;
     private javax.swing.JTextField txt_CodigoProducto;
     private javax.swing.JTextField txt_CondicionIVACliente;
     private javax.swing.JTextField txt_DomicilioCliente;
