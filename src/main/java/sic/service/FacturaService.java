@@ -449,6 +449,7 @@ public class FacturaService {
                     } else {
                         ABC = Math.floor(renglon.getCantidad()) / 2;
                         X = renglon.getCantidad() - ABC;
+                        X = (double) Math.round(X * 100) / 100;
                     }
                 }
                 RenglonFactura nuevoRenglonConIVA = renglonService.calcularRenglon(factura.getTipoFactura(), Movimiento.VENTA, ABC, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
