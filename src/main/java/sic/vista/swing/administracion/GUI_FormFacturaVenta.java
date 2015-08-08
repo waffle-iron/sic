@@ -416,7 +416,6 @@ public class GUI_FormFacturaVenta extends JDialog {
         panelRenglones = new javax.swing.JPanel();
         sp_Renglones = new javax.swing.JScrollPane();
         tbl_Renglones = new javax.swing.JTable();
-        lbl_CodigoProducto = new javax.swing.JLabel();
         btn_IngresarCodigoProducto = new javax.swing.JButton();
         btn_BuscarProducto = new javax.swing.JButton();
         btn_NuevoProducto = new javax.swing.JButton();
@@ -571,9 +570,8 @@ public class GUI_FormFacturaVenta extends JDialog {
         });
         sp_Renglones.setViewportView(tbl_Renglones);
 
-        lbl_CodigoProducto.setText("Código Producto:");
-
         btn_IngresarCodigoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/16x16.png"))); // NOI18N
+        btn_IngresarCodigoProducto.setPreferredSize(new java.awt.Dimension(60, 25));
         btn_IngresarCodigoProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_IngresarCodigoProductoActionPerformed(evt);
@@ -610,6 +608,7 @@ public class GUI_FormFacturaVenta extends JDialog {
             }
         });
 
+        marcarDesmarcar.setFocusable(false);
         marcarDesmarcar.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 marcarDesmarcarStateChanged(evt);
@@ -620,39 +619,34 @@ public class GUI_FormFacturaVenta extends JDialog {
         panelRenglones.setLayout(panelRenglonesLayout);
         panelRenglonesLayout.setHorizontalGroup(
             panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp_Renglones)
+            .addComponent(sp_Renglones, javax.swing.GroupLayout.DEFAULT_SIZE, 801, Short.MAX_VALUE)
             .addGroup(panelRenglonesLayout.createSequentialGroup()
                 .addComponent(marcarDesmarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(lbl_CodigoProducto)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txt_CodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txt_CodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(btn_IngresarCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btn_IngresarCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_BuscarProducto)
                 .addGap(0, 0, 0)
                 .addComponent(btn_NuevoProducto)
                 .addGap(0, 0, 0)
                 .addComponent(btn_QuitarDeLista)
-                .addContainerGap(265, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        panelRenglonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_BuscarProducto, btn_NuevoProducto, btn_QuitarDeLista});
-
         panelRenglonesLayout.setVerticalGroup(
             panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelRenglonesLayout.createSequentialGroup()
-                .addComponent(sp_Renglones, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
                 .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(btn_IngresarCodigoProducto)
+                    .addComponent(marcarDesmarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txt_CodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_CodigoProducto)
+                    .addComponent(btn_IngresarCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_BuscarProducto)
                     .addComponent(btn_NuevoProducto)
-                    .addComponent(btn_QuitarDeLista)
-                    .addComponent(marcarDesmarcar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(btn_QuitarDeLista))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sp_Renglones, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE))
         );
 
         panelRenglonesLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_IngresarCodigoProducto, txt_CodigoProducto});
@@ -917,7 +911,7 @@ public class GUI_FormFacturaVenta extends JDialog {
                             .addComponent(panelRenglones, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(panelResultados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 64, Short.MAX_VALUE))
+                                .addGap(0, 31, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(panelDatosComprobante, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1176,7 +1170,6 @@ public class GUI_FormFacturaVenta extends JDialog {
     private javax.swing.JLabel lbl_105;
     private javax.swing.JLabel lbl_21;
     private javax.swing.JLabel lbl_Cliente;
-    private javax.swing.JLabel lbl_CodigoProducto;
     private javax.swing.JLabel lbl_Fecha;
     private javax.swing.JLabel lbl_FechaVto;
     private javax.swing.JLabel lbl_FormaDePago;

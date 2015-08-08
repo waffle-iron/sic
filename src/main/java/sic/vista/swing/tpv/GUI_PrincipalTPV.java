@@ -67,6 +67,7 @@ public class GUI_PrincipalTPV extends JFrame {
         btn_BuscarPorCodigoProducto.addKeyListener(keyHandler);
         txt_Recargo_porcentaje.addKeyListener(keyHandler);
         btn_Continuar.addKeyListener(keyHandler);
+        tbtn_marcarDesmarcar.addKeyListener(keyHandler);
     }
 
     public char getTipoDeFactura() {
@@ -735,6 +736,7 @@ public class GUI_PrincipalTPV extends JFrame {
             }
         });
 
+        tbtn_marcarDesmarcar.setFocusable(false);
         tbtn_marcarDesmarcar.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 tbtn_marcarDesmarcarStateChanged(evt);
@@ -751,7 +753,7 @@ public class GUI_PrincipalTPV extends JFrame {
                     .addComponent(sp_Resultado)
                     .addGroup(panelRenglonesLayout.createSequentialGroup()
                         .addComponent(tbtn_marcarDesmarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txt_CodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(btn_BuscarPorCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -775,7 +777,7 @@ public class GUI_PrincipalTPV extends JFrame {
                     .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btn_BuscarProductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btn_EliminarEntradaProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(tbtn_marcarDesmarcar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(tbtn_marcarDesmarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sp_Resultado, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                 .addContainerGap())
