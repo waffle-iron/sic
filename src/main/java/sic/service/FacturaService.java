@@ -441,15 +441,19 @@ public class FacturaService {
                 if (renglon.getCantidad() < 1) {
                     FacturaABC = renglon.getCantidad();
                 } else {
-                    FacturaABC = Math.ceil(renglon.getCantidad());
-                    if ((FacturaABC % 2) == 0) {
-                        FacturaABC = FacturaABC / 2;
-                        FacturaX = renglon.getCantidad() - FacturaABC;
-                        FacturaX = (double) Math.round(FacturaX * 100) / 100;
+                    if (renglon.getCantidad() - Math.ceil(renglon.getCantidad()) == 0) {
+                        FacturaABC = Math.ceil(renglon.getCantidad() / 2);
+                        FacturaX = Math.floor(renglon.getCantidad() / 2);
                     } else {
-                        FacturaABC = Math.floor(renglon.getCantidad()) / 2;
-                        FacturaX = renglon.getCantidad() - FacturaABC;
-                        FacturaX = (double) Math.round(FacturaX * 100) / 100;
+                        if ((renglon.getCantidad() % 2) == 0) {
+                            FacturaABC = renglon.getCantidad() / 2;
+                            FacturaX = renglon.getCantidad() - FacturaABC;
+                            FacturaX = (double) Math.round(FacturaX * 100) / 100;
+                        } else {
+                            FacturaABC = Math.ceil(renglon.getCantidad() / 2);
+                            FacturaX = renglon.getCantidad() - FacturaABC;
+                            FacturaX = (double) Math.round(FacturaX * 100) / 100;
+                        }
                     }
                 }
                 RenglonFactura nuevoRenglonConIVA = renglonService.calcularRenglon(factura.getTipoFactura(), Movimiento.VENTA, FacturaABC, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
