@@ -176,7 +176,7 @@ public class GUI_PrincipalTPV extends JFrame {
 
     private void cargarCliente(Cliente cliente) {
         this.cliente = cliente;
-        txt_NombreCliente.setText(cliente.getNombre());
+        txt_NombreCliente.setText(cliente.getRazonSocial());
         txt_DomicilioCliente.setText(cliente.getDireccion());
         txt_CondicionIVACliente.setText(cliente.getCondicionIVA().toString());
         txt_IDFiscalCliente.setText(cliente.getId_Fiscal());

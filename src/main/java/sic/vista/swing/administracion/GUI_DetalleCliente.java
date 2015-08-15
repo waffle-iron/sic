@@ -49,7 +49,8 @@ public class GUI_DetalleCliente extends JDialog {
 
     private void cargarClienteParaModificar() {
         txt_Id_Fiscal.setText(clienteModificar.getId_Fiscal());
-        txt_Nombre.setText(clienteModificar.getNombre());
+        txt_RazonSocial.setText(clienteModificar.getRazonSocial());
+        txt_NombreFantasia.setText(clienteModificar.getNombreFantasia());
         cmb_CondicionIVA.setSelectedItem(clienteModificar.getCondicionIVA());
         txt_Direccion.setText(clienteModificar.getDireccion());
         cmb_Pais.setSelectedItem(clienteModificar.getLocalidad().getProvincia().getPais());
@@ -64,7 +65,7 @@ public class GUI_DetalleCliente extends JDialog {
 
     private void limpiarYRecargarComponentes() {
         txt_Id_Fiscal.setText("");
-        txt_Nombre.setText("");
+        txt_RazonSocial.setText("");
         txt_Direccion.setText("");
         txt_TelPrimario.setText("");
         txt_TelSecundario.setText("");
@@ -147,11 +148,13 @@ public class GUI_DetalleCliente extends JDialog {
         panel1 = new javax.swing.JPanel();
         lbl_CondicionIVA = new javax.swing.JLabel();
         cmb_CondicionIVA = new javax.swing.JComboBox();
-        lbl_Nombre = new javax.swing.JLabel();
-        txt_Nombre = new javax.swing.JTextField();
+        lbl_RazonSocial = new javax.swing.JLabel();
+        txt_RazonSocial = new javax.swing.JTextField();
         lbl_Id_Fiscal = new javax.swing.JLabel();
         txt_Id_Fiscal = new javax.swing.JTextField();
         btn_NuevaCondicionIVA = new javax.swing.JButton();
+        lbl_NombreFantasia = new javax.swing.JLabel();
+        txt_NombreFantasia = new javax.swing.JTextField();
         btn_Guardar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -224,12 +227,11 @@ public class GUI_DetalleCliente extends JDialog {
         panel2Layout.setHorizontalGroup(
             panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbl_Direccion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_Pais, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_Provincia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_Localidad, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
+                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lbl_Provincia, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_Pais, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_Direccion, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_Localidad, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panel2Layout.createSequentialGroup()
@@ -295,19 +297,19 @@ public class GUI_DetalleCliente extends JDialog {
         panel3Layout.setHorizontalGroup(
             panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel3Layout.createSequentialGroup()
-                .addGroup(panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbl_TelPrimario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
-                    .addComponent(lbl_TelSecundario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_Contacto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
-                    .addComponent(lbl_Email, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_FechaAlta, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lbl_Email, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_Contacto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_TelSecundario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_TelPrimario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_FechaAlta, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txt_Email, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txt_Contacto, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txt_TelSecundario, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(dc_FechaAlta, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
-                    .addComponent(txt_TelPrimario, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addGroup(panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txt_TelSecundario)
+                    .addComponent(txt_TelPrimario, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dc_FechaAlta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txt_Email, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txt_Contacto, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
         panel3Layout.setVerticalGroup(
@@ -344,9 +346,9 @@ public class GUI_DetalleCliente extends JDialog {
 
         cmb_CondicionIVA.setMaximumRowCount(5);
 
-        lbl_Nombre.setForeground(java.awt.Color.red);
-        lbl_Nombre.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lbl_Nombre.setText("* Nombre:");
+        lbl_RazonSocial.setForeground(java.awt.Color.red);
+        lbl_RazonSocial.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_RazonSocial.setText("* Razon Social:");
 
         lbl_Id_Fiscal.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Id_Fiscal.setText("ID Fiscal:");
@@ -360,24 +362,28 @@ public class GUI_DetalleCliente extends JDialog {
             }
         });
 
+        lbl_NombreFantasia.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_NombreFantasia.setText("Nombre Fantasia:");
+
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(lbl_Nombre, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_CondicionIVA, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                    .addComponent(lbl_RazonSocial, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_NombreFantasia, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                    .addComponent(lbl_CondicionIVA, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbl_Id_Fiscal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_Nombre)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel1Layout.createSequentialGroup()
-                        .addComponent(cmb_CondicionIVA, 0, 321, Short.MAX_VALUE)
+                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panel1Layout.createSequentialGroup()
+                        .addComponent(cmb_CondicionIVA, 0, 326, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btn_NuevaCondicionIVA))
-                    .addComponent(txt_Id_Fiscal))
+                    .addComponent(txt_NombreFantasia)
+                    .addComponent(txt_RazonSocial)
+                    .addComponent(txt_Id_Fiscal, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
         panel1Layout.setVerticalGroup(
@@ -389,8 +395,12 @@ public class GUI_DetalleCliente extends JDialog {
                     .addComponent(lbl_Id_Fiscal))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txt_Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_Nombre))
+                    .addComponent(txt_RazonSocial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_RazonSocial))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_NombreFantasia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_NombreFantasia))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmb_CondicionIVA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -417,8 +427,11 @@ public class GUI_DetalleCliente extends JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panel2, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btn_Guardar, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(panel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(7, 7, 7))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btn_Guardar)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -531,7 +544,8 @@ public class GUI_DetalleCliente extends JDialog {
             if (operacion == TipoDeOperacion.ALTA) {
                 Cliente cliente = new Cliente();
                 cliente.setId_Fiscal(txt_Id_Fiscal.getText().trim());
-                cliente.setNombre(txt_Nombre.getText().trim());
+                cliente.setRazonSocial(txt_RazonSocial.getText().trim());
+                cliente.setNombreFantasia(txt_NombreFantasia.getText().trim());
                 cliente.setCondicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem());
                 cliente.setDireccion(txt_Direccion.getText().trim());
                 cliente.setLocalidad((Localidad) cmb_Localidad.getSelectedItem());
@@ -554,7 +568,8 @@ public class GUI_DetalleCliente extends JDialog {
 
             if (operacion == TipoDeOperacion.ACTUALIZACION) {
                 clienteModificar.setId_Fiscal(txt_Id_Fiscal.getText().trim());
-                clienteModificar.setNombre(txt_Nombre.getText().trim());
+                clienteModificar.setRazonSocial(txt_RazonSocial.getText().trim());
+                clienteModificar.setNombreFantasia(txt_NombreFantasia.getText().trim());
                 clienteModificar.setCondicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem());
                 clienteModificar.setDireccion(txt_Direccion.getText().trim());
                 clienteModificar.setLocalidad((Localidad) cmb_Localidad.getSelectedItem());
@@ -613,9 +628,10 @@ public class GUI_DetalleCliente extends JDialog {
     private javax.swing.JLabel lbl_FechaAlta;
     private javax.swing.JLabel lbl_Id_Fiscal;
     private javax.swing.JLabel lbl_Localidad;
-    private javax.swing.JLabel lbl_Nombre;
+    private javax.swing.JLabel lbl_NombreFantasia;
     private javax.swing.JLabel lbl_Pais;
     private javax.swing.JLabel lbl_Provincia;
+    private javax.swing.JLabel lbl_RazonSocial;
     private javax.swing.JLabel lbl_TelPrimario;
     private javax.swing.JLabel lbl_TelSecundario;
     private javax.swing.JPanel panel1;
@@ -625,7 +641,8 @@ public class GUI_DetalleCliente extends JDialog {
     private javax.swing.JTextField txt_Direccion;
     private javax.swing.JTextField txt_Email;
     private javax.swing.JTextField txt_Id_Fiscal;
-    private javax.swing.JTextField txt_Nombre;
+    private javax.swing.JTextField txt_NombreFantasia;
+    private javax.swing.JTextField txt_RazonSocial;
     private javax.swing.JTextField txt_TelPrimario;
     private javax.swing.JTextField txt_TelSecundario;
     // End of variables declaration//GEN-END:variables

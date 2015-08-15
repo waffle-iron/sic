@@ -34,10 +34,10 @@ public class ClienteRepository {
         }
     }
 
-    public Cliente getClientePorNombre(String nombre, Empresa empresa) {
+    public Cliente getClientePorRazonSocial(String razonSocial, Empresa empresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarPorNombre", Cliente.class);
-        typedQuery.setParameter("nombre", nombre);
+        TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarPorRazonSocial", Cliente.class);
+        typedQuery.setParameter("razonSocial", razonSocial);
         typedQuery.setParameter("empresa", empresa);
         List<Cliente> clientes = typedQuery.getResultList();
         em.close();
@@ -48,9 +48,9 @@ public class ClienteRepository {
         }
     }
 
-    public List<Cliente> getClientesQueContengaNombreContactoIdFiscal(String criteria, Empresa empresa) {
+    public List<Cliente> getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(String criteria, Empresa empresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarPorNombreYContactoQueContenga", Cliente.class);
+        TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarQueContengaRazonSocialNombreFantasiaIdFiscal", Cliente.class);
         typedQuery.setParameter("empresa", empresa);
         typedQuery.setParameter("criteria", "%" + criteria + "%");
         List<Cliente> clientes = typedQuery.getResultList();
@@ -87,22 +87,37 @@ public class ClienteRepository {
 
     public List<Cliente> buscarClientes(BusquedaClienteCriteria criteria) {
         String query = "SELECT c FROM Cliente c WHERE c.empresa = :empresa AND c.eliminado = false";
-        if (criteria.getBuscaPorNombre() == true) {
-            String[] terminos = criteria.getNombre().split(" ");
-            for (int i = 0; i < terminos.length; i++) {
-                query += " AND c.nombre LIKE '%" + terminos[i] + "%'";
+
+        //OR entre razonSocial y nombreFantasia
+        if (criteria.buscaPorRazonSocial() && criteria.buscaPorNombreFantasia()) {
+            String[] terminos = criteria.getRazonSocial().split(" ");
+            for (String termino : terminos) {
+                query += " AND (c.razonSocial LIKE '%" + termino + "%'" + " OR c.nombreFantasia LIKE '%" + termino + "%')";
+            }
+        } else {
+            if (criteria.buscaPorRazonSocial() == true) {
+                String[] terminos = criteria.getRazonSocial().split(" ");
+                for (String termino : terminos) {
+                    query += " AND c.razonSocial LIKE '%" + termino + "%'";
+                }
+            }
+            if (criteria.buscaPorNombreFantasia() == true) {
+                String[] terminos = criteria.getNombreFantasia().split(" ");
+                for (String termino : terminos) {
+                    query += " AND c.nombreFantasia LIKE '%" + termino + "%'";
+                }
             }
         }
-        if (criteria.getBuscaPorId_Fiscal() == true) {
+        if (criteria.buscaPorId_Fiscal() == true) {
             query = query + " AND c.id_Fiscal = '" + criteria.getId_Fiscal() + "'";
         }
-        if (criteria.getBuscaPorLocalidad() == true) {
+        if (criteria.buscaPorLocalidad() == true) {
             query = query + " AND c.localidad = " + criteria.getLocalidad().getId_Localidad();
         }
-        if (criteria.getBuscaPorProvincia() == true) {
+        if (criteria.buscaPorProvincia() == true) {
             query = query + " AND c.localidad.provincia = " + criteria.getProvincia().getId_Provincia();
         }
-        if (criteria.getBuscaPorPais() == true) {
+        if (criteria.buscaPorPais() == true) {
             query = query + " AND c.localidad.provincia.pais = " + criteria.getPais().getId_Pais();
         }
         EntityManager em = PersistenceUtil.getEntityManager();

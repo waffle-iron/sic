@@ -166,7 +166,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             fila[1] = String.valueOf(factura.getTipoFactura());
             fila[2] = factura.getNumSerie() + " - " + factura.getNumFactura();
             fila[3] = factura.getFechaVencimiento();
-            fila[4] = factura.getCliente().getNombre();
+            fila[4] = factura.getCliente().getRazonSocial();
             fila[5] = factura.getUsuario().getNombre();
             fila[6] = factura.getFormaPago().getNombre();
             fila[7] = factura.getTransportista().getNombre();
