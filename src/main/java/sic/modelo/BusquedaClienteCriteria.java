@@ -6,8 +6,10 @@ package sic.modelo;
  */
 public class BusquedaClienteCriteria {
 
-    private boolean buscaPorNombre;
-    private String nombre;
+    private boolean buscaPorRazonSocial;
+    private String razonSocial;
+    private boolean buscaPorNombreFantasia;
+    private String nombreFantasia;
     private boolean buscaPorId_Fiscal;
     private String id_Fiscal;
     private boolean buscaPorPais;
@@ -21,9 +23,18 @@ public class BusquedaClienteCriteria {
     public BusquedaClienteCriteria() {
     }
 
-    public BusquedaClienteCriteria(boolean buscaPorNombre, String nombre, boolean buscaPorId_Fiscal, String id_Fiscal, boolean buscaPorPais, Pais pais, boolean buscaPorProvincia, Provincia provincia, boolean buscaPorLocalidad, Localidad localidad, Empresa empresa) {
-        this.buscaPorNombre = buscaPorNombre;
-        this.nombre = nombre;
+    public BusquedaClienteCriteria(boolean buscaPorRazonSocial, String razonSocial,
+            boolean buscaPorNombreFantasia, String nombreFantasia,
+            boolean buscaPorId_Fiscal, String id_Fiscal,
+            boolean buscaPorPais, Pais pais,
+            boolean buscaPorProvincia, Provincia provincia,
+            boolean buscaPorLocalidad, Localidad localidad,
+            Empresa empresa) {
+
+        this.buscaPorRazonSocial = buscaPorRazonSocial;
+        this.razonSocial = razonSocial;
+        this.buscaPorNombreFantasia = buscaPorNombreFantasia;
+        this.nombreFantasia = nombreFantasia;
         this.buscaPorId_Fiscal = buscaPorId_Fiscal;
         this.id_Fiscal = id_Fiscal;
         this.buscaPorPais = buscaPorPais;
@@ -35,23 +46,39 @@ public class BusquedaClienteCriteria {
         this.empresa = empresa;
     }
 
-    public boolean getBuscaPorNombre() {
-        return buscaPorNombre;
+    public boolean buscaPorRazonSocial() {
+        return buscaPorRazonSocial;
     }
 
-    public void setBuscaPorNombre(boolean buscaPorNombre) {
-        this.buscaPorNombre = buscaPorNombre;
+    public void setBuscaPorRazonSocial(boolean buscaPorRazonSocial) {
+        this.buscaPorRazonSocial = buscaPorRazonSocial;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getRazonSocial() {
+        return razonSocial;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setRazonSocial(String razonSocial) {
+        this.razonSocial = razonSocial;
     }
 
-    public boolean getBuscaPorId_Fiscal() {
+    public boolean buscaPorNombreFantasia() {
+        return buscaPorNombreFantasia;
+    }
+
+    public void setBuscaPorNombreFantasia(boolean buscaPorNombreFantasia) {
+        this.buscaPorNombreFantasia = buscaPorNombreFantasia;
+    }
+
+    public String getNombreFantasia() {
+        return nombreFantasia;
+    }
+
+    public void setNombreFantasia(String nombreFantasia) {
+        this.nombreFantasia = nombreFantasia;
+    }
+
+    public boolean buscaPorId_Fiscal() {
         return buscaPorId_Fiscal;
     }
 
@@ -67,7 +94,7 @@ public class BusquedaClienteCriteria {
         this.id_Fiscal = id_Fiscal;
     }
 
-    public boolean getBuscaPorPais() {
+    public boolean buscaPorPais() {
         return buscaPorPais;
     }
 
@@ -83,7 +110,7 @@ public class BusquedaClienteCriteria {
         this.pais = pais;
     }
 
-    public boolean getBuscaPorProvincia() {
+    public boolean buscaPorProvincia() {
         return buscaPorProvincia;
     }
 
@@ -99,7 +126,7 @@ public class BusquedaClienteCriteria {
         this.provincia = provincia;
     }
 
-    public boolean getBuscaPorLocalidad() {
+    public boolean buscaPorLocalidad() {
         return buscaPorLocalidad;
     }
 
@@ -122,4 +149,5 @@ public class BusquedaClienteCriteria {
     public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
+
 }

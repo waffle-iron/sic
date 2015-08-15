@@ -20,12 +20,12 @@ public class ClienteService {
         return modeloCliente.getClientes(empresa);
     }
 
-    public List<Cliente> getClientesQueContengaNombreContactoIdFiscal(String criteria, Empresa empresa) {
-        return modeloCliente.getClientesQueContengaNombreContactoIdFiscal(criteria, empresa);
+    public List<Cliente> getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(String criteria, Empresa empresa) {
+        return modeloCliente.getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(criteria, empresa);
     }
 
-    public Cliente getClientePorNombre(String nombre, Empresa empresa) {
-        return modeloCliente.getClientePorNombre(nombre, empresa);
+    public Cliente getClientePorRazonSocial(String razonSocial, Empresa empresa) {
+        return modeloCliente.getClientePorRazonSocial(razonSocial, empresa);
     }
 
     public Cliente getClientePorIdFiscal(String idFiscal, Empresa empresa) {
@@ -42,7 +42,6 @@ public class ClienteService {
      * predeterminado y cambia su estado.
      *
      * @param cliente Cliente candidato a predeterminado.
-     * @throws BaseDeDatosException
      */
     public void setClientePredeterminado(Cliente cliente) {
         Cliente clientePredeterminadoAnterior = modeloCliente.getClientePredeterminado(cliente.getEmpresa());
@@ -55,7 +54,7 @@ public class ClienteService {
     }
 
     public List<Cliente> buscarClientes(BusquedaClienteCriteria criteria) {
-        //@Todo No debe verificar contra la palabra "Todos/as". Usar el boolean asociado a ese campo
+        //@TODO No debe verificar contra la palabra "Todos/as". Usar el boolean asociado a ese campo
         //Pais
         if (criteria.getPais().getNombre().equals("Todos")) {
             criteria.setBuscaPorPais(false);
@@ -71,11 +70,6 @@ public class ClienteService {
         return modeloCliente.buscarClientes(criteria);
     }
 
-    public void eliminar(Cliente cliente) {
-        cliente.setEliminado(true);
-        modeloCliente.actualizar(cliente);
-    }
-
     private void validarOperacion(TipoDeOperacion operacion, Cliente cliente) {
         //Entrada de Datos
         if (!Validator.esEmailValido(cliente.getEmail())) {
@@ -83,9 +77,9 @@ public class ClienteService {
                     .getString("mensaje_cliente_email_invalido"));
         }
         //Requeridos        
-        if (Validator.esVacio(cliente.getNombre())) {
+        if (Validator.esVacio(cliente.getRazonSocial())) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_cliente_vacio_nombre"));
+                    .getString("mensaje_cliente_vacio_razonSocial"));
         }
         if (cliente.getCondicionIVA() == null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
@@ -116,16 +110,16 @@ public class ClienteService {
                         .getString("mensaje_cliente_duplicado_idFiscal"));
             }
         }
-        //Nombre
-        Cliente clienteDuplicado = this.getClientePorNombre(cliente.getNombre(), cliente.getEmpresa());
+        //Razon Social
+        Cliente clienteDuplicado = this.getClientePorRazonSocial(cliente.getRazonSocial(), cliente.getEmpresa());
         if (operacion.equals(TipoDeOperacion.ALTA) && clienteDuplicado != null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_cliente_duplicado_nombre"));
+                    .getString("mensaje_cliente_duplicado_razonSocial"));
         }
         if (operacion.equals(TipoDeOperacion.ACTUALIZACION)) {
             if (clienteDuplicado != null && clienteDuplicado.getId_Cliente() != cliente.getId_Cliente()) {
                 throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                        .getString("mensaje_cliente_duplicado_nombre"));
+                        .getString("mensaje_cliente_duplicado_razonSocial"));
             }
         }
     }
@@ -137,6 +131,11 @@ public class ClienteService {
 
     public void actualizar(Cliente cliente) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, cliente);
+        modeloCliente.actualizar(cliente);
+    }
+
+    public void eliminar(Cliente cliente) {
+        cliente.setEliminado(true);
         modeloCliente.actualizar(cliente);
     }
 }

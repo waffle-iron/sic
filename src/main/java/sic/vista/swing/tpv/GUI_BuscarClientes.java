@@ -3,7 +3,6 @@ package sic.vista.swing.tpv;
 import java.awt.Frame;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -58,26 +57,28 @@ public class GUI_BuscarClientes extends JDialog {
     }
 
     private void Buscar() {
-        clientes = clienteService.getClientesQueContengaNombreContactoIdFiscal(
-                txt_TextoBusqueda.getText().trim(), empresaService.getEmpresaActiva().getEmpresa());
+        clientes = clienteService.getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(
+                txt_TextoBusqueda.getText().trim(),
+                empresaService.getEmpresaActiva().getEmpresa());
         this.cargarResultadosAlTable();
     }
 
     private void setColumnas() {
         //nombres de columnas
-        String[] encabezados = new String[12];
+        String[] encabezados = new String[13];
         encabezados[0] = "ID Fiscal";
-        encabezados[1] = "Nombre";
-        encabezados[2] = "Contacto";
+        encabezados[1] = "Razon Social";
+        encabezados[2] = "Nombre Fantasia";
         encabezados[3] = "Direccion";
         encabezados[4] = "Condicion IVA";
         encabezados[5] = "Tel. Primario";
         encabezados[6] = "Tel. Secundario";
-        encabezados[7] = "Email";
-        encabezados[8] = "Fecha Alta";
-        encabezados[9] = "Localidad";
-        encabezados[10] = "Provincia";
-        encabezados[11] = "Pais";
+        encabezados[7] = "Contacto";
+        encabezados[8] = "Email";
+        encabezados[9] = "Fecha Alta";
+        encabezados[10] = "Localidad";
+        encabezados[11] = "Provincia";
+        encabezados[12] = "Pais";
         modeloTablaResultados.setColumnIdentifiers(encabezados);
         tbl_Resultado.setModel(modeloTablaResultados);
 
@@ -91,10 +92,11 @@ public class GUI_BuscarClientes extends JDialog {
         tipos[5] = String.class;
         tipos[6] = String.class;
         tipos[7] = String.class;
-        tipos[8] = Date.class;
-        tipos[9] = String.class;
+        tipos[8] = String.class;
+        tipos[9] = Date.class;
         tipos[10] = String.class;
         tipos[11] = String.class;
+        tipos[12] = String.class;
         modeloTablaResultados.setClaseColumnas(tipos);
         tbl_Resultado.getTableHeader().setReorderingAllowed(false);
         tbl_Resultado.getTableHeader().setResizingAllowed(true);
@@ -104,32 +106,34 @@ public class GUI_BuscarClientes extends JDialog {
         tbl_Resultado.getColumnModel().getColumn(1).setPreferredWidth(250);
         tbl_Resultado.getColumnModel().getColumn(2).setPreferredWidth(250);
         tbl_Resultado.getColumnModel().getColumn(3).setPreferredWidth(250);
-        tbl_Resultado.getColumnModel().getColumn(4).setPreferredWidth(180);
+        tbl_Resultado.getColumnModel().getColumn(4).setPreferredWidth(250);
         tbl_Resultado.getColumnModel().getColumn(5).setPreferredWidth(180);
-        tbl_Resultado.getColumnModel().getColumn(6).setPreferredWidth(200);
-        tbl_Resultado.getColumnModel().getColumn(7).setPreferredWidth(250);
-        tbl_Resultado.getColumnModel().getColumn(8).setPreferredWidth(100);
-        tbl_Resultado.getColumnModel().getColumn(9).setPreferredWidth(200);
+        tbl_Resultado.getColumnModel().getColumn(6).setPreferredWidth(180);
+        tbl_Resultado.getColumnModel().getColumn(7).setPreferredWidth(200);
+        tbl_Resultado.getColumnModel().getColumn(8).setPreferredWidth(250);
+        tbl_Resultado.getColumnModel().getColumn(9).setPreferredWidth(100);
         tbl_Resultado.getColumnModel().getColumn(10).setPreferredWidth(200);
         tbl_Resultado.getColumnModel().getColumn(11).setPreferredWidth(200);
+        tbl_Resultado.getColumnModel().getColumn(12).setPreferredWidth(200);
     }
 
     private void cargarResultadosAlTable() {
         this.limpiarJTable();
         for (Cliente cliente : clientes) {
-            Object[] fila = new Object[12];
+            Object[] fila = new Object[13];
             fila[0] = cliente.getId_Fiscal();
-            fila[1] = cliente.getNombre();
-            fila[2] = cliente.getContacto();
+            fila[1] = cliente.getRazonSocial();
+            fila[2] = cliente.getNombreFantasia();
             fila[3] = cliente.getDireccion();
             fila[4] = cliente.getCondicionIVA();
             fila[5] = cliente.getTelPrimario();
             fila[6] = cliente.getTelSecundario();
-            fila[7] = cliente.getEmail();
-            fila[8] = cliente.getFechaAlta();
-            fila[9] = cliente.getLocalidad();
-            fila[10] = cliente.getLocalidad().getProvincia();
-            fila[11] = cliente.getLocalidad().getProvincia().getPais();
+            fila[7] = cliente.getContacto();
+            fila[8] = cliente.getEmail();
+            fila[9] = cliente.getFechaAlta();
+            fila[10] = cliente.getLocalidad();
+            fila[11] = cliente.getLocalidad().getProvincia();
+            fila[12] = cliente.getLocalidad().getProvincia().getPais();
             modeloTablaResultados.addRow(fila);
         }
         tbl_Resultado.setModel(modeloTablaResultados);

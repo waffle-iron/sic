@@ -72,20 +72,21 @@ public class GUI_Clientes extends JInternalFrame {
         tbl_Resultados.setAutoCreateRowSorter(true);
 
         //nombres de columnas
-        String[] encabezados = new String[13];
+        String[] encabezados = new String[14];
         encabezados[0] = "Predeterminado";
         encabezados[1] = "ID Fiscal";
-        encabezados[2] = "Nombre";
-        encabezados[3] = "Contacto";
+        encabezados[2] = "Razon Social";
+        encabezados[3] = "Nombre Fantasia";        
         encabezados[4] = "Direccion";
         encabezados[5] = "Condicion IVA";
         encabezados[6] = "Tel. Primario";
-        encabezados[7] = "Tel. Secundario";        
-        encabezados[8] = "Email";
-        encabezados[9] = "Fecha Alta";
-        encabezados[10] = "Localidad";
-        encabezados[11] = "Provincia";
-        encabezados[12] = "Pais";
+        encabezados[7] = "Tel. Secundario";
+        encabezados[8] = "Contacto";
+        encabezados[9] = "Email";
+        encabezados[10] = "Fecha Alta";
+        encabezados[11] = "Localidad";
+        encabezados[12] = "Provincia";
+        encabezados[13] = "Pais";
         modeloTablaDeResultados.setColumnIdentifiers(encabezados);
         tbl_Resultados.setModel(modeloTablaDeResultados);
 
@@ -100,10 +101,11 @@ public class GUI_Clientes extends JInternalFrame {
         tipos[6] = String.class;
         tipos[7] = String.class;
         tipos[8] = String.class;
-        tipos[9] = Date.class;
-        tipos[10] = String.class;
+        tipos[9] = String.class;
+        tipos[10] = Date.class;
         tipos[11] = String.class;
         tipos[12] = String.class;
+        tipos[13] = String.class;
         modeloTablaDeResultados.setClaseColumnas(tipos);
         tbl_Resultados.getTableHeader().setReorderingAllowed(false);
         tbl_Resultados.getTableHeader().setResizingAllowed(true);
@@ -114,33 +116,35 @@ public class GUI_Clientes extends JInternalFrame {
         tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(250);
         tbl_Resultados.getColumnModel().getColumn(3).setPreferredWidth(250);
         tbl_Resultados.getColumnModel().getColumn(4).setPreferredWidth(250);
-        tbl_Resultados.getColumnModel().getColumn(5).setPreferredWidth(150);
-        tbl_Resultados.getColumnModel().getColumn(6).setPreferredWidth(200);
+        tbl_Resultados.getColumnModel().getColumn(5).setPreferredWidth(250);
+        tbl_Resultados.getColumnModel().getColumn(6).setPreferredWidth(150);
         tbl_Resultados.getColumnModel().getColumn(7).setPreferredWidth(200);
-        tbl_Resultados.getColumnModel().getColumn(8).setPreferredWidth(250);
-        tbl_Resultados.getColumnModel().getColumn(9).setPreferredWidth(100);
-        tbl_Resultados.getColumnModel().getColumn(10).setPreferredWidth(200);
+        tbl_Resultados.getColumnModel().getColumn(8).setPreferredWidth(200);
+        tbl_Resultados.getColumnModel().getColumn(9).setPreferredWidth(250);
+        tbl_Resultados.getColumnModel().getColumn(10).setPreferredWidth(100);
         tbl_Resultados.getColumnModel().getColumn(11).setPreferredWidth(200);
         tbl_Resultados.getColumnModel().getColumn(12).setPreferredWidth(200);
+        tbl_Resultados.getColumnModel().getColumn(13).setPreferredWidth(200);
     }
 
     private void cargarResultadosAlTable() {
         this.limpiarJTable();
         for (Cliente cliente : clientes) {
-            Object[] fila = new Object[13];
+            Object[] fila = new Object[14];
             fila[0] = cliente.isPredeterminado();
             fila[1] = cliente.getId_Fiscal();
-            fila[2] = cliente.getNombre();
-            fila[3] = cliente.getContacto();
+            fila[2] = cliente.getRazonSocial();
+            fila[3] = cliente.getNombreFantasia();            
             fila[4] = cliente.getDireccion();
             fila[5] = cliente.getCondicionIVA().getNombre();
             fila[6] = cliente.getTelPrimario();
             fila[7] = cliente.getTelSecundario();            
-            fila[8] = cliente.getEmail();
-            fila[9] = cliente.getFechaAlta();
-            fila[10] = cliente.getLocalidad().getNombre();
-            fila[11] = cliente.getLocalidad().getProvincia().getNombre();
-            fila[12] = cliente.getLocalidad().getProvincia().getPais().getNombre();
+            fila[8] = cliente.getContacto();
+            fila[9] = cliente.getEmail();
+            fila[10] = cliente.getFechaAlta();
+            fila[11] = cliente.getLocalidad().getNombre();
+            fila[12] = cliente.getLocalidad().getProvincia().getNombre();
+            fila[13] = cliente.getLocalidad().getProvincia().getPais().getNombre();
             modeloTablaDeResultados.addRow(fila);
         }
         tbl_Resultados.setModel(modeloTablaDeResultados);
@@ -157,7 +161,8 @@ public class GUI_Clientes extends JInternalFrame {
 
     private void buscar() {
         BusquedaClienteCriteria criteria = new BusquedaClienteCriteria(
-                chk_Nombre.isSelected(), txt_Nombre.getText().trim(),
+                chk_RazonSocialNombreFantasia.isSelected(), txt_RazonSocialNombreFantasia.getText().trim(),
+                chk_RazonSocialNombreFantasia.isSelected(), txt_RazonSocialNombreFantasia.getText().trim(),
                 chk_Id_Fiscal.isSelected(), txt_Id_Fiscal.getText().trim(),
                 chk_Ubicacion.isSelected(), (Pais) cmb_Pais.getSelectedItem(),
                 chk_Ubicacion.isSelected(), (Provincia) cmb_Provincia.getSelectedItem(),
@@ -178,8 +183,8 @@ public class GUI_Clientes extends JInternalFrame {
     private void initComponents() {
 
         panelFiltros = new javax.swing.JPanel();
-        chk_Nombre = new javax.swing.JCheckBox();
-        txt_Nombre = new javax.swing.JTextField();
+        chk_RazonSocialNombreFantasia = new javax.swing.JCheckBox();
+        txt_RazonSocialNombreFantasia = new javax.swing.JTextField();
         chk_Ubicacion = new javax.swing.JCheckBox();
         cmb_Provincia = new javax.swing.JComboBox();
         cmb_Pais = new javax.swing.JComboBox();
@@ -221,14 +226,14 @@ public class GUI_Clientes extends JInternalFrame {
 
         panelFiltros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
 
-        chk_Nombre.setText("Nombre:");
-        chk_Nombre.addItemListener(new java.awt.event.ItemListener() {
+        chk_RazonSocialNombreFantasia.setText("Razon Social / Nombre Fantasia:");
+        chk_RazonSocialNombreFantasia.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                chk_NombreItemStateChanged(evt);
+                chk_RazonSocialNombreFantasiaItemStateChanged(evt);
             }
         });
 
-        txt_Nombre.setEnabled(false);
+        txt_RazonSocialNombreFantasia.setEnabled(false);
 
         chk_Ubicacion.setText("Ubicación:");
         chk_Ubicacion.addItemListener(new java.awt.event.ItemListener() {
@@ -285,47 +290,42 @@ public class GUI_Clientes extends JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbl_cantResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(panelFiltrosLayout.createSequentialGroup()
+                        .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(chk_Ubicacion, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chk_RazonSocialNombreFantasia, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chk_Id_Fiscal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chk_Id_Fiscal)
-                            .addComponent(chk_Nombre))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txt_Nombre, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
-                            .addComponent(txt_Id_Fiscal))
-                        .addGap(18, 18, 18)
-                        .addComponent(chk_Ubicacion)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cmb_Localidad, 0, 186, Short.MAX_VALUE)
+                            .addComponent(txt_RazonSocialNombreFantasia)
+                            .addComponent(txt_Id_Fiscal)
+                            .addComponent(cmb_Localidad, 0, 235, Short.MAX_VALUE)
                             .addComponent(cmb_Provincia, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cmb_Pais, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(cmb_Pais, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
-
-        panelFiltrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cmb_Pais, txt_Nombre});
-
         panelFiltrosLayout.setVerticalGroup(
             panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelFiltrosLayout.createSequentialGroup()
-                .addContainerGap(11, Short.MAX_VALUE)
                 .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(chk_Nombre)
-                    .addComponent(txt_Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chk_Ubicacion)
-                    .addComponent(cmb_Pais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(chk_RazonSocialNombreFantasia)
+                    .addComponent(txt_RazonSocialNombreFantasia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(chk_Id_Fiscal)
-                        .addComponent(txt_Id_Fiscal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(cmb_Provincia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chk_Id_Fiscal)
+                    .addComponent(txt_Id_Fiscal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmb_Localidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_Buscar)
-                    .addComponent(lbl_cantResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(chk_Ubicacion)
+                    .addGroup(panelFiltrosLayout.createSequentialGroup()
+                        .addComponent(cmb_Pais, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmb_Provincia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmb_Localidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btn_Buscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_cantResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         panelResultados.setBorder(javax.swing.BorderFactory.createTitledBorder("Resultados"));
@@ -402,7 +402,7 @@ public class GUI_Clientes extends JInternalFrame {
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelResultadosLayout.createSequentialGroup()
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_Nuevo)
@@ -417,10 +417,10 @@ public class GUI_Clientes extends JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panelResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(panelFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addComponent(panelResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -433,15 +433,15 @@ public class GUI_Clientes extends JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void chk_NombreItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_NombreItemStateChanged
+    private void chk_RazonSocialNombreFantasiaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_RazonSocialNombreFantasiaItemStateChanged
         //Pregunta el estado actual del checkBox
-        if (chk_Nombre.isSelected() == true) {
-            txt_Nombre.setEnabled(true);
-            txt_Nombre.requestFocus();
+        if (chk_RazonSocialNombreFantasia.isSelected() == true) {
+            txt_RazonSocialNombreFantasia.setEnabled(true);
+            txt_RazonSocialNombreFantasia.requestFocus();
         } else {
-            txt_Nombre.setEnabled(false);
+            txt_RazonSocialNombreFantasia.setEnabled(false);
         }
-    }//GEN-LAST:event_chk_NombreItemStateChanged
+    }//GEN-LAST:event_chk_RazonSocialNombreFantasiaItemStateChanged
 
     private void chk_UbicacionItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_UbicacionItemStateChanged
         //Pregunta el estado actual del checkBox
@@ -621,6 +621,7 @@ public class GUI_Clientes extends JInternalFrame {
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_setPredeterminadoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Buscar;
     private javax.swing.JButton btn_Eliminar;
@@ -628,7 +629,7 @@ public class GUI_Clientes extends JInternalFrame {
     private javax.swing.JButton btn_Nuevo;
     private javax.swing.JButton btn_setPredeterminado;
     private javax.swing.JCheckBox chk_Id_Fiscal;
-    private javax.swing.JCheckBox chk_Nombre;
+    private javax.swing.JCheckBox chk_RazonSocialNombreFantasia;
     private javax.swing.JCheckBox chk_Ubicacion;
     private javax.swing.JComboBox cmb_Localidad;
     private javax.swing.JComboBox cmb_Pais;
@@ -639,6 +640,6 @@ public class GUI_Clientes extends JInternalFrame {
     private javax.swing.JScrollPane sp_Resultados;
     private javax.swing.JTable tbl_Resultados;
     private javax.swing.JTextField txt_Id_Fiscal;
-    private javax.swing.JTextField txt_Nombre;
+    private javax.swing.JTextField txt_RazonSocialNombreFantasia;
     // End of variables declaration//GEN-END:variables
 }

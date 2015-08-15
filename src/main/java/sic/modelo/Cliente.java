@@ -19,14 +19,22 @@ import javax.persistence.TemporalType;
 
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "Cliente.buscarTodos", query = "SELECT c FROM Cliente c WHERE c.empresa = :empresa AND c.eliminado = false ORDER BY c.nombre ASC"),
-    @NamedQuery(name = "Cliente.buscarPorId", query = "SELECT c FROM Cliente c WHERE c.id_Cliente = :id AND c.eliminado = false"),
-    @NamedQuery(name = "Cliente.buscarPorNombreYContactoQueContenga", query = "SELECT c FROM Cliente c "
-            + "WHERE c.nombre like :criteria OR c.contacto like :criteria OR c.id_Fiscal like :criteria AND c.empresa = :empresa AND c.eliminado = false "
-            + "ORDER BY c.nombre ASC"),
-    @NamedQuery(name = "Cliente.buscarPorNombre", query = "SELECT c FROM Cliente c WHERE c.nombre = :nombre AND c.empresa = :empresa AND c.eliminado = false ORDER BY c.nombre ASC"),
-    @NamedQuery(name = "Cliente.buscarPorIdFiscal", query = "SELECT c FROM Cliente c WHERE c.id_Fiscal = :id_Fiscal AND c.eliminado = false AND c.empresa = :empresa"),
-    @NamedQuery(name = "Cliente.buscarPredeterminado", query = "SELECT c FROM Cliente c WHERE c.predeterminado = true AND c.eliminado = false AND c.empresa = :empresa")
+    @NamedQuery(name = "Cliente.buscarTodos",
+            query = "SELECT c FROM Cliente c WHERE c.empresa = :empresa AND c.eliminado = false ORDER BY c.razonSocial ASC"),
+    @NamedQuery(name = "Cliente.buscarPorId",
+            query = "SELECT c FROM Cliente c WHERE c.id_Cliente = :id AND c.eliminado = false"),
+    @NamedQuery(name = "Cliente.buscarQueContengaRazonSocialNombreFantasiaIdFiscal",
+            query = "SELECT c FROM Cliente c "
+            + "WHERE (c.razonSocial LIKE :criteria OR c.nombreFantasia LIKE :criteria OR c.id_Fiscal LIKE :criteria) "
+            + "AND c.empresa = :empresa AND c.eliminado = false "
+            + "ORDER BY c.razonSocial ASC"),
+    @NamedQuery(name = "Cliente.buscarPorRazonSocial",
+            query = "SELECT c FROM Cliente c WHERE c.razonSocial = :razonSocial AND c.empresa = :empresa AND c.eliminado = false "
+            + "ORDER BY c.razonSocial ASC"),
+    @NamedQuery(name = "Cliente.buscarPorIdFiscal",
+            query = "SELECT c FROM Cliente c WHERE c.id_Fiscal = :id_Fiscal AND c.eliminado = false AND c.empresa = :empresa"),
+    @NamedQuery(name = "Cliente.buscarPredeterminado",
+            query = "SELECT c FROM Cliente c WHERE c.predeterminado = true AND c.eliminado = false AND c.empresa = :empresa")
 })
 public class Cliente implements Serializable {
 
@@ -35,7 +43,9 @@ public class Cliente implements Serializable {
     private long id_Cliente;
 
     @Column(nullable = false)
-    private String nombre;
+    private String razonSocial;
+
+    private String nombreFantasia;
 
     @Column(nullable = false)
     private String direccion;
@@ -153,12 +163,20 @@ public class Cliente implements Serializable {
         this.localidad = localidad;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getRazonSocial() {
+        return razonSocial;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setRazonSocial(String razonSocial) {
+        this.razonSocial = razonSocial;
+    }
+
+    public String getNombreFantasia() {
+        return nombreFantasia;
+    }
+
+    public void setNombreFantasia(String nombreFantasia) {
+        this.nombreFantasia = nombreFantasia;
     }
 
     public String getTelPrimario() {
@@ -203,14 +221,14 @@ public class Cliente implements Serializable {
 
     @Override
     public String toString() {
-        return nombre;
+        return razonSocial;
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
         hash = 97 * hash + (int) (this.id_Cliente ^ (this.id_Cliente >>> 32));
-        hash = 97 * hash + Objects.hashCode(this.nombre);
+        hash = 97 * hash + Objects.hashCode(this.razonSocial);
         return hash;
     }
 
@@ -226,7 +244,7 @@ public class Cliente implements Serializable {
         if (this.id_Cliente != other.id_Cliente) {
             return false;
         }
-        if (!Objects.equals(this.nombre, other.nombre)) {
+        if (!Objects.equals(this.razonSocial, other.razonSocial)) {
             return false;
         }
         return true;
