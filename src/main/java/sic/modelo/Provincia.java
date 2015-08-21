@@ -13,11 +13,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "provincia")
 @NamedQueries({
-    @NamedQuery(name = "Provincia.buscarProvinciasDelPais", query = "SELECT p FROM Provincia p WHERE p.pais = :pais AND p.eliminada = false ORDER BY p.nombre ASC"),
-    @NamedQuery(name = "Provincia.buscarPorNombre", query = "SELECT p FROM Provincia p WHERE p.pais = :pais AND p.eliminada = false AND p.nombre = :nombre ORDER BY p.nombre ASC")
+    @NamedQuery(name = "Provincia.buscarProvinciasDelPais",
+            query = "SELECT p FROM Provincia p WHERE p.pais = :pais AND p.eliminada = false ORDER BY p.nombre ASC"),
+    @NamedQuery(name = "Provincia.buscarPorNombre",
+            query = "SELECT p FROM Provincia p WHERE p.pais = :pais AND p.eliminada = false AND p.nombre = :nombre ORDER BY p.nombre ASC")
 })
 public class Provincia implements Serializable {
 

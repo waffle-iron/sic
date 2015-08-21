@@ -11,10 +11,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "renglonfactura")
 @NamedQueries({
-    @NamedQuery(name = "RenglonFactura.getRenglonesDeLaFactura", query = "SELECT r FROM RenglonFactura r WHERE r.factura = :factura")
+    @NamedQuery(name = "RenglonFactura.getRenglonesDeLaFactura",
+            query = "SELECT r FROM RenglonFactura r WHERE r.factura = :factura")
 })
 public class RenglonFactura implements Serializable {
 

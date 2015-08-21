@@ -9,8 +9,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "configuraciondelsistema")
 @NamedQueries({
     @NamedQuery(name = "ConfiguracionDelSistema.buscarPorId",
             query = "SELECT cds FROM ConfiguracionDelSistema cds WHERE cds.id_ConfiguracionDelSistema = :id"),

@@ -15,10 +15,12 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
+@Table(name = "factura")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Factura implements Serializable {
 

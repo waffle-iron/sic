@@ -13,11 +13,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "transportista")
 @NamedQueries({
-    @NamedQuery(name = "Transportista.buscarTodos", query = "SELECT t FROM Transportista t WHERE t.empresa = :empresa AND t.eliminado = false ORDER BY t.nombre ASC"),
-    @NamedQuery(name = "Transportista.buscarPorNombre", query = "SELECT t FROM Transportista t WHERE t.empresa = :empresa AND t.nombre = :nombre AND t.eliminado = false ORDER BY t.nombre ASC")
+    @NamedQuery(name = "Transportista.buscarTodos",
+            query = "SELECT t FROM Transportista t WHERE t.empresa = :empresa AND t.eliminado = false ORDER BY t.nombre ASC"),
+    @NamedQuery(name = "Transportista.buscarPorNombre",
+            query = "SELECT t FROM Transportista t WHERE t.empresa = :empresa AND t.nombre = :nombre AND t.eliminado = false ORDER BY t.nombre ASC")
 })
 public class Transportista implements Serializable {
 

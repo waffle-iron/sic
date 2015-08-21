@@ -15,15 +15,21 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
+@Table(name = "empresa")
 @NamedQueries({
-    @NamedQuery(name = "Empresa.buscarTodas", query = "SELECT e FROM Empresa e WHERE e.eliminada = false ORDER BY e.nombre ASC"),
-    @NamedQuery(name = "Empresa.buscarPorId", query = "SELECT e FROM Empresa e WHERE e.id_Empresa = :id AND e.eliminada = false"),
-    @NamedQuery(name = "Empresa.buscarPorNombre", query = "SELECT e FROM Empresa e WHERE e.nombre LIKE :nombre AND e.eliminada = false ORDER BY e.nombre ASC"),
-    @NamedQuery(name = "Empresa.buscarPorCUIP", query = "SELECT e FROM Empresa e WHERE e.cuip = :cuip AND e.eliminada = false")
+    @NamedQuery(name = "Empresa.buscarTodas",
+            query = "SELECT e FROM Empresa e WHERE e.eliminada = false ORDER BY e.nombre ASC"),
+    @NamedQuery(name = "Empresa.buscarPorId",
+            query = "SELECT e FROM Empresa e WHERE e.id_Empresa = :id AND e.eliminada = false"),
+    @NamedQuery(name = "Empresa.buscarPorNombre",
+            query = "SELECT e FROM Empresa e WHERE e.nombre LIKE :nombre AND e.eliminada = false ORDER BY e.nombre ASC"),
+    @NamedQuery(name = "Empresa.buscarPorCUIP",
+            query = "SELECT e FROM Empresa e WHERE e.cuip = :cuip AND e.eliminada = false")
 })
 public class Empresa implements Serializable {
 

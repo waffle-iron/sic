@@ -13,11 +13,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "medida")
 @NamedQueries({
-    @NamedQuery(name = "Medida.buscarTodas", query = "SELECT m FROM Medida m WHERE m.eliminada = false AND m.empresa = :empresa ORDER BY m.nombre ASC"),
-    @NamedQuery(name = "Medida.buscarPorNombre", query = "SELECT m FROM Medida m WHERE m.eliminada = false AND m.nombre LIKE :nombre AND m.empresa = :empresa ORDER BY m.nombre ASC")
+    @NamedQuery(name = "Medida.buscarTodas",
+            query = "SELECT m FROM Medida m WHERE m.eliminada = false AND m.empresa = :empresa ORDER BY m.nombre ASC"),
+    @NamedQuery(name = "Medida.buscarPorNombre",
+            query = "SELECT m FROM Medida m WHERE m.eliminada = false AND m.nombre LIKE :nombre AND m.empresa = :empresa ORDER BY m.nombre ASC")
 })
 public class Medida implements Serializable {
 

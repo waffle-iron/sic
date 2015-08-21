@@ -13,13 +13,19 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "formadepago")
 @NamedQueries({
-    @NamedQuery(name = "FormaDePago.buscarTodas", query = "SELECT f FROM FormaDePago f WHERE f.empresa = :empresa AND f.eliminada = false ORDER BY f.nombre ASC"),
-    @NamedQuery(name = "FormaDePago.buscarPorId", query = "SELECT f FROM FormaDePago f WHERE f.eliminada = false AND f.id_FormaDePago = :id"),
-    @NamedQuery(name = "FormaDePago.buscarPorNombre", query = "SELECT f FROM FormaDePago f WHERE f.eliminada = false AND f.empresa = :empresa AND f.nombre = :nombre"),
-    @NamedQuery(name = "FormaDePago.buscarPredeterminada", query = "SELECT f FROM FormaDePago f WHERE f.predeterminado = true and f.empresa = :empresa and f.eliminada = false")
+    @NamedQuery(name = "FormaDePago.buscarTodas",
+            query = "SELECT f FROM FormaDePago f WHERE f.empresa = :empresa AND f.eliminada = false ORDER BY f.nombre ASC"),
+    @NamedQuery(name = "FormaDePago.buscarPorId",
+            query = "SELECT f FROM FormaDePago f WHERE f.eliminada = false AND f.id_FormaDePago = :id"),
+    @NamedQuery(name = "FormaDePago.buscarPorNombre",
+            query = "SELECT f FROM FormaDePago f WHERE f.eliminada = false AND f.empresa = :empresa AND f.nombre = :nombre"),
+    @NamedQuery(name = "FormaDePago.buscarPredeterminada",
+            query = "SELECT f FROM FormaDePago f WHERE f.predeterminado = true and f.empresa = :empresa and f.eliminada = false")
 })
 public class FormaDePago implements Serializable {
 

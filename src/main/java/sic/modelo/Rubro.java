@@ -13,11 +13,15 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "rubro")
 @NamedQueries({
-    @NamedQuery(name = "Rubro.buscarTodos", query = "SELECT r FROM Rubro r WHERE r.eliminado = false AND r.empresa = :empresa ORDER BY r.nombre ASC"),
-    @NamedQuery(name = "Rubro.buscarPorNombre", query = "SELECT r FROM Rubro r WHERE r.eliminado = false AND r.nombre LIKE :nombre AND r.empresa = :empresa ORDER BY r.nombre ASC")
+    @NamedQuery(name = "Rubro.buscarTodos",
+            query = "SELECT r FROM Rubro r WHERE r.eliminado = false AND r.empresa = :empresa ORDER BY r.nombre ASC"),
+    @NamedQuery(name = "Rubro.buscarPorNombre",
+            query = "SELECT r FROM Rubro r WHERE r.eliminado = false AND r.nombre LIKE :nombre AND r.empresa = :empresa ORDER BY r.nombre ASC")
 })
 public class Rubro implements Serializable {
 

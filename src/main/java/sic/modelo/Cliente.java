@@ -14,10 +14,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
+@Table(name = "cliente")
 @NamedQueries({
     @NamedQuery(name = "Cliente.buscarTodos",
             query = "SELECT c FROM Cliente c WHERE c.empresa = :empresa AND c.eliminado = false ORDER BY c.razonSocial ASC"),

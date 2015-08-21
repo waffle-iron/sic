@@ -7,12 +7,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "facturaventa")
 @NamedQueries({
-    @NamedQuery(name = "Factura.buscarPorTipoSerieNum", query = "SELECT f FROM FacturaVenta f WHERE f.tipoFactura = :tipo AND f.numSerie = :serie AND f.numFactura = :num"),
-    @NamedQuery(name = "Factura.buscarMayorNumFacturaSegunTipo", query = "SELECT max(fv.numFactura) FROM FacturaVenta fv WHERE fv.tipoFactura = :tipo AND fv.numSerie = :serie"),
-    @NamedQuery(name = "Factura.buscarTopProductosMasVendidosPorAnio", query = "SELECT renglones.descripcionItem, sum(renglones.cantidad) as suma "
+    @NamedQuery(name = "Factura.buscarPorTipoSerieNum",
+            query = "SELECT f FROM FacturaVenta f WHERE f.tipoFactura = :tipo AND f.numSerie = :serie AND f.numFactura = :num"),
+    @NamedQuery(name = "Factura.buscarMayorNumFacturaSegunTipo",
+            query = "SELECT max(fv.numFactura) FROM FacturaVenta fv WHERE fv.tipoFactura = :tipo AND fv.numSerie = :serie"),
+    @NamedQuery(name = "Factura.buscarTopProductosMasVendidosPorAnio",
+            query = "SELECT renglones.descripcionItem, sum(renglones.cantidad) as suma "
             + "FROM FacturaVenta factura INNER JOIN factura.renglones renglones "
             + "WHERE year(factura.fecha) = :anio AND factura.eliminada = false "
             + "GROUP BY renglones.descripcionItem ORDER BY sum(renglones.cantidad) DESC")

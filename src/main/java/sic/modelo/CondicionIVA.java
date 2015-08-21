@@ -11,11 +11,15 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "condicioniva")
 @NamedQueries({
-    @NamedQuery(name = "CondicionIVA.buscarTodas", query = "SELECT c FROM CondicionIVA c WHERE c.eliminada = false ORDER BY c.nombre ASC"),
-    @NamedQuery(name = "CondicionIVA.buscarPorNombre", query = "SELECT c FROM CondicionIVA c WHERE c.nombre LIKE :nombre AND c.eliminada = false")
+    @NamedQuery(name = "CondicionIVA.buscarTodas",
+            query = "SELECT c FROM CondicionIVA c WHERE c.eliminada = false ORDER BY c.nombre ASC"),
+    @NamedQuery(name = "CondicionIVA.buscarPorNombre",
+            query = "SELECT c FROM CondicionIVA c WHERE c.nombre LIKE :nombre AND c.eliminada = false")
 })
 public class CondicionIVA implements Serializable {
 
