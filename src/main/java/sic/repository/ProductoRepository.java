@@ -15,28 +15,28 @@ public class ProductoRepository {
         String query = "SELECT p FROM Producto p WHERE p.empresa = :empresa AND p.eliminado = false";
         //Codigo        
         if (criteria.isBuscarPorCodigo() == true) {
-            query = query + " AND p.codigo = '" + criteria.getCodigo() + "'";
+            query += " AND p.codigo LIKE '%" + criteria.getCodigo() + "%'";
         }
         //Descripcion
         if (criteria.isBuscarPorDescripcion() == true) {
             String[] terminos = criteria.getDescripcion().split(" ");
-            for (int i = 0; i < terminos.length; i++) {
-                query += " AND p.descripcion LIKE '%" + terminos[i] + "%'";
+            for (String termino : terminos) {
+                query += " AND p.descripcion LIKE '%" + termino + "%'";
             }
         }
         //Rubro
         if (criteria.isBuscarPorRubro() == true) {
-            query = query + " AND p.rubro = " + criteria.getRubro().getId_Rubro();
+            query += " AND p.rubro = " + criteria.getRubro().getId_Rubro();
         }
         //Proveedor
         if (criteria.isBuscarPorProveedor()) {
-            query = query + " AND p.proveedor = " + criteria.getProveedor().getId_Proveedor();
+            query += " AND p.proveedor = " + criteria.getProveedor().getId_Proveedor();
         }
         //Faltantes
         if (criteria.isListarSoloFaltantes() == true) {
-            query = query + " AND p.cantidad <= p.cantMinima AND p.ilimitado = 0";
+            query += " AND p.cantidad <= p.cantMinima AND p.ilimitado = 0";
         }
-        query = query + " ORDER BY p.descripcion ASC";
+        query += " ORDER BY p.descripcion ASC";
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Producto> typedQuery = em.createQuery(query, Producto.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
@@ -76,13 +76,18 @@ public class ProductoRepository {
         }
     }
 
-    public List<Producto> getProductoPorDescripcionQueContenga(String descripcion, int cantRegistros, Empresa empresa) {
+    public List<Producto> getProductosQueContengaCodigoDescripcion(String criteria, int cantRegistros, Empresa empresa) {
         String query = "SELECT p FROM Producto p WHERE p.empresa = :empresa AND p.eliminado = false";
-        String[] terminos = descripcion.split(" ");
+        query += " AND (p.codigo LIKE '%" + criteria + "%' OR (";
+        String[] terminos = criteria.split(" ");
         for (int i = 0; i < terminos.length; i++) {
-            query += " AND p.descripcion LIKE '%" + terminos[i] + "%'";
+            query += "p.descripcion LIKE '%" + terminos[i] + "%'";
+            //si no es el ultimo, agregar un AND
+            if (i != (terminos.length - 1)) {
+                query += " AND ";
+            }
         }
-        query += " ORDER BY p.descripcion ASC";
+        query += ")) ORDER BY p.descripcion ASC";
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Producto> typedQuery = em.createQuery(query, Producto.class);
         typedQuery.setParameter("empresa", empresa);

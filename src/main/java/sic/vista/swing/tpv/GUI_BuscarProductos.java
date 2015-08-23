@@ -4,7 +4,6 @@ import java.awt.Frame;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
@@ -50,8 +49,7 @@ public class GUI_BuscarProductos extends JDialog {
         this.setLocationRelativeTo(parent);
         this.setColumnas();
 
-        //listeners
-        cmb_CriterioBusqueda.addKeyListener(keyHandler);
+        //listeners        
         txt_CampoBusqueda.addKeyListener(keyHandler);
         btn_Buscar.addKeyListener(keyHandler);
         tbl_Resultado.addKeyListener(keyHandler);
@@ -82,29 +80,9 @@ public class GUI_BuscarProductos extends JDialog {
 
     private void buscar() throws ServiceException {
         int cantidadResultados = 250;
-
-        if (cmb_CriterioBusqueda.getModel().getSelectedItem().equals("DESCRIPCION")) {
-            productos = productoService.getProductoPorDescripcionQueContenga(
-                    txt_CampoBusqueda.getText().trim(),
-                    cantidadResultados,
-                    empresaService.getEmpresaActiva().getEmpresa());
-        }
-
-        if (cmb_CriterioBusqueda.getModel().getSelectedItem().equals("CODIGO")) {
-            if (txt_CampoBusqueda.getText().trim().length() == 0) {
-                productos = productoService.getProductoPorDescripcionQueContenga("",
-                        cantidadResultados,
-                        empresaService.getEmpresaActiva().getEmpresa());
-            } else {
-                Producto pro = productoService.getProductoPorCodigo(txt_CampoBusqueda.getText().trim(),
-                        empresaService.getEmpresaActiva().getEmpresa());
-                productos = new ArrayList<Producto>();
-                if (pro != null) {
-                    productos.add(pro);
-                }
-            }
-        }
-
+        productos = productoService.getProductosPorDescripcionQueContenga(
+                txt_CampoBusqueda.getText().trim(), cantidadResultados,
+                empresaService.getEmpresaActiva().getEmpresa());
         prodSeleccionado = null;
         txt_UnidadMedida.setText("");
     }
@@ -235,7 +213,6 @@ public class GUI_BuscarProductos extends JDialog {
 
         //Descripcion
         //tbl_Resultado.getColumnModel().getColumn(1).setPreferredWidth(380);
-
         //Cantidad
         tbl_Resultado.getColumnModel().getColumn(2).setPreferredWidth(67);
         tbl_Resultado.getColumnModel().getColumn(2).setMaxWidth(67);
@@ -281,7 +258,6 @@ public class GUI_BuscarProductos extends JDialog {
         lbl_Descuento = new javax.swing.JLabel();
         txt_Cantidad = new javax.swing.JFormattedTextField();
         txt_PorcentajeDescuento = new javax.swing.JFormattedTextField();
-        cmb_CriterioBusqueda = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         ta_ObservacionesProducto = new javax.swing.JTextArea();
 
@@ -404,15 +380,6 @@ public class GUI_BuscarProductos extends JDialog {
             }
         });
 
-        cmb_CriterioBusqueda.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
-        cmb_CriterioBusqueda.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "DESCRIPCION", "CODIGO" }));
-        cmb_CriterioBusqueda.setFocusable(false);
-        cmb_CriterioBusqueda.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmb_CriterioBusquedaItemStateChanged(evt);
-            }
-        });
-
         ta_ObservacionesProducto.setColumns(20);
         ta_ObservacionesProducto.setEditable(false);
         ta_ObservacionesProducto.setLineWrap(true);
@@ -427,15 +394,13 @@ public class GUI_BuscarProductos extends JDialog {
             .addGroup(panelFondoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sp_Resultado, javax.swing.GroupLayout.DEFAULT_SIZE, 797, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFondoLayout.createSequentialGroup()
-                        .addComponent(cmb_CriterioBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txt_CampoBusqueda, javax.swing.GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
+                    .addComponent(sp_Resultado)
+                    .addGroup(panelFondoLayout.createSequentialGroup()
+                        .addComponent(txt_CampoBusqueda)
                         .addGap(0, 0, 0)
                         .addComponent(btn_Buscar))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFondoLayout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(lbl_Descuento)
@@ -454,11 +419,9 @@ public class GUI_BuscarProductos extends JDialog {
             panelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelFondoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(txt_CampoBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_Buscar))
-                    .addComponent(cmb_CriterioBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panelFondoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_CampoBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_Buscar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sp_Resultado, javax.swing.GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -477,7 +440,7 @@ public class GUI_BuscarProductos extends JDialog {
                 .addContainerGap())
         );
 
-        panelFondoLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Buscar, cmb_CriterioBusqueda, txt_CampoBusqueda});
+        panelFondoLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Buscar, txt_CampoBusqueda});
 
         panelFondoLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {txt_Cantidad, txt_PorcentajeDescuento, txt_UnidadMedida});
 
@@ -629,21 +592,6 @@ public class GUI_BuscarProductos extends JDialog {
         });
     }//GEN-LAST:event_txt_PorcentajeDescuentoFocusGained
 
-    private void cmb_CriterioBusquedaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_CriterioBusquedaItemStateChanged
-        try {
-            this.buscar();
-            this.actualizarProductosCargadosEnFactura();
-            this.cargarResultadosAlTable();
-
-        } catch (ServiceException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_cmb_CriterioBusquedaItemStateChanged
-
     private void tbl_ResultadoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tbl_ResultadoFocusGained
         //Si no hay nada seleccionado y NO esta vacio el table, selecciona la primer fila
         if ((tbl_Resultado.getSelectedRow() == -1) && (tbl_Resultado.getRowCount() != 0)) {
@@ -653,7 +601,6 @@ public class GUI_BuscarProductos extends JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Aceptar;
     private javax.swing.JButton btn_Buscar;
-    private javax.swing.JComboBox cmb_CriterioBusqueda;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_Cantidad;
     private javax.swing.JLabel lbl_Descuento;

@@ -251,8 +251,8 @@ public class ProductoService {
         return modeloProducto.getProductoPorDescripcion(descripcion, empresa);
     }
 
-    public List<Producto> getProductoPorDescripcionQueContenga(String descripcion, int cantRegistros, Empresa empresa) {
-        return modeloProducto.getProductoPorDescripcionQueContenga(descripcion, cantRegistros, empresa);
+    public List<Producto> getProductosPorDescripcionQueContenga(String criteria, int cantRegistros, Empresa empresa) {
+        return modeloProducto.getProductosQueContengaCodigoDescripcion(criteria, cantRegistros, empresa);
     }
 
     //**************************************************************************
