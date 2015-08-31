@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 import javax.swing.*;
-import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
@@ -20,6 +19,7 @@ import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
 import sic.service.*;
 import sic.util.RenderTabla;
+import sic.util.Utilidades;
 import sic.vista.swing.GUI_LogIn;
 import sic.vista.swing.ModeloTabla;
 import sic.vista.swing.administracion.GUI_Principal;
@@ -260,26 +260,46 @@ public class GUI_PrincipalTPV extends JFrame {
         sp_Resultado.getViewport().setViewPosition(p);
     }
 
-    private void cargarRenglonesAlTable(boolean eliminar) {
-        TableModel copiaDatosJTable = tbl_Resultado.getModel(); // para copiar los datos del JTable
-        int cantidadDeFilas = copiaDatosJTable.getRowCount();
+    private void cargarRenglonesAlTable(EstadoRenglon[] valoresDeChk) {
         modeloTablaResultados = new ModeloTabla();
         this.setColumnas();
-        int indiceParaMarcar = 0;
+        int i = 0;
+        boolean corte;
         for (RenglonFactura renglon : renglones) {
             Object[] fila = new Object[8];
-            try {
-                if (cantidadDeFilas != 0 && (eliminar == false)) {
-                    boolean marcado = (boolean) copiaDatosJTable.getValueAt(indiceParaMarcar, 0);
-                    fila[0] = marcado;
-                } else {
-                    fila[0] = false;
+            corte = false;
+            /*Dentro de este While, el case según el valor leido en el array de chars, 
+             asigna el valor booleano correspondiente al checkbox del renglon.*/
+
+            while (corte == false) {
+                switch (valoresDeChk[i]) {
+                    case MARCADO: {
+                        fila[0] = true;
+                        corte = true;
+                        break;
+                    }
+                    case DESMARCADO: {
+                        fila[0] = false;
+                        corte = true;
+                        break;
+                    }
+                    /* En caso de que el char sea E, se considera que fue de un
+                     renglon eliminado, entonces la estructura while continua iterando.*/
+                    case ELIMINADO: {
+                        i++;
+                        break;
+                    }
+                    /* El caso por defecto, se da cuando el método es ejecutado
+                     desde otras partes que no sea eliminar, ya que la colección
+                     contendrá valores vacíos ''.*/
+                    default: {
+                        fila[0] = false;
+                        corte = true;
+                    }
                 }
-            } catch (ArrayIndexOutOfBoundsException renglonNuevo) {
-                fila[0] = false;
             }
 
-            indiceParaMarcar++;
+            i++;
             fila[1] = renglon.getCodigoItem();
             fila[2] = renglon.getDescripcionItem();
             fila[3] = renglon.getMedidaItem();
@@ -307,8 +327,32 @@ public class GUI_PrincipalTPV extends JFrame {
             GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones);
             GUI_buscarProducto.setVisible(true);
             if (GUI_buscarProducto.debeCargarRenglon()) {
+
+                boolean cargado = renglones.contains(GUI_buscarProducto.getRenglon());
+
                 this.agregarRenglon(GUI_buscarProducto.getRenglon());
-                this.cargarRenglonesAlTable(false);
+                /*Si la tabla no contiene renglones, despues de agregar el renglon
+                 a la coleccion, carga el arreglo con los estados con un solo elemento, 
+                 cuyo valor es "SinMarcar" para evitar un nulo.*/
+
+                int cantidadRenglones = tbl_Resultado.getRowCount();
+                EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
+                if (cantidadRenglones == 0) {
+                    estadosRenglones[0] = EstadoRenglon.DESMARCADO;
+                } else {
+                    for (int i = 0; i < cantidadRenglones; i++) {
+                        if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
+                            estadosRenglones[i] = EstadoRenglon.MARCADO;
+                        } else {
+                            estadosRenglones[i] = EstadoRenglon.DESMARCADO;
+                        }
+                    }
+
+                    //Se ejecuta o no segun si el renglon ya existe
+                    //si ya existe, no se ejecuta
+                    estadosRenglones[cantidadRenglones] = EstadoRenglon.DESMARCADO;
+                }
+                this.cargarRenglonesAlTable(estadosRenglones);
                 this.calcularResultados();
             }
         } else {
@@ -327,7 +371,21 @@ public class GUI_PrincipalTPV extends JFrame {
             if (this.existeStockDisponible(1, producto)) {
                 RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
                 this.agregarRenglon(renglon);
-                this.cargarRenglonesAlTable(false);
+                int cantidad = tbl_Resultado.getRowCount();
+                EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
+                if (cantidad == 0) {
+                    estadosRenglones[0] = EstadoRenglon.DESMARCADO;
+                } else {
+                    for (int i = 0; i < cantidad; i++) {
+                        if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
+                            estadosRenglones[i] = EstadoRenglon.MARCADO;
+                        } else {
+                            estadosRenglones[i] = EstadoRenglon.DESMARCADO;
+                        }
+                    }
+                    estadosRenglones[cantidad] = EstadoRenglon.DESMARCADO;
+                }
+                this.cargarRenglonesAlTable(estadosRenglones);
                 this.calcularResultados();
                 txt_CodigoProducto.setText("");
             } else {
@@ -410,7 +468,24 @@ public class GUI_PrincipalTPV extends JFrame {
             RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());
             this.agregarRenglon(renglon);
         }
-        this.cargarRenglonesAlTable(false);
+        int cantidad = tbl_Resultado.getRowCount();
+        EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
+        
+        //preguntar si renglones tiene algo y luego recien llamar al metodo nuevo
+        
+        if (cantidad == 0) {
+            estadosRenglones[0] = EstadoRenglon.DESMARCADO;
+        } else {
+            for (int i = 0; i < cantidad; i++) {
+                if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
+                    estadosRenglones[i] = EstadoRenglon.MARCADO;
+                } else {
+                    estadosRenglones[i] = EstadoRenglon.DESMARCADO;
+                }
+            }
+            estadosRenglones[cantidad] = EstadoRenglon.DESMARCADO;
+        }
+        this.cargarRenglonesAlTable(estadosRenglones);
         this.calcularResultados();
     }
 
@@ -686,7 +761,7 @@ public class GUI_PrincipalTPV extends JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tbl_Resultado.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tbl_Resultado.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         tbl_Resultado.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tbl_ResultadoFocusGained(evt);
@@ -1205,24 +1280,28 @@ public class GUI_PrincipalTPV extends JFrame {
     }//GEN-LAST:event_btn_ContinuarActionPerformed
 
     private void btn_EliminarEntradaProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarEntradaProductoActionPerformed
-        int[] indicesParaEliminar = new int[tbl_Resultado.getRowCount()];
-        int punteroIndices = 0;
-        int cantidadAEliminar = 0;
+        int[] indicesParaEliminar = Utilidades.getSelectedRowsModelIndices(tbl_Resultado);
+        List<RenglonFactura> renglonesParaBorrar = new ArrayList<>();
+        for (int i = 0; i < indicesParaEliminar.length; i++) {
+            renglonesParaBorrar.add(renglones.get(indicesParaEliminar[i]));
+        }
+        EstadoRenglon[] estadoDeRenglones = new EstadoRenglon[renglones.size()];
         for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
-            if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
-                indicesParaEliminar[punteroIndices] = i;
-                punteroIndices++;
-                cantidadAEliminar++;
+            if (((boolean) tbl_Resultado.getValueAt(i, 0)) == true) {
+                estadoDeRenglones[i] = EstadoRenglon.MARCADO;
+            } else {
+                if (((boolean) tbl_Resultado.getValueAt(i, 0)) == false) {
+                    estadoDeRenglones[i] = EstadoRenglon.DESMARCADO;
+                }
             }
         }
-        List<RenglonFactura> paraBorrar = new ArrayList<>();
-        for (int i = 0; i < cantidadAEliminar; i++) {
-            paraBorrar.add(renglones.get(indicesParaEliminar[i]));
+        for (int i = 0; i < indicesParaEliminar.length; i++) {
+            estadoDeRenglones[indicesParaEliminar[i]] = EstadoRenglon.ELIMINADO;
         }
-        for (RenglonFactura renglon : paraBorrar) {
+        for (RenglonFactura renglon : renglonesParaBorrar) {
             renglones.remove(renglon);
         }
-        this.cargarRenglonesAlTable(true);
+        this.cargarRenglonesAlTable(estadoDeRenglones);
         this.calcularResultados();
 
     }//GEN-LAST:event_btn_EliminarEntradaProductoActionPerformed
