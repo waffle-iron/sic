@@ -260,7 +260,7 @@ public class GUI_PrincipalTPV extends JFrame {
         sp_Resultado.getViewport().setViewPosition(p);
     }
 
-    private void cargarRenglonesAlTable(EstadoRenglon[] valoresDeChk) {
+    private void cargarRenglonesAlTable(EstadoRenglon[] EstadosDeLosRenglones) {
         modeloTablaResultados = new ModeloTabla();
         this.setColumnas();
         int i = 0;
@@ -272,7 +272,7 @@ public class GUI_PrincipalTPV extends JFrame {
              asigna el valor booleano correspondiente al checkbox del renglon.*/
 
             while (corte == false) {
-                switch (valoresDeChk[i]) {
+                switch (EstadosDeLosRenglones[i]) {
                     case MARCADO: {
                         fila[0] = true;
                         corte = true;
@@ -328,19 +328,17 @@ public class GUI_PrincipalTPV extends JFrame {
             GUI_buscarProducto.setVisible(true);
             if (GUI_buscarProducto.debeCargarRenglon()) {
 
-                boolean cargado = renglones.contains(GUI_buscarProducto.getRenglon());
+                boolean yaEstaCargado = renglones.contains(GUI_buscarProducto.getRenglon());
 
                 this.agregarRenglon(GUI_buscarProducto.getRenglon());
                 /*Si la tabla no contiene renglones, despues de agregar el renglon
                  a la coleccion, carga el arreglo con los estados con un solo elemento, 
                  cuyo valor es "SinMarcar" para evitar un nulo.*/
-
-                int cantidadRenglones = tbl_Resultado.getRowCount();
                 EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
-                if (cantidadRenglones == 0) {
+                if (tbl_Resultado.getRowCount() == 0) {
                     estadosRenglones[0] = EstadoRenglon.DESMARCADO;
                 } else {
-                    for (int i = 0; i < cantidadRenglones; i++) {
+                    for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
                         if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
                             estadosRenglones[i] = EstadoRenglon.MARCADO;
                         } else {
@@ -350,7 +348,10 @@ public class GUI_PrincipalTPV extends JFrame {
 
                     //Se ejecuta o no segun si el renglon ya existe
                     //si ya existe, no se ejecuta
-                    estadosRenglones[cantidadRenglones] = EstadoRenglon.DESMARCADO;
+                    if (!yaEstaCargado) {
+                        estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
+                    }
+
                 }
                 this.cargarRenglonesAlTable(estadosRenglones);
                 this.calcularResultados();
@@ -371,19 +372,18 @@ public class GUI_PrincipalTPV extends JFrame {
             if (this.existeStockDisponible(1, producto)) {
                 RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
                 this.agregarRenglon(renglon);
-                int cantidad = tbl_Resultado.getRowCount();
                 EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
-                if (cantidad == 0) {
+                if (tbl_Resultado.getRowCount() == 0) {
                     estadosRenglones[0] = EstadoRenglon.DESMARCADO;
                 } else {
-                    for (int i = 0; i < cantidad; i++) {
+                    for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
                         if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
                             estadosRenglones[i] = EstadoRenglon.MARCADO;
                         } else {
                             estadosRenglones[i] = EstadoRenglon.DESMARCADO;
                         }
                     }
-                    estadosRenglones[cantidad] = EstadoRenglon.DESMARCADO;
+                    estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
                 }
                 this.cargarRenglonesAlTable(estadosRenglones);
                 this.calcularResultados();
@@ -468,22 +468,28 @@ public class GUI_PrincipalTPV extends JFrame {
             RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());
             this.agregarRenglon(renglon);
         }
-        int cantidad = tbl_Resultado.getRowCount();
         EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
-        
-        //preguntar si renglones tiene algo y luego recien llamar al metodo nuevo
-        
-        if (cantidad == 0) {
-            estadosRenglones[0] = EstadoRenglon.DESMARCADO;
-        } else {
-            for (int i = 0; i < cantidad; i++) {
-                if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
-                    estadosRenglones[i] = EstadoRenglon.MARCADO;
-                } else {
-                    estadosRenglones[i] = EstadoRenglon.DESMARCADO;
+        /*
+         if (renglones.isEmpty()) {
+         estadosRenglones = new EstadoRenglon[1];
+         } else {
+         estadosRenglones = new EstadoRenglon[renglones.size()];
+         }*/
+        if (!renglones.isEmpty()) {
+            if (tbl_Resultado.getRowCount() == 0) {
+                estadosRenglones[0] = EstadoRenglon.DESMARCADO;
+            } else {
+                for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
+                    if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
+                        estadosRenglones[i] = EstadoRenglon.MARCADO;
+                    } else {
+                        estadosRenglones[i] = EstadoRenglon.DESMARCADO;
+                    }
+                }
+                if (tbl_Resultado.getRowCount() > renglones.size()) {
+                    estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
                 }
             }
-            estadosRenglones[cantidad] = EstadoRenglon.DESMARCADO;
         }
         this.cargarRenglonesAlTable(estadosRenglones);
         this.calcularResultados();
