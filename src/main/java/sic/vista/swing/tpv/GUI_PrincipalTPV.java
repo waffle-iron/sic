@@ -260,7 +260,7 @@ public class GUI_PrincipalTPV extends JFrame {
         sp_Resultado.getViewport().setViewPosition(p);
     }
 
-    private void cargarRenglonesAlTable(EstadoRenglon[] EstadosDeLosRenglones) {
+    private void cargarRenglonesAlTable(EstadoRenglon[] estadosDeLosRenglones) {
         modeloTablaResultados = new ModeloTabla();
         this.setColumnas();
         int i = 0;
@@ -272,7 +272,7 @@ public class GUI_PrincipalTPV extends JFrame {
              asigna el valor booleano correspondiente al checkbox del renglon.*/
 
             while (corte == false) {
-                switch (EstadosDeLosRenglones[i]) {
+                switch (estadosDeLosRenglones[i]) {
                     case MARCADO: {
                         fila[0] = true;
                         corte = true;
@@ -327,10 +327,10 @@ public class GUI_PrincipalTPV extends JFrame {
             GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones);
             GUI_buscarProducto.setVisible(true);
             if (GUI_buscarProducto.debeCargarRenglon()) {
-                boolean yaEstaCargado = false;
+                boolean renglonCargado = false;
                 for (RenglonFactura renglon : renglones) {
                     if (renglon.getId_ProductoItem() == GUI_buscarProducto.getRenglon().getId_ProductoItem()) {
-                        yaEstaCargado = true;
+                        renglonCargado = true;
                     }
                 }
                 this.agregarRenglon(GUI_buscarProducto.getRenglon());
@@ -351,7 +351,7 @@ public class GUI_PrincipalTPV extends JFrame {
 
                     //Se ejecuta o no segun si el renglon ya existe
                     //si ya existe, no se ejecuta
-                    if (!yaEstaCargado) {
+                    if (!renglonCargado) {
                         estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
                     }
 
