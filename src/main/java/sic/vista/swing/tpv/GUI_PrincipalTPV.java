@@ -327,9 +327,12 @@ public class GUI_PrincipalTPV extends JFrame {
             GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones);
             GUI_buscarProducto.setVisible(true);
             if (GUI_buscarProducto.debeCargarRenglon()) {
-
-                boolean yaEstaCargado = renglones.contains(GUI_buscarProducto.getRenglon());
-
+                boolean yaEstaCargado = false;
+                for (RenglonFactura renglon : renglones) {
+                    if (renglon.getId_ProductoItem() == GUI_buscarProducto.getRenglon().getId_ProductoItem()) {
+                        yaEstaCargado = true;
+                    }
+                }
                 this.agregarRenglon(GUI_buscarProducto.getRenglon());
                 /*Si la tabla no contiene renglones, despues de agregar el renglon
                  a la coleccion, carga el arreglo con los estados con un solo elemento, 
