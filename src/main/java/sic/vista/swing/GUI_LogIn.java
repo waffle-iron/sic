@@ -60,7 +60,7 @@ public class GUI_LogIn extends JFrame {
             } catch (ServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());                
+                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
                 JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
@@ -70,11 +70,7 @@ public class GUI_LogIn extends JFrame {
 
     private void ingresar() {
         if (usuario != null) {
-            if (usuario.getPermisosAdministrador() == true) {
-                this.abrirGUI_Principal();
-            } else {
-                this.abrirGUI_TPV();
-            }
+            this.abrirGUI_Principal();
         }
     }
 
@@ -127,11 +123,11 @@ public class GUI_LogIn extends JFrame {
         new GUI_Principal().setVisible(true);
         this.dispose();
     }
-
-    private void abrirGUI_TPV() {
-        new GUI_PrincipalTPV().setVisible(true);
-        this.dispose();
-    }
+    /*
+     private void abrirGUI_TPV() {
+     new GUI_PrincipalTPV().setVisible(true);
+     this.dispose();
+     }**/
 
     private void capturaTeclaEnter(KeyEvent evt) {
         //tecla ENTER
@@ -327,7 +323,7 @@ public class GUI_LogIn extends JFrame {
             datosConexion.setHost(txt_Host.getText().trim());
             datosConexion.setNombreBaseDeDatos(txt_BD.getText().trim());
             datosConexion.setPuerto(Integer.parseInt(txt_Puerto.getText().trim()));
-            
+
             conexionService.guardar(datosConexion);
             JOptionPane.showMessageDialog(this, "La configuración de conexion se guardo correctamente!",
                     "Informacion", JOptionPane.INFORMATION_MESSAGE);

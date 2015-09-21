@@ -54,10 +54,14 @@
                               <Component id="lbl_Transporte" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="cmb_FormaDePago" pref="206" max="32767" attributes="0"/>
+                              <Component id="cmb_Transporte" max="32767" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lbl_Vendedor" alignment="0" pref="303" max="32767" attributes="0"/>
-                              <Component id="cmb_FormaDePago" alignment="0" pref="261" max="32767" attributes="0"/>
-                              <Component id="cmb_Transporte" alignment="0" pref="261" max="32767" attributes="0"/>
+                              <Component id="nuevaFormaDePago" max="32767" attributes="0"/>
+                              <Component id="nuevoTransporte" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -80,6 +84,10 @@
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="btn_Finalizar" min="-2" max="-2" attributes="0"/>
                       </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="82" pref="82" max="-2" attributes="0"/>
+                          <Component id="lbl_Vendedor" pref="303" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -97,11 +105,13 @@
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_FormaDePago" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="cmb_FormaDePago" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="nuevaFormaDePago" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_Transporte" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="cmb_Transporte" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="nuevoTransporte" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="separador" min="-2" pref="10" max="-2" attributes="0"/>
@@ -260,6 +270,28 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Dividir Factura"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="nuevaFormaDePago">
+          <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="nueva"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nuevaFormaDePagoActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="nuevoTransporte">
+          <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="nuevo"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nuevoTransporteActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

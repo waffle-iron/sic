@@ -7,6 +7,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
@@ -22,6 +23,7 @@ import sic.service.*;
 import sic.util.RenderTabla;
 import sic.vista.swing.GUI_LogIn;
 import sic.vista.swing.ModeloTabla;
+import sic.vista.swing.administracion.GUI_DetalleProducto;
 import sic.vista.swing.administracion.GUI_Principal;
 import sic.vista.swing.administracion.GUI_SeleccionEmpresa;
 
@@ -55,6 +57,15 @@ public class GUI_PrincipalTPV extends JFrame {
         ImageIcon iconoNoMarcado = new ImageIcon(getClass().getResource("/sic/icons/chkNoMarcado_16x16.png"));
         this.tbtn_marcarDesmarcar.setIcon(iconoNoMarcado);
 
+        //aplicando verificación de tipo de Usuario
+        if (!usuarioService.getUsuarioActivo().getUsuario().getPermisosAdministrador()) {
+            fechaEmision.setEnabled(false);
+            fechaVencimiento.setEnabled(false);
+            nuevoProducto.setEnabled(false);
+        }
+        fechaEmision.setDate(new Date());
+        fechaVencimiento.setDate(new Date());
+
         //listeners        
         cmb_TipoFactura.addKeyListener(keyHandler);
         btn_CambiarUserEmpresa.addKeyListener(keyHandler);
@@ -68,6 +79,9 @@ public class GUI_PrincipalTPV extends JFrame {
         txt_Recargo_porcentaje.addKeyListener(keyHandler);
         btn_Continuar.addKeyListener(keyHandler);
         tbtn_marcarDesmarcar.addKeyListener(keyHandler);
+        fechaEmision.addKeyListener(keyHandler);
+        fechaVencimiento.addKeyListener(keyHandler);
+        nuevoProducto.addKeyListener(keyHandler);
     }
 
     public char getTipoDeFactura() {
@@ -107,6 +121,14 @@ public class GUI_PrincipalTPV extends JFrame {
 
     public ModeloTabla getModeloTabla() {
         return this.modeloTablaResultados;
+    }
+
+    public Date getFechaEmision() {
+        return this.fechaEmision.getDate();
+    }
+
+    public Date getFechaVencimiento() {
+        return this.fechaVencimiento.getDate();
     }
 
     private void prepararComponentes() {
@@ -393,6 +415,8 @@ public class GUI_PrincipalTPV extends JFrame {
         return respuesta == JOptionPane.YES_OPTION;
     }
 
+    //revisar este método.
+
     private void cargarTiposDeFacturaDisponibles() {
         char[] tiposFactura = facturaService.getTipoFacturaVenta(empresaService.getEmpresaActiva().getEmpresa(), cliente);
         cmb_TipoFactura.removeAllItems();
@@ -463,6 +487,10 @@ public class GUI_PrincipalTPV extends JFrame {
         txt_NombreCliente = new javax.swing.JTextField();
         btn_BuscarCliente = new javax.swing.JButton();
         btn_NuevoCliente = new javax.swing.JButton();
+        fechaVencimiento = new com.toedter.calendar.JDateChooser();
+        fechaEmision = new com.toedter.calendar.JDateChooser();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         panelEncabezado = new javax.swing.JPanel();
         lbl_TipoFactura = new javax.swing.JLabel();
         cmb_TipoFactura = new javax.swing.JComboBox();
@@ -476,6 +504,7 @@ public class GUI_PrincipalTPV extends JFrame {
         txt_CodigoProducto = new javax.swing.JTextField();
         btn_BuscarPorCodigoProducto = new javax.swing.JButton();
         tbtn_marcarDesmarcar = new javax.swing.JToggleButton();
+        nuevoProducto = new javax.swing.JButton();
         panelObservaciones = new javax.swing.JPanel();
         lbl_Observaciones = new javax.swing.JLabel();
         btn_AddComment = new javax.swing.JButton();
@@ -560,6 +589,11 @@ public class GUI_PrincipalTPV extends JFrame {
             }
         });
 
+        jLabel1.setForeground(java.awt.Color.red);
+        jLabel1.setText("*Fecha De Factura");
+
+        jLabel2.setText("Fecha De Vencimiento");
+
         javax.swing.GroupLayout panelClienteLayout = new javax.swing.GroupLayout(panelCliente);
         panelCliente.setLayout(panelClienteLayout);
         panelClienteLayout.setHorizontalGroup(
@@ -570,7 +604,16 @@ public class GUI_PrincipalTPV extends JFrame {
                     .addGroup(panelClienteLayout.createSequentialGroup()
                         .addComponent(btn_NuevoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(btn_BuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btn_BuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(fechaEmision, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fechaVencimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(33, 33, 33))
                     .addGroup(panelClienteLayout.createSequentialGroup()
                         .addGroup(panelClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lbl_NombreCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -591,10 +634,17 @@ public class GUI_PrincipalTPV extends JFrame {
         panelClienteLayout.setVerticalGroup(
             panelClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelClienteLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_BuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_NuevoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panelClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(fechaEmision, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(fechaVencimiento, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(panelClienteLayout.createSequentialGroup()
+                        .addGroup(panelClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.CENTER)
+                            .addGroup(panelClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(btn_NuevoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btn_BuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 5, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txt_NombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -609,7 +659,7 @@ public class GUI_PrincipalTPV extends JFrame {
                     .addComponent(lbl_CondicionIVACliente)
                     .addComponent(txt_IDFiscalCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_IDFiscalCliente))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         lbl_TipoFactura.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
@@ -743,6 +793,14 @@ public class GUI_PrincipalTPV extends JFrame {
             }
         });
 
+        nuevoProducto.setForeground(java.awt.Color.blue);
+        nuevoProducto.setText("Nuevo Producto");
+        nuevoProducto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                nuevoProductoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelRenglonesLayout = new javax.swing.GroupLayout(panelRenglones);
         panelRenglones.setLayout(panelRenglonesLayout);
         panelRenglonesLayout.setHorizontalGroup(
@@ -761,6 +819,8 @@ public class GUI_PrincipalTPV extends JFrame {
                         .addComponent(btn_BuscarProductos, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(btn_EliminarEntradaProducto)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(nuevoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -774,9 +834,11 @@ public class GUI_PrincipalTPV extends JFrame {
                 .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(txt_CodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_BuscarPorCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_BuscarProductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_EliminarEntradaProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(nuevoProducto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btn_BuscarProductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btn_EliminarEntradaProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(tbtn_marcarDesmarcar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sp_Resultado, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
@@ -1282,6 +1344,13 @@ public class GUI_PrincipalTPV extends JFrame {
         }
     }//GEN-LAST:event_tbtn_marcarDesmarcarStateChanged
 
+    private void nuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoProductoActionPerformed
+        GUI_DetalleProducto gui_DetalleProducto = new GUI_DetalleProducto();
+        gui_DetalleProducto.setModal(true);
+        gui_DetalleProducto.setLocationRelativeTo(this);
+        gui_DetalleProducto.setVisible(true);
+    }//GEN-LAST:event_nuevoProductoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AddComment;
     private javax.swing.JButton btn_BuscarCliente;
@@ -1293,6 +1362,10 @@ public class GUI_PrincipalTPV extends JFrame {
     private javax.swing.JButton btn_NuevoCliente;
     private javax.swing.JButton btn_VolverAdministracion;
     private javax.swing.JComboBox cmb_TipoFactura;
+    private com.toedter.calendar.JDateChooser fechaEmision;
+    private com.toedter.calendar.JDateChooser fechaVencimiento;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_105;
     private javax.swing.JLabel lbl_21;
@@ -1309,6 +1382,7 @@ public class GUI_PrincipalTPV extends JFrame {
     private javax.swing.JLabel lbl_SubTotalNeto;
     private javax.swing.JLabel lbl_TipoFactura;
     private javax.swing.JLabel lbl_Total;
+    private javax.swing.JButton nuevoProducto;
     private javax.swing.JPanel panelCliente;
     private javax.swing.JPanel panelEncabezado;
     private javax.swing.JPanel panelGeneral;

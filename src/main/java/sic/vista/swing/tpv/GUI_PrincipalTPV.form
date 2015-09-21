@@ -106,8 +106,17 @@
                               <Component id="btn_NuevoCliente" min="-2" pref="187" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                               <Component id="btn_BuscarCliente" min="-2" pref="198" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="fechaEmision" min="-2" pref="132" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="fechaVencimiento" min="-2" pref="132" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
+                          <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="lbl_NombreCliente" alignment="0" max="32767" attributes="1"/>
                                   <Component id="lbl_DomicilioCliente" alignment="0" max="32767" attributes="1"/>
@@ -133,13 +142,23 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="btn_BuscarCliente" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btn_NuevoCliente" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="fechaEmision" alignment="2" max="32767" attributes="0"/>
+                          <Component id="fechaVencimiento" alignment="2" max="32767" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabel1" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jLabel2" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                                      <Component id="btn_NuevoCliente" alignment="3" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btn_BuscarCliente" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <EmptySpace min="0" pref="5" max="32767" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="txt_NombreCliente" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lbl_NombreCliente" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -156,7 +175,7 @@
                           <Component id="txt_IDFiscalCliente" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lbl_IDFiscalCliente" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="17" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -245,6 +264,23 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_NuevoClienteActionPerformed"/>
               </Events>
+            </Component>
+            <Component class="com.toedter.calendar.JDateChooser" name="fechaVencimiento">
+            </Component>
+            <Component class="com.toedter.calendar.JDateChooser" name="fechaEmision">
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel1">
+              <Properties>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="0" green="0" id="red" palette="1" red="ff" type="palette"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="*Fecha De Factura"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel2">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Fecha De Vencimiento"/>
+              </Properties>
             </Component>
           </SubComponents>
         </Container>
@@ -364,6 +400,8 @@
                               <Component id="btn_BuscarProductos" linkSize="14" min="-2" pref="173" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                               <Component id="btn_EliminarEntradaProducto" linkSize="14" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="nuevoProducto" min="-2" pref="155" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
                       </Group>
@@ -378,9 +416,12 @@
                       <Group type="103" groupAlignment="2" attributes="0">
                           <Component id="txt_CodigoProducto" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="btn_BuscarPorCodigoProducto" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Group type="103" alignment="2" groupAlignment="3" attributes="0">
-                              <Component id="btn_BuscarProductos" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="btn_EliminarEntradaProducto" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                          <Group type="103" alignment="2" groupAlignment="0" attributes="0">
+                              <Component id="nuevoProducto" alignment="1" min="-2" pref="30" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="btn_BuscarProductos" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btn_EliminarEntradaProducto" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                           <Component id="tbtn_marcarDesmarcar" min="-2" pref="30" max="-2" attributes="0"/>
                       </Group>
@@ -510,6 +551,17 @@
               </Properties>
               <Events>
                 <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="tbtn_marcarDesmarcarStateChanged"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="nuevoProducto">
+              <Properties>
+                <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Nuevo Producto"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nuevoProductoActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

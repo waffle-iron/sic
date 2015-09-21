@@ -14,12 +14,12 @@ import sic.vista.swing.GUI_LogIn;
 import sic.vista.swing.tpv.GUI_PrincipalTPV;
 
 public class GUI_Principal extends JFrame {
-
+    
     private final JLabel lbl_Fondo;
     private final EmpresaService empresaService = new EmpresaService();
     private final UsuarioService usuarioService = new UsuarioService();
     private static final Logger log = Logger.getLogger(GUI_Principal.class.getPackage().getName());
-
+    
     public GUI_Principal() {
         this.initComponents();
         ImageIcon iconoVentana = new ImageIcon(GUI_Principal.class.getResource("/sic/icons/SIC_24_square.png"));
@@ -31,12 +31,22 @@ public class GUI_Principal extends JFrame {
         this.setSize(new Dimension(1000, 720));
         this.setExtendedState(MAXIMIZED_BOTH);
         this.setLocationRelativeTo(null);
+        if (!usuarioService.getUsuarioActivo().getUsuario().getPermisosAdministrador()) {
+            mnuItm_Empresas.setEnabled(false);
+            mnuItm_Usuarios.setEnabled(false);
+            mnuItm_Configuracion.setEnabled(false);
+            mnu_Compras.setEnabled(false);
+            mnu_Ventas.setEnabled(false);
+            mnu_Administracion.setEnabled(false);
+            mnu_Stock.setEnabled(false);
+            mnu_Estadisticas.setEnabled(false);
+        }
     }
-
+    
     public JDesktopPane getDesktopPane() {
         return dp_Escritorio;
     }
-
+    
     private void llamarGUI_SeleccionEmpresa() {
         GUI_SeleccionEmpresa gui_seleccionEmpresa = new GUI_SeleccionEmpresa(this, true);
         gui_seleccionEmpresa.setLocationRelativeTo(this);
@@ -48,7 +58,7 @@ public class GUI_Principal extends JFrame {
             lbl_EmpresaActiva.setText("Empresa: " + empresa.getNombre());
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -110,6 +120,11 @@ public class GUI_Principal extends JFrame {
         dp_Escritorio.setToolTipText("");
 
         mnu_Sistema.setText("Sistema");
+        mnu_Sistema.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnu_SistemaActionPerformed(evt);
+            }
+        });
 
         mnuItm_IrTPV.setText("Ir a Punto de Venta");
         mnuItm_IrTPV.addActionListener(new java.awt.event.ActionListener() {
@@ -331,7 +346,7 @@ public class GUI_Principal extends JFrame {
             } else {
                 this.llamarGUI_SeleccionEmpresa();
             }
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -358,7 +373,7 @@ public class GUI_Principal extends JFrame {
             //selecciona y trae al frente el internalframe
             try {
                 gui.setSelected(true);
-
+                
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
                 log.error(msjError + " - " + ex.getMessage());
@@ -379,7 +394,7 @@ public class GUI_Principal extends JFrame {
             //selecciona y trae al frente el internalframe
             try {
                 gui.setSelected(true);
-
+                
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
                 log.error(msjError + " - " + ex.getMessage());
@@ -400,7 +415,7 @@ public class GUI_Principal extends JFrame {
             //selecciona y trae al frente el internalframe
             try {
                 gui.setSelected(true);
-
+                
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
                 log.error(msjError + " - " + ex.getMessage());
@@ -421,7 +436,7 @@ public class GUI_Principal extends JFrame {
             //selecciona y trae al frente el internalframe
             try {
                 gui.setSelected(true);
-
+                
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
                 log.error(msjError + " - " + ex.getMessage());
@@ -442,7 +457,7 @@ public class GUI_Principal extends JFrame {
             //selecciona y trae al frente el internalframe
             try {
                 gui.setSelected(true);
-
+                
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
                 log.error(msjError + " - " + ex.getMessage());
@@ -481,7 +496,7 @@ public class GUI_Principal extends JFrame {
             //selecciona y trae al frente el internalframe
             try {
                 gui.setSelected(true);
-
+                
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
                 log.error(msjError + " - " + ex.getMessage());
@@ -502,7 +517,7 @@ public class GUI_Principal extends JFrame {
             //selecciona y trae al frente el internalframe
             try {
                 gui.setSelected(true);
-
+                
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
                 log.error(msjError + " - " + ex.getMessage());
@@ -518,6 +533,10 @@ public class GUI_Principal extends JFrame {
         gui_ConfiguracionDelSistema.setVisible(true);
         Utilidades.cerrarTodasVentanas(dp_Escritorio);
     }//GEN-LAST:event_mnuItm_ConfiguracionActionPerformed
+
+    private void mnu_SistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnu_SistemaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mnu_SistemaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator Separador1;
