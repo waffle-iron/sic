@@ -264,6 +264,7 @@ public class GUI_CerrarVenta extends JDialog {
         chk_condicionDividir.setText("Dividir Factura");
 
         nuevaFormaDePago.setForeground(java.awt.Color.blue);
+        nuevaFormaDePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddWallet_16x16.png")));
         nuevaFormaDePago.setText("nueva");
         nuevaFormaDePago.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -272,6 +273,7 @@ public class GUI_CerrarVenta extends JDialog {
         });
 
         nuevoTransporte.setForeground(java.awt.Color.blue);
+        nuevoTransporte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddTruck_16x16.png")));
         nuevoTransporte.setText("nuevo");
         nuevoTransporte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
