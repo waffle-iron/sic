@@ -21,14 +21,14 @@ import sic.vista.swing.administracion.GUI_Principal;
 import sic.vista.swing.tpv.GUI_PrincipalTPV;
 
 public class GUI_LogIn extends JFrame {
-
+    
     private boolean configDesplegada;
     private Usuario usuario;
     private UsuarioService usuarioService = new UsuarioService();
     private ConfiguracionDelSistemaService configuracionService = new ConfiguracionDelSistemaService();
     private ConexionService conexionService = new ConexionService();
     private static final Logger log = Logger.getLogger(GUI_LogIn.class.getPackage().getName());
-
+    
     public GUI_LogIn() {
         this.initComponents();
         this.setTitle("S.I.C. " + ResourceBundle.getBundle("Mensajes").getString("version"));
@@ -42,7 +42,7 @@ public class GUI_LogIn extends JFrame {
         btn_Guardar.setEnabled(false);
         this.cargarDatosConexion();
     }
-
+    
     public static void main(String args[]) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -51,7 +51,7 @@ public class GUI_LogIn extends JFrame {
             }
         });
     }
-
+    
     private void validarUsuario() {
         if (!txt_Usuario.getText().trim().equals("") || txt_Contrasenia.getPassword().length != 0) {
             try {
@@ -67,13 +67,13 @@ public class GUI_LogIn extends JFrame {
             JOptionPane.showMessageDialog(this, "Ingrese un usuario y contraseña para poder continuar.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
     private void ingresar() {
         if (usuario != null) {
             this.abrirGUI_Principal();
         }
     }
-
+    
     private void desplegarPlegarConfig() {
         if (configDesplegada == true) {
             this.setSize(290, 150);
@@ -102,7 +102,7 @@ public class GUI_LogIn extends JFrame {
             this.cargarDatosConexion();
         }
     }
-
+    
     private void cargarDatosConexion() {
         try {
             configuracionService.leerXML();
@@ -113,29 +113,30 @@ public class GUI_LogIn extends JFrame {
                 txt_Puerto.setText(String.valueOf(XMLFileConfig.getPuertoConexion()));
             }
             txt_BD.setText(XMLFileConfig.getBdConexion());
-
+            
         } catch (XMLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
     private void abrirGUI_Principal() {
-        new GUI_Principal().setVisible(true);
-        this.dispose();
+        if (usuarioService.getUsuarioActivo().getUsuario().getPermisosAdministrador()) {
+            new GUI_Principal().setVisible(true);
+            this.dispose();
+        } else {
+            this.txt_Usuario.setText("");
+            this.txt_Contrasenia.setText("");
+            new GUI_PrincipalTPV().setVisible(true);
+        }
     }
-    /*
-     private void abrirGUI_TPV() {
-     new GUI_PrincipalTPV().setVisible(true);
-     this.dispose();
-     }**/
-
+    
     private void capturaTeclaEnter(KeyEvent evt) {
         //tecla ENTER
         if (evt.getKeyCode() == 10) {
             btn_IngresarActionPerformed(null);
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -318,21 +319,21 @@ public class GUI_LogIn extends JFrame {
             if (puertoIngresado.equals("") || !Validator.esNumericoPositivo(puertoIngresado)) {
                 throw new ServiceException("El puerto ingresado es inválido.");
             }
-
+            
             DatosConexion datosConexion = new DatosConexion();
             datosConexion.setHost(txt_Host.getText().trim());
             datosConexion.setNombreBaseDeDatos(txt_BD.getText().trim());
             datosConexion.setPuerto(Integer.parseInt(txt_Puerto.getText().trim()));
-
+            
             conexionService.guardar(datosConexion);
             JOptionPane.showMessageDialog(this, "La configuración de conexion se guardo correctamente!",
                     "Informacion", JOptionPane.INFORMATION_MESSAGE);
             this.cargarDatosConexion();
             this.desplegarPlegarConfig();
-
+            
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
+            
         } catch (XMLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -358,7 +359,7 @@ public class GUI_LogIn extends JFrame {
                 btn_Salir.setEnabled(true);
                 txt_Usuario.setEnabled(true);
                 txt_Contrasenia.setEnabled(true);
-
+                
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {

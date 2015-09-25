@@ -24,10 +24,9 @@ import sic.util.RenderTabla;
 import sic.vista.swing.GUI_LogIn;
 import sic.vista.swing.ModeloTabla;
 import sic.vista.swing.administracion.GUI_DetalleProducto;
-import sic.vista.swing.administracion.GUI_Principal;
 import sic.vista.swing.administracion.GUI_SeleccionEmpresa;
 
-public class GUI_PrincipalTPV extends JFrame {
+public class GUI_PrincipalTPV extends JDialog {
 
     private Empresa empresa;
     private char tipoDeFactura;
@@ -51,7 +50,7 @@ public class GUI_PrincipalTPV extends JFrame {
         renglones = new ArrayList<>();
         this.setSize(new Dimension(1050, 645));
         this.setLocationRelativeTo(null);
-        this.setExtendedState(MAXIMIZED_BOTH);
+        // this.setExtendedState(MAXIMIZED_BOTH);
         ImageIcon iconoVentana = new ImageIcon(GUI_PrincipalTPV.class.getResource("/sic/icons/SIC_24_square.png"));
         this.setIconImage(iconoVentana.getImage());
         ImageIcon iconoNoMarcado = new ImageIcon(getClass().getResource("/sic/icons/chkNoMarcado_16x16.png"));
@@ -68,7 +67,6 @@ public class GUI_PrincipalTPV extends JFrame {
 
         //listeners        
         cmb_TipoFactura.addKeyListener(keyHandler);
-        btn_CambiarUserEmpresa.addKeyListener(keyHandler);
         btn_NuevoCliente.addKeyListener(keyHandler);
         btn_BuscarCliente.addKeyListener(keyHandler);
         btn_BuscarProductos.addKeyListener(keyHandler);
@@ -140,9 +138,6 @@ public class GUI_PrincipalTPV extends JFrame {
         txt_IVA21_neto.setValue(new Double("0.0"));
         txt_ImpInterno_neto.setValue(new Double("0.0"));
         txt_Total.setValue(new Double("0.0"));
-        if (!usuarioService.getUsuarioActivo().getUsuario().getPermisosAdministrador()) {
-            btn_VolverAdministracion.setEnabled(false);
-        }
     }
 
     private void llamarGUI_SeleccionEmpresa() {
@@ -492,8 +487,6 @@ public class GUI_PrincipalTPV extends JFrame {
         panelEncabezado = new javax.swing.JPanel();
         lbl_TipoFactura = new javax.swing.JLabel();
         cmb_TipoFactura = new javax.swing.JComboBox();
-        btn_CambiarUserEmpresa = new javax.swing.JButton();
-        btn_VolverAdministracion = new javax.swing.JButton();
         panelRenglones = new javax.swing.JPanel();
         sp_Resultado = new javax.swing.JScrollPane();
         tbl_Resultado = new javax.swing.JTable();
@@ -677,25 +670,6 @@ public class GUI_PrincipalTPV extends JFrame {
             }
         });
 
-        btn_CambiarUserEmpresa.setForeground(java.awt.Color.blue);
-        btn_CambiarUserEmpresa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/GroupArrow_16x16.png"))); // NOI18N
-        btn_CambiarUserEmpresa.setToolTipText("Cambiar usuario");
-        btn_CambiarUserEmpresa.setFocusable(false);
-        btn_CambiarUserEmpresa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_CambiarUserEmpresaActionPerformed(evt);
-            }
-        });
-
-        btn_VolverAdministracion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Administracion_16x16.png"))); // NOI18N
-        btn_VolverAdministracion.setToolTipText("Ir al administrador");
-        btn_VolverAdministracion.setFocusable(false);
-        btn_VolverAdministracion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_VolverAdministracionActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout panelEncabezadoLayout = new javax.swing.GroupLayout(panelEncabezado);
         panelEncabezado.setLayout(panelEncabezadoLayout);
         panelEncabezadoLayout.setHorizontalGroup(
@@ -705,24 +679,16 @@ public class GUI_PrincipalTPV extends JFrame {
                 .addComponent(lbl_TipoFactura)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_VolverAdministracion)
-                .addGap(0, 0, 0)
-                .addComponent(btn_CambiarUserEmpresa))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelEncabezadoLayout.setVerticalGroup(
             panelEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelEncabezadoLayout.createSequentialGroup()
-                .addGroup(panelEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lbl_TipoFactura)
-                        .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btn_VolverAdministracion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btn_CambiarUserEmpresa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(panelEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_TipoFactura)
+                    .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        panelEncabezadoLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_CambiarUserEmpresa, btn_VolverAdministracion});
 
         panelRenglones.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -1157,7 +1123,6 @@ public class GUI_PrincipalTPV extends JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
-            btn_CambiarUserEmpresa.setText(usuarioService.getUsuarioActivo().getUsuario().getNombre());
             this.setColumnas();
             this.prepararComponentes();
             this.llamarGUI_SeleccionEmpresa();
@@ -1176,17 +1141,9 @@ public class GUI_PrincipalTPV extends JFrame {
         }
     }//GEN-LAST:event_formWindowOpened
 
-    private void btn_CambiarUserEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_CambiarUserEmpresaActionPerformed
-        if (this.cerrarVentana()) {
-            this.dispose();
-            new GUI_LogIn().setVisible(true);
-        }
-    }//GEN-LAST:event_btn_CambiarUserEmpresaActionPerformed
-
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if (this.cerrarVentana()) {
-            System.exit(0);
-        }
+        this.cerrarVentana();
+        this.dispose();
     }//GEN-LAST:event_formWindowClosing
 
     private void cmb_TipoFacturaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_TipoFacturaItemStateChanged
@@ -1202,13 +1159,6 @@ public class GUI_PrincipalTPV extends JFrame {
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_cmb_TipoFacturaItemStateChanged
-
-    private void btn_VolverAdministracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VolverAdministracionActionPerformed
-        if (this.cerrarVentana()) {
-            this.dispose();
-            new GUI_Principal().setVisible(true);
-        }
-    }//GEN-LAST:event_btn_VolverAdministracionActionPerformed
 
     private void btn_BuscarPorCodigoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarPorCodigoProductoActionPerformed
         try {
@@ -1357,11 +1307,9 @@ public class GUI_PrincipalTPV extends JFrame {
     private javax.swing.JButton btn_BuscarCliente;
     private javax.swing.JButton btn_BuscarPorCodigoProducto;
     private javax.swing.JButton btn_BuscarProductos;
-    private javax.swing.JButton btn_CambiarUserEmpresa;
     private javax.swing.JButton btn_Continuar;
     private javax.swing.JButton btn_EliminarEntradaProducto;
     private javax.swing.JButton btn_NuevoCliente;
-    private javax.swing.JButton btn_VolverAdministracion;
     private javax.swing.JComboBox cmb_TipoFactura;
     private com.toedter.calendar.JDateChooser fechaEmision;
     private com.toedter.calendar.JDateChooser fechaVencimiento;

@@ -1,6 +1,5 @@
 package sic.vista.swing.tpv;
 
-import java.awt.Frame;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
@@ -35,7 +34,7 @@ public class GUI_CerrarVenta extends JDialog {
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_CerrarVenta.class.getPackage().getName());
 
-    public GUI_CerrarVenta(Frame parent, boolean modal) {
+    public GUI_CerrarVenta(JDialog parent, boolean modal) {
         super(parent, modal);
         this.initComponents();
         this.setIcon();

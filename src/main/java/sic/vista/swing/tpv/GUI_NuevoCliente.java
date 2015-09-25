@@ -31,7 +31,7 @@ public class GUI_NuevoCliente extends JDialog {
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_NuevoCliente.class.getPackage().getName());
 
-    public GUI_NuevoCliente(java.awt.Frame parent, boolean modal) {
+    public GUI_NuevoCliente(JDialog parent, boolean modal) {
         super(parent, modal);
         this.initComponents();
         this.setIcon();

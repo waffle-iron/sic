@@ -19,6 +19,7 @@ import sic.service.*;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 import sic.vista.swing.ModeloTabla;
+import sic.vista.swing.tpv.GUI_PrincipalTPV;
 
 public class GUI_FacturasVenta extends JInternalFrame {
 
@@ -233,7 +234,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             viewer.setVisible(true);
         }
     }
-    
+
     private boolean existeClienteDisponible() {
         return !clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa()).isEmpty();
     }
@@ -692,11 +693,11 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
     private void btn_NuevaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_NuevaActionPerformed
         try {
-            GUI_FormFacturaVenta gui_FormVenta = new GUI_FormFacturaVenta();
             if (this.existeClienteDisponible()) {
-                gui_FormVenta.setModal(true);
-                gui_FormVenta.setLocationRelativeTo(this);
-                gui_FormVenta.setVisible(true);
+                GUI_PrincipalTPV gui_tpv = new GUI_PrincipalTPV();
+                gui_tpv.setModal(true);
+                gui_tpv.setLocationRelativeTo(this);
+                gui_tpv.setVisible(true);
                 this.cargarComboBoxClientes();
             } else {
                 String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");

@@ -17,6 +17,13 @@ public class GUI_SeleccionEmpresa extends JDialog {
     private final EmpresaService empresaService = new EmpresaService();
     private static final Logger log = Logger.getLogger(GUI_SeleccionEmpresa.class.getPackage().getName());
 
+    public GUI_SeleccionEmpresa(JDialog parent, boolean modal) {
+        super(parent, modal);
+        this.initComponents();
+        this.setIcon();
+        this.setLocationRelativeTo(null);
+    }
+
     public GUI_SeleccionEmpresa(Frame parent, boolean modal) {
         super(parent, modal);
         this.initComponents();

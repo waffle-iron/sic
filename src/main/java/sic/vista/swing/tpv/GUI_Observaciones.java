@@ -1,12 +1,11 @@
 package sic.vista.swing.tpv;
 
-import java.awt.Frame;
 import javax.swing.JDialog;
 import javax.swing.JTextArea;
 
 public class GUI_Observaciones extends JDialog {
 
-    public GUI_Observaciones(Frame parent, boolean modal, String texto) {
+    public GUI_Observaciones(JDialog parent, boolean modal, String texto) {
         super(parent, modal);
         this.initComponents();
         this.setLocationRelativeTo(parent);

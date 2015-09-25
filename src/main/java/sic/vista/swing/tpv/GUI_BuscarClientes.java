@@ -1,6 +1,5 @@
 package sic.vista.swing.tpv;
 
-import java.awt.Frame;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Date;
@@ -29,7 +28,7 @@ public class GUI_BuscarClientes extends JDialog {
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_BuscarClientes.class.getPackage().getName());
 
-    public GUI_BuscarClientes(Frame parent, boolean modal) {
+    public GUI_BuscarClientes(JDialog parent, boolean modal) {
         super(parent, modal);
         this.initComponents();
         this.setIcon();

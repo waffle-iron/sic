@@ -1,6 +1,5 @@
 package sic.vista.swing.tpv;
 
-import java.awt.Frame;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
@@ -39,7 +38,7 @@ public class GUI_BuscarProductos extends JDialog {
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_BuscarProductos.class.getPackage().getName());
 
-    public GUI_BuscarProductos(Frame parent, boolean modal, List<RenglonFactura> renglones) {
+    public GUI_BuscarProductos(JDialog parent, boolean modal, List<RenglonFactura> renglones) {
         super(parent, modal);
         this.initComponents();
         this.setIcon();
