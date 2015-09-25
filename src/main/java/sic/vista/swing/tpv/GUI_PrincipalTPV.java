@@ -472,12 +472,7 @@ public class GUI_PrincipalTPV extends JFrame {
             this.agregarRenglon(renglon);
         }
         EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
-        /*
-         if (renglones.isEmpty()) {
-         estadosRenglones = new EstadoRenglon[1];
-         } else {
-         estadosRenglones = new EstadoRenglon[renglones.size()];
-         }*/
+
         if (!renglones.isEmpty()) {
             if (tbl_Resultado.getRowCount() == 0) {
                 estadosRenglones[0] = EstadoRenglon.DESMARCADO;
