@@ -60,8 +60,8 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="nuevaFormaDePago" max="32767" attributes="0"/>
-                              <Component id="nuevoTransporte" max="32767" attributes="0"/>
+                              <Component id="btn_nuevaFormaDePago" max="32767" attributes="0"/>
+                              <Component id="btn_nuevoTransporte" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -105,13 +105,13 @@
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_FormaDePago" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="cmb_FormaDePago" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="nuevaFormaDePago" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_nuevaFormaDePago" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_Transporte" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="cmb_Transporte" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="nuevoTransporte" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_nuevoTransporte" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="separador" min="-2" pref="10" max="-2" attributes="0"/>
@@ -271,32 +271,32 @@
             <Property name="text" type="java.lang.String" value="Dividir Factura"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="nuevaFormaDePago">
+        <Component class="javax.swing.JButton" name="btn_nuevaFormaDePago">
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
             </Property>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="new javax.swing.ImageIcon(getClass().getResource(&quot;/sic/icons/AddWallet_16x16.png&quot;))" type="code"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/sic/icons/AddWallet_16x16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="nueva"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nuevaFormaDePagoActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_nuevaFormaDePagoActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="nuevoTransporte">
+        <Component class="javax.swing.JButton" name="btn_nuevoTransporte">
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
             </Property>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="new javax.swing.ImageIcon(getClass().getResource(&quot;/sic/icons/AddTruck_16x16.png&quot;))" type="code"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/sic/icons/AddTruck_16x16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="nuevo"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nuevoTransporteActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_nuevoTransporteActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

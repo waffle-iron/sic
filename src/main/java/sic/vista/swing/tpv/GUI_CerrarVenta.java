@@ -46,8 +46,8 @@ public class GUI_CerrarVenta extends JDialog {
 
         //verificación de Usuario
         if (!usuarioService.getUsuarioActivo().getUsuario().getPermisosAdministrador()) {
-            nuevaFormaDePago.setEnabled(false);
-            nuevoTransporte.setEnabled(false);
+            btn_nuevaFormaDePago.setEnabled(false);
+            btn_nuevoTransporte.setEnabled(false);
         }
 
         //listeners
@@ -55,8 +55,8 @@ public class GUI_CerrarVenta extends JDialog {
         cmb_Transporte.addKeyListener(keyHandler);
         txt_AbonaCon.addKeyListener(keyHandler);
         btn_Finalizar.addKeyListener(keyHandler);
-        nuevaFormaDePago.addKeyListener(keyHandler);
-        nuevoTransporte.addKeyListener(keyHandler);
+        btn_nuevaFormaDePago.addKeyListener(keyHandler);
+        btn_nuevoTransporte.addKeyListener(keyHandler);
     }
 
     public boolean isExito() {
@@ -116,7 +116,7 @@ public class GUI_CerrarVenta extends JDialog {
 
     private FacturaVenta construirFactura() {
         FacturaVenta facturaVenta = new FacturaVenta();
-        facturaVenta.setFecha(gui_tpv.getFechaEmision());
+        facturaVenta.setFecha(gui_tpv.getFechaFactura());
         facturaVenta.setTipoFactura(gui_tpv.getTipoDeFactura());
         facturaVenta.setNumSerie(1);
         facturaVenta.setNumFactura(facturaService.calcularNumeroFactura(gui_tpv.getTipoDeFactura(), 1));
@@ -186,8 +186,8 @@ public class GUI_CerrarVenta extends JDialog {
         lbl_TotalAPagar = new javax.swing.JFormattedTextField();
         lbl_Vuelto = new javax.swing.JFormattedTextField();
         chk_condicionDividir = new javax.swing.JCheckBox();
-        nuevaFormaDePago = new javax.swing.JButton();
-        nuevoTransporte = new javax.swing.JButton();
+        btn_nuevaFormaDePago = new javax.swing.JButton();
+        btn_nuevoTransporte = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cerrar Venta");
@@ -262,21 +262,21 @@ public class GUI_CerrarVenta extends JDialog {
 
         chk_condicionDividir.setText("Dividir Factura");
 
-        nuevaFormaDePago.setForeground(java.awt.Color.blue);
-        nuevaFormaDePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddWallet_16x16.png")));
-        nuevaFormaDePago.setText("nueva");
-        nuevaFormaDePago.addActionListener(new java.awt.event.ActionListener() {
+        btn_nuevaFormaDePago.setForeground(java.awt.Color.blue);
+        btn_nuevaFormaDePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddWallet_16x16.png"))); // NOI18N
+        btn_nuevaFormaDePago.setText("nueva");
+        btn_nuevaFormaDePago.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nuevaFormaDePagoActionPerformed(evt);
+                btn_nuevaFormaDePagoActionPerformed(evt);
             }
         });
 
-        nuevoTransporte.setForeground(java.awt.Color.blue);
-        nuevoTransporte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddTruck_16x16.png")));
-        nuevoTransporte.setText("nuevo");
-        nuevoTransporte.addActionListener(new java.awt.event.ActionListener() {
+        btn_nuevoTransporte.setForeground(java.awt.Color.blue);
+        btn_nuevoTransporte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddTruck_16x16.png"))); // NOI18N
+        btn_nuevoTransporte.setText("nuevo");
+        btn_nuevoTransporte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nuevoTransporteActionPerformed(evt);
+                btn_nuevoTransporteActionPerformed(evt);
             }
         });
 
@@ -299,8 +299,8 @@ public class GUI_CerrarVenta extends JDialog {
                             .addComponent(cmb_Transporte, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(nuevaFormaDePago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(nuevoTransporte, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(btn_nuevaFormaDePago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btn_nuevoTransporte, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(panel1Layout.createSequentialGroup()
                         .addComponent(lbl_Cambio)
                         .addGap(48, 48, 48)
@@ -333,12 +333,12 @@ public class GUI_CerrarVenta extends JDialog {
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_FormaDePago)
                     .addComponent(cmb_FormaDePago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nuevaFormaDePago))
+                    .addComponent(btn_nuevaFormaDePago))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_Transporte)
                     .addComponent(cmb_Transporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nuevoTransporte))
+                    .addComponent(btn_nuevoTransporte))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(separador, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -465,7 +465,7 @@ public class GUI_CerrarVenta extends JDialog {
         this.calcularVuelto();
     }//GEN-LAST:event_txt_AbonaConFocusLost
 
-    private void nuevaFormaDePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevaFormaDePagoActionPerformed
+    private void btn_nuevaFormaDePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevaFormaDePagoActionPerformed
         GUI_FormasDePago gui_FormasDePago = new GUI_FormasDePago();
         gui_FormasDePago.setModal(true);
         gui_FormasDePago.setLocationRelativeTo(this);
@@ -478,9 +478,9 @@ public class GUI_CerrarVenta extends JDialog {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_nuevaFormaDePagoActionPerformed
+    }//GEN-LAST:event_btn_nuevaFormaDePagoActionPerformed
 
-    private void nuevoTransporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoTransporteActionPerformed
+    private void btn_nuevoTransporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevoTransporteActionPerformed
         GUI_DetalleTransportista gui_DetalleTransportista = new GUI_DetalleTransportista();
         gui_DetalleTransportista.setModal(true);
         gui_DetalleTransportista.setLocationRelativeTo(this);
@@ -494,10 +494,12 @@ public class GUI_CerrarVenta extends JDialog {
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
 
-    }//GEN-LAST:event_nuevoTransporteActionPerformed
+    }//GEN-LAST:event_btn_nuevoTransporteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Finalizar;
+    private javax.swing.JButton btn_nuevaFormaDePago;
+    private javax.swing.JButton btn_nuevoTransporte;
     private javax.swing.JCheckBox chk_condicionDividir;
     private javax.swing.JComboBox cmb_FormaDePago;
     private javax.swing.JComboBox cmb_Transporte;
@@ -511,8 +513,6 @@ public class GUI_CerrarVenta extends JDialog {
     private javax.swing.JLabel lbl_Vendedor;
     private javax.swing.JLabel lbl_Vendor;
     private javax.swing.JFormattedTextField lbl_Vuelto;
-    private javax.swing.JButton nuevaFormaDePago;
-    private javax.swing.JButton nuevoTransporte;
     private javax.swing.JPanel panel1;
     private javax.swing.JSeparator separador;
     private javax.swing.JFormattedTextField txt_AbonaCon;

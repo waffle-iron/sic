@@ -110,11 +110,6 @@ public class GUI_Principal extends JFrame {
         dp_Escritorio.setToolTipText("");
 
         mnu_Sistema.setText("Sistema");
-        mnu_Sistema.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnu_SistemaActionPerformed(evt);
-            }
-        });
 
         mnuItm_IrTPV.setText("Ir a Punto de Venta");
         mnuItm_IrTPV.addActionListener(new java.awt.event.ActionListener() {
@@ -524,10 +519,6 @@ public class GUI_Principal extends JFrame {
         gui_ConfiguracionDelSistema.setVisible(true);
         Utilidades.cerrarTodasVentanas(dp_Escritorio);
     }//GEN-LAST:event_mnuItm_ConfiguracionActionPerformed
-
-    private void mnu_SistemaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnu_SistemaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_mnu_SistemaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator Separador1;

@@ -19,13 +19,15 @@ public class GUI_SeleccionEmpresa extends JDialog {
 
     public GUI_SeleccionEmpresa(JDialog parent, boolean modal) {
         super(parent, modal);
-        this.initComponents();
-        this.setIcon();
-        this.setLocationRelativeTo(null);
+        this.setIU();
     }
 
     public GUI_SeleccionEmpresa(Frame parent, boolean modal) {
         super(parent, modal);
+        this.setIU();
+    }
+
+    private void setIU() {
         this.initComponents();
         this.setIcon();
         this.setLocationRelativeTo(null);

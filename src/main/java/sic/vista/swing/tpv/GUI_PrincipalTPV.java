@@ -58,12 +58,12 @@ public class GUI_PrincipalTPV extends JDialog {
 
         //aplicando verificación de tipo de Usuario
         if (!usuarioService.getUsuarioActivo().getUsuario().getPermisosAdministrador()) {
-            fechaEmision.setEnabled(false);
-            fechaVencimiento.setEnabled(false);
-            nuevoProducto.setEnabled(false);
+            dc_fechaFactura.setEnabled(false);
+            dc_fechaVencimiento.setEnabled(false);
+            btn_nuevoProducto.setEnabled(false);
         }
-        fechaEmision.setDate(new Date());
-        fechaVencimiento.setDate(new Date());
+        dc_fechaFactura.setDate(new Date());
+        dc_fechaVencimiento.setDate(new Date());
 
         //listeners        
         cmb_TipoFactura.addKeyListener(keyHandler);
@@ -77,9 +77,9 @@ public class GUI_PrincipalTPV extends JDialog {
         txt_Recargo_porcentaje.addKeyListener(keyHandler);
         btn_Continuar.addKeyListener(keyHandler);
         tbtn_marcarDesmarcar.addKeyListener(keyHandler);
-        fechaEmision.addKeyListener(keyHandler);
-        fechaVencimiento.addKeyListener(keyHandler);
-        nuevoProducto.addKeyListener(keyHandler);
+        dc_fechaFactura.addKeyListener(keyHandler);
+        dc_fechaVencimiento.addKeyListener(keyHandler);
+        btn_nuevoProducto.addKeyListener(keyHandler);
     }
 
     public char getTipoDeFactura() {
@@ -121,12 +121,12 @@ public class GUI_PrincipalTPV extends JDialog {
         return this.modeloTablaResultados;
     }
 
-    public Date getFechaEmision() {
-        return this.fechaEmision.getDate();
+    public Date getFechaFactura() {
+        return this.dc_fechaFactura.getDate();
     }
 
     public Date getFechaVencimiento() {
-        return this.fechaVencimiento.getDate();
+        return this.dc_fechaVencimiento.getDate();
     }
 
     private void prepararComponentes() {
@@ -403,13 +403,6 @@ public class GUI_PrincipalTPV extends JDialog {
         txt_Total.setValue(total);
     }
 
-    private boolean cerrarVentana() {
-        int respuesta = JOptionPane.showConfirmDialog(this,
-                "¿Esta seguro que desea salir?\nSe perderá la Venta que esta realizando.",
-                "Salir", JOptionPane.YES_NO_OPTION);
-        return respuesta == JOptionPane.YES_OPTION;
-    }
-
     private void cargarTiposDeFacturaDisponibles() {
         char[] tiposFactura = facturaService.getTipoFacturaVenta(empresaService.getEmpresaActiva().getEmpresa(), cliente);
         cmb_TipoFactura.removeAllItems();
@@ -480,10 +473,10 @@ public class GUI_PrincipalTPV extends JDialog {
         txt_NombreCliente = new javax.swing.JTextField();
         btn_BuscarCliente = new javax.swing.JButton();
         btn_NuevoCliente = new javax.swing.JButton();
-        fechaVencimiento = new com.toedter.calendar.JDateChooser();
-        fechaEmision = new com.toedter.calendar.JDateChooser();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        dc_fechaVencimiento = new com.toedter.calendar.JDateChooser();
+        dc_fechaFactura = new com.toedter.calendar.JDateChooser();
+        lbl_fechaFactura = new javax.swing.JLabel();
+        lbl_fechaDeVencimiento = new javax.swing.JLabel();
         panelEncabezado = new javax.swing.JPanel();
         lbl_TipoFactura = new javax.swing.JLabel();
         cmb_TipoFactura = new javax.swing.JComboBox();
@@ -495,7 +488,7 @@ public class GUI_PrincipalTPV extends JDialog {
         txt_CodigoProducto = new javax.swing.JTextField();
         btn_BuscarPorCodigoProducto = new javax.swing.JButton();
         tbtn_marcarDesmarcar = new javax.swing.JToggleButton();
-        nuevoProducto = new javax.swing.JButton();
+        btn_nuevoProducto = new javax.swing.JButton();
         panelObservaciones = new javax.swing.JPanel();
         lbl_Observaciones = new javax.swing.JLabel();
         btn_AddComment = new javax.swing.JButton();
@@ -580,11 +573,11 @@ public class GUI_PrincipalTPV extends JDialog {
             }
         });
 
-        jLabel1.setForeground(java.awt.Color.red);
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel1.setText("*Fecha De Factura");
+        lbl_fechaFactura.setForeground(java.awt.Color.red);
+        lbl_fechaFactura.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_fechaFactura.setText("*Fecha De Factura");
 
-        jLabel2.setText("Fecha De Vencimiento");
+        lbl_fechaDeVencimiento.setText("Fecha De Vencimiento");
 
         javax.swing.GroupLayout panelClienteLayout = new javax.swing.GroupLayout(panelCliente);
         panelCliente.setLayout(panelClienteLayout);
@@ -598,13 +591,13 @@ public class GUI_PrincipalTPV extends JDialog {
                         .addGap(0, 0, 0)
                         .addComponent(btn_BuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel1)
+                        .addComponent(lbl_fechaFactura)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(fechaEmision, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dc_fechaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel2)
+                        .addComponent(lbl_fechaDeVencimiento)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(fechaVencimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(dc_fechaVencimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(33, 33, 33))
                     .addGroup(panelClienteLayout.createSequentialGroup()
                         .addGroup(panelClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -627,10 +620,10 @@ public class GUI_PrincipalTPV extends JDialog {
             panelClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelClienteLayout.createSequentialGroup()
                 .addGroup(panelClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(fechaVencimiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(fechaEmision, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(dc_fechaVencimiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_fechaDeVencimiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(dc_fechaFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_fechaFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelClienteLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txt_NombreCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -757,14 +750,14 @@ public class GUI_PrincipalTPV extends JDialog {
             }
         });
 
-        nuevoProducto.setForeground(java.awt.Color.blue);
-        nuevoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddProduct_16x16.png")));
-        nuevoProducto.setText("Nuevo Producto");
-        nuevoProducto.setMaximumSize(new java.awt.Dimension(163, 25));
-        nuevoProducto.setMinimumSize(new java.awt.Dimension(163, 25));
-        nuevoProducto.addActionListener(new java.awt.event.ActionListener() {
+        btn_nuevoProducto.setForeground(java.awt.Color.blue);
+        btn_nuevoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddProduct_16x16.png"))); // NOI18N
+        btn_nuevoProducto.setText("Nuevo Producto");
+        btn_nuevoProducto.setMaximumSize(new java.awt.Dimension(163, 25));
+        btn_nuevoProducto.setMinimumSize(new java.awt.Dimension(163, 25));
+        btn_nuevoProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nuevoProductoActionPerformed(evt);
+                btn_nuevoProductoActionPerformed(evt);
             }
         });
 
@@ -787,7 +780,7 @@ public class GUI_PrincipalTPV extends JDialog {
                         .addGap(0, 0, 0)
                         .addComponent(btn_EliminarEntradaProducto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(nuevoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_nuevoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 155, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -802,7 +795,7 @@ public class GUI_PrincipalTPV extends JDialog {
                     .addComponent(txt_CodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_BuscarPorCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(nuevoProducto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_nuevoProducto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btn_BuscarProductos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btn_EliminarEntradaProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -1142,7 +1135,6 @@ public class GUI_PrincipalTPV extends JDialog {
     }//GEN-LAST:event_formWindowOpened
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        this.cerrarVentana();
         this.dispose();
     }//GEN-LAST:event_formWindowClosing
 
@@ -1295,12 +1287,12 @@ public class GUI_PrincipalTPV extends JDialog {
         }
     }//GEN-LAST:event_tbtn_marcarDesmarcarStateChanged
 
-    private void nuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoProductoActionPerformed
+    private void btn_nuevoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevoProductoActionPerformed
         GUI_DetalleProducto gui_DetalleProducto = new GUI_DetalleProducto();
         gui_DetalleProducto.setModal(true);
         gui_DetalleProducto.setLocationRelativeTo(this);
         gui_DetalleProducto.setVisible(true);
-    }//GEN-LAST:event_nuevoProductoActionPerformed
+    }//GEN-LAST:event_btn_nuevoProductoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AddComment;
@@ -1310,11 +1302,10 @@ public class GUI_PrincipalTPV extends JDialog {
     private javax.swing.JButton btn_Continuar;
     private javax.swing.JButton btn_EliminarEntradaProducto;
     private javax.swing.JButton btn_NuevoCliente;
+    private javax.swing.JButton btn_nuevoProducto;
     private javax.swing.JComboBox cmb_TipoFactura;
-    private com.toedter.calendar.JDateChooser fechaEmision;
-    private com.toedter.calendar.JDateChooser fechaVencimiento;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private com.toedter.calendar.JDateChooser dc_fechaFactura;
+    private com.toedter.calendar.JDateChooser dc_fechaVencimiento;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_105;
     private javax.swing.JLabel lbl_21;
@@ -1331,7 +1322,8 @@ public class GUI_PrincipalTPV extends JDialog {
     private javax.swing.JLabel lbl_SubTotalNeto;
     private javax.swing.JLabel lbl_TipoFactura;
     private javax.swing.JLabel lbl_Total;
-    private javax.swing.JButton nuevoProducto;
+    private javax.swing.JLabel lbl_fechaDeVencimiento;
+    private javax.swing.JLabel lbl_fechaFactura;
     private javax.swing.JPanel panelCliente;
     private javax.swing.JPanel panelEncabezado;
     private javax.swing.JPanel panelGeneral;
