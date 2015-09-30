@@ -136,6 +136,16 @@ public class GUI_PrincipalTPV extends JFrame {
         }
     }
 
+    private void cargarEstadoDeLosChkEnTabla(JTable tbl_Resultado, EstadoRenglon[] estadosDeLosRenglones) {
+        for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
+            if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
+                estadosDeLosRenglones[i] = EstadoRenglon.MARCADO;
+            } else {
+                estadosDeLosRenglones[i] = EstadoRenglon.DESMARCADO;
+            }
+        }
+    }
+
     private boolean existeClientePredeterminado() {
         Cliente clientePredeterminado = clienteService.getClientePredeterminado(empresa);
         if (clientePredeterminado == null) {
@@ -268,8 +278,8 @@ public class GUI_PrincipalTPV extends JFrame {
         for (RenglonFactura renglon : renglones) {
             Object[] fila = new Object[8];
             corte = false;
-            /*Dentro de este While, el case según el valor leido en el array de chars, 
-             asigna el valor booleano correspondiente al checkbox del renglon.*/
+            /*Dentro de este While, el case según el valor leido en el array de la enumeración,
+             (modelo tabla)asigna el valor correspondiente al checkbox del renglon.*/
 
             while (corte == false) {
                 switch (estadosDeLosRenglones[i]) {
@@ -283,7 +293,7 @@ public class GUI_PrincipalTPV extends JFrame {
                         corte = true;
                         break;
                     }
-                    /* En caso de que el char sea E, se considera que fue de un
+                    /* En caso de que no sea un marcado o desmarcado, se considera que fue de un
                      renglon eliminado, entonces la estructura while continua iterando.*/
                     case ELIMINADO: {
                         i++;
@@ -336,19 +346,12 @@ public class GUI_PrincipalTPV extends JFrame {
                 this.agregarRenglon(GUI_buscarProducto.getRenglon());
                 /*Si la tabla no contiene renglones, despues de agregar el renglon
                  a la coleccion, carga el arreglo con los estados con un solo elemento, 
-                 cuyo valor es "SinMarcar" para evitar un nulo.*/
+                 cuyo valor es "Desmarcado" para evitar un nulo.*/
                 EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
                 if (tbl_Resultado.getRowCount() == 0) {
                     estadosRenglones[0] = EstadoRenglon.DESMARCADO;
                 } else {
-                    for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
-                        if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
-                            estadosRenglones[i] = EstadoRenglon.MARCADO;
-                        } else {
-                            estadosRenglones[i] = EstadoRenglon.DESMARCADO;
-                        }
-                    }
-
+                    this.cargarEstadoDeLosChkEnTabla(tbl_Resultado, estadosRenglones);
                     //Se ejecuta o no segun si el renglon ya existe
                     //si ya existe, no se ejecuta
                     if (!renglonCargado) {
@@ -379,13 +382,7 @@ public class GUI_PrincipalTPV extends JFrame {
                 if (tbl_Resultado.getRowCount() == 0) {
                     estadosRenglones[0] = EstadoRenglon.DESMARCADO;
                 } else {
-                    for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
-                        if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
-                            estadosRenglones[i] = EstadoRenglon.MARCADO;
-                        } else {
-                            estadosRenglones[i] = EstadoRenglon.DESMARCADO;
-                        }
-                    }
+                    this.cargarEstadoDeLosChkEnTabla(tbl_Resultado, estadosRenglones);
                     estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
                 }
                 this.cargarRenglonesAlTable(estadosRenglones);
@@ -477,13 +474,7 @@ public class GUI_PrincipalTPV extends JFrame {
             if (tbl_Resultado.getRowCount() == 0) {
                 estadosRenglones[0] = EstadoRenglon.DESMARCADO;
             } else {
-                for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
-                    if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
-                        estadosRenglones[i] = EstadoRenglon.MARCADO;
-                    } else {
-                        estadosRenglones[i] = EstadoRenglon.DESMARCADO;
-                    }
-                }
+                this.cargarEstadoDeLosChkEnTabla(tbl_Resultado, estadosRenglones);
                 if (tbl_Resultado.getRowCount() > renglones.size()) {
                     estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
                 }
