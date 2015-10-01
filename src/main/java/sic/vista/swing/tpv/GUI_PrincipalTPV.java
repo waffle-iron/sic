@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 import javax.swing.*;
-import javax.swing.table.TableModel;
 import org.apache.log4j.Logger;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
@@ -20,13 +19,14 @@ import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
 import sic.service.*;
 import sic.util.RenderTabla;
+import sic.util.Utilidades;
 import sic.vista.swing.GUI_LogIn;
 import sic.vista.swing.ModeloTabla;
 import sic.vista.swing.administracion.GUI_Principal;
 import sic.vista.swing.administracion.GUI_SeleccionEmpresa;
 
 public class GUI_PrincipalTPV extends JFrame {
-
+    
     private Empresa empresa;
     private char tipoDeFactura;
     private Cliente cliente;
@@ -42,7 +42,7 @@ public class GUI_PrincipalTPV extends JFrame {
     private final UsuarioService usuarioService = new UsuarioService();
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_PrincipalTPV.class.getPackage().getName());
-
+    
     public GUI_PrincipalTPV() {
         this.initComponents();
         modeloTablaResultados = new ModeloTabla();
@@ -69,27 +69,27 @@ public class GUI_PrincipalTPV extends JFrame {
         btn_Continuar.addKeyListener(keyHandler);
         tbtn_marcarDesmarcar.addKeyListener(keyHandler);
     }
-
+    
     public char getTipoDeFactura() {
         return tipoDeFactura;
     }
-
+    
     public Cliente getCliente() {
         return cliente;
     }
-
+    
     public Empresa getEmpresa() {
         return empresa;
     }
-
+    
     public JTextArea getTxta_Observaciones() {
         return txta_Observaciones;
     }
-
+    
     public List<RenglonFactura> getRenglones() {
         return renglones;
     }
-
+    
     public ResultadosFactura getResultadosFactura() {
         ResultadosFactura resultados = new ResultadosFactura();
         resultados.setSubTotal(Double.parseDouble(txt_Subtotal.getValue().toString()));
@@ -104,11 +104,11 @@ public class GUI_PrincipalTPV extends JFrame {
         resultados.setTotal(Double.parseDouble(txt_Total.getValue().toString()));
         return resultados;
     }
-
+    
     public ModeloTabla getModeloTabla() {
         return this.modeloTablaResultados;
     }
-
+    
     private void prepararComponentes() {
         txt_Subtotal.setValue(new Double("0.0"));
         txt_Recargo_porcentaje.setValue(new Double("0.0"));
@@ -122,7 +122,7 @@ public class GUI_PrincipalTPV extends JFrame {
             btn_VolverAdministracion.setEnabled(false);
         }
     }
-
+    
     private void llamarGUI_SeleccionEmpresa() {
         GUI_SeleccionEmpresa GUI_Empresas = new GUI_SeleccionEmpresa(this, true);
         GUI_Empresas.setVisible(true);
@@ -135,7 +135,17 @@ public class GUI_PrincipalTPV extends JFrame {
                     + " - " + empresa.getNombre());
         }
     }
-
+    
+    private void cargarEstadoDeLosChkEnTabla(JTable tbl_Resultado, EstadoRenglon[] estadosDeLosRenglones) {
+        for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
+            if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
+                estadosDeLosRenglones[i] = EstadoRenglon.MARCADO;
+            } else {
+                estadosDeLosRenglones[i] = EstadoRenglon.DESMARCADO;
+            }
+        }
+    }
+    
     private boolean existeClientePredeterminado() {
         Cliente clientePredeterminado = clienteService.getClientePredeterminado(empresa);
         if (clientePredeterminado == null) {
@@ -149,7 +159,7 @@ public class GUI_PrincipalTPV extends JFrame {
             return true;
         }
     }
-
+    
     private boolean existeFormaDePagoPredeterminada() {
         FormaDePago fp = formaDePagoService.getFormaDePagoPredeterminada(empresa);
         if (fp == null) {
@@ -162,7 +172,7 @@ public class GUI_PrincipalTPV extends JFrame {
             return true;
         }
     }
-
+    
     private boolean existeTransportistaCargado() {
         if (transportistaService.getTransportistas(empresa).isEmpty()) {
             String mensaje = "No posee ningun Transportista cargado en la empresa seleccionada.\n"
@@ -173,7 +183,7 @@ public class GUI_PrincipalTPV extends JFrame {
             return true;
         }
     }
-
+    
     private void cargarCliente(Cliente cliente) {
         this.cliente = cliente;
         txt_NombreCliente.setText(cliente.getRazonSocial());
@@ -181,7 +191,7 @@ public class GUI_PrincipalTPV extends JFrame {
         txt_CondicionIVACliente.setText(cliente.getCondicionIVA().toString());
         txt_IDFiscalCliente.setText(cliente.getId_Fiscal());
     }
-
+    
     private void setColumnas() {
         //nombres de columnas
         String[] encabezados = new String[8];
@@ -223,7 +233,7 @@ public class GUI_PrincipalTPV extends JFrame {
         tbl_Resultado.getColumnModel().getColumn(6).setPreferredWidth(120);
         tbl_Resultado.getColumnModel().getColumn(7).setPreferredWidth(120);
     }
-
+    
     private boolean existeStockDisponible(double cantRequerida, Producto producto) {
         double disponibilidad;
         if (producto.isIlimitado() == false) {
@@ -238,7 +248,7 @@ public class GUI_PrincipalTPV extends JFrame {
             return true;
         }
     }
-
+    
     private void agregarRenglon(RenglonFactura renglon) {
         boolean agregado = false;
         //busca entre los renglones al producto, aumenta la cantidad y recalcula el descuento        
@@ -259,27 +269,47 @@ public class GUI_PrincipalTPV extends JFrame {
         Point p = new Point(0, tbl_Resultado.getHeight());
         sp_Resultado.getViewport().setViewPosition(p);
     }
-
-    private void cargarRenglonesAlTable(boolean eliminar) {
-        TableModel copiaDatosJTable = tbl_Resultado.getModel(); // para copiar los datos del JTable
-        int cantidadDeFilas = copiaDatosJTable.getRowCount();
+    
+    private void cargarRenglonesAlTable(EstadoRenglon[] estadosDeLosRenglones) {
         modeloTablaResultados = new ModeloTabla();
         this.setColumnas();
-        int indiceParaMarcar = 0;
+        int i = 0;
+        boolean corte;
         for (RenglonFactura renglon : renglones) {
             Object[] fila = new Object[8];
-            try {
-                if (cantidadDeFilas != 0 && (eliminar == false)) {
-                    boolean marcado = (boolean) copiaDatosJTable.getValueAt(indiceParaMarcar, 0);
-                    fila[0] = marcado;
-                } else {
-                    fila[0] = false;
+            corte = false;
+            /*Dentro de este While, el case según el valor leido en el array de la enumeración,
+             (modelo tabla)asigna el valor correspondiente al checkbox del renglon.*/
+            
+            while (corte == false) {
+                switch (estadosDeLosRenglones[i]) {
+                    case MARCADO: {
+                        fila[0] = true;
+                        corte = true;
+                        break;
+                    }
+                    case DESMARCADO: {
+                        fila[0] = false;
+                        corte = true;
+                        break;
+                    }
+                    /* En caso de que no sea un marcado o desmarcado, se considera que fue de un
+                     renglon eliminado, entonces la estructura while continua iterando.*/
+                    case ELIMINADO: {
+                        i++;
+                        break;
+                    }
+                    /* El caso por defecto, se da cuando el método es ejecutado
+                     desde otras partes que no sea eliminar, ya que la colección
+                     contendrá valores vacíos ''.*/
+                    default: {
+                        fila[0] = false;
+                        corte = true;
+                    }
                 }
-            } catch (ArrayIndexOutOfBoundsException renglonNuevo) {
-                fila[0] = false;
             }
-
-            indiceParaMarcar++;
+            
+            i++;
             fila[1] = renglon.getCodigoItem();
             fila[2] = renglon.getDescripcionItem();
             fila[3] = renglon.getMedidaItem();
@@ -291,7 +321,7 @@ public class GUI_PrincipalTPV extends JFrame {
         }
         tbl_Resultado.setModel(modeloTablaResultados);
     }
-
+    
     private void limpiarYRecargarComponentes() {
         renglones = new ArrayList<>();
         modeloTablaResultados = new ModeloTabla();
@@ -300,15 +330,37 @@ public class GUI_PrincipalTPV extends JFrame {
         txta_Observaciones.setText("");
         txt_Recargo_porcentaje.setValue(0.0);
         this.calcularResultados();
+        this.tbtn_marcarDesmarcar.setSelected(false);
     }
-
+    
     private void buscarProductoConVentanaAuxiliar() {
         if (facturaService.validarCantidadMaximaDeRenglones(renglones.size())) {
             GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones);
             GUI_buscarProducto.setVisible(true);
             if (GUI_buscarProducto.debeCargarRenglon()) {
+                boolean renglonCargado = false;
+                for (RenglonFactura renglon : renglones) {
+                    if (renglon.getId_ProductoItem() == GUI_buscarProducto.getRenglon().getId_ProductoItem()) {
+                        renglonCargado = true;
+                    }
+                }
                 this.agregarRenglon(GUI_buscarProducto.getRenglon());
-                this.cargarRenglonesAlTable(false);
+                /*Si la tabla no contiene renglones, despues de agregar el renglon
+                 a la coleccion, carga el arreglo con los estados con un solo elemento, 
+                 cuyo valor es "Desmarcado" para evitar un nulo.*/
+                EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
+                if (tbl_Resultado.getRowCount() == 0) {
+                    estadosRenglones[0] = EstadoRenglon.DESMARCADO;
+                } else {
+                    this.cargarEstadoDeLosChkEnTabla(tbl_Resultado, estadosRenglones);
+                    //Se ejecuta o no segun si el renglon ya existe
+                    //si ya existe, no se ejecuta
+                    if (!renglonCargado) {
+                        estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
+                    }
+                    
+                }
+                this.cargarRenglonesAlTable(estadosRenglones);
                 this.calcularResultados();
             }
         } else {
@@ -317,7 +369,7 @@ public class GUI_PrincipalTPV extends JFrame {
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
     private void buscarProductoPorCodigo() throws ServiceException {
         Producto producto = productoService.getProductoPorCodigo(
                 txt_CodigoProducto.getText().trim(), empresaService.getEmpresaActiva().getEmpresa());
@@ -327,7 +379,14 @@ public class GUI_PrincipalTPV extends JFrame {
             if (this.existeStockDisponible(1, producto)) {
                 RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
                 this.agregarRenglon(renglon);
-                this.cargarRenglonesAlTable(false);
+                EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
+                if (tbl_Resultado.getRowCount() == 0) {
+                    estadosRenglones[0] = EstadoRenglon.DESMARCADO;
+                } else {
+                    this.cargarEstadoDeLosChkEnTabla(tbl_Resultado, estadosRenglones);
+                    estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
+                }
+                this.cargarRenglonesAlTable(estadosRenglones);
                 this.calcularResultados();
                 txt_CodigoProducto.setText("");
             } else {
@@ -335,17 +394,17 @@ public class GUI_PrincipalTPV extends JFrame {
             }
         }
     }
-
+    
     private void validarComponentesDeResultados() {
         try {
             txt_Recargo_porcentaje.commitEdit();
-
+            
         } catch (ParseException ex) {
             String msjError = "Se produjo un error analizando los campos.";
             log.error(msjError + " - " + ex.getMessage());
         }
     }
-
+    
     private void calcularResultados() {
         double subTotal;
         double recargo_porcentaje;
@@ -385,14 +444,14 @@ public class GUI_PrincipalTPV extends JFrame {
         total = facturaService.calcularTotal(subTotal, 0, recargo_neto, iva_105_neto, iva_21_neto, impInterno_neto);
         txt_Total.setValue(total);
     }
-
+    
     private boolean cerrarVentana() {
         int respuesta = JOptionPane.showConfirmDialog(this,
                 "¿Esta seguro que desea salir?\nSe perderá la Venta que esta realizando.",
                 "Salir", JOptionPane.YES_NO_OPTION);
         return respuesta == JOptionPane.YES_OPTION;
     }
-
+    
     private void cargarTiposDeFacturaDisponibles() {
         char[] tiposFactura = facturaService.getTipoFacturaVenta(empresaService.getEmpresaActiva().getEmpresa(), cliente);
         cmb_TipoFactura.removeAllItems();
@@ -400,7 +459,7 @@ public class GUI_PrincipalTPV extends JFrame {
             cmb_TipoFactura.addItem(tiposFactura[i]);
         }
     }
-
+    
     private void recargarRenglonesSegunTipoDeFactura() {
         //resguardo de renglones
         List<RenglonFactura> resguardoRenglones = renglones;
@@ -410,7 +469,19 @@ public class GUI_PrincipalTPV extends JFrame {
             RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());
             this.agregarRenglon(renglon);
         }
-        this.cargarRenglonesAlTable(false);
+        EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
+        
+        if (!renglones.isEmpty()) {
+            if (tbl_Resultado.getRowCount() == 0) {
+                estadosRenglones[0] = EstadoRenglon.DESMARCADO;
+            } else {
+                this.cargarEstadoDeLosChkEnTabla(tbl_Resultado, estadosRenglones);
+                if (tbl_Resultado.getRowCount() > renglones.size()) {
+                    estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
+                }
+            }
+        }
+        this.cargarRenglonesAlTable(estadosRenglones);
         this.calcularResultados();
     }
 
@@ -418,35 +489,35 @@ public class GUI_PrincipalTPV extends JFrame {
      * Clase interna para manejar las hotkeys del TPV
      */
     class HotKeysHandler extends KeyAdapter {
-
+        
         @Override
         public void keyPressed(KeyEvent evt) {
             if (evt.getKeyCode() == KeyEvent.VK_F5) {
                 btn_NuevoClienteActionPerformed(null);
             }
-
+            
             if (evt.getKeyCode() == KeyEvent.VK_F2) {
                 btn_BuscarClienteActionPerformed(null);
             }
-
+            
             if (evt.getKeyCode() == KeyEvent.VK_F4) {
                 btn_BuscarProductosActionPerformed(null);
             }
-
+            
             if (evt.getKeyCode() == KeyEvent.VK_F9) {
                 btn_ContinuarActionPerformed(null);
             }
-
+            
             if (evt.getSource() == tbl_Resultado && evt.getKeyCode() == 127) {
                 btn_EliminarEntradaProductoActionPerformed(null);
             }
-
+            
             if (evt.getSource() == tbl_Resultado && evt.getKeyCode() == KeyEvent.VK_TAB) {
                 txt_CodigoProducto.requestFocus();
             }
         }
     };
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -686,7 +757,7 @@ public class GUI_PrincipalTPV extends JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        tbl_Resultado.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tbl_Resultado.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         tbl_Resultado.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 tbl_ResultadoFocusGained(evt);
@@ -1070,7 +1141,7 @@ public class GUI_PrincipalTPV extends JFrame {
                 this.cargarCliente(GUI_buscarCliente.getCliSeleccionado());
                 this.cargarTiposDeFacturaDisponibles();
             }
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1085,7 +1156,7 @@ public class GUI_PrincipalTPV extends JFrame {
                 this.cargarCliente(GUI_AltaCliente.getClienteDadoDeAlta());
                 this.cargarTiposDeFacturaDisponibles();
             }
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1105,7 +1176,7 @@ public class GUI_PrincipalTPV extends JFrame {
                 this.dispose();
                 new GUI_LogIn().setVisible(true);
             }
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1133,7 +1204,7 @@ public class GUI_PrincipalTPV extends JFrame {
                 tipoDeFactura = cmb_TipoFactura.getSelectedItem().toString().charAt(0);
                 this.recargarRenglonesSegunTipoDeFactura();
             }
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1150,10 +1221,10 @@ public class GUI_PrincipalTPV extends JFrame {
     private void btn_BuscarPorCodigoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarPorCodigoProductoActionPerformed
         try {
             this.buscarProductoPorCodigo();
-
+            
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1163,10 +1234,10 @@ public class GUI_PrincipalTPV extends JFrame {
     private void txt_CodigoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_CodigoProductoActionPerformed
         try {
             this.buscarProductoPorCodigo();
-
+            
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1205,24 +1276,26 @@ public class GUI_PrincipalTPV extends JFrame {
     }//GEN-LAST:event_btn_ContinuarActionPerformed
 
     private void btn_EliminarEntradaProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarEntradaProductoActionPerformed
-        int[] indicesParaEliminar = new int[tbl_Resultado.getRowCount()];
-        int punteroIndices = 0;
-        int cantidadAEliminar = 0;
+        int[] indicesParaEliminar = Utilidades.getSelectedRowsModelIndices(tbl_Resultado);
+        List<RenglonFactura> renglonesParaBorrar = new ArrayList<>();
+        for (int i = 0; i < indicesParaEliminar.length; i++) {
+            renglonesParaBorrar.add(renglones.get(indicesParaEliminar[i]));
+        }
+        EstadoRenglon[] estadoDeRenglones = new EstadoRenglon[renglones.size()];
         for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
-            if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
-                indicesParaEliminar[punteroIndices] = i;
-                punteroIndices++;
-                cantidadAEliminar++;
+            if (((boolean) tbl_Resultado.getValueAt(i, 0)) == true) {
+                estadoDeRenglones[i] = EstadoRenglon.MARCADO;
+            } else {
+                estadoDeRenglones[i] = EstadoRenglon.DESMARCADO;
             }
         }
-        List<RenglonFactura> paraBorrar = new ArrayList<>();
-        for (int i = 0; i < cantidadAEliminar; i++) {
-            paraBorrar.add(renglones.get(indicesParaEliminar[i]));
+        for (int i = 0; i < indicesParaEliminar.length; i++) {
+            estadoDeRenglones[indicesParaEliminar[i]] = EstadoRenglon.ELIMINADO;
         }
-        for (RenglonFactura renglon : paraBorrar) {
+        for (RenglonFactura renglon : renglonesParaBorrar) {
             renglones.remove(renglon);
         }
-        this.cargarRenglonesAlTable(true);
+        this.cargarRenglonesAlTable(estadoDeRenglones);
         this.calcularResultados();
 
     }//GEN-LAST:event_btn_EliminarEntradaProductoActionPerformed
@@ -1230,7 +1303,7 @@ public class GUI_PrincipalTPV extends JFrame {
     private void btn_BuscarProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarProductosActionPerformed
         try {
             this.buscarProductoConVentanaAuxiliar();
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
