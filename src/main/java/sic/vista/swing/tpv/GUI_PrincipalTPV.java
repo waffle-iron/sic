@@ -50,7 +50,6 @@ public class GUI_PrincipalTPV extends JDialog {
         renglones = new ArrayList<>();
         this.setSize(new Dimension(1050, 645));
         this.setLocationRelativeTo(null);
-        // this.setExtendedState(MAXIMIZED_BOTH);
         ImageIcon iconoVentana = new ImageIcon(GUI_PrincipalTPV.class.getResource("/sic/icons/SIC_24_square.png"));
         this.setIconImage(iconoVentana.getImage());
         ImageIcon iconoNoMarcado = new ImageIcon(getClass().getResource("/sic/icons/chkNoMarcado_16x16.png"));
