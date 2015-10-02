@@ -26,7 +26,7 @@ public class GUI_LogIn extends JFrame {
     private Usuario usuario;
     private final UsuarioService usuarioService = new UsuarioService();
     private final ConfiguracionDelSistemaService configuracionService = new ConfiguracionDelSistemaService();
-    private ConexionService conexionService = new ConexionService();
+    private final ConexionService conexionService = new ConexionService();
     private static final Logger log = Logger.getLogger(GUI_LogIn.class.getPackage().getName());
 
     public GUI_LogIn() {
@@ -70,12 +70,14 @@ public class GUI_LogIn extends JFrame {
 
     private void ingresar() {
         if (usuario != null) {
-            if (usuario.getPermisosAdministrador()) {
-                this.abrirGUI_Principal();
+            if (usuario.getPermisosAdministrador()) {                
+                new GUI_Principal().setVisible(true);
+                this.dispose();
             } else {
                 this.txt_Usuario.setText("");
                 this.txt_Contrasenia.setText("");
                 new GUI_PrincipalTPV().setVisible(true);
+                this.dispose();
             }
         }
     }
@@ -124,12 +126,7 @@ public class GUI_LogIn extends JFrame {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-    private void abrirGUI_Principal() {
-        new GUI_Principal().setVisible(true);
-        this.dispose();
-    }
-
+   
     private void capturaTeclaEnter(KeyEvent evt) {
         //tecla ENTER
         if (evt.getKeyCode() == 10) {

@@ -28,51 +28,61 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="panel1" alignment="0" max="32767" attributes="0"/>
+          <Component id="panelGeneral" alignment="0" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="panel1" min="-2" max="-2" attributes="0"/>
+          <Component id="panelGeneral" min="-2" max="-2" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="panel1">
+    <Container class="javax.swing.JPanel" name="panelGeneral">
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="separador" alignment="1" pref="404" max="32767" attributes="0"/>
+              <Component id="separador" alignment="1" pref="517" max="32767" attributes="0"/>
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lbl_Vendor" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="lbl_FormaDePago" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="lbl_Transporte" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="cmb_FormaDePago" pref="206" max="32767" attributes="0"/>
-                              <Component id="cmb_Transporte" max="32767" attributes="0"/>
+                              <Component id="lbl_FormaDePago" alignment="0" max="32767" attributes="0"/>
+                              <Component id="lbl_Transporte" alignment="0" max="32767" attributes="0"/>
+                              <Component id="lbl_Vendor" alignment="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="btn_nuevaFormaDePago" max="32767" attributes="0"/>
-                              <Component id="btn_nuevoTransporte" max="32767" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="cmb_FormaDePago" max="32767" attributes="0"/>
+                                      <Component id="cmb_Transporte" max="32767" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="btn_nuevaFormaDePago" alignment="1" min="-2" max="-2" attributes="0"/>
+                                      <Component id="btn_nuevoTransporte" alignment="1" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                              </Group>
+                              <Component id="lbl_Vendedor" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="lbl_Cambio" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="48" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="lbl_Pago" max="32767" attributes="1"/>
-                              <Component id="lbl_Total" alignment="0" max="32767" attributes="1"/>
-                              <Component id="lbl_Devolucion" alignment="0" max="32767" attributes="1"/>
+                          <Component id="lbl_Cambio" min="-2" pref="117" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                      <Component id="lbl_Pago" alignment="1" max="32767" attributes="1"/>
+                                      <Component id="lbl_Total" alignment="1" pref="222" max="32767" attributes="1"/>
+                                  </Group>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="lbl_Devolucion" max="32767" attributes="1"/>
                           </Group>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="txt_AbonaCon" alignment="1" max="32767" attributes="1"/>
                               <Component id="lbl_Vuelto" max="32767" attributes="0"/>
@@ -84,10 +94,6 @@
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="btn_Finalizar" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="82" pref="82" max="-2" attributes="0"/>
-                          <Component id="lbl_Vendedor" pref="303" max="32767" attributes="0"/>
-                      </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -95,7 +101,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="lbl_Vendor" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -104,24 +110,22 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_FormaDePago" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_FormaDePago" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="btn_nuevaFormaDePago" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_FormaDePago" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_nuevaFormaDePago" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_Transporte" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_Transporte" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="btn_nuevoTransporte" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_Transporte" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_nuevoTransporte" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="separador" min="-2" pref="10" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="lbl_Cambio" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="lbl_Total" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="lbl_TotalAPagar" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="lbl_Total" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbl_Cambio" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbl_TotalAPagar" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
@@ -129,11 +133,11 @@
                       <Component id="txt_AbonaCon" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="lbl_Devolucion" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="lbl_Vuelto" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="lbl_Devolucion" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbl_Vuelto" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="19" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="btn_Finalizar" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="chk_condicionDividir" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -194,9 +198,9 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_AbonaConActionPerformed"/>
             <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_AbonaConFocusGained"/>
             <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_AbonaConFocusLost"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_AbonaConActionPerformed"/>
             <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_AbonaConKeyReleased"/>
           </Events>
         </Component>
@@ -279,7 +283,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/sic/icons/AddWallet_16x16.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="nueva"/>
+            <Property name="text" type="java.lang.String" value="Nueva"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_nuevaFormaDePagoActionPerformed"/>
@@ -293,7 +297,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/sic/icons/AddTruck_16x16.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="nuevo"/>
+            <Property name="text" type="java.lang.String" value="Nuevo"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_nuevoTransporteActionPerformed"/>
