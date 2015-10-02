@@ -1,10 +1,10 @@
-CREATE DATABASE  IF NOT EXISTS `sic` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
+CREATE DATABASE  IF NOT EXISTS `sic` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
 USE `sic`;
--- MySQL dump 10.13  Distrib 5.6.17, for Win32 (x86)
+-- MySQL dump 10.13  Distrib 5.5.44, for debian-linux-gnu (x86_64)
 --
 -- Host: 127.0.0.1    Database: sic
 -- ------------------------------------------------------
--- Server version	5.6.20
+-- Server version	5.5.44-0ubuntu0.14.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -26,7 +26,8 @@ DROP TABLE IF EXISTS `cliente`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cliente` (
   `id_Cliente` bigint(20) NOT NULL AUTO_INCREMENT,
-  `nombre` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `razonSocial` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `nombreFantasia` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
   `direccion` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `id_CondicionIVA` bigint(20) NOT NULL,
   `id_Fiscal` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -46,7 +47,7 @@ CREATE TABLE `cliente` (
   CONSTRAINT `FK96841DDAA1BB0388` FOREIGN KEY (`id_Localidad`) REFERENCES `localidad` (`id_Localidad`),
   CONSTRAINT `FK96841DDAD801A27A` FOREIGN KEY (`id_CondicionIVA`) REFERENCES `condicioniva` (`id_CondicionIVA`),
   CONSTRAINT `FK96841DDADCB3D948` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +81,7 @@ CREATE TABLE `configuraciondelsistema` (
   PRIMARY KEY (`id_ConfiguracionDelSistema`),
   KEY `FKD426557E6813BD87` (`id_Empresa`),
   CONSTRAINT `FKD426557E6813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -109,7 +110,7 @@ CREATE TABLE `empresa` (
   KEY `FK26DD869D801A27A` (`id_CondicionIVA`),
   CONSTRAINT `FK26DD869A1BB0388` FOREIGN KEY (`id_Localidad`) REFERENCES `localidad` (`id_Localidad`),
   CONSTRAINT `FK26DD869D801A27A` FOREIGN KEY (`id_CondicionIVA`) REFERENCES `condicioniva` (`id_CondicionIVA`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,7 +150,7 @@ CREATE TABLE `factura` (
   CONSTRAINT `FK2223DF586E17BF64` FOREIGN KEY (`id_FormaDePago`) REFERENCES `formadepago` (`id_FormaDePago`) ON DELETE CASCADE,
   CONSTRAINT `FK2223DF58A23D3F36` FOREIGN KEY (`id_Transportista`) REFERENCES `transportista` (`id_Transportista`),
   CONSTRAINT `FK2223DF58DCB3D948` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=148 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=224 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -208,7 +209,7 @@ CREATE TABLE `formadepago` (
   PRIMARY KEY (`id_FormaDePago`),
   KEY `FK68B59117DCB3D948` (`id_Empresa`),
   CONSTRAINT `FK68B59117DCB3D948` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -326,7 +327,7 @@ CREATE TABLE `producto` (
   CONSTRAINT `FKC8063580DCB3D948` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`) ON DELETE CASCADE,
   CONSTRAINT `FKC8063580EF9DB872` FOREIGN KEY (`id_Proveedor`) REFERENCES `proveedor` (`id_Proveedor`) ON DELETE CASCADE,
   CONSTRAINT `FKC8063580F70837AE` FOREIGN KEY (`id_Rubro`) REFERENCES `rubro` (`id_Rubro`)
-) ENGINE=InnoDB AUTO_INCREMENT=1913 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1915 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -358,7 +359,7 @@ CREATE TABLE `proveedor` (
   CONSTRAINT `FK5696EABEA1BB0388` FOREIGN KEY (`id_Localidad`) REFERENCES `localidad` (`id_Localidad`),
   CONSTRAINT `FK5696EABED801A27A` FOREIGN KEY (`id_CondicionIVA`) REFERENCES `condicioniva` (`id_CondicionIVA`),
   CONSTRAINT `FK5696EABEDCB3D948` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=74 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -407,7 +408,7 @@ CREATE TABLE `renglonfactura` (
   PRIMARY KEY (`id_RenglonFactura`),
   KEY `FKC6A221F91C1FE726` (`id_Factura`),
   CONSTRAINT `FKC6A221F91C1FE726` FOREIGN KEY (`id_Factura`) REFERENCES `factura` (`id_Factura`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1101 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1265 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -449,7 +450,7 @@ CREATE TABLE `transportista` (
   KEY `FKD881E3A0A1BB0388` (`id_Localidad`),
   CONSTRAINT `FKD881E3A0A1BB0388` FOREIGN KEY (`id_Localidad`) REFERENCES `localidad` (`id_Localidad`),
   CONSTRAINT `FKD881E3A0DCB3D948` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -478,4 +479,4 @@ CREATE TABLE `usuario` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-04-20 19:07:59
+-- Dump completed on 2015-10-02 11:17:13
