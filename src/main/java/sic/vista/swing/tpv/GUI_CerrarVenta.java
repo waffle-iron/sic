@@ -57,6 +57,9 @@ public class GUI_CerrarVenta extends JDialog {
         btn_Finalizar.addKeyListener(keyHandler);
         btn_nuevaFormaDePago.addKeyListener(keyHandler);
         btn_nuevoTransporte.addKeyListener(keyHandler);
+        if (gui_tpv.getTipoDeFactura() == 'A' || gui_tpv.getTipoDeFactura() == 'B' || gui_tpv.getTipoDeFactura() == 'C') {
+            this.chk_condicionDividir.setEnabled(true);
+        }
     }
 
     public boolean isExito() {
@@ -261,6 +264,7 @@ public class GUI_CerrarVenta extends JDialog {
         lbl_Vuelto.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
 
         chk_condicionDividir.setText("Dividir Factura");
+        chk_condicionDividir.setEnabled(false);
 
         btn_nuevaFormaDePago.setForeground(java.awt.Color.blue);
         btn_nuevaFormaDePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddWallet_16x16.png"))); // NOI18N
@@ -388,9 +392,8 @@ public class GUI_CerrarVenta extends JDialog {
             this.cargarTransportistas();
             //set predeterminado
             cmb_Transporte.setSelectedIndex(0);
-            cmb_FormaDePago.setSelectedItem(formaDePagoService.getFormaDePagoPredeterminada(gui_tpv.getEmpresa()));
-            UsuarioService controladorUsuario = new UsuarioService();
-            lbl_Vendedor.setText(controladorUsuario.getUsuarioActivo().getUsuario().getNombre());
+            cmb_FormaDePago.setSelectedItem(formaDePagoService.getFormaDePagoPredeterminada(gui_tpv.getEmpresa()));            
+            lbl_Vendedor.setText(usuarioService.getUsuarioActivo().getUsuario().getNombre());
             txt_AbonaCon.requestFocus();
 
         } catch (PersistenceException ex) {

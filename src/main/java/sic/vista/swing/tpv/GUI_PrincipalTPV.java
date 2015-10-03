@@ -21,7 +21,6 @@ import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
 import sic.service.*;
 import sic.util.RenderTabla;
-import sic.vista.swing.GUI_LogIn;
 import sic.vista.swing.ModeloTabla;
 import sic.vista.swing.administracion.GUI_DetalleProducto;
 import sic.vista.swing.administracion.GUI_SeleccionEmpresa;
@@ -1122,13 +1121,16 @@ public class GUI_PrincipalTPV extends JDialog {
         try {
             this.setColumnas();
             this.prepararComponentes();
-            this.llamarGUI_SeleccionEmpresa();
+            if (!this.usuarioService.getUsuarioActivo().getUsuario().getPermisosAdministrador()) {
+                this.llamarGUI_SeleccionEmpresa();
+            } else {
+                empresa = empresaService.getEmpresaActiva().getEmpresa();
+            }
             //verifica que exista un Cliente predeterminado, una Forma de Pago y un Transportista
             if (this.existeClientePredeterminado() && this.existeFormaDePagoPredeterminada() && this.existeTransportistaCargado()) {
                 this.cargarTiposDeFacturaDisponibles();
             } else {
                 this.dispose();
-                new GUI_LogIn().setVisible(true);
             }
 
         } catch (PersistenceException ex) {
