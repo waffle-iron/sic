@@ -17,39 +17,28 @@ import sic.service.ConfiguracionDelSistemaService;
 import sic.service.ServiceException;
 import sic.service.UsuarioService;
 import sic.util.Validator;
-import sic.vista.swing.administracion.GUI_Principal;
-import sic.vista.swing.tpv.GUI_PrincipalTPV;
 
 public class GUI_LogIn extends JFrame {
 
     private boolean configDesplegada;
     private Usuario usuario;
-    private UsuarioService usuarioService = new UsuarioService();
-    private ConfiguracionDelSistemaService configuracionService = new ConfiguracionDelSistemaService();
-    private ConexionService conexionService = new ConexionService();
+    private final UsuarioService usuarioService = new UsuarioService();
+    private final ConfiguracionDelSistemaService configuracionService = new ConfiguracionDelSistemaService();
+    private final ConexionService conexionService = new ConexionService();
     private static final Logger log = Logger.getLogger(GUI_LogIn.class.getPackage().getName());
 
     public GUI_LogIn() {
         this.initComponents();
+        this.setSize(290, 150);
         this.setTitle("S.I.C. " + ResourceBundle.getBundle("Mensajes").getString("version"));
         ImageIcon iconoVentana = new ImageIcon(GUI_LogIn.class.getResource("/sic/icons/SIC_24_square.png"));
-        this.setIconImage(iconoVentana.getImage());
-        this.setSize(290, 150);
+        this.setIconImage(iconoVentana.getImage());        
         this.setLocationRelativeTo(null);
         txt_Host.setEnabled(false);
         txt_Puerto.setEnabled(false);
         txt_BD.setEnabled(false);
         btn_Guardar.setEnabled(false);
         this.cargarDatosConexion();
-    }
-
-    public static void main(String args[]) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new GUI_LogIn().setVisible(true);
-            }
-        });
     }
 
     private void validarUsuario() {
@@ -60,7 +49,7 @@ public class GUI_LogIn extends JFrame {
             } catch (ServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());                
+                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
                 JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
@@ -70,12 +59,24 @@ public class GUI_LogIn extends JFrame {
 
     private void ingresar() {
         if (usuario != null) {
-            if (usuario.getPermisosAdministrador() == true) {
-                this.abrirGUI_Principal();
+            if (usuario.getPermisosAdministrador()) {
+                new GUI_Principal().setVisible(true);
+                this.dispose();
             } else {
-                this.abrirGUI_TPV();
+                GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
+                gui_puntoDeVenta.setModal(true);
+                gui_puntoDeVenta.setVisible(true);
+                this.limpiarCredenciales();
+                txt_Usuario.requestFocus();
             }
         }
+    }
+
+    private void limpiarCredenciales() {
+        usuario = null;
+        usuarioService.setUsuarioActivo(usuario);
+        this.txt_Usuario.setText("");
+        this.txt_Contrasenia.setText("");
     }
 
     private void desplegarPlegarConfig() {
@@ -121,16 +122,6 @@ public class GUI_LogIn extends JFrame {
         } catch (XMLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }
-
-    private void abrirGUI_Principal() {
-        new GUI_Principal().setVisible(true);
-        this.dispose();
-    }
-
-    private void abrirGUI_TPV() {
-        new GUI_PrincipalTPV().setVisible(true);
-        this.dispose();
     }
 
     private void capturaTeclaEnter(KeyEvent evt) {
@@ -236,7 +227,7 @@ public class GUI_LogIn extends JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pb_Conectando, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
+                        .addComponent(pb_Conectando, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -244,8 +235,8 @@ public class GUI_LogIn extends JFrame {
                             .addComponent(lblContrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txt_Usuario, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
-                            .addComponent(txt_Contrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE))
+                            .addComponent(txt_Usuario, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+                            .addComponent(txt_Contrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE))
                         .addGap(12, 12, 12))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btn_Configuracion)
@@ -263,9 +254,9 @@ public class GUI_LogIn extends JFrame {
                                     .addComponent(lblBD, javax.swing.GroupLayout.Alignment.TRAILING))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txt_BD, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
-                                    .addComponent(txt_Puerto, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
-                                    .addComponent(txt_Host, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)))
+                                    .addComponent(txt_BD, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                                    .addComponent(txt_Puerto, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                                    .addComponent(txt_Host, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)))
                             .addComponent(btn_Guardar, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addContainerGap())))
         );
@@ -327,7 +318,7 @@ public class GUI_LogIn extends JFrame {
             datosConexion.setHost(txt_Host.getText().trim());
             datosConexion.setNombreBaseDeDatos(txt_BD.getText().trim());
             datosConexion.setPuerto(Integer.parseInt(txt_Puerto.getText().trim()));
-            
+
             conexionService.guardar(datosConexion);
             JOptionPane.showMessageDialog(this, "La configuración de conexion se guardo correctamente!",
                     "Informacion", JOptionPane.INFORMATION_MESSAGE);
