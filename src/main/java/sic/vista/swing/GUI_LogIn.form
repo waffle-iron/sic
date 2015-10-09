@@ -29,7 +29,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="pb_Conectando" pref="455" max="32767" attributes="0"/>
+                      <Component id="pb_Conectando" pref="301" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" attributes="0">
@@ -39,8 +39,8 @@
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txt_Usuario" pref="358" max="32767" attributes="2"/>
-                          <Component id="txt_Contrasenia" alignment="0" pref="358" max="32767" attributes="2"/>
+                          <Component id="txt_Usuario" pref="204" max="32767" attributes="2"/>
+                          <Component id="txt_Contrasenia" alignment="0" pref="204" max="32767" attributes="2"/>
                       </Group>
                       <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
                   </Group>
@@ -62,9 +62,9 @@
                               </Group>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="txt_BD" pref="340" max="32767" attributes="2"/>
-                                  <Component id="txt_Puerto" alignment="0" pref="340" max="32767" attributes="2"/>
-                                  <Component id="txt_Host" alignment="1" pref="340" max="32767" attributes="2"/>
+                                  <Component id="txt_BD" pref="186" max="32767" attributes="2"/>
+                                  <Component id="txt_Puerto" alignment="0" pref="186" max="32767" attributes="2"/>
+                                  <Component id="txt_Host" alignment="1" pref="186" max="32767" attributes="2"/>
                               </Group>
                           </Group>
                           <Component id="btn_Guardar" alignment="1" min="-2" max="-2" attributes="0"/>

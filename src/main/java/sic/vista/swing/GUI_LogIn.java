@@ -17,8 +17,6 @@ import sic.service.ConfiguracionDelSistemaService;
 import sic.service.ServiceException;
 import sic.service.UsuarioService;
 import sic.util.Validator;
-import sic.vista.swing.administracion.GUI_Principal;
-import sic.vista.swing.tpv.GUI_PrincipalTPV;
 
 public class GUI_LogIn extends JFrame {
 
@@ -31,25 +29,16 @@ public class GUI_LogIn extends JFrame {
 
     public GUI_LogIn() {
         this.initComponents();
+        this.setSize(290, 150);
         this.setTitle("S.I.C. " + ResourceBundle.getBundle("Mensajes").getString("version"));
         ImageIcon iconoVentana = new ImageIcon(GUI_LogIn.class.getResource("/sic/icons/SIC_24_square.png"));
-        this.setIconImage(iconoVentana.getImage());
-        this.setSize(290, 150);
+        this.setIconImage(iconoVentana.getImage());        
         this.setLocationRelativeTo(null);
         txt_Host.setEnabled(false);
         txt_Puerto.setEnabled(false);
         txt_BD.setEnabled(false);
         btn_Guardar.setEnabled(false);
         this.cargarDatosConexion();
-    }
-
-    public static void main(String args[]) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new GUI_LogIn().setVisible(true);
-            }
-        });
     }
 
     private void validarUsuario() {
@@ -70,16 +59,24 @@ public class GUI_LogIn extends JFrame {
 
     private void ingresar() {
         if (usuario != null) {
-            if (usuario.getPermisosAdministrador()) {                
+            if (usuario.getPermisosAdministrador()) {
                 new GUI_Principal().setVisible(true);
                 this.dispose();
             } else {
-                this.txt_Usuario.setText("");
-                this.txt_Contrasenia.setText("");
-                new GUI_PrincipalTPV().setVisible(true);
-                this.dispose();
+                GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
+                gui_puntoDeVenta.setModal(true);
+                gui_puntoDeVenta.setVisible(true);
+                this.limpiarCredenciales();
+                txt_Usuario.requestFocus();
             }
         }
+    }
+
+    private void limpiarCredenciales() {
+        usuario = null;
+        usuarioService.setUsuarioActivo(usuario);
+        this.txt_Usuario.setText("");
+        this.txt_Contrasenia.setText("");
     }
 
     private void desplegarPlegarConfig() {
@@ -126,7 +123,7 @@ public class GUI_LogIn extends JFrame {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-   
+
     private void capturaTeclaEnter(KeyEvent evt) {
         //tecla ENTER
         if (evt.getKeyCode() == 10) {
@@ -230,7 +227,7 @@ public class GUI_LogIn extends JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pb_Conectando, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
+                        .addComponent(pb_Conectando, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -238,8 +235,8 @@ public class GUI_LogIn extends JFrame {
                             .addComponent(lblContrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txt_Usuario, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
-                            .addComponent(txt_Contrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE))
+                            .addComponent(txt_Usuario, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
+                            .addComponent(txt_Contrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE))
                         .addGap(12, 12, 12))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btn_Configuracion)
@@ -257,9 +254,9 @@ public class GUI_LogIn extends JFrame {
                                     .addComponent(lblBD, javax.swing.GroupLayout.Alignment.TRAILING))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txt_BD, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
-                                    .addComponent(txt_Puerto, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
-                                    .addComponent(txt_Host, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)))
+                                    .addComponent(txt_BD, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                                    .addComponent(txt_Puerto, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+                                    .addComponent(txt_Host, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)))
                             .addComponent(btn_Guardar, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addContainerGap())))
         );

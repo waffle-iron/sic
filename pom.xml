@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>sic</groupId>
     <artifactId>SIC</artifactId>
-    <version>1.6.1</version>
+    <version>1.6.2</version>
     <packaging>jar</packaging>
     
     <dependencies>        
@@ -100,7 +100,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>sic.vista.swing.GUI_LogIn</mainClass>
+                            <mainClass>sic.App</mainClass>
                         </manifest>
                     </archive>                    
                 </configuration>
