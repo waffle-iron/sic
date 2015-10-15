@@ -11,8 +11,6 @@ import sic.modelo.XMLFileConfig;
 public class PersistenceUtil {
 
     private static EntityManagerFactory emf = null;
-    private static final String username = "admin12345";
-    private static final String password = "sic12345";
     private static final Logger log = Logger.getLogger(PersistenceUtil.class.getPackage().getName());
 
     public static EntityManager getEntityManager() {
@@ -22,6 +20,8 @@ public class PersistenceUtil {
                     + "/" + XMLFileConfig.getBdConexion();
             Map properties = new HashMap();
             properties.put("javax.persistence.jdbc.url", url);
+            String username = System.getenv("SICusr");
+            String password = System.getenv("SICpass");
             properties.put("javax.persistence.jdbc.user", username);
             properties.put("javax.persistence.jdbc.password", password);
             try {
