@@ -20,8 +20,8 @@ public class PersistenceUtil {
                     + "/" + XMLFileConfig.getBdConexion();
             Map properties = new HashMap();
             properties.put("javax.persistence.jdbc.url", url);
-            String username = System.getenv("SICusr");
-            String password = System.getenv("SICpass");
+            String username = System.getenv("SIC_USERNAME");
+            String password = System.getenv("SIC_PASSWORD");
             properties.put("javax.persistence.jdbc.user", username);
             properties.put("javax.persistence.jdbc.password", password);
             try {
