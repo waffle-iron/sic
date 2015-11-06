@@ -15,6 +15,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -75,8 +76,21 @@ public abstract class Factura implements Serializable {
 
     private boolean eliminada;
 
+   // @Column(nullable = false)  / 
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
+    private Pedido pedido;
+
     public Factura() {
     }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }     
 
     public List<RenglonFactura> getRenglones() {
         return renglones;
