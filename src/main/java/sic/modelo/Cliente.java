@@ -90,55 +90,10 @@ public class Cliente implements Serializable {
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "cliente")
     private Set<FacturaVenta> facturasVenta;
 
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "cliente")
+    private Set<Pedido> pedidos;
+
     public Cliente() {
-    }
-
-    public Set<FacturaVenta> getFacturasVenta() {
-        return facturasVenta;
-    }
-
-    public void setFacturasVenta(Set<FacturaVenta> facturasVenta) {
-        this.facturasVenta = facturasVenta;
-    }
-
-    public CondicionIVA getCondicionIVA() {
-        return condicionIVA;
-    }
-
-    public void setCondicionIVA(CondicionIVA condicionIVA) {
-        this.condicionIVA = condicionIVA;
-    }
-
-    public String getContacto() {
-        return contacto;
-    }
-
-    public void setContacto(String contacto) {
-        this.contacto = contacto;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Date getFechaAlta() {
-        return fechaAlta;
-    }
-
-    public void setFechaAlta(Date fechaAlta) {
-        this.fechaAlta = fechaAlta;
     }
 
     public long getId_Cliente() {
@@ -147,22 +102,6 @@ public class Cliente implements Serializable {
 
     public void setId_Cliente(long id_Cliente) {
         this.id_Cliente = id_Cliente;
-    }
-
-    public String getId_Fiscal() {
-        return id_Fiscal;
-    }
-
-    public void setId_Fiscal(String id_Fiscal) {
-        this.id_Fiscal = id_Fiscal;
-    }
-
-    public Localidad getLocalidad() {
-        return localidad;
-    }
-
-    public void setLocalidad(Localidad localidad) {
-        this.localidad = localidad;
     }
 
     public String getRazonSocial() {
@@ -181,6 +120,38 @@ public class Cliente implements Serializable {
         this.nombreFantasia = nombreFantasia;
     }
 
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
+    }
+
+    public CondicionIVA getCondicionIVA() {
+        return condicionIVA;
+    }
+
+    public void setCondicionIVA(CondicionIVA condicionIVA) {
+        this.condicionIVA = condicionIVA;
+    }
+
+    public String getId_Fiscal() {
+        return id_Fiscal;
+    }
+
+    public void setId_Fiscal(String id_Fiscal) {
+        this.id_Fiscal = id_Fiscal;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getTelPrimario() {
         return telPrimario;
     }
@@ -195,6 +166,38 @@ public class Cliente implements Serializable {
 
     public void setTelSecundario(String telSecundario) {
         this.telSecundario = telSecundario;
+    }
+
+    public Localidad getLocalidad() {
+        return localidad;
+    }
+
+    public void setLocalidad(Localidad localidad) {
+        this.localidad = localidad;
+    }
+
+    public String getContacto() {
+        return contacto;
+    }
+
+    public void setContacto(String contacto) {
+        this.contacto = contacto;
+    }
+
+    public Date getFechaAlta() {
+        return fechaAlta;
+    }
+
+    public void setFechaAlta(Date fechaAlta) {
+        this.fechaAlta = fechaAlta;
+    }
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
 
     public boolean isEliminado() {
@@ -213,24 +216,42 @@ public class Cliente implements Serializable {
         this.predeterminado = predeterminado;
     }
 
-    public Empresa getEmpresa() {
-        return empresa;
+    public Set<FacturaVenta> getFacturasVenta() {
+        return facturasVenta;
     }
 
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
+    public void setFacturasVenta(Set<FacturaVenta> facturasVenta) {
+        this.facturasVenta = facturasVenta;
     }
 
-    @Override
-    public String toString() {
-        return razonSocial;
+    public Set<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 97 * hash + (int) (this.id_Cliente ^ (this.id_Cliente >>> 32));
-        hash = 97 * hash + Objects.hashCode(this.razonSocial);
+        int hash = 7;
+        hash = 37 * hash + (int) (this.id_Cliente ^ (this.id_Cliente >>> 32));
+        hash = 37 * hash + Objects.hashCode(this.razonSocial);
+        hash = 37 * hash + Objects.hashCode(this.nombreFantasia);
+        hash = 37 * hash + Objects.hashCode(this.direccion);
+        hash = 37 * hash + Objects.hashCode(this.condicionIVA);
+        hash = 37 * hash + Objects.hashCode(this.id_Fiscal);
+        hash = 37 * hash + Objects.hashCode(this.email);
+        hash = 37 * hash + Objects.hashCode(this.telPrimario);
+        hash = 37 * hash + Objects.hashCode(this.telSecundario);
+        hash = 37 * hash + Objects.hashCode(this.localidad);
+        hash = 37 * hash + Objects.hashCode(this.contacto);
+        hash = 37 * hash + Objects.hashCode(this.fechaAlta);
+        hash = 37 * hash + Objects.hashCode(this.empresa);
+        hash = 37 * hash + (this.eliminado ? 1 : 0);
+        hash = 37 * hash + (this.predeterminado ? 1 : 0);
+        hash = 37 * hash + Objects.hashCode(this.facturasVenta);
+        hash = 37 * hash + Objects.hashCode(this.pedidos);
         return hash;
     }
 
@@ -249,6 +270,49 @@ public class Cliente implements Serializable {
         if (!Objects.equals(this.razonSocial, other.razonSocial)) {
             return false;
         }
+        if (!Objects.equals(this.nombreFantasia, other.nombreFantasia)) {
+            return false;
+        }
+        if (!Objects.equals(this.direccion, other.direccion)) {
+            return false;
+        }
+        if (!Objects.equals(this.condicionIVA, other.condicionIVA)) {
+            return false;
+        }
+        if (!Objects.equals(this.id_Fiscal, other.id_Fiscal)) {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        if (!Objects.equals(this.telSecundario, other.telSecundario)) {
+            return false;
+        }
+        if (!Objects.equals(this.localidad, other.localidad)) {
+            return false;
+        }
+        if (!Objects.equals(this.contacto, other.contacto)) {
+            return false;
+        }
+        if (!Objects.equals(this.fechaAlta, other.fechaAlta)) {
+            return false;
+        }
+        if (!Objects.equals(this.empresa, other.empresa)) {
+            return false;
+        }
+        if (this.eliminado != other.eliminado) {
+            return false;
+        }
+        if (this.predeterminado != other.predeterminado) {
+            return false;
+        }
+        if (!Objects.equals(this.facturasVenta, other.facturasVenta)) {
+            return false;
+        }
+        if (!Objects.equals(this.pedidos, other.pedidos)) {
+            return false;
+        }
         return true;
     }
+
 }
