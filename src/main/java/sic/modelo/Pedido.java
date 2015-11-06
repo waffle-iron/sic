@@ -39,7 +39,7 @@ public class Pedido implements Serializable {
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Usuario", referencedColumnName = "id_Usuario")
-    Usuario usuario;
+    private Usuario usuario;
 
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "pedido")
     private List<Factura> facturas;
