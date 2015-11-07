@@ -1,4 +1,4 @@
-package sic.repository;
+package sic.repository.jpa;
 
 import java.util.List;
 import java.util.ResourceBundle;
@@ -6,11 +6,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import sic.modelo.Usuario;
+import sic.repository.IUsuarioRepository;
 import sic.service.ServiceException;
 import sic.util.PersistenceUtil;
 
-public class UsuarioRepository {
+public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {
 
+    @Override
     public List<Usuario> getUsuarios() {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Usuario> typedQuery = em.createNamedQuery("Usuario.buscarTodos", Usuario.class);
@@ -19,6 +21,7 @@ public class UsuarioRepository {
         return usuarios;
     }
 
+    @Override
     public Usuario getUsuarioPorNombre(String nombre) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Usuario> typedQuery = em.createNamedQuery("Usuario.buscarPorNombre", Usuario.class);
@@ -32,6 +35,7 @@ public class UsuarioRepository {
         }
     }
 
+    @Override
     public List<Usuario> getUsuariosAdministradores() {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Usuario> typedQuery = em.createNamedQuery("Usuario.buscarUsuariosAdministradores", Usuario.class);
@@ -40,6 +44,7 @@ public class UsuarioRepository {
         return usuarios;
     }
 
+    @Override
     public Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) throws ServiceException {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Usuario> typedQuery = em.createNamedQuery("Usuario.buscarPorNombreContrasenia", Usuario.class);
@@ -54,6 +59,7 @@ public class UsuarioRepository {
         }
     }
 
+    @Override
     public void actualizar(Usuario usuario) {
         EntityManager em = PersistenceUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -63,6 +69,7 @@ public class UsuarioRepository {
         em.close();
     }
 
+    @Override
     public void guardar(Usuario usuario) {
         EntityManager em = PersistenceUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();

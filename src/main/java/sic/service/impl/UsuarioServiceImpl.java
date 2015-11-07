@@ -1,38 +1,48 @@
-package sic.service;
+package sic.service.impl;
 
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.UsuarioRepository;
 import sic.modelo.UsuarioActivo;
 import sic.modelo.Usuario;
+import sic.repository.IUsuarioRepository;
+import sic.repository.jpa.UsuarioRepositoryJPAImpl;
+import sic.service.IUsuarioService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
 
-public class UsuarioService {
-
-    private final UsuarioRepository modeloUsuario = new UsuarioRepository();
-
+public class UsuarioServiceImpl implements IUsuarioService {
+    
+    private final IUsuarioRepository usuarioRepository = new UsuarioRepositoryJPAImpl();
+       
+    @Override
     public List<Usuario> getUsuarios() {
-        return modeloUsuario.getUsuarios();
+        return usuarioRepository.getUsuarios();
     }
 
+    @Override
     public Usuario getUsuarioPorNombre(String nombre) {
-        return modeloUsuario.getUsuarioPorNombre(nombre);
+        return usuarioRepository.getUsuarioPorNombre(nombre);
     }
 
+    @Override
     public List<Usuario> getUsuariosAdministradores() {
-        return modeloUsuario.getUsuariosAdministradores();
+        return usuarioRepository.getUsuariosAdministradores();
     }
 
+    @Override
     public Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) {
-        return modeloUsuario.getUsuarioPorNombreContrasenia(nombre, contrasenia);
+        return usuarioRepository.getUsuarioPorNombreContrasenia(nombre, contrasenia);
     }
 
+    @Override
     public UsuarioActivo getUsuarioActivo() {
         return UsuarioActivo.getInstance();
     }
 
+    @Override
     public void setUsuarioActivo(Usuario usuario) {
         UsuarioActivo usuarioActivo = UsuarioActivo.getInstance();
         usuarioActivo.setUsuario(usuario);
@@ -75,24 +85,28 @@ public class UsuarioService {
         }
     }
 
+    @Override
     public void actualizar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, usuario);
         usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
-        modeloUsuario.actualizar(usuario);
+        usuarioRepository.actualizar(usuario);
     }
 
+    @Override
     public void guardar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ALTA, usuario);
         usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
-        modeloUsuario.guardar(usuario);
+        usuarioRepository.guardar(usuario);
     }
 
+    @Override
     public void eliminar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ELIMINACION, usuario);
         usuario.setEliminado(true);
-        modeloUsuario.actualizar(usuario);
+        usuarioRepository.actualizar(usuario);
     }
 
+    @Override
     public Usuario validarUsuario(String nombre, String password) {
         Usuario usuario = this.getUsuarioPorNombreContrasenia(nombre, Utilidades.encriptarConMD5(password));
         if (usuario == null) {

@@ -1,5 +1,6 @@
 package sic.vista.swing;
 
+import sic.service.impl.UsuarioServiceImpl;
 import java.beans.PropertyVetoException;
 import java.text.ParseException;
 import java.util.Date;
@@ -28,7 +29,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private final FacturaService facturaService = new FacturaService();
     private final EmpresaService empresaService = new EmpresaService();
     private final ClienteService clienteService = new ClienteService();
-    private final UsuarioService usuarioService = new UsuarioService();
+    private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_FacturasVenta.class.getPackage().getName());
 
     public GUI_FacturasVenta() {

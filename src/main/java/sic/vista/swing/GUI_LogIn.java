@@ -15,14 +15,14 @@ import sic.modelo.Usuario;
 import sic.service.ConexionService;
 import sic.service.ConfiguracionDelSistemaService;
 import sic.service.ServiceException;
-import sic.service.UsuarioService;
+import sic.service.impl.UsuarioServiceImpl;
 import sic.util.Validator;
 
 public class GUI_LogIn extends JFrame {
 
     private boolean configDesplegada;
     private Usuario usuario;
-    private final UsuarioService usuarioService = new UsuarioService();
+    private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
     private final ConfiguracionDelSistemaService configuracionService = new ConfiguracionDelSistemaService();
     private final ConexionService conexionService = new ConexionService();
     private static final Logger log = Logger.getLogger(GUI_LogIn.class.getPackage().getName());

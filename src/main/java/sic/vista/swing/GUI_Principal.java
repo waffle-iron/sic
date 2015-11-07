@@ -8,7 +8,7 @@ import javax.swing.*;
 import org.apache.log4j.Logger;
 import sic.modelo.Empresa;
 import sic.service.EmpresaService;
-import sic.service.UsuarioService;
+import sic.service.impl.UsuarioServiceImpl;
 import sic.util.Utilidades;
 import sic.vista.swing.GUI_LogIn;
 import sic.vista.swing.GUI_PuntoDeVenta;
@@ -17,7 +17,7 @@ public class GUI_Principal extends JFrame {
 
     private final JLabel lbl_Fondo;
     private final EmpresaService empresaService = new EmpresaService();
-    private final UsuarioService usuarioService = new UsuarioService();
+    private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_Principal.class.getPackage().getName());
 
     public GUI_Principal() {

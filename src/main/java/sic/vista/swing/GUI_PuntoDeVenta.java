@@ -1,5 +1,6 @@
 package sic.vista.swing;
 
+import sic.service.impl.UsuarioServiceImpl;
 import sic.modelo.ResultadosFactura;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -35,7 +36,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
     private final ProductoService productoService = new ProductoService();
     private final FacturaService facturaService = new FacturaService();
-    private final UsuarioService usuarioService = new UsuarioService();
+    private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());
 

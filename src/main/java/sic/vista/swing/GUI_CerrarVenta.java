@@ -1,5 +1,6 @@
 package sic.vista.swing;
 
+import sic.service.impl.UsuarioServiceImpl;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
@@ -27,7 +28,7 @@ public class GUI_CerrarVenta extends JDialog {
     private final FormaDePagoService formaDePagoService = new FormaDePagoService();
     private final TransportistaService transportistaService = new TransportistaService();
     private final FacturaService facturaService = new FacturaService();
-    private final UsuarioService usuarioService = new UsuarioService();
+    private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_CerrarVenta.class.getPackage().getName());
 

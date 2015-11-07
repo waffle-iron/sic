@@ -12,7 +12,7 @@ import sic.modelo.UsuarioActivo;
 import sic.modelo.Usuario;
 import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
-import sic.service.UsuarioService;
+import sic.service.impl.UsuarioServiceImpl;
 
 public class GUI_Usuarios extends JDialog {
 
@@ -20,7 +20,7 @@ public class GUI_Usuarios extends JDialog {
     private Usuario usuarioSeleccionado;
     private TipoDeOperacion operacion;
     private boolean mismoUsuarioActivo = false;
-    private final UsuarioService usuarioService = new UsuarioService();
+    private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_Usuarios.class.getPackage().getName());
 
     public GUI_Usuarios() {
