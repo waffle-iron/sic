@@ -2,6 +2,7 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -91,7 +92,7 @@ public class Cliente implements Serializable {
     private Set<FacturaVenta> facturasVenta;
 
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "cliente")
-    private Set<Pedido> pedidos;
+    private List<Pedido> pedidos;
 
     public Cliente() {
     }
@@ -106,6 +107,11 @@ public class Cliente implements Serializable {
 
     public String getRazonSocial() {
         return razonSocial;
+    }
+
+    @Override
+    public String toString() {
+        return "Cliente{" + "razonSocial=" + razonSocial + '}';
     }
 
     public void setRazonSocial(String razonSocial) {
@@ -224,11 +230,11 @@ public class Cliente implements Serializable {
         this.facturasVenta = facturasVenta;
     }
 
-    public Set<Pedido> getPedidos() {
+    public List<Pedido> getPedidos() {
         return pedidos;
     }
 
-    public void setPedidos(Set<Pedido> pedidos) {
+    public void setPedidos(List<Pedido> pedidos) {
         this.pedidos = pedidos;
     }
 
