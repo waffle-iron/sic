@@ -27,7 +27,7 @@ public class RenglonPedido implements Serializable {
     @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
     private Pedido pedido;
 
-    @OneToMany(cascade = {CascadeType.ALL})
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Producto", referencedColumnName = "id_Producto")
     private Producto Producto;
 

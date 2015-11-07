@@ -108,12 +108,7 @@ public class Cliente implements Serializable {
     public String getRazonSocial() {
         return razonSocial;
     }
-
-    @Override
-    public String toString() {
-        return "Cliente{" + "razonSocial=" + razonSocial + '}';
-    }
-
+ 
     public void setRazonSocial(String razonSocial) {
         this.razonSocial = razonSocial;
     }
@@ -321,4 +316,8 @@ public class Cliente implements Serializable {
         return true;
     }
 
+     @Override
+    public String toString() {
+        return razonSocial;
+    }
 }

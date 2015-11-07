@@ -1,6 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -43,7 +44,7 @@ public class Usuario implements Serializable {
     private Set<FacturaVenta> facturasVenta;
 
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "cliente")
-    private Set<Pedido> pedidos;
+    private List<Pedido> pedidos;
 
     private boolean eliminado;
 
@@ -60,11 +61,6 @@ public class Usuario implements Serializable {
 
     public String getNombre() {
         return nombre;
-    }
-
-    @Override
-    public String toString() {
-        return "Usuario{" + "nombre=" + nombre + '}';
     }
 
     public void setNombre(String nombre) {
@@ -95,11 +91,11 @@ public class Usuario implements Serializable {
         this.facturasVenta = facturasVenta;
     }
 
-    public Set<Pedido> getPedidos() {
+    public List<Pedido> getPedidos() {
         return pedidos;
     }
 
-    public void setPedidos(Set<Pedido> pedidos) {
+    public void setPedidos(List<Pedido> pedidos) {
         this.pedidos = pedidos;
     }
 
@@ -156,5 +152,9 @@ public class Usuario implements Serializable {
         }
         return true;
     }
-
+    
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }
