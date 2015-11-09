@@ -75,7 +75,19 @@ public abstract class Factura implements Serializable {
 
     private boolean eliminada;
 
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
+    private Pedido pedido;
+
     public Factura() {
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     public List<RenglonFactura> getRenglones() {

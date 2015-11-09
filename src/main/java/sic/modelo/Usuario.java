@@ -1,6 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -42,17 +43,12 @@ public class Usuario implements Serializable {
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "usuario")
     private Set<FacturaVenta> facturasVenta;
 
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "cliente")
+    private List<Pedido> pedidos;
+
     private boolean eliminado;
 
     public Usuario() {
-    }
-
-    public Set<FacturaVenta> getFacturasVenta() {
-        return facturasVenta;
-    }
-
-    public void setFacturasVenta(Set<FacturaVenta> facturasVenta) {
-        this.facturasVenta = facturasVenta;
     }
 
     public long getId_Usuario() {
@@ -71,6 +67,14 @@ public class Usuario implements Serializable {
         this.nombre = nombre;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public boolean getPermisosAdministrador() {
         return permisosAdministrador;
     }
@@ -79,12 +83,20 @@ public class Usuario implements Serializable {
         this.permisosAdministrador = permisosAdministrador;
     }
 
-    public String getPassword() {
-        return password;
+    public Set<FacturaVenta> getFacturasVenta() {
+        return facturasVenta;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setFacturasVenta(Set<FacturaVenta> facturasVenta) {
+        this.facturasVenta = facturasVenta;
+    }
+
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
     }
 
     public boolean isEliminado() {
@@ -96,15 +108,15 @@ public class Usuario implements Serializable {
     }
 
     @Override
-    public String toString() {
-        return nombre;
-    }
-
-    @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + (int) (this.id_Usuario ^ (this.id_Usuario >>> 32));
-        hash = 97 * hash + Objects.hashCode(this.nombre);
+        int hash = 5;
+        hash = 29 * hash + (int) (this.id_Usuario ^ (this.id_Usuario >>> 32));
+        hash = 29 * hash + Objects.hashCode(this.nombre);
+        hash = 29 * hash + Objects.hashCode(this.password);
+        hash = 29 * hash + (this.permisosAdministrador ? 1 : 0);
+        hash = 29 * hash + Objects.hashCode(this.facturasVenta);
+        hash = 29 * hash + Objects.hashCode(this.pedidos);
+        hash = 29 * hash + (this.eliminado ? 1 : 0);
         return hash;
     }
 
@@ -123,7 +135,26 @@ public class Usuario implements Serializable {
         if (!Objects.equals(this.nombre, other.nombre)) {
             return false;
         }
+        if (!Objects.equals(this.password, other.password)) {
+            return false;
+        }
+        if (this.permisosAdministrador != other.permisosAdministrador) {
+            return false;
+        }
+        if (!Objects.equals(this.facturasVenta, other.facturasVenta)) {
+            return false;
+        }
+        if (!Objects.equals(this.pedidos, other.pedidos)) {
+            return false;
+        }
+        if (this.eliminado != other.eliminado) {
+            return false;
+        }
         return true;
     }
-
+    
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }
