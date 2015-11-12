@@ -3,6 +3,8 @@ package sic.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.UsuarioActivo;
 import sic.modelo.Usuario;
 import sic.repository.IUsuarioRepository;
@@ -13,10 +15,16 @@ import sic.service.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
 
+@Service
 public class UsuarioServiceImpl implements IUsuarioService {
+        
+    private final IUsuarioRepository usuarioRepository;
+
+    @Autowired
+    public UsuarioServiceImpl(IUsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }      
     
-    private final IUsuarioRepository usuarioRepository = new UsuarioRepositoryJPAImpl();
-       
     @Override
     public List<Usuario> getUsuarios() {
         return usuarioRepository.getUsuarios();

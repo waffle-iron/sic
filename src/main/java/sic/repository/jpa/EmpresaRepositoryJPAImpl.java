@@ -1,28 +1,32 @@
-package sic.repository;
+package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
 import sic.modelo.Empresa;
-import sic.util.PersistenceUtil;
+import sic.repository.IEmpresaRepository;
 
-public class EmpresaRepository {
+@Repository
+public class EmpresaRepositoryJPAImpl implements IEmpresaRepository {
 
-    public List<Empresa> getEmpresas() {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @PersistenceContext
+    private EntityManager em;
+    
+    @Override
+    public List<Empresa> getEmpresas() {        
         TypedQuery<Empresa> typedQuery = em.createNamedQuery("Empresa.buscarTodas", Empresa.class);
-        List<Empresa> empresas = typedQuery.getResultList();
-        em.close();
+        List<Empresa> empresas = typedQuery.getResultList();        
         return empresas;
     }
 
-    public Empresa getEmpresaPorNombre(String nombre) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public Empresa getEmpresaPorNombre(String nombre) {        
         TypedQuery<Empresa> typedQuery = em.createNamedQuery("Empresa.buscarPorNombre", Empresa.class);
         typedQuery.setParameter("nombre", nombre);
-        List<Empresa> empresas = typedQuery.getResultList();
-        em.close();
+        List<Empresa> empresas = typedQuery.getResultList();        
         if (empresas.isEmpty()) {
             return null;
         } else {
@@ -30,12 +34,11 @@ public class EmpresaRepository {
         }
     }
 
-    public Empresa getEmpresaPorCUIP(long cuip) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public Empresa getEmpresaPorCUIP(long cuip) {        
         TypedQuery<Empresa> typedQuery = em.createNamedQuery("Empresa.buscarPorCUIP", Empresa.class);
         typedQuery.setParameter("cuip", cuip);
-        List<Empresa> empresas = typedQuery.getResultList();
-        em.close();
+        List<Empresa> empresas = typedQuery.getResultList();        
         if (empresas.isEmpty()) {
             return null;
         } else {
@@ -43,21 +46,19 @@ public class EmpresaRepository {
         }
     }
 
-    public void guardar(Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void guardar(Empresa empresa) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(em.merge(empresa));
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 
-    public void actualizar(Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void actualizar(Empresa empresa) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.merge(empresa);
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 }

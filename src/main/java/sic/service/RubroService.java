@@ -2,14 +2,14 @@ package sic.service;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.RubroRepository;
+import sic.repository.jpa.RubroRepositoryJPAImpl;
 import sic.modelo.Empresa;
 import sic.modelo.Rubro;
 import sic.util.Validator;
 
 public class RubroService {
 
-    private final RubroRepository modeloRubro = new RubroRepository();
+    private final RubroRepositoryJPAImpl modeloRubro = new RubroRepositoryJPAImpl();
 
     public List<Rubro> getRubros(Empresa empresa) {
         return modeloRubro.getRubros(empresa);

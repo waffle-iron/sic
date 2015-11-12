@@ -1,32 +1,36 @@
-package sic.repository;
+package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
 import sic.modelo.BusquedaTransportistaCriteria;
 import sic.modelo.Empresa;
 import sic.modelo.Transportista;
-import sic.util.PersistenceUtil;
+import sic.repository.ITransportistaRepository;
 
-public class TransportistaRepository {
+@Repository
+public class TransportistaRepositoryJPAImpl implements ITransportistaRepository {
 
-    public List<Transportista> getTransportistas(Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @PersistenceContext
+    private EntityManager em;
+    
+    @Override
+    public List<Transportista> getTransportistas(Empresa empresa) {        
         TypedQuery<Transportista> typedQuery = em.createNamedQuery("Transportista.buscarTodos", Transportista.class);
         typedQuery.setParameter("empresa", empresa);
-        List<Transportista> transportistas = typedQuery.getResultList();
-        em.close();
+        List<Transportista> transportistas = typedQuery.getResultList();        
         return transportistas;
     }
 
-    public Transportista getTransportistaPorNombre(String nombre, Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public Transportista getTransportistaPorNombre(String nombre, Empresa empresa) {        
         TypedQuery<Transportista> typedQuery = em.createNamedQuery("Transportista.buscarPorNombre", Transportista.class);
         typedQuery.setParameter("nombre", nombre);
         typedQuery.setParameter("empresa", empresa);
-        List<Transportista> transportistas = typedQuery.getResultList();
-        em.close();
+        List<Transportista> transportistas = typedQuery.getResultList();        
         if (transportistas.isEmpty()) {
             return null;
         } else {
@@ -34,6 +38,7 @@ public class TransportistaRepository {
         }
     }
 
+    @Override
     public List<Transportista> busquedaPersonalizada(BusquedaTransportistaCriteria criteria) {
         String query = "SELECT t FROM Transportista t WHERE t.empresa = :empresa AND t.eliminado = false";
         //Nombre
@@ -55,30 +60,26 @@ public class TransportistaRepository {
         if (criteria.isBuscarPorPais() == true) {
             query = query + " AND t.localidad.provincia.pais = " + criteria.getPais().getId_Pais();
         }
-        query = query + " ORDER BY t.nombre ASC";
-        EntityManager em = PersistenceUtil.getEntityManager();
+        query = query + " ORDER BY t.nombre ASC";        
         TypedQuery<Transportista> typedQuery = em.createQuery(query, Transportista.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
-        List<Transportista> transportistas = typedQuery.getResultList();
-        em.close();
+        List<Transportista> transportistas = typedQuery.getResultList();        
         return transportistas;
     }
 
-    public void guardar(Transportista transportista) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void guardar(Transportista transportista) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(em.merge(transportista));
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 
-    public void actualizar(Transportista transportista) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void actualizar(Transportista transportista) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.merge(transportista);
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 }

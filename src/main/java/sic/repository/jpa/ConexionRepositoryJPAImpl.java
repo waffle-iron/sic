@@ -1,11 +1,16 @@
-package sic.repository;
+package sic.repository.jpa;
 
+import org.springframework.stereotype.Repository;
 import sic.modelo.DatosConexion;
+import sic.repository.IConexionRepository;
+import sic.repository.XMLException;
 
-public class ConexionRepository {
+@Repository
+public class ConexionRepositoryJPAImpl implements IConexionRepository {
 
+    @Override
     public void guardar(DatosConexion datosConexion) throws XMLException {
-        ConfiguracionDelSistemaRepository modeloConfig = new ConfiguracionDelSistemaRepository();
+        ConfiguracionDelSistemaRepositoryJPAImpl modeloConfig = new ConfiguracionDelSistemaRepositoryJPAImpl();
         modeloConfig.guardarXMLconDOM("/CONFIGURACION/CONEXION/HOST", datosConexion.getHost());
         modeloConfig.guardarXMLconDOM("/CONFIGURACION/CONEXION/BD", datosConexion.getNombreBaseDeDatos());
         modeloConfig.guardarXMLconDOM("/CONFIGURACION/CONEXION/PORT", String.valueOf(datosConexion.getPuerto()));

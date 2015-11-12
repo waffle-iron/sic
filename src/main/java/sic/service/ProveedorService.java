@@ -3,14 +3,14 @@ package sic.service;
 import sic.modelo.BusquedaProveedorCriteria;
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.ProveedorRepository;
+import sic.repository.jpa.ProveedorRepositoryJPAImpl;
 import sic.modelo.Empresa;
 import sic.modelo.Proveedor;
 import sic.util.Validator;
 
 public class ProveedorService {
 
-    private final ProveedorRepository modeloProveedor = new ProveedorRepository();
+    private final ProveedorRepositoryJPAImpl modeloProveedor = new ProveedorRepositoryJPAImpl();
 
     public List<Proveedor> getProveedores(Empresa empresa) {
         return modeloProveedor.getProveedores(empresa);

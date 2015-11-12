@@ -1,32 +1,35 @@
-package sic.repository;
+package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
 import sic.modelo.BusquedaClienteCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
-import sic.util.PersistenceUtil;
+import sic.repository.IClienteRepository;
 
-public class ClienteRepository {
+@Repository
+public class ClienteRepositoryJPAImpl implements IClienteRepository {
+    
+    @PersistenceContext
+    private EntityManager em;
 
-    public List<Cliente> getClientes(Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public List<Cliente> getClientes(Empresa empresa) {        
         TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarTodos", Cliente.class);
         typedQuery.setParameter("empresa", empresa);
-        List<Cliente> clientes = typedQuery.getResultList();
-        em.close();
+        List<Cliente> clientes = typedQuery.getResultList();        
         return clientes;
-
     }
 
-    public Cliente getClientePorId(long id_Cliente) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public Cliente getClientePorId(long id_Cliente) {        
         TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarPorId", Cliente.class);
         typedQuery.setParameter("id", id_Cliente);
-        List<Cliente> clientes = typedQuery.getResultList();
-        em.close();
+        List<Cliente> clientes = typedQuery.getResultList();        
         if (clientes.isEmpty()) {
             return null;
         } else {
@@ -34,13 +37,12 @@ public class ClienteRepository {
         }
     }
 
-    public Cliente getClientePorRazonSocial(String razonSocial, Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public Cliente getClientePorRazonSocial(String razonSocial, Empresa empresa) {        
         TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarPorRazonSocial", Cliente.class);
         typedQuery.setParameter("razonSocial", razonSocial);
         typedQuery.setParameter("empresa", empresa);
-        List<Cliente> clientes = typedQuery.getResultList();
-        em.close();
+        List<Cliente> clientes = typedQuery.getResultList();        
         if (clientes.isEmpty()) {
             return null;
         } else {
@@ -48,23 +50,21 @@ public class ClienteRepository {
         }
     }
 
-    public List<Cliente> getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(String criteria, Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public List<Cliente> getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(String criteria, Empresa empresa) {        
         TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarQueContengaRazonSocialNombreFantasiaIdFiscal", Cliente.class);
         typedQuery.setParameter("empresa", empresa);
         typedQuery.setParameter("criteria", "%" + criteria + "%");
-        List<Cliente> clientes = typedQuery.getResultList();
-        em.close();
+        List<Cliente> clientes = typedQuery.getResultList();        
         return clientes;
     }
 
-    public Cliente getClientePorId_Fiscal(String id_Fiscal, Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public Cliente getClientePorId_Fiscal(String id_Fiscal, Empresa empresa) {        
         TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarPorIdFiscal", Cliente.class);
         typedQuery.setParameter("id_Fiscal", id_Fiscal);
         typedQuery.setParameter("empresa", empresa);
-        List<Cliente> clientes = typedQuery.getResultList();
-        em.close();
+        List<Cliente> clientes = typedQuery.getResultList();        
         if (clientes.isEmpty()) {
             return null;
         } else {
@@ -72,12 +72,11 @@ public class ClienteRepository {
         }
     }
 
-    public Cliente getClientePredeterminado(Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public Cliente getClientePredeterminado(Empresa empresa) {        
         TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarPredeterminado", Cliente.class);
         typedQuery.setParameter("empresa", empresa);
-        List<Cliente> clientes = typedQuery.getResultList();
-        em.close();
+        List<Cliente> clientes = typedQuery.getResultList();        
         if (clientes.isEmpty()) {
             return null;
         } else {
@@ -85,6 +84,7 @@ public class ClienteRepository {
         }
     }
 
+    @Override
     public List<Cliente> buscarClientes(BusquedaClienteCriteria criteria) {
         String query = "SELECT c FROM Cliente c WHERE c.empresa = :empresa AND c.eliminado = false";
 
@@ -119,30 +119,26 @@ public class ClienteRepository {
         }
         if (criteria.buscaPorPais() == true) {
             query = query + " AND c.localidad.provincia.pais = " + criteria.getPais().getId_Pais();
-        }
-        EntityManager em = PersistenceUtil.getEntityManager();
+        }        
         TypedQuery<Cliente> typedQuery = em.createQuery(query, Cliente.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
-        List<Cliente> clientes = typedQuery.getResultList();
-        em.close();
+        List<Cliente> clientes = typedQuery.getResultList();        
         return clientes;
     }
 
-    public void guardar(Cliente cliente) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void guardar(Cliente cliente) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(em.merge(cliente));
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 
-    public void actualizar(Cliente cliente) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void actualizar(Cliente cliente) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.merge(cliente);
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 }

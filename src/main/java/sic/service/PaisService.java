@@ -2,13 +2,13 @@ package sic.service;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.PaisRepository;
+import sic.repository.jpa.PaisRepositoryJPAImpl;
 import sic.modelo.Pais;
 import sic.util.Validator;
 
 public class PaisService {
 
-    private final PaisRepository modeloPais = new PaisRepository();
+    private final PaisRepositoryJPAImpl modeloPais = new PaisRepositoryJPAImpl();
 
     public List<Pais> getPaises() {
         return modeloPais.getPaises();

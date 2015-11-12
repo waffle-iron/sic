@@ -1,30 +1,34 @@
-package sic.repository;
+package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
 import sic.modelo.Empresa;
 import sic.modelo.FormaDePago;
-import sic.util.PersistenceUtil;
+import sic.repository.IFormaDePagoRepository;
 
-public class FormaDePagoRepository {
+@Repository
+public class FormaDePagoRepositoryJPAImpl implements IFormaDePagoRepository {
 
-    public List<FormaDePago> getFormasDePago(Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @PersistenceContext
+    private EntityManager em;
+    
+    @Override
+    public List<FormaDePago> getFormasDePago(Empresa empresa) {        
         TypedQuery<FormaDePago> typedQuery = em.createNamedQuery("FormaDePago.buscarTodas", FormaDePago.class);
         typedQuery.setParameter("empresa", empresa);
-        List<FormaDePago> formasDePago = typedQuery.getResultList();
-        em.close();
+        List<FormaDePago> formasDePago = typedQuery.getResultList();        
         return formasDePago;
     }
 
-    public FormaDePago getFormaDePagoPorId(long id) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public FormaDePago getFormaDePagoPorId(long id) {        
         TypedQuery<FormaDePago> typedQuery = em.createNamedQuery("FormaDePago.buscarPorId", FormaDePago.class);
         typedQuery.setParameter("id", id);
-        List<FormaDePago> formasDePago = typedQuery.getResultList();
-        em.close();
+        List<FormaDePago> formasDePago = typedQuery.getResultList();        
         if (formasDePago.isEmpty()) {
             return null;
         } else {
@@ -32,12 +36,11 @@ public class FormaDePagoRepository {
         }
     }
 
-    public FormaDePago getFormaDePagoPredeterminado(Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public FormaDePago getFormaDePagoPredeterminado(Empresa empresa) {        
         TypedQuery<FormaDePago> typedQuery = em.createNamedQuery("FormaDePago.buscarPredeterminada", FormaDePago.class);
         typedQuery.setParameter("empresa", empresa);
-        List<FormaDePago> formasDePago = typedQuery.getResultList();
-        em.close();
+        List<FormaDePago> formasDePago = typedQuery.getResultList();        
         if (formasDePago.isEmpty()) {
             return null;
         } else {
@@ -45,13 +48,12 @@ public class FormaDePagoRepository {
         }
     }
 
-    public FormaDePago getFormaDePagoPorNombre(String nombre, Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public FormaDePago getFormaDePagoPorNombre(String nombre, Empresa empresa) {        
         TypedQuery<FormaDePago> typedQuery = em.createNamedQuery("FormaDePago.buscarPorNombre", FormaDePago.class);
         typedQuery.setParameter("nombre", nombre);
         typedQuery.setParameter("empresa", empresa);
-        List<FormaDePago> formasDePago = typedQuery.getResultList();
-        em.close();
+        List<FormaDePago> formasDePago = typedQuery.getResultList();        
         if (formasDePago.isEmpty()) {
             return null;
         } else {
@@ -59,21 +61,19 @@ public class FormaDePagoRepository {
         }
     }
 
-    public void guardar(FormaDePago formaDePago) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void guardar(FormaDePago formaDePago) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(em.merge(formaDePago));
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 
-    public void actualizar(FormaDePago formaDePago) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void actualizar(FormaDePago formaDePago) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.merge(formaDePago);
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 }

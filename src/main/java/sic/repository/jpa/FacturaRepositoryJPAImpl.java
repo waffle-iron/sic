@@ -1,37 +1,41 @@
-package sic.repository;
+package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
 import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.RenglonFactura;
+import sic.repository.IFacturaRepository;
 import sic.util.FormatterFechaHora;
-import sic.util.PersistenceUtil;
 
-public class FacturaRepository {
+@Repository
+public class FacturaRepositoryJPAImpl implements IFacturaRepository {
 
-    public List<RenglonFactura> getRenglonesDeLaFactura(Factura factura) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @PersistenceContext
+    private EntityManager em;
+    
+    @Override
+    public List<RenglonFactura> getRenglonesDeLaFactura(Factura factura) {        
         TypedQuery<RenglonFactura> typedQuery = em.createNamedQuery("RenglonFactura.getRenglonesDeLaFactura", RenglonFactura.class);
         typedQuery.setParameter("factura", factura);
-        List<RenglonFactura> renglones = typedQuery.getResultList();
-        em.close();
+        List<RenglonFactura> renglones = typedQuery.getResultList();        
         return renglones;
     }
     
-    public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {        
         TypedQuery<FacturaVenta> typedQuery = em.createNamedQuery("Factura.buscarPorTipoSerieNum", FacturaVenta.class);
         typedQuery.setParameter("tipo", tipo);
         typedQuery.setParameter("serie", serie);
         typedQuery.setParameter("num", num);
-        List<FacturaVenta> facturasVenta = typedQuery.getResultList();
-        em.close();
+        List<FacturaVenta> facturasVenta = typedQuery.getResultList();        
         if (facturasVenta.isEmpty()) {
             return null;
         } else {
@@ -39,6 +43,7 @@ public class FacturaRepository {
         }
     }
 
+    @Override
     public List<FacturaCompra> buscarFacturasCompra(BusquedaFacturaCompraCriteria criteria) {
         String query = "SELECT f FROM FacturaCompra f WHERE f.empresa = :empresa AND f.eliminada = false";
         //Fecha Factura
@@ -58,19 +63,18 @@ public class FacturaRepository {
         if (criteria.isBuscarSoloInpagas() == true) {
             query += " AND f.pagada = false";
         }
-        query += " ORDER BY f.fecha ASC";
-        EntityManager em = PersistenceUtil.getEntityManager();
+        query += " ORDER BY f.fecha ASC";        
         TypedQuery<FacturaCompra> typedQuery = em.createQuery(query, FacturaCompra.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
         //si es 0, recupera TODOS los registros
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        List<FacturaCompra> facturasCompra = typedQuery.getResultList();
-        em.close();
+        List<FacturaCompra> facturasCompra = typedQuery.getResultList();        
         return facturasCompra;
     }
 
+    @Override
     public List<FacturaVenta> buscarFacturasVenta(BusquedaFacturaVentaCriteria criteria) {
         String query = "SELECT f FROM FacturaVenta f WHERE f.empresa = :empresa AND f.eliminada = false";
         //Fecha
@@ -98,26 +102,23 @@ public class FacturaRepository {
         if (criteria.isBuscaSoloInpagas() == true) {
             query += " AND f.pagada = false";
         }
-        query += " ORDER BY f.fecha ASC";
-        EntityManager em = PersistenceUtil.getEntityManager();
+        query += " ORDER BY f.fecha ASC";        
         TypedQuery<FacturaVenta> typedQuery = em.createQuery(query, FacturaVenta.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
         //si es 0, recupera TODOS los registros
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        List<FacturaVenta> facturasVenta = typedQuery.getResultList();
-        em.close();
+        List<FacturaVenta> facturasVenta = typedQuery.getResultList();        
         return facturasVenta;
     }
 
-    public long getMayorNumFacturaSegunTipo(char tipoDeFactura, long serie) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public long getMayorNumFacturaSegunTipo(char tipoDeFactura, long serie) {        
         TypedQuery<Long> typedQuery = em.createNamedQuery("Factura.buscarMayorNumFacturaSegunTipo", Long.class);
         typedQuery.setParameter("tipo", tipoDeFactura);
         typedQuery.setParameter("serie", serie);
-        Long resultado = typedQuery.getSingleResult();
-        em.close();
+        Long resultado = typedQuery.getSingleResult();        
         if (resultado == null) {
             return 1;
         } else {
@@ -125,31 +126,28 @@ public class FacturaRepository {
         }
     }
 
-    public void guardar(Factura factura) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void guardar(Factura factura) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(em.merge(factura));
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 
-    public void actualizar(Factura factura) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void actualizar(Factura factura) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.merge(factura);
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 
-    public List<Object[]> listarProductosMasVendidosPorAnio(int anio) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public List<Object[]> listarProductosMasVendidosPorAnio(int anio) {        
         TypedQuery<Object[]> typedQuery = (TypedQuery<Object[]>) em.createNamedQuery("Factura.buscarTopProductosMasVendidosPorAnio");
         typedQuery.setParameter("anio", anio);
         typedQuery.setMaxResults(5);
-        List<Object[]> resultado = typedQuery.getResultList();
-        em.close();
+        List<Object[]> resultado = typedQuery.getResultList();        
         return resultado;
     }
 }

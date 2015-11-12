@@ -2,13 +2,13 @@ package sic.service;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.CondicionIVARepository;
+import sic.repository.jpa.CondicionIVARepositoryJPAImpl;
 import sic.modelo.CondicionIVA;
 import sic.util.Validator;
 
 public class CondicionDeIVAService {
 
-    private final CondicionIVARepository modeloCondicionIVA = new CondicionIVARepository();
+    private final CondicionIVARepositoryJPAImpl modeloCondicionIVA = new CondicionIVARepositoryJPAImpl();
 
     public List<CondicionIVA> getCondicionesIVA() {
         return modeloCondicionIVA.getCondicionesIVA();

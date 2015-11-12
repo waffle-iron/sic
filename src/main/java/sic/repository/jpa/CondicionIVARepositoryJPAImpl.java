@@ -1,28 +1,32 @@
-package sic.repository;
+package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
 import sic.modelo.CondicionIVA;
-import sic.util.PersistenceUtil;
+import sic.repository.ICondicionIVARepository;
 
-public class CondicionIVARepository {
+@Repository
+public class CondicionIVARepositoryJPAImpl implements ICondicionIVARepository {
 
-    public List<CondicionIVA> getCondicionesIVA() {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @PersistenceContext
+    private EntityManager em;
+    
+    @Override
+    public List<CondicionIVA> getCondicionesIVA() {        
         TypedQuery<CondicionIVA> typedQuery = em.createNamedQuery("CondicionIVA.buscarTodas", CondicionIVA.class);
-        List<CondicionIVA> condicionesIVA = typedQuery.getResultList();
-        em.close();
+        List<CondicionIVA> condicionesIVA = typedQuery.getResultList();        
         return condicionesIVA;
     }
 
-    public CondicionIVA getCondicionIVAPorNombre(String nombre) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public CondicionIVA getCondicionIVAPorNombre(String nombre) {        
         TypedQuery<CondicionIVA> typedQuery = em.createNamedQuery("CondicionIVA.buscarPorNombre", CondicionIVA.class);
         typedQuery.setParameter("nombre", nombre);
-        List<CondicionIVA> condicionesIVA = typedQuery.getResultList();
-        em.close();
+        List<CondicionIVA> condicionesIVA = typedQuery.getResultList();        
         if (condicionesIVA.isEmpty()) {
             return null;
         } else {
@@ -30,21 +34,19 @@ public class CondicionIVARepository {
         }
     }
 
-    public void actualizar(CondicionIVA condicionIVA) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void actualizar(CondicionIVA condicionIVA) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.merge(condicionIVA);
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 
-    public void guardar(CondicionIVA condicionIVA) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void guardar(CondicionIVA condicionIVA) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(condicionIVA);
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 }

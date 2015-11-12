@@ -2,12 +2,12 @@ package sic.service;
 
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
-import sic.repository.ConfiguracionDelSistemaRepository;
+import sic.repository.jpa.ConfiguracionDelSistemaRepositoryJPAImpl;
 import sic.repository.XMLException;
 
 public class ConfiguracionDelSistemaService {
 
-    private final ConfiguracionDelSistemaRepository configuracionRepository = new ConfiguracionDelSistemaRepository();
+    private final ConfiguracionDelSistemaRepositoryJPAImpl configuracionRepository = new ConfiguracionDelSistemaRepositoryJPAImpl();
 
     public void guardarXML(String pathEtiqueta, String valor) throws XMLException {
         configuracionRepository.guardarXMLconDOM(pathEtiqueta, valor);

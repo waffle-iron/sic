@@ -8,7 +8,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import sic.repository.FacturaRepository;
+import sic.repository.jpa.FacturaRepositoryJPAImpl;
 import sic.modelo.Cliente;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
@@ -22,7 +22,7 @@ import sic.util.Validator;
 
 public class FacturaService {
 
-    private final FacturaRepository facturaRepository = new FacturaRepository();
+    private final FacturaRepositoryJPAImpl facturaRepository = new FacturaRepositoryJPAImpl();
     private final ProductoService productoService = new ProductoService();
     private final ConfiguracionDelSistemaService configuracionDelSistemaService = new ConfiguracionDelSistemaService();
     private final EmpresaService EmpresaService = new EmpresaService();

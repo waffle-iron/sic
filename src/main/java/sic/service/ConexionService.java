@@ -1,14 +1,14 @@
 package sic.service;
 
 import java.util.ResourceBundle;
-import sic.repository.ConexionRepository;
+import sic.repository.jpa.ConexionRepositoryJPAImpl;
 import sic.repository.XMLException;
 import sic.modelo.DatosConexion;
 import sic.util.Validator;
 
 public class ConexionService {
 
-    private final ConexionRepository modeloConexion = new ConexionRepository();
+    private final ConexionRepositoryJPAImpl modeloConexion = new ConexionRepositoryJPAImpl();
 
     private void validar(DatosConexion datosConexion) {
         //Requeridos

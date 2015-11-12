@@ -8,7 +8,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import sic.repository.ProductoRepository;
+import sic.repository.jpa.ProductoRepositoryJPAImpl;
 import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
@@ -23,7 +23,7 @@ import sic.util.Validator;
 
 public class ProductoService {
 
-    private final ProductoRepository modeloProducto = new ProductoRepository();
+    private final ProductoRepositoryJPAImpl modeloProducto = new ProductoRepositoryJPAImpl();
     private final EmpresaService empresaService = new EmpresaService();
 
     private void validarOperacion(TipoDeOperacion operacion, Producto producto) {

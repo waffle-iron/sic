@@ -1,16 +1,23 @@
-package sic.repository;
+package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
 import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.Empresa;
 import sic.modelo.Producto;
-import sic.util.PersistenceUtil;
+import sic.repository.IProductoRepository;
 
-public class ProductoRepository {
+@Repository
+public class ProductoRepositoryJPAImpl implements IProductoRepository {
 
+    @PersistenceContext
+    private EntityManager em;
+
+    @Override
     public List<Producto> BuscarProductos(BusquedaProductoCriteria criteria) {
         String query = "SELECT p FROM Producto p WHERE p.empresa = :empresa AND p.eliminado = false";
         //Codigo        
@@ -37,7 +44,6 @@ public class ProductoRepository {
             query += " AND p.cantidad <= p.cantMinima AND p.ilimitado = 0";
         }
         query += " ORDER BY p.descripcion ASC";
-        EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Producto> typedQuery = em.createQuery(query, Producto.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
         //si es 0, recupera TODOS los registros
@@ -45,16 +51,14 @@ public class ProductoRepository {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
         List<Producto> productos = typedQuery.getResultList();
-        em.close();
         return productos;
     }
 
+    @Override
     public Producto getProductoPorId(long id_Producto) {
-        EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Producto> typedQuery = em.createNamedQuery("Producto.buscarPorId", Producto.class);
         typedQuery.setParameter("id", id_Producto);
         List<Producto> productos = typedQuery.getResultList();
-        em.close();
         if (productos.isEmpty()) {
             return null;
         } else {
@@ -62,13 +66,12 @@ public class ProductoRepository {
         }
     }
 
+    @Override
     public Producto getProductoPorDescripcion(String descripcion, Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Producto> typedQuery = em.createNamedQuery("Producto.buscarPorDescripcion", Producto.class);
         typedQuery.setParameter("descripcion", descripcion);
         typedQuery.setParameter("empresa", empresa);
         List<Producto> productos = typedQuery.getResultList();
-        em.close();
         if (productos.isEmpty()) {
             return null;
         } else {
@@ -76,6 +79,7 @@ public class ProductoRepository {
         }
     }
 
+    @Override
     public List<Producto> getProductosQueContengaCodigoDescripcion(String criteria, int cantRegistros, Empresa empresa) {
         String query = "SELECT p FROM Producto p WHERE p.empresa = :empresa AND p.eliminado = false";
         query += " AND (p.codigo LIKE '%" + criteria + "%' OR (";
@@ -88,7 +92,6 @@ public class ProductoRepository {
             }
         }
         query += ")) ORDER BY p.descripcion ASC";
-        EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Producto> typedQuery = em.createQuery(query, Producto.class);
         typedQuery.setParameter("empresa", empresa);
         //si es 0, recupera TODOS los registros
@@ -96,17 +99,15 @@ public class ProductoRepository {
             typedQuery.setMaxResults(cantRegistros);
         }
         List<Producto> productos = typedQuery.getResultList();
-        em.close();
         return productos;
     }
 
+    @Override
     public Producto getProductoPorCodigo(String codigo, Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Producto> typedQuery = em.createNamedQuery("Producto.buscarPorCodigo", Producto.class);
         typedQuery.setParameter("codigo", codigo);
         typedQuery.setParameter("empresa", empresa);
         List<Producto> productos = typedQuery.getResultList();
-        em.close();
         if (productos.isEmpty()) {
             return null;
         } else {
@@ -114,32 +115,29 @@ public class ProductoRepository {
         }
     }
 
+    @Override
     public void guardar(Producto producto) {
-        EntityManager em = PersistenceUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(em.merge(producto));
         tx.commit();
-        em.close();
     }
 
+    @Override
     public void actualizar(Producto producto) {
-        EntityManager em = PersistenceUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.merge(producto);
         tx.commit();
-        em.close();
     }
 
+    @Override
     public void actualizarMultiplesProductos(List<Producto> productos) {
-        EntityManager em = PersistenceUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         for (Producto producto : productos) {
             em.merge(producto);
         }
         tx.commit();
-        em.close();
     }
 }

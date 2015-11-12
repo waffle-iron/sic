@@ -2,14 +2,14 @@ package sic.service;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.FormaDePagoRepository;
+import sic.repository.jpa.FormaDePagoRepositoryJPAImpl;
 import sic.modelo.Empresa;
 import sic.modelo.FormaDePago;
 import sic.util.Validator;
 
 public class FormaDePagoService {
 
-    private final FormaDePagoRepository modeloFormaDePago = new FormaDePagoRepository();
+    private final FormaDePagoRepositoryJPAImpl modeloFormaDePago = new FormaDePagoRepositoryJPAImpl();
 
     public List<FormaDePago> getFormasDePago(Empresa empresa) {
         return modeloFormaDePago.getFormasDePago(empresa);

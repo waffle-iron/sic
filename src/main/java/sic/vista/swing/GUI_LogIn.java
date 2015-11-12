@@ -8,26 +8,30 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import sic.repository.XMLException;
 import sic.modelo.DatosConexion;
 import sic.modelo.XMLFileConfig;
 import sic.modelo.Usuario;
 import sic.service.ConexionService;
 import sic.service.ConfiguracionDelSistemaService;
+import sic.service.IUsuarioService;
 import sic.service.ServiceException;
-import sic.service.impl.UsuarioServiceImpl;
 import sic.util.Validator;
 
+@Component
 public class GUI_LogIn extends JFrame {
 
     private boolean configDesplegada;
     private Usuario usuario;
-    private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
+    private final IUsuarioService usuarioService;    
     private final ConfiguracionDelSistemaService configuracionService = new ConfiguracionDelSistemaService();
     private final ConexionService conexionService = new ConexionService();
     private static final Logger log = Logger.getLogger(GUI_LogIn.class.getPackage().getName());
 
-    public GUI_LogIn() {
+    @Autowired
+    public GUI_LogIn(IUsuarioService usuarioService) {
         this.initComponents();
         this.setSize(290, 150);
         this.setTitle("S.I.C. " + ResourceBundle.getBundle("Mensajes").getString("version"));
@@ -39,6 +43,7 @@ public class GUI_LogIn extends JFrame {
         txt_BD.setEnabled(false);
         btn_Guardar.setEnabled(false);
         this.cargarDatosConexion();
+        this.usuarioService = usuarioService;
     }
 
     private void validarUsuario() {

@@ -2,14 +2,14 @@ package sic.service;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.ProvinciaRepository;
+import sic.repository.jpa.ProvinciaRepositoryJPAImpl;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
 import sic.util.Validator;
 
 public class ProvinciaService {
 
-    private final ProvinciaRepository modeloProvincia = new ProvinciaRepository();
+    private final ProvinciaRepositoryJPAImpl modeloProvincia = new ProvinciaRepositoryJPAImpl();
 
     public List<Provincia> getProvinciasDelPais(Pais pais) {
         return modeloProvincia.getProvinciasDelPais(pais);

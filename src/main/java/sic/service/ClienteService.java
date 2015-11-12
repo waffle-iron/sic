@@ -2,7 +2,7 @@ package sic.service;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.ClienteRepository;
+import sic.repository.jpa.ClienteRepositoryJPAImpl;
 import sic.modelo.BusquedaClienteCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
@@ -10,7 +10,7 @@ import sic.util.Validator;
 
 public class ClienteService {
 
-    private final ClienteRepository modeloCliente = new ClienteRepository();
+    private final ClienteRepositoryJPAImpl modeloCliente = new ClienteRepositoryJPAImpl();
 
     public Cliente getClientePorId(long id_Cliente) {
         return modeloCliente.getClientePorId(id_Cliente);

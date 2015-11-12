@@ -1,32 +1,36 @@
-package sic.repository;
+package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
 import sic.modelo.BusquedaProveedorCriteria;
 import sic.modelo.Empresa;
 import sic.modelo.Proveedor;
-import sic.util.PersistenceUtil;
+import sic.repository.IProveedorRepository;
 
-public class ProveedorRepository {
+@Repository
+public class ProveedorRepositoryJPAImpl implements IProveedorRepository {
 
-    public List<Proveedor> getProveedores(Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @PersistenceContext
+    private EntityManager em;
+    
+    @Override
+    public List<Proveedor> getProveedores(Empresa empresa) {        
         TypedQuery<Proveedor> typedQuery = em.createNamedQuery("Proveedor.buscarTodos", Proveedor.class);
         typedQuery.setParameter("empresa", empresa);
-        List<Proveedor> proveedores = typedQuery.getResultList();
-        em.close();
+        List<Proveedor> proveedores = typedQuery.getResultList();        
         return proveedores;
     }
 
-    public Proveedor getProveedorPorCodigo(String codigo, Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public Proveedor getProveedorPorCodigo(String codigo, Empresa empresa) {        
         TypedQuery<Proveedor> typedQuery = em.createNamedQuery("Proveedor.buscarPorCodigo", Proveedor.class);
         typedQuery.setParameter("codigo", codigo);
         typedQuery.setParameter("empresa", empresa);
-        List<Proveedor> proveedores = typedQuery.getResultList();
-        em.close();
+        List<Proveedor> proveedores = typedQuery.getResultList();        
         if (proveedores.isEmpty()) {
             return null;
         } else {
@@ -34,13 +38,12 @@ public class ProveedorRepository {
         }
     }
 
-    public Proveedor getProveedorPorRazonSocial(String razonSocial, Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public Proveedor getProveedorPorRazonSocial(String razonSocial, Empresa empresa) {        
         TypedQuery<Proveedor> typedQuery = em.createNamedQuery("Proveedor.buscarPorRazonSocial", Proveedor.class);
         typedQuery.setParameter("razonSocial", razonSocial);
         typedQuery.setParameter("empresa", empresa);
-        List<Proveedor> proveedores = typedQuery.getResultList();
-        em.close();
+        List<Proveedor> proveedores = typedQuery.getResultList();        
         if (proveedores.isEmpty()) {
             return null;
         } else {
@@ -48,13 +51,12 @@ public class ProveedorRepository {
         }
     }
 
-    public Proveedor getProveedorPorId_Fiscal(String id_Fiscal, Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public Proveedor getProveedorPorId_Fiscal(String id_Fiscal, Empresa empresa) {        
         TypedQuery<Proveedor> typedQuery = em.createNamedQuery("Proveedor.buscarPorIdFiscal", Proveedor.class);
         typedQuery.setParameter("idFiscal", id_Fiscal);
         typedQuery.setParameter("empresa", empresa);
-        List<Proveedor> proveedores = typedQuery.getResultList();
-        em.close();
+        List<Proveedor> proveedores = typedQuery.getResultList();        
         if (proveedores.isEmpty()) {
             return null;
         } else {
@@ -62,6 +64,7 @@ public class ProveedorRepository {
         }
     }
 
+    @Override
     public List<Proveedor> buscarProveedores(BusquedaProveedorCriteria criteria) {
         String query = "SELECT p FROM Proveedor p WHERE p.empresa = :empresa AND p.eliminado = false";
         //Razon Social
@@ -91,34 +94,30 @@ public class ProveedorRepository {
         if (criteria.isBuscaPorPais() == true) {
             query = query + " AND p.localidad.provincia.pais = " + criteria.getPais().getId_Pais();
         }
-        query = query + " ORDER BY p.razonSocial ASC";
-        EntityManager em = PersistenceUtil.getEntityManager();
+        query = query + " ORDER BY p.razonSocial ASC";        
         TypedQuery<Proveedor> typedQuery = em.createQuery(query, Proveedor.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
         //si es 0, recupera TODOS los registros
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        List<Proveedor> proveedores = typedQuery.getResultList();
-        em.close();
+        List<Proveedor> proveedores = typedQuery.getResultList();        
         return proveedores;
     }
 
-    public void guardar(Proveedor proveedor) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void guardar(Proveedor proveedor) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(em.merge(proveedor));
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 
-    public void actualizar(Proveedor proveedor) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void actualizar(Proveedor proveedor) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.merge(proveedor);
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 }

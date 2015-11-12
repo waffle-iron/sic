@@ -19,7 +19,6 @@ import sic.modelo.FormaDePago;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.service.*;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_CerrarVenta extends JDialog {
 

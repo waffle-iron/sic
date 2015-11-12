@@ -3,14 +3,14 @@ package sic.service;
 import sic.modelo.BusquedaTransportistaCriteria;
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.TransportistaRepository;
+import sic.repository.jpa.TransportistaRepositoryJPAImpl;
 import sic.modelo.Empresa;
 import sic.modelo.Transportista;
 import sic.util.Validator;
 
 public class TransportistaService {
 
-    private final TransportistaRepository modeloTransportista = new TransportistaRepository();
+    private final TransportistaRepositoryJPAImpl modeloTransportista = new TransportistaRepositoryJPAImpl();
 
     public List<Transportista> getTransportistas(Empresa empresa) {
         return modeloTransportista.getTransportistas(empresa);

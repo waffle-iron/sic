@@ -1,31 +1,35 @@
-package sic.repository;
+package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
 import sic.modelo.Empresa;
 import sic.modelo.Medida;
-import sic.util.PersistenceUtil;
+import sic.repository.IMedidaRepository;
 
-public class MedidaRepository {
+@Repository
+public class MedidaRepositoryJPAImpl implements IMedidaRepository {
 
-    public List<Medida> getUnidadMedidas(Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @PersistenceContext
+    private EntityManager em;
+    
+    @Override
+    public List<Medida> getUnidadMedidas(Empresa empresa) {        
         TypedQuery<Medida> typedQuery = em.createNamedQuery("Medida.buscarTodas", Medida.class);
         typedQuery.setParameter("empresa", empresa);
-        List<Medida> medidas = typedQuery.getResultList();
-        em.close();
+        List<Medida> medidas = typedQuery.getResultList();        
         return medidas;
     }
 
-    public Medida getMedidaPorNombre(String nombreMedida, Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public Medida getMedidaPorNombre(String nombreMedida, Empresa empresa) {        
         TypedQuery<Medida> typedQuery = em.createNamedQuery("Medida.buscarPorNombre", Medida.class);
         typedQuery.setParameter("nombre", nombreMedida);
         typedQuery.setParameter("empresa", empresa);
-        List<Medida> medidas = typedQuery.getResultList();
-        em.close();
+        List<Medida> medidas = typedQuery.getResultList();        
         if (medidas.isEmpty()) {
             return null;
         } else {
@@ -33,21 +37,19 @@ public class MedidaRepository {
         }
     }
 
-    public void guardar(Medida medida) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void guardar(Medida medida) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(em.merge(medida));
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 
-    public void actualizar(Medida medida) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void actualizar(Medida medida) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.merge(medida);
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 }

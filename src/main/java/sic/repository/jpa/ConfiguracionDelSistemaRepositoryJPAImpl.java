@@ -1,4 +1,4 @@
-package sic.repository;
+package sic.repository.jpa;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,6 +23,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -30,10 +32,14 @@ import org.xml.sax.SAXException;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
 import sic.modelo.XMLFileConfig;
-import sic.util.PersistenceUtil;
+import sic.repository.IConfiguracionDelSistemaRepository;
+import sic.repository.XMLException;
 
-public class ConfiguracionDelSistemaRepository {
-
+@Repository
+public class ConfiguracionDelSistemaRepositoryJPAImpl implements IConfiguracionDelSistemaRepository {
+    
+    @PersistenceContext
+    private EntityManager em;
     private final String pathConexionConfig = System.getProperty("user.home") + "/conexionConfig.xml";
     private static final String mensaje_ErrorTransformerConfigurationException = ResourceBundle.getBundle("Mensajes").getString("mensaje_ErrorTransformerConfigurationException");
     private static final String mensaje_ErrorTransformerException = ResourceBundle.getBundle("Mensajes").getString("mensaje_ErrorTransformerException");
@@ -42,7 +48,7 @@ public class ConfiguracionDelSistemaRepository {
     private static final String mensaje_ErrorSAXException = ResourceBundle.getBundle("Mensajes").getString("mensaje_ErrorSAXException");
     private static final String mensaje_ErrorIOException = ResourceBundle.getBundle("Mensajes").getString("mensaje_ErrorIOException");
     private static final String mensaje_ErrorFileNotFoundException = ResourceBundle.getBundle("Mensajes").getString("mensaje_ErrorFileNotFoundException");
-    private static final Logger log = Logger.getLogger(ConfiguracionDelSistemaRepository.class.getPackage().getName());
+    private static final Logger log = Logger.getLogger(ConfiguracionDelSistemaRepositoryJPAImpl.class.getPackage().getName());
 
     private void contruirXMLconDOM() throws XMLException {
 
@@ -95,6 +101,7 @@ public class ConfiguracionDelSistemaRepository {
         }
     }
 
+    @Override
     public void leerXMLconDOM() throws XMLException {
         try {
             //verifica si existe el archivo
@@ -150,6 +157,7 @@ public class ConfiguracionDelSistemaRepository {
         }
     }
 
+    @Override
     public void guardarXMLconDOM(String pathEtiqueta, String valor) throws XMLException {
         try {
             //verifica si existe el archivo
@@ -201,12 +209,11 @@ public class ConfiguracionDelSistemaRepository {
         }
     }
 
-    public ConfiguracionDelSistema getConfiguracionDelSistemaPorId(long id_ConfiguracionDelSistema) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public ConfiguracionDelSistema getConfiguracionDelSistemaPorId(long id_ConfiguracionDelSistema) {        
         TypedQuery<ConfiguracionDelSistema> typedQuery = em.createNamedQuery("ConfiguracionDelSistema.buscarPorId", ConfiguracionDelSistema.class);
         typedQuery.setParameter("id", id_ConfiguracionDelSistema);
-        List<ConfiguracionDelSistema> configuraciones = typedQuery.getResultList();
-        em.close();
+        List<ConfiguracionDelSistema> configuraciones = typedQuery.getResultList();        
         if (configuraciones.isEmpty()) {
             return null;
         } else {
@@ -214,12 +221,11 @@ public class ConfiguracionDelSistemaRepository {
         }
     }
 
-    public ConfiguracionDelSistema getConfiguracionDelSistemaPorEmpresa(Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public ConfiguracionDelSistema getConfiguracionDelSistemaPorEmpresa(Empresa empresa) {        
         TypedQuery<ConfiguracionDelSistema> typedQuery = em.createNamedQuery("ConfiguracionDelSistema.buscarPorEmpresa", ConfiguracionDelSistema.class);
         typedQuery.setParameter("empresa", empresa);
-        List<ConfiguracionDelSistema> configuraciones = typedQuery.getResultList();
-        em.close();
+        List<ConfiguracionDelSistema> configuraciones = typedQuery.getResultList();        
         if (configuraciones.isEmpty()) {
             return null;
         } else {
@@ -227,22 +233,20 @@ public class ConfiguracionDelSistemaRepository {
         }
     }
 
-    public void guardar(ConfiguracionDelSistema cds) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void guardar(ConfiguracionDelSistema cds) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(em.merge(cds));
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 
-    public void actualizar(ConfiguracionDelSistema cds) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void actualizar(ConfiguracionDelSistema cds) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.merge(cds);
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 
 }

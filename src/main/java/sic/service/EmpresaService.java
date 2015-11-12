@@ -4,15 +4,15 @@ import sic.modelo.EmpresaActiva;
 import java.util.List;
 import java.util.ResourceBundle;
 import sic.modelo.ConfiguracionDelSistema;
-import sic.repository.EmpresaRepository;
+import sic.repository.jpa.EmpresaRepositoryJPAImpl;
 import sic.modelo.Empresa;
-import sic.repository.ConfiguracionDelSistemaRepository;
+import sic.repository.jpa.ConfiguracionDelSistemaRepositoryJPAImpl;
 import sic.util.Validator;
 
 public class EmpresaService {
 
-    private final EmpresaRepository modeloEmpresa = new EmpresaRepository();
-    private final ConfiguracionDelSistemaRepository configuracionDelSistemaRepository = new ConfiguracionDelSistemaRepository();
+    private final EmpresaRepositoryJPAImpl modeloEmpresa = new EmpresaRepositoryJPAImpl();
+    private final ConfiguracionDelSistemaRepositoryJPAImpl configuracionDelSistemaRepository = new ConfiguracionDelSistemaRepositoryJPAImpl();
 
     public List<Empresa> getEmpresas() {
         return modeloEmpresa.getEmpresas();

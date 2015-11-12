@@ -1,31 +1,35 @@
-package sic.repository;
+package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
 import sic.modelo.Empresa;
 import sic.modelo.Rubro;
-import sic.util.PersistenceUtil;
+import sic.repository.IRubroRepository;
 
-public class RubroRepository {
+@Repository
+public class RubroRepositoryJPAImpl implements IRubroRepository {
 
-    public List<Rubro> getRubros(Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @PersistenceContext
+    private EntityManager em;
+    
+    @Override
+    public List<Rubro> getRubros(Empresa empresa) {        
         TypedQuery<Rubro> typedQuery = em.createNamedQuery("Rubro.buscarTodos", Rubro.class);
         typedQuery.setParameter("empresa", empresa);
-        List<Rubro> rubros = typedQuery.getResultList();
-        em.close();
+        List<Rubro> rubros = typedQuery.getResultList();        
         return rubros;
     }
 
-    public Rubro getRubroPorNombre(String nombre, Empresa empresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public Rubro getRubroPorNombre(String nombre, Empresa empresa) {        
         TypedQuery<Rubro> typedQuery = em.createNamedQuery("Rubro.buscarPorNombre", Rubro.class);
         typedQuery.setParameter("nombre", nombre);
         typedQuery.setParameter("empresa", empresa);
-        List<Rubro> rubros = typedQuery.getResultList();
-        em.close();
+        List<Rubro> rubros = typedQuery.getResultList();        
         if (rubros.isEmpty()) {
             return null;
         } else {
@@ -33,21 +37,19 @@ public class RubroRepository {
         }
     }
 
-    public void guardar(Rubro rubro) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void guardar(Rubro rubro) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(em.merge(rubro));
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 
-    public void actualizar(Rubro rubro) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void actualizar(Rubro rubro) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.merge(rubro);
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 }

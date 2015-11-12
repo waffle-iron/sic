@@ -1,32 +1,35 @@
-package sic.repository;
+package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
-import sic.util.PersistenceUtil;
+import sic.repository.IProvinciaRepository;
 
-public class ProvinciaRepository {
+@Repository
+public class ProvinciaRepositoryJPAImpl implements IProvinciaRepository {
 
-    public List<Provincia> getProvinciasDelPais(Pais pais) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @PersistenceContext
+    private EntityManager em;
+    
+    @Override
+    public List<Provincia> getProvinciasDelPais(Pais pais) {        
         TypedQuery<Provincia> typedQuery = em.createNamedQuery("Provincia.buscarProvinciasDelPais", Provincia.class);
         typedQuery.setParameter("pais", pais);
-        List<Provincia> provincias = typedQuery.getResultList();
-        em.close();
+        List<Provincia> provincias = typedQuery.getResultList();        
         return provincias;
-
     }
 
-    public Provincia getProvinciaPorNombre(String nombreProvincia, Pais paisRelacionado) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public Provincia getProvinciaPorNombre(String nombreProvincia, Pais paisRelacionado) {        
         TypedQuery<Provincia> typedQuery = em.createNamedQuery("Provincia.buscarPorNombre", Provincia.class);
         typedQuery.setParameter("nombre", nombreProvincia);
         typedQuery.setParameter("pais", paisRelacionado);
-        List<Provincia> provincias = typedQuery.getResultList();
-        em.close();
+        List<Provincia> provincias = typedQuery.getResultList();        
         if (provincias.isEmpty()) {
             return null;
         } else {
@@ -34,21 +37,19 @@ public class ProvinciaRepository {
         }
     }
 
-    public void actualizar(Provincia provincia) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void actualizar(Provincia provincia) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.merge(provincia);
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 
-    public void guardar(Provincia provincia) {
-        EntityManager em = PersistenceUtil.getEntityManager();
+    @Override
+    public void guardar(Provincia provincia) {        
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(em.merge(provincia));
-        tx.commit();
-        em.close();
+        tx.commit();        
     }
 }

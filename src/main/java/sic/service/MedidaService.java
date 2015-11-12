@@ -2,14 +2,14 @@ package sic.service;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.MedidaRepository;
+import sic.repository.jpa.MedidaRepositoryJPAImpl;
 import sic.modelo.Empresa;
 import sic.modelo.Medida;
 import sic.util.Validator;
 
 public class MedidaService {
 
-    private final MedidaRepository modeloMedida = new MedidaRepository();
+    private final MedidaRepositoryJPAImpl modeloMedida = new MedidaRepositoryJPAImpl();
 
     public List<Medida> getUnidadMedidas(Empresa empresa) {
         return modeloMedida.getUnidadMedidas(empresa);

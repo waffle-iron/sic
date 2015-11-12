@@ -2,15 +2,15 @@ package sic.service;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.FacturaRepository;
-import sic.repository.PagoFacturaCompraRepository;
+import sic.repository.jpa.FacturaRepositoryJPAImpl;
+import sic.repository.jpa.PagoFacturaCompraRepositoryJPAImpl;
 import sic.modelo.FacturaCompra;
 import sic.modelo.PagoFacturaCompra;
 
 public class PagoFacturaDeCompraService {
 
-    private final PagoFacturaCompraRepository modeloPagoFacturaCompra = new PagoFacturaCompraRepository();
-    private final FacturaRepository modeloFactura = new FacturaRepository();
+    private final PagoFacturaCompraRepositoryJPAImpl modeloPagoFacturaCompra = new PagoFacturaCompraRepositoryJPAImpl();
+    private final FacturaRepositoryJPAImpl modeloFactura = new FacturaRepositoryJPAImpl();
 
     public List<PagoFacturaCompra> getPagosDeLaFactura(FacturaCompra facturaCompra) {
         return modeloPagoFacturaCompra.getPagosDeLaFactura(facturaCompra);
