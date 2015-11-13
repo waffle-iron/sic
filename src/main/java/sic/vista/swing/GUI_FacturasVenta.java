@@ -18,8 +18,6 @@ import sic.modelo.Usuario;
 import sic.service.*;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
-import sic.vista.swing.GUI_PuntoDeVenta;
 
 public class GUI_FacturasVenta extends JInternalFrame {
 

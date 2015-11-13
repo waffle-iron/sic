@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -18,6 +20,10 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "pedido")
+@NamedQueries({
+    @NamedQuery(name = "Pedido.numeroDePedidos",
+            query = "SELECT count(p) FROM Pedido p WHERE p.empresa.id_Empresa = :empresa")
+})
 public class Pedido implements Serializable {
 
     @Id
@@ -32,6 +38,28 @@ public class Pedido implements Serializable {
 
     @Column(nullable = false)
     private String historial;
+
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
+    private Empresa empresa;
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+
+    private boolean eliminado;
+
+    public boolean isEliminada() {
+        return eliminado;
+    }
+
+    public void setEliminada(boolean eliminada) {
+        this.eliminado = eliminada;
+    }
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Cliente", referencedColumnName = "id_Cliente")

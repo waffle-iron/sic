@@ -74,6 +74,7 @@ public class GUI_Principal extends JFrame {
         mnuItm_Proveedores = new javax.swing.JMenuItem();
         mnu_Ventas = new javax.swing.JMenu();
         mnuItm_FacturasVenta = new javax.swing.JMenuItem();
+        mnuItm_Pedidos = new javax.swing.JMenuItem();
         mnuItm_Clientes = new javax.swing.JMenuItem();
         mnu_Administracion = new javax.swing.JMenu();
         mnuItm_Transportistas = new javax.swing.JMenuItem();
@@ -208,6 +209,14 @@ public class GUI_Principal extends JFrame {
             }
         });
         mnu_Ventas.add(mnuItm_FacturasVenta);
+
+        mnuItm_Pedidos.setText("Pedidos");
+        mnuItm_Pedidos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuItm_PedidosActionPerformed(evt);
+            }
+        });
+        mnu_Ventas.add(mnuItm_Pedidos);
 
         mnuItm_Clientes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Client_16x16.png"))); // NOI18N
         mnuItm_Clientes.setText("Clientes");
@@ -520,6 +529,12 @@ public class GUI_Principal extends JFrame {
         Utilidades.cerrarTodasVentanas(dp_Escritorio);
     }//GEN-LAST:event_mnuItm_ConfiguracionActionPerformed
 
+    private void mnuItm_PedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_PedidosActionPerformed
+        GUI_Pedidos gui_pedidos = new GUI_Pedidos(this, true);
+        gui_pedidos.setLocationRelativeTo(this);
+        gui_pedidos.setVisible(true);
+    }//GEN-LAST:event_mnuItm_PedidosActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator Separador1;
     private javax.swing.JPopupMenu.Separator Separador2;
@@ -538,6 +553,7 @@ public class GUI_Principal extends JFrame {
     private javax.swing.JMenuItem mnuItm_FacturasVenta;
     private javax.swing.JMenuItem mnuItm_FormasDePago;
     private javax.swing.JMenuItem mnuItm_IrTPV;
+    private javax.swing.JMenuItem mnuItm_Pedidos;
     private javax.swing.JMenuItem mnuItm_Productos;
     private javax.swing.JMenuItem mnuItm_Proveedores;
     private javax.swing.JMenuItem mnuItm_Salir;
