@@ -1,5 +1,12 @@
 package sic.vista.swing;
 
+import sic.service.impl.TransportistaServiceImpl;
+import sic.service.impl.RenglonDeFacturaServiceImpl;
+import sic.service.impl.FormaDePagoServiceImpl;
+import sic.service.impl.FacturaServiceImpl;
+import sic.service.impl.ProductoServiceImpl;
+import sic.service.impl.EmpresaServiceImpl;
+import sic.service.impl.ClienteServiceImpl;
 import sic.service.impl.UsuarioServiceImpl;
 import sic.modelo.ResultadosFactura;
 import java.awt.Dimension;
@@ -29,13 +36,13 @@ public class GUI_PuntoDeVenta extends JDialog {
     private Cliente cliente;
     private List<RenglonFactura> renglones;
     private ModeloTabla modeloTablaResultados;
-    private final EmpresaService empresaService = new EmpresaService();
-    private final ClienteService clienteService = new ClienteService();
-    private final FormaDePagoService formaDePagoService = new FormaDePagoService();
-    private final TransportistaService transportistaService = new TransportistaService();
-    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
-    private final ProductoService productoService = new ProductoService();
-    private final FacturaService facturaService = new FacturaService();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
+    private final ClienteServiceImpl clienteService = new ClienteServiceImpl();
+    private final FormaDePagoServiceImpl formaDePagoService = new FormaDePagoServiceImpl();
+    private final TransportistaServiceImpl transportistaService = new TransportistaServiceImpl();
+    private final RenglonDeFacturaServiceImpl renglonDeFacturaService = new RenglonDeFacturaServiceImpl();
+    private final ProductoServiceImpl productoService = new ProductoServiceImpl();
+    private final FacturaServiceImpl facturaService = new FacturaServiceImpl();
     private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());

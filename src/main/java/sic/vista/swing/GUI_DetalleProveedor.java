@@ -1,5 +1,11 @@
 package sic.vista.swing;
 
+import sic.service.impl.ProveedorServiceImpl;
+import sic.service.impl.LocalidadServiceImpl;
+import sic.service.impl.PaisServiceImpl;
+import sic.service.impl.ProvinciaServiceImpl;
+import sic.service.impl.EmpresaServiceImpl;
+import sic.service.impl.CondicionDeIVAServiceImpl;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
@@ -18,12 +24,12 @@ public class GUI_DetalleProveedor extends JDialog {
 
     private Proveedor proveedorModificar;
     private final TipoDeOperacion operacion;
-    private final CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
-    private final PaisService paisService = new PaisService();
-    private final ProvinciaService provinciaService = new ProvinciaService();
-    private final LocalidadService localidadService = new LocalidadService();
-    private final ProveedorService proveedorService = new ProveedorService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final CondicionDeIVAServiceImpl condicionDeIVAService = new CondicionDeIVAServiceImpl();
+    private final PaisServiceImpl paisService = new PaisServiceImpl();
+    private final ProvinciaServiceImpl provinciaService = new ProvinciaServiceImpl();
+    private final LocalidadServiceImpl localidadService = new LocalidadServiceImpl();
+    private final ProveedorServiceImpl proveedorService = new ProveedorServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_DetalleProveedor.class.getPackage().getName());
 
     public GUI_DetalleProveedor() {

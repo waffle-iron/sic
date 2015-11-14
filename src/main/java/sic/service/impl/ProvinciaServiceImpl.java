@@ -1,22 +1,35 @@
-package sic.service;
+package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.jpa.ProvinciaRepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
+import sic.repository.IProvinciaRepository;
+import sic.service.IProvinciaService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Validator;
 
-public class ProvinciaService {
+@Service
+public class ProvinciaServiceImpl implements IProvinciaService {
 
-    private final ProvinciaRepositoryJPAImpl modeloProvincia = new ProvinciaRepositoryJPAImpl();
+    private final IProvinciaRepository provinciaRepository;
 
+    @Autowired
+    public ProvinciaServiceImpl(IProvinciaRepository provinciaRepository) {
+        this.provinciaRepository = provinciaRepository;
+    }        
+
+    @Override
     public List<Provincia> getProvinciasDelPais(Pais pais) {
-        return modeloProvincia.getProvinciasDelPais(pais);
+        return provinciaRepository.getProvinciasDelPais(pais);
     }
 
+    @Override
     public Provincia getProvinciaPorNombre(String nombre, Pais pais) {
-        return modeloProvincia.getProvinciaPorNombre(nombre, pais);
+        return provinciaRepository.getProvinciaPorNombre(nombre, pais);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Provincia provincia) {
@@ -44,18 +57,21 @@ public class ProvinciaService {
         }
     }
 
+    @Override
     public void eliminar(Provincia provincia) {
         provincia.setEliminada(true);
-        modeloProvincia.actualizar(provincia);
+        provinciaRepository.actualizar(provincia);
     }
 
+    @Override
     public void actualizar(Provincia provincia) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, provincia);
-        modeloProvincia.actualizar(provincia);
+        provinciaRepository.actualizar(provincia);
     }
 
+    @Override
     public void guardar(Provincia provincia) {
         this.validarOperacion(TipoDeOperacion.ALTA, provincia);
-        modeloProvincia.guardar(provincia);
+        provinciaRepository.guardar(provincia);
     }
 }

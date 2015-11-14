@@ -1,5 +1,9 @@
 package sic.vista.swing;
 
+import sic.service.impl.RubroServiceImpl;
+import sic.service.impl.ProveedorServiceImpl;
+import sic.service.impl.ProductoServiceImpl;
+import sic.service.impl.EmpresaServiceImpl;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -15,7 +19,6 @@ import sic.modelo.Rubro;
 import sic.service.*;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_BusquedaProductos extends JDialog {
 
@@ -23,10 +26,10 @@ public class GUI_BusquedaProductos extends JDialog {
     private List<Producto> productos;
     private Producto productoSeleccionado;
     private int cantidadResultadosParaMostrar = 500;
-    private final RubroService rubroService = new RubroService();
-    private final EmpresaService empresaService = new EmpresaService();
-    private final ProveedorService proveedorService = new ProveedorService();
-    private final ProductoService productoService = new ProductoService();
+    private final RubroServiceImpl rubroService = new RubroServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
+    private final ProveedorServiceImpl proveedorService = new ProveedorServiceImpl();
+    private final ProductoServiceImpl productoService = new ProductoServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_BusquedaProductos.class.getPackage().getName());
 
     public GUI_BusquedaProductos() {

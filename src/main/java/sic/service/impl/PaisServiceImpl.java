@@ -1,21 +1,34 @@
-package sic.service;
+package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.jpa.PaisRepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.Pais;
+import sic.repository.IPaisRepository;
+import sic.service.IPaisService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Validator;
 
-public class PaisService {
+@Service
+public class PaisServiceImpl implements IPaisService {
 
-    private final PaisRepositoryJPAImpl modeloPais = new PaisRepositoryJPAImpl();
+    private final IPaisRepository paisRepository;
 
+    @Autowired
+    public PaisServiceImpl(IPaisRepository paisRepository) {
+        this.paisRepository = paisRepository;
+    }    
+    
+    @Override
     public List<Pais> getPaises() {
-        return modeloPais.getPaises();
+        return paisRepository.getPaises();
     }
 
+    @Override
     public Pais getPaisPorNombre(String nombre) {
-        return modeloPais.getPaisPorNombre(nombre);
+        return paisRepository.getPaisPorNombre(nombre);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Pais pais) {
@@ -39,18 +52,21 @@ public class PaisService {
         }
     }
 
+    @Override
     public void eliminar(Pais pais) {
         pais.setEliminado(true);
-        modeloPais.actualizar(pais);
+        paisRepository.actualizar(pais);
     }
 
+    @Override
     public void actualizar(Pais pais) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, pais);
-        modeloPais.actualizar(pais);
+        paisRepository.actualizar(pais);
     }
 
+    @Override
     public void guardar(Pais pais) {
         this.validarOperacion(TipoDeOperacion.ALTA, pais);
-        modeloPais.guardar(pais);
+        paisRepository.guardar(pais);
     }
 }

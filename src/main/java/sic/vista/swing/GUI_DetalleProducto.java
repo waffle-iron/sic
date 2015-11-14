@@ -1,5 +1,10 @@
 package sic.vista.swing;
 
+import sic.service.impl.RubroServiceImpl;
+import sic.service.impl.MedidaServiceImpl;
+import sic.service.impl.ProveedorServiceImpl;
+import sic.service.impl.ProductoServiceImpl;
+import sic.service.impl.EmpresaServiceImpl;
 import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.text.ParseException;
@@ -23,11 +28,11 @@ public class GUI_DetalleProducto extends JDialog {
 
     private Producto productoModificar;
     private final TipoDeOperacion operacion;
-    private final MedidaService medidaService = new MedidaService();
-    private final EmpresaService empresaService = new EmpresaService();
-    private final RubroService rubroService = new RubroService();
-    private final ProveedorService proveedorService = new ProveedorService();
-    private final ProductoService productoService = new ProductoService();
+    private final MedidaServiceImpl medidaService = new MedidaServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
+    private final RubroServiceImpl rubroService = new RubroServiceImpl();
+    private final ProveedorServiceImpl proveedorService = new ProveedorServiceImpl();
+    private final ProductoServiceImpl productoService = new ProductoServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_DetalleProducto.class.getPackage().getName());
 
     public GUI_DetalleProducto() {

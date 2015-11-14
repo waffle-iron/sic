@@ -1,5 +1,8 @@
 package sic.vista.swing;
 
+import sic.service.impl.TransportistaServiceImpl;
+import sic.service.impl.FormaDePagoServiceImpl;
+import sic.service.impl.FacturaServiceImpl;
 import sic.service.impl.UsuarioServiceImpl;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -24,9 +27,9 @@ public class GUI_CerrarVenta extends JDialog {
 
     private final GUI_PuntoDeVenta gui_tpv;
     private boolean exito;
-    private final FormaDePagoService formaDePagoService = new FormaDePagoService();
-    private final TransportistaService transportistaService = new TransportistaService();
-    private final FacturaService facturaService = new FacturaService();
+    private final FormaDePagoServiceImpl formaDePagoService = new FormaDePagoServiceImpl();
+    private final TransportistaServiceImpl transportistaService = new TransportistaServiceImpl();
+    private final FacturaServiceImpl facturaService = new FacturaServiceImpl();
     private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_CerrarVenta.class.getPackage().getName());

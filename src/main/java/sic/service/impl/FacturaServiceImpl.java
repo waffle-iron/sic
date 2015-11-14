@@ -1,4 +1,4 @@
-package sic.service;
+package sic.service.impl;
 
 import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;
@@ -8,7 +8,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import sic.repository.jpa.FacturaRepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.Cliente;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
@@ -17,16 +18,36 @@ import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
+import sic.repository.IFacturaRepository;
+import sic.service.IConfiguracionDelSistemaService;
+import sic.service.IEmpresaService;
+import sic.service.IFacturaService;
+import sic.service.IProductoService;
+import sic.service.Movimiento;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
 
-public class FacturaService {
+@Service
+public class FacturaServiceImpl implements IFacturaService {
 
-    private final FacturaRepositoryJPAImpl facturaRepository = new FacturaRepositoryJPAImpl();
-    private final ProductoService productoService = new ProductoService();
-    private final ConfiguracionDelSistemaService configuracionDelSistemaService = new ConfiguracionDelSistemaService();
-    private final EmpresaService EmpresaService = new EmpresaService();
+    private final IFacturaRepository facturaRepository;
+    private final IProductoService productoService;
+    private final IConfiguracionDelSistemaService configuracionDelSistemaService;
+    private final IEmpresaService empresaService;
 
+    @Autowired
+    public FacturaServiceImpl(IFacturaRepository facturaRepository, IProductoService productoService,
+            IConfiguracionDelSistemaService configuracionDelSistemaService, IEmpresaService empresaService) {
+        
+        this.facturaRepository = facturaRepository;
+        this.productoService = productoService;
+        this.configuracionDelSistemaService = configuracionDelSistemaService;
+        this.empresaService = empresaService;
+    }   
+    
+    @Override
     public char[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor) {
         //cuando la Empresa discrimina IVA
         if (empresa.getCondicionIVA().isDiscriminaIVA()) {
@@ -62,6 +83,7 @@ public class FacturaService {
         }
     }
 
+    @Override
     public char[] getTipoFacturaVenta(Empresa empresa, Cliente cliente) {
         //cuando la Empresa discrimina IVA
         if (empresa.getCondicionIVA().isDiscriminaIVA()) {
@@ -101,6 +123,7 @@ public class FacturaService {
         }
     }
 
+    @Override
     public char[] getTiposFacturaSegunEmpresa(Empresa empresa) {
         if (empresa.getCondicionIVA().isDiscriminaIVA()) {
             char[] tiposPermitidos = new char[4];
@@ -118,14 +141,17 @@ public class FacturaService {
         }
     }
 
+    @Override
     public List<RenglonFactura> getRenglonesDeLaFactura(Factura factura) {
         return facturaRepository.getRenglonesDeLaFactura(factura);
     }
 
+    @Override
     public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {
         return facturaRepository.getFacturaVentaPorTipoSerieNum(tipo, serie, num);
     }
 
+    @Override
     public List<FacturaCompra> buscarFacturaCompra(BusquedaFacturaCompraCriteria criteria) {
         //Fecha de Factura        
         if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
@@ -153,6 +179,7 @@ public class FacturaService {
         return facturaRepository.buscarFacturasCompra(criteria);
     }
 
+    @Override
     public List<FacturaVenta> buscarFacturaVenta(BusquedaFacturaVentaCriteria criteria) {
         //Fecha de Factura        
         if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
@@ -185,12 +212,14 @@ public class FacturaService {
         return facturaRepository.buscarFacturasVenta(criteria);
     }
 
+    @Override
     public void guardar(Factura factura) {
         this.validarFactura(factura);
         facturaRepository.guardar(factura);
         productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
     }
 
+    @Override
     public void eliminar(Factura factura) {
         factura.setEliminada(true);
         facturaRepository.actualizar(factura);
@@ -265,6 +294,7 @@ public class FacturaService {
         }
     }
 
+    @Override
     public long calcularNumeroFactura(char tipoDeFactura, long serie) {
         if (tipoDeFactura == 'Y') {
             return facturaRepository.getMayorNumFacturaSegunTipo('X', serie);
@@ -273,6 +303,7 @@ public class FacturaService {
         }
     }
 
+    @Override
     public double calcularVuelto(double importeAPagar, double importeAbonado) {
         if (importeAbonado <= importeAPagar) {
             return 0;
@@ -281,15 +312,17 @@ public class FacturaService {
         }
     }
 
+    @Override
     public boolean validarCantidadMaximaDeRenglones(int cantidad) {
         ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
-                EmpresaService.getEmpresaActiva().getEmpresa());
+                empresaService.getEmpresaActiva().getEmpresa());
         int max = cds.getCantidadMaximaDeRenglonesEnFactura();
         return cantidad < max;
     }
 
     //**************************************************************************
     //Calculos
+    @Override
     public double calcularSubTotal(List<RenglonFactura> renglones) {
         double resultado = 0;
         for (RenglonFactura renglon : renglones) {
@@ -298,6 +331,7 @@ public class FacturaService {
         return resultado;
     }
 
+    @Override
     public double calcularDescuento_neto(double subtotal, double descuento_porcentaje) {
         double resultado = 0;
         if (descuento_porcentaje != 0) {
@@ -306,6 +340,7 @@ public class FacturaService {
         return Math.round(resultado * 1000.0) / 1000.0;
     }
 
+    @Override
     public double calcularRecargo_neto(double subtotal, double recargo_porcentaje) {
         double resultado = 0;
         if (recargo_porcentaje != 0) {
@@ -314,10 +349,12 @@ public class FacturaService {
         return Math.round(resultado * 1000.0) / 1000.0;
     }
 
+    @Override
     public double calcularSubTotal_neto(double subtotal, double recargo_neto, double descuento_neto) {
         return subtotal + recargo_neto - descuento_neto;
     }
 
+    @Override
     public double calcularIva_neto(char tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones, double iva_porcentaje) {
         double resultado = 0;
         if (tipoDeFactura == 'A') {
@@ -342,6 +379,7 @@ public class FacturaService {
         return Math.round(resultado * 1000.0) / 1000.0;
     }
 
+    @Override
     public double calcularImpInterno_neto(char tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones) {
         double resultado = 0;
         if (tipoDeFactura == 'A') {
@@ -363,12 +401,14 @@ public class FacturaService {
         return Math.round(resultado * 1000.0) / 1000.0;
     }
 
+    @Override
     public double calcularTotal(double subTotal, double descuento_neto, double recargo_neto, double iva105_neto, double iva21_neto, double impInterno_neto) {
         double resultado;
         resultado = (subTotal + recargo_neto - descuento_neto) + iva105_neto + iva21_neto + impInterno_neto;
         return Math.round(resultado * 1000.0) / 1000.0;
     }
 
+    @Override
     public double calcularTotalFacturado(List<FacturaVenta> facturas) {
         double resultado = 0;
         for (FacturaVenta facturaVenta : facturas) {
@@ -377,6 +417,7 @@ public class FacturaService {
         return resultado;
     }
 
+    @Override
     public double calcularIVA_Venta(List<FacturaVenta> facturas) {
         double resultado = 0;
         for (FacturaVenta facturaVenta : facturas) {
@@ -385,6 +426,7 @@ public class FacturaService {
         return resultado;
     }
 
+    @Override
     public double calcularGananciaTotal(List<FacturaVenta> facturas) {
         double resultado = 0;
         for (FacturaVenta facturaVenta : facturas) {
@@ -398,18 +440,20 @@ public class FacturaService {
 
     //**************************************************************************
     //Estadisticas
+    @Override
     public List<Object[]> listarProductosMasVendidosPorAnio(int anio) {
         return facturaRepository.listarProductosMasVendidosPorAnio(anio);
     }
 
     //**************************************************************************
     //Reportes
+    @Override
     public JasperPrint getReporteFacturaVenta(Factura factura) throws JRException {
-        ClassLoader classLoader = FacturaService.class.getClassLoader();
+        ClassLoader classLoader = FacturaServiceImpl.class.getClassLoader();
         InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/FacturaVenta.jasper");
         Map params = new HashMap();
         ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
-                EmpresaService.getEmpresaActiva().getEmpresa());
+                empresaService.getEmpresaActiva().getEmpresa());
         params.put("preImpresa", cds.usarFacturaVentaPreImpresa());
         params.put("facturaVenta", factura);
         params.put("nroComprobante", factura.getNumSerie() + "-" + factura.getNumFactura());
@@ -421,10 +465,11 @@ public class FacturaService {
 
     //**************************************************************************    
     //Division de Factura
+    @Override
     public List<FacturaVenta> dividirFactura(FacturaVenta factura, int[] indices) {
         double FacturaABC = 0;
         double FacturaX = 0;
-        RenglonDeFacturaService renglonService = new RenglonDeFacturaService();
+        RenglonDeFacturaServiceImpl renglonService = new RenglonDeFacturaServiceImpl();
         List<RenglonFactura> renglonesConIVA = new ArrayList<>();
         List<RenglonFactura> renglonesSinIVA = new ArrayList<>();
         FacturaVenta facturaSinIVA = new FacturaVenta();
@@ -523,6 +568,7 @@ public class FacturaService {
         return facturas;
     }
 
+    @Override
     public double calcularTotalFacturas(List<FacturaVenta> facturas) {
         double total = 0;
         for (Factura factura : facturas) {

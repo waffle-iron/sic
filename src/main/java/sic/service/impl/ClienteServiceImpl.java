@@ -1,39 +1,56 @@
-package sic.service;
+package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.jpa.ClienteRepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.BusquedaClienteCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
+import sic.repository.IClienteRepository;
+import sic.service.IClienteService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Validator;
 
-public class ClienteService {
+@Service
+public class ClienteServiceImpl implements IClienteService {
+    
+    private final IClienteRepository clienteRepository;
 
-    private final ClienteRepositoryJPAImpl modeloCliente = new ClienteRepositoryJPAImpl();
+    @Autowired
+    public ClienteServiceImpl(IClienteRepository clienteRepository) {
+        this.clienteRepository = clienteRepository;
+    }   
 
+    @Override
     public Cliente getClientePorId(long id_Cliente) {
-        return modeloCliente.getClientePorId(id_Cliente);
+        return clienteRepository.getClientePorId(id_Cliente);
     }
 
+    @Override
     public List<Cliente> getClientes(Empresa empresa) {
-        return modeloCliente.getClientes(empresa);
+        return clienteRepository.getClientes(empresa);
     }
 
+    @Override
     public List<Cliente> getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(String criteria, Empresa empresa) {
-        return modeloCliente.getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(criteria, empresa);
+        return clienteRepository.getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(criteria, empresa);
     }
 
+    @Override
     public Cliente getClientePorRazonSocial(String razonSocial, Empresa empresa) {
-        return modeloCliente.getClientePorRazonSocial(razonSocial, empresa);
+        return clienteRepository.getClientePorRazonSocial(razonSocial, empresa);
     }
 
+    @Override
     public Cliente getClientePorIdFiscal(String idFiscal, Empresa empresa) {
-        return modeloCliente.getClientePorId_Fiscal(idFiscal, empresa);
+        return clienteRepository.getClientePorId_Fiscal(idFiscal, empresa);
     }
 
+    @Override
     public Cliente getClientePredeterminado(Empresa empresa) {
-        return modeloCliente.getClientePredeterminado(empresa);
+        return clienteRepository.getClientePredeterminado(empresa);
     }
 
     /**
@@ -43,16 +60,18 @@ public class ClienteService {
      *
      * @param cliente Cliente candidato a predeterminado.
      */
+    @Override
     public void setClientePredeterminado(Cliente cliente) {
-        Cliente clientePredeterminadoAnterior = modeloCliente.getClientePredeterminado(cliente.getEmpresa());
+        Cliente clientePredeterminadoAnterior = clienteRepository.getClientePredeterminado(cliente.getEmpresa());
         if (clientePredeterminadoAnterior != null) {
             clientePredeterminadoAnterior.setPredeterminado(false);
-            modeloCliente.actualizar(clientePredeterminadoAnterior);
+            clienteRepository.actualizar(clientePredeterminadoAnterior);
         }
         cliente.setPredeterminado(true);
-        modeloCliente.actualizar(cliente);
+        clienteRepository.actualizar(cliente);
     }
 
+    @Override
     public List<Cliente> buscarClientes(BusquedaClienteCriteria criteria) {
         //@TODO No debe verificar contra la palabra "Todos/as". Usar el boolean asociado a ese campo
         //Pais
@@ -67,7 +86,7 @@ public class ClienteService {
         if (criteria.getLocalidad().getNombre().equals("Todas")) {
             criteria.setBuscaPorLocalidad(false);
         }
-        return modeloCliente.buscarClientes(criteria);
+        return clienteRepository.buscarClientes(criteria);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Cliente cliente) {
@@ -124,18 +143,21 @@ public class ClienteService {
         }
     }
 
+    @Override
     public void guardar(Cliente cliente) {
         this.validarOperacion(TipoDeOperacion.ALTA, cliente);
-        modeloCliente.guardar(cliente);
+        clienteRepository.guardar(cliente);
     }
 
+    @Override
     public void actualizar(Cliente cliente) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, cliente);
-        modeloCliente.actualizar(cliente);
+        clienteRepository.actualizar(cliente);
     }
 
+    @Override
     public void eliminar(Cliente cliente) {
         cliente.setEliminado(true);
-        modeloCliente.actualizar(cliente);
+        clienteRepository.actualizar(cliente);
     }
 }

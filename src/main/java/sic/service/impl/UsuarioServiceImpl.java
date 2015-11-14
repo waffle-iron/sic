@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import sic.modelo.UsuarioActivo;
 import sic.modelo.Usuario;
 import sic.repository.IUsuarioRepository;
-import sic.repository.jpa.UsuarioRepositoryJPAImpl;
 import sic.service.IUsuarioService;
 import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;

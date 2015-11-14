@@ -1,21 +1,36 @@
-package sic.service;
+package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.jpa.FacturaRepositoryJPAImpl;
-import sic.repository.jpa.PagoFacturaCompraRepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.FacturaCompra;
 import sic.modelo.PagoFacturaCompra;
+import sic.repository.IFacturaRepository;
+import sic.repository.IPagoFacturaCompraRepository;
+import sic.service.IPagoFacturaDeCompraService;
+import sic.service.ServiceException;
 
-public class PagoFacturaDeCompraService {
+@Service
+public class PagoFacturaDeCompraServiceImpl implements IPagoFacturaDeCompraService {
 
-    private final PagoFacturaCompraRepositoryJPAImpl modeloPagoFacturaCompra = new PagoFacturaCompraRepositoryJPAImpl();
-    private final FacturaRepositoryJPAImpl modeloFactura = new FacturaRepositoryJPAImpl();
+    private final IPagoFacturaCompraRepository pagoFacturaCompraRepository;
+    private final IFacturaRepository facturaRepository;
 
+    @Autowired
+    public PagoFacturaDeCompraServiceImpl(IPagoFacturaCompraRepository pagoFacturaCompraRepository,
+            IFacturaRepository facturaRepository) {
+        
+        this.pagoFacturaCompraRepository = pagoFacturaCompraRepository;
+        this.facturaRepository = facturaRepository;
+    }      
+
+    @Override
     public List<PagoFacturaCompra> getPagosDeLaFactura(FacturaCompra facturaCompra) {
-        return modeloPagoFacturaCompra.getPagosDeLaFactura(facturaCompra);
+        return pagoFacturaCompraRepository.getPagosDeLaFactura(facturaCompra);
     }
 
+    @Override
     public double getTotalPagado(FacturaCompra facturaCompra) {
         double resultado = 0.0;
         for (PagoFacturaCompra pago : this.getPagosDeLaFactura(facturaCompra)) {
@@ -24,19 +39,21 @@ public class PagoFacturaDeCompraService {
         return resultado;
     }
 
+    @Override
     public double getSaldoAPagar(FacturaCompra facturaCompra) {
         double deuda = facturaCompra.getTotal();
         double pagado = this.getTotalPagado(facturaCompra);
         return deuda - pagado;
     }
 
+    @Override
     public void setFacturaEstadoDePago(FacturaCompra facturaCompra) {
         if (this.getTotalPagado(facturaCompra) >= facturaCompra.getTotal()) {
             facturaCompra.setPagada(true);
         } else {
             facturaCompra.setPagada(false);
         }
-        modeloFactura.actualizar(facturaCompra);
+        facturaRepository.actualizar(facturaCompra);
     }
 
     private void validarOperacion(PagoFacturaCompra pago) {
@@ -55,13 +72,15 @@ public class PagoFacturaDeCompraService {
         }
     }
 
+    @Override
     public void eliminar(PagoFacturaCompra pago) {
         pago.setEliminado(true);
-        modeloPagoFacturaCompra.actualizar(pago);
+        pagoFacturaCompraRepository.actualizar(pago);
     }
 
+    @Override
     public void guardar(PagoFacturaCompra pago) {
         this.validarOperacion(pago);
-        modeloPagoFacturaCompra.guardar(pago);
+        pagoFacturaCompraRepository.guardar(pago);
     }
 }

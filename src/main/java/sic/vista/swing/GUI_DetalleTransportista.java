@@ -1,5 +1,10 @@
 package sic.vista.swing;
 
+import sic.service.impl.TransportistaServiceImpl;
+import sic.service.impl.LocalidadServiceImpl;
+import sic.service.impl.PaisServiceImpl;
+import sic.service.impl.ProvinciaServiceImpl;
+import sic.service.impl.EmpresaServiceImpl;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
@@ -17,11 +22,11 @@ public class GUI_DetalleTransportista extends JDialog {
 
     private Transportista transportistaModificar;
     private final TipoDeOperacion operacion;
-    private final PaisService paisService = new PaisService();
-    private final ProvinciaService provinciaService = new ProvinciaService();
-    private final LocalidadService localidadService = new LocalidadService();
-    private final TransportistaService transportistaService = new TransportistaService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final PaisServiceImpl paisService = new PaisServiceImpl();
+    private final ProvinciaServiceImpl provinciaService = new ProvinciaServiceImpl();
+    private final LocalidadServiceImpl localidadService = new LocalidadServiceImpl();
+    private final TransportistaServiceImpl transportistaService = new TransportistaServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_DetalleTransportista.class.getPackage().getName());
 
     public GUI_DetalleTransportista() {

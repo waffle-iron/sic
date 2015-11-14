@@ -9,12 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import sic.modelo.Empresa;
-import sic.service.EmpresaService;
+import sic.service.impl.EmpresaServiceImpl;
 
 public class GUI_SeleccionEmpresa extends JDialog {
 
     private Empresa empresaSeleccionada;
-    private final EmpresaService empresaService = new EmpresaService();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_SeleccionEmpresa.class.getPackage().getName());
 
     public GUI_SeleccionEmpresa(JDialog parent, boolean modal) {

@@ -16,14 +16,13 @@ import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
-import sic.service.EmpresaService;
-import sic.service.ProductoService;
-import sic.service.ProveedorService;
-import sic.service.RubroService;
+import sic.service.impl.EmpresaServiceImpl;
+import sic.service.impl.ProductoServiceImpl;
+import sic.service.impl.ProveedorServiceImpl;
+import sic.service.impl.RubroServiceImpl;
 import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_Productos extends JInternalFrame {
 
@@ -31,10 +30,10 @@ public class GUI_Productos extends JInternalFrame {
     private List<Producto> productos;
     private boolean listarSoloFaltantes;
     private int cantidadResultadosParaMostrar = 500;
-    private final RubroService rubroService = new RubroService();
-    private final EmpresaService empresaService = new EmpresaService();
-    private final ProveedorService proveedorService = new ProveedorService();
-    private final ProductoService productoService = new ProductoService();
+    private final RubroServiceImpl rubroService = new RubroServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
+    private final ProveedorServiceImpl proveedorService = new ProveedorServiceImpl();
+    private final ProductoServiceImpl productoService = new ProductoServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_Productos.class.getPackage().getName());
 
     public GUI_Productos() {

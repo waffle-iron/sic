@@ -1,5 +1,10 @@
 package sic.vista.swing;
 
+import sic.service.impl.ProveedorServiceImpl;
+import sic.service.impl.LocalidadServiceImpl;
+import sic.service.impl.PaisServiceImpl;
+import sic.service.impl.ProvinciaServiceImpl;
+import sic.service.impl.EmpresaServiceImpl;
 import java.beans.PropertyVetoException;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -14,18 +19,17 @@ import sic.modelo.Proveedor;
 import sic.modelo.Provincia;
 import sic.service.*;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_Proveedores extends JInternalFrame {
 
     private ModeloTabla modeloTablaResultados;
     private List<Proveedor> proveedores;
     private Proveedor provSeleccionado;
-    private final PaisService paisService = new PaisService();
-    private final ProvinciaService provinciaService = new ProvinciaService();
-    private final LocalidadService localidadService = new LocalidadService();
-    private final ProveedorService proveedorService = new ProveedorService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final PaisServiceImpl paisService = new PaisServiceImpl();
+    private final ProvinciaServiceImpl provinciaService = new ProvinciaServiceImpl();
+    private final LocalidadServiceImpl localidadService = new LocalidadServiceImpl();
+    private final ProveedorServiceImpl proveedorService = new ProveedorServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_Proveedores.class.getPackage().getName());
 
     public GUI_Proveedores() {

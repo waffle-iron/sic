@@ -1,21 +1,34 @@
-package sic.service;
+package sic.service.impl;
 
 import sic.modelo.BusquedaTransportistaCriteria;
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.jpa.TransportistaRepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.Empresa;
 import sic.modelo.Transportista;
+import sic.repository.ITransportistaRepository;
+import sic.service.ITransportistaService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Validator;
 
-public class TransportistaService {
+@Service
+public class TransportistaServiceImpl implements ITransportistaService {
 
-    private final TransportistaRepositoryJPAImpl modeloTransportista = new TransportistaRepositoryJPAImpl();
+    private final ITransportistaRepository transportistaRepository;
 
-    public List<Transportista> getTransportistas(Empresa empresa) {
-        return modeloTransportista.getTransportistas(empresa);
+    @Autowired
+    public TransportistaServiceImpl(ITransportistaRepository transportistaRepository) {
+        this.transportistaRepository = transportistaRepository;
     }
 
+    @Override
+    public List<Transportista> getTransportistas(Empresa empresa) {
+        return transportistaRepository.getTransportistas(empresa);
+    }
+
+    @Override
     public List<Transportista> buscarTransportistas(BusquedaTransportistaCriteria criteria) {
         //@Todo No debe verificar contra la palabra "Todos/as". Usar el boolean asociado a ese campo
         //Pais
@@ -30,11 +43,12 @@ public class TransportistaService {
         if (criteria.getLocalidad().getNombre().equals("Todas")) {
             criteria.setBuscarPorLocalidad(false);
         }
-        return modeloTransportista.busquedaPersonalizada(criteria);
+        return transportistaRepository.busquedaPersonalizada(criteria);
     }
 
+    @Override
     public Transportista getTransportistaPorNombre(String nombre, Empresa empresa) {
-        return modeloTransportista.getTransportistaPorNombre(nombre, empresa);
+        return transportistaRepository.getTransportistaPorNombre(nombre, empresa);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Transportista transportista) {
@@ -67,18 +81,21 @@ public class TransportistaService {
 
     }
 
+    @Override
     public void guardar(Transportista transportista) {
         this.validarOperacion(TipoDeOperacion.ALTA, transportista);
-        modeloTransportista.guardar(transportista);
+        transportistaRepository.guardar(transportista);
     }
 
+    @Override
     public void actualizar(Transportista transportista) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, transportista);
-        modeloTransportista.actualizar(transportista);
+        transportistaRepository.actualizar(transportista);
     }
 
+    @Override
     public void eliminar(Transportista transportista) {
         transportista.setEliminado(true);
-        modeloTransportista.actualizar(transportista);
+        transportistaRepository.actualizar(transportista);
     }
 }

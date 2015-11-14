@@ -1,27 +1,41 @@
-package sic.service;
+package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.jpa.LocalidadRepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.Localidad;
 import sic.modelo.Provincia;
+import sic.repository.ILocalidadRepository;
+import sic.service.ILocalidadService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Validator;
 
-public class LocalidadService {
+@Service
+public class LocalidadServiceImpl implements ILocalidadService {
 
-    private final LocalidadRepositoryJPAImpl modeloLocalidad = new LocalidadRepositoryJPAImpl();
+    private final ILocalidadRepository localidadRepository;
 
+    @Autowired
+    public LocalidadServiceImpl(ILocalidadRepository localidadRepository) {
+        this.localidadRepository = localidadRepository;
+    }    
+
+    @Override
     public List<Localidad> getLocalidadesDeLaProvincia(Provincia provincia) {
-        return modeloLocalidad.getLocalidadesDeLaProvincia(provincia);
+        return localidadRepository.getLocalidadesDeLaProvincia(provincia);
     }
 
+    @Override
     public void eliminar(Localidad localidad) {
         localidad.setEliminada(true);
-        modeloLocalidad.actualizar(localidad);
+        localidadRepository.actualizar(localidad);
     }
 
+    @Override
     public Localidad getLocalidadPorNombre(String nombre, Provincia provincia) {
-        return modeloLocalidad.getLocalidadPorNombre(nombre, provincia);
+        return localidadRepository.getLocalidadPorNombre(nombre, provincia);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Localidad localidad) {
@@ -49,13 +63,15 @@ public class LocalidadService {
         }
     }
 
+    @Override
     public void actualizar(Localidad localidad) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, localidad);
-        modeloLocalidad.actualizar(localidad);
+        localidadRepository.actualizar(localidad);
     }
 
+    @Override
     public void guardar(Localidad localidad) {
         this.validarOperacion(TipoDeOperacion.ALTA, localidad);
-        modeloLocalidad.guardar(localidad);
+        localidadRepository.guardar(localidad);
     }
 }

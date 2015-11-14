@@ -8,17 +8,16 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import sic.modelo.FormaDePago;
-import sic.service.EmpresaService;
-import sic.service.FormaDePagoService;
+import sic.service.impl.EmpresaServiceImpl;
+import sic.service.impl.FormaDePagoServiceImpl;
 import sic.service.ServiceException;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_FormasDePago extends JDialog {
 
     private ModeloTabla modeloTablaResultados = new ModeloTabla();
     private List<FormaDePago> formasDePago;
-    private final FormaDePagoService formaDePagoService = new FormaDePagoService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final FormaDePagoServiceImpl formaDePagoService = new FormaDePagoServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_FormasDePago.class.getPackage().getName());
 
     public GUI_FormasDePago() {

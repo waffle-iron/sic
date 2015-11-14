@@ -1,21 +1,34 @@
-package sic.service;
+package sic.service.impl;
 
 import sic.modelo.BusquedaProveedorCriteria;
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.jpa.ProveedorRepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.Empresa;
 import sic.modelo.Proveedor;
+import sic.repository.IProveedorRepository;
+import sic.service.IProveedorService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Validator;
 
-public class ProveedorService {
+@Service
+public class ProveedorServiceImpl implements IProveedorService {
 
-    private final ProveedorRepositoryJPAImpl modeloProveedor = new ProveedorRepositoryJPAImpl();
+    private final IProveedorRepository proveedorRepository;
 
+    @Autowired
+    public ProveedorServiceImpl(IProveedorRepository proveedorRepository) {
+        this.proveedorRepository = proveedorRepository;
+    }    
+    
+    @Override
     public List<Proveedor> getProveedores(Empresa empresa) {
-        return modeloProveedor.getProveedores(empresa);
+        return proveedorRepository.getProveedores(empresa);
     }
 
+    @Override
     public List<Proveedor> buscarProveedores(BusquedaProveedorCriteria criteria) {
         //@Todo No debe verificar contra la palabra "Todos/as". Usar el boolean asociado a ese campo
         //Pais
@@ -30,19 +43,22 @@ public class ProveedorService {
         if (criteria.getLocalidad().getNombre().equals("Todas")) {
             criteria.setBuscaPorLocalidad(false);
         }
-        return modeloProveedor.buscarProveedores(criteria);
+        return proveedorRepository.buscarProveedores(criteria);
     }
 
+    @Override
     public Proveedor getProveedorPorCodigo(String codigo, Empresa empresa) {
-        return modeloProveedor.getProveedorPorCodigo(codigo, empresa);
+        return proveedorRepository.getProveedorPorCodigo(codigo, empresa);
     }
 
+    @Override
     public Proveedor getProveedorPorId_Fiscal(String id_Fiscal, Empresa empresa) {
-        return modeloProveedor.getProveedorPorId_Fiscal(id_Fiscal, empresa);
+        return proveedorRepository.getProveedorPorId_Fiscal(id_Fiscal, empresa);
     }
 
+    @Override
     public Proveedor getProveedorPorRazonSocial(String razonSocial, Empresa empresa) {
-        return modeloProveedor.getProveedorPorRazonSocial(razonSocial, empresa);
+        return proveedorRepository.getProveedorPorRazonSocial(razonSocial, empresa);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Proveedor proveedor) {
@@ -115,18 +131,21 @@ public class ProveedorService {
         }
     }
 
+    @Override
     public void guardar(Proveedor proveedor) {
         this.validarOperacion(TipoDeOperacion.ALTA, proveedor);
-        modeloProveedor.guardar(proveedor);
+        proveedorRepository.guardar(proveedor);
     }
 
+    @Override
     public void actualizar(Proveedor proveedor) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, proveedor);
-        modeloProveedor.actualizar(proveedor);
+        proveedorRepository.actualizar(proveedor);
     }
 
+    @Override
     public void eliminar(Proveedor proveedor) {
         proveedor.setEliminado(true);
-        modeloProveedor.actualizar(proveedor);
+        proveedorRepository.actualizar(proveedor);
     }
 }

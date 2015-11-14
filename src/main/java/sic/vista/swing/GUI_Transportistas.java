@@ -1,5 +1,10 @@
 package sic.vista.swing;
 
+import sic.service.impl.TransportistaServiceImpl;
+import sic.service.impl.LocalidadServiceImpl;
+import sic.service.impl.PaisServiceImpl;
+import sic.service.impl.ProvinciaServiceImpl;
+import sic.service.impl.EmpresaServiceImpl;
 import java.beans.PropertyVetoException;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -12,20 +17,18 @@ import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
 import sic.modelo.Transportista;
-import sic.service.*;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_Transportistas extends JInternalFrame {
 
     private ModeloTabla modeloTablaResultados;
     private List<Transportista> transportistas;
     private Transportista transSeleccionado;
-    private final PaisService paisService = new PaisService();
-    private final ProvinciaService provinciaService = new ProvinciaService();
-    private final LocalidadService localidadService = new LocalidadService();
-    private final TransportistaService transportistaService = new TransportistaService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final PaisServiceImpl paisService = new PaisServiceImpl();
+    private final ProvinciaServiceImpl provinciaService = new ProvinciaServiceImpl();
+    private final LocalidadServiceImpl localidadService = new LocalidadServiceImpl();
+    private final TransportistaServiceImpl transportistaService = new TransportistaServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_Transportistas.class.getPackage().getName());
 
     public GUI_Transportistas() {

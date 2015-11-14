@@ -9,8 +9,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import sic.modelo.Medida;
-import sic.service.EmpresaService;
-import sic.service.MedidaService;
+import sic.service.impl.EmpresaServiceImpl;
+import sic.service.impl.MedidaServiceImpl;
 import sic.service.ServiceException;
 import sic.util.Utilidades;
 
@@ -18,8 +18,8 @@ public class GUI_DetalleMedida extends JDialog {
 
     private final DefaultListModel modeloList = new DefaultListModel();
     private Medida medidaSeleccionada;
-    private final MedidaService medidaService = new MedidaService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final MedidaServiceImpl medidaService = new MedidaServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_DetalleMedida.class.getPackage().getName());
 
     public GUI_DetalleMedida() {

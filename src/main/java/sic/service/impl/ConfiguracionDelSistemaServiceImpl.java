@@ -1,34 +1,49 @@
-package sic.service;
+package sic.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
-import sic.repository.jpa.ConfiguracionDelSistemaRepositoryJPAImpl;
+import sic.repository.IConfiguracionDelSistemaRepository;
 import sic.repository.XMLException;
+import sic.service.IConfiguracionDelSistemaService;
 
-public class ConfiguracionDelSistemaService {
+@Service
+public class ConfiguracionDelSistemaServiceImpl implements IConfiguracionDelSistemaService {
 
-    private final ConfiguracionDelSistemaRepositoryJPAImpl configuracionRepository = new ConfiguracionDelSistemaRepositoryJPAImpl();
+    private final IConfiguracionDelSistemaRepository configuracionRepository;
 
+    @Autowired
+    public ConfiguracionDelSistemaServiceImpl(IConfiguracionDelSistemaRepository configuracionRepository) {
+        this.configuracionRepository = configuracionRepository;
+    }  
+    
+    @Override
     public void guardarXML(String pathEtiqueta, String valor) throws XMLException {
         configuracionRepository.guardarXMLconDOM(pathEtiqueta, valor);
     }
 
+    @Override
     public void leerXML() throws XMLException {
         configuracionRepository.leerXMLconDOM();
     }
 
+    @Override
     public ConfiguracionDelSistema getConfiguracionDelSistemaPorId(long id_ConfiguracionDelSistema) {
         return configuracionRepository.getConfiguracionDelSistemaPorId(id_ConfiguracionDelSistema);
     }
 
+    @Override
     public ConfiguracionDelSistema getConfiguracionDelSistemaPorEmpresa(Empresa empresa) {
         return configuracionRepository.getConfiguracionDelSistemaPorEmpresa(empresa);
     }
 
+    @Override
     public void guardar(ConfiguracionDelSistema cds) {        
         configuracionRepository.guardar(cds);
     }
 
+    @Override
     public void actualizar(ConfiguracionDelSistema cds) {        
         configuracionRepository.actualizar(cds);
     }

@@ -1,5 +1,8 @@
 package sic.vista.swing;
 
+import sic.service.impl.FacturaServiceImpl;
+import sic.service.impl.EmpresaServiceImpl;
+import sic.service.impl.ClienteServiceImpl;
 import sic.service.impl.UsuarioServiceImpl;
 import java.beans.PropertyVetoException;
 import java.text.ParseException;
@@ -19,16 +22,14 @@ import sic.modelo.Usuario;
 import sic.service.*;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
-import sic.vista.swing.GUI_PuntoDeVenta;
 
 public class GUI_FacturasVenta extends JInternalFrame {
 
     private ModeloTabla modeloTablaFacturas;
     private List<FacturaVenta> facturas;
-    private final FacturaService facturaService = new FacturaService();
-    private final EmpresaService empresaService = new EmpresaService();
-    private final ClienteService clienteService = new ClienteService();
+    private final FacturaServiceImpl facturaService = new FacturaServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
+    private final ClienteServiceImpl clienteService = new ClienteServiceImpl();
     private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_FacturasVenta.class.getPackage().getName());
 

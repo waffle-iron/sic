@@ -8,9 +8,9 @@ import org.apache.log4j.Logger;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
-import sic.service.LocalidadService;
-import sic.service.PaisService;
-import sic.service.ProvinciaService;
+import sic.service.impl.LocalidadServiceImpl;
+import sic.service.impl.PaisServiceImpl;
+import sic.service.impl.ProvinciaServiceImpl;
 import sic.service.ServiceException;
 
 public class GUI_DetalleLocalidad extends JDialog {
@@ -19,9 +19,9 @@ public class GUI_DetalleLocalidad extends JDialog {
     private final DefaultComboBoxModel modeloComboPaises = new DefaultComboBoxModel();
     private final DefaultComboBoxModel modeloComboProvincias = new DefaultComboBoxModel();
     private final DefaultComboBoxModel modeloComboProvinciasBusqueda = new DefaultComboBoxModel();
-    private final LocalidadService localidadService = new LocalidadService();
-    private final ProvinciaService provinciaService = new ProvinciaService();
-    private final PaisService paisService = new PaisService();
+    private final LocalidadServiceImpl localidadService = new LocalidadServiceImpl();
+    private final ProvinciaServiceImpl provinciaService = new ProvinciaServiceImpl();
+    private final PaisServiceImpl paisService = new PaisServiceImpl();
     private Localidad localidadSeleccionada;
     private static final Logger log = Logger.getLogger(GUI_DetalleLocalidad.class.getPackage().getName());
 

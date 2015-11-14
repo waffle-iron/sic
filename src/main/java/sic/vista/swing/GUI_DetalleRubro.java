@@ -9,8 +9,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import sic.modelo.Rubro;
-import sic.service.EmpresaService;
-import sic.service.RubroService;
+import sic.service.impl.EmpresaServiceImpl;
+import sic.service.impl.RubroServiceImpl;
 import sic.service.ServiceException;
 import sic.util.Utilidades;
 
@@ -18,8 +18,8 @@ public class GUI_DetalleRubro extends JDialog {
 
     private final DefaultListModel modeloList = new DefaultListModel();
     private Rubro rubroSeleccionado;
-    private final RubroService rubroService = new RubroService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final RubroServiceImpl rubroService = new RubroServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_DetalleRubro.class.getPackage().getName());
 
     public GUI_DetalleRubro() {

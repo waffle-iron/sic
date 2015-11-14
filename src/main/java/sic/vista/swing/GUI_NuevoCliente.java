@@ -1,5 +1,11 @@
 package sic.vista.swing;
 
+import sic.service.impl.LocalidadServiceImpl;
+import sic.service.impl.PaisServiceImpl;
+import sic.service.impl.ProvinciaServiceImpl;
+import sic.service.impl.EmpresaServiceImpl;
+import sic.service.impl.CondicionDeIVAServiceImpl;
+import sic.service.impl.ClienteServiceImpl;
 import com.toedter.calendar.IDateEditor;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -21,12 +27,12 @@ import sic.service.*;
 public class GUI_NuevoCliente extends JDialog {
 
     private Cliente clienteDadoDeAlta;
-    private final ProvinciaService provinciaService = new ProvinciaService();
-    private final LocalidadService localidadService = new LocalidadService();
-    private final CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
-    private final PaisService paisService = new PaisService();
-    private final ClienteService clienteService = new ClienteService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final ProvinciaServiceImpl provinciaService = new ProvinciaServiceImpl();
+    private final LocalidadServiceImpl localidadService = new LocalidadServiceImpl();
+    private final CondicionDeIVAServiceImpl condicionDeIVAService = new CondicionDeIVAServiceImpl();
+    private final PaisServiceImpl paisService = new PaisServiceImpl();
+    private final ClienteServiceImpl clienteService = new ClienteServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_NuevoCliente.class.getPackage().getName());
 

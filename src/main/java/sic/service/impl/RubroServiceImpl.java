@@ -1,22 +1,35 @@
-package sic.service;
+package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.jpa.RubroRepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.Empresa;
 import sic.modelo.Rubro;
+import sic.repository.IRubroRepository;
+import sic.service.IRubroService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Validator;
 
-public class RubroService {
+@Service
+public class RubroServiceImpl implements IRubroService {
 
-    private final RubroRepositoryJPAImpl modeloRubro = new RubroRepositoryJPAImpl();
+    private final IRubroRepository rubroRepository;
 
+    @Autowired
+    public RubroServiceImpl(IRubroRepository rubroRepository) {
+        this.rubroRepository = rubroRepository;
+    }       
+
+    @Override
     public List<Rubro> getRubros(Empresa empresa) {
-        return modeloRubro.getRubros(empresa);
+        return rubroRepository.getRubros(empresa);
     }
 
+    @Override
     public Rubro getRubroPorNombre(String nombre, Empresa empresa) {
-        return modeloRubro.getRubroPorNombre(nombre, empresa);
+        return rubroRepository.getRubroPorNombre(nombre, empresa);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Rubro rubro) {
@@ -40,18 +53,21 @@ public class RubroService {
         }
     }
 
+    @Override
     public void actualizar(Rubro rubro) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, rubro);
-        modeloRubro.actualizar(rubro);
+        rubroRepository.actualizar(rubro);
     }
 
+    @Override
     public void guardar(Rubro rubro) {
         this.validarOperacion(TipoDeOperacion.ALTA, rubro);
-        modeloRubro.guardar(rubro);
+        rubroRepository.guardar(rubro);
     }
 
+    @Override
     public void eliminar(Rubro rubro) {
         rubro.setEliminado(true);
-        modeloRubro.actualizar(rubro);
+        rubroRepository.actualizar(rubro);
     }
 }

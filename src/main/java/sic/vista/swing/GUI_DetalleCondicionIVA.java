@@ -9,14 +9,14 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import sic.modelo.CondicionIVA;
-import sic.service.CondicionDeIVAService;
+import sic.service.impl.CondicionDeIVAServiceImpl;
 import sic.service.ServiceException;
 
 public class GUI_DetalleCondicionIVA extends JDialog {
 
     private CondicionIVA condicionIVASeleccionada;
     private final DefaultListModel modeloList = new DefaultListModel();
-    private final CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
+    private final CondicionDeIVAServiceImpl condicionDeIVAService = new CondicionDeIVAServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_DetalleCondicionIVA.class.getPackage().getName());
 
     public GUI_DetalleCondicionIVA() {

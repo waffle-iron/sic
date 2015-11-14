@@ -1,5 +1,10 @@
 package sic.vista.swing;
 
+import sic.service.impl.LocalidadServiceImpl;
+import sic.service.impl.PaisServiceImpl;
+import sic.service.impl.ProvinciaServiceImpl;
+import sic.service.impl.EmpresaServiceImpl;
+import sic.service.impl.CondicionDeIVAServiceImpl;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -24,11 +29,11 @@ public class GUI_Empresas extends JDialog {
     private Empresa empresaSeleccionada;
     private TipoDeOperacion tipoDeOperacion;
     private byte[] logo = null;
-    private final CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
-    private final PaisService paisService = new PaisService();
-    private final ProvinciaService provinciaService = new ProvinciaService();
-    private final LocalidadService localidadService = new LocalidadService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final CondicionDeIVAServiceImpl condicionDeIVAService = new CondicionDeIVAServiceImpl();
+    private final PaisServiceImpl paisService = new PaisServiceImpl();
+    private final ProvinciaServiceImpl provinciaService = new ProvinciaServiceImpl();
+    private final LocalidadServiceImpl localidadService = new LocalidadServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_Empresas.class.getPackage().getName());
 
     public GUI_Empresas() {

@@ -7,14 +7,14 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import sic.modelo.ConfiguracionDelSistema;
-import sic.service.ConfiguracionDelSistemaService;
-import sic.service.EmpresaService;
+import sic.service.impl.ConfiguracionDelSistemaServiceImpl;
+import sic.service.impl.EmpresaServiceImpl;
 
 public class GUI_ConfiguracionDelSistema extends JDialog {
 
     private ConfiguracionDelSistema cdsModificar;
-    private final ConfiguracionDelSistemaService configuracionDelSistemaService = new ConfiguracionDelSistemaService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final ConfiguracionDelSistemaServiceImpl configuracionDelSistemaService = new ConfiguracionDelSistemaServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_ConfiguracionDelSistema.class.getPackage().getName());
 
     public GUI_ConfiguracionDelSistema() {

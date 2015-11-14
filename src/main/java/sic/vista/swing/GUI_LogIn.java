@@ -14,8 +14,8 @@ import sic.repository.XMLException;
 import sic.modelo.DatosConexion;
 import sic.modelo.XMLFileConfig;
 import sic.modelo.Usuario;
-import sic.service.ConexionService;
-import sic.service.ConfiguracionDelSistemaService;
+import sic.service.impl.ConexionServiceImpl;
+import sic.service.impl.ConfiguracionDelSistemaServiceImpl;
 import sic.service.IUsuarioService;
 import sic.service.ServiceException;
 import sic.util.Validator;
@@ -26,8 +26,8 @@ public class GUI_LogIn extends JFrame {
     private boolean configDesplegada;
     private Usuario usuario;
     private final IUsuarioService usuarioService;    
-    private final ConfiguracionDelSistemaService configuracionService = new ConfiguracionDelSistemaService();
-    private final ConexionService conexionService = new ConexionService();
+    private final ConfiguracionDelSistemaServiceImpl configuracionService = new ConfiguracionDelSistemaServiceImpl();
+    private final ConexionServiceImpl conexionService = new ConexionServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_LogIn.class.getPackage().getName());
 
     @Autowired

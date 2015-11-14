@@ -9,14 +9,14 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import sic.modelo.Pais;
-import sic.service.PaisService;
+import sic.service.impl.PaisServiceImpl;
 import sic.service.ServiceException;
 
 public class GUI_DetallePais extends JDialog {
 
     private final DefaultListModel modeloList = new DefaultListModel();
     private Pais paisSeleccionado;
-    private final PaisService paisService = new PaisService();
+    private final PaisServiceImpl paisService = new PaisServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_DetallePais.class.getPackage().getName());
 
     public GUI_DetallePais() {

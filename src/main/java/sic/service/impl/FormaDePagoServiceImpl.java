@@ -1,38 +1,52 @@
-package sic.service;
+package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.jpa.FormaDePagoRepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.Empresa;
 import sic.modelo.FormaDePago;
+import sic.repository.IFormaDePagoRepository;
+import sic.service.IFormaDePagoService;
+import sic.service.ServiceException;
 import sic.util.Validator;
 
-public class FormaDePagoService {
+@Service
+public class FormaDePagoServiceImpl implements IFormaDePagoService {
 
-    private final FormaDePagoRepositoryJPAImpl modeloFormaDePago = new FormaDePagoRepositoryJPAImpl();
+    private final IFormaDePagoRepository formaDePagoRepository;
 
+    @Autowired
+    public FormaDePagoServiceImpl(IFormaDePagoRepository formaDePagoRepository) {
+        this.formaDePagoRepository = formaDePagoRepository;
+    }        
+
+    @Override
     public List<FormaDePago> getFormasDePago(Empresa empresa) {
-        return modeloFormaDePago.getFormasDePago(empresa);
+        return formaDePagoRepository.getFormasDePago(empresa);
     }
 
+    @Override
     public FormaDePago getFormasDePagoPorId(long id) {
-        return modeloFormaDePago.getFormaDePagoPorId(id);
+        return formaDePagoRepository.getFormaDePagoPorId(id);
     }
 
+    @Override
     public FormaDePago getFormaDePagoPredeterminada(Empresa empresa) {
-        return modeloFormaDePago.getFormaDePagoPredeterminado(empresa);
+        return formaDePagoRepository.getFormaDePagoPredeterminado(empresa);
     }
 
+    @Override
     public void setFormaDePagoPredeterminada(FormaDePago formaDePago) {
         //antes de setear como predeterminado, busca si ya existe
         //otro como predeterminado y cambia su estado.
-        FormaDePago formaPredeterminadaAnterior = modeloFormaDePago.getFormaDePagoPredeterminado(formaDePago.getEmpresa());
+        FormaDePago formaPredeterminadaAnterior = formaDePagoRepository.getFormaDePagoPredeterminado(formaDePago.getEmpresa());
         if (formaPredeterminadaAnterior != null) {
             formaPredeterminadaAnterior.setPredeterminado(false);
-            modeloFormaDePago.actualizar(formaPredeterminadaAnterior);
+            formaDePagoRepository.actualizar(formaPredeterminadaAnterior);
         }
         formaDePago.setPredeterminado(true);
-        modeloFormaDePago.actualizar(formaDePago);
+        formaDePagoRepository.actualizar(formaDePago);
     }
 
     private void validarOperacion(FormaDePago formaDePago) {
@@ -47,19 +61,21 @@ public class FormaDePagoService {
         }
         //Duplicados
         //Nombre
-        if (modeloFormaDePago.getFormaDePagoPorNombre(formaDePago.getNombre(), formaDePago.getEmpresa()) != null) {
+        if (formaDePagoRepository.getFormaDePagoPorNombre(formaDePago.getNombre(), formaDePago.getEmpresa()) != null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_formaDePago_duplicado_nombre"));
         }
     }
 
+    @Override
     public void guardar(FormaDePago formaDePago) {
         this.validarOperacion(formaDePago);
-        modeloFormaDePago.guardar(formaDePago);
+        formaDePagoRepository.guardar(formaDePago);
     }
 
+    @Override
     public void eliminar(FormaDePago formaDePago) {
         formaDePago.setEliminada(true);
-        modeloFormaDePago.actualizar(formaDePago);
+        formaDePagoRepository.actualizar(formaDePago);
     }
 }

@@ -10,19 +10,18 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import sic.modelo.FacturaCompra;
 import sic.modelo.PagoFacturaCompra;
-import sic.service.PagoFacturaDeCompraService;
+import sic.service.impl.PagoFacturaDeCompraServiceImpl;
 import sic.service.ServiceException;
 import sic.util.FormatterFechaHora;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_Pagos extends JDialog {
 
     private ModeloTabla modeloTablaResultados;
     private List<PagoFacturaCompra> pagos;
     private final FacturaCompra facturaRelacionada;
-    private final PagoFacturaDeCompraService pagoFacturaDeCompraService = new PagoFacturaDeCompraService();
+    private final PagoFacturaDeCompraServiceImpl pagoFacturaDeCompraService = new PagoFacturaDeCompraServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_Pagos.class.getPackage().getName());
 
     public GUI_Pagos(FacturaCompra factura) {

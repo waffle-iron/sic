@@ -1,35 +1,54 @@
-package sic.service;
+package sic.service.impl;
 
 import sic.modelo.EmpresaActiva;
 import java.util.List;
 import java.util.ResourceBundle;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.ConfiguracionDelSistema;
-import sic.repository.jpa.EmpresaRepositoryJPAImpl;
 import sic.modelo.Empresa;
-import sic.repository.jpa.ConfiguracionDelSistemaRepositoryJPAImpl;
+import sic.repository.IConfiguracionDelSistemaRepository;
+import sic.repository.IEmpresaRepository;
+import sic.service.IEmpresaService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Validator;
 
-public class EmpresaService {
+@Service
+public class EmpresaServiceImpl implements IEmpresaService {
 
-    private final EmpresaRepositoryJPAImpl modeloEmpresa = new EmpresaRepositoryJPAImpl();
-    private final ConfiguracionDelSistemaRepositoryJPAImpl configuracionDelSistemaRepository = new ConfiguracionDelSistemaRepositoryJPAImpl();
+    private final IEmpresaRepository empresaRepository;
+    private final IConfiguracionDelSistemaRepository configuracionDelSistemaRepository;
 
+    @Autowired
+    public EmpresaServiceImpl(IEmpresaRepository empresaRepository,
+            IConfiguracionDelSistemaRepository configuracionDelSistemaRepository) {
+        
+        this.empresaRepository = empresaRepository;
+        this.configuracionDelSistemaRepository = configuracionDelSistemaRepository;
+    }       
+
+    @Override
     public List<Empresa> getEmpresas() {
-        return modeloEmpresa.getEmpresas();
+        return empresaRepository.getEmpresas();
     }
 
+    @Override
     public Empresa getEmpresaPorNombre(String nombre) {
-        return modeloEmpresa.getEmpresaPorNombre(nombre);
+        return empresaRepository.getEmpresaPorNombre(nombre);
     }
 
+    @Override
     public Empresa getEmpresaPorCUIP(long cuip) {
-        return modeloEmpresa.getEmpresaPorCUIP(cuip);
+        return empresaRepository.getEmpresaPorCUIP(cuip);
     }
 
+    @Override
     public EmpresaActiva getEmpresaActiva() {
         return EmpresaActiva.getInstance();
     }
 
+    @Override
     public void setEmpresaActiva(Empresa empresa) {
         EmpresaActiva empresaActiva = EmpresaActiva.getInstance();
         empresaActiva.setEmpresa(empresa);
@@ -93,19 +112,22 @@ public class EmpresaService {
         configuracionDelSistemaRepository.guardar(cds);
     }
 
+    @Override
     public void guardar(Empresa empresa) {
         validarOperacion(TipoDeOperacion.ALTA, empresa);
-        modeloEmpresa.guardar(empresa);
+        empresaRepository.guardar(empresa);
         crearConfiguracionDelSistema(empresa);
     }
 
+    @Override
     public void actualizar(Empresa empresa) {
         validarOperacion(TipoDeOperacion.ACTUALIZACION, empresa);
-        modeloEmpresa.actualizar(empresa);
+        empresaRepository.actualizar(empresa);
     }
 
+    @Override
     public void eliminar(Empresa empresa) {
         empresa.setEliminada(true);
-        modeloEmpresa.actualizar(empresa);
+        empresaRepository.actualizar(empresa);
     }
 }

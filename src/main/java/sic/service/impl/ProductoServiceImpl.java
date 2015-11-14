@@ -1,4 +1,4 @@
-package sic.service;
+package sic.service.impl;
 
 import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.PreciosProducto;
@@ -8,7 +8,8 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import sic.repository.jpa.ProductoRepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
@@ -18,13 +19,25 @@ import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Rubro;
+import sic.repository.IProductoRepository;
+import sic.service.IEmpresaService;
+import sic.service.IProductoService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
 
-public class ProductoService {
+@Service
+public class ProductoServiceImpl implements IProductoService {
 
-    private final ProductoRepositoryJPAImpl modeloProducto = new ProductoRepositoryJPAImpl();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final IProductoRepository productoRepository;
+    private final IEmpresaService empresaService;
+
+    @Autowired
+    public ProductoServiceImpl(IProductoRepository productoRepository, IEmpresaService empresaService) {
+        this.productoRepository = productoRepository;
+        this.empresaService = empresaService;
+    }   
 
     private void validarOperacion(TipoDeOperacion operacion, Producto producto) {
         //Entrada de Datos
@@ -113,6 +126,7 @@ public class ProductoService {
         }
     }
 
+    @Override
     public List<Producto> buscarProductos(BusquedaProductoCriteria criteria) {
         //Rubro
         if (criteria.isBuscarPorRubro() == true && criteria.getRubro() == null) {
@@ -124,22 +138,25 @@ public class ProductoService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_producto_vacio_proveedor"));
         }
-        return modeloProducto.BuscarProductos(criteria);
+        return productoRepository.BuscarProductos(criteria);
     }
 
+    @Override
     public void guardar(Producto producto) {
         this.validarOperacion(TipoDeOperacion.ALTA, producto);
-        modeloProducto.guardar(producto);
+        productoRepository.guardar(producto);
     }
 
+    @Override
     public void actualizar(Producto producto) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, producto);
-        modeloProducto.actualizar(producto);
+        productoRepository.actualizar(producto);
     }
 
+    @Override
     public void actualizarStock(Factura factura, TipoDeOperacion operacion) {
         for (RenglonFactura renglon : factura.getRenglones()) {
-            Producto producto = modeloProducto.getProductoPorId(renglon.getId_ProductoItem());
+            Producto producto = productoRepository.getProductoPorId(renglon.getId_ProductoItem());
             if (producto.isIlimitado() == false) {
 
                 if (renglon.getFactura() instanceof FacturaVenta) {
@@ -165,18 +182,20 @@ public class ProductoService {
                     }
                 }
 
-                modeloProducto.actualizar(producto);
+                productoRepository.actualizar(producto);
             }
         }
     }
 
+    @Override
     public void eliminarMultiplesProductos(List<Producto> productos) {
         for (Producto producto : productos) {
             producto.setEliminado(true);
         }
-        modeloProducto.actualizarMultiplesProductos(productos);
+        productoRepository.actualizarMultiplesProductos(productos);
     }
 
+    @Override
     public void modificarMultiplesProductos(List<Producto> productos,
             boolean checkPrecios, PreciosProducto preciosProducto,
             boolean checkMedida, Medida medida,
@@ -232,31 +251,36 @@ public class ProductoService {
                 producto.setFechaUltimaModificacion(fechaHoraActual);
             }
         }
-        modeloProducto.actualizarMultiplesProductos(productos);
+        productoRepository.actualizarMultiplesProductos(productos);
     }
 
+    @Override
     public Producto getProductoPorId(long id_Producto) {
-        return modeloProducto.getProductoPorId(id_Producto);
+        return productoRepository.getProductoPorId(id_Producto);
     }
 
+    @Override
     public Producto getProductoPorCodigo(String codigo, Empresa empresa) {
         if (codigo.isEmpty() == true || empresa == null) {
             return null;
         } else {
-            return modeloProducto.getProductoPorCodigo(codigo, empresa);
+            return productoRepository.getProductoPorCodigo(codigo, empresa);
         }
     }
 
+    @Override
     public Producto getProductoPorDescripcion(String descripcion, Empresa empresa) {
-        return modeloProducto.getProductoPorDescripcion(descripcion, empresa);
+        return productoRepository.getProductoPorDescripcion(descripcion, empresa);
     }
 
+    @Override
     public List<Producto> getProductosPorDescripcionQueContenga(String criteria, int cantRegistros, Empresa empresa) {
-        return modeloProducto.getProductosQueContengaCodigoDescripcion(criteria, cantRegistros, empresa);
+        return productoRepository.getProductosQueContengaCodigoDescripcion(criteria, cantRegistros, empresa);
     }
 
     //**************************************************************************
     //Calculos
+    @Override
     public double calcularGanancia_Porcentaje(double precioCosto, double PVP) {
         //evita la division por cero
         if (precioCosto == 0) {
@@ -266,26 +290,31 @@ public class ProductoService {
         return Math.round(resultado * 100.0) / 100.0;
     }
 
+    @Override
     public double calcularGanancia_Neto(double precioCosto, double ganancia_porcentaje) {
         double resultado = (precioCosto * ganancia_porcentaje) / 100;
         return Math.round(resultado * 100.0) / 100.0;
     }
 
+    @Override
     public double calcularPVP(double precioCosto, double ganancia_porcentaje) {
         double resultado = (precioCosto * (ganancia_porcentaje / 100)) + precioCosto;
         return Math.round(resultado * 100.0) / 100.0;
     }
 
+    @Override
     public double calcularIVA_Neto(double precioCosto, double iva_porcentaje) {
         double resultado = (precioCosto * iva_porcentaje) / 100;
         return Math.round(resultado * 100.0) / 100.0;
     }
 
+    @Override
     public double calcularImpInterno_Neto(double precioCosto, double impInterno_porcentaje) {
         double resultado = (precioCosto * impInterno_porcentaje) / 100;
         return Math.round(resultado * 100.0) / 100.0;
     }
 
+    @Override
     public double calcularPrecioLista(double PVP, double iva_porcentaje, double impInterno_porcentaje) {
         double resulIVA = PVP * (iva_porcentaje / 100);
         double resultImpInterno = PVP * (impInterno_porcentaje / 100);
@@ -295,8 +324,9 @@ public class ProductoService {
 
     //**************************************************************************
     //Reportes
+    @Override
     public JasperPrint getReporteListaDePrecios(List<Producto> productos) throws JRException {
-        ClassLoader classLoader = FacturaService.class.getClassLoader();
+        ClassLoader classLoader = FacturaServiceImpl.class.getClassLoader();
         InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/ListaPreciosProductos.jasper");
         Map params = new HashMap();
         params.put("empresa", empresaService.getEmpresaActiva().getEmpresa());

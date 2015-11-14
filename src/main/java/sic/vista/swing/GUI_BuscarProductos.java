@@ -13,14 +13,13 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
-import sic.service.EmpresaService;
+import sic.service.impl.EmpresaServiceImpl;
 import sic.service.Movimiento;
-import sic.service.ProductoService;
-import sic.service.RenglonDeFacturaService;
+import sic.service.impl.ProductoServiceImpl;
+import sic.service.impl.RenglonDeFacturaServiceImpl;
 import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_BuscarProductos extends JDialog {
 
@@ -31,9 +30,9 @@ public class GUI_BuscarProductos extends JDialog {
     private Producto prodSeleccionado;
     private RenglonFactura renglon;
     private boolean debeCargarRenglon;
-    private final ProductoService productoService = new ProductoService();
-    private final EmpresaService empresaService = new EmpresaService();
-    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
+    private final ProductoServiceImpl productoService = new ProductoServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
+    private final RenglonDeFacturaServiceImpl renglonDeFacturaService = new RenglonDeFacturaServiceImpl();
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_BuscarProductos.class.getPackage().getName());
 

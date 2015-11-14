@@ -1,14 +1,24 @@
-package sic.service;
+package sic.service.impl;
 
 import java.util.ResourceBundle;
-import sic.repository.jpa.ConexionRepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.repository.XMLException;
 import sic.modelo.DatosConexion;
+import sic.repository.IConexionRepository;
+import sic.service.IConexionService;
+import sic.service.ServiceException;
 import sic.util.Validator;
 
-public class ConexionService {
+@Service
+public class ConexionServiceImpl implements IConexionService {
 
-    private final ConexionRepositoryJPAImpl modeloConexion = new ConexionRepositoryJPAImpl();
+    private final IConexionRepository conexionRepository;
+
+    @Autowired
+    public ConexionServiceImpl(IConexionRepository conexionRepository) {
+        this.conexionRepository = conexionRepository;
+    }
 
     private void validar(DatosConexion datosConexion) {
         //Requeridos
@@ -22,8 +32,9 @@ public class ConexionService {
         }
     }
 
+    @Override
     public void guardar(DatosConexion datosConexion) throws XMLException {
         this.validar(datosConexion);
-        modeloConexion.guardar(datosConexion);
+        conexionRepository.guardar(datosConexion);
     }
 }

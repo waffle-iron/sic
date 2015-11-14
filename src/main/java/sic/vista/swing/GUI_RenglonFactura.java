@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
 import sic.service.Movimiento;
-import sic.service.RenglonDeFacturaService;
+import sic.service.impl.RenglonDeFacturaServiceImpl;
 
 public class GUI_RenglonFactura extends JDialog {
 
@@ -18,7 +18,7 @@ public class GUI_RenglonFactura extends JDialog {
     private boolean cargarRenglon;
     private final char tipoDeFactura;
     private final Movimiento movimiento;
-    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
+    private final RenglonDeFacturaServiceImpl renglonDeFacturaService = new RenglonDeFacturaServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_RenglonFactura.class.getPackage().getName());
 
     public GUI_RenglonFactura(Producto producto, char tipoDeFactura, Movimiento movimiento) {

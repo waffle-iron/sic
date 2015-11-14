@@ -1,10 +1,15 @@
-package sic.service;
+package sic.service.impl;
 
+import org.springframework.stereotype.Service;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
+import sic.service.IRenglonDeFacturaService;
+import sic.service.Movimiento;
 
-public class RenglonDeFacturaService {
+@Service
+public class RenglonDeFacturaServiceImpl implements IRenglonDeFacturaService {
 
+    @Override
     public RenglonFactura calcularRenglon(char tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje) {
         RenglonFactura nuevoRenglon = new RenglonFactura();
         nuevoRenglon.setId_ProductoItem(producto.getId_Producto());

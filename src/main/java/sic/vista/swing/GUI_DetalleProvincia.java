@@ -7,8 +7,8 @@ import javax.swing.*;
 import org.apache.log4j.Logger;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
-import sic.service.PaisService;
-import sic.service.ProvinciaService;
+import sic.service.impl.PaisServiceImpl;
+import sic.service.impl.ProvinciaServiceImpl;
 import sic.service.ServiceException;
 
 public class GUI_DetalleProvincia extends JDialog {
@@ -17,7 +17,7 @@ public class GUI_DetalleProvincia extends JDialog {
     private final DefaultComboBoxModel modeloComboPaises = new DefaultComboBoxModel();
     private final DefaultComboBoxModel modeloComboPaisesBusqueda = new DefaultComboBoxModel();
     private Provincia provinciaSeleccionada;
-    private final ProvinciaService provinciaService = new ProvinciaService();
+    private final ProvinciaServiceImpl provinciaService = new ProvinciaServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_DetalleProvincia.class.getPackage().getName());
 
     public GUI_DetalleProvincia() {
@@ -313,7 +313,7 @@ private void cmb_PaisesBusquedaItemStateChanged(java.awt.event.ItemEvent evt) {/
     }
 
     private void cargarComboBoxPaises(JComboBox comboBox, DefaultComboBoxModel modelo) {
-        PaisService paisService = new PaisService();        
+        PaisServiceImpl paisService = new PaisServiceImpl();        
         modelo.removeAllElements();
         List<Pais> paises  = paisService.getPaises();
         for (Pais pais : paises) {

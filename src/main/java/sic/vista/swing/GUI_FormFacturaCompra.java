@@ -1,5 +1,12 @@
 package sic.vista.swing;
 
+import sic.service.impl.TransportistaServiceImpl;
+import sic.service.impl.RenglonDeFacturaServiceImpl;
+import sic.service.impl.FormaDePagoServiceImpl;
+import sic.service.impl.ProveedorServiceImpl;
+import sic.service.impl.FacturaServiceImpl;
+import sic.service.impl.ProductoServiceImpl;
+import sic.service.impl.EmpresaServiceImpl;
 import java.awt.Color;
 import java.awt.Point;
 import java.text.ParseException;
@@ -17,19 +24,18 @@ import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.service.*;
 import sic.util.RenderTabla;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_FormFacturaCompra extends JDialog {
 
     private ModeloTabla modeloTablaRenglones = new ModeloTabla();
     private List<RenglonFactura> renglones;
     private final FacturaCompra facturaParaMostrar;
-    private final ProveedorService proveedorService = new ProveedorService();
-    private final EmpresaService empresaService = new EmpresaService();
-    private final TransportistaService transportistaService = new TransportistaService();
-    private final FacturaService facturaService = new FacturaService();
-    private final ProductoService productoService = new ProductoService();
-    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
+    private final ProveedorServiceImpl proveedorService = new ProveedorServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
+    private final TransportistaServiceImpl transportistaService = new TransportistaServiceImpl();
+    private final FacturaServiceImpl facturaService = new FacturaServiceImpl();
+    private final ProductoServiceImpl productoService = new ProductoServiceImpl();
+    private final RenglonDeFacturaServiceImpl renglonDeFacturaService = new RenglonDeFacturaServiceImpl();
     private char tipoDeFactura;
     private final boolean operacionAlta;
     private static final Logger log = Logger.getLogger(GUI_FormFacturaCompra.class.getPackage().getName());
@@ -172,8 +178,8 @@ public class GUI_FormFacturaCompra extends JDialog {
     }
 
     private void cargarComboBoxFormasDePago() {
-        FormaDePagoService formaDePagoService = new FormaDePagoService();
-        EmpresaService controladorEmpresa = new EmpresaService();
+        FormaDePagoServiceImpl formaDePagoService = new FormaDePagoServiceImpl();
+        EmpresaServiceImpl controladorEmpresa = new EmpresaServiceImpl();
         List<FormaDePago> formas;
         cmb_FormaDePago.removeAllItems();
         formas = formaDePagoService.getFormasDePago(controladorEmpresa.getEmpresaActiva().getEmpresa());

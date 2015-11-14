@@ -1,22 +1,35 @@
-package sic.service;
+package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.jpa.MedidaRepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.Empresa;
 import sic.modelo.Medida;
+import sic.repository.IMedidaRepository;
+import sic.service.IMedidaService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Validator;
 
-public class MedidaService {
+@Service
+public class MedidaServiceImpl implements IMedidaService {
 
-    private final MedidaRepositoryJPAImpl modeloMedida = new MedidaRepositoryJPAImpl();
+    private final IMedidaRepository medidaRepository;
 
+    @Autowired
+    public MedidaServiceImpl(IMedidaRepository medidaRepository) {
+        this.medidaRepository = medidaRepository;
+    }   
+
+    @Override
     public List<Medida> getUnidadMedidas(Empresa empresa) {
-        return modeloMedida.getUnidadMedidas(empresa);
+        return medidaRepository.getUnidadMedidas(empresa);
     }
 
+    @Override
     public Medida getMedidaPorNombre(String nombre, Empresa empresa) {
-        return modeloMedida.getMedidaPorNombre(nombre, empresa);
+        return medidaRepository.getMedidaPorNombre(nombre, empresa);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Medida medida) {
@@ -40,18 +53,21 @@ public class MedidaService {
         }
     }
 
+    @Override
     public void actualizar(Medida medida) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, medida);
-        modeloMedida.actualizar(medida);
+        medidaRepository.actualizar(medida);
     }
 
+    @Override
     public void guardar(Medida medida) {
         this.validarOperacion(TipoDeOperacion.ALTA, medida);
-        modeloMedida.guardar(medida);
+        medidaRepository.guardar(medida);
     }
 
+    @Override
     public void eliminar(Medida medida) {
         medida.setEliminada(true);
-        modeloMedida.actualizar(medida);
+        medidaRepository.actualizar(medida);
     }
 }

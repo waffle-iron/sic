@@ -12,21 +12,20 @@ import org.apache.log4j.Logger;
 import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.FacturaCompra;
 import sic.modelo.Proveedor;
-import sic.service.EmpresaService;
-import sic.service.FacturaService;
-import sic.service.ProveedorService;
+import sic.service.impl.EmpresaServiceImpl;
+import sic.service.impl.FacturaServiceImpl;
+import sic.service.impl.ProveedorServiceImpl;
 import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_FacturasCompra extends JInternalFrame {
 
     private ModeloTabla modeloTablaFacturas = new ModeloTabla();
     private List<FacturaCompra> facturas;
-    private final FacturaService facturaService = new FacturaService();
-    private final EmpresaService empresaService = new EmpresaService();
-    private final ProveedorService proveedorService = new ProveedorService();
+    private final FacturaServiceImpl facturaService = new FacturaServiceImpl();
+    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
+    private final ProveedorServiceImpl proveedorService = new ProveedorServiceImpl();
     private static final Logger log = Logger.getLogger(GUI_FacturasCompra.class.getPackage().getName());
 
     public GUI_FacturasCompra() {

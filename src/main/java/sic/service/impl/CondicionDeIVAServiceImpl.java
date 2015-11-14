@@ -1,36 +1,52 @@
-package sic.service;
+package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
-import sic.repository.jpa.CondicionIVARepositoryJPAImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import sic.modelo.CondicionIVA;
+import sic.repository.ICondicionIVARepository;
+import sic.service.ICondicionIVAService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Validator;
 
-public class CondicionDeIVAService {
+@Service
+public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
 
-    private final CondicionIVARepositoryJPAImpl modeloCondicionIVA = new CondicionIVARepositoryJPAImpl();
+    private final ICondicionIVARepository condicionIVARepository;
 
+    @Autowired
+    public CondicionDeIVAServiceImpl(ICondicionIVARepository condicionIVARepository) {
+        this.condicionIVARepository = condicionIVARepository;
+    }   
+
+    @Override
     public List<CondicionIVA> getCondicionesIVA() {
-        return modeloCondicionIVA.getCondicionesIVA();
+        return condicionIVARepository.getCondicionesIVA();
     }
 
+    @Override
     public void actualizar(CondicionIVA condicionIVA) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, condicionIVA);
-        modeloCondicionIVA.actualizar(condicionIVA);
+        condicionIVARepository.actualizar(condicionIVA);
     }
 
+    @Override
     public void guardar(CondicionIVA condicionIVA) {
         this.validarOperacion(TipoDeOperacion.ALTA, condicionIVA);
-        modeloCondicionIVA.guardar(condicionIVA);
+        condicionIVARepository.guardar(condicionIVA);
     }
 
+    @Override
     public void eliminar(CondicionIVA condicionIVA) {
         condicionIVA.setEliminada(true);
-        modeloCondicionIVA.actualizar(condicionIVA);
+        condicionIVARepository.actualizar(condicionIVA);
     }
 
+    @Override
     public CondicionIVA getCondicionIVAPorNombre(String nombre) {
-        return modeloCondicionIVA.getCondicionIVAPorNombre(nombre);
+        return condicionIVARepository.getCondicionIVAPorNombre(nombre);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, CondicionIVA condicionIVA) {
