@@ -10,8 +10,6 @@ import sic.modelo.Empresa;
 import sic.service.EmpresaService;
 import sic.service.UsuarioService;
 import sic.util.Utilidades;
-import sic.vista.swing.GUI_LogIn;
-import sic.vista.swing.GUI_PuntoDeVenta;
 
 public class GUI_Principal extends JFrame {
 
@@ -530,9 +528,24 @@ public class GUI_Principal extends JFrame {
     }//GEN-LAST:event_mnuItm_ConfiguracionActionPerformed
 
     private void mnuItm_PedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_PedidosActionPerformed
-        GUI_Pedidos gui_pedidos = new GUI_Pedidos(this, true);
-        gui_pedidos.setLocationRelativeTo(this);
-        gui_pedidos.setVisible(true);
+        JInternalFrame gui = Utilidades.estaEnDesktop(getDesktopPane(), GUI_FacturasVenta.class);
+        if (gui == null) {
+            gui = new GUI_Pedidos();
+            gui.setLocation(getDesktopPane().getWidth() / 2 - gui.getWidth() / 2,
+                    getDesktopPane().getHeight() / 2 - gui.getHeight() / 2);
+            getDesktopPane().add(gui);
+            gui.setVisible(true);
+        } else {
+            //selecciona y trae al frente el internalframe
+            try {
+                gui.setSelected(true);
+
+            } catch (PropertyVetoException ex) {
+                String msjError = "No se pudo seleccionar la ventana requerida.";
+                log.error(msjError + " - " + ex.getMessage());
+                JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_mnuItm_PedidosActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

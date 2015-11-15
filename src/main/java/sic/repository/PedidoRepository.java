@@ -2,8 +2,10 @@ package sic.repository;
 
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import sic.modelo.BusquedaPedidoCriteria;
+import sic.modelo.Factura;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonPedido;
 import sic.util.FormatterFechaHora;
@@ -20,7 +22,7 @@ public class PedidoRepository {
         return renglonesPedido;
     }
 
-    public List<Pedido> buscarPedido(BusquedaPedidoCriteria criteria) {
+    public List<Pedido> buscarPedidos(BusquedaPedidoCriteria criteria) {
         String query = "SELECT p FROM Pedido p WHERE p.empresa = :empresa AND p.eliminado = false";
         //Fecha del pedido
         if (criteria.isBuscaPorFecha() == true) {
@@ -53,7 +55,7 @@ public class PedidoRepository {
 
     public long calcularNumeroPedido(long empresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Long> typedQuery = em.createNamedQuery("Pedido.numeroDePedidos", Long.class);
+        TypedQuery<Long> typedQuery = em.createNamedQuery("Pedido.calcularCantidadDePedidos", Long.class);
         typedQuery.setParameter("empresa", empresa);
         Long resultado = typedQuery.getSingleResult();
         em.close();
@@ -64,4 +66,34 @@ public class PedidoRepository {
         }
     }
 
+    public List<Factura> getFacturas(Pedido pedido) {//verificar
+        EntityManager em = PersistenceUtil.getEntityManager();
+        TypedQuery<Factura> typedQuery = em.createNamedQuery("Pedido.buscarPedidosConFacturas", Factura.class);
+        typedQuery.setParameter("pedido", pedido);
+        List<Factura> facturas = typedQuery.getResultList();
+        em.close();
+        return facturas;
+    }
+
+    public void guardar(Pedido pedido) {
+        EntityManager em = PersistenceUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        em.persist(em.merge(pedido));
+        tx.commit();
+        em.close();
+    }
+
+    public Pedido getPedidoPorId(long id_Pedido) {
+        EntityManager em = PersistenceUtil.getEntityManager();
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorId", Pedido.class);
+        typedQuery.setParameter("id", id_Pedido);
+        List<Pedido> pedidos = typedQuery.getResultList();
+        em.close();
+        if (pedidos.isEmpty()) {
+            return null;
+        } else {
+            return pedidos.get(0);
+        }
+    }
 }

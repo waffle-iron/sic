@@ -22,7 +22,9 @@ import javax.persistence.TemporalType;
 @Table(name = "pedido")
 @NamedQueries({
     @NamedQuery(name = "Pedido.numeroDePedidos",
-            query = "SELECT count(p) FROM Pedido p WHERE p.empresa.id_Empresa = :empresa")
+            query = "SELECT count(p) FROM Pedido p WHERE p.empresa.id_Empresa = :empresa"),
+    @NamedQuery(name = "Pedido.buscarPedidosConFacturas",
+            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.facturas")
 })
 public class Pedido implements Serializable {
 
