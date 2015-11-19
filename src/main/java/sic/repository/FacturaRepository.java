@@ -23,7 +23,7 @@ public class FacturaRepository {
         em.close();
         return renglones;
     }
-    
+
     public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<FacturaVenta> typedQuery = em.createNamedQuery("Factura.buscarPorTipoSerieNum", FacturaVenta.class);
@@ -93,6 +93,10 @@ public class FacturaRepository {
         //Nro de Factura
         if (criteria.isBuscaPorNumeroFactura() == true) {
             query += " AND f.numSerie = " + criteria.getNumSerie() + " AND f.numFactura = " + criteria.getNumFactura();
+        }
+        //pedidos
+        if (criteria.isBuscarPorPedido() == true && criteria.getPedido() != null) {
+            query += " AND f.pedido = " + criteria.getPedido().getNroPedido();
         }
         //Inpagas
         if (criteria.isBuscaSoloInpagas() == true) {

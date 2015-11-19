@@ -1,5 +1,6 @@
 package sic.repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -15,14 +16,14 @@ public class PedidoRepository {
 
     public List<RenglonPedido> getRenglonesDelPedido(Pedido pedido) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<RenglonPedido> typedQuery = em.createNamedQuery("RenglonPedido.getRenglonesDelPedido", RenglonPedido.class);
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarRenglonesDelPedido", Pedido.class);
         typedQuery.setParameter("pedido", pedido);
-        List<RenglonPedido> renglonesPedido = typedQuery.getResultList();
+        List<Pedido> paraObtenerRenglones = typedQuery.getResultList();
         em.close();
-        return renglonesPedido;
+        return paraObtenerRenglones.get(0).getRenglones();
     }
 
-    public List<Pedido> buscarPedidos(BusquedaPedidoCriteria criteria) {
+    public List<Pedido> buscarPedidosPorCriteria(BusquedaPedidoCriteria criteria) {
         String query = "SELECT p FROM Pedido p WHERE p.empresa = :empresa AND p.eliminado = false";
         //Fecha del pedido
         if (criteria.isBuscaPorFecha() == true) {
@@ -55,7 +56,7 @@ public class PedidoRepository {
 
     public long calcularNumeroPedido(long empresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Long> typedQuery = em.createNamedQuery("Pedido.calcularCantidadDePedidos", Long.class);
+        TypedQuery<Long> typedQuery = em.createNamedQuery("Pedido.numeroDePedidos", Long.class);
         typedQuery.setParameter("empresa", empresa);
         Long resultado = typedQuery.getSingleResult();
         em.close();
@@ -68,10 +69,14 @@ public class PedidoRepository {
 
     public List<Factura> getFacturas(Pedido pedido) {//verificar
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Factura> typedQuery = em.createNamedQuery("Pedido.buscarPedidosConFacturas", Factura.class);
-        typedQuery.setParameter("pedido", pedido);
-        List<Factura> facturas = typedQuery.getResultList();
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPedidoConFacturas", Pedido.class);
+        typedQuery.setParameter("nroPedido", pedido.getNroPedido());
+        List<Pedido> pedidos = typedQuery.getResultList();
         em.close();
+        List<Factura> facturas = new ArrayList<>();
+        for (Pedido p : pedidos) {
+            facturas.addAll(p.getFacturas());
+        }
         return facturas;
     }
 
@@ -88,6 +93,54 @@ public class PedidoRepository {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorId", Pedido.class);
         typedQuery.setParameter("id", id_Pedido);
+        List<Pedido> pedidos = typedQuery.getResultList();
+        em.close();
+        if (pedidos.isEmpty()) {
+            return null;
+        } else {
+            return pedidos.get(0);
+        }
+    }
+
+    public void actualizar(Pedido pedido) {
+        EntityManager em = PersistenceUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        em.merge(pedido);
+        tx.commit();
+        em.close();
+    }
+
+    public Pedido getPedidoPorNumero(long nroPedido) {
+        EntityManager em = PersistenceUtil.getEntityManager();
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumero", Pedido.class);
+        typedQuery.setParameter("nroPedido", nroPedido);
+        List<Pedido> pedidos = typedQuery.getResultList();
+        em.close();
+        if (pedidos.isEmpty()) {
+            return null;
+        } else {
+            return pedidos.get(0);
+        }
+    }
+
+    public Pedido getPedidoPorNumeroConFacturas(long nroPedido) {
+        EntityManager em = PersistenceUtil.getEntityManager();
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroConFacturas", Pedido.class);
+        typedQuery.setParameter("nroPedido", nroPedido);
+        List<Pedido> pedidos = typedQuery.getResultList();
+        em.close();
+        if (pedidos.isEmpty()) {
+            return null;
+        } else {
+            return pedidos.get(0);
+        }
+    }
+    
+    public Pedido getPedidoPorNumeroConRenglones(long nroPedido) {
+        EntityManager em = PersistenceUtil.getEntityManager();
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroConRenglones", Pedido.class);
+        typedQuery.setParameter("nroPedido", nroPedido);
         List<Pedido> pedidos = typedQuery.getResultList();
         em.close();
         if (pedidos.isEmpty()) {
