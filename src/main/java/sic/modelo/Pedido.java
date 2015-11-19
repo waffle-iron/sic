@@ -23,8 +23,18 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = "Pedido.numeroDePedidos",
             query = "SELECT count(p) FROM Pedido p WHERE p.empresa.id_Empresa = :empresa"),
-    @NamedQuery(name = "Pedido.buscarPedidosConFacturas",
-            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.facturas")
+    @NamedQuery(name = "Pedido.buscarPedidoConFacturas",
+            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.facturas WHERE p.nroPedido = :nroPedido"),
+    @NamedQuery(name = "Pedido.buscarRenglonesDelPedido",
+            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones WHERE p = :pedido"),
+    @NamedQuery(name = "Pedido.buscarPorId",
+            query = "SELECT p FROM Pedido p WHERE p.id_Pedido = :id"),
+    @NamedQuery(name = "Pedido.buscarPorNumero",
+            query = "SELECT p FROM Pedido p WHERE p.nroPedido = :nroPedido"),
+    @NamedQuery(name = "Pedido.buscarPorNumeroConFacturas",
+            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.facturas WHERE p.nroPedido = :nroPedido"),
+    @NamedQuery(name = "Pedido.buscarPorNumeroConRenglones",
+            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones WHERE p.nroPedido = :nroPedido")
 })
 public class Pedido implements Serializable {
 
@@ -74,7 +84,7 @@ public class Pedido implements Serializable {
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "pedido")
     private List<Factura> facturas;
 
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "pedido")
     private List<RenglonPedido> renglones;
 
     private double total;
@@ -156,16 +166,18 @@ public class Pedido implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 53 * hash + (int) (this.id_Pedido ^ (this.id_Pedido >>> 32));
-        hash = 53 * hash + (int) (this.nroPedido ^ (this.nroPedido >>> 32));
-        hash = 53 * hash + Objects.hashCode(this.fecha);
-        hash = 53 * hash + Objects.hashCode(this.historial);
-        hash = 53 * hash + Objects.hashCode(this.cliente);
-        hash = 53 * hash + Objects.hashCode(this.usuario);
-        hash = 53 * hash + Objects.hashCode(this.facturas);
-        hash = 53 * hash + Objects.hashCode(this.renglones);
-        hash = 53 * hash + (int) (Double.doubleToLongBits(this.total) ^ (Double.doubleToLongBits(this.total) >>> 32));
+        int hash = 5;
+        hash = 47 * hash + (int) (this.id_Pedido ^ (this.id_Pedido >>> 32));
+        hash = 47 * hash + (int) (this.nroPedido ^ (this.nroPedido >>> 32));
+        hash = 47 * hash + Objects.hashCode(this.fecha);
+        hash = 47 * hash + Objects.hashCode(this.historial);
+        hash = 47 * hash + Objects.hashCode(this.empresa);
+        hash = 47 * hash + (this.eliminado ? 1 : 0);
+        hash = 47 * hash + Objects.hashCode(this.cliente);
+        hash = 47 * hash + Objects.hashCode(this.usuario);
+        hash = 47 * hash + Objects.hashCode(this.facturas);
+        hash = 47 * hash + Objects.hashCode(this.renglones);
+        hash = 47 * hash + (int) (Double.doubleToLongBits(this.total) ^ (Double.doubleToLongBits(this.total) >>> 32));
         return hash;
     }
 
@@ -188,6 +200,12 @@ public class Pedido implements Serializable {
             return false;
         }
         if (!Objects.equals(this.historial, other.historial)) {
+            return false;
+        }
+        if (!Objects.equals(this.empresa, other.empresa)) {
+            return false;
+        }
+        if (this.eliminado != other.eliminado) {
             return false;
         }
         if (!Objects.equals(this.cliente, other.cliente)) {

@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -19,7 +18,7 @@ public class RenglonPedido implements Serializable {
     @GeneratedValue
     private long id_RenglonPedido;
 
-    private int cantidad;
+    private double cantidad;
 
     private double subTotal;
 
@@ -42,11 +41,11 @@ public class RenglonPedido implements Serializable {
         this.id_RenglonPedido = id_RenglonPedido;
     }
 
-    public int getCantidad() {
+    public double getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(int cantidad) {
+    public void setCantidad(double cantidad) {
         this.cantidad = cantidad;
     }
 
@@ -77,11 +76,11 @@ public class RenglonPedido implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + (int) (this.id_RenglonPedido ^ (this.id_RenglonPedido >>> 32));
-        hash = 79 * hash + this.cantidad;
-        hash = 79 * hash + (int) (Double.doubleToLongBits(this.subTotal) ^ (Double.doubleToLongBits(this.subTotal) >>> 32));
-        hash = 79 * hash + Objects.hashCode(this.pedido);
-        hash = 79 * hash + Objects.hashCode(this.Producto);
+        hash = 47 * hash + (int) (this.id_RenglonPedido ^ (this.id_RenglonPedido >>> 32));
+        hash = 47 * hash + (int) (Double.doubleToLongBits(this.cantidad) ^ (Double.doubleToLongBits(this.cantidad) >>> 32));
+        hash = 47 * hash + (int) (Double.doubleToLongBits(this.subTotal) ^ (Double.doubleToLongBits(this.subTotal) >>> 32));
+        hash = 47 * hash + Objects.hashCode(this.pedido);
+        hash = 47 * hash + Objects.hashCode(this.Producto);
         return hash;
     }
 

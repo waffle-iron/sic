@@ -23,6 +23,8 @@ public class BusquedaFacturaVentaCriteria {
     private boolean buscaSoloInpagas;
     private Empresa empresa;
     private int cantRegistros;
+    private boolean buscarPorPedido;
+    private Pedido pedido;
 
     public BusquedaFacturaVentaCriteria() {
     }
@@ -30,7 +32,7 @@ public class BusquedaFacturaVentaCriteria {
     public BusquedaFacturaVentaCriteria(boolean buscaPorFecha, Date fechaDesde, Date fechaHasta,
             boolean buscaCliente, Cliente cliente, boolean buscaPorTipoFactura, char tipoFactura,
             boolean buscaUsuario, Usuario usuario, boolean buscaPorNumeroFactura, int numSerie, int numFactura,
-            boolean buscaSoloInpagas, Empresa empresa, int cantRegistros) {
+            boolean buscaSoloInpagas, Empresa empresa, int cantRegistros, Pedido pedido) {
 
         this.buscaPorFecha = buscaPorFecha;
         this.fechaDesde = fechaDesde;
@@ -47,6 +49,7 @@ public class BusquedaFacturaVentaCriteria {
         this.buscaSoloInpagas = buscaSoloInpagas;
         this.empresa = empresa;
         this.cantRegistros = cantRegistros;
+        this.pedido = pedido;
     }
 
     public boolean isBuscaPorFecha() {
@@ -167,5 +170,21 @@ public class BusquedaFacturaVentaCriteria {
 
     public void setCantRegistros(int cantRegistros) {
         this.cantRegistros = cantRegistros;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
+    }
+
+    public boolean isBuscarPorPedido() {
+        return buscarPorPedido;
+    }
+
+    public void setBuscarPorPedido(boolean buscarPorPedido) {
+        this.buscarPorPedido = buscarPorPedido;
     }
 }
