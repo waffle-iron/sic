@@ -2,21 +2,26 @@ package sic.vista.swing;
 
 import java.awt.HeadlessException;
 import java.beans.PropertyVetoException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
 import javax.persistence.PersistenceException;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import org.apache.log4j.Logger;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.Pedido;
+import sic.modelo.Producto;
 import sic.modelo.RenglonPedido;
 import sic.modelo.Usuario;
 import sic.service.ClienteService;
 import sic.service.EmpresaService;
 import sic.service.PedidoService;
+import sic.service.ServiceException;
 import sic.service.UsuarioService;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
@@ -30,6 +35,7 @@ public class GUI_Pedidos extends JInternalFrame {
     private List<Pedido> pedidos;
     private ModeloTabla modeloTablaPedidos;
     private ModeloTabla modeloTablaRenglones;
+    private int cantidadResultadosParaMostrar = 100;
     private static final Logger log = Logger.getLogger(GUI_Pedidos.class.getPackage().getName());
 
     public GUI_Pedidos() {
@@ -47,53 +53,35 @@ public class GUI_Pedidos extends JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        chk_Fecha = new javax.swing.JCheckBox();
-        chk_Cliente = new javax.swing.JCheckBox();
-        chk_Vendedor = new javax.swing.JCheckBox();
-        dc_Desde = new com.toedter.calendar.JDateChooser();
-        dc_Hasta = new com.toedter.calendar.JDateChooser();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_Pedidos = new javax.swing.JTable();
-        btn_Buscar = new javax.swing.JButton();
-        chk_Numero = new javax.swing.JCheckBox();
         btn_NuevoPedido = new javax.swing.JButton();
         btn_VerFacturas = new javax.swing.JButton();
         btn_Facturar = new javax.swing.JButton();
-        cmb_Cliente = new javax.swing.JComboBox();
-        cmb_Vendedor = new javax.swing.JComboBox();
-        tf_Numero = new javax.swing.JTextField();
-        lb_Desde = new javax.swing.JLabel();
-        lb_Hasta = new javax.swing.JLabel();
         pb_Filtro = new javax.swing.JProgressBar();
         jScrollPane2 = new javax.swing.JScrollPane();
         tbl_RenglonesPedido = new javax.swing.JTable();
+        panel_Filtros = new javax.swing.JPanel();
+        tf_Numero = new javax.swing.JTextField();
+        chk_Numero = new javax.swing.JCheckBox();
+        chk_Fecha = new javax.swing.JCheckBox();
+        lb_Desde = new javax.swing.JLabel();
+        dc_Desde = new com.toedter.calendar.JDateChooser();
+        dc_Hasta = new com.toedter.calendar.JDateChooser();
+        lb_Hasta = new javax.swing.JLabel();
+        chk_Cliente = new javax.swing.JCheckBox();
+        cmb_Cliente = new javax.swing.JComboBox();
+        cmb_Vendedor = new javax.swing.JComboBox();
+        chk_Vendedor = new javax.swing.JCheckBox();
+        btn_Buscar = new javax.swing.JButton();
+        cmb_cantidadMostrar = new javax.swing.JComboBox();
+        lbl_cantidadMostrar = new javax.swing.JLabel();
 
         setClosable(true);
         setMaximizable(true);
         setResizable(true);
         setTitle("Ventana para administrar pedidos");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/PedidoIco_16x16.png"))); // NOI18N
-
-        chk_Fecha.setText("Fecha");
-        chk_Fecha.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                chk_FechaItemStateChanged(evt);
-            }
-        });
-
-        chk_Cliente.setText("Cliente");
-        chk_Cliente.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                chk_ClienteItemStateChanged(evt);
-            }
-        });
-
-        chk_Vendedor.setText("Vendedor");
-        chk_Vendedor.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                chk_VendedorItemStateChanged(evt);
-            }
-        });
 
         tbl_Pedidos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -113,20 +101,6 @@ public class GUI_Pedidos extends JInternalFrame {
             }
         });
         jScrollPane1.setViewportView(tbl_Pedidos);
-
-        btn_Buscar.setText("Buscar");
-        btn_Buscar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_BuscarActionPerformed(evt);
-            }
-        });
-
-        chk_Numero.setText("Numero");
-        chk_Numero.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                chk_NumeroItemStateChanged(evt);
-            }
-        });
 
         btn_NuevoPedido.setText("Nuevo");
         btn_NuevoPedido.addActionListener(new java.awt.event.ActionListener() {
@@ -149,10 +123,6 @@ public class GUI_Pedidos extends JInternalFrame {
             }
         });
 
-        lb_Desde.setText("Desde:");
-
-        lb_Hasta.setText("Hasta:");
-
         tbl_RenglonesPedido.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -166,87 +136,162 @@ public class GUI_Pedidos extends JInternalFrame {
         ));
         jScrollPane2.setViewportView(tbl_RenglonesPedido);
 
+        chk_Numero.setText("Numero");
+        chk_Numero.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chk_NumeroItemStateChanged(evt);
+            }
+        });
+
+        chk_Fecha.setText("Fecha");
+        chk_Fecha.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chk_FechaItemStateChanged(evt);
+            }
+        });
+
+        lb_Desde.setText("Desde:");
+
+        lb_Hasta.setText("Hasta:");
+
+        chk_Cliente.setText("Cliente");
+        chk_Cliente.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chk_ClienteItemStateChanged(evt);
+            }
+        });
+
+        chk_Vendedor.setText("Vendedor");
+        chk_Vendedor.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chk_VendedorItemStateChanged(evt);
+            }
+        });
+
+        btn_Buscar.setText("Buscar");
+        btn_Buscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_BuscarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panel_FiltrosLayout = new javax.swing.GroupLayout(panel_Filtros);
+        panel_Filtros.setLayout(panel_FiltrosLayout);
+        panel_FiltrosLayout.setHorizontalGroup(
+            panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel_FiltrosLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panel_FiltrosLayout.createSequentialGroup()
+                        .addComponent(chk_Fecha)
+                        .addGap(18, 18, 18)
+                        .addComponent(lb_Desde))
+                    .addComponent(chk_Numero)
+                    .addComponent(chk_Cliente)
+                    .addComponent(chk_Vendedor))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panel_FiltrosLayout.createSequentialGroup()
+                        .addComponent(cmb_Vendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(42, 42, 42)
+                        .addComponent(btn_Buscar))
+                    .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(cmb_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(panel_FiltrosLayout.createSequentialGroup()
+                            .addComponent(dc_Desde, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(lb_Hasta)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(dc_Hasta, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(tf_Numero, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 27, Short.MAX_VALUE))
+        );
+        panel_FiltrosLayout.setVerticalGroup(
+            panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel_FiltrosLayout.createSequentialGroup()
+                .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panel_FiltrosLayout.createSequentialGroup()
+                        .addComponent(tf_Numero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(dc_Desde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panel_FiltrosLayout.createSequentialGroup()
+                        .addComponent(chk_Numero)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(chk_Fecha)
+                            .addComponent(lb_Desde)))
+                    .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(lb_Hasta)
+                        .addComponent(dc_Hasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chk_Cliente)
+                    .addComponent(cmb_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmb_Vendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chk_Vendedor)
+                    .addComponent(btn_Buscar))
+                .addGap(0, 12, Short.MAX_VALUE))
+        );
+
+        cmb_cantidadMostrar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "100", "500", "1000", "5000", "Sin Limite" }));
+        cmb_cantidadMostrar.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmb_cantidadMostrarItemStateChanged(evt);
+            }
+        });
+        cmb_cantidadMostrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmb_cantidadMostrarActionPerformed(evt);
+            }
+        });
+
+        lbl_cantidadMostrar.setText("Cantidad a mostrar");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(chk_Vendedor, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(chk_Cliente, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btn_Buscar))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btn_NuevoPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btn_VerFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btn_Facturar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 242, Short.MAX_VALUE)
-                                .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1)))
+                        .addComponent(btn_NuevoPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btn_VerFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btn_Facturar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1)
+                    .addComponent(jScrollPane2)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chk_Numero)
-                            .addComponent(chk_Fecha))
+                        .addComponent(panel_Filtros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
+                        .addComponent(lbl_cantidadMostrar)
                         .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lb_Desde)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(dc_Desde, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(26, 26, 26)
-                                .addComponent(lb_Hasta)
-                                .addGap(18, 18, 18)
-                                .addComponent(dc_Hasta, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(tf_Numero, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmb_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(cmb_Vendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane2)))
+                        .addComponent(cmb_cantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(17, 17, 17)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(10, 10, 10)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tf_Numero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chk_Numero))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(dc_Hasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(dc_Desde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lb_Hasta, javax.swing.GroupLayout.Alignment.LEADING))
-                    .addComponent(chk_Fecha)
-                    .addComponent(lb_Desde))
-                .addGap(11, 11, 11)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(panel_Filtros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(chk_Cliente)
-                            .addComponent(cmb_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(chk_Vendedor)
-                            .addComponent(cmb_Vendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(btn_Buscar)))
-                .addGap(27, 27, 27)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                            .addComponent(cmb_cantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_cantidadMostrar))
+                        .addGap(25, 25, 25)))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btn_Facturar, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btn_VerFacturas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -381,6 +426,31 @@ public class GUI_Pedidos extends JInternalFrame {
         tbl_Pedidos.setRowSelectionInterval(row, row);
     }//GEN-LAST:event_tbl_PedidosMouseClicked
 
+    private void cmb_cantidadMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_cantidadMostrarActionPerformed
+        this.buscar();
+    }//GEN-LAST:event_cmb_cantidadMostrarActionPerformed
+
+    private void cmb_cantidadMostrarItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_cantidadMostrarItemStateChanged
+        if (cmb_cantidadMostrar.getSelectedItem().equals("Sin Limite")) {
+            cantidadResultadosParaMostrar = 0;
+        }
+
+        if (cmb_cantidadMostrar.getSelectedItem().equals("100")) {
+            cantidadResultadosParaMostrar = 100;
+        }
+
+        if (cmb_cantidadMostrar.getSelectedItem().equals("1000")) {
+            cantidadResultadosParaMostrar = 1000;
+        }
+
+        if (cmb_cantidadMostrar.getSelectedItem().equals("5000")) {
+            cantidadResultadosParaMostrar = 5000;
+        }
+        if (cmb_cantidadMostrar.getSelectedItem().equals("500")) {
+            cantidadResultadosParaMostrar = 500;
+        }
+    }//GEN-LAST:event_cmb_cantidadMostrarItemStateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Buscar;
@@ -393,12 +463,15 @@ public class GUI_Pedidos extends JInternalFrame {
     private javax.swing.JCheckBox chk_Vendedor;
     private javax.swing.JComboBox cmb_Cliente;
     private javax.swing.JComboBox cmb_Vendedor;
+    private javax.swing.JComboBox cmb_cantidadMostrar;
     private com.toedter.calendar.JDateChooser dc_Desde;
     private com.toedter.calendar.JDateChooser dc_Hasta;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lb_Desde;
     private javax.swing.JLabel lb_Hasta;
+    private javax.swing.JLabel lbl_cantidadMostrar;
+    private javax.swing.JPanel panel_Filtros;
     private javax.swing.JProgressBar pb_Filtro;
     private javax.swing.JTable tbl_Pedidos;
     private javax.swing.JTable tbl_RenglonesPedido;
@@ -406,35 +479,67 @@ public class GUI_Pedidos extends JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     public void buscar() {
-        try {
-            BusquedaPedidoCriteria criteria = new BusquedaPedidoCriteria();
-            criteria.setCliente((Cliente) cmb_Cliente.getSelectedItem());
-            criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-            criteria.setFechaDesde(dc_Desde.getDate());
-            criteria.setFechaHasta(dc_Hasta.getDate());
-            if (tf_Numero.getText().isEmpty()) {
-                criteria.setNumPedido(0);
-            } else {
-                criteria.setNumPedido(Long.valueOf(tf_Numero.getText()));
+        pb_Filtro.setIndeterminate(true);
+
+        SwingWorker<List<Pedido>, Void> worker = new SwingWorker<List<Pedido>, Void>() {
+            @Override
+            protected List<Pedido> doInBackground() throws Exception {
+                try {
+                    BusquedaPedidoCriteria criteria = new BusquedaPedidoCriteria();
+                    criteria.setCliente((Cliente) cmb_Cliente.getSelectedItem());
+                    criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                    criteria.setFechaDesde(dc_Desde.getDate());
+                    criteria.setFechaHasta(dc_Hasta.getDate());
+                    if (tf_Numero.getText().isEmpty()) {
+                        criteria.setNumPedido(0);
+                    } else {
+                        criteria.setNumPedido(Long.valueOf(tf_Numero.getText()));
+                    }
+                    criteria.setUsuario((Usuario) cmb_Vendedor.getSelectedItem());
+                    criteria.setBuscaCliente(chk_Cliente.isSelected());
+                    criteria.setBuscaPorFecha(chk_Fecha.isSelected());
+                    criteria.setBuscaPorNumeroPedido(chk_Numero.isSelected());
+                    criteria.setBuscaUsuario(chk_Vendedor.isSelected());
+                    criteria.setCantRegistros(cantidadResultadosParaMostrar);
+                    pedidos = pedidoService.buscarConCriteria(criteria);
+                    return pedidos;
+                } catch (ServiceException ex) {
+                    JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+                } catch (PersistenceException ex) {
+                    log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+                    JOptionPane.showInternalMessageDialog(getParent(), ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                pedidos = new ArrayList<>();
+                return pedidos;
             }
-            criteria.setUsuario((Usuario) cmb_Vendedor.getSelectedItem());
-            criteria.setBuscaCliente(chk_Cliente.isSelected());
-            criteria.setBuscaPorFecha(chk_Fecha.isSelected());
-            criteria.setBuscaPorNumeroPedido(chk_Numero.isSelected());
-            criteria.setBuscaUsuario(chk_Vendedor.isSelected());
-            criteria.setCantRegistros(0);
-            pedidos = pedidoService.buscarConCriteria(criteria);
-            this.cargarResultadosAlTable();
-            if (pedidos.isEmpty()) {
-                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle(
-                        "Mensajes").getString("mensaje_busqueda_sin_resultados"),
-                        "Aviso", JOptionPane.INFORMATION_MESSAGE);
+
+            @Override
+            protected void done() {
+                cargarResultadosAlTable();
+                pb_Filtro.setIndeterminate(false);
+                try {
+                    if (get().isEmpty()) {
+                        JOptionPane.showInternalMessageDialog(getParent(),
+                                ResourceBundle.getBundle("Mensajes")
+                                .getString("mensaje_busqueda_sin_resultados"),
+                                "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                } catch (InterruptedException ex) {
+                    String msjError = "La tarea que se estaba realizando fue interrumpida. Intente nuevamente.";
+                    log.error(msjError + " - " + ex.getMessage());
+                    JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+
+                } catch (ExecutionException ex) {
+                    String msjError = "Se produjo un error en la ejecución de la tarea solicitada. Intente nuevamente.";
+                    log.error(msjError + " - " + ex.getMessage());
+                    JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
-        } catch (NumberFormatException | HeadlessException e) {
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_error_al_buscar"),
-                    e.toString(), JOptionPane.ERROR_MESSAGE);
-        }
+        };
+
+        worker.execute();
     }
 
     private void cargarResultadosAlTable() {
@@ -466,7 +571,7 @@ public class GUI_Pedidos extends JInternalFrame {
     }
 
     private void setColumnasRenglones() {
-        /// Renglones Pedido
+                /// Renglones Pedido
         //sorting
         tbl_RenglonesPedido.setAutoCreateRowSorter(true);
 

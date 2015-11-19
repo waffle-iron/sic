@@ -23,7 +23,6 @@ import sic.service.RubroService;
 import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_Productos extends JInternalFrame {
 
