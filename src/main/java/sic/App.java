@@ -43,7 +43,7 @@ public class App {
     public LocalContainerEntityManagerFactoryBean getEntityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(this.getDataSource());
-        em.setPackagesToScan(new String[]{"sic.modelo"});
+        //em.setPackagesToScan(new String[]{"sic.modelo"});
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(this.getAdditionalProperties());
@@ -75,9 +75,6 @@ public class App {
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(App.class);
         System.out.println(Arrays.toString(context.getBeanDefinitionNames()));
-        IUsuarioRepository usuarioRepository = context.getBean(IUsuarioRepository.class);
-        List<Usuario> usuarios = usuarioRepository.getUsuarios();
-
         GUI_LogIn gui_LogIn = context.getBean(GUI_LogIn.class);
         gui_LogIn.setVisible(true);
     }

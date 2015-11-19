@@ -9,29 +9,38 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import sic.repository.XMLException;
 import sic.modelo.DatosConexion;
 import sic.modelo.XMLFileConfig;
 import sic.modelo.Usuario;
-import sic.service.impl.ConexionServiceImpl;
-import sic.service.impl.ConfiguracionDelSistemaServiceImpl;
+import sic.service.IConexionService;
+import sic.service.IConfiguracionDelSistemaService;
 import sic.service.IUsuarioService;
 import sic.service.ServiceException;
 import sic.util.Validator;
 
 @Component
+@Scope("prototype")
 public class GUI_LogIn extends JFrame {
-
-    private boolean configDesplegada;
-    private Usuario usuario;
-    private final IUsuarioService usuarioService;    
-    private final ConfiguracionDelSistemaServiceImpl configuracionService = new ConfiguracionDelSistemaServiceImpl();
-    private final ConexionServiceImpl conexionService = new ConexionServiceImpl();
-    private static final Logger log = Logger.getLogger(GUI_LogIn.class.getPackage().getName());
-
+    
     @Autowired
-    public GUI_LogIn(IUsuarioService usuarioService) {
+    private GUI_Principal gui_principal;       
+    private final IUsuarioService usuarioService;        
+    private final IConexionService conexionService;       
+    private final IConfiguracionDelSistemaService configuracionService;    
+    private boolean configDesplegada;
+    private Usuario usuario;        
+    private static final Logger log = Logger.getLogger(GUI_LogIn.class.getPackage().getName());
+    
+    @Autowired
+    public GUI_LogIn(IUsuarioService usuarioService, IConexionService conexionService,
+            IConfiguracionDelSistemaService configuracionService) {
+        
+        this.usuarioService = usuarioService;
+        this.conexionService = conexionService;
+        this.configuracionService = configuracionService;
         this.initComponents();
         this.setSize(290, 150);
         this.setTitle("S.I.C. " + ResourceBundle.getBundle("Mensajes").getString("version"));
@@ -42,8 +51,7 @@ public class GUI_LogIn extends JFrame {
         txt_Puerto.setEnabled(false);
         txt_BD.setEnabled(false);
         btn_Guardar.setEnabled(false);
-        this.cargarDatosConexion();
-        this.usuarioService = usuarioService;
+        this.cargarDatosConexion();        
     }
 
     private void validarUsuario() {
@@ -65,7 +73,8 @@ public class GUI_LogIn extends JFrame {
     private void ingresar() {
         if (usuario != null) {
             if (usuario.getPermisosAdministrador()) {
-                new GUI_Principal().setVisible(true);
+                //new GUI_Principal().setVisible(true);
+                gui_principal.setVisible(true);
                 this.dispose();
             } else {
                 GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
@@ -330,11 +339,9 @@ public class GUI_LogIn extends JFrame {
             this.cargarDatosConexion();
             this.desplegarPlegarConfig();
 
-        } catch (ServiceException ex) {
+        } catch (ServiceException | XMLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
-        } catch (XMLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_GuardarActionPerformed
 

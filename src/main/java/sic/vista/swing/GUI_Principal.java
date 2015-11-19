@@ -6,19 +6,28 @@ import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 import javax.swing.*;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import sic.modelo.Empresa;
-import sic.service.impl.EmpresaServiceImpl;
-import sic.service.impl.UsuarioServiceImpl;
+import sic.service.IEmpresaService;
+import sic.service.IUsuarioService;
 import sic.util.Utilidades;
 
+@Component
 public class GUI_Principal extends JFrame {
+    
+    @Autowired
+    private GUI_LogIn gui_logIn;
 
     private final JLabel lbl_Fondo;
-    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
-    private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
+    private final IEmpresaService empresaService;
+    private final IUsuarioService usuarioService;
     private static final Logger log = Logger.getLogger(GUI_Principal.class.getPackage().getName());
 
-    public GUI_Principal() {
+    @Autowired
+    public GUI_Principal(IEmpresaService empresaService, IUsuarioService usuarioService) {
+        this.empresaService = empresaService;
+        this.usuarioService = usuarioService;
         this.initComponents();
         ImageIcon iconoVentana = new ImageIcon(GUI_Principal.class.getResource("/sic/icons/SIC_24_square.png"));
         this.setIconImage(iconoVentana.getImage());
@@ -318,7 +327,8 @@ public class GUI_Principal extends JFrame {
 
     private void mnuItm_CambiarUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_CambiarUserActionPerformed
         this.dispose();
-        new GUI_LogIn().setVisible(true);
+        gui_logIn.setVisible(true);
+        //new GUI_LogIn().setVisible(true);
     }//GEN-LAST:event_mnuItm_CambiarUserActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
