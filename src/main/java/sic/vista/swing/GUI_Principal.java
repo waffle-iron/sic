@@ -208,6 +208,7 @@ public class GUI_Principal extends JFrame {
         });
         mnu_Ventas.add(mnuItm_FacturasVenta);
 
+        mnuItm_Pedidos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/PedidoIco_16x16.png"))); // NOI18N
         mnuItm_Pedidos.setText("Pedidos");
         mnuItm_Pedidos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -528,7 +529,7 @@ public class GUI_Principal extends JFrame {
     }//GEN-LAST:event_mnuItm_ConfiguracionActionPerformed
 
     private void mnuItm_PedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_PedidosActionPerformed
-        JInternalFrame gui = Utilidades.estaEnDesktop(getDesktopPane(), GUI_FacturasVenta.class);
+        JInternalFrame gui = Utilidades.estaEnDesktop(getDesktopPane(), GUI_Pedidos.class);
         if (gui == null) {
             gui = new GUI_Pedidos();
             gui.setLocation(getDesktopPane().getWidth() / 2 - gui.getWidth() / 2,

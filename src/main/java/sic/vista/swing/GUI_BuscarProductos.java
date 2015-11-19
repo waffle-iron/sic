@@ -20,7 +20,6 @@ import sic.service.RenglonDeFacturaService;
 import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_BuscarProductos extends JDialog {
 

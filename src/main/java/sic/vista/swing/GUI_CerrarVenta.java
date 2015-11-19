@@ -18,7 +18,6 @@ import sic.modelo.FormaDePago;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.service.*;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_CerrarVenta extends JDialog {
 
@@ -29,6 +28,7 @@ public class GUI_CerrarVenta extends JDialog {
     private final FacturaService facturaService = new FacturaService();
     private final UsuarioService usuarioService = new UsuarioService();
     private final HotKeysHandler keyHandler = new HotKeysHandler();
+    private final PedidoService pedidoService = new PedidoService();
     private static final Logger log = Logger.getLogger(GUI_CerrarVenta.class.getPackage().getName());
 
     public GUI_CerrarVenta(JDialog parent, boolean modal) {
@@ -389,7 +389,7 @@ public class GUI_CerrarVenta extends JDialog {
             this.cargarTransportistas();
             //set predeterminado
             cmb_Transporte.setSelectedIndex(0);
-            cmb_FormaDePago.setSelectedItem(formaDePagoService.getFormaDePagoPredeterminada(gui_tpv.getEmpresa()));            
+            cmb_FormaDePago.setSelectedItem(formaDePagoService.getFormaDePagoPredeterminada(gui_tpv.getEmpresa()));
             lbl_Vendedor.setText(usuarioService.getUsuarioActivo().getUsuario().getNombre());
             txt_AbonaCon.requestFocus();
 
@@ -421,6 +421,9 @@ public class GUI_CerrarVenta extends JDialog {
             }
             if (!dividir) {
                 FacturaVenta factura = this.construirFactura();
+                if (!(gui_tpv.getPedido() == null)) {
+                   factura.setPedido(pedidoService.getPedidoPorId(gui_tpv.getPedido().getNroPedido()));
+                }
                 Factura aux = this.guardarFactura(factura);
                 this.lanzarReporteFactura(aux);
                 exito = true;
