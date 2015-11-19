@@ -7,24 +7,24 @@ import java.util.ResourceBundle;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Factura;
 import sic.modelo.Pedido;
+import sic.modelo.RenglonPedido;
 import sic.repository.PedidoRepository;
 
 public class PedidoService {
-
+    
     private final PedidoRepository pedidoRepository = new PedidoRepository();
     private final EmpresaService empresaService = new EmpresaService();
-    private final FacturaService facturaService = new FacturaService();
-
-    private long calcularNumeroPedido() {
+    
+    public long calcularNumeroPedido() {
         return pedidoRepository.calcularNumeroPedido(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
     }
-
+    
     public List<Pedido> buscarConCriteria(BusquedaPedidoCriteria criteria) {
         if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedidos_fechas_busqueda_invalidas"));
         }
-
+        
         if (criteria.isBuscaPorFecha() == true) {
             Calendar cal = new GregorianCalendar();
             cal.setTime(criteria.getFechaDesde());
@@ -49,18 +49,18 @@ public class PedidoService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_usuario_vacio"));
         }
-
+        
         if (criteria.isBuscaPorNumeroPedido() == true && criteria.getNumPedido() == null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_numeroPedido_vacio"));
         }
-        return pedidoRepository.buscarPedidos(criteria);
+        return pedidoRepository.buscarPedidosPorCriteria(criteria);
     }
-
+    
     public List<Factura> getFacturas(Pedido pedido) {
         return pedidoRepository.getFacturas(pedido);
     }
-
+    
     public void validarPedido(Pedido pedido) {
         //Entrada de Datos
         //Requeridos
@@ -81,14 +81,38 @@ public class PedidoService {
                     .getString("mensaje_pedido_usuario_vacio"));
         }
     }
-
+    
     public void guardar(Pedido pedido) {
         this.validarPedido(pedido);
         pedidoRepository.guardar(pedido);
     }
-
+    
+    public void actualizar(Pedido pedido) {
+        pedidoRepository.actualizar(pedido);
+    }
+    
     public Pedido getPedidoPorId(long id_Pedido) {
         return pedidoRepository.getPedidoPorId(id_Pedido);
     }
-
+    
+    public Pedido getPedidoPorNumero(long nroPedido) {
+        return pedidoRepository.getPedidoPorNumero(nroPedido);
+    }
+    
+    public Pedido getPedidoPorNumeroConFacturas(long nroPedido){
+       return pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido);
+    }
+    
+    public Pedido getPedidoPorNumeroConRenglones(long nroPedido){
+       return pedidoRepository.getPedidoPorNumeroConRenglones(nroPedido);
+    }
+    
+    public void eliminar(Pedido pedido) {
+        pedido.setEliminada(true);
+        pedidoRepository.actualizar(pedido);
+    }
+    
+    public List<RenglonPedido> getRenglonesDelPedido(Pedido pedido) {
+        return pedidoRepository.getRenglonesDelPedido(pedido);
+    }
 }

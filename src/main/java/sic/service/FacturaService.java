@@ -67,35 +67,39 @@ public class FacturaService {
         if (empresa.getCondicionIVA().isDiscriminaIVA()) {
             if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando la Empresa discrimina IVA y el Cliente tambien
-                char[] tiposPermitidos = new char[4];
+                char[] tiposPermitidos = new char[5];
                 tiposPermitidos[0] = 'A';
                 tiposPermitidos[1] = 'B';
                 tiposPermitidos[2] = 'X';
                 tiposPermitidos[3] = 'Y';
+                tiposPermitidos[4] = 'P';
                 return tiposPermitidos;
             } else {
                 //cuando la Empresa discrminina IVA y el Cliente NO
-                char[] tiposPermitidos = new char[3];
+                char[] tiposPermitidos = new char[4];
                 tiposPermitidos[0] = 'B';
                 tiposPermitidos[1] = 'X';
                 tiposPermitidos[2] = 'Y';
+                tiposPermitidos[3] = 'P';
                 return tiposPermitidos;
             }
         } else {
             //cuando la Empresa NO discrimina IVA
             if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Cliente SI
-                char[] tiposPermitidos = new char[3];
+                char[] tiposPermitidos = new char[4];
                 tiposPermitidos[0] = 'C';
                 tiposPermitidos[1] = 'X';
                 tiposPermitidos[2] = 'Y';
+                tiposPermitidos[3] = 'P';
                 return tiposPermitidos;
             } else {
                 //cuando la Empresa NO discrminina IVA y el Cliente tampoco
-                char[] tiposPermitidos = new char[3];
+                char[] tiposPermitidos = new char[4];
                 tiposPermitidos[0] = 'C';
                 tiposPermitidos[1] = 'X';
                 tiposPermitidos[2] = 'Y';
+                tiposPermitidos[3] = 'P';
                 return tiposPermitidos;
             }
         }
