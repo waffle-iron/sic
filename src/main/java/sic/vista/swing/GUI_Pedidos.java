@@ -1,6 +1,5 @@
 package sic.vista.swing;
 
-import java.awt.HeadlessException;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,7 +14,6 @@ import org.apache.log4j.Logger;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.Pedido;
-import sic.modelo.Producto;
 import sic.modelo.RenglonPedido;
 import sic.modelo.Usuario;
 import sic.service.ClienteService;
@@ -49,17 +47,217 @@ public class GUI_Pedidos extends JInternalFrame {
         cmb_Vendedor.setEnabled(false);
     }
 
+    public void buscar() {
+        pb_Filtro.setIndeterminate(true);
+
+        SwingWorker<List<Pedido>, Void> worker = new SwingWorker<List<Pedido>, Void>() {
+            @Override
+            protected List<Pedido> doInBackground() throws Exception {
+                try {
+                    BusquedaPedidoCriteria criteria = new BusquedaPedidoCriteria();
+                    criteria.setCliente((Cliente) cmb_Cliente.getSelectedItem());
+                    criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                    criteria.setFechaDesde(dc_Desde.getDate());
+                    criteria.setFechaHasta(dc_Hasta.getDate());
+                    if (tf_Numero.getText().isEmpty()) {
+                        criteria.setNumPedido(0);
+                    } else {
+                        criteria.setNumPedido(Long.valueOf(tf_Numero.getText()));
+                    }
+                    criteria.setUsuario((Usuario) cmb_Vendedor.getSelectedItem());
+                    criteria.setBuscaCliente(chk_Cliente.isSelected());
+                    criteria.setBuscaPorFecha(chk_Fecha.isSelected());
+                    criteria.setBuscaPorNumeroPedido(chk_Numero.isSelected());
+                    criteria.setBuscaUsuario(chk_Vendedor.isSelected());
+                    criteria.setCantRegistros(cantidadResultadosParaMostrar);
+                    pedidos = pedidoService.buscarConCriteria(criteria);
+                    return pedidos;
+                } catch (ServiceException ex) {
+                    JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+                } catch (PersistenceException ex) {
+                    log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+                    JOptionPane.showInternalMessageDialog(getParent(), ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                pedidos = new ArrayList<>();
+                return pedidos;
+            }
+
+            @Override
+            protected void done() {
+                cargarResultadosAlTable();
+                pb_Filtro.setIndeterminate(false);
+                try {
+                    if (get().isEmpty()) {
+                        JOptionPane.showInternalMessageDialog(getParent(),
+                                ResourceBundle.getBundle("Mensajes")
+                                .getString("mensaje_busqueda_sin_resultados"),
+                                "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                } catch (InterruptedException ex) {
+                    String msjError = "La tarea que se estaba realizando fue interrumpida. Intente nuevamente.";
+                    log.error(msjError + " - " + ex.getMessage());
+                    JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+
+                } catch (ExecutionException ex) {
+                    String msjError = "Se produjo un error en la ejecución de la tarea solicitada. Intente nuevamente.";
+                    log.error(msjError + " - " + ex.getMessage());
+                    JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        };
+
+        worker.execute();
+    }
+
+    private void cargarRenglones() {
+        GUI_FacturasVenta gui = new GUI_FacturasVenta();
+        gui.setLocation(getDesktopPane().getWidth() / 2 - gui.getWidth() / 2,
+                getDesktopPane().getHeight() / 2 - gui.getHeight() / 2);
+        getDesktopPane().add(gui);
+        long numeroDePedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1);
+        gui.setNumeroDePedido(numeroDePedido);
+        gui.setVisible(true);
+        gui.buscarPedido();
+
+        try {
+            gui.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            String msjError = "No se pudo seleccionar la ventana requerida.";
+            log.error(msjError + " - " + ex.getMessage());
+            JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void cargarResultadosAlTable() {
+        this.limpiarJTables();
+        for (Pedido pedido : pedidos) {
+            Object[] fila = new Object[4];
+            fila[0] = pedido.getFecha();
+            fila[1] = pedido.getNroPedido();
+            fila[2] = pedido.getCliente().getRazonSocial();
+            fila[3] = pedido.getUsuario().getNombre();
+            modeloTablaPedidos.addRow(fila);
+        }
+        tbl_Pedidos.setModel(modeloTablaPedidos);
+    }
+
+    private void limpiarJTables() {
+        modeloTablaPedidos = new ModeloTabla();
+        tbl_Pedidos.setModel(modeloTablaPedidos);
+        modeloTablaRenglones = new ModeloTabla();
+        tbl_RenglonesPedido.setModel(modeloTablaRenglones);
+        this.setColumnasPedido();
+        this.setColumnasRenglones();
+    }
+
+    private void limpiarTablaRenglones() {
+        modeloTablaRenglones = new ModeloTabla();
+        tbl_RenglonesPedido.setModel(modeloTablaRenglones);
+        this.setColumnasPedido();
+    }
+
+    private void setColumnasRenglones() {
+        /// Renglones Pedido
+        //sorting
+        tbl_RenglonesPedido.setAutoCreateRowSorter(true);
+
+        //nombres de columnas
+        String[] encabezadoRenglones = new String[4];
+        encabezadoRenglones[0] = "id Producto";
+        encabezadoRenglones[1] = "Descripcion";
+        encabezadoRenglones[2] = "Cantidad";
+        encabezadoRenglones[3] = "Subtotal";
+        modeloTablaRenglones.setColumnIdentifiers(encabezadoRenglones);
+        tbl_RenglonesPedido.setModel(modeloTablaRenglones);
+
+        //tipo de dato columnas
+        Class[] tiposRenglones = new Class[modeloTablaRenglones.getColumnCount()];
+        tiposRenglones[0] = Long.class;
+        tiposRenglones[1] = String.class;
+        tiposRenglones[2] = Integer.class;
+        tiposRenglones[3] = Double.class;
+        modeloTablaRenglones.setClaseColumnas(tiposRenglones);
+        tbl_RenglonesPedido.getTableHeader().setReorderingAllowed(false);
+        tbl_RenglonesPedido.getTableHeader().setResizingAllowed(true);
+
+        //render para los tipos de datos
+        tbl_RenglonesPedido.setDefaultRenderer(Double.class, new RenderTabla());
+
+        //Tamanios de columnas
+        tbl_RenglonesPedido.getColumnModel().getColumn(0).setPreferredWidth(100);
+        tbl_RenglonesPedido.getColumnModel().getColumn(1).setPreferredWidth(110);
+        tbl_RenglonesPedido.getColumnModel().getColumn(2).setPreferredWidth(100);
+        tbl_RenglonesPedido.getColumnModel().getColumn(3).setPreferredWidth(130);
+    }
+
+    private void setColumnasPedido() {
+        //sorting
+        tbl_Pedidos.setAutoCreateRowSorter(true);
+
+        //nombres de columnas
+        String[] encabezados = new String[4];
+        encabezados[0] = "Fecha Pedido";
+        encabezados[1] = "Nº Pedido";
+        encabezados[2] = "Cliente";
+        encabezados[3] = "Usuario (Vendedor)";
+        modeloTablaPedidos.setColumnIdentifiers(encabezados);
+        tbl_Pedidos.setModel(modeloTablaPedidos);
+
+        //tipo de dato columnas
+        Class[] tipos = new Class[modeloTablaPedidos.getColumnCount()];
+        tipos[0] = Date.class;
+        tipos[1] = Long.class;
+        tipos[2] = String.class;
+        tipos[3] = String.class;
+        modeloTablaPedidos.setClaseColumnas(tipos);
+        tbl_Pedidos.getTableHeader().setReorderingAllowed(false);
+        tbl_Pedidos.getTableHeader().setResizingAllowed(true);
+
+        //render para los tipos de datos
+        tbl_Pedidos.setDefaultRenderer(Double.class, new RenderTabla());
+
+        //Tamanios de columnas
+        tbl_Pedidos.getColumnModel().getColumn(0).setPreferredWidth(100);
+        tbl_Pedidos.getColumnModel().getColumn(1).setPreferredWidth(110);
+        tbl_Pedidos.getColumnModel().getColumn(2).setPreferredWidth(100);
+        tbl_Pedidos.getColumnModel().getColumn(3).setPreferredWidth(130);
+    }
+
+    private void cargarComboBoxClientes() {
+        cmb_Cliente.removeAllItems();
+        List<Cliente> clientes;
+        clientes = clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa());
+        for (Cliente cliente : clientes) {
+            cmb_Cliente.addItem(cliente);
+        }
+    }
+
+    private void cargarComboBoxUsuarios() {
+        cmb_Vendedor.removeAllItems();
+        List<Usuario> usuarios;
+        usuarios = usuarioSercice.getUsuarios();
+        for (Usuario usuario : usuarios) {
+            cmb_Vendedor.addItem(usuario);
+        }
+    }
+
+    private boolean existeClienteDisponible() {
+        return !clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa()).isEmpty();
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
+        sp_Pedidos = new javax.swing.JScrollPane();
         tbl_Pedidos = new javax.swing.JTable();
         btn_NuevoPedido = new javax.swing.JButton();
         btn_VerFacturas = new javax.swing.JButton();
         btn_Facturar = new javax.swing.JButton();
         pb_Filtro = new javax.swing.JProgressBar();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        sp_RenglonesDelPedido = new javax.swing.JScrollPane();
         tbl_RenglonesPedido = new javax.swing.JTable();
         panel_Filtros = new javax.swing.JPanel();
         tf_Numero = new javax.swing.JTextField();
@@ -82,6 +280,23 @@ public class GUI_Pedidos extends JInternalFrame {
         setResizable(true);
         setTitle("Ventana para administrar pedidos");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/PedidoIco_16x16.png"))); // NOI18N
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
+            }
+        });
 
         tbl_Pedidos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -100,7 +315,7 @@ public class GUI_Pedidos extends JInternalFrame {
                 tbl_PedidosMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tbl_Pedidos);
+        sp_Pedidos.setViewportView(tbl_Pedidos);
 
         btn_NuevoPedido.setText("Nuevo");
         btn_NuevoPedido.addActionListener(new java.awt.event.ActionListener() {
@@ -134,7 +349,7 @@ public class GUI_Pedidos extends JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane2.setViewportView(tbl_RenglonesPedido);
+        sp_RenglonesDelPedido.setViewportView(tbl_RenglonesPedido);
 
         chk_Numero.setText("Numero");
         chk_Numero.addItemListener(new java.awt.event.ItemListener() {
@@ -235,7 +450,7 @@ public class GUI_Pedidos extends JInternalFrame {
                 .addGap(0, 12, Short.MAX_VALUE))
         );
 
-        cmb_cantidadMostrar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "100", "500", "1000", "5000", "Sin Limite" }));
+        cmb_cantidadMostrar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "100", "500", "1000", "5000", "2" }));
         cmb_cantidadMostrar.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmb_cantidadMostrarItemStateChanged(evt);
@@ -264,11 +479,11 @@ public class GUI_Pedidos extends JInternalFrame {
                         .addComponent(btn_Facturar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1)
-                    .addComponent(jScrollPane2)
+                    .addComponent(sp_Pedidos)
+                    .addComponent(sp_RenglonesDelPedido)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(panel_Filtros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
                         .addComponent(lbl_cantidadMostrar)
                         .addGap(18, 18, 18)
                         .addComponent(cmb_cantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -288,9 +503,9 @@ public class GUI_Pedidos extends JInternalFrame {
                             .addComponent(cmb_cantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbl_cantidadMostrar))
                         .addGap(25, 25, 25)))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                .addComponent(sp_Pedidos, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                .addComponent(sp_RenglonesDelPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
                 .addGap(26, 26, 26)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btn_Facturar, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -321,7 +536,7 @@ public class GUI_Pedidos extends JInternalFrame {
     private void chk_VendedorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_VendedorItemStateChanged
         if (chk_Vendedor.isSelected() == true) {
             cmb_Vendedor.setEnabled(true);
-            this.cargarComboBoxUsuario();
+            this.cargarComboBoxUsuarios();
             cmb_Vendedor.requestFocus();
         } else {
             cmb_Vendedor.removeAllItems();
@@ -370,7 +585,7 @@ public class GUI_Pedidos extends JInternalFrame {
 
     private void btn_FacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FacturarActionPerformed
         try {
-            if (this.existeClienteDisponible()) { //setPedido
+            if (this.existeClienteDisponible()) {
                 GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
                 gui_puntoDeVenta.setPedido(pedidoService.getPedidoPorNumero((long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1)));
                 gui_puntoDeVenta.setModal(true);
@@ -388,27 +603,11 @@ public class GUI_Pedidos extends JInternalFrame {
     }//GEN-LAST:event_btn_FacturarActionPerformed
 
     private void btn_VerFacturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerFacturasActionPerformed
-        GUI_FacturasVenta gui = new GUI_FacturasVenta();
-        gui.setLocation(getDesktopPane().getWidth() / 2 - gui.getWidth() / 2,
-                getDesktopPane().getHeight() / 2 - gui.getHeight() / 2);
-        getDesktopPane().add(gui);
-        long numeroDePedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1);
-        gui.setNumeroDePedido(numeroDePedido);
-        gui.setVisible(true);
-        gui.buscarPedido();
-
-        try {
-            gui.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            String msjError = "No se pudo seleccionar la ventana requerida.";
-            log.error(msjError + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
+        this.cargarRenglones();
     }//GEN-LAST:event_btn_VerFacturasActionPerformed
 
     private void tbl_PedidosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_PedidosMouseClicked
-        int row = tbl_Pedidos.getSelectedRow();
+        int row = Utilidades.getSelectedRowModelIndice(tbl_Pedidos);
         // int column = tbl_Pedidos.getSelectedColumn();
         this.limpiarTablaRenglones();
         this.setColumnasRenglones();
@@ -431,9 +630,6 @@ public class GUI_Pedidos extends JInternalFrame {
     }//GEN-LAST:event_cmb_cantidadMostrarActionPerformed
 
     private void cmb_cantidadMostrarItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_cantidadMostrarItemStateChanged
-        if (cmb_cantidadMostrar.getSelectedItem().equals("Sin Limite")) {
-            cantidadResultadosParaMostrar = 0;
-        }
 
         if (cmb_cantidadMostrar.getSelectedItem().equals("100")) {
             cantidadResultadosParaMostrar = 100;
@@ -449,8 +645,21 @@ public class GUI_Pedidos extends JInternalFrame {
         if (cmb_cantidadMostrar.getSelectedItem().equals("500")) {
             cantidadResultadosParaMostrar = 500;
         }
+        if (cmb_cantidadMostrar.getSelectedItem().equals("2")) {
+            cantidadResultadosParaMostrar = 2;
+        }
     }//GEN-LAST:event_cmb_cantidadMostrarItemStateChanged
 
+    private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        try {
+            this.setMaximum(true);
+        } catch (PropertyVetoException ex) {
+            String msjError = "Se produjo un error al intentar maximizar la ventana.";
+            log.error(msjError + " - " + ex.getMessage());
+            JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+        }
+    }//GEN-LAST:event_formInternalFrameOpened
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Buscar;
@@ -466,197 +675,15 @@ public class GUI_Pedidos extends JInternalFrame {
     private javax.swing.JComboBox cmb_cantidadMostrar;
     private com.toedter.calendar.JDateChooser dc_Desde;
     private com.toedter.calendar.JDateChooser dc_Hasta;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lb_Desde;
     private javax.swing.JLabel lb_Hasta;
     private javax.swing.JLabel lbl_cantidadMostrar;
     private javax.swing.JPanel panel_Filtros;
     private javax.swing.JProgressBar pb_Filtro;
+    private javax.swing.JScrollPane sp_Pedidos;
+    private javax.swing.JScrollPane sp_RenglonesDelPedido;
     private javax.swing.JTable tbl_Pedidos;
     private javax.swing.JTable tbl_RenglonesPedido;
     private javax.swing.JTextField tf_Numero;
     // End of variables declaration//GEN-END:variables
-
-    public void buscar() {
-        pb_Filtro.setIndeterminate(true);
-
-        SwingWorker<List<Pedido>, Void> worker = new SwingWorker<List<Pedido>, Void>() {
-            @Override
-            protected List<Pedido> doInBackground() throws Exception {
-                try {
-                    BusquedaPedidoCriteria criteria = new BusquedaPedidoCriteria();
-                    criteria.setCliente((Cliente) cmb_Cliente.getSelectedItem());
-                    criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-                    criteria.setFechaDesde(dc_Desde.getDate());
-                    criteria.setFechaHasta(dc_Hasta.getDate());
-                    if (tf_Numero.getText().isEmpty()) {
-                        criteria.setNumPedido(0);
-                    } else {
-                        criteria.setNumPedido(Long.valueOf(tf_Numero.getText()));
-                    }
-                    criteria.setUsuario((Usuario) cmb_Vendedor.getSelectedItem());
-                    criteria.setBuscaCliente(chk_Cliente.isSelected());
-                    criteria.setBuscaPorFecha(chk_Fecha.isSelected());
-                    criteria.setBuscaPorNumeroPedido(chk_Numero.isSelected());
-                    criteria.setBuscaUsuario(chk_Vendedor.isSelected());
-                    criteria.setCantRegistros(cantidadResultadosParaMostrar);
-                    pedidos = pedidoService.buscarConCriteria(criteria);
-                    return pedidos;
-                } catch (ServiceException ex) {
-                    JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
-                } catch (PersistenceException ex) {
-                    log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                    JOptionPane.showInternalMessageDialog(getParent(), ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                pedidos = new ArrayList<>();
-                return pedidos;
-            }
-
-            @Override
-            protected void done() {
-                cargarResultadosAlTable();
-                pb_Filtro.setIndeterminate(false);
-                try {
-                    if (get().isEmpty()) {
-                        JOptionPane.showInternalMessageDialog(getParent(),
-                                ResourceBundle.getBundle("Mensajes")
-                                .getString("mensaje_busqueda_sin_resultados"),
-                                "Aviso", JOptionPane.INFORMATION_MESSAGE);
-                    }
-
-                } catch (InterruptedException ex) {
-                    String msjError = "La tarea que se estaba realizando fue interrumpida. Intente nuevamente.";
-                    log.error(msjError + " - " + ex.getMessage());
-                    JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
-
-                } catch (ExecutionException ex) {
-                    String msjError = "Se produjo un error en la ejecución de la tarea solicitada. Intente nuevamente.";
-                    log.error(msjError + " - " + ex.getMessage());
-                    JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        };
-
-        worker.execute();
-    }
-
-    private void cargarResultadosAlTable() {
-        this.limpiarJTables();
-        for (Pedido pedido : pedidos) {
-            Object[] fila = new Object[4];
-            fila[0] = pedido.getFecha();
-            fila[1] = pedido.getNroPedido();
-            fila[2] = pedido.getCliente().getRazonSocial();
-            fila[3] = pedido.getUsuario().getNombre();
-            modeloTablaPedidos.addRow(fila);
-        }
-        tbl_Pedidos.setModel(modeloTablaPedidos);
-    }
-
-    private void limpiarJTables() {
-        modeloTablaPedidos = new ModeloTabla();
-        tbl_Pedidos.setModel(modeloTablaPedidos);
-        modeloTablaRenglones = new ModeloTabla();
-        tbl_RenglonesPedido.setModel(modeloTablaRenglones);
-        this.setColumnasPedido();
-        this.setColumnasRenglones();
-    }
-
-    private void limpiarTablaRenglones() {
-        modeloTablaRenglones = new ModeloTabla();
-        tbl_RenglonesPedido.setModel(modeloTablaRenglones);
-        this.setColumnasPedido();
-    }
-
-    private void setColumnasRenglones() {
-                /// Renglones Pedido
-        //sorting
-        tbl_RenglonesPedido.setAutoCreateRowSorter(true);
-
-        //nombres de columnas
-        String[] encabezadoRenglones = new String[4];
-        encabezadoRenglones[0] = "id Producto";
-        encabezadoRenglones[1] = "Descripcion";
-        encabezadoRenglones[2] = "Cantidad";
-        encabezadoRenglones[3] = "Subtotal";
-        modeloTablaRenglones.setColumnIdentifiers(encabezadoRenglones);
-        tbl_RenglonesPedido.setModel(modeloTablaRenglones);
-
-        //tipo de dato columnas
-        Class[] tiposRenglones = new Class[modeloTablaRenglones.getColumnCount()];
-        tiposRenglones[0] = Long.class;
-        tiposRenglones[1] = String.class;
-        tiposRenglones[2] = String.class;
-        tiposRenglones[3] = String.class;
-        modeloTablaRenglones.setClaseColumnas(tiposRenglones);
-        tbl_RenglonesPedido.getTableHeader().setReorderingAllowed(false);
-        tbl_RenglonesPedido.getTableHeader().setResizingAllowed(true);
-
-        //render para los tipos de datos
-        tbl_RenglonesPedido.setDefaultRenderer(Double.class, new RenderTabla());
-
-        //Tamanios de columnas
-        tbl_RenglonesPedido.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tbl_RenglonesPedido.getColumnModel().getColumn(1).setPreferredWidth(110);
-        tbl_RenglonesPedido.getColumnModel().getColumn(2).setPreferredWidth(100);
-        tbl_RenglonesPedido.getColumnModel().getColumn(3).setPreferredWidth(130);
-    }
-
-    private void setColumnasPedido() {
-        //sorting
-        tbl_Pedidos.setAutoCreateRowSorter(true);
-
-        //nombres de columnas
-        String[] encabezados = new String[4];
-        encabezados[0] = "Fecha Pedido";
-        encabezados[1] = "Nº Pedido";
-        encabezados[2] = "Cliente";
-        encabezados[3] = "Usuario (Vendedor)";
-        modeloTablaPedidos.setColumnIdentifiers(encabezados);
-        tbl_Pedidos.setModel(modeloTablaPedidos);
-
-        //tipo de dato columnas
-        Class[] tipos = new Class[modeloTablaPedidos.getColumnCount()];
-        tipos[0] = Date.class;
-        tipos[1] = Long.class;
-        tipos[2] = String.class;
-        tipos[3] = String.class;
-        modeloTablaPedidos.setClaseColumnas(tipos);
-        tbl_Pedidos.getTableHeader().setReorderingAllowed(false);
-        tbl_Pedidos.getTableHeader().setResizingAllowed(true);
-
-        //render para los tipos de datos
-        tbl_Pedidos.setDefaultRenderer(Double.class, new RenderTabla());
-
-        //Tamanios de columnas
-        tbl_Pedidos.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tbl_Pedidos.getColumnModel().getColumn(1).setPreferredWidth(110);
-        tbl_Pedidos.getColumnModel().getColumn(2).setPreferredWidth(100);
-        tbl_Pedidos.getColumnModel().getColumn(3).setPreferredWidth(130);
-    }
-
-    private void cargarComboBoxClientes() {
-        cmb_Cliente.removeAllItems();
-        List<Cliente> clientes;
-        clientes = clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa());
-        for (Cliente cliente : clientes) {
-            cmb_Cliente.addItem(cliente);
-        }
-    }
-
-    private void cargarComboBoxUsuario() {
-        cmb_Vendedor.removeAllItems();
-        List<Usuario> usuarios;
-        usuarios = usuarioSercice.getUsuarios();
-        for (Usuario usuario : usuarios) {
-            cmb_Vendedor.addItem(usuario);
-        }
-    }
-
-    private boolean existeClienteDisponible() {
-        return !clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa()).isEmpty();
-    }
-
 }

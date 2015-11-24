@@ -21,12 +21,12 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "pedido")
 @NamedQueries({
-    @NamedQuery(name = "Pedido.numeroDePedidos",
-            query = "SELECT count(p) FROM Pedido p WHERE p.empresa.id_Empresa = :empresa"),
+    @NamedQuery(name = "Pedido.buscarCantidadNroPedidos",
+            query = "SELECT count(p) FROM Pedido p WHERE p.empresa.id_Empresa = :idEmpresa"),
     @NamedQuery(name = "Pedido.buscarPedidoConFacturas",
-            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.facturas WHERE p.nroPedido = :nroPedido"),
+            query = "SELECT f FROM Factura f WHERE f.pedido.nroPedido = :nroPedido"),
     @NamedQuery(name = "Pedido.buscarRenglonesDelPedido",
-            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones WHERE p = :pedido"),
+            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones WHERE p.id_Pedido = :idPedido"),
     @NamedQuery(name = "Pedido.buscarPorId",
             query = "SELECT p FROM Pedido p WHERE p.id_Pedido = :id"),
     @NamedQuery(name = "Pedido.buscarPorNumero",
@@ -55,23 +55,7 @@ public class Pedido implements Serializable {
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
 
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
-
     private boolean eliminado;
-
-    public boolean isEliminada() {
-        return eliminado;
-    }
-
-    public void setEliminada(boolean eliminada) {
-        this.eliminado = eliminada;
-    }
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Cliente", referencedColumnName = "id_Cliente")
@@ -162,6 +146,22 @@ public class Pedido implements Serializable {
 
     public void setTotal(double total) {
         this.total = total;
+    }
+
+    public Empresa getEmpresa() {
+        return empresa;
+    }
+
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
+    }
+
+    public boolean isEliminada() {
+        return eliminado;
+    }
+
+    public void setEliminada(boolean eliminada) {
+        this.eliminado = eliminada;
     }
 
     @Override

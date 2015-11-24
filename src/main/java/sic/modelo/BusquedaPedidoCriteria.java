@@ -12,7 +12,6 @@ public class BusquedaPedidoCriteria {
     private boolean buscaUsuario;
     private Usuario usuario;
     private boolean buscaPorNumeroPedido;
-
     private long numPedido;
     private Empresa empresa;
     private int cantRegistros;

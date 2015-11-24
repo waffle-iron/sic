@@ -1,7 +1,10 @@
 package sic.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
+import sic.modelo.RenglonPedido;
 
 public class RenglonDeFacturaService {
 
@@ -80,7 +83,7 @@ public class RenglonDeFacturaService {
                 resultado = producto.getPrecioVentaPublico();
             } else {
                 if (tipoDeFactura == 'Y') {
-                    iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje()/2) / 100;
+                    iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje() / 2) / 100;
                     impInterno_resultado = (producto.getPrecioVentaPublico() * producto.getImpuestoInterno_porcentaje()) / 100;
                     resultado = producto.getPrecioVentaPublico() + iva_resultado + impInterno_resultado;
                 } else {
@@ -94,5 +97,17 @@ public class RenglonDeFacturaService {
     private double calcularImporte(double cantidad, double precioUnitario, double descuento_neto) {
         double resultado = (precioUnitario - descuento_neto) * cantidad;
         return Math.round(resultado * 1000.0) / 1000.0;
+    }
+
+    public RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon) {
+        return this.calcularRenglon('P', Movimiento.PEDIDO, renglon.getCantidad(), renglon.getProducto(), 0.0);
+    }
+
+    public List<RenglonFactura> getRenglonesDePedidoComoRenglonesFactura(List<RenglonPedido> renglonPedido) {
+        List<RenglonFactura> renglonesDeFactura = new ArrayList<>();
+        for (RenglonPedido renglon : renglonPedido) {
+            renglonesDeFactura.add(this.getRenglonFacturaPorRenglonPedido(renglon));
+        }
+        return renglonesDeFactura;
     }
 }

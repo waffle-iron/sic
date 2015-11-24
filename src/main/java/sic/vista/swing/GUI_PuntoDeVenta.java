@@ -8,6 +8,7 @@ import java.awt.event.KeyEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
@@ -44,7 +45,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());
     private final RenglonDePedidoService renglonDePedidoService = new RenglonDePedidoService();
-    private Pedido pedido; 
+    private Pedido pedido;
 
     public GUI_PuntoDeVenta() {
         this.initComponents();
@@ -85,6 +86,12 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     public void cargarPedidoParaFacturar() {
         this.cargarRenglonesDelPedido(pedido);
+        if (this.renglones.isEmpty()) {
+            if (JOptionPane.showConfirmDialog(null, "¿Cerrar Punto de Venta?", "Pedido totalmente facturado",
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                this.dispose();
+            }
+        }
         this.empresa = pedido.getEmpresa();
         this.cliente = pedido.getCliente();
         EstadoRenglon[] marcaDeRenglonesDelPedido = new EstadoRenglon[renglones.size()];
@@ -534,34 +541,46 @@ public class GUI_PuntoDeVenta extends JDialog {
         return nuevo;
     }
 
-    private void cargarRenglonesDelPedido(Pedido pedido) {
-        List<RenglonFactura> renglonesDelPedido = new ArrayList<>();
-
-        List<Factura> facturas = pedidoService.getFacturas(pedido);
+    private HashMap<Long, RenglonFactura> getRenglonesUnificadosPorIdProducto(long nroPedido) {
+        List<Factura> facturas = pedidoService.getFacturasDelPedido(nroPedido);
         List<RenglonFactura> renglonesDeFacturas = new ArrayList<>();
-        for (Factura factura : facturas) {
-            renglonesDeFacturas.addAll(factura.getRenglones());
-        }
-        int i = 0;
-
-        for (RenglonPedido renglonPedido : pedidoService.getRenglonesDelPedido(pedido)) {
-            if (renglonesDeFacturas.isEmpty()) {
-                renglonesDelPedido.add(renglonDeFacturaService.calcularRenglon('P', Movimiento.PEDIDO,
-                        renglonPedido.getCantidad(), renglonPedido.getProducto(),
-                        0.0));
-            } else {
-                if ((renglonesDeFacturas.get(i).getId_ProductoItem()
-                        != renglonPedido.getProducto().getId_Producto())) {
-                    renglonesDelPedido.add(renglonDeFacturaService.calcularRenglon('P', Movimiento.PEDIDO,
-                            renglonPedido.getCantidad(), renglonPedido.getProducto(),
-                            0.0));
+        HashMap<Long, RenglonFactura> Lista = new HashMap<>();
+        if (!facturas.isEmpty()) {
+            for (Factura factura : facturas) {
+                renglonesDeFacturas.addAll(factura.getRenglones());
+            }
+            for (RenglonFactura renglon : renglonesDeFacturas) {
+                if (Lista.containsKey(renglon.getId_ProductoItem())) {
+                    Lista.get(renglon.getId_ProductoItem())
+                            .setCantidad(Lista.get(renglon.getId_ProductoItem()).getCantidad() + renglon.getCantidad());
                 } else {
-                    i++;
+                    Lista.put(renglon.getId_ProductoItem(), renglon);
                 }
-
             }
         }
-        this.renglones = renglonesDelPedido;
+        renglonesDeFacturas.clear();
+        /*for (Entry<Long, RenglonFactura> entry : Lista.entrySet()) {
+         renglonesDeFacturas.add(entry.getValue());
+         }*/
+
+        return Lista;
+    }
+
+    private void cargarRenglonesDelPedido(Pedido pedido) {
+        List<RenglonFactura> renglonesDelPedidoParaFacturar = new ArrayList<>();
+        HashMap<Long, RenglonFactura> renglonesDeFacturas = this.getRenglonesUnificadosPorIdProducto(pedido.getNroPedido());
+        List<RenglonPedido> renglonesDelPedido = pedidoService.getRenglonesDelPedido(pedido.getId_Pedido());
+        for (RenglonPedido renglon : renglonesDelPedido) {
+            if (renglonesDeFacturas.containsKey(renglon.getProducto().getId_Producto())) {
+                if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
+                    renglon.setCantidad(renglon.getCantidad() - renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad());
+                    renglonesDelPedidoParaFacturar.add(renglonDeFacturaService.getRenglonFacturaPorRenglonPedido(renglon));
+                }
+            } else {
+                renglonesDelPedidoParaFacturar.add(renglonDeFacturaService.getRenglonFacturaPorRenglonPedido(renglon));
+            }
+        }
+        this.renglones = renglonesDelPedidoParaFacturar;
     }
 
     /**

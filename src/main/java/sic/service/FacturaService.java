@@ -291,7 +291,7 @@ public class FacturaService {
         int max = cds.getCantidadMaximaDeRenglonesEnFactura();
         return cantidad < max;
     }
-
+    
     //**************************************************************************
     //Calculos
     public double calcularSubTotal(List<RenglonFactura> renglones) {

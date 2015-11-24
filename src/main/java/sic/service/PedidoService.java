@@ -22,7 +22,7 @@ public class PedidoService {
     public List<Pedido> buscarConCriteria(BusquedaPedidoCriteria criteria) {
         if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_pedidos_fechas_busqueda_invalidas"));
+                    .getString("mensaje_pedido_fechas_busqueda_invalidas"));
         }
         
         if (criteria.isBuscaPorFecha() == true) {
@@ -57,8 +57,8 @@ public class PedidoService {
         return pedidoRepository.buscarPedidosPorCriteria(criteria);
     }
     
-    public List<Factura> getFacturas(Pedido pedido) {
-        return pedidoRepository.getFacturas(pedido);
+    public List<Factura> getFacturasDelPedido(long nroPedido) {
+        return pedidoRepository.getFacturasDelPedido(nroPedido);
     }
     
     public void validarPedido(Pedido pedido) {
@@ -112,7 +112,7 @@ public class PedidoService {
         pedidoRepository.actualizar(pedido);
     }
     
-    public List<RenglonPedido> getRenglonesDelPedido(Pedido pedido) {
-        return pedidoRepository.getRenglonesDelPedido(pedido);
+    public List<RenglonPedido> getRenglonesDelPedido(long idPedido) {
+        return pedidoRepository.getRenglonesDelPedido(idPedido);
     }
 }
