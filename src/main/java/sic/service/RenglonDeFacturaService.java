@@ -1,12 +1,16 @@
 package sic.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import sic.modelo.Pedido;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
 import sic.modelo.RenglonPedido;
 
 public class RenglonDeFacturaService {
+    
+    private final PedidoService pedidoService = new PedidoService();
 
     public RenglonFactura calcularRenglon(char tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje) {
         RenglonFactura nuevoRenglon = new RenglonFactura();
@@ -109,5 +113,23 @@ public class RenglonDeFacturaService {
             renglonesDeFactura.add(this.getRenglonFacturaPorRenglonPedido(renglon));
         }
         return renglonesDeFactura;
+    }
+    
+     public List<RenglonFactura> getRenglonesParaFacturarDelPedido(Pedido pedido) {
+        List<RenglonFactura> renglonesDelPedidoParaFacturar = new ArrayList<>();
+        HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesUnificadosPorIdProducto(pedido.getNroPedido());
+        List<RenglonPedido> renglonesDelPedido = pedidoService.getRenglonesDelPedido(pedido.getId_Pedido());
+        for (RenglonPedido renglon : renglonesDelPedido) {
+            if (renglonesDeFacturas.containsKey(renglon.getProducto().getId_Producto())) {
+                if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
+                    renglon.setCantidad(renglon.getCantidad() - renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad());
+                    renglonesDelPedidoParaFacturar.add(this.getRenglonFacturaPorRenglonPedido(renglon));
+                }
+            } else {
+                renglonesDelPedidoParaFacturar.add(this.getRenglonFacturaPorRenglonPedido(renglon));
+            }
+        }
+        return renglonesDelPedidoParaFacturar;
+
     }
 }
