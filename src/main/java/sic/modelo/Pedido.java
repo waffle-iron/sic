@@ -3,7 +3,6 @@ package sic.modelo;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.Data;
 
 @Entity
 @Table(name = "pedido")
@@ -36,6 +36,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Pedido.buscarPorNumeroConRenglones",
             query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones WHERE p.nroPedido = :nroPedido")
 })
+@Data
 public class Pedido implements Serializable {
 
     @Id
@@ -72,158 +73,5 @@ public class Pedido implements Serializable {
     private List<RenglonPedido> renglones;
 
     private double total;
-
-    public Pedido() {
-    }
-
-    public long getId_Pedido() {
-        return id_Pedido;
-    }
-
-    public void setId_Pedido(long id_Pedido) {
-        this.id_Pedido = id_Pedido;
-    }
-
-    public long getNroPedido() {
-        return nroPedido;
-    }
-
-    public void setNroPedido(long nroPedido) {
-        this.nroPedido = nroPedido;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    public String getHistorial() {
-        return historial;
-    }
-
-    public void setHistorial(String historial) {
-        this.historial = historial;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public List<Factura> getFacturas() {
-        return facturas;
-    }
-
-    public void setFacturas(List<Factura> facturas) {
-        this.facturas = facturas;
-    }
-
-    public List<RenglonPedido> getRenglones() {
-        return renglones;
-    }
-
-    public void setRenglones(List<RenglonPedido> renglones) {
-        this.renglones = renglones;
-    }
-
-    public double getTotal() {
-        return total;
-    }
-
-    public void setTotal(double total) {
-        this.total = total;
-    }
-
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
-
-    public boolean isEliminada() {
-        return eliminado;
-    }
-
-    public void setEliminada(boolean eliminada) {
-        this.eliminado = eliminada;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 47 * hash + (int) (this.id_Pedido ^ (this.id_Pedido >>> 32));
-        hash = 47 * hash + (int) (this.nroPedido ^ (this.nroPedido >>> 32));
-        hash = 47 * hash + Objects.hashCode(this.fecha);
-        hash = 47 * hash + Objects.hashCode(this.historial);
-        hash = 47 * hash + Objects.hashCode(this.empresa);
-        hash = 47 * hash + (this.eliminado ? 1 : 0);
-        hash = 47 * hash + Objects.hashCode(this.cliente);
-        hash = 47 * hash + Objects.hashCode(this.usuario);
-        hash = 47 * hash + Objects.hashCode(this.facturas);
-        hash = 47 * hash + Objects.hashCode(this.renglones);
-        hash = 47 * hash + (int) (Double.doubleToLongBits(this.total) ^ (Double.doubleToLongBits(this.total) >>> 32));
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Pedido other = (Pedido) obj;
-        if (this.id_Pedido != other.id_Pedido) {
-            return false;
-        }
-        if (this.nroPedido != other.nroPedido) {
-            return false;
-        }
-        if (!Objects.equals(this.fecha, other.fecha)) {
-            return false;
-        }
-        if (!Objects.equals(this.historial, other.historial)) {
-            return false;
-        }
-        if (!Objects.equals(this.empresa, other.empresa)) {
-            return false;
-        }
-        if (this.eliminado != other.eliminado) {
-            return false;
-        }
-        if (!Objects.equals(this.cliente, other.cliente)) {
-            return false;
-        }
-        if (!Objects.equals(this.usuario, other.usuario)) {
-            return false;
-        }
-        if (!Objects.equals(this.facturas, other.facturas)) {
-            return false;
-        }
-        if (!Objects.equals(this.renglones, other.renglones)) {
-            return false;
-        }
-        if (Double.doubleToLongBits(this.total) != Double.doubleToLongBits(other.total)) {
-            return false;
-        }
-        return true;
-    }
 
 }
