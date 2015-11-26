@@ -38,8 +38,8 @@ public class PedidoRepository {
             query += " AND p.usuario = " + criteria.getUsuario().getId_Usuario();
         }
         //Nro de Pedido
-        if (criteria.isBuscaPorNumeroPedido() == true) {
-            query += " AND p.nroPedido = " + criteria.getNumIdPedido();
+        if (criteria.isBuscaPorNroPedido() == true) {
+            query += " AND p.nroPedido = " + criteria.getNroPedido();
         }
         query += " ORDER BY p.fecha DESC";
         EntityManager em = PersistenceUtil.getEntityManager();

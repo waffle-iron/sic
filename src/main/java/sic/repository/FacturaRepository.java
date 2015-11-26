@@ -94,9 +94,9 @@ public class FacturaRepository {
         if (criteria.isBuscaPorNumeroFactura() == true) {
             query += " AND f.numSerie = " + criteria.getNumSerie() + " AND f.numFactura = " + criteria.getNumFactura();
         }
-        //pedidos
-        if (criteria.isBuscarPorPedido() == true && criteria.getPedido() != null) {
-            query += " AND f.pedido = " + criteria.getPedido().getNroPedido();
+        //Pedido
+        if (criteria.isBuscarPorPedido() == true) {
+            query += " AND f.pedido = " + criteria.getNroPedido();
         }
         //Inpagas
         if (criteria.isBuscaSoloInpagas() == true) {
