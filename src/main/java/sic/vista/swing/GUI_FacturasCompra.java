@@ -9,12 +9,14 @@ import javax.persistence.PersistenceException;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.FacturaCompra;
 import sic.modelo.Proveedor;
-import sic.service.impl.EmpresaServiceImpl;
-import sic.service.impl.FacturaServiceImpl;
-import sic.service.impl.ProveedorServiceImpl;
+import sic.service.IEmpresaService;
+import sic.service.IFacturaService;
+import sic.service.IProveedorService;
 import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
@@ -23,9 +25,10 @@ public class GUI_FacturasCompra extends JInternalFrame {
 
     private ModeloTabla modeloTablaFacturas = new ModeloTabla();
     private List<FacturaCompra> facturas;
-    private final FacturaServiceImpl facturaService = new FacturaServiceImpl();
-    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
-    private final ProveedorServiceImpl proveedorService = new ProveedorServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
     private static final Logger log = Logger.getLogger(GUI_FacturasCompra.class.getPackage().getName());
 
     public GUI_FacturasCompra() {

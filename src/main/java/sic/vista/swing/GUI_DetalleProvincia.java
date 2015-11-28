@@ -3,12 +3,19 @@ package sic.vista.swing;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
-import javax.swing.*;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
-import sic.service.impl.PaisServiceImpl;
-import sic.service.impl.ProvinciaServiceImpl;
+import sic.service.IPaisService;
+import sic.service.IProvinciaService;
 import sic.service.ServiceException;
 
 public class GUI_DetalleProvincia extends JDialog {
@@ -17,7 +24,9 @@ public class GUI_DetalleProvincia extends JDialog {
     private final DefaultComboBoxModel modeloComboPaises = new DefaultComboBoxModel();
     private final DefaultComboBoxModel modeloComboPaisesBusqueda = new DefaultComboBoxModel();
     private Provincia provinciaSeleccionada;
-    private final ProvinciaServiceImpl provinciaService = new ProvinciaServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
+    private final IPaisService paisService = appContext.getBean(IPaisService.class);
     private static final Logger log = Logger.getLogger(GUI_DetalleProvincia.class.getPackage().getName());
 
     public GUI_DetalleProvincia() {
@@ -312,8 +321,7 @@ private void cmb_PaisesBusquedaItemStateChanged(java.awt.event.ItemEvent evt) {/
         lst_Provincias.setModel(modeloList);
     }
 
-    private void cargarComboBoxPaises(JComboBox comboBox, DefaultComboBoxModel modelo) {
-        PaisServiceImpl paisService = new PaisServiceImpl();        
+    private void cargarComboBoxPaises(JComboBox comboBox, DefaultComboBoxModel modelo) {          
         modelo.removeAllElements();
         List<Pais> paises  = paisService.getPaises();
         for (Pais pais : paises) {

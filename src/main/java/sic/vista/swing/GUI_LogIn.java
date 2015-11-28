@@ -8,42 +8,40 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.repository.XMLException;
 import sic.modelo.DatosConexion;
 import sic.modelo.XMLFileConfig;
 import sic.modelo.Usuario;
-import sic.service.impl.ConexionServiceImpl;
-import sic.service.impl.ConfiguracionDelSistemaServiceImpl;
+import sic.service.IConexionService;
+import sic.service.IConfiguracionDelSistemaService;
 import sic.service.IUsuarioService;
 import sic.service.ServiceException;
 import sic.util.Validator;
 
-@Component
 public class GUI_LogIn extends JFrame {
 
     private boolean configDesplegada;
     private Usuario usuario;
-    private final IUsuarioService usuarioService;    
-    private final ConfiguracionDelSistemaServiceImpl configuracionService = new ConfiguracionDelSistemaServiceImpl();
-    private final ConexionServiceImpl conexionService = new ConexionServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
+    private final IConfiguracionDelSistemaService configuracionService = appContext.getBean(IConfiguracionDelSistemaService.class);
+    private final IConexionService conexionService = appContext.getBean(IConexionService.class);
     private static final Logger log = Logger.getLogger(GUI_LogIn.class.getPackage().getName());
 
-    @Autowired
-    public GUI_LogIn(IUsuarioService usuarioService) {
+    public GUI_LogIn() {        
         this.initComponents();
         this.setSize(290, 150);
         this.setTitle("S.I.C. " + ResourceBundle.getBundle("Mensajes").getString("version"));
         ImageIcon iconoVentana = new ImageIcon(GUI_LogIn.class.getResource("/sic/icons/SIC_24_square.png"));
-        this.setIconImage(iconoVentana.getImage());        
+        this.setIconImage(iconoVentana.getImage());
         this.setLocationRelativeTo(null);
         txt_Host.setEnabled(false);
         txt_Puerto.setEnabled(false);
         txt_BD.setEnabled(false);
         btn_Guardar.setEnabled(false);
         this.cargarDatosConexion();
-        this.usuarioService = usuarioService;
     }
 
     private void validarUsuario() {

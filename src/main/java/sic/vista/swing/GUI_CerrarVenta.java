@@ -1,9 +1,5 @@
 package sic.vista.swing;
 
-import sic.service.impl.TransportistaServiceImpl;
-import sic.service.impl.FormaDePagoServiceImpl;
-import sic.service.impl.FacturaServiceImpl;
-import sic.service.impl.UsuarioServiceImpl;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
@@ -11,26 +7,37 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Factura;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
-import sic.service.*;
+import sic.service.IFacturaService;
+import sic.service.IFormaDePagoService;
+import sic.service.ITransportistaService;
+import sic.service.IUsuarioService;
+import sic.service.ServiceException;
 
 public class GUI_CerrarVenta extends JDialog {
 
     private final GUI_PuntoDeVenta gui_tpv;
     private boolean exito;
-    private final FormaDePagoServiceImpl formaDePagoService = new FormaDePagoServiceImpl();
-    private final TransportistaServiceImpl transportistaService = new TransportistaServiceImpl();
-    private final FacturaServiceImpl facturaService = new FacturaServiceImpl();
-    private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
+    private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
+    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
+    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_CerrarVenta.class.getPackage().getName());
 

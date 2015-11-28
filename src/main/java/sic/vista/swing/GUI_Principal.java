@@ -4,18 +4,26 @@ import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Empresa;
-import sic.service.impl.EmpresaServiceImpl;
-import sic.service.impl.UsuarioServiceImpl;
+import sic.service.IEmpresaService;
+import sic.service.IUsuarioService;
 import sic.util.Utilidades;
 
 public class GUI_Principal extends JFrame {
 
     private final JLabel lbl_Fondo;
-    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
-    private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);    
+    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private static final Logger log = Logger.getLogger(GUI_Principal.class.getPackage().getName());
 
     public GUI_Principal() {
@@ -33,7 +41,7 @@ public class GUI_Principal extends JFrame {
 
     public JDesktopPane getDesktopPane() {
         return dp_Escritorio;
-    }
+    }     
 
     private void llamarGUI_SeleccionEmpresa() {
         GUI_SeleccionEmpresa gui_seleccionEmpresa = new GUI_SeleccionEmpresa(this, true);

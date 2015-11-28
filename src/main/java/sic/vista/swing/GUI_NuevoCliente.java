@@ -1,11 +1,5 @@
 package sic.vista.swing;
 
-import sic.service.impl.LocalidadServiceImpl;
-import sic.service.impl.PaisServiceImpl;
-import sic.service.impl.ProvinciaServiceImpl;
-import sic.service.impl.EmpresaServiceImpl;
-import sic.service.impl.CondicionDeIVAServiceImpl;
-import sic.service.impl.ClienteServiceImpl;
 import com.toedter.calendar.IDateEditor;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -17,22 +11,31 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Cliente;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
-import sic.service.*;
+import sic.service.IClienteService;
+import sic.service.ICondicionIVAService;
+import sic.service.IEmpresaService;
+import sic.service.ILocalidadService;
+import sic.service.IPaisService;
+import sic.service.IProvinciaService;
+import sic.service.ServiceException;
 
 public class GUI_NuevoCliente extends JDialog {
 
     private Cliente clienteDadoDeAlta;
-    private final ProvinciaServiceImpl provinciaService = new ProvinciaServiceImpl();
-    private final LocalidadServiceImpl localidadService = new LocalidadServiceImpl();
-    private final CondicionDeIVAServiceImpl condicionDeIVAService = new CondicionDeIVAServiceImpl();
-    private final PaisServiceImpl paisService = new PaisServiceImpl();
-    private final ClienteServiceImpl clienteService = new ClienteServiceImpl();
-    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
+    private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
+    private final ICondicionIVAService condicionIVAService = appContext.getBean(ICondicionIVAService.class);
+    private final IPaisService paisService = appContext.getBean(IPaisService.class);
+    private final IClienteService clienteService = appContext.getBean(IClienteService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_NuevoCliente.class.getPackage().getName());
 
@@ -79,7 +82,7 @@ public class GUI_NuevoCliente extends JDialog {
 
     public void cargarComboBoxCondicionesIVA() {
         cmb_CondicionIVA.removeAllItems();
-        List<CondicionIVA> condicionesIVA = condicionDeIVAService.getCondicionesIVA();
+        List<CondicionIVA> condicionesIVA = condicionIVAService.getCondicionesIVA();
         for (CondicionIVA cond : condicionesIVA) {
             cmb_CondicionIVA.addItem(cond);
         }

@@ -1,10 +1,5 @@
 package sic.vista.swing;
 
-import sic.service.impl.RubroServiceImpl;
-import sic.service.impl.MedidaServiceImpl;
-import sic.service.impl.ProveedorServiceImpl;
-import sic.service.impl.ProductoServiceImpl;
-import sic.service.impl.EmpresaServiceImpl;
 import sic.modelo.PreciosProducto;
 import java.awt.Color;
 import java.awt.event.ItemEvent;
@@ -17,21 +12,29 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Medida;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
-import sic.service.*;
+import sic.service.IEmpresaService;
+import sic.service.IMedidaService;
+import sic.service.IProductoService;
+import sic.service.IProveedorService;
+import sic.service.IRubroService;
+import sic.service.ServiceException;
 
 public class GUI_ModificacionProductosBulk extends JDialog {
 
     private final List<Producto> productosParaModificar;
     private ModeloTabla modeloTablaProductos;
-    private final MedidaServiceImpl medidaService = new MedidaServiceImpl();
-    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
-    private final RubroServiceImpl rubroService = new RubroServiceImpl();
-    private final ProveedorServiceImpl proveedorService = new ProveedorServiceImpl();
-    private final ProductoServiceImpl productoService = new ProductoServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IMedidaService medidaService = appContext.getBean(IMedidaService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IRubroService rubroService = appContext.getBean(IRubroService.class);
+    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
+    private final IProductoService productoService = appContext.getBean(IProductoService.class);
     private static final Logger log = Logger.getLogger(GUI_ModificacionProductosBulk.class.getPackage().getName());
 
     public GUI_ModificacionProductosBulk(List<Producto> productosParaModificar) {

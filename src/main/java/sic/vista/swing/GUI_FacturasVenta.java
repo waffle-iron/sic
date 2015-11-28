@@ -1,25 +1,31 @@
 package sic.vista.swing;
 
-import sic.service.impl.FacturaServiceImpl;
-import sic.service.impl.EmpresaServiceImpl;
-import sic.service.impl.ClienteServiceImpl;
-import sic.service.impl.UsuarioServiceImpl;
 import java.beans.PropertyVetoException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Usuario;
-import sic.service.*;
+import sic.service.IClienteService;
+import sic.service.IEmpresaService;
+import sic.service.IFacturaService;
+import sic.service.IUsuarioService;
+import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -27,10 +33,11 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
     private ModeloTabla modeloTablaFacturas;
     private List<FacturaVenta> facturas;
-    private final FacturaServiceImpl facturaService = new FacturaServiceImpl();
-    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
-    private final ClienteServiceImpl clienteService = new ClienteServiceImpl();
-    private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IClienteService clienteService = appContext.getBean(IClienteService.class);
+    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private static final Logger log = Logger.getLogger(GUI_FacturasVenta.class.getPackage().getName());
 
     public GUI_FacturasVenta() {

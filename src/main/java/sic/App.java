@@ -1,7 +1,5 @@
 package sic;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
@@ -18,8 +16,6 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import sic.modelo.Usuario;
-import sic.repository.IUsuarioRepository;
 import sic.vista.swing.GUI_LogIn;
 
 /**
@@ -34,7 +30,7 @@ public class App {
         Properties properties = new Properties();
         //properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
-        properties.setProperty("hibernate.show_sql", "true");
+        properties.setProperty("hibernate.show_sql", "false");
         properties.setProperty("hibernate.format_sql", "true");
         return properties;
     }
@@ -72,13 +68,15 @@ public class App {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 
+    @Bean
+    public AppContextProvider getApplicationContextProvider() {
+        return new AppContextProvider();
+    }
+
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(App.class);
-        System.out.println(Arrays.toString(context.getBeanDefinitionNames()));
-        IUsuarioRepository usuarioRepository = context.getBean(IUsuarioRepository.class);
-        List<Usuario> usuarios = usuarioRepository.getUsuarios();
-
-        GUI_LogIn gui_LogIn = context.getBean(GUI_LogIn.class);
+        System.out.println("Spring Context inicializado con ID: " + context.getId());
+        GUI_LogIn gui_LogIn = new GUI_LogIn();
         gui_LogIn.setVisible(true);
     }
 }

@@ -8,9 +8,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.FacturaCompra;
 import sic.modelo.PagoFacturaCompra;
-import sic.service.impl.PagoFacturaDeCompraServiceImpl;
+import sic.service.IPagoFacturaDeCompraService;
 import sic.service.ServiceException;
 import sic.util.FormatterFechaHora;
 import sic.util.RenderTabla;
@@ -21,7 +23,8 @@ public class GUI_Pagos extends JDialog {
     private ModeloTabla modeloTablaResultados;
     private List<PagoFacturaCompra> pagos;
     private final FacturaCompra facturaRelacionada;
-    private final PagoFacturaDeCompraServiceImpl pagoFacturaDeCompraService = new PagoFacturaDeCompraServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IPagoFacturaDeCompraService pagoFacturaDeCompraService = appContext.getBean(IPagoFacturaDeCompraService.class);
     private static final Logger log = Logger.getLogger(GUI_Pagos.class.getPackage().getName());
 
     public GUI_Pagos(FacturaCompra factura) {

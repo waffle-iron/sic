@@ -8,24 +8,27 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Empresa;
-import sic.service.impl.EmpresaServiceImpl;
+import sic.service.IEmpresaService;
 
 public class GUI_SeleccionEmpresa extends JDialog {
 
     private Empresa empresaSeleccionada;
-    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private static final Logger log = Logger.getLogger(GUI_SeleccionEmpresa.class.getPackage().getName());
 
     public GUI_SeleccionEmpresa(JDialog parent, boolean modal) {
-        super(parent, modal);
+        super(parent, modal);        
         this.setIU();
     }
 
     public GUI_SeleccionEmpresa(JFrame parent, boolean modal) {
-        super(parent, modal);
+        super(parent, modal);        
         this.setIU();
-    }
+    }     
 
     private void setIU() {
         this.initComponents();

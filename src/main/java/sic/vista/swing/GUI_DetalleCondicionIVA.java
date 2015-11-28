@@ -8,15 +8,18 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.CondicionIVA;
-import sic.service.impl.CondicionDeIVAServiceImpl;
+import sic.service.ICondicionIVAService;
 import sic.service.ServiceException;
 
 public class GUI_DetalleCondicionIVA extends JDialog {
 
     private CondicionIVA condicionIVASeleccionada;
     private final DefaultListModel modeloList = new DefaultListModel();
-    private final CondicionDeIVAServiceImpl condicionDeIVAService = new CondicionDeIVAServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final ICondicionIVAService condicionIVAService = appContext.getBean(ICondicionIVAService.class);
     private static final Logger log = Logger.getLogger(GUI_DetalleCondicionIVA.class.getPackage().getName());
 
     public GUI_DetalleCondicionIVA() {
@@ -31,7 +34,7 @@ public class GUI_DetalleCondicionIVA extends JDialog {
 
     private void cargarListCondiciones() {
         modeloList.clear();
-        List<CondicionIVA> condicionesIVA = condicionDeIVAService.getCondicionesIVA();
+        List<CondicionIVA> condicionesIVA = condicionIVAService.getCondicionesIVA();
         for (CondicionIVA cond : condicionesIVA) {
             modeloList.addElement(cond);
         }
@@ -195,7 +198,7 @@ public class GUI_DetalleCondicionIVA extends JDialog {
         condicionIVA.setNombre(txt_Nombre.getText().trim());
         condicionIVA.setDiscriminaIVA(chk_DiscriminaIVA.isSelected());
         try {
-            condicionDeIVAService.guardar(condicionIVA);
+            condicionIVAService.guardar(condicionIVA);
             this.limpiarYRecargarComponentes();
 
         } catch (ServiceException ex) {
@@ -217,7 +220,7 @@ public class GUI_DetalleCondicionIVA extends JDialog {
             } else {
                 condicionIVASeleccionada.setNombre(txt_Nombre.getText().trim());
                 condicionIVASeleccionada.setDiscriminaIVA(chk_DiscriminaIVA.isSelected());
-                condicionDeIVAService.actualizar(condicionIVASeleccionada);
+                condicionIVAService.actualizar(condicionIVASeleccionada);
                 this.limpiarYRecargarComponentes();
             }
 
@@ -239,7 +242,7 @@ public class GUI_DetalleCondicionIVA extends JDialog {
                         "Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 //eliminar                
-                condicionDeIVAService.eliminar(condicionIVASeleccionada);
+                condicionIVAService.eliminar(condicionIVASeleccionada);
                 this.limpiarYRecargarComponentes();
             }
 

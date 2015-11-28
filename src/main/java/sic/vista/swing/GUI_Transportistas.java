@@ -1,10 +1,5 @@
 package sic.vista.swing;
 
-import sic.service.impl.TransportistaServiceImpl;
-import sic.service.impl.LocalidadServiceImpl;
-import sic.service.impl.PaisServiceImpl;
-import sic.service.impl.ProvinciaServiceImpl;
-import sic.service.impl.EmpresaServiceImpl;
 import java.beans.PropertyVetoException;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -12,11 +7,18 @@ import javax.persistence.PersistenceException;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.BusquedaTransportistaCriteria;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
 import sic.modelo.Transportista;
+import sic.service.IEmpresaService;
+import sic.service.ILocalidadService;
+import sic.service.IPaisService;
+import sic.service.IProvinciaService;
+import sic.service.ITransportistaService;
 import sic.util.Utilidades;
 
 public class GUI_Transportistas extends JInternalFrame {
@@ -24,11 +26,12 @@ public class GUI_Transportistas extends JInternalFrame {
     private ModeloTabla modeloTablaResultados;
     private List<Transportista> transportistas;
     private Transportista transSeleccionado;
-    private final PaisServiceImpl paisService = new PaisServiceImpl();
-    private final ProvinciaServiceImpl provinciaService = new ProvinciaServiceImpl();
-    private final LocalidadServiceImpl localidadService = new LocalidadServiceImpl();
-    private final TransportistaServiceImpl transportistaService = new TransportistaServiceImpl();
-    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IPaisService paisService = appContext.getBean(IPaisService.class);
+    private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
+    private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
+    private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private static final Logger log = Logger.getLogger(GUI_Transportistas.class.getPackage().getName());
 
     public GUI_Transportistas() {

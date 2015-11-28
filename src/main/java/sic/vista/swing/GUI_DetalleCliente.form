@@ -367,7 +367,7 @@
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                       <Component id="lbl_RazonSocial" alignment="0" max="32767" attributes="1"/>
-                      <Component id="lbl_NombreFantasia" alignment="0" pref="100" max="32767" attributes="0"/>
+                      <Component id="lbl_NombreFantasia" alignment="0" pref="0" max="32767" attributes="0"/>
                       <Component id="lbl_CondicionIVA" alignment="0" max="32767" attributes="1"/>
                       <Component id="lbl_Id_Fiscal" max="32767" attributes="0"/>
                   </Group>

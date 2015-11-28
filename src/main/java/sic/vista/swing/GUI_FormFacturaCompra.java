@@ -1,28 +1,34 @@
 package sic.vista.swing;
 
-import sic.service.impl.TransportistaServiceImpl;
-import sic.service.impl.RenglonDeFacturaServiceImpl;
-import sic.service.impl.FormaDePagoServiceImpl;
-import sic.service.impl.ProveedorServiceImpl;
-import sic.service.impl.FacturaServiceImpl;
-import sic.service.impl.ProductoServiceImpl;
-import sic.service.impl.EmpresaServiceImpl;
 import java.awt.Color;
 import java.awt.Point;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FormaDePago;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
-import sic.service.*;
+import sic.service.IEmpresaService;
+import sic.service.IFacturaService;
+import sic.service.IFormaDePagoService;
+import sic.service.IProductoService;
+import sic.service.IProveedorService;
+import sic.service.IRenglonDeFacturaService;
+import sic.service.ITransportistaService;
+import sic.service.Movimiento;
+import sic.service.ServiceException;
 import sic.util.RenderTabla;
 
 public class GUI_FormFacturaCompra extends JDialog {
@@ -30,12 +36,14 @@ public class GUI_FormFacturaCompra extends JDialog {
     private ModeloTabla modeloTablaRenglones = new ModeloTabla();
     private List<RenglonFactura> renglones;
     private final FacturaCompra facturaParaMostrar;
-    private final ProveedorServiceImpl proveedorService = new ProveedorServiceImpl();
-    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
-    private final TransportistaServiceImpl transportistaService = new TransportistaServiceImpl();
-    private final FacturaServiceImpl facturaService = new FacturaServiceImpl();
-    private final ProductoServiceImpl productoService = new ProductoServiceImpl();
-    private final RenglonDeFacturaServiceImpl renglonDeFacturaService = new RenglonDeFacturaServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
+    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
+    private final IProductoService productoService = appContext.getBean(IProductoService.class);
+    private final IRenglonDeFacturaService renglonDeFacturaService = appContext.getBean(IRenglonDeFacturaService.class);
+    private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private char tipoDeFactura;
     private final boolean operacionAlta;
     private static final Logger log = Logger.getLogger(GUI_FormFacturaCompra.class.getPackage().getName());
@@ -177,13 +185,11 @@ public class GUI_FormFacturaCompra extends JDialog {
         }
     }
 
-    private void cargarComboBoxFormasDePago() {
-        FormaDePagoServiceImpl formaDePagoService = new FormaDePagoServiceImpl();
-        EmpresaServiceImpl controladorEmpresa = new EmpresaServiceImpl();
-        List<FormaDePago> formas;
+    private void cargarComboBoxFormasDePago() {        
+        List<FormaDePago> formasDePago;
         cmb_FormaDePago.removeAllItems();
-        formas = formaDePagoService.getFormasDePago(controladorEmpresa.getEmpresaActiva().getEmpresa());
-        for (FormaDePago f : formas) {
+        formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
+        for (FormaDePago f : formasDePago) {
             cmb_FormaDePago.addItem(f);
         }
     }

@@ -1,9 +1,5 @@
 package sic.vista.swing;
 
-import sic.service.impl.RubroServiceImpl;
-import sic.service.impl.ProveedorServiceImpl;
-import sic.service.impl.ProductoServiceImpl;
-import sic.service.impl.EmpresaServiceImpl;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -12,11 +8,17 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
-import sic.service.*;
+import sic.service.IEmpresaService;
+import sic.service.IProductoService;
+import sic.service.IProveedorService;
+import sic.service.IRubroService;
+import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -26,10 +28,11 @@ public class GUI_BusquedaProductos extends JDialog {
     private List<Producto> productos;
     private Producto productoSeleccionado;
     private int cantidadResultadosParaMostrar = 500;
-    private final RubroServiceImpl rubroService = new RubroServiceImpl();
-    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
-    private final ProveedorServiceImpl proveedorService = new ProveedorServiceImpl();
-    private final ProductoServiceImpl productoService = new ProductoServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IRubroService rubroService = appContext.getBean(IRubroService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
+    private final IProductoService productoService = appContext.getBean(IProductoService.class);
     private static final Logger log = Logger.getLogger(GUI_BusquedaProductos.class.getPackage().getName());
 
     public GUI_BusquedaProductos() {

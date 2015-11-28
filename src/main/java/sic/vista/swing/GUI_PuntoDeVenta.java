@@ -1,13 +1,5 @@
 package sic.vista.swing;
 
-import sic.service.impl.TransportistaServiceImpl;
-import sic.service.impl.RenglonDeFacturaServiceImpl;
-import sic.service.impl.FormaDePagoServiceImpl;
-import sic.service.impl.FacturaServiceImpl;
-import sic.service.impl.ProductoServiceImpl;
-import sic.service.impl.EmpresaServiceImpl;
-import sic.service.impl.ClienteServiceImpl;
-import sic.service.impl.UsuarioServiceImpl;
 import sic.modelo.ResultadosFactura;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -19,31 +11,49 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
 import sic.modelo.FormaDePago;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
-import sic.service.*;
+import sic.service.IClienteService;
+import sic.service.IEmpresaService;
+import sic.service.IFacturaService;
+import sic.service.IFormaDePagoService;
+import sic.service.IProductoService;
+import sic.service.IRenglonDeFacturaService;
+import sic.service.ITransportistaService;
+import sic.service.IUsuarioService;
+import sic.service.Movimiento;
+import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
 public class GUI_PuntoDeVenta extends JDialog {
+
     private Empresa empresa;
     private char tipoDeFactura;
     private Cliente cliente;
     private List<RenglonFactura> renglones;
     private ModeloTabla modeloTablaResultados;
-    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
-    private final ClienteServiceImpl clienteService = new ClienteServiceImpl();
-    private final FormaDePagoServiceImpl formaDePagoService = new FormaDePagoServiceImpl();
-    private final TransportistaServiceImpl transportistaService = new TransportistaServiceImpl();
-    private final RenglonDeFacturaServiceImpl renglonDeFacturaService = new RenglonDeFacturaServiceImpl();
-    private final ProductoServiceImpl productoService = new ProductoServiceImpl();
-    private final FacturaServiceImpl facturaService = new FacturaServiceImpl();
-    private final UsuarioServiceImpl usuarioService = new UsuarioServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IClienteService clienteService = appContext.getBean(IClienteService.class);
+    private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
+    private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
+    private final IRenglonDeFacturaService renglonDeFacturaService = appContext.getBean(IRenglonDeFacturaService.class);
+    private final IProductoService productoService = appContext.getBean(IProductoService.class);
+    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
+    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());
 
@@ -83,27 +93,27 @@ public class GUI_PuntoDeVenta extends JDialog {
         dc_fechaVencimiento.addKeyListener(keyHandler);
         btn_nuevoProducto.addKeyListener(keyHandler);
     }
-    
+
     public char getTipoDeFactura() {
         return tipoDeFactura;
     }
-    
+
     public Cliente getCliente() {
         return cliente;
     }
-    
+
     public Empresa getEmpresa() {
         return empresa;
     }
-    
+
     public JTextArea getTxta_Observaciones() {
         return txta_Observaciones;
     }
-    
+
     public List<RenglonFactura> getRenglones() {
         return renglones;
     }
-    
+
     public ResultadosFactura getResultadosFactura() {
         ResultadosFactura resultados = new ResultadosFactura();
         resultados.setSubTotal(Double.parseDouble(txt_Subtotal.getValue().toString()));
@@ -118,7 +128,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         resultados.setTotal(Double.parseDouble(txt_Total.getValue().toString()));
         return resultados;
     }
-    
+
     public ModeloTabla getModeloTabla() {
         return this.modeloTablaResultados;
     }
@@ -129,7 +139,7 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     public Date getFechaVencimiento() {
         return this.dc_fechaVencimiento.getDate();
-    }
+    }    
 
     private void prepararComponentes() {
         txt_Subtotal.setValue(new Double("0.0"));
@@ -141,12 +151,12 @@ public class GUI_PuntoDeVenta extends JDialog {
         txt_ImpInterno_neto.setValue(new Double("0.0"));
         txt_Total.setValue(new Double("0.0"));
     }
-    
+
     private void llamarGUI_SeleccionEmpresa() {
         GUI_SeleccionEmpresa GUI_Empresas = new GUI_SeleccionEmpresa(this, true);
         GUI_Empresas.setVisible(true);
         if (empresaService.getEmpresaActiva().getEmpresa() == null) {
-            System.exit(0);            
+            System.exit(0);
         } else {
             empresa = empresaService.getEmpresaActiva().getEmpresa();
             this.setTitle("S.I.C. Punto de Venta "
@@ -154,7 +164,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                     + " - " + empresa.getNombre());
         }
     }
-    
+
     private void cargarEstadoDeLosChkEnTabla(JTable tbl_Resultado, EstadoRenglon[] estadosDeLosRenglones) {
         for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
             if ((boolean) tbl_Resultado.getValueAt(i, 0)) {
@@ -164,7 +174,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             }
         }
     }
-    
+
     private boolean existeClientePredeterminado() {
         Cliente clientePredeterminado = clienteService.getClientePredeterminado(empresa);
         if (clientePredeterminado == null) {
@@ -178,7 +188,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             return true;
         }
     }
-    
+
     private boolean existeFormaDePagoPredeterminada() {
         FormaDePago fp = formaDePagoService.getFormaDePagoPredeterminada(empresa);
         if (fp == null) {
@@ -191,7 +201,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             return true;
         }
     }
-    
+
     private boolean existeTransportistaCargado() {
         if (transportistaService.getTransportistas(empresa).isEmpty()) {
             String mensaje = "No posee ningun Transportista cargado en la empresa seleccionada.\n"
@@ -202,7 +212,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             return true;
         }
     }
-    
+
     private void cargarCliente(Cliente cliente) {
         this.cliente = cliente;
         txt_NombreCliente.setText(cliente.getRazonSocial());
@@ -210,7 +220,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         txt_CondicionIVACliente.setText(cliente.getCondicionIVA().toString());
         txt_IDFiscalCliente.setText(cliente.getId_Fiscal());
     }
-    
+
     private void setColumnas() {
         //nombres de columnas
         String[] encabezados = new String[8];
@@ -252,7 +262,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         tbl_Resultado.getColumnModel().getColumn(6).setPreferredWidth(120);
         tbl_Resultado.getColumnModel().getColumn(7).setPreferredWidth(120);
     }
-    
+
     private boolean existeStockDisponible(double cantRequerida, Producto producto) {
         double disponibilidad;
         if (producto.isIlimitado() == false) {
@@ -267,7 +277,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             return true;
         }
     }
-    
+
     private void agregarRenglon(RenglonFactura renglon) {
         boolean agregado = false;
         //busca entre los renglones al producto, aumenta la cantidad y recalcula el descuento        
@@ -288,7 +298,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         Point p = new Point(0, tbl_Resultado.getHeight());
         sp_Resultado.getViewport().setViewPosition(p);
     }
-    
+
     private void cargarRenglonesAlTable(EstadoRenglon[] estadosDeLosRenglones) {
         modeloTablaResultados = new ModeloTabla();
         this.setColumnas();
@@ -299,7 +309,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             corte = false;
             /*Dentro de este While, el case según el valor leido en el array de la enumeración,
              (modelo tabla)asigna el valor correspondiente al checkbox del renglon.*/
-            
+
             while (corte == false) {
                 switch (estadosDeLosRenglones[i]) {
                     case MARCADO: {
@@ -327,7 +337,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                     }
                 }
             }
-            
+
             i++;
             fila[1] = renglon.getCodigoItem();
             fila[2] = renglon.getDescripcionItem();
@@ -340,7 +350,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         }
         tbl_Resultado.setModel(modeloTablaResultados);
     }
-    
+
     private void limpiarYRecargarComponentes() {
         renglones = new ArrayList<>();
         modeloTablaResultados = new ModeloTabla();
@@ -351,7 +361,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.calcularResultados();
         this.tbtn_marcarDesmarcar.setSelected(false);
     }
-    
+
     private void buscarProductoConVentanaAuxiliar() {
         if (facturaService.validarCantidadMaximaDeRenglones(renglones.size())) {
             GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones);
@@ -377,7 +387,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                     if (!renglonCargado) {
                         estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
                     }
-                    
+
                 }
                 this.cargarRenglonesAlTable(estadosRenglones);
                 this.calcularResultados();
@@ -388,42 +398,40 @@ public class GUI_PuntoDeVenta extends JDialog {
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void buscarProductoPorCodigo() throws ServiceException {
         Producto producto = productoService.getProductoPorCodigo(
                 txt_CodigoProducto.getText().trim(), empresaService.getEmpresaActiva().getEmpresa());
         if (producto == null) {
             JOptionPane.showMessageDialog(this, "No se encontró ningun producto con el codigo ingresado!", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            if (this.existeStockDisponible(1, producto)) {
-                RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
-                this.agregarRenglon(renglon);
-                EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
-                if (tbl_Resultado.getRowCount() == 0) {
-                    estadosRenglones[0] = EstadoRenglon.DESMARCADO;
-                } else {
-                    this.cargarEstadoDeLosChkEnTabla(tbl_Resultado, estadosRenglones);
-                    estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
-                }
-                this.cargarRenglonesAlTable(estadosRenglones);
-                this.calcularResultados();
-                txt_CodigoProducto.setText("");
+        } else if (this.existeStockDisponible(1, producto)) {
+            RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
+            this.agregarRenglon(renglon);
+            EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
+            if (tbl_Resultado.getRowCount() == 0) {
+                estadosRenglones[0] = EstadoRenglon.DESMARCADO;
             } else {
-                JOptionPane.showMessageDialog(this, "No existe disponibilidad para el producto buscado.", "Error", JOptionPane.ERROR_MESSAGE);
+                this.cargarEstadoDeLosChkEnTabla(tbl_Resultado, estadosRenglones);
+                estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
             }
+            this.cargarRenglonesAlTable(estadosRenglones);
+            this.calcularResultados();
+            txt_CodigoProducto.setText("");
+        } else {
+            JOptionPane.showMessageDialog(this, "No existe disponibilidad para el producto buscado.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void validarComponentesDeResultados() {
         try {
             txt_Recargo_porcentaje.commitEdit();
-            
+
         } catch (ParseException ex) {
             String msjError = "Se produjo un error analizando los campos.";
             log.error(msjError + " - " + ex.getMessage());
         }
     }
-    
+
     private void calcularResultados() {
         double subTotal;
         double recargo_porcentaje;
@@ -471,7 +479,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             cmb_TipoFactura.addItem(tiposFactura[i]);
         }
     }
-    
+
     private void recargarRenglonesSegunTipoDeFactura() {
         //resguardo de renglones
         List<RenglonFactura> resguardoRenglones = renglones;
@@ -482,7 +490,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             this.agregarRenglon(renglon);
         }
         EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
-        
+
         if (!renglones.isEmpty()) {
             if (tbl_Resultado.getRowCount() == 0) {
                 estadosRenglones[0] = EstadoRenglon.DESMARCADO;
@@ -501,35 +509,35 @@ public class GUI_PuntoDeVenta extends JDialog {
      * Clase interna para manejar las hotkeys del TPV
      */
     class HotKeysHandler extends KeyAdapter {
-        
+
         @Override
         public void keyPressed(KeyEvent evt) {
             if (evt.getKeyCode() == KeyEvent.VK_F5) {
                 btn_NuevoClienteActionPerformed(null);
             }
-            
+
             if (evt.getKeyCode() == KeyEvent.VK_F2) {
                 btn_BuscarClienteActionPerformed(null);
             }
-            
+
             if (evt.getKeyCode() == KeyEvent.VK_F4) {
                 btn_BuscarProductosActionPerformed(null);
             }
-            
+
             if (evt.getKeyCode() == KeyEvent.VK_F9) {
                 btn_ContinuarActionPerformed(null);
             }
-            
+
             if (evt.getSource() == tbl_Resultado && evt.getKeyCode() == 127) {
                 btn_EliminarEntradaProductoActionPerformed(null);
             }
-            
+
             if (evt.getSource() == tbl_Resultado && evt.getKeyCode() == KeyEvent.VK_TAB) {
                 txt_CodigoProducto.requestFocus();
             }
         }
     };
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -1170,7 +1178,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                 this.cargarCliente(gui_buscarCliente.getClienteSeleccionado());
                 this.cargarTiposDeFacturaDisponibles();
             }
-            
+
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1185,7 +1193,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                 this.cargarCliente(GUI_AltaCliente.getClienteDadoDeAlta());
                 this.cargarTiposDeFacturaDisponibles();
             }
-            
+
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1207,7 +1215,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             } else {
                 this.dispose();
             }
-            
+
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1226,7 +1234,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                 tipoDeFactura = cmb_TipoFactura.getSelectedItem().toString().charAt(0);
                 this.recargarRenglonesSegunTipoDeFactura();
             }
-            
+
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1236,10 +1244,10 @@ public class GUI_PuntoDeVenta extends JDialog {
     private void btn_BuscarPorCodigoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarPorCodigoProductoActionPerformed
         try {
             this.buscarProductoPorCodigo();
-            
+
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            
+
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1249,10 +1257,10 @@ public class GUI_PuntoDeVenta extends JDialog {
     private void txt_CodigoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_CodigoProductoActionPerformed
         try {
             this.buscarProductoPorCodigo();
-            
+
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            
+
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1318,7 +1326,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     private void btn_BuscarProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarProductosActionPerformed
         try {
             this.buscarProductoConVentanaAuxiliar();
-            
+
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);

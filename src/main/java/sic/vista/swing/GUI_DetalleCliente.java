@@ -1,11 +1,5 @@
 package sic.vista.swing;
 
-import sic.service.impl.LocalidadServiceImpl;
-import sic.service.impl.PaisServiceImpl;
-import sic.service.impl.ProvinciaServiceImpl;
-import sic.service.impl.EmpresaServiceImpl;
-import sic.service.impl.CondicionDeIVAServiceImpl;
-import sic.service.impl.ClienteServiceImpl;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -14,23 +8,33 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Cliente;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
-import sic.service.*;
+import sic.service.IClienteService;
+import sic.service.ICondicionIVAService;
+import sic.service.IEmpresaService;
+import sic.service.ILocalidadService;
+import sic.service.IPaisService;
+import sic.service.IProvinciaService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 
 public class GUI_DetalleCliente extends JDialog {
 
     private Cliente clienteModificar;
     private final TipoDeOperacion operacion;
-    private final CondicionDeIVAServiceImpl condicionDeIVAService = new CondicionDeIVAServiceImpl();
-    private final PaisServiceImpl paisService = new PaisServiceImpl();
-    private final ProvinciaServiceImpl provinciaService = new ProvinciaServiceImpl();
-    private final LocalidadServiceImpl localidadService = new LocalidadServiceImpl();
-    private final ClienteServiceImpl clienteService = new ClienteServiceImpl();
-    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final ICondicionIVAService condicionIVAService = appContext.getBean(ICondicionIVAService.class);
+    private final IPaisService paisService = appContext.getBean(IPaisService.class);
+    private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
+    private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
+    private final IClienteService clienteService = appContext.getBean(IClienteService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private static final Logger log = Logger.getLogger(GUI_DetalleCliente.class.getPackage().getName());
 
     public GUI_DetalleCliente() {
@@ -92,7 +96,7 @@ public class GUI_DetalleCliente extends JDialog {
     private void cargarComboBoxCondicionesIVA() {
         List<CondicionIVA> condicionesIVA;
         cmb_CondicionIVA.removeAllItems();
-        condicionesIVA = condicionDeIVAService.getCondicionesIVA();
+        condicionesIVA = condicionIVAService.getCondicionesIVA();
         for (CondicionIVA cond : condicionesIVA) {
             cmb_CondicionIVA.addItem(cond);
         }

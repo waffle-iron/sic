@@ -8,9 +8,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Rubro;
-import sic.service.impl.EmpresaServiceImpl;
-import sic.service.impl.RubroServiceImpl;
+import sic.service.IEmpresaService;
+import sic.service.IRubroService;
 import sic.service.ServiceException;
 import sic.util.Utilidades;
 
@@ -18,8 +20,9 @@ public class GUI_DetalleRubro extends JDialog {
 
     private final DefaultListModel modeloList = new DefaultListModel();
     private Rubro rubroSeleccionado;
-    private final RubroServiceImpl rubroService = new RubroServiceImpl();
-    private final EmpresaServiceImpl empresaService = new EmpresaServiceImpl();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IRubroService rubroService = appContext.getBean(IRubroService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private static final Logger log = Logger.getLogger(GUI_DetalleRubro.class.getPackage().getName());
 
     public GUI_DetalleRubro() {
