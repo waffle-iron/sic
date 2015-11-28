@@ -21,7 +21,7 @@ import sic.service.ServiceException;
 import sic.util.Validator;
 
 public class GUI_LogIn extends JFrame {
-
+    
     private boolean configDesplegada;
     private Usuario usuario;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
@@ -328,11 +328,9 @@ public class GUI_LogIn extends JFrame {
             this.cargarDatosConexion();
             this.desplegarPlegarConfig();
 
-        } catch (ServiceException ex) {
+        } catch (ServiceException | XMLException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
-        } catch (XMLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_GuardarActionPerformed
 

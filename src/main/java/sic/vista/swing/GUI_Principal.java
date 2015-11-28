@@ -19,7 +19,7 @@ import sic.service.IUsuarioService;
 import sic.util.Utilidades;
 
 public class GUI_Principal extends JFrame {
-
+    
     private final JLabel lbl_Fondo;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);    
