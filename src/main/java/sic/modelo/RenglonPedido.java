@@ -22,6 +22,8 @@ public class RenglonPedido implements Serializable {
     private double cantidad;
 
     private double subTotal;
+    
+    private double descuento_procentaje;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")

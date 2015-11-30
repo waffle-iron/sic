@@ -22,11 +22,13 @@ import lombok.Data;
 @Table(name = "pedido")
 @NamedQueries({
     @NamedQuery(name = "Pedido.buscarCantidadNroPedidos",
-            query = "SELECT count(p) FROM Pedido p WHERE p.empresa.id_Empresa = :idEmpresa"),
+            query = "SELECT max(p.nroPedido) FROM Pedido p WHERE p.empresa.id_Empresa = :idEmpresa"),
+    @NamedQuery(name = "Pedido.buscarPrecioActual",
+            query = "SELECT SUM((p.Producto.precioLista) * p.cantidad) FROM RenglonPedido p WHERE p.pedido.nroPedido = :nroPedido"),
     @NamedQuery(name = "Pedido.buscarPedidoConFacturas",
-            query = "SELECT f FROM Factura f WHERE f.pedido.nroPedido = :nroPedido"),
+            query = "SELECT f FROM Factura f WHERE f.eliminada = false AND f.pedido.nroPedido = :nroPedido"),
     @NamedQuery(name = "Pedido.buscarRenglonesDelPedido",
-            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones WHERE p.id_Pedido = :idPedido"),
+            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones WHERE p.nroPedido = :nroPedido"),
     @NamedQuery(name = "Pedido.buscarPorId",
             query = "SELECT p FROM Pedido p WHERE p.id_Pedido = :id"),
     @NamedQuery(name = "Pedido.buscarPorNumero",
@@ -48,6 +50,9 @@ public class Pedido implements Serializable {
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaVencimiento;
 
     @Column(nullable = false)
     private String historial;
