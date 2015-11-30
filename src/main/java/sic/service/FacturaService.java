@@ -62,44 +62,44 @@ public class FacturaService {
         }
     }
 
-    public char[] getTipoFacturaVenta(Empresa empresa, Cliente cliente) {
+    public String[] getTipoFacturaVenta(Empresa empresa, Cliente cliente) {
         //cuando la Empresa discrimina IVA
         if (empresa.getCondicionIVA().isDiscriminaIVA()) {
             if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando la Empresa discrimina IVA y el Cliente tambien
-                char[] tiposPermitidos = new char[5];
-                tiposPermitidos[0] = 'A';
-                tiposPermitidos[1] = 'B';
-                tiposPermitidos[2] = 'X';
-                tiposPermitidos[3] = 'Y';
-                tiposPermitidos[4] = 'P';
+                String[] tiposPermitidos = new String[5];
+                tiposPermitidos[0] = "Factura A";
+                tiposPermitidos[1] = "Factura B";
+                tiposPermitidos[2] = "Factura X";
+                tiposPermitidos[3] = "Factura Y";
+                tiposPermitidos[4] = "Pedido";
                 return tiposPermitidos;
             } else {
                 //cuando la Empresa discrminina IVA y el Cliente NO
-                char[] tiposPermitidos = new char[4];
-                tiposPermitidos[0] = 'B';
-                tiposPermitidos[1] = 'X';
-                tiposPermitidos[2] = 'Y';
-                tiposPermitidos[3] = 'P';
+                String[] tiposPermitidos = new String[4];
+                tiposPermitidos[0] = "Factura B";
+                tiposPermitidos[1] = "Factura X";
+                tiposPermitidos[2] = "Factura Y";
+                tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
         } else {
             //cuando la Empresa NO discrimina IVA
             if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Cliente SI
-                char[] tiposPermitidos = new char[4];
-                tiposPermitidos[0] = 'C';
-                tiposPermitidos[1] = 'X';
-                tiposPermitidos[2] = 'Y';
-                tiposPermitidos[3] = 'P';
+                String[] tiposPermitidos = new String[4];
+                tiposPermitidos[0] = "Factura C";
+                tiposPermitidos[1] = "Factura X";
+                tiposPermitidos[2] = "Factura Y";
+                tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             } else {
                 //cuando la Empresa NO discrminina IVA y el Cliente tampoco
-                char[] tiposPermitidos = new char[4];
-                tiposPermitidos[0] = 'C';
-                tiposPermitidos[1] = 'X';
-                tiposPermitidos[2] = 'Y';
-                tiposPermitidos[3] = 'P';
+                String[] tiposPermitidos = new String[4];
+                tiposPermitidos[0] = "Factura C";
+                tiposPermitidos[1] = "Factura X";
+                tiposPermitidos[2] = "Factura Y";
+                tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
         }
@@ -126,7 +126,7 @@ public class FacturaService {
         return facturaRepository.getRenglonesDeLaFactura(factura);
     }
 
-    public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {
+    public FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num) {
         return facturaRepository.getFacturaVentaPorTipoSerieNum(tipo, serie, num);
     }
 
@@ -269,12 +269,8 @@ public class FacturaService {
         }
     }
 
-    public long calcularNumeroFactura(char tipoDeFactura, long serie) {
-        if (tipoDeFactura == 'Y') {
-            return facturaRepository.getMayorNumFacturaSegunTipo('X', serie);
-        } else {
-            return facturaRepository.getMayorNumFacturaSegunTipo(tipoDeFactura, serie);
-        }
+    public long calcularNumeroFactura(String tipoDeFactura, long serie) {
+        return facturaRepository.getSiguienteNumFacturaSegunTipo(tipoDeFactura, serie);
     }
 
     public double calcularVuelto(double importeAPagar, double importeAbonado) {
@@ -291,7 +287,7 @@ public class FacturaService {
         int max = cds.getCantidadMaximaDeRenglonesEnFactura();
         return cantidad < max;
     }
-    
+
     //**************************************************************************
     //Calculos
     public double calcularSubTotal(List<RenglonFactura> renglones) {
@@ -322,9 +318,9 @@ public class FacturaService {
         return subtotal + recargo_neto - descuento_neto;
     }
 
-    public double calcularIva_neto(char tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones, double iva_porcentaje) {
+    public double calcularIva_neto(String tipoDeComprobante, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones, double iva_porcentaje) {
         double resultado = 0;
-        if (tipoDeFactura == 'A') {
+        if (tipoDeComprobante.equals("Factura A")) {
             for (RenglonFactura renglon : renglones) {
                 //descuento
                 double descuento = 0;
@@ -346,9 +342,9 @@ public class FacturaService {
         return Math.round(resultado * 1000.0) / 1000.0;
     }
 
-    public double calcularImpInterno_neto(char tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones) {
+    public double calcularImpInterno_neto(String tipoDeComprobante, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones) {
         double resultado = 0;
-        if (tipoDeFactura == 'A') {
+        if (tipoDeComprobante.equals("Factura A")) {
             for (RenglonFactura renglon : renglones) {
                 //descuento
                 double descuento = 0;
@@ -460,10 +456,10 @@ public class FacturaService {
                         }
                     }
                 }
-                RenglonFactura nuevoRenglonConIVA = renglonService.calcularRenglon(factura.getTipoFactura(), Movimiento.VENTA, FacturaABC, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+                RenglonFactura nuevoRenglonConIVA = renglonService.calcularRenglon(this.getTipoComprobante(factura), Movimiento.VENTA, FacturaABC, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
                 nuevoRenglonConIVA.setFactura(facturaConIVA);
                 renglonesConIVA.add(nuevoRenglonConIVA);
-                RenglonFactura nuevoRenglonSinIVA = renglonService.calcularRenglon('X', Movimiento.VENTA, FacturaX, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+                RenglonFactura nuevoRenglonSinIVA = renglonService.calcularRenglon("Factura X", Movimiento.VENTA, FacturaX, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
                 nuevoRenglonSinIVA.setFactura(facturaSinIVA);
                 if (nuevoRenglonSinIVA.getCantidad() != 0) {
                     renglonesSinIVA.add(nuevoRenglonSinIVA);
@@ -472,7 +468,7 @@ public class FacturaService {
                 renglonMarcado++;
             } else {
                 numeroDeRenglon++;
-                RenglonFactura nuevoRenglonConIVA = renglonService.calcularRenglon(factura.getTipoFactura(), Movimiento.VENTA, renglon.getCantidad(), productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+                RenglonFactura nuevoRenglonConIVA = renglonService.calcularRenglon(this.getTipoComprobante(factura), Movimiento.VENTA, renglon.getCantidad(), productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
                 nuevoRenglonConIVA.setFactura(facturaConIVA);
                 renglonesConIVA.add(nuevoRenglonConIVA);
             }
@@ -481,7 +477,7 @@ public class FacturaService {
         facturaSinIVA.setFecha(factura.getFecha());
         facturaSinIVA.setTipoFactura('X');
         facturaSinIVA.setNumSerie(factura.getNumSerie());
-        facturaSinIVA.setNumFactura(this.calcularNumeroFactura(facturaSinIVA.getTipoFactura(), facturaSinIVA.getNumSerie()));
+        facturaSinIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoComprobante(facturaSinIVA), facturaSinIVA.getNumSerie()));
         facturaSinIVA.setFormaPago(factura.getFormaPago());
         facturaSinIVA.setFechaVencimiento(factura.getFechaVencimiento());
         facturaSinIVA.setTransportista(factura.getTransportista());
@@ -490,9 +486,9 @@ public class FacturaService {
         facturaSinIVA.setDescuento_neto(this.calcularDescuento_neto(facturaSinIVA.getSubTotal(), facturaSinIVA.getDescuento_porcentaje()));
         facturaSinIVA.setRecargo_neto(this.calcularRecargo_neto(facturaSinIVA.getSubTotal(), facturaSinIVA.getRecargo_porcentaje()));
         facturaSinIVA.setSubTotal_neto(this.calcularSubTotal_neto(facturaSinIVA.getSubTotal(), facturaSinIVA.getRecargo_neto(), facturaSinIVA.getDescuento_neto()));
-        facturaSinIVA.setIva_105_neto(this.calcularIva_neto(facturaSinIVA.getTipoFactura(), facturaSinIVA.getDescuento_porcentaje(), facturaSinIVA.getRecargo_porcentaje(), renglonesConIVA, 10.5));
-        facturaSinIVA.setIva_21_neto(this.calcularIva_neto(facturaSinIVA.getTipoFactura(), facturaSinIVA.getDescuento_porcentaje(), facturaSinIVA.getRecargo_porcentaje(), renglonesConIVA, 21));
-        facturaSinIVA.setImpuestoInterno_neto(this.calcularImpInterno_neto(facturaSinIVA.getTipoFactura(), facturaSinIVA.getDescuento_porcentaje(), facturaSinIVA.getRecargo_porcentaje(), renglonesSinIVA));
+        facturaSinIVA.setIva_105_neto(this.calcularIva_neto(this.getTipoComprobante(facturaSinIVA), facturaSinIVA.getDescuento_porcentaje(), facturaSinIVA.getRecargo_porcentaje(), renglonesConIVA, 10.5));
+        facturaSinIVA.setIva_21_neto(this.calcularIva_neto(this.getTipoComprobante(facturaSinIVA), facturaSinIVA.getDescuento_porcentaje(), facturaSinIVA.getRecargo_porcentaje(), renglonesConIVA, 21));
+        facturaSinIVA.setImpuestoInterno_neto(this.calcularImpInterno_neto(this.getTipoComprobante(facturaSinIVA), facturaSinIVA.getDescuento_porcentaje(), facturaSinIVA.getRecargo_porcentaje(), renglonesSinIVA));
         facturaSinIVA.setTotal(this.calcularTotal(facturaSinIVA.getSubTotal(), facturaSinIVA.getDescuento_neto(), facturaSinIVA.getRecargo_neto(), facturaSinIVA.getIva_105_neto(), facturaSinIVA.getIva_21_neto(), facturaSinIVA.getImpuestoInterno_neto()));
         facturaSinIVA.setObservaciones(factura.getObservaciones());
         facturaSinIVA.setPagada(factura.isPagada());
@@ -503,7 +499,7 @@ public class FacturaService {
         facturaConIVA.setFecha(factura.getFecha());
         facturaConIVA.setTipoFactura(factura.getTipoFactura());
         facturaConIVA.setNumSerie(factura.getNumSerie());
-        facturaConIVA.setNumFactura(this.calcularNumeroFactura(factura.getTipoFactura(), facturaConIVA.getNumSerie()));
+        facturaConIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoComprobante(facturaSinIVA), facturaConIVA.getNumSerie()));
         facturaConIVA.setFormaPago(factura.getFormaPago());
         facturaConIVA.setFechaVencimiento(factura.getFechaVencimiento());
         facturaConIVA.setTransportista(factura.getTransportista());
@@ -512,9 +508,9 @@ public class FacturaService {
         facturaConIVA.setDescuento_neto(this.calcularDescuento_neto(facturaConIVA.getSubTotal(), facturaConIVA.getDescuento_porcentaje()));
         facturaConIVA.setRecargo_neto(this.calcularRecargo_neto(facturaConIVA.getSubTotal(), facturaConIVA.getRecargo_porcentaje()));
         facturaConIVA.setSubTotal_neto(this.calcularSubTotal_neto(facturaConIVA.getSubTotal(), facturaConIVA.getRecargo_neto(), facturaConIVA.getDescuento_neto()));
-        facturaConIVA.setIva_105_neto(this.calcularIva_neto(facturaConIVA.getTipoFactura(), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), renglonesConIVA, 10.5));
-        facturaConIVA.setIva_21_neto(this.calcularIva_neto(facturaConIVA.getTipoFactura(), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), renglonesConIVA, 21));
-        facturaConIVA.setImpuestoInterno_neto(this.calcularImpInterno_neto(facturaConIVA.getTipoFactura(), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), renglonesConIVA));
+        facturaConIVA.setIva_105_neto(this.calcularIva_neto(this.getTipoComprobante(facturaSinIVA), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), renglonesConIVA, 10.5));
+        facturaConIVA.setIva_21_neto(this.calcularIva_neto(this.getTipoComprobante(facturaSinIVA), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), renglonesConIVA, 21));
+        facturaConIVA.setImpuestoInterno_neto(this.calcularImpInterno_neto(this.getTipoComprobante(facturaSinIVA), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), renglonesConIVA));
         facturaConIVA.setTotal(this.calcularTotal(facturaConIVA.getSubTotal(), facturaConIVA.getDescuento_neto(), facturaConIVA.getRecargo_neto(), facturaConIVA.getIva_105_neto(), facturaConIVA.getIva_21_neto(), facturaConIVA.getImpuestoInterno_neto()));
         facturaConIVA.setObservaciones(factura.getObservaciones());
         facturaConIVA.setPagada(factura.isPagada());
@@ -534,4 +530,30 @@ public class FacturaService {
         }
         return total;
     }
+
+    public String getTipoComprobante(Factura factura) {
+        String tipoComprobante = new String();
+        switch (factura.getTipoFactura()) {
+            case 'A':
+                tipoComprobante = "Factura A";
+                break;
+            case 'B':
+                tipoComprobante = "Factura B";
+                break;
+            case 'C':
+                tipoComprobante = "Factura C";
+                break;
+            case 'Y':
+                tipoComprobante = "Factura Y";
+                break;
+            case 'X':
+                tipoComprobante = "Factura X";
+                break;
+            case 'P':
+                tipoComprobante = "Pedido";
+                break;
+        }
+        return tipoComprobante;
+    }
+
 }

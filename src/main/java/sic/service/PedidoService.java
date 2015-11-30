@@ -18,49 +18,7 @@ public class PedidoService {
     private final PedidoRepository pedidoRepository = new PedidoRepository();
     private final EmpresaService empresaService = new EmpresaService();
 
-    public long calcularNumeroPedido() {
-        return pedidoRepository.calcularNumeroPedido(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-    }
-
-    public List<Pedido> buscarConCriteria(BusquedaPedidoCriteria criteria) {
-        if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_pedido_fechas_busqueda_invalidas"));
-        }
-
-        if (criteria.isBuscaPorFecha() == true) {
-            Calendar cal = new GregorianCalendar();
-            cal.setTime(criteria.getFechaDesde());
-            cal.set(Calendar.HOUR_OF_DAY, 0);
-            cal.set(Calendar.MINUTE, 0);
-            cal.set(Calendar.SECOND, 0);
-            criteria.setFechaDesde(cal.getTime());
-            cal.setTime(criteria.getFechaHasta());
-            cal.set(Calendar.HOUR_OF_DAY, 23);
-            cal.set(Calendar.MINUTE, 59);
-            cal.set(Calendar.SECOND, 59);
-            criteria.setFechaHasta(cal.getTime());
-        }
-
-        //Cliente
-        if (criteria.isBuscaCliente() == true && criteria.getCliente() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_pedido_cliente_vacio"));
-        }
-        //Usuario
-        if (criteria.isBuscaUsuario() == true && criteria.getUsuario() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_pedido_usuario_vacio"));
-        }
-
-        return pedidoRepository.buscarPedidosPorCriteria(criteria);
-    }
-
-    public List<Factura> getFacturasDelPedido(long nroPedido) {
-        return pedidoRepository.getFacturasDelPedido(nroPedido);
-    }
-
-    public void validarPedido(Pedido pedido) {
+    private void validarPedido(Pedido pedido) {
         //Entrada de Datos
         //Requeridos
         if (pedido.getFecha() == null) {
@@ -79,6 +37,19 @@ public class PedidoService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_usuario_vacio"));
         }
+        //Duplicados
+        if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido()) != null) {
+            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pedido_ya_existe"));
+        }
+    }
+
+    public long calcularNumeroPedido() {
+        return pedidoRepository.calcularNumeroPedido(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+    }
+
+    public List<Factura> getFacturasDelPedido(long nroPedido) {
+        return pedidoRepository.getFacturasDelPedido(nroPedido);
     }
 
     public void guardar(Pedido pedido) {
@@ -86,12 +57,45 @@ public class PedidoService {
         pedidoRepository.guardar(pedido);
     }
 
+    public List<Pedido> buscarConCriteria(BusquedaPedidoCriteria criteria) {
+        //Fecha
+        if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
+            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pedido_fechas_busqueda_invalidas"));
+        }
+        if (criteria.isBuscaPorFecha() == true) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(criteria.getFechaDesde());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            criteria.setFechaDesde(cal.getTime());
+            cal.setTime(criteria.getFechaHasta());
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            criteria.setFechaHasta(cal.getTime());
+        }
+        //Cliente
+        if (criteria.isBuscaCliente() == true && criteria.getCliente() == null) {
+            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_cliente_vacio_razonSocial"));
+        }
+        //Usuario
+        if (criteria.isBuscaUsuario() == true && criteria.getUsuario() == null) {
+            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_usuario_vacio_nombre"));
+        }
+
+        return pedidoRepository.buscarPedidosPorCriteria(criteria);
+    }
+
     public void actualizar(Pedido pedido) {
         pedidoRepository.actualizar(pedido);
     }
 
-    public Pedido getPedidoPorId(long id_Pedido) {
-        return pedidoRepository.getPedidoPorId(id_Pedido);
+    public Pedido getPedidoPorNro(long nroPedido) {
+        return pedidoRepository.getPedidoPorNro(nroPedido);
     }
 
     public Pedido getPedidoPorNumero(long nroPedido) {
@@ -111,29 +115,33 @@ public class PedidoService {
         pedidoRepository.actualizar(pedido);
     }
 
-    public List<RenglonPedido> getRenglonesDelPedido(long idPedido) {
-        return pedidoRepository.getRenglonesDelPedido(idPedido);
+    public List<RenglonPedido> getRenglonesDelPedido(long nroPedido) {
+        return pedidoRepository.getRenglonesDelPedido(nroPedido);
     }
 
-    public HashMap<Long, RenglonFactura> getRenglonesUnificadosPorIdProducto(long nroPedido) {
+    public HashMap<Long, RenglonFactura> getRenglonesDeFacturasUnificadosPorNroPedido(long nroPedido) {
         List<Factura> facturas = this.getFacturasDelPedido(nroPedido);
         List<RenglonFactura> renglonesDeFacturas = new ArrayList<>();
-        HashMap<Long, RenglonFactura> Lista = new HashMap<>();
+        HashMap<Long, RenglonFactura> listaRenglonesUnificados = new HashMap<>();
         if (!facturas.isEmpty()) {
             for (Factura factura : facturas) {
                 renglonesDeFacturas.addAll(factura.getRenglones());
             }
             for (RenglonFactura renglon : renglonesDeFacturas) {
-                if (Lista.containsKey(renglon.getId_ProductoItem())) {
-                    Lista.get(renglon.getId_ProductoItem())
-                            .setCantidad(Lista.get(renglon.getId_ProductoItem()).getCantidad() + renglon.getCantidad());
+                if (listaRenglonesUnificados.containsKey(renglon.getId_ProductoItem())) {
+                    listaRenglonesUnificados.get(renglon.getId_ProductoItem())
+                            .setCantidad(listaRenglonesUnificados
+                                    .get(renglon.getId_ProductoItem()).getCantidad() + renglon.getCantidad());
                 } else {
-                    Lista.put(renglon.getId_ProductoItem(), renglon);
+                    listaRenglonesUnificados.put(renglon.getId_ProductoItem(), renglon);
                 }
             }
         }
         renglonesDeFacturas.clear();
-        return Lista;
+        return listaRenglonesUnificados;
     }
-    
+
+    public double getPrecioActual(long nroPedido) {
+        return pedidoRepository.getPrecioActualPedido(nroPedido);
+    }
 }
