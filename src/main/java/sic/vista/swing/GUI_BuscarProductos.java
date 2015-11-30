@@ -134,7 +134,7 @@ public class GUI_BuscarProductos extends JDialog {
             txt_PorcentajeDescuento.commitEdit();
 
             if (prodSeleccionado != null) {
-                renglon = renglonDeFacturaService.calcularRenglon(gui_PrincipalTPV.getTipoDeFactura(), Movimiento.VENTA,
+                renglon = renglonDeFacturaService.calcularRenglon(gui_PrincipalTPV.getStringTipoDeComprobante(), Movimiento.VENTA,
                         Double.parseDouble(txt_Cantidad.getValue().toString()), prodSeleccionado,
                         Double.parseDouble(txt_PorcentajeDescuento.getValue().toString()));
             }

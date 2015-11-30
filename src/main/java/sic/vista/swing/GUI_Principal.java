@@ -208,7 +208,7 @@ public class GUI_Principal extends JFrame {
         });
         mnu_Ventas.add(mnuItm_FacturasVenta);
 
-        mnuItm_Pedidos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/PedidoIco_16x16.png"))); // NOI18N
+        mnuItm_Pedidos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/PedidoFacturar_16x16.png"))); // NOI18N
         mnuItm_Pedidos.setText("Pedidos");
         mnuItm_Pedidos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

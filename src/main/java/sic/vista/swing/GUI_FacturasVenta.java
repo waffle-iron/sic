@@ -14,36 +14,99 @@ import org.apache.log4j.Logger;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.FacturaVenta;
-import sic.modelo.Pedido;
 import sic.modelo.Usuario;
 import sic.service.*;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
 public class GUI_FacturasVenta extends JInternalFrame {
-    
+
     private ModeloTabla modeloTablaFacturas;
     private List<FacturaVenta> facturas;
     private final FacturaService facturaService = new FacturaService();
     private final EmpresaService empresaService = new EmpresaService();
     private final ClienteService clienteService = new ClienteService();
     private final UsuarioService usuarioService = new UsuarioService();
-    private final PedidoService pedidoService = new PedidoService();
     private static final Logger log = Logger.getLogger(GUI_FacturasVenta.class.getPackage().getName());
-    private long numeroDePedido;
-    
+
     public GUI_FacturasVenta() {
         this.initComponents();
         modeloTablaFacturas = new ModeloTabla();
         this.setSize(750, 450);
     }
-    
-    public void buscarPedido() {
-        chk_NumeroPedido.doClick();
-        txt_NumeroPedido.setText(Long.toString(numeroDePedido));
-        btn_Buscar.doClick();
+
+    public void buscarConCriteria(BusquedaFacturaVentaCriteria criteria) {
+        this.buscar(criteria);
+        this.calcularResultados();
+        this.setEstadoDeComponentes(criteria);
     }
-    
+
+    private void setEstadoDeComponentes(BusquedaFacturaVentaCriteria criteria) {
+        if (criteria.isBuscaCliente() && criteria.getCliente() != null) {
+            chk_Cliente.setSelected(true);
+            cmb_Cliente.setEnabled(true);
+            cmb_Cliente.setSelectedItem(criteria.getCliente());
+        }
+        if (criteria.isBuscarPorPedido() && criteria.getNroPedido() != 0) {
+            chk_NumeroPedido.setSelected(true);
+            txt_NumeroPedido.setEnabled(true);
+            txt_NumeroPedido.setText(String.valueOf(criteria.getNroPedido()));
+        }
+        if (criteria.isBuscaPorFecha() && criteria.getFechaDesde() != null && criteria.getFechaHasta() != null) {
+            chk_Fecha.setSelected(true);
+            dc_FechaDesde.setEnabled(true);
+            dc_FechaDesde.setDate(criteria.getFechaDesde());
+            dc_FechaHasta.setEnabled(false);
+            dc_FechaHasta.setDate(criteria.getFechaHasta());
+        }
+        if (criteria.isBuscaPorNumeroFactura() && criteria.getNumFactura() != 0) {
+            chk_NumFactura.setSelected(true);
+            txt_NroFactura.setEnabled(true);
+            txt_NroFactura.setText(String.valueOf(criteria.getNumFactura()));
+        }
+        if (criteria.isBuscaPorTipoFactura() && criteria.getTipoFactura() != '\u0000') {
+            chk_NumFactura.setEnabled(true);
+            cmb_TipoFactura.setEnabled(true);
+            cmb_TipoFactura.setSelectedItem(criteria.getTipoFactura());
+        }
+        if (criteria.isBuscaSoloInpagas()) {
+            chk_Inpagas.setSelected(true);
+        }
+        if (criteria.isBuscaUsuario() && criteria.getUsuario() != null) {
+            chk_Cliente.setEnabled(true);
+            cmb_Cliente.setEnabled(true);
+            cmb_Cliente.setSelectedItem(criteria.getUsuario());
+        }
+    }
+
+    private BusquedaFacturaVentaCriteria getCriteriaDeComponentes() {
+        BusquedaFacturaVentaCriteria criteria = new BusquedaFacturaVentaCriteria();
+        try {
+            criteria.setBuscaPorFecha(chk_Fecha.isSelected());
+            criteria.setFechaDesde(dc_FechaDesde.getDate());
+            criteria.setFechaHasta(dc_FechaHasta.getDate());
+            criteria.setBuscaCliente(chk_Cliente.isSelected());
+            criteria.setCliente((Cliente) cmb_Cliente.getSelectedItem());
+            criteria.setBuscaPorTipoFactura(chk_TipoFactura.isSelected());
+            criteria.setTipoFactura(cmb_TipoFactura.getSelectedItem().toString().charAt(0));
+            criteria.setBuscaUsuario(chk_Usuario.isSelected());
+            criteria.setUsuario((Usuario) cmb_Usuario.getSelectedItem());
+            criteria.setBuscaPorNumeroFactura(chk_NumFactura.isSelected());
+            txt_SerieFactura.commitEdit();
+            txt_NroFactura.commitEdit();
+            criteria.setNumSerie(Integer.valueOf(txt_SerieFactura.getValue().toString()));
+            criteria.setNumFactura(Integer.valueOf(txt_NroFactura.getValue().toString()));
+            criteria.setBuscaSoloInpagas(chk_Inpagas.isSelected());
+            criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+            criteria.setCantRegistros(0);
+            criteria.setBuscarPorPedido(chk_NumeroPedido.isSelected());
+            criteria.setNroPedido(Long.parseLong(txt_NumeroPedido.getText()));
+        } catch (ParseException | ServiceException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return criteria;
+    }
+
     private void setColumnas() {
         //sorting
         tbl_Resultados.setAutoCreateRowSorter(true);
@@ -115,72 +178,57 @@ public class GUI_FacturasVenta extends JInternalFrame {
         tbl_Resultados.getColumnModel().getColumn(15).setPreferredWidth(120);
         tbl_Resultados.getColumnModel().getColumn(16).setPreferredWidth(120);
     }
-    
+
     private void calcularResultados() {
         try {
             txt_ResultTotalFacturado.setValue(facturaService.calcularTotalFacturado(facturas));
             txt_ResultGananciaTotal.setValue(facturaService.calcularGananciaTotal(facturas));
             txt_ResultTotalIVAVenta.setValue(facturaService.calcularIVA_Venta(facturas));
-            
+
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
-    private void buscar() {
+
+    private void buscar(BusquedaFacturaVentaCriteria criteria) {
         try {
-            BusquedaFacturaVentaCriteria criteria = new BusquedaFacturaVentaCriteria();
-            criteria.setBuscaPorFecha(chk_Fecha.isSelected());
-            criteria.setFechaDesde(dc_FechaDesde.getDate());
-            criteria.setFechaHasta(dc_FechaHasta.getDate());
-            criteria.setBuscaCliente(chk_Cliente.isSelected());
-            criteria.setCliente((Cliente) cmb_Cliente.getSelectedItem());
-            criteria.setBuscaPorTipoFactura(chk_TipoFactura.isSelected());
-            criteria.setTipoFactura(cmb_TipoFactura.getSelectedItem().toString().charAt(0));
-            criteria.setBuscaUsuario(chk_Usuario.isSelected());
-            criteria.setUsuario((Usuario) cmb_Usuario.getSelectedItem());
-            criteria.setBuscaPorNumeroFactura(chk_NumFactura.isSelected());
-            txt_SerieFactura.commitEdit();
-            txt_NroFactura.commitEdit();
-            criteria.setNumSerie(Integer.valueOf(txt_SerieFactura.getValue().toString()));
-            criteria.setNumFactura(Integer.valueOf(txt_NroFactura.getValue().toString()));
-            criteria.setBuscaSoloInpagas(chk_Inpagas.isSelected());
-            criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-            criteria.setCantRegistros(0);
-            criteria.setBuscarPorPedido(chk_NumeroPedido.isSelected());
-            if (txt_NumeroPedido.getText().isEmpty()) {
-                criteria.setPedido(new Pedido());
-                criteria.getPedido().setNroPedido(0);
-            } else {
-                this.setNumeroDePedido(Long.parseLong(txt_NumeroPedido.getText()));
-                Pedido pedidoABuscar = pedidoService.getPedidoPorNumero(numeroDePedido);
-                if (pedidoABuscar == null) {
-                    pedidoABuscar = new Pedido();
-                    criteria.setPedido(pedidoABuscar);
-                    criteria.getPedido().setNroPedido(0);
-                } else {
-                    criteria.setPedido(pedidoABuscar);
-                }
-            }
+//            //BusquedaFacturaVentaCriteria criteria = new BusquedaFacturaVentaCriteria();
+//            criteria.setBuscaPorFecha(chk_Fecha.isSelected());
+//            criteria.setFechaDesde(dc_FechaDesde.getDate());
+//            criteria.setFechaHasta(dc_FechaHasta.getDate());
+//            criteria.setBuscaCliente(chk_Cliente.isSelected());
+//            criteria.setCliente((Cliente) cmb_Cliente.getSelectedItem());
+//            criteria.setBuscaPorTipoFactura(chk_TipoFactura.isSelected());
+//            criteria.setTipoFactura(cmb_TipoFactura.getSelectedItem().toString().charAt(0));
+//            criteria.setBuscaUsuario(chk_Usuario.isSelected());
+//            criteria.setUsuario((Usuario) cmb_Usuario.getSelectedItem());
+//            criteria.setBuscaPorNumeroFactura(chk_NumFactura.isSelected());
+//            txt_SerieFactura.commitEdit();
+//            txt_NroFactura.commitEdit();
+//            criteria.setNumSerie(Integer.valueOf(txt_SerieFactura.getValue().toString()));
+//            criteria.setNumFactura(Integer.valueOf(txt_NroFactura.getValue().toString()));
+//            criteria.setBuscaSoloInpagas(chk_Inpagas.isSelected());
+//            criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+//            criteria.setCantRegistros(0);
+//            criteria.setBuscarPorPedido(chk_NumeroPedido.isSelected());
+//            criteria.setNroPedido(Long.parseLong(txt_NumeroPedido.getText()));
+
             facturas = facturaService.buscarFacturaVenta(criteria);
             this.cargarResultadosAlTable();
-            
+
             if (facturas.isEmpty()) {
                 JOptionPane.showMessageDialog(this, ResourceBundle.getBundle(
                         "Mensajes").getString("mensaje_busqueda_sin_resultados"),
                         "Aviso", JOptionPane.INFORMATION_MESSAGE);
             }
-            
-        } catch (ParseException | ServiceException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            
+
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void cargarResultadosAlTable() {
         this.limpiarJTable();
         for (FacturaVenta factura : facturas) {
@@ -208,13 +256,13 @@ public class GUI_FacturasVenta extends JInternalFrame {
         String mensaje = facturas.size() + " facturas encontradas.";
         lbl_CantRegistrosEncontrados.setText(mensaje);
     }
-    
+
     private void limpiarJTable() {
         modeloTablaFacturas = new ModeloTabla();
         tbl_Resultados.setModel(modeloTablaFacturas);
         this.setColumnas();
     }
-    
+
     private void cargarComboBoxClientes() {
         cmb_Cliente.removeAllItems();
         List<Cliente> clientes;
@@ -223,7 +271,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             cmb_Cliente.addItem(cliente);
         }
     }
-    
+
     private void cargarComboBoxUsuarios() {
         cmb_Usuario.removeAllItems();
         List<Usuario> usuarios;
@@ -232,7 +280,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             cmb_Usuario.addItem(usuario);
         }
     }
-    
+
     private void cargarComboBoxTipoFactura() {
         char[] tiposFactura = facturaService.getTiposFacturaSegunEmpresa(empresaService.getEmpresaActiva().getEmpresa());
         cmb_TipoFactura.removeAllItems();
@@ -240,12 +288,12 @@ public class GUI_FacturasVenta extends JInternalFrame {
             cmb_TipoFactura.addItem(tiposFactura[i]);
         }
     }
-    
+
     private void lanzarReporteFactura() throws JRException {
         if (tbl_Resultados.getSelectedRow() != -1) {
             int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
             JasperPrint report = facturaService.getReporteFacturaVenta(facturas.get(indexFilaSeleccionada));
-            
+
             JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
             viewer.setSize(this.getWidth(), this.getHeight());
             ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
@@ -256,11 +304,18 @@ public class GUI_FacturasVenta extends JInternalFrame {
             viewer.setVisible(true);
         }
     }
-    
+
     private boolean existeClienteDisponible() {
         return !clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa()).isEmpty();
     }
-    
+
+    private void controlDeValores(java.awt.event.KeyEvent evt) {
+        char c = evt.getKeyChar();
+        if ((c < '0' || c > '9')) {
+            evt.consume();
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -276,14 +331,16 @@ public class GUI_FacturasVenta extends JInternalFrame {
         lbl_Desde = new javax.swing.JLabel();
         dc_FechaDesde = new com.toedter.calendar.JDateChooser();
         dc_FechaHasta = new com.toedter.calendar.JDateChooser();
-        jLabel1 = new javax.swing.JLabel();
+        separador = new javax.swing.JLabel();
         chk_Usuario = new javax.swing.JCheckBox();
         cmb_Usuario = new javax.swing.JComboBox();
         txt_SerieFactura = new javax.swing.JFormattedTextField();
         txt_NroFactura = new javax.swing.JFormattedTextField();
-        lbl_CantRegistrosEncontrados = new javax.swing.JLabel();
         chk_TipoFactura = new javax.swing.JCheckBox();
         cmb_TipoFactura = new javax.swing.JComboBox();
+        chk_NumeroPedido = new javax.swing.JCheckBox();
+        txt_NumeroPedido = new javax.swing.JFormattedTextField();
+        lbl_CantRegistrosEncontrados = new javax.swing.JLabel();
         panelResultados = new javax.swing.JPanel();
         sp_Resultados = new javax.swing.JScrollPane();
         tbl_Resultados = new javax.swing.JTable();
@@ -297,8 +354,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
         txt_ResultGananciaTotal = new javax.swing.JFormattedTextField();
         txt_ResultTotalIVAVenta = new javax.swing.JFormattedTextField();
         btn_Nueva = new javax.swing.JButton();
-        chk_NumeroPedido = new javax.swing.JCheckBox();
-        txt_NumeroPedido = new javax.swing.JFormattedTextField();
 
         setClosable(true);
         setMaximizable(true);
@@ -371,8 +426,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
         dc_FechaHasta.setDateFormatString("dd/MM/yyyy");
         dc_FechaHasta.setEnabled(false);
 
-        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 15)); // NOI18N
-        jLabel1.setText("-");
+        separador.setFont(new java.awt.Font("DejaVu Sans", 0, 15)); // NOI18N
+        separador.setText("-");
 
         chk_Usuario.setText("Usuario (Vendedor):");
         chk_Usuario.addItemListener(new java.awt.event.ItemListener() {
@@ -386,12 +441,20 @@ public class GUI_FacturasVenta extends JInternalFrame {
         txt_SerieFactura.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         txt_SerieFactura.setText("0");
         txt_SerieFactura.setEnabled(false);
+        txt_SerieFactura.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_SerieFacturaKeyTyped(evt);
+            }
+        });
 
         txt_NroFactura.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         txt_NroFactura.setText("0");
         txt_NroFactura.setEnabled(false);
-
-        lbl_CantRegistrosEncontrados.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        txt_NroFactura.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_NroFacturaKeyTyped(evt);
+            }
+        });
 
         chk_TipoFactura.setText("Tipo de Factura:");
         chk_TipoFactura.addItemListener(new java.awt.event.ItemListener() {
@@ -401,6 +464,24 @@ public class GUI_FacturasVenta extends JInternalFrame {
         });
 
         cmb_TipoFactura.setEnabled(false);
+
+        chk_NumeroPedido.setText("Nº de Pedido:");
+        chk_NumeroPedido.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chk_NumeroPedidoItemStateChanged(evt);
+            }
+        });
+
+        txt_NumeroPedido.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        txt_NumeroPedido.setText("0");
+        txt_NumeroPedido.setEnabled(false);
+        txt_NumeroPedido.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_NumeroPedidoKeyTyped(evt);
+            }
+        });
+
+        lbl_CantRegistrosEncontrados.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
         javax.swing.GroupLayout panelFiltrosLayout = new javax.swing.GroupLayout(panelFiltros);
         panelFiltros.setLayout(panelFiltrosLayout);
@@ -414,12 +495,14 @@ public class GUI_FacturasVenta extends JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbl_CantRegistrosEncontrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(panelFiltrosLayout.createSequentialGroup()
-                        .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chk_Fecha)
-                            .addComponent(chk_Cliente)
-                            .addComponent(chk_Usuario)
-                            .addComponent(chk_NumFactura)
-                            .addComponent(chk_TipoFactura))
+                        .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(chk_Inpagas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chk_Usuario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chk_Fecha, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chk_Cliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chk_NumFactura, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chk_TipoFactura, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chk_NumeroPedido, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(12, 12, 12)
                         .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cmb_Usuario, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -427,12 +510,11 @@ public class GUI_FacturasVenta extends JInternalFrame {
                             .addGroup(panelFiltrosLayout.createSequentialGroup()
                                 .addComponent(txt_SerieFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel1)
+                                .addComponent(separador)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txt_NroFactura))
                             .addGroup(panelFiltrosLayout.createSequentialGroup()
                                 .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(panelFiltrosLayout.createSequentialGroup()
                                         .addComponent(lbl_Desde)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -440,9 +522,11 @@ public class GUI_FacturasVenta extends JInternalFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(lbl_Hasta)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(dc_FechaHasta, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)))
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addComponent(chk_Inpagas))
+                                        .addComponent(dc_FechaHasta, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
+                                    .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addComponent(txt_NumeroPedido, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.Alignment.LEADING, 0, 147, Short.MAX_VALUE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
 
@@ -468,7 +552,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(txt_SerieFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
+                    .addComponent(separador)
                     .addComponent(txt_NroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(chk_NumFactura))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -476,11 +560,16 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     .addComponent(chk_TipoFactura)
                     .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_NumeroPedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chk_NumeroPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(chk_Inpagas)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(8, 8, 8)
                 .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btn_Buscar)
-                    .addComponent(lbl_CantRegistrosEncontrados, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(lbl_CantRegistrosEncontrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         panelResultados.setBorder(javax.swing.BorderFactory.createTitledBorder("Resultados"));
@@ -586,7 +675,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 .addComponent(btn_Eliminar)
                 .addGap(0, 0, 0)
                 .addComponent(btn_VerDetalle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
                 .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(sp_Resultados)
         );
@@ -596,7 +685,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -608,10 +697,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
         panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_VerDetalle});
 
-        chk_NumeroPedido.setText("Nº Pedido");
-
-        txt_NumeroPedido.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -619,22 +704,12 @@ public class GUI_FacturasVenta extends JInternalFrame {
             .addComponent(panelResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(panelFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_NumeroPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chk_NumeroPedido))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(chk_NumeroPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txt_NumeroPedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addComponent(panelFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -666,19 +741,19 @@ public class GUI_FacturasVenta extends JInternalFrame {
 }//GEN-LAST:event_chk_ClienteItemStateChanged
 
     private void btn_BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarActionPerformed
-        this.buscar();
+        this.buscar(this.getCriteriaDeComponentes());
         this.calcularResultados();
 }//GEN-LAST:event_btn_BuscarActionPerformed
 
     private void btn_VerDetalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerDetalleActionPerformed
         try {
             this.lanzarReporteFactura();
-            
+
         } catch (JRException ex) {
             String msjError = "Se produjo un error procesando el reporte.";
             log.error(msjError + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
-            
+
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -694,9 +769,9 @@ public class GUI_FacturasVenta extends JInternalFrame {
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
                     facturaService.eliminar(facturas.get(indexFilaSeleccionada));
-                    this.buscar();
+                    this.buscar(this.getCriteriaDeComponentes());
                     this.calcularResultados();
-                    
+
                 } catch (PersistenceException ex) {
                     log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -723,12 +798,12 @@ public class GUI_FacturasVenta extends JInternalFrame {
             this.cargarComboBoxTipoFactura();
             this.setColumnas();
             this.setMaximum(true);
-            
+
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
-            
+
         } catch (PropertyVetoException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";
             log.error(msjError + " - " + ex.getMessage());
@@ -767,16 +842,29 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
                 JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
             }
-            
+
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevaActionPerformed
-    
-    public void setNumeroDePedido(long numeroDePedido) {
-        this.numeroDePedido = numeroDePedido;
-    }
+
+    private void txt_SerieFacturaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_SerieFacturaKeyTyped
+        this.controlDeValores(evt);
+    }//GEN-LAST:event_txt_SerieFacturaKeyTyped
+
+    private void txt_NroFacturaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_NroFacturaKeyTyped
+        this.controlDeValores(evt);
+    }//GEN-LAST:event_txt_NroFacturaKeyTyped
+
+    private void txt_NumeroPedidoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_NumeroPedidoKeyTyped
+        this.controlDeValores(evt);
+    }//GEN-LAST:event_txt_NumeroPedidoKeyTyped
+
+    private void chk_NumeroPedidoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_NumeroPedidoItemStateChanged
+        txt_NumeroPedido.setEnabled(chk_NumeroPedido.isSelected());
+    }//GEN-LAST:event_chk_NumeroPedidoItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Buscar;
     private javax.swing.JButton btn_Eliminar;
@@ -794,7 +882,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private javax.swing.JComboBox cmb_Usuario;
     private com.toedter.calendar.JDateChooser dc_FechaDesde;
     private com.toedter.calendar.JDateChooser dc_FechaHasta;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lbl_CantRegistrosEncontrados;
     private javax.swing.JLabel lbl_Desde;
     private javax.swing.JLabel lbl_GananciaTotal;
@@ -804,6 +891,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private javax.swing.JPanel panelFiltros;
     private javax.swing.JPanel panelNumeros;
     private javax.swing.JPanel panelResultados;
+    private javax.swing.JLabel separador;
     private javax.swing.JScrollPane sp_Resultados;
     private javax.swing.JTable tbl_Resultados;
     private javax.swing.JFormattedTextField txt_NroFactura;

@@ -16,18 +16,18 @@ public class GUI_RenglonFactura extends JDialog {
     private RenglonFactura renglon;
     private final Producto producto;
     private boolean cargarRenglon;
-    private final char tipoDeFactura;
+    private final String tipoDeComprobante;
     private final Movimiento movimiento;
     private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
     private static final Logger log = Logger.getLogger(GUI_RenglonFactura.class.getPackage().getName());
 
-    public GUI_RenglonFactura(Producto producto, char tipoDeFactura, Movimiento movimiento) {
+    public GUI_RenglonFactura(Producto producto, String tipoDeComprobante, Movimiento movimiento) {
         this.initComponents();
         this.setIcon();
         renglon = new RenglonFactura();
         this.prepararComponentes();
         this.producto = producto;
-        this.tipoDeFactura = tipoDeFactura;
+        this.tipoDeComprobante = tipoDeComprobante;
         this.movimiento = movimiento;
         cargarRenglon = false;
     }
@@ -64,7 +64,7 @@ public class GUI_RenglonFactura extends JDialog {
 
     private void actualizarCampos() {
         this.validarComponentes();
-        renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, movimiento, Double.parseDouble(txt_Cantidad.getValue().toString()),
+        renglon = renglonDeFacturaService.calcularRenglon(tipoDeComprobante, movimiento, Double.parseDouble(txt_Cantidad.getValue().toString()),
                 producto, Double.parseDouble(txt_Descuento_porcentaje.getValue().toString()));
     }
 

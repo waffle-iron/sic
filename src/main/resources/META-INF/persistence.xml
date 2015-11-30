@@ -24,6 +24,7 @@
         <class>sic.modelo.Usuario</class>
         <class>sic.modelo.FacturaVenta</class>
         <class>sic.modelo.ConfiguracionDelSistema</class>
+        <class>sic.modelo.Pedido</class>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>

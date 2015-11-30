@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import sic.modelo.Factura;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
+import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.service.*;
@@ -54,7 +55,7 @@ public class GUI_CerrarVenta extends JDialog {
         btn_Finalizar.addKeyListener(keyHandler);
         btn_nuevaFormaDePago.addKeyListener(keyHandler);
         btn_nuevoTransporte.addKeyListener(keyHandler);
-        if (gui_tpv.getTipoDeFactura() == 'A' || gui_tpv.getTipoDeFactura() == 'B' || gui_tpv.getTipoDeFactura() == 'C') {
+        if (gui_tpv.getStringTipoDeComprobante().equals("Factura A") || gui_tpv.getStringTipoDeComprobante().equals("Factura B") || gui_tpv.getStringTipoDeComprobante().equals("Factura C")) {
             this.chk_condicionDividir.setEnabled(true);
         }
     }
@@ -98,7 +99,7 @@ public class GUI_CerrarVenta extends JDialog {
 
     private Factura guardarFactura(Factura facturaVenta) throws ServiceException {
         facturaService.guardar(facturaVenta);
-        return facturaService.getFacturaVentaPorTipoSerieNum(facturaVenta.getTipoFactura(), facturaVenta.getNumSerie(), facturaVenta.getNumFactura());
+        return facturaService.getFacturaVentaPorTipoSerieNum(facturaService.getTipoComprobante(facturaVenta), facturaVenta.getNumSerie(), facturaVenta.getNumFactura());
     }
 
     private void calcularVuelto() {
@@ -117,9 +118,9 @@ public class GUI_CerrarVenta extends JDialog {
     private FacturaVenta construirFactura() {
         FacturaVenta facturaVenta = new FacturaVenta();
         facturaVenta.setFecha(gui_tpv.getFechaFactura());
-        facturaVenta.setTipoFactura(gui_tpv.getTipoDeFactura());
+        facturaVenta.setTipoFactura(gui_tpv.getCharTipoDeComprobante());
         facturaVenta.setNumSerie(1);
-        facturaVenta.setNumFactura(facturaService.calcularNumeroFactura(gui_tpv.getTipoDeFactura(), 1));
+        facturaVenta.setNumFactura(facturaService.calcularNumeroFactura(gui_tpv.getStringTipoDeComprobante(), 1));
         facturaVenta.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
         facturaVenta.setFechaVencimiento(gui_tpv.getFechaVencimiento());
         facturaVenta.setTransportista((Transportista) cmb_Transporte.getSelectedItem());
@@ -405,7 +406,7 @@ public class GUI_CerrarVenta extends JDialog {
             boolean dividir;
             dividir = false;
             int[] indicesParaDividir = null;
-            if (chk_condicionDividir.isSelected() && (gui_tpv.getTipoDeFactura() == 'A' || gui_tpv.getTipoDeFactura() == 'B' || gui_tpv.getTipoDeFactura() == 'C')) {
+            if (chk_condicionDividir.isSelected() && (gui_tpv.getStringTipoDeComprobante().equals("Factura A") || gui_tpv.getStringTipoDeComprobante().equals("Factura B") || gui_tpv.getStringTipoDeComprobante().equals("Factura C"))) {
                 ModeloTabla modeloTablaPuntoDeVenta = gui_tpv.getModeloTabla();
                 indicesParaDividir = new int[modeloTablaPuntoDeVenta.getRowCount()];
                 int j = 0;
@@ -419,10 +420,12 @@ public class GUI_CerrarVenta extends JDialog {
                     dividir = true;
                 }
             }
+            // Pedido pedido = pedidoService.getPedidoPorNro(gui_tpv.getPedido().getNroPedido());
             if (!dividir) {
                 FacturaVenta factura = this.construirFactura();
-                if (!(gui_tpv.getPedido() == null)) {
-                   factura.setPedido(pedidoService.getPedidoPorId(gui_tpv.getPedido().getNroPedido()));
+                if (gui_tpv.getPedido() == null) {
+                } else {
+                    factura.setPedido(pedidoService.getPedidoPorNro(gui_tpv.getPedido().getNroPedido()));
                 }
                 Factura aux = this.guardarFactura(factura);
                 this.lanzarReporteFactura(aux);
@@ -432,6 +435,9 @@ public class GUI_CerrarVenta extends JDialog {
                 List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), indicesParaDividir);
                 for (Factura factura : facturasDivididas) {
                     if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
+                        if (!(gui_tpv.getPedido() == null)) {
+                            factura.setPedido(pedidoService.getPedidoPorNro(gui_tpv.getPedido().getNroPedido()));
+                        }
                         this.lanzarReporteFactura(this.guardarFactura(factura));
                         exito = true;
                         this.dispose();

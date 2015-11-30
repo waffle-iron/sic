@@ -6,9 +6,9 @@ import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
@@ -16,7 +16,6 @@ import javax.swing.*;
 import org.apache.log4j.Logger;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
-import sic.modelo.Factura;
 import sic.modelo.FormaDePago;
 import sic.modelo.Pedido;
 import sic.modelo.Producto;
@@ -29,7 +28,7 @@ import sic.util.Utilidades;
 public class GUI_PuntoDeVenta extends JDialog {
 
     private Empresa empresa;
-    private char tipoDeFactura;
+    private String tipoDeComprobante;
     private Cliente cliente;
     private List<RenglonFactura> renglones;
     private ModeloTabla modeloTablaResultados;
@@ -68,7 +67,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         dc_fechaVencimiento.setDate(new Date());
 
         //listeners        
-        cmb_TipoFactura.addKeyListener(keyHandler);
+        cmb_TipoComprobante.addKeyListener(keyHandler);
         btn_NuevoCliente.addKeyListener(keyHandler);
         btn_BuscarCliente.addKeyListener(keyHandler);
         btn_BuscarProductos.addKeyListener(keyHandler);
@@ -85,13 +84,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     public void cargarPedidoParaFacturar() {
-        this.cargarRenglonesDelPedido(pedido);
-        if (this.renglones.isEmpty()) {
-            if (JOptionPane.showConfirmDialog(null, "¿Cerrar Punto de Venta?", "Pedido totalmente facturado",
-                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                this.dispose();
-            }
-        }
+        this.renglones = renglonDeFacturaService.getRenglonesRestantesParaFacturarDelPedido(pedido);
         this.empresa = pedido.getEmpresa();
         this.cliente = pedido.getCliente();
         EstadoRenglon[] marcaDeRenglonesDelPedido = new EstadoRenglon[renglones.size()];
@@ -110,8 +103,13 @@ public class GUI_PuntoDeVenta extends JDialog {
         return this.pedido;
     }
 
-    public char getTipoDeFactura() {
-        return tipoDeFactura;
+    public char getCharTipoDeComprobante() {
+        int indice = tipoDeComprobante.length() - 1;
+        return tipoDeComprobante.charAt(indice);
+    }
+
+    public String getStringTipoDeComprobante() {
+        return tipoDeComprobante;
     }
 
     public Cliente getCliente() {
@@ -300,7 +298,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         for (int i = 0; i < renglones.size(); i++) {
             if (renglones.get(i).getId_ProductoItem() == renglon.getId_ProductoItem()) {
                 Producto producto = productoService.getProductoPorId(renglon.getId_ProductoItem());
-                renglones.set(i, renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, renglones.get(i).getCantidad() + renglon.getCantidad(), producto, renglon.getDescuento_porcentaje()));
+                renglones.set(i, renglonDeFacturaService.calcularRenglon(tipoDeComprobante, Movimiento.VENTA, renglones.get(i).getCantidad() + renglon.getCantidad(), producto, renglon.getDescuento_porcentaje()));
                 agregado = true;
             }
         }
@@ -422,7 +420,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             JOptionPane.showMessageDialog(this, "No se encontró ningun producto con el codigo ingresado!", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             if (this.existeStockDisponible(1, producto)) {
-                RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
+                RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeComprobante, Movimiento.VENTA, 1, producto, 0);
                 this.agregarRenglon(renglon);
                 EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
                 if (tbl_Resultado.getRowCount() == 0) {
@@ -474,15 +472,15 @@ public class GUI_PuntoDeVenta extends JDialog {
         txt_SubTotalNeto.setValue(subTotalNeto);
 
         //iva 10,5% neto
-        iva_105_neto = facturaService.calcularIva_neto(tipoDeFactura, 0, recargo_porcentaje, renglones, 10.5);
+        iva_105_neto = facturaService.calcularIva_neto(tipoDeComprobante, 0, recargo_porcentaje, renglones, 10.5);
         txt_IVA105_neto.setValue(iva_105_neto);
 
         //IVA 21% neto
-        iva_21_neto = facturaService.calcularIva_neto(tipoDeFactura, 0, recargo_porcentaje, renglones, 21.0);
+        iva_21_neto = facturaService.calcularIva_neto(tipoDeComprobante, 0, recargo_porcentaje, renglones, 21.0);
         txt_IVA21_neto.setValue(iva_21_neto);
 
         //Imp Interno neto
-        impInterno_neto = facturaService.calcularImpInterno_neto(tipoDeFactura, 0, recargo_porcentaje, renglones);
+        impInterno_neto = facturaService.calcularImpInterno_neto(tipoDeComprobante, 0, recargo_porcentaje, renglones);
         txt_ImpInterno_neto.setValue(impInterno_neto);
 
         //total
@@ -490,11 +488,14 @@ public class GUI_PuntoDeVenta extends JDialog {
         txt_Total.setValue(total);
     }
 
-    private void cargarTiposDeFacturaDisponibles() {
-        char[] tiposFactura = facturaService.getTipoFacturaVenta(empresaService.getEmpresaActiva().getEmpresa(), cliente);
-        cmb_TipoFactura.removeAllItems();
+    private void cargarTiposDeComprobantesDisponibles() {
+        String[] tiposFactura = facturaService.getTipoFacturaVenta(empresaService.getEmpresaActiva().getEmpresa(), cliente);
+        cmb_TipoComprobante.removeAllItems();
         for (int i = 0; tiposFactura.length > i; i++) {
-            cmb_TipoFactura.addItem(tiposFactura[i]);
+            cmb_TipoComprobante.addItem(tiposFactura[i]);
+        }
+        if (!(this.pedido == null)) {
+            cmb_TipoComprobante.removeItem("Pedido");
         }
     }
 
@@ -504,7 +505,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         renglones = new ArrayList<>();
         for (RenglonFactura renglonFactura : resguardoRenglones) {
             Producto producto = productoService.getProductoPorId(renglonFactura.getId_ProductoItem());
-            RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());
+            RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeComprobante, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());
             this.agregarRenglon(renglon);
         }
         EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
@@ -526,61 +527,20 @@ public class GUI_PuntoDeVenta extends JDialog {
     private Pedido construirPedido() {
         Pedido nuevo = new Pedido();
         nuevo.setCliente(cliente);
-        nuevo.setEliminada(false);
+        nuevo.setEliminado(false);
         nuevo.setEmpresa(empresa);
         nuevo.setFacturas(null);
         nuevo.setFecha(dc_fechaFactura.getDate());
         nuevo.setHistorial(txta_Observaciones.getText());
         nuevo.setUsuario(usuarioService.getUsuarioActivo().getUsuario());
         nuevo.setNroPedido(pedidoService.calcularNumeroPedido());
+        nuevo.setTotal(facturaService.calcularSubTotal(renglones));
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
         for (RenglonFactura renglonFactura : renglones) {
             renglonesPedido.add(renglonDePedidoService.calcularRenglonPedido(renglonFactura, nuevo));
         }
         nuevo.setRenglones(renglonesPedido);
         return nuevo;
-    }
-
-    private HashMap<Long, RenglonFactura> getRenglonesUnificadosPorIdProducto(long nroPedido) {
-        List<Factura> facturas = pedidoService.getFacturasDelPedido(nroPedido);
-        List<RenglonFactura> renglonesDeFacturas = new ArrayList<>();
-        HashMap<Long, RenglonFactura> Lista = new HashMap<>();
-        if (!facturas.isEmpty()) {
-            for (Factura factura : facturas) {
-                renglonesDeFacturas.addAll(factura.getRenglones());
-            }
-            for (RenglonFactura renglon : renglonesDeFacturas) {
-                if (Lista.containsKey(renglon.getId_ProductoItem())) {
-                    Lista.get(renglon.getId_ProductoItem())
-                            .setCantidad(Lista.get(renglon.getId_ProductoItem()).getCantidad() + renglon.getCantidad());
-                } else {
-                    Lista.put(renglon.getId_ProductoItem(), renglon);
-                }
-            }
-        }
-        renglonesDeFacturas.clear();
-        /*for (Entry<Long, RenglonFactura> entry : Lista.entrySet()) {
-         renglonesDeFacturas.add(entry.getValue());
-         }*/
-
-        return Lista;
-    }
-
-    private void cargarRenglonesDelPedido(Pedido pedido) {
-        List<RenglonFactura> renglonesDelPedidoParaFacturar = new ArrayList<>();
-        HashMap<Long, RenglonFactura> renglonesDeFacturas = this.getRenglonesUnificadosPorIdProducto(pedido.getNroPedido());
-        List<RenglonPedido> renglonesDelPedido = pedidoService.getRenglonesDelPedido(pedido.getId_Pedido());
-        for (RenglonPedido renglon : renglonesDelPedido) {
-            if (renglonesDeFacturas.containsKey(renglon.getProducto().getId_Producto())) {
-                if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
-                    renglon.setCantidad(renglon.getCantidad() - renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad());
-                    renglonesDelPedidoParaFacturar.add(renglonDeFacturaService.getRenglonFacturaPorRenglonPedido(renglon));
-                }
-            } else {
-                renglonesDelPedidoParaFacturar.add(renglonDeFacturaService.getRenglonFacturaPorRenglonPedido(renglon));
-            }
-        }
-        this.renglones = renglonesDelPedidoParaFacturar;
     }
 
     /**
@@ -668,19 +628,19 @@ public class GUI_PuntoDeVenta extends JDialog {
         dc_fechaFactura = new com.toedter.calendar.JDateChooser();
         lbl_fechaDeVencimiento = new javax.swing.JLabel();
         dc_fechaVencimiento = new com.toedter.calendar.JDateChooser();
-        lbl_TipoFactura = new javax.swing.JLabel();
-        cmb_TipoFactura = new javax.swing.JComboBox();
+        lbl_TipoDeComprobante = new javax.swing.JLabel();
+        cmb_TipoComprobante = new javax.swing.JComboBox();
         btn_NuevoCliente = new javax.swing.JButton();
         btn_BuscarCliente = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("S.I.C. Punto de Venta");
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowOpened(java.awt.event.WindowEvent evt) {
-                formWindowOpened(evt);
-            }
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
             }
         });
 
@@ -885,9 +845,9 @@ public class GUI_PuntoDeVenta extends JDialog {
             }
         });
 
+        txta_Observaciones.setEditable(false);
         txta_Observaciones.setBackground(new java.awt.Color(220, 215, 215));
         txta_Observaciones.setColumns(20);
-        txta_Observaciones.setEditable(false);
         txta_Observaciones.setRows(5);
         txta_Observaciones.setFocusable(false);
         jScrollPane1.setViewportView(txta_Observaciones);
@@ -1101,24 +1061,24 @@ public class GUI_PuntoDeVenta extends JDialog {
         });
 
         lbl_fechaFactura.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lbl_fechaFactura.setText("Fecha de Factura:");
+        lbl_fechaFactura.setText("Fecha de Emisión:");
 
-        lbl_fechaDeVencimiento.setText("Fecha de Vencimiento");
+        lbl_fechaDeVencimiento.setText("Fecha Vencimiento");
 
-        lbl_TipoFactura.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        lbl_TipoFactura.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lbl_TipoFactura.setText("Tipo de Factura:");
+        lbl_TipoDeComprobante.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        lbl_TipoDeComprobante.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_TipoDeComprobante.setText("Tipo de Comprobante:");
 
-        cmb_TipoFactura.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        cmb_TipoFactura.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "X" }));
-        cmb_TipoFactura.addItemListener(new java.awt.event.ItemListener() {
+        cmb_TipoComprobante.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        cmb_TipoComprobante.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Factura A", "Factura C", "Factura X", "Pedido" }));
+        cmb_TipoComprobante.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmb_TipoFacturaItemStateChanged(evt);
+                cmb_TipoComprobanteItemStateChanged(evt);
             }
         });
-        cmb_TipoFactura.addActionListener(new java.awt.event.ActionListener() {
+        cmb_TipoComprobante.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmb_TipoFacturaActionPerformed(evt);
+                cmb_TipoComprobanteActionPerformed(evt);
             }
         });
 
@@ -1152,9 +1112,9 @@ public class GUI_PuntoDeVenta extends JDialog {
                 .addGroup(panelEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelEncabezadoLayout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(lbl_TipoFactura)
+                        .addComponent(lbl_TipoDeComprobante)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cmb_TipoComprobante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelEncabezadoLayout.createSequentialGroup()
                         .addComponent(btn_NuevoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
@@ -1180,8 +1140,8 @@ public class GUI_PuntoDeVenta extends JDialog {
                         .addComponent(dc_fechaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(lbl_fechaFactura))
                     .addGroup(panelEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                        .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lbl_TipoFactura)))
+                        .addComponent(cmb_TipoComprobante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lbl_TipoDeComprobante)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelEncabezadoLayout.createSequentialGroup()
@@ -1254,7 +1214,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         try {
             if (gui_buscarCliente.getClienteSeleccionado() != null) {
                 this.cargarCliente(gui_buscarCliente.getClienteSeleccionado());
-                this.cargarTiposDeFacturaDisponibles();
+                this.cargarTiposDeComprobantesDisponibles();
             }
 
         } catch (PersistenceException ex) {
@@ -1269,7 +1229,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         try {
             if (GUI_AltaCliente.getClienteDadoDeAlta() != null) {
                 this.cargarCliente(GUI_AltaCliente.getClienteDadoDeAlta());
-                this.cargarTiposDeFacturaDisponibles();
+                this.cargarTiposDeComprobantesDisponibles();
             }
 
         } catch (PersistenceException ex) {
@@ -1289,10 +1249,13 @@ public class GUI_PuntoDeVenta extends JDialog {
             }
             if (!(this.pedido == null)) {
                 this.cargarPedidoParaFacturar();
+                btn_NuevoCliente.setEnabled(false);
+                btn_BuscarCliente.setEnabled(false);
+                txta_Observaciones.setText(this.pedido.getHistorial());
             }
             //verifica que exista un Cliente predeterminado, una Forma de Pago y un Transportista
             if (this.existeClientePredeterminado() && this.existeFormaDePagoPredeterminada() && this.existeTransportistaCargado()) {
-                this.cargarTiposDeFacturaDisponibles();
+                this.cargarTiposDeComprobantesDisponibles();
             } else {
                 this.dispose();
             }
@@ -1308,11 +1271,11 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.dispose();
     }//GEN-LAST:event_formWindowClosing
 
-    private void cmb_TipoFacturaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_TipoFacturaItemStateChanged
+    private void cmb_TipoComprobanteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_TipoComprobanteItemStateChanged
 //para evitar que pase null cuando esta recargando el comboBox
         try {
-            if (cmb_TipoFactura.getSelectedItem() != null) {
-                tipoDeFactura = cmb_TipoFactura.getSelectedItem().toString().charAt(0);
+            if (cmb_TipoComprobante.getSelectedItem() != null) {
+                this.tipoDeComprobante = cmb_TipoComprobante.getSelectedItem().toString();
                 this.recargarRenglonesSegunTipoDeFactura();
             }
 
@@ -1320,7 +1283,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_cmb_TipoFacturaItemStateChanged
+    }//GEN-LAST:event_cmb_TipoComprobanteItemStateChanged
 
     private void btn_BuscarPorCodigoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarPorCodigoProductoActionPerformed
         try {
@@ -1372,18 +1335,20 @@ public class GUI_PuntoDeVenta extends JDialog {
     }//GEN-LAST:event_txt_Recargo_porcentajeActionPerformed
 
     private void btn_ContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ContinuarActionPerformed
-        if (cmb_TipoFactura.getSelectedItem().toString().charAt(0) != 'P') {
+        if (!cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")) {
             GUI_CerrarVenta gui_CerrarVenta = new GUI_CerrarVenta(this, true);
             gui_CerrarVenta.setVisible(true);
             if (gui_CerrarVenta.isExito()) {
                 this.limpiarYRecargarComponentes();
             }
         } else {
-            if (JOptionPane.showConfirmDialog(null, "¿está seguro de darlo de alta?", "VA A GENERAR UN PEDIDO",
-                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                Pedido pedidoNuevo = this.construirPedido();
+            Pedido pedidoNuevo = this.construirPedido();
+            try {  //se quito el mensaje para cambiar por el reporte
                 pedidoService.guardar(pedidoNuevo);
                 this.limpiarYRecargarComponentes();
+            } catch (ServiceException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
             }
         }
     }//GEN-LAST:event_btn_ContinuarActionPerformed
@@ -1437,11 +1402,11 @@ public class GUI_PuntoDeVenta extends JDialog {
         }
     }//GEN-LAST:event_txt_Recargo_porcentajeKeyTyped
 
-    private void cmb_TipoFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_TipoFacturaActionPerformed
+    private void cmb_TipoComprobanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_TipoComprobanteActionPerformed
         for (int i = 0; i < tbl_Resultado.getRowCount(); i++) {
             tbl_Resultado.setValueAt((boolean) tbl_Resultado.getValueAt(i, 0), i, 0);
         }
-    }//GEN-LAST:event_cmb_TipoFacturaActionPerformed
+    }//GEN-LAST:event_cmb_TipoComprobanteActionPerformed
 
     private void tbl_ResultadoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_ResultadoMouseClicked
         int fila = tbl_Resultado.getSelectedRow();
@@ -1484,7 +1449,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     private javax.swing.JButton btn_EliminarEntradaProducto;
     private javax.swing.JButton btn_NuevoCliente;
     private javax.swing.JButton btn_nuevoProducto;
-    private javax.swing.JComboBox cmb_TipoFactura;
+    private javax.swing.JComboBox cmb_TipoComprobante;
     private com.toedter.calendar.JDateChooser dc_fechaFactura;
     private com.toedter.calendar.JDateChooser dc_fechaVencimiento;
     private javax.swing.JScrollPane jScrollPane1;
@@ -1501,7 +1466,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     private javax.swing.JLabel lbl_Observaciones;
     private javax.swing.JLabel lbl_SubTotal;
     private javax.swing.JLabel lbl_SubTotalNeto;
-    private javax.swing.JLabel lbl_TipoFactura;
+    private javax.swing.JLabel lbl_TipoDeComprobante;
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_fechaDeVencimiento;
     private javax.swing.JLabel lbl_fechaFactura;
