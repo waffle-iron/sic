@@ -13,10 +13,10 @@ import sic.util.PersistenceUtil;
 
 public class PedidoRepository {
 
-    public List<RenglonPedido> getRenglonesDelPedido(long idPedido) {
+    public List<RenglonPedido> getRenglonesDelPedido(long nroPedido) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarRenglonesDelPedido", Pedido.class);
-        typedQuery.setParameter("idPedido", idPedido);
+        typedQuery.setParameter("nroPedido", nroPedido);
         List<Pedido> paraObtenerRenglones = typedQuery.getResultList();
         em.close();
         return paraObtenerRenglones.get(0).getRenglones();
@@ -59,7 +59,7 @@ public class PedidoRepository {
         typedQuery.setParameter("idEmpresa", idEmpresa);
         Long resultado = typedQuery.getSingleResult();
         em.close();
-        if (resultado == 0) {
+        if (resultado == null) {
             return 1;
         } else {
             return resultado + 1;
@@ -84,10 +84,10 @@ public class PedidoRepository {
         em.close();
     }
 
-    public Pedido getPedidoPorId(long id_Pedido) {
+    public Pedido getPedidoPorNro(long nroPedido) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorId", Pedido.class);
-        typedQuery.setParameter("id", id_Pedido);
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumero", Pedido.class);
+        typedQuery.setParameter("nroPedido", nroPedido);
         List<Pedido> pedidos = typedQuery.getResultList();
         em.close();
         if (pedidos.isEmpty()) {
@@ -143,5 +143,14 @@ public class PedidoRepository {
         } else {
             return pedidos.get(0);
         }
+    }
+
+    public double getPrecioActualPedido(long nroPedido) {
+        EntityManager em = PersistenceUtil.getEntityManager();
+        TypedQuery<Double> typedQuery = em.createNamedQuery("Pedido.buscarPrecioActual", Double.class);
+        typedQuery.setParameter("nroPedido", nroPedido);
+        Double resultado = typedQuery.getSingleResult();
+        em.close();
+        return resultado;
     }
 }

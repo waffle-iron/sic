@@ -24,10 +24,10 @@ public class FacturaRepository {
         return renglones;
     }
 
-    public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {
+    public FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<FacturaVenta> typedQuery = em.createNamedQuery("Factura.buscarPorTipoSerieNum", FacturaVenta.class);
-        typedQuery.setParameter("tipo", tipo);
+        typedQuery.setParameter("tipo", tipo.charAt(tipo.length() - 1));
         typedQuery.setParameter("serie", serie);
         typedQuery.setParameter("num", num);
         List<FacturaVenta> facturasVenta = typedQuery.getResultList();
@@ -115,10 +115,10 @@ public class FacturaRepository {
         return facturasVenta;
     }
 
-    public long getMayorNumFacturaSegunTipo(char tipoDeFactura, long serie) {
+    public long getSiguienteNumFacturaSegunTipo(String tipoDeComprobante, long serie) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Long> typedQuery = em.createNamedQuery("Factura.buscarMayorNumFacturaSegunTipo", Long.class);
-        typedQuery.setParameter("tipo", tipoDeFactura);
+        typedQuery.setParameter("tipo", tipoDeComprobante.charAt(tipoDeComprobante.length() - 1));
         typedQuery.setParameter("serie", serie);
         Long resultado = typedQuery.getSingleResult();
         em.close();
