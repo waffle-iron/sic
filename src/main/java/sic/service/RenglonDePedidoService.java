@@ -13,6 +13,7 @@ public class RenglonDePedidoService {
         RenglonPedido nuevoRenglon = new RenglonPedido();
         nuevoRenglon.setCantidad(renglonFactura.getCantidad());
         nuevoRenglon.setPedido(pedido);
+        nuevoRenglon.setDescuento_procentaje(renglonFactura.getDescuento_porcentaje());
         Producto producto = productoService.getProductoPorId(renglonFactura.getId_ProductoItem());
         nuevoRenglon.setProducto(producto);
         nuevoRenglon.setSubTotal(producto.getPrecioVentaPublico());
