@@ -94,10 +94,6 @@ public class PedidoService {
         pedidoRepository.actualizar(pedido);
     }
 
-    public Pedido getPedidoPorNro(long nroPedido) {
-        return pedidoRepository.getPedidoPorNro(nroPedido);
-    }
-
     public Pedido getPedidoPorNumero(long nroPedido) {
         return pedidoRepository.getPedidoPorNumero(nroPedido);
     }

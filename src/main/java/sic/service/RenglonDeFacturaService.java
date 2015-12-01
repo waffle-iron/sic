@@ -103,19 +103,19 @@ public class RenglonDeFacturaService {
         return Math.round(resultado * 1000.0) / 1000.0;
     }
 
-    public RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon) {
-        return this.calcularRenglon("Pedido", Movimiento.PEDIDO, renglon.getCantidad(), renglon.getProducto(), renglon.getDescuento_procentaje());
+    public RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante) {
+        return this.calcularRenglon(tipoComprobante, Movimiento.VENTA, renglon.getCantidad(), renglon.getProducto(), renglon.getDescuento_procentaje());
     }
 
-    public List<RenglonFactura> getRenglonesDePedidoComoRenglonesFactura(List<RenglonPedido> renglonPedido) {
+    public List<RenglonFactura> getRenglonesDePedidoComoRenglonesFactura(List<RenglonPedido> renglonPedido, String tipoComprobante) {
         List<RenglonFactura> renglonesDeFactura = new ArrayList<>();
         for (RenglonPedido renglon : renglonPedido) {
-            renglonesDeFactura.add(this.getRenglonFacturaPorRenglonPedido(renglon));
+            renglonesDeFactura.add(this.getRenglonFacturaPorRenglonPedido(renglon, tipoComprobante));
         }
         return renglonesDeFactura;
     }
     
-     public List<RenglonFactura> getRenglonesRestantesParaFacturarDelPedido(Pedido pedido) {
+     public List<RenglonFactura> getRenglonesRestantesParaFacturarDelPedido(Pedido pedido, String tipoComprobante) {
         List<RenglonFactura> renglonesRestantes = new ArrayList<>();
         HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getNroPedido());
         List<RenglonPedido> renglonesDelPedido = pedidoService.getRenglonesDelPedido(pedido.getNroPedido());
@@ -123,10 +123,10 @@ public class RenglonDeFacturaService {
             if (renglonesDeFacturas.containsKey(renglon.getProducto().getId_Producto())) {
                 if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
                     renglon.setCantidad(renglon.getCantidad() - renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad());
-                    renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon));
+                    renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon, tipoComprobante));
                 }
             } else {
-                renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon));
+                renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon, tipoComprobante));
             }
         }
         return renglonesRestantes;

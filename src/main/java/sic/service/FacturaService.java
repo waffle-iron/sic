@@ -127,7 +127,7 @@ public class FacturaService {
     }
 
     public FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num) {
-        return facturaRepository.getFacturaVentaPorTipoSerieNum(tipo, serie, num);
+        return facturaRepository.getFacturaVentaPorTipoSerieNum(tipo.charAt(tipo.length() - 1), serie, num);
     }
 
     public List<FacturaCompra> buscarFacturaCompra(BusquedaFacturaCompraCriteria criteria) {
@@ -270,7 +270,7 @@ public class FacturaService {
     }
 
     public long calcularNumeroFactura(String tipoDeFactura, long serie) {
-        return facturaRepository.getSiguienteNumFacturaSegunTipo(tipoDeFactura, serie);
+        return facturaRepository.getSiguienteNumFacturaSegunTipo(tipoDeFactura.charAt(tipoDeFactura.length() - 1), serie);
     }
 
     public double calcularVuelto(double importeAPagar, double importeAbonado) {
@@ -499,7 +499,7 @@ public class FacturaService {
         facturaConIVA.setFecha(factura.getFecha());
         facturaConIVA.setTipoFactura(factura.getTipoFactura());
         facturaConIVA.setNumSerie(factura.getNumSerie());
-        facturaConIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoComprobante(facturaSinIVA), facturaConIVA.getNumSerie()));
+        facturaConIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoComprobante(facturaConIVA), facturaConIVA.getNumSerie()));
         facturaConIVA.setFormaPago(factura.getFormaPago());
         facturaConIVA.setFechaVencimiento(factura.getFechaVencimiento());
         facturaConIVA.setTransportista(factura.getTransportista());
@@ -508,9 +508,9 @@ public class FacturaService {
         facturaConIVA.setDescuento_neto(this.calcularDescuento_neto(facturaConIVA.getSubTotal(), facturaConIVA.getDescuento_porcentaje()));
         facturaConIVA.setRecargo_neto(this.calcularRecargo_neto(facturaConIVA.getSubTotal(), facturaConIVA.getRecargo_porcentaje()));
         facturaConIVA.setSubTotal_neto(this.calcularSubTotal_neto(facturaConIVA.getSubTotal(), facturaConIVA.getRecargo_neto(), facturaConIVA.getDescuento_neto()));
-        facturaConIVA.setIva_105_neto(this.calcularIva_neto(this.getTipoComprobante(facturaSinIVA), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), renglonesConIVA, 10.5));
-        facturaConIVA.setIva_21_neto(this.calcularIva_neto(this.getTipoComprobante(facturaSinIVA), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), renglonesConIVA, 21));
-        facturaConIVA.setImpuestoInterno_neto(this.calcularImpInterno_neto(this.getTipoComprobante(facturaSinIVA), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), renglonesConIVA));
+        facturaConIVA.setIva_105_neto(this.calcularIva_neto(this.getTipoComprobante(facturaConIVA), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), renglonesConIVA, 10.5));
+        facturaConIVA.setIva_21_neto(this.calcularIva_neto(this.getTipoComprobante(facturaConIVA), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), renglonesConIVA, 21));
+        facturaConIVA.setImpuestoInterno_neto(this.calcularImpInterno_neto(this.getTipoComprobante(facturaConIVA), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), renglonesConIVA));
         facturaConIVA.setTotal(this.calcularTotal(facturaConIVA.getSubTotal(), facturaConIVA.getDescuento_neto(), facturaConIVA.getRecargo_neto(), facturaConIVA.getIva_105_neto(), facturaConIVA.getIva_21_neto(), facturaConIVA.getImpuestoInterno_neto()));
         facturaConIVA.setObservaciones(factura.getObservaciones());
         facturaConIVA.setPagada(factura.isPagada());
