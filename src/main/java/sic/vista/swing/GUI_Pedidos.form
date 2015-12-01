@@ -68,7 +68,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="chk_Vendedor" linkSize="9" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="cmb_Vendedor" linkSize="8" min="-2" pref="156" max="-2" attributes="0"/>
+                          <Component id="cmb_Vendedor" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
@@ -94,7 +94,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="chk_Cliente" linkSize="9" min="-2" pref="123" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="cmb_Cliente" linkSize="8" min="-2" pref="156" max="-2" attributes="0"/>
+                          <Component id="cmb_Cliente" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace pref="20" max="32767" attributes="0"/>
@@ -115,17 +115,17 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="chk_NumeroPedido" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="txt_NumeroPedido" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="txt_NumeroPedido" linkSize="12" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="chk_Cliente" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_Cliente" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_Cliente" linkSize="12" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="chk_Vendedor" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_Vendedor" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_Vendedor" linkSize="12" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">

@@ -84,9 +84,11 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     public void cargarPedidoParaFacturar() {
-        this.renglones = renglonDeFacturaService.getRenglonesRestantesParaFacturarDelPedido(pedido);
+        String tipoComprobante = cmb_TipoComprobante.getSelectedItem().toString();
+        this.renglones = renglonDeFacturaService.getRenglonesRestantesParaFacturarDelPedido(pedido, tipoComprobante);
         this.empresa = pedido.getEmpresa();
         this.cliente = pedido.getCliente();
+        this.tipoDeComprobante = tipoComprobante; 
         EstadoRenglon[] marcaDeRenglonesDelPedido = new EstadoRenglon[renglones.size()];
         for (int i = 0; i < renglones.size(); i++) {
             marcaDeRenglonesDelPedido[i] = EstadoRenglon.DESMARCADO;
@@ -489,13 +491,19 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     private void cargarTiposDeComprobantesDisponibles() {
-        String[] tiposFactura = facturaService.getTipoFacturaVenta(empresaService.getEmpresaActiva().getEmpresa(), cliente);
-        cmb_TipoComprobante.removeAllItems();
-        for (int i = 0; tiposFactura.length > i; i++) {
-            cmb_TipoComprobante.addItem(tiposFactura[i]);
-        }
-        if (!(this.pedido == null)) {
-            cmb_TipoComprobante.removeItem("Pedido");
+        if (this.pedido == null) {
+            String[] tiposFactura = facturaService.getTipoFacturaVenta(empresaService.getEmpresaActiva().getEmpresa(), cliente);
+            cmb_TipoComprobante.removeAllItems();
+            for (int i = 0; tiposFactura.length > i; i++) {
+                cmb_TipoComprobante.addItem(tiposFactura[i]);
+            }
+        } else {
+            if (this.pedido.getId_Pedido() == 0) {
+                cmb_TipoComprobante.removeAllItems();
+                cmb_TipoComprobante.addItem("Pedido");
+            } else {
+                cmb_TipoComprobante.removeItem("Pedido");
+            }
         }
     }
 
@@ -531,6 +539,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         nuevo.setEmpresa(empresa);
         nuevo.setFacturas(null);
         nuevo.setFecha(dc_fechaFactura.getDate());
+        nuevo.setFechaVencimiento(dc_fechaVencimiento.getDate());
         nuevo.setHistorial(txta_Observaciones.getText());
         nuevo.setUsuario(usuarioService.getUsuarioActivo().getUsuario());
         nuevo.setNroPedido(pedidoService.calcularNumeroPedido());
@@ -1063,7 +1072,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         lbl_fechaFactura.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_fechaFactura.setText("Fecha de Emisión:");
 
-        lbl_fechaDeVencimiento.setText("Fecha Vencimiento");
+        lbl_fechaDeVencimiento.setText("Fecha Vencimiento:");
 
         lbl_TipoDeComprobante.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         lbl_TipoDeComprobante.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -1248,10 +1257,13 @@ public class GUI_PuntoDeVenta extends JDialog {
                 empresa = empresaService.getEmpresaActiva().getEmpresa();
             }
             if (!(this.pedido == null)) {
-                this.cargarPedidoParaFacturar();
-                btn_NuevoCliente.setEnabled(false);
-                btn_BuscarCliente.setEnabled(false);
-                txta_Observaciones.setText(this.pedido.getHistorial());
+                if (this.pedido.getId_Pedido() != 0) {
+                    this.cargarPedidoParaFacturar();
+                    btn_NuevoCliente.setEnabled(false);
+                    btn_BuscarCliente.setEnabled(false);
+                    txta_Observaciones.setText(this.pedido.getHistorial());
+                    this.calcularResultados(); 
+                }
             }
             //verifica que exista un Cliente predeterminado, una Forma de Pago y un Transportista
             if (this.existeClientePredeterminado() && this.existeFormaDePagoPredeterminada() && this.existeTransportistaCargado()) {

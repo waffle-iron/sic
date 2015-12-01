@@ -849,7 +849,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_fechaDeVencimiento">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Fecha Vencimiento"/>
+                <Property name="text" type="java.lang.String" value="Fecha Vencimiento:"/>
               </Properties>
             </Component>
             <Component class="com.toedter.calendar.JDateChooser" name="dc_fechaVencimiento">

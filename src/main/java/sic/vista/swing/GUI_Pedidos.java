@@ -112,24 +112,26 @@ public class GUI_Pedidos extends JInternalFrame {
     }
 
     private void verFacturasVenta() {
-        GUI_FacturasVenta gui_facturaVenta = new GUI_FacturasVenta();
-        gui_facturaVenta.setLocation(getDesktopPane().getWidth() / 2 - gui_facturaVenta.getWidth() / 2,
-                getDesktopPane().getHeight() / 2 - gui_facturaVenta.getHeight() / 2);
-        getDesktopPane().add(gui_facturaVenta);
-        long numeroDePedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1);
-        gui_facturaVenta.setVisible(true);
-        BusquedaFacturaVentaCriteria criteria = new BusquedaFacturaVentaCriteria();
-        criteria.setBuscarPorPedido(true);
-        criteria.setNroPedido(numeroDePedido);
-        criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-        gui_facturaVenta.buscarConCriteria(criteria);
+        if (tbl_Pedidos.getSelectedRow() != -1) {
+            GUI_FacturasVenta gui_facturaVenta = new GUI_FacturasVenta();
+            gui_facturaVenta.setLocation(getDesktopPane().getWidth() / 2 - gui_facturaVenta.getWidth() / 2,
+                    getDesktopPane().getHeight() / 2 - gui_facturaVenta.getHeight() / 2);
+            getDesktopPane().add(gui_facturaVenta);
+            long numeroDePedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1);
+            gui_facturaVenta.setVisible(true);
+            BusquedaFacturaVentaCriteria criteria = new BusquedaFacturaVentaCriteria();
+            criteria.setBuscarPorPedido(true);
+            criteria.setNroPedido(numeroDePedido);
+            criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+            gui_facturaVenta.buscarConCriteria(criteria);
 
-        try {
-            gui_facturaVenta.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            String msjError = "No se pudo seleccionar la ventana requerida.";
-            log.error(msjError + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+            try {
+                gui_facturaVenta.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                String msjError = "No se pudo seleccionar la ventana requerida.";
+                log.error(msjError + " - " + ex.getMessage());
+                JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -164,7 +166,7 @@ public class GUI_Pedidos extends JInternalFrame {
         this.setColumnasRenglonesPedido();
     }
 
-    private void setColumnasRenglonesPedido() {        
+    private void setColumnasRenglonesPedido() {
         //sorting
         tbl_RenglonesPedido.setAutoCreateRowSorter(true);
 
@@ -261,8 +263,16 @@ public class GUI_Pedidos extends JInternalFrame {
         return !clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa()).isEmpty();
     }
 
-    private void cargarRenglonesDelPedidoSeleccionadoEnTabla() {
+    private void cargarRenglonesDelPedidoSeleccionadoEnTabla(java.awt.event.KeyEvent evt) {
         int row = Utilidades.getSelectedRowModelIndice(tbl_Pedidos);
+        if (evt != null) {
+            if ((evt.getKeyCode() == KeyEvent.VK_UP) && row > 0) {
+                row--;
+            }
+            if ((evt.getKeyCode() == KeyEvent.VK_DOWN) && (row + 1) < tbl_Pedidos.getRowCount()) {
+                row++;
+            }
+        }
         this.limpiarTablaRenglones();
         this.setColumnasRenglonesPedido();
         long nroPedido = (long) tbl_Pedidos.getValueAt(row, 1);
@@ -393,7 +403,7 @@ public class GUI_Pedidos extends JInternalFrame {
                     .addGroup(panel_FiltrosLayout.createSequentialGroup()
                         .addComponent(chk_Vendedor)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cmb_Vendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(cmb_Vendedor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(panel_FiltrosLayout.createSequentialGroup()
                         .addComponent(btn_Buscar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -415,13 +425,11 @@ public class GUI_Pedidos extends JInternalFrame {
                     .addGroup(panel_FiltrosLayout.createSequentialGroup()
                         .addComponent(chk_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cmb_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cmb_Cliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
         panel_FiltrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {dc_FechaDesde, dc_FechaHasta});
-
-        panel_FiltrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cmb_Cliente, cmb_Vendedor});
 
         panel_FiltrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {chk_Cliente, chk_Fecha, chk_NumeroPedido, chk_Vendedor});
 
@@ -453,6 +461,8 @@ public class GUI_Pedidos extends JInternalFrame {
                     .addComponent(btn_Buscar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        panel_FiltrosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {cmb_Cliente, cmb_Vendedor, txt_NumeroPedido});
 
         panel_resultados.setBorder(javax.swing.BorderFactory.createTitledBorder("Resultados"));
 
@@ -666,9 +676,9 @@ public class GUI_Pedidos extends JInternalFrame {
         try {
             if (this.existeClienteDisponible()) {
                 GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
+                gui_puntoDeVenta.setPedido(new Pedido());
                 gui_puntoDeVenta.setModal(true);
                 gui_puntoDeVenta.setLocationRelativeTo(this);
-//                gui_puntoDeVenta.soloPedidos();
                 gui_puntoDeVenta.setVisible(true);
             } else {
                 String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
@@ -683,21 +693,23 @@ public class GUI_Pedidos extends JInternalFrame {
 
     private void btn_FacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FacturarActionPerformed
         try {
-            long nroPedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1);
-            Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido);
-            if (renglonDeFacturaService.getRenglonesRestantesParaFacturarDelPedido(pedido).isEmpty()) {
-                JOptionPane.showInternalMessageDialog(this, "El pedido fué totalmente facturado", "Aviso",
-                        JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                if (this.existeClienteDisponible()) {
-                    GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
-                    gui_puntoDeVenta.setPedido(pedido);
-                    gui_puntoDeVenta.setModal(true);
-                    gui_puntoDeVenta.setLocationRelativeTo(this);
-                    gui_puntoDeVenta.setVisible(true);
+            if (tbl_Pedidos.getSelectedRow() != -1) {
+                long nroPedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1);
+                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido);
+                if (renglonDeFacturaService.getRenglonesRestantesParaFacturarDelPedido(pedido,"Pedido").isEmpty()) {
+                    JOptionPane.showInternalMessageDialog(this, "El pedido fué totalmente facturado", "Aviso",
+                            JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
-                    JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+                    if (this.existeClienteDisponible()) {
+                        GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
+                        gui_puntoDeVenta.setPedido(pedido);
+                        gui_puntoDeVenta.setModal(true);
+                        gui_puntoDeVenta.setLocationRelativeTo(this);
+                        gui_puntoDeVenta.setVisible(true);
+                    } else {
+                        String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
+                        JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
 
@@ -712,7 +724,7 @@ public class GUI_Pedidos extends JInternalFrame {
     }//GEN-LAST:event_btn_VerFacturasActionPerformed
 
     private void tbl_PedidosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_PedidosMouseClicked
-        this.cargarRenglonesDelPedidoSeleccionadoEnTabla();
+        this.cargarRenglonesDelPedidoSeleccionadoEnTabla(null);
     }//GEN-LAST:event_tbl_PedidosMouseClicked
 
     private void cmb_cantidadMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_cantidadMostrarActionPerformed
@@ -746,23 +758,23 @@ public class GUI_Pedidos extends JInternalFrame {
 
     private void tbl_PedidosKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbl_PedidosKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_UP || evt.getKeyCode() == KeyEvent.VK_DOWN) {
-            this.cargarRenglonesDelPedidoSeleccionadoEnTabla();
+            this.cargarRenglonesDelPedidoSeleccionadoEnTabla(evt);
         }
     }//GEN-LAST:event_tbl_PedidosKeyPressed
 
     private void btn_ReportePedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ReportePedidoActionPerformed
-    /*    try {
-            this.lanzarReporteListaDePrecios();
+        /*    try {
+         this.lanzarReporteListaDePrecios();
 
-        } catch (JRException ex) {
-            String msjError = "Se produjo un error procesando el reporte.";
-            log.error(msjError + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+         } catch (JRException ex) {
+         String msjError = "Se produjo un error procesando el reporte.";
+         log.error(msjError + " - " + ex.getMessage());
+         JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }*/
+         } catch (PersistenceException ex) {
+         log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+         JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+         }*/
     }//GEN-LAST:event_btn_ReportePedidoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

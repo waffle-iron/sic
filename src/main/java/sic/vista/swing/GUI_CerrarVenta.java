@@ -15,7 +15,6 @@ import org.apache.log4j.Logger;
 import sic.modelo.Factura;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
-import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.service.*;
@@ -420,12 +419,11 @@ public class GUI_CerrarVenta extends JDialog {
                     dividir = true;
                 }
             }
-            // Pedido pedido = pedidoService.getPedidoPorNro(gui_tpv.getPedido().getNroPedido());
             if (!dividir) {
                 FacturaVenta factura = this.construirFactura();
                 if (gui_tpv.getPedido() == null) {
                 } else {
-                    factura.setPedido(pedidoService.getPedidoPorNro(gui_tpv.getPedido().getNroPedido()));
+                    factura.setPedido(pedidoService.getPedidoPorNumero(gui_tpv.getPedido().getNroPedido()));
                 }
                 Factura aux = this.guardarFactura(factura);
                 this.lanzarReporteFactura(aux);
@@ -436,9 +434,11 @@ public class GUI_CerrarVenta extends JDialog {
                 for (Factura factura : facturasDivididas) {
                     if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
                         if (!(gui_tpv.getPedido() == null)) {
-                            factura.setPedido(pedidoService.getPedidoPorNro(gui_tpv.getPedido().getNroPedido()));
+                            factura.setPedido(pedidoService.getPedidoPorNumero(gui_tpv.getPedido().getNroPedido()));
                         }
-                        this.lanzarReporteFactura(this.guardarFactura(factura));
+                        long numeroDeFactura = this.guardarFactura(factura).getNumFactura();
+                        Factura paraReporte = facturaService.getFacturaVentaPorTipoSerieNum(facturaService.getTipoComprobante(factura), factura.getNumSerie(), numeroDeFactura);
+                        this.lanzarReporteFactura(paraReporte);
                         exito = true;
                         this.dispose();
                     }
