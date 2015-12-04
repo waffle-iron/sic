@@ -9,14 +9,15 @@ public class RenglonDePedidoService {
 
     private final ProductoService productoService = new ProductoService();
 
-    public RenglonPedido calcularRenglonPedido(RenglonFactura renglonFactura, Pedido pedido) {
+    public RenglonPedido convertirARenglonPedido(RenglonFactura renglonFactura, Pedido pedido) {
         RenglonPedido nuevoRenglon = new RenglonPedido();
         nuevoRenglon.setCantidad(renglonFactura.getCantidad());
         nuevoRenglon.setPedido(pedido);
-        nuevoRenglon.setDescuento_procentaje(renglonFactura.getDescuento_porcentaje());
+        nuevoRenglon.setDescuento_porcentaje(renglonFactura.getDescuento_porcentaje());
+        nuevoRenglon.setDescuento_neto(renglonFactura.getDescuento_neto());
         Producto producto = productoService.getProductoPorId(renglonFactura.getId_ProductoItem());
         nuevoRenglon.setProducto(producto);
-        nuevoRenglon.setSubTotal(producto.getPrecioVentaPublico());
+        nuevoRenglon.setSubTotal(renglonFactura.getImporte());
         return nuevoRenglon;
     }
 

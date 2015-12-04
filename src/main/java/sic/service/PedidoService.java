@@ -1,17 +1,24 @@
 package sic.service;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Factura;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
 import sic.modelo.RenglonPedido;
 import sic.repository.PedidoRepository;
+import sic.util.Utilidades;
 
 public class PedidoService {
 
@@ -40,8 +47,19 @@ public class PedidoService {
         //Duplicados
         if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido()) != null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_pedido_ya_existe"));
+                    .getString("mensaje_pedido_duplicado"));
         }
+    }
+
+    private List<Pedido> calcularTotalActualDePedidos(List<Pedido> pedidos) {
+        for (Pedido pedido : pedidos) {
+            double totalActual = 0;
+            for (RenglonPedido renglonPedido : pedidoRepository.getRenglonesDelPedido(pedido.getNroPedido())) {
+                totalActual += renglonPedido.getProducto().getPrecioLista() * renglonPedido.getCantidad() * (1 - (renglonPedido.getDescuento_porcentaje() / 100));
+            }
+            pedido.setTotalActual(totalActual);
+        }
+        return pedidos;
     }
 
     public long calcularNumeroPedido() {
@@ -86,8 +104,8 @@ public class PedidoService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_vacio_nombre"));
         }
-
-        return pedidoRepository.buscarPedidosPorCriteria(criteria);
+        List<Pedido> pedidos = pedidoRepository.buscarPedidosPorCriteria(criteria);
+        return this.calcularTotalActualDePedidos(pedidos);
     }
 
     public void actualizar(Pedido pedido) {
@@ -137,7 +155,14 @@ public class PedidoService {
         return listaRenglonesUnificados;
     }
 
-    public double getPrecioActual(long nroPedido) {
-        return pedidoRepository.getPrecioActualPedido(nroPedido);
+    public JasperPrint getReportePedido(Pedido pedido) throws JRException {
+        ClassLoader classLoader = PedidoService.class.getClassLoader();
+        InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/Pedido.jasper");
+        Map params = new HashMap();
+        params.put("pedido", pedido);
+        params.put("logo", Utilidades.convertirByteArrayIntoImage(pedido.getEmpresa().getLogo()));
+        List<RenglonPedido> renglones = this.getRenglonesDelPedido(pedido.getNroPedido());
+        JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(renglones);
+        return JasperFillManager.fillReport(isFileReport, params, ds);
     }
 }
