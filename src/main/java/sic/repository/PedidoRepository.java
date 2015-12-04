@@ -55,7 +55,7 @@ public class PedidoRepository {
 
     public long calcularNumeroPedido(long idEmpresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Long> typedQuery = em.createNamedQuery("Pedido.buscarCantidadNroPedidos", Long.class);
+        TypedQuery<Long> typedQuery = em.createNamedQuery("Pedido.buscarMayorNroPedido", Long.class);
         typedQuery.setParameter("idEmpresa", idEmpresa);
         Long resultado = typedQuery.getSingleResult();
         em.close();
@@ -143,14 +143,5 @@ public class PedidoRepository {
         } else {
             return pedidos.get(0);
         }
-    }
-
-    public double getPrecioActualPedido(long nroPedido) {
-        EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Double> typedQuery = em.createNamedQuery("Pedido.buscarPrecioActual", Double.class);
-        typedQuery.setParameter("nroPedido", nroPedido);
-        Double resultado = typedQuery.getSingleResult();
-        em.close();
-        return resultado;
     }
 }
