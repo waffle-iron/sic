@@ -21,10 +21,8 @@ import lombok.Data;
 @Entity
 @Table(name = "pedido")
 @NamedQueries({
-    @NamedQuery(name = "Pedido.buscarCantidadNroPedidos",
-            query = "SELECT max(p.nroPedido) FROM Pedido p WHERE p.empresa.id_Empresa = :idEmpresa"),
-    @NamedQuery(name = "Pedido.buscarPrecioActual",
-            query = "SELECT SUM((p.Producto.precioLista) * p.cantidad) FROM RenglonPedido p WHERE p.pedido.nroPedido = :nroPedido"),
+    @NamedQuery(name = "Pedido.buscarMayorNroPedido",
+            query = "SELECT MAX(p.nroPedido) FROM Pedido p WHERE p.empresa.id_Empresa = :idEmpresa"),
     @NamedQuery(name = "Pedido.buscarPedidoConFacturas",
             query = "SELECT f FROM Factura f WHERE f.eliminada = false AND f.pedido.nroPedido = :nroPedido"),
     @NamedQuery(name = "Pedido.buscarRenglonesDelPedido",
@@ -55,7 +53,7 @@ public class Pedido implements Serializable {
     private Date fechaVencimiento;
 
     @Column(nullable = false)
-    private String historial;
+    private String observaciones;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
@@ -77,6 +75,8 @@ public class Pedido implements Serializable {
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "pedido")
     private List<RenglonPedido> renglones;
 
-    private double total;
+    private double totalEstimado;
+
+    private double totalActual;
 
 }

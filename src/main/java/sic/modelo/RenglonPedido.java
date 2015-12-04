@@ -10,20 +10,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Data;
 
-@Data
 @Entity
 @Table(name = "renglonPedido")
+@Data
 public class RenglonPedido implements Serializable {
 
     @Id
     @GeneratedValue
     private long id_RenglonPedido;
-
-    private double cantidad;
-
-    private double subTotal;
-    
-    private double descuento_procentaje;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
@@ -31,6 +25,14 @@ public class RenglonPedido implements Serializable {
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Producto", referencedColumnName = "id_Producto")
-    private Producto Producto;
+    private Producto producto;
+
+    private double cantidad;
+
+    private double descuento_porcentaje;
+    
+    private double descuento_neto;
+
+    private double subTotal;
 
 }
