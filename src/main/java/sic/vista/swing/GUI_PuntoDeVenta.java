@@ -6,7 +6,6 @@ import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +27,7 @@ import sic.util.Utilidades;
 public class GUI_PuntoDeVenta extends JDialog {
 
     private Empresa empresa;
-    private String tipoDeComprobante;
+    private String tipoDeFactura;
     private Cliente cliente;
     private List<RenglonFactura> renglones;
     private ModeloTabla modeloTablaResultados;
@@ -84,17 +83,16 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     public void cargarPedidoParaFacturar() {
-        String tipoComprobante = cmb_TipoComprobante.getSelectedItem().toString();
-        this.renglones = renglonDeFacturaService.getRenglonesRestantesParaFacturarDelPedido(pedido, tipoComprobante);
         this.empresa = pedido.getEmpresa();
         this.cliente = pedido.getCliente();
-        this.tipoDeComprobante = tipoComprobante; 
+        this.cargarTiposDeComprobantesDisponibles();
+        this.tipoDeFactura = cmb_TipoComprobante.getSelectedItem().toString();
+        this.renglones = renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(pedido, this.tipoDeFactura);
         EstadoRenglon[] marcaDeRenglonesDelPedido = new EstadoRenglon[renglones.size()];
         for (int i = 0; i < renglones.size(); i++) {
             marcaDeRenglonesDelPedido[i] = EstadoRenglon.DESMARCADO;
         }
         this.cargarRenglonesAlTable(marcaDeRenglonesDelPedido);
-
     }
 
     public void setPedido(Pedido pedido) {
@@ -105,13 +103,8 @@ public class GUI_PuntoDeVenta extends JDialog {
         return this.pedido;
     }
 
-    public char getCharTipoDeComprobante() {
-        int indice = tipoDeComprobante.length() - 1;
-        return tipoDeComprobante.charAt(indice);
-    }
-
-    public String getStringTipoDeComprobante() {
-        return tipoDeComprobante;
+    public String getTipoDeComprobante() {
+        return tipoDeFactura;
     }
 
     public Cliente getCliente() {
@@ -194,10 +187,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     private boolean existeClientePredeterminado() {
         Cliente clientePredeterminado = clienteService.getClientePredeterminado(empresa);
         if (clientePredeterminado == null) {
-            String mensaje = "No posee ningun Cliente Predeterminado con la empresa seleccionada.\n"
-                    + "Debe establecer uno como Predeterminado o dar de alta uno nuevo\n"
-                    + "para poder utilizar el T.P.V. (Terminal Punto de Venta)";
-            JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_cliente_sin_predeterminado"), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         } else {
             this.cargarCliente(clientePredeterminado);
@@ -208,10 +198,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     private boolean existeFormaDePagoPredeterminada() {
         FormaDePago fp = formaDePagoService.getFormaDePagoPredeterminada(empresa);
         if (fp == null) {
-            String mensaje = "No posee ninguna Forma de Pago Predeterminada con la empresa seleccionada.\n"
-                    + "Debe establecer una como Predeterminada o dar de alta una nueva\n"
-                    + "para poder utilizar el T.P.V. (Terminal Punto de Venta)";
-            JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_formaDePago_sin_predeterminada"), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         } else {
             return true;
@@ -220,9 +207,7 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     private boolean existeTransportistaCargado() {
         if (transportistaService.getTransportistas(empresa).isEmpty()) {
-            String mensaje = "No posee ningun Transportista cargado en la empresa seleccionada.\n"
-                    + "Debe dar de alta al menos uno para poder utilizar el T.P.V. (Terminal Punto de Venta)";
-            JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_transportista_ninguno_cargado"), "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         } else {
             return true;
@@ -300,7 +285,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         for (int i = 0; i < renglones.size(); i++) {
             if (renglones.get(i).getId_ProductoItem() == renglon.getId_ProductoItem()) {
                 Producto producto = productoService.getProductoPorId(renglon.getId_ProductoItem());
-                renglones.set(i, renglonDeFacturaService.calcularRenglon(tipoDeComprobante, Movimiento.VENTA, renglones.get(i).getCantidad() + renglon.getCantidad(), producto, renglon.getDescuento_porcentaje()));
+                renglones.set(i, renglonDeFacturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, renglones.get(i).getCantidad() + renglon.getCantidad(), producto, renglon.getDescuento_porcentaje()));
                 agregado = true;
             }
         }
@@ -325,7 +310,6 @@ public class GUI_PuntoDeVenta extends JDialog {
             corte = false;
             /*Dentro de este While, el case según el valor leido en el array de la enumeración,
              (modelo tabla)asigna el valor correspondiente al checkbox del renglon.*/
-
             while (corte == false) {
                 switch (estadosDeLosRenglones[i]) {
                     case MARCADO: {
@@ -353,7 +337,6 @@ public class GUI_PuntoDeVenta extends JDialog {
                     }
                 }
             }
-
             i++;
             fila[1] = renglon.getCodigoItem();
             fila[2] = renglon.getDescripcionItem();
@@ -422,7 +405,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             JOptionPane.showMessageDialog(this, "No se encontró ningun producto con el codigo ingresado!", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
             if (this.existeStockDisponible(1, producto)) {
-                RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeComprobante, Movimiento.VENTA, 1, producto, 0);
+                RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
                 this.agregarRenglon(renglon);
                 EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
                 if (tbl_Resultado.getRowCount() == 0) {
@@ -474,15 +457,15 @@ public class GUI_PuntoDeVenta extends JDialog {
         txt_SubTotalNeto.setValue(subTotalNeto);
 
         //iva 10,5% neto
-        iva_105_neto = facturaService.calcularIva_neto(tipoDeComprobante, 0, recargo_porcentaje, renglones, 10.5);
+        iva_105_neto = facturaService.calcularIva_neto(this.tipoDeFactura, 0, recargo_porcentaje, renglones, 10.5);
         txt_IVA105_neto.setValue(iva_105_neto);
 
         //IVA 21% neto
-        iva_21_neto = facturaService.calcularIva_neto(tipoDeComprobante, 0, recargo_porcentaje, renglones, 21.0);
+        iva_21_neto = facturaService.calcularIva_neto(this.tipoDeFactura, 0, recargo_porcentaje, renglones, 21.0);
         txt_IVA21_neto.setValue(iva_21_neto);
 
         //Imp Interno neto
-        impInterno_neto = facturaService.calcularImpInterno_neto(tipoDeComprobante, 0, recargo_porcentaje, renglones);
+        impInterno_neto = facturaService.calcularImpInterno_neto(this.tipoDeFactura, 0, recargo_porcentaje, renglones);
         txt_ImpInterno_neto.setValue(impInterno_neto);
 
         //total
@@ -491,13 +474,12 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     private void cargarTiposDeComprobantesDisponibles() {
-        if (this.pedido == null) {
-            String[] tiposFactura = facturaService.getTipoFacturaVenta(empresaService.getEmpresaActiva().getEmpresa(), cliente);
-            cmb_TipoComprobante.removeAllItems();
-            for (int i = 0; tiposFactura.length > i; i++) {
-                cmb_TipoComprobante.addItem(tiposFactura[i]);
-            }
-        } else {
+        cmb_TipoComprobante.removeAllItems();
+        String[] tiposFactura = facturaService.getTipoFacturaVenta(empresaService.getEmpresaActiva().getEmpresa(), cliente);
+        for (int i = 0; tiposFactura.length > i; i++) {
+            cmb_TipoComprobante.addItem(tiposFactura[i]);
+        }
+        if (this.pedido != null) {
             if (this.pedido.getId_Pedido() == 0) {
                 cmb_TipoComprobante.removeAllItems();
                 cmb_TipoComprobante.addItem("Pedido");
@@ -513,7 +495,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         renglones = new ArrayList<>();
         for (RenglonFactura renglonFactura : resguardoRenglones) {
             Producto producto = productoService.getProductoPorId(renglonFactura.getId_ProductoItem());
-            RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(tipoDeComprobante, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());
+            RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());
             this.agregarRenglon(renglon);
         }
         EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
@@ -532,24 +514,28 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.calcularResultados();
     }
 
-    private Pedido construirPedido() {
-        Pedido nuevo = new Pedido();
-        nuevo.setCliente(cliente);
-        nuevo.setEliminado(false);
-        nuevo.setEmpresa(empresa);
-        nuevo.setFacturas(null);
-        nuevo.setFecha(dc_fechaFactura.getDate());
-        nuevo.setFechaVencimiento(dc_fechaVencimiento.getDate());
-        nuevo.setHistorial(txta_Observaciones.getText());
-        nuevo.setUsuario(usuarioService.getUsuarioActivo().getUsuario());
-        nuevo.setNroPedido(pedidoService.calcularNumeroPedido());
-        nuevo.setTotal(facturaService.calcularSubTotal(renglones));
+    private void construirPedido() {
+        this.pedido = new Pedido();
+        this.pedido.setCliente(cliente);
+        this.pedido.setEliminado(false);
+        this.pedido.setEmpresa(empresa);
+        this.pedido.setFacturas(null);
+        this.pedido.setFecha(dc_fechaFactura.getDate());
+        this.pedido.setFechaVencimiento(dc_fechaVencimiento.getDate());
+        this.pedido.setObservaciones(txta_Observaciones.getText());
+        this.pedido.setUsuario(usuarioService.getUsuarioActivo().getUsuario());
+        this.pedido.setNroPedido(pedidoService.calcularNumeroPedido());
+        this.pedido.setTotalEstimado(facturaService.calcularSubTotal(renglones));
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
         for (RenglonFactura renglonFactura : renglones) {
-            renglonesPedido.add(renglonDePedidoService.calcularRenglonPedido(renglonFactura, nuevo));
+            renglonesPedido.add(renglonDePedidoService.convertirARenglonPedido(renglonFactura, this.pedido));
         }
-        nuevo.setRenglones(renglonesPedido);
-        return nuevo;
+        this.pedido.setRenglones(renglonesPedido);
+    }
+
+    private Pedido guardarPedido(Pedido pedido) {
+        pedidoService.guardar(pedido);
+        return pedidoService.getPedidoPorNumero(pedido.getNroPedido());
     }
 
     /**
@@ -1079,7 +1065,6 @@ public class GUI_PuntoDeVenta extends JDialog {
         lbl_TipoDeComprobante.setText("Tipo de Comprobante:");
 
         cmb_TipoComprobante.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        cmb_TipoComprobante.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Factura A", "Factura C", "Factura X", "Pedido" }));
         cmb_TipoComprobante.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmb_TipoComprobanteItemStateChanged(evt);
@@ -1250,19 +1235,19 @@ public class GUI_PuntoDeVenta extends JDialog {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
             this.setColumnas();
-            this.prepararComponentes();
+            this.prepararComponentes(); //revisar esto
             if (!this.usuarioService.getUsuarioActivo().getUsuario().getPermisosAdministrador()) {
                 this.llamarGUI_SeleccionEmpresa();
             } else {
                 empresa = empresaService.getEmpresaActiva().getEmpresa();
             }
-            if (!(this.pedido == null)) {
+            if (this.pedido != null) {
                 if (this.pedido.getId_Pedido() != 0) {
                     this.cargarPedidoParaFacturar();
                     btn_NuevoCliente.setEnabled(false);
                     btn_BuscarCliente.setEnabled(false);
-                    txta_Observaciones.setText(this.pedido.getHistorial());
-                    this.calcularResultados(); 
+                    txta_Observaciones.setText(this.pedido.getObservaciones());
+                    this.calcularResultados();
                 }
             }
             //verifica que exista un Cliente predeterminado, una Forma de Pago y un Transportista
@@ -1287,7 +1272,7 @@ public class GUI_PuntoDeVenta extends JDialog {
 //para evitar que pase null cuando esta recargando el comboBox
         try {
             if (cmb_TipoComprobante.getSelectedItem() != null) {
-                this.tipoDeComprobante = cmb_TipoComprobante.getSelectedItem().toString();
+                this.tipoDeFactura = cmb_TipoComprobante.getSelectedItem().toString();
                 this.recargarRenglonesSegunTipoDeFactura();
             }
 
@@ -1354,13 +1339,12 @@ public class GUI_PuntoDeVenta extends JDialog {
                 this.limpiarYRecargarComponentes();
             }
         } else {
-            Pedido pedidoNuevo = this.construirPedido();
-            try {  //se quito el mensaje para cambiar por el reporte
-                pedidoService.guardar(pedidoNuevo);
+            this.construirPedido();
+            try {
+                this.guardarPedido(this.pedido);
                 this.limpiarYRecargarComponentes();
             } catch (ServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
             }
         }
     }//GEN-LAST:event_btn_ContinuarActionPerformed

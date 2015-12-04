@@ -46,7 +46,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         this.initComponents();
         this.setIcon();
         renglones = new ArrayList<>();
-        tipoDeFactura = facturaService.getTipoComprobante(facturaCompra);
+        tipoDeFactura = facturaService.getTipoFactura(facturaCompra);
         this.prepararComponentes();
         this.setTitle("Factura Compra");
         operacionAlta = false;

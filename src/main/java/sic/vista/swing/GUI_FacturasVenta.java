@@ -193,27 +193,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
     private void buscar(BusquedaFacturaVentaCriteria criteria) {
         try {
-//            //BusquedaFacturaVentaCriteria criteria = new BusquedaFacturaVentaCriteria();
-//            criteria.setBuscaPorFecha(chk_Fecha.isSelected());
-//            criteria.setFechaDesde(dc_FechaDesde.getDate());
-//            criteria.setFechaHasta(dc_FechaHasta.getDate());
-//            criteria.setBuscaCliente(chk_Cliente.isSelected());
-//            criteria.setCliente((Cliente) cmb_Cliente.getSelectedItem());
-//            criteria.setBuscaPorTipoFactura(chk_TipoFactura.isSelected());
-//            criteria.setTipoFactura(cmb_TipoFactura.getSelectedItem().toString().charAt(0));
-//            criteria.setBuscaUsuario(chk_Usuario.isSelected());
-//            criteria.setUsuario((Usuario) cmb_Usuario.getSelectedItem());
-//            criteria.setBuscaPorNumeroFactura(chk_NumFactura.isSelected());
-//            txt_SerieFactura.commitEdit();
-//            txt_NroFactura.commitEdit();
-//            criteria.setNumSerie(Integer.valueOf(txt_SerieFactura.getValue().toString()));
-//            criteria.setNumFactura(Integer.valueOf(txt_NroFactura.getValue().toString()));
-//            criteria.setBuscaSoloInpagas(chk_Inpagas.isSelected());
-//            criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-//            criteria.setCantRegistros(0);
-//            criteria.setBuscarPorPedido(chk_NumeroPedido.isSelected());
-//            criteria.setNroPedido(Long.parseLong(txt_NumeroPedido.getText()));
-
             facturas = facturaService.buscarFacturaVenta(criteria);
             this.cargarResultadosAlTable();
 
@@ -309,7 +288,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         return !clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa()).isEmpty();
     }
 
-    private void controlDeValores(java.awt.event.KeyEvent evt) {
+    private void controlarEntradaSoloNumerico(java.awt.event.KeyEvent evt) {
         char c = evt.getKeyChar();
         if ((c < '0' || c > '9')) {
             evt.consume();
@@ -850,15 +829,15 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }//GEN-LAST:event_btn_NuevaActionPerformed
 
     private void txt_SerieFacturaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_SerieFacturaKeyTyped
-        this.controlDeValores(evt);
+        this.controlarEntradaSoloNumerico(evt);
     }//GEN-LAST:event_txt_SerieFacturaKeyTyped
 
     private void txt_NroFacturaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_NroFacturaKeyTyped
-        this.controlDeValores(evt);
+        this.controlarEntradaSoloNumerico(evt);
     }//GEN-LAST:event_txt_NroFacturaKeyTyped
 
     private void txt_NumeroPedidoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_NumeroPedidoKeyTyped
-        this.controlDeValores(evt);
+        this.controlarEntradaSoloNumerico(evt);
     }//GEN-LAST:event_txt_NumeroPedidoKeyTyped
 
     private void chk_NumeroPedidoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_NumeroPedidoItemStateChanged

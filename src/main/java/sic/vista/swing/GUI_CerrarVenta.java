@@ -54,7 +54,7 @@ public class GUI_CerrarVenta extends JDialog {
         btn_Finalizar.addKeyListener(keyHandler);
         btn_nuevaFormaDePago.addKeyListener(keyHandler);
         btn_nuevoTransporte.addKeyListener(keyHandler);
-        if (gui_tpv.getStringTipoDeComprobante().equals("Factura A") || gui_tpv.getStringTipoDeComprobante().equals("Factura B") || gui_tpv.getStringTipoDeComprobante().equals("Factura C")) {
+        if (gui_tpv.getTipoDeComprobante().equals("Factura A") || gui_tpv.getTipoDeComprobante().equals("Factura B") || gui_tpv.getTipoDeComprobante().equals("Factura C")) {
             this.chk_condicionDividir.setEnabled(true);
         }
     }
@@ -98,7 +98,7 @@ public class GUI_CerrarVenta extends JDialog {
 
     private Factura guardarFactura(Factura facturaVenta) throws ServiceException {
         facturaService.guardar(facturaVenta);
-        return facturaService.getFacturaVentaPorTipoSerieNum(facturaService.getTipoComprobante(facturaVenta), facturaVenta.getNumSerie(), facturaVenta.getNumFactura());
+        return facturaService.getFacturaVentaPorTipoSerieNum(facturaService.getTipoFactura(facturaVenta), facturaVenta.getNumSerie(), facturaVenta.getNumFactura());
     }
 
     private void calcularVuelto() {
@@ -117,9 +117,9 @@ public class GUI_CerrarVenta extends JDialog {
     private FacturaVenta construirFactura() {
         FacturaVenta facturaVenta = new FacturaVenta();
         facturaVenta.setFecha(gui_tpv.getFechaFactura());
-        facturaVenta.setTipoFactura(gui_tpv.getCharTipoDeComprobante());
+        facturaVenta.setTipoFactura(gui_tpv.getTipoDeComprobante().charAt(gui_tpv.getTipoDeComprobante().length() - 1));
         facturaVenta.setNumSerie(1);
-        facturaVenta.setNumFactura(facturaService.calcularNumeroFactura(gui_tpv.getStringTipoDeComprobante(), 1));
+        facturaVenta.setNumFactura(facturaService.calcularNumeroFactura(gui_tpv.getTipoDeComprobante(), 1));
         facturaVenta.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
         facturaVenta.setFechaVencimiento(gui_tpv.getFechaVencimiento());
         facturaVenta.setTransportista((Transportista) cmb_Transporte.getSelectedItem());
@@ -405,7 +405,7 @@ public class GUI_CerrarVenta extends JDialog {
             boolean dividir;
             dividir = false;
             int[] indicesParaDividir = null;
-            if (chk_condicionDividir.isSelected() && (gui_tpv.getStringTipoDeComprobante().equals("Factura A") || gui_tpv.getStringTipoDeComprobante().equals("Factura B") || gui_tpv.getStringTipoDeComprobante().equals("Factura C"))) {
+            if (chk_condicionDividir.isSelected() && (gui_tpv.getTipoDeComprobante().equals("Factura A") || gui_tpv.getTipoDeComprobante().equals("Factura B") || gui_tpv.getTipoDeComprobante().equals("Factura C"))) {
                 ModeloTabla modeloTablaPuntoDeVenta = gui_tpv.getModeloTabla();
                 indicesParaDividir = new int[modeloTablaPuntoDeVenta.getRowCount()];
                 int j = 0;
@@ -436,9 +436,7 @@ public class GUI_CerrarVenta extends JDialog {
                         if (!(gui_tpv.getPedido() == null)) {
                             factura.setPedido(pedidoService.getPedidoPorNumero(gui_tpv.getPedido().getNroPedido()));
                         }
-                        long numeroDeFactura = this.guardarFactura(factura).getNumFactura();
-                        Factura paraReporte = facturaService.getFacturaVentaPorTipoSerieNum(facturaService.getTipoComprobante(factura), factura.getNumSerie(), numeroDeFactura);
-                        this.lanzarReporteFactura(paraReporte);
+                        this.lanzarReporteFactura(this.guardarFactura(factura));
                         exito = true;
                         this.dispose();
                     }
