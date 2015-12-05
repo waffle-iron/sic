@@ -12,5 +12,9 @@ public enum Movimiento {
     /**
      * Para el caso en que se este realizando una venta.
      */
-    VENTA;
+    VENTA,
+    /**
+     * Para el caso en que se este realizando un pedido.
+     */
+    PEDIDO;
 }

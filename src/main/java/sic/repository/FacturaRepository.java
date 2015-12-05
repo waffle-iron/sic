@@ -23,7 +23,7 @@ public class FacturaRepository {
         em.close();
         return renglones;
     }
-    
+
     public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<FacturaVenta> typedQuery = em.createNamedQuery("Factura.buscarPorTipoSerieNum", FacturaVenta.class);
@@ -94,6 +94,10 @@ public class FacturaRepository {
         if (criteria.isBuscaPorNumeroFactura() == true) {
             query += " AND f.numSerie = " + criteria.getNumSerie() + " AND f.numFactura = " + criteria.getNumFactura();
         }
+        //Pedido
+        if (criteria.isBuscarPorPedido() == true) {
+            query += " AND f.pedido = " + criteria.getNroPedido();
+        }
         //Inpagas
         if (criteria.isBuscaSoloInpagas() == true) {
             query += " AND f.pagada = false";
@@ -111,7 +115,7 @@ public class FacturaRepository {
         return facturasVenta;
     }
 
-    public long getMayorNumFacturaSegunTipo(char tipoDeFactura, long serie) {
+    public long buscarMayorNumFacturaSegunTipo(char tipoDeFactura, long serie) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Long> typedQuery = em.createNamedQuery("Factura.buscarMayorNumFacturaSegunTipo", Long.class);
         typedQuery.setParameter("tipo", tipoDeFactura);
@@ -119,9 +123,9 @@ public class FacturaRepository {
         Long resultado = typedQuery.getSingleResult();
         em.close();
         if (resultado == null) {
-            return 1;
+            return 0;
         } else {
-            return resultado + 1;
+            return resultado;
         }
     }
 

@@ -15,7 +15,6 @@ import sic.modelo.Pais;
 import sic.modelo.Provincia;
 import sic.service.*;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_Clientes extends JInternalFrame {
 

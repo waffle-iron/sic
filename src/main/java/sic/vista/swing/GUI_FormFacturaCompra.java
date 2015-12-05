@@ -17,7 +17,6 @@ import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.service.*;
 import sic.util.RenderTabla;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_FormFacturaCompra extends JDialog {
 
@@ -30,7 +29,7 @@ public class GUI_FormFacturaCompra extends JDialog {
     private final FacturaService facturaService = new FacturaService();
     private final ProductoService productoService = new ProductoService();
     private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
-    private char tipoDeFactura;
+    private String tipoDeFactura;
     private final boolean operacionAlta;
     private static final Logger log = Logger.getLogger(GUI_FormFacturaCompra.class.getPackage().getName());
 
@@ -46,8 +45,8 @@ public class GUI_FormFacturaCompra extends JDialog {
     public GUI_FormFacturaCompra(FacturaCompra facturaCompra) {
         this.initComponents();
         this.setIcon();
-        renglones = new ArrayList<>();        
-        tipoDeFactura = facturaCompra.getTipoFactura();
+        renglones = new ArrayList<>();
+        tipoDeFactura = facturaService.getTipoFactura(facturaCompra);
         this.prepararComponentes();
         this.setTitle("Factura Compra");
         operacionAlta = false;
@@ -64,7 +63,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         cmb_FormaDePago.setEnabled(false);
         cmb_Transportista.setEnabled(false);
         cmb_TipoFactura.setEnabled(false);
-        btn_NuevoTransportista.setVisible(false);        
+        btn_NuevoTransportista.setVisible(false);
         txt_CodigoProducto.setVisible(false);
         btn_IngresarCodigoProducto.setVisible(false);
         btn_BuscarProducto.setVisible(false);
@@ -185,7 +184,7 @@ public class GUI_FormFacturaCompra extends JDialog {
     private void guardarFactura() throws ServiceException {
         FacturaCompra facturaCompra = new FacturaCompra();
         facturaCompra.setFecha(dc_FechaFactura.getDate());
-        facturaCompra.setTipoFactura(tipoDeFactura);
+        facturaCompra.setTipoFactura(tipoDeFactura.charAt(tipoDeFactura.length() - 1));
         facturaCompra.setNumSerie(Long.parseLong(txt_SerieFactura.getValue().toString()));
         facturaCompra.setNumFactura(Long.parseLong(txt_NumeroFactura.getValue().toString()));
         facturaCompra.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
@@ -1078,7 +1077,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         //para evitar que pase null cuando esta recargando el comboBox
         try {
             if (cmb_TipoFactura.getSelectedItem() != null) {
-                tipoDeFactura = cmb_TipoFactura.getSelectedItem().toString().charAt(0);
+                tipoDeFactura = cmb_TipoFactura.getSelectedItem().toString();
                 this.recargarRenglonesSegunTipoDeFactura();
             }
 

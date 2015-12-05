@@ -1,11 +1,18 @@
 package sic.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import sic.modelo.Pedido;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
+import sic.modelo.RenglonPedido;
 
 public class RenglonDeFacturaService {
+    
+    private final PedidoService pedidoService = new PedidoService();
 
-    public RenglonFactura calcularRenglon(char tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje) {
+    public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje) {
         RenglonFactura nuevoRenglon = new RenglonFactura();
         nuevoRenglon.setId_ProductoItem(producto.getId_Producto());
         nuevoRenglon.setCodigoItem(producto.getCodigo());
@@ -16,7 +23,7 @@ public class RenglonDeFacturaService {
         nuevoRenglon.setDescuento_porcentaje(descuento_porcentaje);
         nuevoRenglon.setDescuento_neto(this.calcularDescuento_neto(nuevoRenglon.getPrecioUnitario(), descuento_porcentaje));
         nuevoRenglon.setIva_porcentaje(producto.getIva_porcentaje());
-        if (tipoDeFactura == 'Y') {
+        if (tipoDeFactura.equals("Factura Y")) {
             nuevoRenglon.setIva_porcentaje(producto.getIva_porcentaje() / 2);
         }
         nuevoRenglon.setIva_neto(this.calcularIVA_neto(movimiento, producto, nuevoRenglon.getDescuento_neto()));
@@ -60,13 +67,13 @@ public class RenglonDeFacturaService {
         return Math.round(resultado * 1000.0) / 1000.0;
     }
 
-    private double calcularPrecioUnitario(Movimiento movimiento, char tipoDeFactura, Producto producto) {
+    private double calcularPrecioUnitario(Movimiento movimiento, String tipoDeFactura, Producto producto) {
         double iva_resultado;
         double impInterno_resultado;
         double resultado = 0;
 
         if (movimiento == Movimiento.COMPRA) {
-            if (tipoDeFactura == 'A' || tipoDeFactura == 'X') {
+            if (tipoDeFactura.equals("Factura A") || tipoDeFactura.equals("Factura X")) {
                 resultado = producto.getPrecioCosto();
             } else {
                 iva_resultado = (producto.getPrecioCosto() * producto.getIva_porcentaje()) / 100;
@@ -76,11 +83,11 @@ public class RenglonDeFacturaService {
         }
 
         if (movimiento == Movimiento.VENTA) {
-            if (tipoDeFactura == 'A' || tipoDeFactura == 'X') {
+            if (tipoDeFactura.equals("Factura A") || tipoDeFactura.equals("Factura X")) {
                 resultado = producto.getPrecioVentaPublico();
             } else {
-                if (tipoDeFactura == 'Y') {
-                    iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje()/2) / 100;
+                if (tipoDeFactura.equals("Factura Y")) {
+                    iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje() / 2) / 100;
                     impInterno_resultado = (producto.getPrecioVentaPublico() * producto.getImpuestoInterno_porcentaje()) / 100;
                     resultado = producto.getPrecioVentaPublico() + iva_resultado + impInterno_resultado;
                 } else {
@@ -94,5 +101,34 @@ public class RenglonDeFacturaService {
     private double calcularImporte(double cantidad, double precioUnitario, double descuento_neto) {
         double resultado = (precioUnitario - descuento_neto) * cantidad;
         return Math.round(resultado * 1000.0) / 1000.0;
+    }
+
+    public RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante) {
+        return this.calcularRenglon(tipoComprobante, Movimiento.VENTA, renglon.getCantidad(), renglon.getProducto(), renglon.getDescuento_porcentaje());
+    }
+
+    public List<RenglonFactura> getRenglonesDePedidoComoRenglonesFactura(List<RenglonPedido> renglonPedido, String tipoComprobante) {
+        List<RenglonFactura> renglonesDeFactura = new ArrayList<>();
+        for (RenglonPedido renglon : renglonPedido) {
+            renglonesDeFactura.add(this.getRenglonFacturaPorRenglonPedido(renglon, tipoComprobante));
+        }
+        return renglonesDeFactura;
+    }
+    
+     public List<RenglonFactura> getRenglonesDePedidoConvertidosARenglonesFactura(Pedido pedido, String tipoComprobante) {
+        List<RenglonFactura> renglonesRestantes = new ArrayList<>();
+        HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getNroPedido());
+        List<RenglonPedido> renglonesDelPedido = pedidoService.getRenglonesDelPedido(pedido.getNroPedido());
+        for (RenglonPedido renglon : renglonesDelPedido) {
+            if (renglonesDeFacturas.containsKey(renglon.getProducto().getId_Producto())) {
+                if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
+                    renglon.setCantidad(renglon.getCantidad() - renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad());
+                    renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon, tipoComprobante));
+                }
+            } else {
+                renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon, tipoComprobante));
+            }
+        }
+        return renglonesRestantes;
     }
 }
