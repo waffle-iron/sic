@@ -53,16 +53,16 @@ public class PedidoRepository {
         return pedidos;
     }
 
-    public long calcularNumeroPedido(long idEmpresa) {
+    public long buscarMayorNroPedido(long idEmpresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Long> typedQuery = em.createNamedQuery("Pedido.buscarMayorNroPedido", Long.class);
         typedQuery.setParameter("idEmpresa", idEmpresa);
         Long resultado = typedQuery.getSingleResult();
         em.close();
         if (resultado == null) {
-            return 1;
+            return 0;
         } else {
-            return resultado + 1;
+            return resultado;
         }
     }
 

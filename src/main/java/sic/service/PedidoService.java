@@ -52,19 +52,21 @@ public class PedidoService {
     }
 
     private List<Pedido> calcularTotalActualDePedidos(List<Pedido> pedidos) {
+        double porcentajeDescuento = 0;
         for (Pedido pedido : pedidos) {
             double totalActual = 0;
             for (RenglonPedido renglonPedido : pedidoRepository.getRenglonesDelPedido(pedido.getNroPedido())) {
-                totalActual += renglonPedido.getProducto().getPrecioLista() * renglonPedido.getCantidad() * (1 - (renglonPedido.getDescuento_porcentaje() / 100));
+                porcentajeDescuento = (1 - (renglonPedido.getDescuento_porcentaje() / 100));
+                totalActual += (renglonPedido.getProducto().getPrecioLista() * renglonPedido.getCantidad() * porcentajeDescuento);
             }
             pedido.setTotalActual(totalActual);
         }
         return pedidos;
     }
 
-    public long calcularNumeroPedido() {
-        return pedidoRepository.calcularNumeroPedido(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-    }
+    public long calcularNumeroPedido() {        
+        return 1 + pedidoRepository.buscarMayorNroPedido(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        }
 
     public List<Factura> getFacturasDelPedido(long nroPedido) {
         return pedidoRepository.getFacturasDelPedido(nroPedido);
@@ -151,7 +153,6 @@ public class PedidoService {
                 }
             }
         }
-        renglonesDeFacturas.clear();
         return listaRenglonesUnificados;
     }
 

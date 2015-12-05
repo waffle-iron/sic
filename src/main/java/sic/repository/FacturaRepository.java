@@ -115,7 +115,7 @@ public class FacturaRepository {
         return facturasVenta;
     }
 
-    public long getSiguienteNumFacturaSegunTipo(char tipoDeFactura, long serie) {
+    public long buscarMayorNumFacturaSegunTipo(char tipoDeFactura, long serie) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Long> typedQuery = em.createNamedQuery("Factura.buscarMayorNumFacturaSegunTipo", Long.class);
         typedQuery.setParameter("tipo", tipoDeFactura);
@@ -123,9 +123,9 @@ public class FacturaRepository {
         Long resultado = typedQuery.getSingleResult();
         em.close();
         if (resultado == null) {
-            return 1;
+            return 0;
         } else {
-            return resultado + 1;
+            return resultado;
         }
     }
 

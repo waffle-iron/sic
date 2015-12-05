@@ -43,7 +43,7 @@ public class Usuario implements Serializable {
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "usuario")
     private Set<FacturaVenta> facturasVenta;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "cliente")
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "usuario")
     private List<Pedido> pedidos;
 
     private boolean eliminado;

@@ -9,7 +9,7 @@ public class RenglonDePedidoService {
 
     private final ProductoService productoService = new ProductoService();
 
-    public RenglonPedido convertirARenglonPedido(RenglonFactura renglonFactura, Pedido pedido) {
+    public RenglonPedido convertirRenglonFacturaARenglonPedido(RenglonFactura renglonFactura, Pedido pedido) {
         RenglonPedido nuevoRenglon = new RenglonPedido();
         nuevoRenglon.setCantidad(renglonFactura.getCantidad());
         nuevoRenglon.setPedido(pedido);

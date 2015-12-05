@@ -295,7 +295,7 @@ public class FacturaService {
     }
 
     public long calcularNumeroFactura(String tipoDeFactura, long serie) {
-        return facturaRepository.getSiguienteNumFacturaSegunTipo(tipoDeFactura.charAt(tipoDeFactura.length() - 1), serie);
+        return 1 + facturaRepository.buscarMayorNumFacturaSegunTipo(tipoDeFactura.charAt(tipoDeFactura.length() - 1), serie);
     }
 
     public double calcularVuelto(double importeAPagar, double importeAbonado) {

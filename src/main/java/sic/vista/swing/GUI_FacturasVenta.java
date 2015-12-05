@@ -36,9 +36,9 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }
 
     public void buscarConCriteria(BusquedaFacturaVentaCriteria criteria) {
+        this.setEstadoDeComponentes(criteria);
         this.buscar(criteria);
         this.calcularResultados();
-        this.setEstadoDeComponentes(criteria);
     }
 
     private void setEstadoDeComponentes(BusquedaFacturaVentaCriteria criteria) {

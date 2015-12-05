@@ -84,7 +84,7 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     public void cargarPedidoParaFacturar() {
         this.empresa = pedido.getEmpresa();
-        this.cliente = pedido.getCliente();
+        this.cargarCliente(pedido.getCliente());
         this.cargarTiposDeComprobantesDisponibles();
         this.tipoDeFactura = cmb_TipoComprobante.getSelectedItem().toString();
         this.renglones = renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(pedido, this.tipoDeFactura);
@@ -528,7 +528,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.pedido.setTotalEstimado(facturaService.calcularSubTotal(renglones));
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
         for (RenglonFactura renglonFactura : renglones) {
-            renglonesPedido.add(renglonDePedidoService.convertirARenglonPedido(renglonFactura, this.pedido));
+            renglonesPedido.add(renglonDePedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura, this.pedido));
         }
         this.pedido.setRenglones(renglonesPedido);
     }
@@ -1241,20 +1241,18 @@ public class GUI_PuntoDeVenta extends JDialog {
             } else {
                 empresa = empresaService.getEmpresaActiva().getEmpresa();
             }
-            if (this.pedido != null) {
-                if (this.pedido.getId_Pedido() != 0) {
-                    this.cargarPedidoParaFacturar();
-                    btn_NuevoCliente.setEnabled(false);
-                    btn_BuscarCliente.setEnabled(false);
-                    txta_Observaciones.setText(this.pedido.getObservaciones());
-                    this.calcularResultados();
-                }
-            }
             //verifica que exista un Cliente predeterminado, una Forma de Pago y un Transportista
             if (this.existeClientePredeterminado() && this.existeFormaDePagoPredeterminada() && this.existeTransportistaCargado()) {
                 this.cargarTiposDeComprobantesDisponibles();
             } else {
                 this.dispose();
+            }
+            if (this.pedido != null && this.pedido.getId_Pedido() != 0) {
+                this.cargarPedidoParaFacturar();
+                btn_NuevoCliente.setEnabled(false);
+                btn_BuscarCliente.setEnabled(false);
+                txta_Observaciones.setText(this.pedido.getObservaciones());
+                this.calcularResultados();
             }
 
         } catch (PersistenceException ex) {
@@ -1342,6 +1340,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             this.construirPedido();
             try {
                 this.guardarPedido(this.pedido);
+                JOptionPane.showMessageDialog(this, "El pedido se guardó correctamente.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                 this.limpiarYRecargarComponentes();
             } catch (ServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
