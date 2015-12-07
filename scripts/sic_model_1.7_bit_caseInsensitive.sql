@@ -1,4 +1,4 @@
-CREATE DATABASE  IF NOT EXISTS `sic` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_bin */;
+CREATE DATABASE  IF NOT EXISTS `sic` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
 USE `sic`;
 -- MySQL dump 10.13  Distrib 5.5.46, for debian-linux-gnu (x86_64)
 --
@@ -26,17 +26,17 @@ DROP TABLE IF EXISTS `cliente`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cliente` (
   `id_Cliente` bigint(20) NOT NULL AUTO_INCREMENT,
-  `contacto` varchar(255) COLLATE utf8_bin NOT NULL,
-  `direccion` varchar(255) COLLATE utf8_bin NOT NULL,
+  `contacto` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `direccion` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `eliminado` bit(1) NOT NULL,
-  `email` varchar(255) COLLATE utf8_bin NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `fechaAlta` datetime NOT NULL,
-  `id_Fiscal` varchar(255) COLLATE utf8_bin NOT NULL,
-  `nombreFantasia` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `id_Fiscal` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `nombreFantasia` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `predeterminado` bit(1) NOT NULL,
-  `razonSocial` varchar(255) COLLATE utf8_bin NOT NULL,
-  `telPrimario` varchar(255) COLLATE utf8_bin NOT NULL,
-  `telSecundario` varchar(255) COLLATE utf8_bin NOT NULL,
+  `razonSocial` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `telPrimario` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `telSecundario` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `id_CondicionIVA` bigint(20) DEFAULT NULL,
   `id_Empresa` bigint(20) DEFAULT NULL,
   `id_Localidad` bigint(20) DEFAULT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE `cliente` (
   CONSTRAINT `FK334B85FA6813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`),
   CONSTRAINT `FK334B85FAC718D9B` FOREIGN KEY (`id_CondicionIVA`) REFERENCES `condicioniva` (`id_CondicionIVA`),
   CONSTRAINT `FK334B85FAD4B2D407` FOREIGN KEY (`id_Localidad`) REFERENCES `localidad` (`id_Localidad`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -61,9 +61,9 @@ CREATE TABLE `condicioniva` (
   `id_CondicionIVA` bigint(20) NOT NULL AUTO_INCREMENT,
   `discriminaIVA` bit(1) NOT NULL,
   `eliminada` bit(1) NOT NULL,
-  `nombre` varchar(255) COLLATE utf8_bin NOT NULL,
+  `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id_CondicionIVA`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -81,7 +81,7 @@ CREATE TABLE `configuraciondelsistema` (
   PRIMARY KEY (`id_ConfiguracionDelSistema`),
   KEY `FK404F099E6813BD87` (`id_Empresa`),
   CONSTRAINT `FK404F099E6813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,15 +94,15 @@ DROP TABLE IF EXISTS `empresa`;
 CREATE TABLE `empresa` (
   `id_Empresa` bigint(20) NOT NULL AUTO_INCREMENT,
   `cuip` bigint(20) NOT NULL,
-  `direccion` varchar(255) COLLATE utf8_bin NOT NULL,
+  `direccion` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `eliminada` bit(1) NOT NULL,
-  `email` varchar(255) COLLATE utf8_bin NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `fechaInicioActividad` datetime DEFAULT NULL,
   `ingresosBrutos` bigint(20) NOT NULL,
-  `lema` varchar(255) COLLATE utf8_bin NOT NULL,
+  `lema` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `logo` longblob,
-  `nombre` varchar(255) COLLATE utf8_bin NOT NULL,
-  `telefono` varchar(255) COLLATE utf8_bin NOT NULL,
+  `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `telefono` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `id_CondicionIVA` bigint(20) DEFAULT NULL,
   `id_Localidad` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id_Empresa`),
@@ -110,7 +110,7 @@ CREATE TABLE `empresa` (
   KEY `FK9F354089C718D9B` (`id_CondicionIVA`),
   CONSTRAINT `FK9F354089C718D9B` FOREIGN KEY (`id_CondicionIVA`) REFERENCES `condicioniva` (`id_CondicionIVA`),
   CONSTRAINT `FK9F354089D4B2D407` FOREIGN KEY (`id_Localidad`) REFERENCES `localidad` (`id_Localidad`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,13 +132,13 @@ CREATE TABLE `factura` (
   `iva_21_neto` double NOT NULL,
   `numFactura` bigint(20) NOT NULL,
   `numSerie` bigint(20) NOT NULL,
-  `observaciones` varchar(255) COLLATE utf8_bin NOT NULL,
+  `observaciones` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `pagada` bit(1) NOT NULL,
   `recargo_neto` double NOT NULL,
   `recargo_porcentaje` double NOT NULL,
   `subTotal` double NOT NULL,
   `subTotal_neto` double NOT NULL,
-  `tipoFactura` char(1) COLLATE utf8_bin NOT NULL,
+  `tipoFactura` char(1) COLLATE utf8_unicode_ci NOT NULL,
   `total` double NOT NULL,
   `id_Empresa` bigint(20) DEFAULT NULL,
   `id_FormaDePago` bigint(20) DEFAULT NULL,
@@ -153,7 +153,7 @@ CREATE TABLE `factura` (
   CONSTRAINT `FKBEEB47786813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`),
   CONSTRAINT `FKBEEB4778C25D6C23` FOREIGN KEY (`id_FormaDePago`) REFERENCES `formadepago` (`id_FormaDePago`),
   CONSTRAINT `FKBEEB4778FBCAB835` FOREIGN KEY (`id_Transportista`) REFERENCES `transportista` (`id_Transportista`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -171,7 +171,7 @@ CREATE TABLE `facturacompra` (
   KEY `FKF84502F6229588F1` (`id_Proveedor`),
   CONSTRAINT `FKF84502F6229588F1` FOREIGN KEY (`id_Proveedor`) REFERENCES `proveedor` (`id_Proveedor`),
   CONSTRAINT `FKF84502F6A77FCB65` FOREIGN KEY (`id_Factura`) REFERENCES `factura` (`id_Factura`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,7 +192,7 @@ CREATE TABLE `facturaventa` (
   CONSTRAINT `FKD77D0DD419D322D1` FOREIGN KEY (`id_Usuario`) REFERENCES `usuario` (`id_Usuario`),
   CONSTRAINT `FKD77D0DD490404869` FOREIGN KEY (`id_Cliente`) REFERENCES `cliente` (`id_Cliente`),
   CONSTRAINT `FKD77D0DD4A77FCB65` FOREIGN KEY (`id_Factura`) REFERENCES `factura` (`id_Factura`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -206,13 +206,13 @@ CREATE TABLE `formadepago` (
   `id_FormaDePago` bigint(20) NOT NULL AUTO_INCREMENT,
   `afectaCaja` bit(1) NOT NULL,
   `eliminada` bit(1) NOT NULL,
-  `nombre` varchar(255) COLLATE utf8_bin NOT NULL,
+  `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `predeterminado` bit(1) NOT NULL,
   `id_Empresa` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id_FormaDePago`),
   KEY `FK3BF588F76813BD87` (`id_Empresa`),
   CONSTRAINT `FK3BF588F76813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -224,14 +224,14 @@ DROP TABLE IF EXISTS `localidad`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `localidad` (
   `id_Localidad` bigint(20) NOT NULL AUTO_INCREMENT,
-  `codigoPostal` varchar(255) COLLATE utf8_bin NOT NULL,
+  `codigoPostal` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `eliminada` bit(1) NOT NULL,
-  `nombre` varchar(255) COLLATE utf8_bin NOT NULL,
+  `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `id_Provincia` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id_Localidad`),
   KEY `FKB8337069230E6A8F` (`id_Provincia`),
   CONSTRAINT `FKB8337069230E6A8F` FOREIGN KEY (`id_Provincia`) REFERENCES `provincia` (`id_Provincia`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,12 +244,12 @@ DROP TABLE IF EXISTS `medida`;
 CREATE TABLE `medida` (
   `id_Medida` bigint(20) NOT NULL AUTO_INCREMENT,
   `eliminada` bit(1) NOT NULL,
-  `nombre` varchar(255) COLLATE utf8_bin NOT NULL,
+  `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `id_Empresa` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id_Medida`),
   KEY `FKBFBE8D5A6813BD87` (`id_Empresa`),
   CONSTRAINT `FKBFBE8D5A6813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -264,12 +264,12 @@ CREATE TABLE `pagofacturacompra` (
   `eliminado` bit(1) NOT NULL,
   `fecha` datetime NOT NULL,
   `monto` double NOT NULL,
-  `nota` varchar(255) COLLATE utf8_bin NOT NULL,
+  `nota` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `id_Factura` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id_PagoFacturaCompra`),
   KEY `FKD14D60FD642D9C43` (`id_Factura`),
   CONSTRAINT `FKD14D60FD642D9C43` FOREIGN KEY (`id_Factura`) REFERENCES `facturacompra` (`id_Factura`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -282,9 +282,9 @@ DROP TABLE IF EXISTS `pais`;
 CREATE TABLE `pais` (
   `id_Pais` bigint(20) NOT NULL AUTO_INCREMENT,
   `eliminado` bit(1) NOT NULL,
-  `nombre` varchar(255) COLLATE utf8_bin NOT NULL,
+  `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`id_Pais`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -300,7 +300,7 @@ CREATE TABLE `pedido` (
   `fecha` datetime NOT NULL,
   `fechaVencimiento` datetime DEFAULT NULL,
   `nroPedido` bigint(20) NOT NULL,
-  `observaciones` varchar(255) COLLATE utf8_bin NOT NULL,
+  `observaciones` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `totalActual` double NOT NULL,
   `totalEstimado` double NOT NULL,
   `id_Cliente` bigint(20) DEFAULT NULL,
@@ -313,7 +313,7 @@ CREATE TABLE `pedido` (
   CONSTRAINT `FKC4DD17456813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`),
   CONSTRAINT `FKC4DD174519D322D1` FOREIGN KEY (`id_Usuario`) REFERENCES `usuario` (`id_Usuario`),
   CONSTRAINT `FKC4DD174590404869` FOREIGN KEY (`id_Cliente`) REFERENCES `cliente` (`id_Cliente`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -327,11 +327,11 @@ CREATE TABLE `producto` (
   `id_Producto` bigint(20) NOT NULL AUTO_INCREMENT,
   `cantMinima` double NOT NULL,
   `cantidad` double NOT NULL,
-  `codigo` varchar(255) COLLATE utf8_bin NOT NULL,
-  `descripcion` varchar(255) COLLATE utf8_bin NOT NULL,
+  `codigo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `descripcion` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `eliminado` bit(1) NOT NULL,
-  `estante` varchar(255) COLLATE utf8_bin NOT NULL,
-  `estanteria` varchar(255) COLLATE utf8_bin NOT NULL,
+  `estante` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `estanteria` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `fechaAlta` datetime NOT NULL,
   `fechaUltimaModificacion` datetime NOT NULL,
   `fechaVencimiento` datetime DEFAULT NULL,
@@ -342,7 +342,7 @@ CREATE TABLE `producto` (
   `impuestoInterno_porcentaje` double NOT NULL,
   `iva_neto` double NOT NULL,
   `iva_porcentaje` double NOT NULL,
-  `nota` varchar(255) COLLATE utf8_bin NOT NULL,
+  `nota` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `precioCosto` double NOT NULL,
   `precioLista` double NOT NULL,
   `precioVentaPublico` double NOT NULL,
@@ -359,7 +359,7 @@ CREATE TABLE `producto` (
   CONSTRAINT `FKC42BD160229588F1` FOREIGN KEY (`id_Proveedor`) REFERENCES `proveedor` (`id_Proveedor`),
   CONSTRAINT `FKC42BD1606813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`),
   CONSTRAINT `FKC42BD160EC2FFB9F` FOREIGN KEY (`id_Medida`) REFERENCES `medida` (`id_Medida`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -371,16 +371,16 @@ DROP TABLE IF EXISTS `proveedor`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `proveedor` (
   `id_Proveedor` bigint(20) NOT NULL AUTO_INCREMENT,
-  `codigo` varchar(255) COLLATE utf8_bin NOT NULL,
-  `contacto` varchar(255) COLLATE utf8_bin NOT NULL,
-  `direccion` varchar(255) COLLATE utf8_bin NOT NULL,
+  `codigo` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `contacto` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `direccion` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `eliminado` bit(1) NOT NULL,
-  `email` varchar(255) COLLATE utf8_bin NOT NULL,
-  `id_Fiscal` varchar(255) COLLATE utf8_bin NOT NULL,
-  `razonSocial` varchar(255) COLLATE utf8_bin NOT NULL,
-  `telPrimario` varchar(255) COLLATE utf8_bin NOT NULL,
-  `telSecundario` varchar(255) COLLATE utf8_bin NOT NULL,
-  `web` varchar(255) COLLATE utf8_bin NOT NULL,
+  `email` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `id_Fiscal` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `razonSocial` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `telPrimario` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `telSecundario` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `web` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `id_CondicionIVA` bigint(20) DEFAULT NULL,
   `id_Empresa` bigint(20) DEFAULT NULL,
   `id_Localidad` bigint(20) DEFAULT NULL,
@@ -391,7 +391,7 @@ CREATE TABLE `proveedor` (
   CONSTRAINT `FKDF24CADE6813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`),
   CONSTRAINT `FKDF24CADEC718D9B` FOREIGN KEY (`id_CondicionIVA`) REFERENCES `condicioniva` (`id_CondicionIVA`),
   CONSTRAINT `FKDF24CADED4B2D407` FOREIGN KEY (`id_Localidad`) REFERENCES `localidad` (`id_Localidad`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -404,12 +404,12 @@ DROP TABLE IF EXISTS `provincia`;
 CREATE TABLE `provincia` (
   `id_Provincia` bigint(20) NOT NULL AUTO_INCREMENT,
   `eliminada` bit(1) NOT NULL,
-  `nombre` varchar(255) COLLATE utf8_bin NOT NULL,
+  `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `id_Pais` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id_Provincia`),
   KEY `FKDF613BAD4BA4E561` (`id_Pais`),
   CONSTRAINT `FKDF613BAD4BA4E561` FOREIGN KEY (`id_Pais`) REFERENCES `pais` (`id_Pais`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -432,7 +432,7 @@ CREATE TABLE `renglonPedido` (
   KEY `FK63F138C4F66D0F75` (`id_Pedido`),
   CONSTRAINT `FK63F138C4F66D0F75` FOREIGN KEY (`id_Pedido`) REFERENCES `pedido` (`id_Pedido`),
   CONSTRAINT `FK63F138C493D5F4EB` FOREIGN KEY (`id_Producto`) REFERENCES `producto` (`id_Producto`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -445,8 +445,8 @@ DROP TABLE IF EXISTS `renglonfactura`;
 CREATE TABLE `renglonfactura` (
   `id_RenglonFactura` bigint(20) NOT NULL AUTO_INCREMENT,
   `cantidad` double NOT NULL,
-  `codigoItem` varchar(255) COLLATE utf8_bin NOT NULL,
-  `descripcionItem` varchar(255) COLLATE utf8_bin NOT NULL,
+  `codigoItem` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `descripcionItem` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `descuento_neto` double NOT NULL,
   `descuento_porcentaje` double NOT NULL,
   `ganancia_neto` double NOT NULL,
@@ -457,13 +457,13 @@ CREATE TABLE `renglonfactura` (
   `impuesto_porcentaje` double NOT NULL,
   `iva_neto` double NOT NULL,
   `iva_porcentaje` double NOT NULL,
-  `medidaItem` varchar(255) COLLATE utf8_bin NOT NULL,
+  `medidaItem` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `precioUnitario` double NOT NULL,
   `id_Factura` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id_RenglonFactura`),
   KEY `FK9F22BDF9A77FCB65` (`id_Factura`),
   CONSTRAINT `FK9F22BDF9A77FCB65` FOREIGN KEY (`id_Factura`) REFERENCES `factura` (`id_Factura`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -476,12 +476,12 @@ DROP TABLE IF EXISTS `rubro`;
 CREATE TABLE `rubro` (
   `id_Rubro` bigint(20) NOT NULL AUTO_INCREMENT,
   `eliminado` bit(1) NOT NULL,
-  `nombre` varchar(255) COLLATE utf8_bin NOT NULL,
+  `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `id_Empresa` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id_Rubro`),
   KEY `FK67D24FC6813BD87` (`id_Empresa`),
   CONSTRAINT `FK67D24FC6813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -493,11 +493,11 @@ DROP TABLE IF EXISTS `transportista`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `transportista` (
   `id_Transportista` bigint(20) NOT NULL AUTO_INCREMENT,
-  `direccion` varchar(255) COLLATE utf8_bin NOT NULL,
+  `direccion` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `eliminado` bit(1) NOT NULL,
-  `nombre` varchar(255) COLLATE utf8_bin NOT NULL,
-  `telefono` varchar(255) COLLATE utf8_bin NOT NULL,
-  `web` varchar(255) COLLATE utf8_bin NOT NULL,
+  `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `telefono` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `web` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `id_Empresa` bigint(20) DEFAULT NULL,
   `id_Localidad` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id_Transportista`),
@@ -505,7 +505,7 @@ CREATE TABLE `transportista` (
   KEY `FKA8E2B3C06813BD87` (`id_Empresa`),
   CONSTRAINT `FKA8E2B3C06813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`),
   CONSTRAINT `FKA8E2B3C0D4B2D407` FOREIGN KEY (`id_Localidad`) REFERENCES `localidad` (`id_Localidad`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -518,11 +518,11 @@ DROP TABLE IF EXISTS `usuario`;
 CREATE TABLE `usuario` (
   `id_Usuario` bigint(20) NOT NULL AUTO_INCREMENT,
   `eliminado` bit(1) NOT NULL,
-  `nombre` varchar(255) COLLATE utf8_bin NOT NULL,
-  `password` varchar(255) COLLATE utf8_bin NOT NULL,
+  `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `permisosAdministrador` bit(1) NOT NULL,
   PRIMARY KEY (`id_Usuario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -534,4 +534,4 @@ CREATE TABLE `usuario` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-05  2:02:52
+-- Dump completed on 2015-12-07 19:25:25
