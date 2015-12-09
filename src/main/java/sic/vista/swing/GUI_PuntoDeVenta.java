@@ -1392,7 +1392,7 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     private void txt_Recargo_porcentajeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_Recargo_porcentajeKeyTyped
         char c = evt.getKeyChar();
-        if ((c < '0' || c > '9') && (c != ',') && (c != '.')) {
+        if ((c < '0' || c > '9') && (c != ',') && (c != '.') && (c != '-')) {
             evt.consume();
         }
     }//GEN-LAST:event_txt_Recargo_porcentajeKeyTyped
