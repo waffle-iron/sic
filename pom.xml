@@ -137,6 +137,27 @@
                     <mainClass>${project.mainClass}</mainClass>                    
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>                        
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/icons</outputDirectory>
+                            <resources>          
+                                <resource>
+                                    <directory>icons</directory>                                    
+                                </resource>
+                            </resources>              
+                        </configuration>            
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>    
 </project>
