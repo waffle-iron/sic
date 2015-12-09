@@ -406,14 +406,9 @@ public class GUI_CerrarVenta extends JDialog {
         try {
             boolean dividir = false;
             int[] indicesParaDividir = null;
-<<<<<<< HEAD
-            if (chk_condicionDividir.isSelected() && (gui_puntoDeVenta.getTipoDeComprobante().equals("Factura A")
+            if (chk_condicionDividir.isSelected()
+                    && (gui_puntoDeVenta.getTipoDeComprobante().equals("Factura A")
                     || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura B")
-=======
-            if (chk_condicionDividir.isSelected() 
-                    && (gui_puntoDeVenta.getTipoDeComprobante().equals("Factura A") 
-                    || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura B") 
->>>>>>> refs/remotes/origin/master
                     || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura C"))) {
 
                 ModeloTabla modeloTablaPuntoDeVenta = gui_puntoDeVenta.getModeloTabla();
@@ -435,21 +430,18 @@ public class GUI_CerrarVenta extends JDialog {
                 FacturaVenta factura = this.construirFactura();
                 if (gui_puntoDeVenta.getPedido() != null) {
                     factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido()));
-<<<<<<< HEAD
-                }
-                Factura aux = this.guardarFactura(factura);
-                Pedido pedido = gui_puntoDeVenta.getPedido();
-                if (renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(gui_puntoDeVenta.getPedido(), "Factura A").isEmpty()) {
-                    pedido.setEstado(EstadoPedido.CERRADO);
+                    this.guardarFactura(factura);
+                    Pedido pedido = gui_puntoDeVenta.getPedido();
+                    if (renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(gui_puntoDeVenta.getPedido(), "Factura A").isEmpty()) {
+                        pedido.setEstado(EstadoPedido.CERRADO);
+                    } else {
+                        pedido.setEstado(EstadoPedido.ENPROCESO);
+                    }
+                    pedidoService.actualizar(pedido);
                 } else {
-                    pedido.setEstado(EstadoPedido.ENPROCESO);
+                    this.guardarFactura(factura);
                 }
-                pedidoService.actualizar(pedido);
-                this.lanzarReporteFactura(aux);
-=======
-                }                
-                this.lanzarReporteFactura(this.guardarFactura(factura));
->>>>>>> refs/remotes/origin/master
+                this.lanzarReporteFactura(facturaService.getFacturaVentaPorTipoSerieNum(facturaService.getTipoFactura(factura), factura.getNumSerie(), factura.getNumFactura()));
                 exito = true;
             } else {
                 List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), indicesParaDividir);
