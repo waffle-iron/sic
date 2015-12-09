@@ -404,20 +404,23 @@ public class GUI_CerrarVenta extends JDialog {
         try {
             boolean dividir = false;
             int[] indicesParaDividir = null;
-            if (chk_condicionDividir.isSelected() && (gui_puntoDeVenta.getTipoDeComprobante().equals("Factura A") 
+            if (chk_condicionDividir.isSelected() 
+                    && (gui_puntoDeVenta.getTipoDeComprobante().equals("Factura A") 
                     || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura B") 
                     || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura C"))) {
                 
                 ModeloTabla modeloTablaPuntoDeVenta = gui_puntoDeVenta.getModeloTabla();
                 indicesParaDividir = new int[modeloTablaPuntoDeVenta.getRowCount()];
                 int j = 0;
+                boolean tieneRenglonesMarcados = false;
                 for (int i = 0; i < modeloTablaPuntoDeVenta.getRowCount(); i++) {
                     if ((boolean) modeloTablaPuntoDeVenta.getValueAt(i, 0)) {
                         indicesParaDividir[j] = i;
                         j++;
+                        tieneRenglonesMarcados = true;
                     }
                 }
-                if (0 != indicesParaDividir.length) {
+                if (indicesParaDividir.length != 0 && tieneRenglonesMarcados) {
                     dividir = true;
                 }
             }
@@ -425,9 +428,8 @@ public class GUI_CerrarVenta extends JDialog {
                 FacturaVenta factura = this.construirFactura();
                 if (gui_puntoDeVenta.getPedido() != null) {
                     factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido()));
-                }
-                Factura aux = this.guardarFactura(factura);
-                this.lanzarReporteFactura(aux);
+                }                
+                this.lanzarReporteFactura(this.guardarFactura(factura));
                 exito = true;
             } else {
                 List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), indicesParaDividir);
