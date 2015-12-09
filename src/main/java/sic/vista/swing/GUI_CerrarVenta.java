@@ -510,15 +510,12 @@ public class GUI_CerrarVenta extends JDialog {
         gui_DetalleTransportista.setModal(true);
         gui_DetalleTransportista.setLocationRelativeTo(this);
         gui_DetalleTransportista.setVisible(true);
-
         try {
             this.cargarTransportistas();
-
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }//GEN-LAST:event_btn_nuevoTransporteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

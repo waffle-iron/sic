@@ -186,7 +186,7 @@ public class GUI_Pedidos extends JInternalFrame {
 
         //tipo de dato columnas
         Class[] tiposRenglones = new Class[modeloTablaRenglones.getColumnCount()];
-        tiposRenglones[0] = ImageIcon.class;
+        tiposRenglones[0] = String.class;
         tiposRenglones[1] = String.class;
         tiposRenglones[2] = Integer.class;
         tiposRenglones[3] = Double.class;

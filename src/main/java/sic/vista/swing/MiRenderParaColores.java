@@ -34,5 +34,4 @@ public class MiRenderParaColores extends DefaultTableCellRenderer {
         }
         return cell;
     }
-
 }
