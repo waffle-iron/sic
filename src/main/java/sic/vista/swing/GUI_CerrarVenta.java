@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import sic.modelo.Factura;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
+import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.service.*;
@@ -27,6 +28,7 @@ public class GUI_CerrarVenta extends JDialog {
     private final TransportistaService transportistaService = new TransportistaService();
     private final FacturaService facturaService = new FacturaService();
     private final UsuarioService usuarioService = new UsuarioService();
+    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private final PedidoService pedidoService = new PedidoService();
     private static final Logger log = Logger.getLogger(GUI_CerrarVenta.class.getPackage().getName());
@@ -404,10 +406,10 @@ public class GUI_CerrarVenta extends JDialog {
         try {
             boolean dividir = false;
             int[] indicesParaDividir = null;
-            if (chk_condicionDividir.isSelected() && (gui_puntoDeVenta.getTipoDeComprobante().equals("Factura A") 
-                    || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura B") 
+            if (chk_condicionDividir.isSelected() && (gui_puntoDeVenta.getTipoDeComprobante().equals("Factura A")
+                    || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura B")
                     || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura C"))) {
-                
+
                 ModeloTabla modeloTablaPuntoDeVenta = gui_puntoDeVenta.getModeloTabla();
                 indicesParaDividir = new int[modeloTablaPuntoDeVenta.getRowCount()];
                 int j = 0;
@@ -427,6 +429,13 @@ public class GUI_CerrarVenta extends JDialog {
                     factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido()));
                 }
                 Factura aux = this.guardarFactura(factura);
+                Pedido pedido = gui_puntoDeVenta.getPedido();
+                if (renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(gui_puntoDeVenta.getPedido(), "Factura A").isEmpty()) {
+                    pedido.setEstado(EstadoPedido.CERRADO);
+                } else {
+                    pedido.setEstado(EstadoPedido.ENPROCESO);
+                }
+                pedidoService.actualizar(pedido);
                 this.lanzarReporteFactura(aux);
                 exito = true;
             } else {
@@ -445,7 +454,7 @@ public class GUI_CerrarVenta extends JDialog {
                 gui_puntoDeVenta.dispose();
             }
             this.dispose();
-            
+
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 

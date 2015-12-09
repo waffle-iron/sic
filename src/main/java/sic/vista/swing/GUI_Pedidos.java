@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import javax.persistence.PersistenceException;
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
@@ -117,7 +118,7 @@ public class GUI_Pedidos extends JInternalFrame {
             gui_facturaVenta.setLocation(getDesktopPane().getWidth() / 2 - gui_facturaVenta.getWidth() / 2,
                     getDesktopPane().getHeight() / 2 - gui_facturaVenta.getHeight() / 2);
             getDesktopPane().add(gui_facturaVenta);
-            long numeroDePedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1);
+            long numeroDePedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 2);
             gui_facturaVenta.setVisible(true);
             BusquedaFacturaVentaCriteria criteria = new BusquedaFacturaVentaCriteria();
             criteria.setBuscarPorPedido(true);
@@ -138,16 +139,18 @@ public class GUI_Pedidos extends JInternalFrame {
     private void cargarResultadosAlTable() {
         this.limpiarJTables();
         for (Pedido pedido : pedidos) {
-            Object[] fila = new Object[6];
-            fila[0] = pedido.getFecha();
-            fila[1] = pedido.getNroPedido();
-            fila[2] = pedido.getCliente().getRazonSocial();
-            fila[3] = pedido.getUsuario().getNombre();
-            fila[4] = pedido.getTotalEstimado();
-            fila[5] = pedido.getTotalActual();
+            Object[] fila = new Object[7];
+            fila[0] = pedido.getEstado();
+            fila[1] = pedido.getFecha();
+            fila[2] = pedido.getNroPedido();
+            fila[3] = pedido.getCliente().getRazonSocial();
+            fila[4] = pedido.getUsuario().getNombre();
+            fila[5] = pedido.getTotalEstimado();
+            fila[6] = pedido.getTotalActual();
             modeloTablaPedidos.addRow(fila);
         }
         tbl_Pedidos.setModel(modeloTablaPedidos);
+        tbl_Pedidos.setDefaultRenderer(Object.class, new MiRenderParaColores());
         lbl_CantRegistrosEncontrados.setText(pedidos.size() + " pedidos encontrados.");
     }
 
@@ -183,7 +186,7 @@ public class GUI_Pedidos extends JInternalFrame {
 
         //tipo de dato columnas
         Class[] tiposRenglones = new Class[modeloTablaRenglones.getColumnCount()];
-        tiposRenglones[0] = String.class;
+        tiposRenglones[0] = ImageIcon.class;
         tiposRenglones[1] = String.class;
         tiposRenglones[2] = Integer.class;
         tiposRenglones[3] = Double.class;
@@ -210,24 +213,26 @@ public class GUI_Pedidos extends JInternalFrame {
         tbl_Pedidos.setAutoCreateRowSorter(true);
 
         //nombres de columnas
-        String[] encabezados = new String[6];
-        encabezados[0] = "Fecha Pedido";
-        encabezados[1] = "Nº Pedido";
-        encabezados[2] = "Cliente";
-        encabezados[3] = "Usuario (Vendedor)";
-        encabezados[4] = "Total Estimado";
-        encabezados[5] = "Total Actual";
+        String[] encabezados = new String[7];
+        encabezados[0] = "Estado";
+        encabezados[1] = "Fecha";
+        encabezados[2] = "Nº Pedido";
+        encabezados[3] = "Cliente";
+        encabezados[4] = "Usuario (Vendedor)";
+        encabezados[5] = "Total Estimado";
+        encabezados[6] = "Total Actual";
         modeloTablaPedidos.setColumnIdentifiers(encabezados);
         tbl_Pedidos.setModel(modeloTablaPedidos);
 
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaPedidos.getColumnCount()];
-        tipos[0] = Date.class;
-        tipos[1] = Long.class;
-        tipos[2] = String.class;
+        tipos[0] = String.class;
+        tipos[1] = Date.class;
+        tipos[2] = Long.class;
         tipos[3] = String.class;
-        tipos[4] = Double.class;
+        tipos[4] = String.class;
         tipos[5] = Double.class;
+        tipos[6] = Double.class;
         modeloTablaPedidos.setClaseColumnas(tipos);
         tbl_Pedidos.getTableHeader().setReorderingAllowed(false);
         tbl_Pedidos.getTableHeader().setResizingAllowed(true);
@@ -278,7 +283,7 @@ public class GUI_Pedidos extends JInternalFrame {
         }
         this.limpiarTablaRenglones();
         this.setColumnasRenglonesPedido();
-        long nroPedido = (long) tbl_Pedidos.getValueAt(row, 1);
+        long nroPedido = (long) tbl_Pedidos.getValueAt(row, 2);
         Pedido paraListarRenglones = pedidoService.getPedidoPorNumeroConRenglones(nroPedido);
         for (RenglonPedido renglon : paraListarRenglones.getRenglones()) {
             Object[] fila = new Object[6];
@@ -684,9 +689,9 @@ public class GUI_Pedidos extends JInternalFrame {
     private void btn_FacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FacturarActionPerformed
         try {
             if (tbl_Pedidos.getSelectedRow() != -1) {
-                long nroPedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1);
+                long nroPedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 2);
                 Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido);
-                if (renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(pedido, "Pedido").isEmpty()) {
+                if (renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(pedido, "Factura A").isEmpty()) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Aviso",
                             JOptionPane.INFORMATION_MESSAGE);
                 } else {

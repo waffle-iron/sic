@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import sic.service.EstadoPedido;
 
 @Entity
 @Table(name = "pedido")
@@ -78,5 +79,7 @@ public class Pedido implements Serializable {
     private double totalEstimado;
 
     private double totalActual;
+    
+    private EstadoPedido estado;
 
 }

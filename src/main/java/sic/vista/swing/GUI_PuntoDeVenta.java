@@ -526,6 +526,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.pedido.setUsuario(usuarioService.getUsuarioActivo().getUsuario());
         this.pedido.setNroPedido(pedidoService.calcularNumeroPedido());
         this.pedido.setTotalEstimado(facturaService.calcularSubTotal(renglones));
+        this.pedido.setEstado(EstadoPedido.INICIADO);
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
         for (RenglonFactura renglonFactura : renglones) {
             renglonesPedido.add(renglonDePedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura, this.pedido));
