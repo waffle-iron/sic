@@ -2,7 +2,6 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +24,7 @@ public class RenglonFactura implements Serializable {
     @GeneratedValue
     private long id_RenglonFactura;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Factura", referencedColumnName = "id_Factura")
     private Factura factura;
 

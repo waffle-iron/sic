@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -54,7 +53,7 @@ public class Cliente implements Serializable {
     @Column(nullable = false)
     private String direccion;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_CondicionIVA", referencedColumnName = "id_CondicionIVA")
     private CondicionIVA condicionIVA;
 
@@ -70,7 +69,7 @@ public class Cliente implements Serializable {
     @Column(nullable = false)
     private String telSecundario;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Localidad", referencedColumnName = "id_Localidad")
     private Localidad localidad;
 
@@ -81,7 +80,7 @@ public class Cliente implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaAlta;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
 
@@ -89,10 +88,10 @@ public class Cliente implements Serializable {
 
     private boolean predeterminado;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "cliente")
+    @OneToMany(mappedBy = "cliente")
     private Set<FacturaVenta> facturasVenta;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "cliente")
+    @OneToMany(mappedBy = "cliente")
     private List<Pedido> pedidos;
 
     @Override

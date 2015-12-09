@@ -3,7 +3,6 @@ package sic.modelo;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -46,7 +45,7 @@ public class Producto implements Serializable {
 
     private double cantMinima;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Medida", referencedColumnName = "id_Medida")
     private Medida medida;
 
@@ -60,7 +59,7 @@ public class Producto implements Serializable {
     private double impuestoInterno_neto;
     private double precioLista;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Rubro", referencedColumnName = "id_Rubro")
     private Rubro rubro;
 
@@ -76,7 +75,7 @@ public class Producto implements Serializable {
     @Column(nullable = false)
     private String estante;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Proveedor", referencedColumnName = "id_Proveedor")
     private Proveedor proveedor;
 
@@ -90,7 +89,7 @@ public class Producto implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaVencimiento;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
 

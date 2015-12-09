@@ -55,21 +55,21 @@ public class Pedido implements Serializable {
     @Column(nullable = false)
     private String observaciones;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
 
     private boolean eliminado;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Cliente", referencedColumnName = "id_Cliente")
     private Cliente cliente;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Usuario", referencedColumnName = "id_Usuario")
     private Usuario usuario;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "pedido")
+    @OneToMany(mappedBy = "pedido")
     private List<Factura> facturas;
 
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "pedido")

@@ -3,7 +3,6 @@ package sic.modelo;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,7 +34,7 @@ public class Transportista implements Serializable {
     @Column(nullable = false)
     private String direccion;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Localidad", referencedColumnName = "id_Localidad")
     private Localidad localidad;
 
@@ -45,10 +44,10 @@ public class Transportista implements Serializable {
     @Column(nullable = false)
     private String telefono;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "transportista")
+    @OneToMany(mappedBy = "transportista")
     private Set<Factura> facturas;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
 

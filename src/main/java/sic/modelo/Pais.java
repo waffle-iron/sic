@@ -3,7 +3,6 @@ package sic.modelo;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,7 +29,7 @@ public class Pais implements Serializable {
     @Column(nullable = false)
     private String nombre;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "pais")
+    @OneToMany(mappedBy = "pais")
     private Set<Provincia> provincias;
 
     private boolean eliminado = false;

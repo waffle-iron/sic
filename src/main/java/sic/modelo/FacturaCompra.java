@@ -2,7 +2,6 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -13,11 +12,11 @@ import javax.persistence.Table;
 @Table(name = "facturacompra")
 public class FacturaCompra extends Factura implements Serializable {
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Proveedor", referencedColumnName = "id_Proveedor")
     private Proveedor proveedor;
     
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "facturaCompra")
+    @OneToMany(mappedBy = "facturaCompra")
     private List<PagoFacturaCompra> pagosFacturaCompra;
 
     public FacturaCompra() {

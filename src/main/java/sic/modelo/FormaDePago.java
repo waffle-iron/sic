@@ -3,7 +3,6 @@ package sic.modelo;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -40,10 +39,10 @@ public class FormaDePago implements Serializable {
 
     private boolean predeterminado;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "formaPago")
+    @OneToMany(mappedBy = "formaPago")
     private Set<Factura> facturas;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
 

@@ -39,14 +39,14 @@ public abstract class Factura implements Serializable {
 
     private long numFactura;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_FormaDePago", referencedColumnName = "id_FormaDePago")
     private FormaDePago formaPago;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaVencimiento;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Transportista", referencedColumnName = "id_Transportista")
     private Transportista transportista;
 
@@ -69,13 +69,13 @@ public abstract class Factura implements Serializable {
 
     private boolean pagada;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
 
     private boolean eliminada;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
     private Pedido pedido;
 
