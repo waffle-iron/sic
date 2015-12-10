@@ -688,7 +688,9 @@ public class GUI_Pedidos extends JInternalFrame {
         try {
             if (this.existeClienteDisponible()) {
                 GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
-                gui_puntoDeVenta.setPedido(new Pedido());
+                Pedido pedido = new Pedido();
+                pedido.setObservaciones("Los precios se encuentran sujetos a modificaciones.");
+                gui_puntoDeVenta.setPedido(pedido);
                 gui_puntoDeVenta.setModal(true);
                 gui_puntoDeVenta.setLocationRelativeTo(this);
                 gui_puntoDeVenta.setVisible(true);

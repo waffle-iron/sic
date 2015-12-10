@@ -1272,8 +1272,8 @@ public class GUI_PuntoDeVenta extends JDialog {
                 this.cargarPedidoParaFacturar();
                 btn_NuevoCliente.setEnabled(false);
                 btn_BuscarCliente.setEnabled(false);
-                txta_Observaciones.setText(this.pedido.getObservaciones());
                 this.calcularResultados();
+                this.txta_Observaciones.setText(pedido.getObservaciones());
             }
 
         } catch (PersistenceException ex) {
@@ -1293,6 +1293,11 @@ public class GUI_PuntoDeVenta extends JDialog {
             if (cmb_TipoComprobante.getSelectedItem() != null) {
                 this.tipoDeFactura = cmb_TipoComprobante.getSelectedItem().toString();
                 this.recargarRenglonesSegunTipoDeFactura();
+                if (cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")) {
+                    this.txta_Observaciones.setText("Los precios se encuentran sujetos a modificaciones.");
+                } else {
+                    this.txta_Observaciones.setText("");
+                }
             }
 
         } catch (PersistenceException ex) {
