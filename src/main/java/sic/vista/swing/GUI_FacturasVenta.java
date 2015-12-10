@@ -97,8 +97,9 @@ public class GUI_FacturasVenta extends JInternalFrame {
             criteria.setNumSerie(Integer.valueOf(txt_SerieFactura.getValue().toString()));
             criteria.setNumFactura(Integer.valueOf(txt_NroFactura.getValue().toString()));
             criteria.setBuscaSoloInpagas(chk_Inpagas.isSelected());
+            criteria.setBuscaSoloPagadas(chk_soloPagadas.isSelected());
             criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-            criteria.setCantRegistros(0);
+            criteria.setCantRegistros(Integer.parseInt(cmb_cantidadAMostrar.getSelectedItem().toString()));
             criteria.setBuscarPorPedido(chk_NumeroPedido.isSelected());
             criteria.setNroPedido(Long.parseLong(txt_NumeroPedido.getText()));
         } catch (ParseException | ServiceException ex) {
@@ -320,6 +321,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         chk_NumeroPedido = new javax.swing.JCheckBox();
         txt_NumeroPedido = new javax.swing.JFormattedTextField();
         lbl_CantRegistrosEncontrados = new javax.swing.JLabel();
+        chk_soloPagadas = new javax.swing.JCheckBox();
         panelResultados = new javax.swing.JPanel();
         sp_Resultados = new javax.swing.JScrollPane();
         tbl_Resultados = new javax.swing.JTable();
@@ -333,6 +335,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
         txt_ResultGananciaTotal = new javax.swing.JFormattedTextField();
         txt_ResultTotalIVAVenta = new javax.swing.JFormattedTextField();
         btn_Nueva = new javax.swing.JButton();
+        cmb_cantidadAMostrar = new javax.swing.JComboBox();
+        lbl_cantidadAMostrar = new javax.swing.JLabel();
 
         setClosable(true);
         setMaximizable(true);
@@ -462,6 +466,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
         lbl_CantRegistrosEncontrados.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
+        chk_soloPagadas.setText("Solo Pagadas");
+
         javax.swing.GroupLayout panelFiltrosLayout = new javax.swing.GroupLayout(panelFiltros);
         panelFiltros.setLayout(panelFiltrosLayout);
         panelFiltrosLayout.setHorizontalGroup(
@@ -504,7 +510,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
                                         .addComponent(dc_FechaHasta, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
                                     .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(txt_NumeroPedido, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.Alignment.LEADING, 0, 147, Short.MAX_VALUE)))
+                                        .addComponent(cmb_TipoFactura, javax.swing.GroupLayout.Alignment.LEADING, 0, 147, Short.MAX_VALUE))
+                                    .addComponent(chk_soloPagadas))
                                 .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
@@ -543,13 +550,17 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     .addComponent(txt_NumeroPedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(chk_NumeroPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chk_Inpagas)
+                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chk_Inpagas)
+                    .addComponent(chk_soloPagadas))
                 .addGap(8, 8, 8)
                 .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btn_Buscar)
                     .addComponent(lbl_CantRegistrosEncontrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
+
+        panelFiltrosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {chk_soloPagadas, txt_NumeroPedido});
 
         panelResultados.setBorder(javax.swing.BorderFactory.createTitledBorder("Resultados"));
 
@@ -664,7 +675,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -676,19 +687,36 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
         panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_VerDetalle});
 
+        cmb_cantidadAMostrar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "50", "100", "500" }));
+        cmb_cantidadAMostrar.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmb_cantidadAMostrarItemStateChanged(evt);
+            }
+        });
+
+        lbl_cantidadAMostrar.setText("Cantidad a mostrar:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(panelFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbl_cantidadAMostrar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmb_cantidadAMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addComponent(panelResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(panelFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(panelFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(cmb_cantidadAMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lbl_cantidadAMostrar)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -844,6 +872,11 @@ public class GUI_FacturasVenta extends JInternalFrame {
         txt_NumeroPedido.setEnabled(chk_NumeroPedido.isSelected());
     }//GEN-LAST:event_chk_NumeroPedidoItemStateChanged
 
+    private void cmb_cantidadAMostrarItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_cantidadAMostrarItemStateChanged
+        this.buscar(this.getCriteriaDeComponentes());
+        this.calcularResultados();
+    }//GEN-LAST:event_cmb_cantidadAMostrarItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Buscar;
     private javax.swing.JButton btn_Eliminar;
@@ -856,9 +889,11 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private javax.swing.JCheckBox chk_NumeroPedido;
     private javax.swing.JCheckBox chk_TipoFactura;
     private javax.swing.JCheckBox chk_Usuario;
+    private javax.swing.JCheckBox chk_soloPagadas;
     private javax.swing.JComboBox cmb_Cliente;
     private javax.swing.JComboBox cmb_TipoFactura;
     private javax.swing.JComboBox cmb_Usuario;
+    private javax.swing.JComboBox cmb_cantidadAMostrar;
     private com.toedter.calendar.JDateChooser dc_FechaDesde;
     private com.toedter.calendar.JDateChooser dc_FechaHasta;
     private javax.swing.JLabel lbl_CantRegistrosEncontrados;
@@ -867,6 +902,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private javax.swing.JLabel lbl_Hasta;
     private javax.swing.JLabel lbl_TotalFacturado;
     private javax.swing.JLabel lbl_TotalIVAVenta;
+    private javax.swing.JLabel lbl_cantidadAMostrar;
     private javax.swing.JPanel panelFiltros;
     private javax.swing.JPanel panelNumeros;
     private javax.swing.JPanel panelResultados;

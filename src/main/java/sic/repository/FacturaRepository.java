@@ -102,7 +102,11 @@ public class FacturaRepository {
         if (criteria.isBuscaSoloInpagas() == true) {
             query += " AND f.pagada = false";
         }
-        query += " ORDER BY f.fecha ASC";
+        //Pagadas
+        if (criteria.isBuscaSoloPagadas() == true) {
+            query += " AND f.pagada = true";
+        }
+        query += " ORDER BY f.fecha DESC";
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<FacturaVenta> typedQuery = em.createQuery(query, FacturaVenta.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
