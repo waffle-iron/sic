@@ -279,7 +279,7 @@ public class GUI_Pedidos extends JInternalFrame {
         this.limpiarTablaRenglones();
         this.setColumnasRenglonesPedido();
         long nroPedido = (long) tbl_Pedidos.getValueAt(row, 1);
-        Pedido paraListarRenglones = pedidoService.getPedidoPorNumeroConRenglones(nroPedido);
+        Pedido paraListarRenglones = pedidoService.getPedidoPorNumeroYEmpresaConRenglones(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
         for (RenglonPedido renglon : paraListarRenglones.getRenglones()) {
             Object[] fila = new Object[6];
             fila[0] = renglon.getProducto().getCodigo();
@@ -685,7 +685,7 @@ public class GUI_Pedidos extends JInternalFrame {
         try {
             if (tbl_Pedidos.getSelectedRow() != -1) {
                 long nroPedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1);
-                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido);
+                Pedido pedido = pedidoService.getPedidoPorNumeroYIdEmpresa(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
                 if (renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(pedido, "Pedido").isEmpty()) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Aviso",
                             JOptionPane.INFORMATION_MESSAGE);

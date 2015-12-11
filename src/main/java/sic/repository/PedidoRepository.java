@@ -84,9 +84,10 @@ public class PedidoRepository {
         em.close();
     }
 
-    public Pedido getPedidoPorNro(long nroPedido) {
+    public Pedido getPedidoPorNroYEmpresa(long nroPedido, long idEmpresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumero", Pedido.class);
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroYIdEmpresa", Pedido.class);
+        typedQuery.setParameter("idEmpresa", idEmpresa);
         typedQuery.setParameter("nroPedido", nroPedido);
         List<Pedido> pedidos = typedQuery.getResultList();
         em.close();
@@ -106,19 +107,6 @@ public class PedidoRepository {
         em.close();
     }
 
-    public Pedido getPedidoPorNumero(long nroPedido) {
-        EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumero", Pedido.class);
-        typedQuery.setParameter("nroPedido", nroPedido);
-        List<Pedido> pedidos = typedQuery.getResultList();
-        em.close();
-        if (pedidos.isEmpty()) {
-            return null;
-        } else {
-            return pedidos.get(0);
-        }
-    }
-
     public Pedido getPedidoPorNumeroConFacturas(long nroPedido) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroConFacturas", Pedido.class);
@@ -132,10 +120,11 @@ public class PedidoRepository {
         }
     }
 
-    public Pedido getPedidoPorNumeroConRenglones(long nroPedido) {
+    public Pedido getPedidoPorNumeroYEmpresaConRenglones(long nroPedido, long idEmpresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroConRenglones", Pedido.class);
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroYIdEmpresaConRenglones", Pedido.class);
         typedQuery.setParameter("nroPedido", nroPedido);
+        typedQuery.setParameter("idEmpresa", idEmpresa);
         List<Pedido> pedidos = typedQuery.getResultList();
         em.close();
         if (pedidos.isEmpty()) {
