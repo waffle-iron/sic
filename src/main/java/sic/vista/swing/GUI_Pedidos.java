@@ -599,19 +599,16 @@ public class GUI_Pedidos extends JInternalFrame {
                     .addComponent(cmb_cantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_cantidadMostrar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Pedidos, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(sp_Pedidos, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_RenglonesDelPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(sp_RenglonesDelPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pb_Filtro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_detallePedido, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btn_Facturar, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btn_VerFacturas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_NuevoPedido, javax.swing.GroupLayout.Alignment.TRAILING)))
-            .addGroup(javax.swing.GroupLayout.Alignment.CENTER, panel_resultadosLayout.createSequentialGroup()
-                .addGap(288, 288, 288)
-                .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2))
         );
 
         panel_resultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Facturar, btn_NuevoPedido, btn_VerFacturas, btn_detallePedido});
@@ -778,9 +775,6 @@ public class GUI_Pedidos extends JInternalFrame {
     private javax.swing.JButton btn_Buscar;
     private javax.swing.JButton btn_Facturar;
     private javax.swing.JButton btn_NuevoPedido;
-    private javax.swing.JButton btn_VerDetalle;
-    private javax.swing.JButton btn_VerDetalle1;
-    private javax.swing.JButton btn_VerDetalle2;
     private javax.swing.JButton btn_VerFacturas;
     private javax.swing.JButton btn_detallePedido;
     private javax.swing.JCheckBox chk_Cliente;

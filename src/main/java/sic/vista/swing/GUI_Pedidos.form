@@ -278,21 +278,17 @@
                       <Component id="lbl_cantidadMostrar" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="sp_Pedidos" pref="0" max="32767" attributes="0"/>
+                  <Component id="sp_Pedidos" pref="126" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="sp_RenglonesDelPedido" pref="0" max="32767" attributes="0"/>
+                  <Component id="sp_RenglonesDelPedido" pref="127" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="pb_Filtro" alignment="1" min="-2" pref="23" max="-2" attributes="0"/>
                       <Component id="btn_detallePedido" linkSize="7" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_Facturar" linkSize="7" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_VerFacturas" linkSize="7" alignment="1" min="-2" pref="26" max="-2" attributes="0"/>
                       <Component id="btn_NuevoPedido" linkSize="7" alignment="1" min="-2" max="-2" attributes="0"/>
                   </Group>
-              </Group>
-              <Group type="102" alignment="2" attributes="0">
-                  <EmptySpace min="288" pref="288" max="-2" attributes="0"/>
-                  <Component id="pb_Filtro" min="-2" pref="23" max="-2" attributes="0"/>
-                  <EmptySpace min="2" pref="2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
