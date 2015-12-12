@@ -84,9 +84,9 @@ public class PedidoRepository {
         em.close();
     }
 
-    public Pedido getPedidoPorNroYEmpresa(long nroPedido, long idEmpresa) {
+    public Pedido getPedidoPorNro(long nroPedido, long idEmpresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroYIdEmpresa", Pedido.class);
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumero", Pedido.class);
         typedQuery.setParameter("idEmpresa", idEmpresa);
         typedQuery.setParameter("nroPedido", nroPedido);
         List<Pedido> pedidos = typedQuery.getResultList();
@@ -120,9 +120,9 @@ public class PedidoRepository {
         }
     }
 
-    public Pedido getPedidoPorNumeroYEmpresaConRenglones(long nroPedido, long idEmpresa) {
+    public Pedido getPedidoPorNumeroConRenglones(long nroPedido, long idEmpresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroYIdEmpresaConRenglones", Pedido.class);
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroConRenglones", Pedido.class);
         typedQuery.setParameter("nroPedido", nroPedido);
         typedQuery.setParameter("idEmpresa", idEmpresa);
         List<Pedido> pedidos = typedQuery.getResultList();

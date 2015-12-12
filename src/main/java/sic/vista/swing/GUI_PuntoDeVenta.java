@@ -535,7 +535,7 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     private Pedido guardarPedido(Pedido pedido) {
         pedidoService.guardar(pedido);
-        return pedidoService.getPedidoPorNumeroYIdEmpresa(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa());
+        return pedidoService.getPedidoPorNumero(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa());
     }
 
     /**

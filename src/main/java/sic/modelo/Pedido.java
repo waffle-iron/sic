@@ -29,11 +29,11 @@ import lombok.Data;
             query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones WHERE p.nroPedido = :nroPedido"),
     @NamedQuery(name = "Pedido.buscarPorId",
             query = "SELECT p FROM Pedido p WHERE p.id_Pedido = :id"),
-    @NamedQuery(name = "Pedido.buscarPorNumeroYIdEmpresa",
+    @NamedQuery(name = "Pedido.buscarPorNumero",
             query = "SELECT p FROM Pedido p WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa"),
     @NamedQuery(name = "Pedido.buscarPorNumeroConFacturas",
             query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.facturas WHERE p.nroPedido = :nroPedido"),
-    @NamedQuery(name = "Pedido.buscarPorNumeroYIdEmpresaConRenglones",
+    @NamedQuery(name = "Pedido.buscarPorNumeroConRenglones",
             query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa")
 })
 @Data

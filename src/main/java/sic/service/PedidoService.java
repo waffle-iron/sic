@@ -45,7 +45,7 @@ public class PedidoService {
                     .getString("mensaje_pedido_usuario_vacio"));
         }
         //Duplicados
-        if (pedidoRepository.getPedidoPorNroYEmpresa(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) != null) {
+        if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) != null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_duplicado"));
         }
@@ -114,16 +114,16 @@ public class PedidoService {
         pedidoRepository.actualizar(pedido);
     }
 
-    public Pedido getPedidoPorNumeroYIdEmpresa(long nroPedido, long idEmpresa) {
-        return pedidoRepository.getPedidoPorNroYEmpresa(nroPedido, idEmpresa);
+    public Pedido getPedidoPorNumero(long nroPedido, long idEmpresa) {
+        return pedidoRepository.getPedidoPorNro(nroPedido, idEmpresa);
     }
 
     public Pedido getPedidoPorNumeroConFacturas(long nroPedido) {
         return pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido);
     }
 
-    public Pedido getPedidoPorNumeroYEmpresaConRenglones(long nroPedido, long idEmpresa) {
-        return pedidoRepository.getPedidoPorNumeroYEmpresaConRenglones(nroPedido, idEmpresa);
+    public Pedido getPedidoPorNumeroConRenglones(long nroPedido, long idEmpresa) {
+        return pedidoRepository.getPedidoPorNumeroConRenglones(nroPedido, idEmpresa);
     }
 
     public void eliminar(Pedido pedido) {
