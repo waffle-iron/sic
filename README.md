@@ -1,3 +1,5 @@
+https://travis-ci.org/belluccifranco/sic.svg?branch=master
+
 Sistema de Información Comercial
 
 Sistema de gestión que permite:
