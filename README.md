@@ -1,4 +1,4 @@
-https://travis-ci.org/belluccifranco/sic.svg?branch=master
+[![Build Status](https://travis-ci.org/belluccifranco/sic.svg)](https://travis-ci.org/belluccifranco/sic)
 
 Sistema de Información Comercial
 
