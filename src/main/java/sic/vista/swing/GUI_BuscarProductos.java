@@ -87,7 +87,7 @@ public class GUI_BuscarProductos extends JDialog {
     private void aceptarProducto() {
         this.actualizarEstadoSeleccion();
         if (prodSeleccionado != null) {
-            if (this.existeStockDisponible(renglon.getCantidad(), prodSeleccionado)) {
+            if (productoService.existeStockDisponible(prodSeleccionado.getId_Producto(), renglon.getCantidad()) || gui_PrincipalTPV.getTipoDeComprobante().equals("Pedido")) {
                 debeCargarRenglon = true;
                 this.dispose();
             }
@@ -107,14 +107,18 @@ public class GUI_BuscarProductos extends JDialog {
         }
     }
 
-    private boolean existeStockDisponible(double cantRequerida, Producto producto) {
+    private boolean existeStockDisponible(double cantRequerida, Producto producto, String tipoComprobante) {
         if (cantRequerida > 0) {
             if (prodSeleccionado.isIlimitado() == false) {
-                if (cantRequerida > producto.getCantidad()) {
-                    JOptionPane.showMessageDialog(this,
-                            "La cantidad ingresada es mayor a la disponible para el producto seleccionado.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                    return false;
+                if (!tipoComprobante.equals("Pedido")) {
+                    if (cantRequerida > producto.getCantidad()) {
+                        JOptionPane.showMessageDialog(this,
+                                "La cantidad ingresada es mayor a la disponible para el producto seleccionado.",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        return false;
+                    } else {
+                        return true;
+                    }
                 } else {
                     return true;
                 }

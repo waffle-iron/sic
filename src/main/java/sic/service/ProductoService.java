@@ -25,6 +25,7 @@ public class ProductoService {
 
     private final ProductoRepository modeloProducto = new ProductoRepository();
     private final EmpresaService empresaService = new EmpresaService();
+    private final ProductoRepository productoRepository = new ProductoRepository();
 
     private void validarOperacion(TipoDeOperacion operacion, Producto producto) {
         //Entrada de Datos
@@ -161,7 +162,7 @@ public class ProductoService {
                             result = 0;
                         }
                         producto.setCantidad(result);
-                        
+
                     }
                 }
 
@@ -255,8 +256,13 @@ public class ProductoService {
         return modeloProducto.getProductosQueContengaCodigoDescripcion(criteria, cantRegistros, empresa);
     }
 
+    public boolean existeStockDisponible(long idProducto, double cantidad) {
+        return productoRepository.existeStockDisponible(idProducto, cantidad);
+    }
+
     //**************************************************************************
     //Calculos
+
     public double calcularGanancia_Porcentaje(double precioCosto, double PVP) {
         //evita la division por cero
         if (precioCosto == 0) {

@@ -1331,11 +1331,25 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     private void btn_ContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ContinuarActionPerformed
         if (!cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")) {
-            GUI_CerrarVenta gui_CerrarVenta = new GUI_CerrarVenta(this, true);
-            gui_CerrarVenta.setVisible(true);
-            if (gui_CerrarVenta.isExito()) {
-                this.limpiarYRecargarComponentes();
+            List<RenglonFactura> productosFaltantes = new ArrayList();
+            for (RenglonFactura renglon : renglones) {
+                if (!productoService.existeStockDisponible(renglon.getId_ProductoItem(), renglon.getCantidad())) {
+                    productosFaltantes.add(renglon);
+                }
             }
+            if (productosFaltantes.isEmpty()) {
+                GUI_CerrarVenta gui_CerrarVenta = new GUI_CerrarVenta(this, true);
+                gui_CerrarVenta.setVisible(true);
+                if (gui_CerrarVenta.isExito()) {
+                    this.limpiarYRecargarComponentes();
+                }
+            } else {
+                GUI_MensajeProductosFaltantes gui_MensajeProductosFaltantes = new GUI_MensajeProductosFaltantes(productosFaltantes);
+                gui_MensajeProductosFaltantes.setModal(true);
+                gui_MensajeProductosFaltantes.setLocationRelativeTo(this);
+                gui_MensajeProductosFaltantes.setVisible(true);
+            }
+
         } else {
             this.construirPedido();
             try {
