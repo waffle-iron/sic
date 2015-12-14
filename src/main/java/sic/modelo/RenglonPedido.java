@@ -1,6 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -22,9 +23,11 @@ public class RenglonPedido implements Serializable {
     @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
     private Pedido pedido;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "id_Producto", referencedColumnName = "id_Producto")
     private Producto producto;
+    
+    private boolean eliminado;
 
     private double cantidad;
 

@@ -484,7 +484,9 @@ public class GUI_PuntoDeVenta extends JDialog {
                 cmb_TipoComprobante.removeAllItems();
                 cmb_TipoComprobante.addItem("Pedido");
             } else {
-                cmb_TipoComprobante.removeItem("Pedido");
+                if (this.pedido.getEstado() == EstadoPedido.ENPROCESO) {
+                    cmb_TipoComprobante.removeItem("Pedido");
+                }
             }
         }
     }
@@ -537,6 +539,26 @@ public class GUI_PuntoDeVenta extends JDialog {
     private Pedido guardarPedido(Pedido pedido) {
         pedidoService.guardar(pedido);
         return pedidoService.getPedidoPorNumero(pedido.getNroPedido());
+    }
+
+    private void actualizarPedido(Pedido pedido) {
+        pedido = pedidoService.getPedidoPorNumeroConRenglones(pedido.getNroPedido());
+        List<RenglonPedido> nuevosRenglones = new ArrayList();
+        for (RenglonPedido renglonPedido : pedido.getRenglones()) {
+            for (RenglonFactura renglonFactura : this.renglones) {
+                if (renglonPedido.getProducto().getId_Producto() == renglonFactura.getId_ProductoItem()) {
+                    if (renglonPedido.getCantidad() != renglonFactura.getCantidad()) {
+                        renglonPedido.setCantidad(renglonFactura.getCantidad());
+                    }
+                } else {
+                    nuevosRenglones.add(renglonDePedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura, pedido));
+                }
+            }
+        }
+        if (!nuevosRenglones.isEmpty()) {
+            pedido.getRenglones().addAll(nuevosRenglones);
+        }
+        pedidoService.actualizar(pedido);
     }
 
     /**
@@ -1338,13 +1360,21 @@ public class GUI_PuntoDeVenta extends JDialog {
                 this.limpiarYRecargarComponentes();
             }
         } else {
-            this.construirPedido();
-            try {
-                this.guardarPedido(this.pedido);
-                JOptionPane.showMessageDialog(this, "El pedido se guardó correctamente.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
-                this.limpiarYRecargarComponentes();
-            } catch (ServiceException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            if (pedidoService.getPedidoPorNumero(this.pedido.getNroPedido()) == null) {
+                this.construirPedido();
+                try {
+                    this.guardarPedido(this.pedido);
+                    JOptionPane.showMessageDialog(this, "El pedido se guardó correctamente.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    this.limpiarYRecargarComponentes();
+                } catch (ServiceException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                if (pedidoService.getPedidoPorNumero(this.pedido.getNroPedido()).getEstado() == EstadoPedido.INICIADO) {
+                    this.actualizarPedido(this.pedido);
+                    JOptionPane.showMessageDialog(this, "El pedido se actualizó correctamente.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    this.dispose();
+                }
             }
         }
     }//GEN-LAST:event_btn_ContinuarActionPerformed
