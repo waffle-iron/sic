@@ -404,11 +404,11 @@ public class GUI_CerrarVenta extends JDialog {
         try {
             boolean dividir = false;
             int[] indicesParaDividir = null;
-            if (chk_condicionDividir.isSelected() 
-                    && (gui_puntoDeVenta.getTipoDeComprobante().equals("Factura A") 
-                    || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura B") 
+            if (chk_condicionDividir.isSelected()
+                    && (gui_puntoDeVenta.getTipoDeComprobante().equals("Factura A")
+                    || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura B")
                     || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura C"))) {
-                
+
                 ModeloTabla modeloTablaPuntoDeVenta = gui_puntoDeVenta.getModeloTabla();
                 indicesParaDividir = new int[modeloTablaPuntoDeVenta.getRowCount()];
                 int j = 0;
@@ -427,8 +427,8 @@ public class GUI_CerrarVenta extends JDialog {
             if (!dividir) {
                 FacturaVenta factura = this.construirFactura();
                 if (gui_puntoDeVenta.getPedido() != null) {
-                    factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido()));
-                }                
+                    factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido(), gui_puntoDeVenta.getEmpresa().getId_Empresa()));
+                }
                 this.lanzarReporteFactura(this.guardarFactura(factura));
                 exito = true;
             } else {
@@ -436,7 +436,7 @@ public class GUI_CerrarVenta extends JDialog {
                 for (Factura factura : facturasDivididas) {
                     if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
                         if (gui_puntoDeVenta.getPedido() != null) {
-                            factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido()));
+                            factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido(), gui_puntoDeVenta.getEmpresa().getId_Empresa()));
                         }
                         this.lanzarReporteFactura(this.guardarFactura(factura));
                         exito = true;
@@ -447,7 +447,7 @@ public class GUI_CerrarVenta extends JDialog {
                 gui_puntoDeVenta.dispose();
             }
             this.dispose();
-            
+
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
