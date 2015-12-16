@@ -98,10 +98,12 @@ public class GUI_BuscarProductos extends JDialog {
     }
 
     private void actualizarProductosCargadosEnFactura() {
-        for (RenglonFactura renglonFactura : renglonesFactura) {
-            for (Producto producto : productos) {
-                if (renglonFactura.getDescripcionItem().equals(producto.getDescripcion()) && producto.isIlimitado() == false) {
-                    producto.setCantidad(producto.getCantidad() - renglonFactura.getCantidad());
+        if (!gui_PrincipalTPV.getTipoDeComprobante().equals("Pedido")) {
+            for (RenglonFactura renglonFactura : renglonesFactura) {
+                for (Producto producto : productos) {
+                    if (renglonFactura.getDescripcionItem().equals(producto.getDescripcion()) && producto.isIlimitado() == false) {
+                        producto.setCantidad(producto.getCantidad() - renglonFactura.getCantidad());
+                    }
                 }
             }
         }
