@@ -276,9 +276,9 @@
                       <Component id="lbl_cantidadMostrar" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="sp_Pedidos" pref="123" max="32767" attributes="0"/>
+                  <Component id="sp_Pedidos" pref="125" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="sp_RenglonesDelPedido" pref="122" max="32767" attributes="0"/>
+                  <Component id="sp_RenglonesDelPedido" pref="124" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="pb_Filtro" alignment="2" min="-2" pref="23" max="-2" attributes="0"/>

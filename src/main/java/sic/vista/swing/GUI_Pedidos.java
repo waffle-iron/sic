@@ -44,6 +44,8 @@ public class GUI_Pedidos extends JInternalFrame {
         initComponents();
         this.setSize(850, 450);
         this.limpiarJTables();
+        cmb_Cliente.addItem("Seleccione un Cliente...");
+        cmb_Vendedor.addItem("Seleccione un Vendedor...");
         txt_NumeroPedido.setEnabled(false);
         dc_FechaDesde.setEnabled(false);
         dc_FechaHasta.setEnabled(false);
@@ -58,16 +60,20 @@ public class GUI_Pedidos extends JInternalFrame {
             protected List<Pedido> doInBackground() throws Exception {
                 try {
                     BusquedaPedidoCriteria criteria = new BusquedaPedidoCriteria();
-                    criteria.setCliente((Cliente) cmb_Cliente.getSelectedItem());
                     criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
                     criteria.setFechaDesde(dc_FechaDesde.getDate());
                     criteria.setFechaHasta(dc_FechaHasta.getDate());
                     criteria.setNroPedido(Long.valueOf(txt_NumeroPedido.getText()));
-                    criteria.setUsuario((Usuario) cmb_Vendedor.getSelectedItem());
                     criteria.setBuscaCliente(chk_Cliente.isSelected());
+                    if (chk_Cliente.isSelected()) {
+                        criteria.setCliente((Cliente) cmb_Cliente.getSelectedItem());
+                    }
                     criteria.setBuscaPorFecha(chk_Fecha.isSelected());
                     criteria.setBuscaPorNroPedido(chk_NumeroPedido.isSelected());
                     criteria.setBuscaUsuario(chk_Vendedor.isSelected());
+                    if (chk_Vendedor.isSelected()) {
+                        criteria.setUsuario((Usuario) cmb_Vendedor.getSelectedItem());
+                    }
                     criteria.setCantRegistros(cantidadResultadosParaMostrar);
                     pedidos = pedidoService.buscarConCriteria(criteria);
                     return pedidos;
@@ -267,7 +273,7 @@ public class GUI_Pedidos extends JInternalFrame {
     }
 
     private void cargarRenglonesDelPedidoSeleccionadoEnTabla(java.awt.event.KeyEvent evt) {
-        int row = Utilidades.getSelectedRowModelIndice(tbl_Pedidos);
+        int row = tbl_Pedidos.getSelectedRow();
         if (evt != null) {
             if ((evt.getKeyCode() == KeyEvent.VK_UP) && row > 0) {
                 row--;
@@ -581,9 +587,9 @@ public class GUI_Pedidos extends JInternalFrame {
                     .addComponent(cmb_cantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_cantidadMostrar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Pedidos, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+                .addComponent(sp_Pedidos, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_RenglonesDelPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
+                .addComponent(sp_RenglonesDelPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -626,6 +632,7 @@ public class GUI_Pedidos extends JInternalFrame {
             cmb_Cliente.requestFocus();
         } else {
             cmb_Cliente.removeAllItems();
+            cmb_Cliente.addItem("Seleccione un Cliente...");
             cmb_Cliente.setEnabled(false);
         }
     }//GEN-LAST:event_chk_ClienteItemStateChanged
@@ -637,6 +644,7 @@ public class GUI_Pedidos extends JInternalFrame {
             cmb_Vendedor.requestFocus();
         } else {
             cmb_Vendedor.removeAllItems();
+            cmb_Vendedor.addItem("Seleccione un Vendedor...");
             cmb_Vendedor.setEnabled(false);
         }
     }//GEN-LAST:event_chk_VendedorItemStateChanged
