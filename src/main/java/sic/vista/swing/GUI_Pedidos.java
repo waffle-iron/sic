@@ -766,7 +766,7 @@ public class GUI_Pedidos extends JInternalFrame {
     private void btn_detallePedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_detallePedidoActionPerformed
         if (tbl_Pedidos.getSelectedRow() != -1) {
             long nroPedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1);
-            Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido);
+            Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
             this.lanzarReportePedido(pedido);
         }
     }//GEN-LAST:event_btn_detallePedidoActionPerformed
