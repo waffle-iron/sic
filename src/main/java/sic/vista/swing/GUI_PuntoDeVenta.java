@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 import javax.swing.*;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
@@ -536,6 +539,24 @@ public class GUI_PuntoDeVenta extends JDialog {
     private Pedido guardarPedido(Pedido pedido) {
         pedidoService.guardar(pedido);
         return pedidoService.getPedidoPorNumero(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa());
+    }
+
+    private void lanzarReportePedido(Pedido pedido) {
+        try {
+            JasperPrint report = pedidoService.getReportePedido(pedido);
+            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+            viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
+            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+            viewer.setIconImage(iconoVentana.getImage());
+            viewer.setLocationRelativeTo(null);
+            JRViewer jrv = new JRViewer(report);
+            viewer.getContentPane().add(jrv);
+            viewer.setVisible(true);
+        } catch (JRException jre) {
+            String msjError = "Se produjo un error procesando el reporte.";
+            log.error(msjError + " - " + jre.getMessage());
+            JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
@@ -1251,8 +1272,8 @@ public class GUI_PuntoDeVenta extends JDialog {
                 this.cargarPedidoParaFacturar();
                 btn_NuevoCliente.setEnabled(false);
                 btn_BuscarCliente.setEnabled(false);
-                txta_Observaciones.setText(this.pedido.getObservaciones());
                 this.calcularResultados();
+                this.txta_Observaciones.setText(pedido.getObservaciones());
             }
 
         } catch (PersistenceException ex) {
@@ -1272,6 +1293,11 @@ public class GUI_PuntoDeVenta extends JDialog {
             if (cmb_TipoComprobante.getSelectedItem() != null) {
                 this.tipoDeFactura = cmb_TipoComprobante.getSelectedItem().toString();
                 this.recargarRenglonesSegunTipoDeFactura();
+                if (cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")) {
+                    this.txta_Observaciones.setText("Los precios se encuentran sujetos a modificaciones.");
+                } else {
+                    this.txta_Observaciones.setText("");
+                }
             }
 
         } catch (PersistenceException ex) {
@@ -1339,8 +1365,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         } else {
             this.construirPedido();
             try {
-                this.guardarPedido(this.pedido);
-                JOptionPane.showMessageDialog(this, "El pedido se guardó correctamente.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                this.lanzarReportePedido(this.guardarPedido(this.pedido));
                 this.limpiarYRecargarComponentes();
             } catch (ServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
