@@ -14,8 +14,6 @@ public class MiRenderParaColores extends DefaultTableCellRenderer {
             Object valor, boolean isSelected, boolean hasFocus,
             int row, int column) {
         JLabel cell = (JLabel) super.getTableCellRendererComponent(tabla, valor, isSelected, hasFocus, row, column);
-        int iteraciones = tabla.getRowCount();
-        for (int i = 0; i < iteraciones; i++) {
             if (valor instanceof EstadoPedido) {
                 EstadoPedido estado = (EstadoPedido) valor;
                 if (estado == EstadoPedido.CERRADO) {
@@ -28,10 +26,6 @@ public class MiRenderParaColores extends DefaultTableCellRenderer {
                     cell.setBackground(Color.GREEN);
                 }
             }
-            if (valor instanceof String) {
-                cell.setBackground(Color.WHITE);
-            }
-        }
         return cell;
     }
 }

@@ -150,7 +150,7 @@ public class GUI_Pedidos extends JInternalFrame {
             modeloTablaPedidos.addRow(fila);
         }
         tbl_Pedidos.setModel(modeloTablaPedidos);
-        tbl_Pedidos.setDefaultRenderer(Object.class, new MiRenderParaColores());
+        tbl_Pedidos.setDefaultRenderer(EstadoPedido.class, new MiRenderParaColores());
         lbl_CantRegistrosEncontrados.setText(pedidos.size() + " pedidos encontrados.");
     }
 
@@ -226,7 +226,7 @@ public class GUI_Pedidos extends JInternalFrame {
 
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaPedidos.getColumnCount()];
-        tipos[0] = String.class;
+        tipos[0] = EstadoPedido.class;
         tipos[1] = Date.class;
         tipos[2] = Long.class;
         tipos[3] = String.class;
