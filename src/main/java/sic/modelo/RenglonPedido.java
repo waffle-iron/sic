@@ -10,7 +10,7 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "renglonPedido")
+@Table(name = "renglonpedido")
 @Data
 public class RenglonPedido implements Serializable {
 
