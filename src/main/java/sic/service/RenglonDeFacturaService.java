@@ -9,7 +9,7 @@ import sic.modelo.RenglonFactura;
 import sic.modelo.RenglonPedido;
 
 public class RenglonDeFacturaService {
-    
+
     private final PedidoService pedidoService = new PedidoService();
 
     public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje) {
@@ -107,15 +107,7 @@ public class RenglonDeFacturaService {
         return this.calcularRenglon(tipoComprobante, Movimiento.VENTA, renglon.getCantidad(), renglon.getProducto(), renglon.getDescuento_porcentaje());
     }
 
-    public List<RenglonFactura> getRenglonesDePedidoComoRenglonesFactura(List<RenglonPedido> renglonPedido, String tipoComprobante) {
-        List<RenglonFactura> renglonesDeFactura = new ArrayList<>();
-        for (RenglonPedido renglon : renglonPedido) {
-            renglonesDeFactura.add(this.getRenglonFacturaPorRenglonPedido(renglon, tipoComprobante));
-        }
-        return renglonesDeFactura;
-    }
-    
-     public List<RenglonFactura> getRenglonesDePedidoConvertidosARenglonesFactura(Pedido pedido, String tipoComprobante) {
+    public List<RenglonFactura> getRenglonesDePedidoConvertidosARenglonesFactura(Pedido pedido, String tipoComprobante) {
         List<RenglonFactura> renglonesRestantes = new ArrayList<>();
         HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getNroPedido());
         List<RenglonPedido> renglonesDelPedido = pedidoService.getRenglonesDelPedido(pedido.getNroPedido());

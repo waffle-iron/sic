@@ -1,7 +1,7 @@
 package sic.service;
 
 /**
- * Describe las distintas operaciones comerciales que se pueden realizar.
+ * Describe los distintos estados de un Pedido.
  */
 public enum EstadoPedido {
 

@@ -542,23 +542,10 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     private void actualizarPedido(Pedido pedido) {
-        pedido = pedidoService.getPedidoPorNumeroConRenglones(pedido.getNroPedido());
-        List<RenglonPedido> nuevosRenglones = new ArrayList();
-        for (RenglonPedido renglonPedido : pedido.getRenglones()) {
-            for (RenglonFactura renglonFactura : this.renglones) {
-                if (renglonPedido.getProducto().getId_Producto() == renglonFactura.getId_ProductoItem()) {
-                    if (renglonPedido.getCantidad() != renglonFactura.getCantidad()) {
-                        renglonPedido.setCantidad(renglonFactura.getCantidad());
-                    }
-                } else {
-                    nuevosRenglones.add(renglonDePedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura, pedido));
-                }
-            }
-        }
-        if (!nuevosRenglones.isEmpty()) {
-            pedido.getRenglones().addAll(nuevosRenglones);
-        }
-        pedidoService.actualizar(pedido);
+       pedido = pedidoService.getPedidoPorNumeroConRenglones(pedido.getNroPedido());
+       pedido.getRenglones().clear();
+       pedido.getRenglones().addAll(renglonDePedidoService.convertirRenglonesFacturaARenglonesPedido(this.renglones, pedido));
+       pedidoService.actualizar(pedido);
     }
 
     /**
@@ -1370,7 +1357,8 @@ public class GUI_PuntoDeVenta extends JDialog {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                if (pedidoService.getPedidoPorNumero(this.pedido.getNroPedido()).getEstado() == EstadoPedido.INICIADO) {
+              //  Pedido pedidoParaEstado = pedidoService.getPedidoPorNumero(this.pedido.getNroPedido());
+                if (this.pedido.getEstado() == EstadoPedido.INICIADO || this.pedido.getEstado() == null) {
                     this.actualizarPedido(this.pedido);
                     JOptionPane.showMessageDialog(this, "El pedido se actualizó correctamente.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                     this.dispose();

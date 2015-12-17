@@ -20,6 +20,7 @@ import sic.modelo.RenglonPedido;
 import sic.modelo.Usuario;
 import sic.service.ClienteService;
 import sic.service.EmpresaService;
+import sic.service.EstadoPedido;
 import sic.service.PedidoService;
 import sic.service.RenglonDeFacturaService;
 import sic.service.ServiceException;
@@ -688,7 +689,7 @@ public class GUI_Pedidos extends JInternalFrame {
             if (tbl_Pedidos.getSelectedRow() != -1) {
                 long nroPedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 2);
                 Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido);
-                if (renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(pedido, "Factura A").isEmpty()) {
+                if (pedido.getEstado() == EstadoPedido.CERRADO) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Aviso",
                             JOptionPane.INFORMATION_MESSAGE);
                 } else {

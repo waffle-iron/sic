@@ -73,7 +73,7 @@ public class Pedido implements Serializable {
     @OneToMany(mappedBy = "pedido")
     private List<Factura> facturas;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "pedido")
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "pedido", orphanRemoval = true)
     private List<RenglonPedido> renglones;
 
     private double totalEstimado;
