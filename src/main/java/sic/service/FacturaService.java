@@ -223,7 +223,8 @@ public class FacturaService {
     public void eliminar(Factura factura) {
         factura.setEliminada(true);
         facturaRepository.actualizar(factura);
-        productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);
+        Factura facturaConRenglones = this.getFacturaVentaPorTipoSerieNum(this.getTipoFactura(factura), factura.getNumSerie(), factura.getNumFactura());
+        productoService.actualizarStock(facturaConRenglones, TipoDeOperacion.ELIMINACION);
     }
 
     private void validarFactura(Factura factura) {

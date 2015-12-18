@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/belluccifranco/sic.svg)](https://travis-ci.org/belluccifranco/sic)
+
 Sistema de Información Comercial
 
 Sistema de gestión que permite:
@@ -6,6 +8,7 @@ Sistema de gestión que permite:
 - Control de usuarios del sistema
 - Realizar ventas por medio de una interfaz de Punto de Venta
 - Controlar los pagos de las facturas de compra
+- Administrar pedidos y relacionarlos con facturas
 
 
 Tecnologias utilizadas hasta el momento:

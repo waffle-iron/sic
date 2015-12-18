@@ -65,6 +65,15 @@ public class GUI_CerrarVenta extends JDialog {
         return exito;
     }
 
+    public void actualizarEstadoPedido(Pedido pedido) {
+        if (renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(gui_puntoDeVenta.getPedido(), "Factura A").isEmpty()) {
+            pedido.setEstado(EstadoPedido.CERRADO);
+        } else {
+            pedido.setEstado(EstadoPedido.ENPROCESO);
+        }
+        pedidoService.actualizar(pedido);
+    }
+
     private void setIcon() {
         ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_24_square.png"));
         this.setIconImage(iconoVentana.getImage());
@@ -429,15 +438,10 @@ public class GUI_CerrarVenta extends JDialog {
             if (!dividir) {
                 FacturaVenta factura = this.construirFactura();
                 if (gui_puntoDeVenta.getPedido() != null) {
-                    factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido()));
+                    factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido(), gui_puntoDeVenta.getEmpresa().getId_Empresa()));
                     this.guardarFactura(factura);
                     Pedido pedido = gui_puntoDeVenta.getPedido();
-                    if (renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(gui_puntoDeVenta.getPedido(), "Factura A").isEmpty()) {
-                        pedido.setEstado(EstadoPedido.CERRADO);
-                    } else {
-                        pedido.setEstado(EstadoPedido.ENPROCESO);
-                    }
-                    pedidoService.actualizar(pedido);
+                    this.actualizarEstadoPedido(pedido);
                 } else {
                     this.guardarFactura(factura);
                 }
@@ -448,11 +452,12 @@ public class GUI_CerrarVenta extends JDialog {
                 for (Factura factura : facturasDivididas) {
                     if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
                         if (gui_puntoDeVenta.getPedido() != null) {
-                            factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido()));
+                            factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido(), gui_puntoDeVenta.getEmpresa().getId_Empresa()));
                         }
                         this.lanzarReporteFactura(this.guardarFactura(factura));
                         exito = true;
                     }
+                    this.actualizarEstadoPedido(gui_puntoDeVenta.getPedido());
                 }
             }
             if (gui_puntoDeVenta.getPedido() != null) {
