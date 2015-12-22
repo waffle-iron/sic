@@ -107,32 +107,7 @@ public class GUI_BuscarProductos extends JDialog {
                 }
             }
         }
-    }
-
-    private boolean existeStockDisponible(double cantRequerida, Producto producto, String tipoComprobante) {
-        if (cantRequerida > 0) {
-            if (prodSeleccionado.isIlimitado() == false) {
-                if (!tipoComprobante.equals("Pedido")) {
-                    if (cantRequerida > producto.getCantidad()) {
-                        JOptionPane.showMessageDialog(this,
-                                "La cantidad ingresada es mayor a la disponible para el producto seleccionado.",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                        return false;
-                    } else {
-                        return true;
-                    }
-                } else {
-                    return true;
-                }
-            } else {
-                return true;
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "La cantidad ingresada debe ser mayor a 0.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-    }
+    }    
 
     private void actualizarEstadoSeleccion() {
         try {
