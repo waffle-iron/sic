@@ -25,7 +25,6 @@ public class ProductoService {
 
     private final ProductoRepository modeloProducto = new ProductoRepository();
     private final EmpresaService empresaService = new EmpresaService();
-    private final ProductoRepository productoRepository = new ProductoRepository();
 
     private void validarOperacion(TipoDeOperacion operacion, Producto producto) {
         //Entrada de Datos
@@ -257,7 +256,7 @@ public class ProductoService {
     }
 
     public boolean existeStockDisponible(long idProducto, double cantidad) {
-        return productoRepository.existeStockDisponible(idProducto, cantidad);
+        return (this.getProductoPorId(idProducto).getCantidad() >= cantidad) || this.getProductoPorId(idProducto).isIlimitado();
     }
 
     //**************************************************************************

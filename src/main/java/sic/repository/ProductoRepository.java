@@ -142,17 +142,4 @@ public class ProductoRepository {
         tx.commit();
         em.close();
     }
-
-    public boolean existeStockDisponible(long idProducto, double cantidad) {
-        EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Producto> typedQuery = em.createNamedQuery("Producto.buscarPorId", Producto.class);
-        typedQuery.setParameter("id", idProducto);
-        List<Producto> productos = typedQuery.getResultList();
-        em.close();
-        if (productos.isEmpty()) {
-            return false;
-        } else {
-            return (productos.get(0).getCantidad() >= cantidad) || productos.get(0).isIlimitado();
-        }
-    }
 }

@@ -404,7 +404,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         if (producto == null) {
             JOptionPane.showMessageDialog(this, "No se encontró ningun producto con el codigo ingresado!", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            if (this.existeStockDisponible(1, producto)) {
+            if (productoService.existeStockDisponible(producto.getId_Producto(), 1)) {
                 RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
                 this.agregarRenglon(renglon);
                 EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];

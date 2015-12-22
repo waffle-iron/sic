@@ -105,7 +105,7 @@ public class GUI_MensajeProductosFaltantes extends JDialog {
         ));
         jScrollPane1.setViewportView(tbl_Faltantes);
 
-        btn_volver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/volver_16x16.png"))); // NOI18N
+        btn_volver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/volver_32x32.png"))); // NOI18N
         btn_volver.setText("VOLVER");
         btn_volver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
