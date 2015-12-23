@@ -87,9 +87,14 @@ public class GUI_BuscarProductos extends JDialog {
     private void aceptarProducto() {
         this.actualizarEstadoSeleccion();
         if (prodSeleccionado != null) {
-            if (productoService.existeStockDisponible(prodSeleccionado.getId_Producto(), renglon.getCantidad()) || gui_PrincipalTPV.getTipoDeComprobante().equals("Pedido")) {
+            boolean existeStock = productoService.existeStockDisponible(prodSeleccionado.getId_Producto(), renglon.getCantidad());
+            if (existeStock || gui_PrincipalTPV.getTipoDeComprobante().equals("Pedido")) {
                 debeCargarRenglon = true;
                 this.dispose();
+            } else {
+                if (!existeStock) {
+                    JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_producto_sin_stock_suficiente"), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         } else {
             debeCargarRenglon = false;
@@ -107,7 +112,7 @@ public class GUI_BuscarProductos extends JDialog {
                 }
             }
         }
-    }    
+    }
 
     private void actualizarEstadoSeleccion() {
         try {
