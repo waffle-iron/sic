@@ -103,7 +103,7 @@ public class GUI_BuscarProductos extends JDialog {
     }
 
     private void actualizarProductosCargadosEnFactura() {
-        if (!gui_PrincipalTPV.getTipoDeComprobante().equals("Pedido")) {
+        if (!gui_PrincipalTPV.getTipoDeComprobante().equals("Pedido") && gui_PrincipalTPV.getPedido() == null) {
             for (RenglonFactura renglonFactura : renglonesFactura) {
                 for (Producto producto : productos) {
                     if (renglonFactura.getDescripcionItem().equals(producto.getDescripcion()) && producto.isIlimitado() == false) {
