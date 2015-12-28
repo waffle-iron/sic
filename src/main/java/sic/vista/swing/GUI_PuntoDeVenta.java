@@ -267,21 +267,6 @@ public class GUI_PuntoDeVenta extends JDialog {
         tbl_Resultado.getColumnModel().getColumn(7).setPreferredWidth(120);
     }
 
-    private boolean existeStockDisponible(double cantRequerida, Producto producto) {
-        double disponibilidad;
-        if (producto.isIlimitado() == false) {
-            disponibilidad = producto.getCantidad();
-            for (RenglonFactura renglon : renglones) {
-                if (renglon.getDescripcionItem().equals(producto.getDescripcion())) {
-                    disponibilidad -= renglon.getCantidad();
-                }
-            }
-            return disponibilidad >= cantRequerida;
-        } else {
-            return true;
-        }
-    }
-
     private void agregarRenglon(RenglonFactura renglon) {
         boolean agregado = false;
         //busca entre los renglones al producto, aumenta la cantidad y recalcula el descuento        
@@ -402,27 +387,24 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     private void buscarProductoPorCodigo() throws ServiceException {
-        Producto producto = productoService.getProductoPorCodigo(
-                txt_CodigoProducto.getText().trim(), empresaService.getEmpresaActiva().getEmpresa());
+        Producto producto = productoService.getProductoPorCodigo(txt_CodigoProducto.getText().trim(), empresaService.getEmpresaActiva().getEmpresa());
         if (producto == null) {
             JOptionPane.showMessageDialog(this, "No se encontró ningun producto con el codigo ingresado!", "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            if (this.existeStockDisponible(1, producto)) {
-                RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
-                this.agregarRenglon(renglon);
-                EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
-                if (tbl_Resultado.getRowCount() == 0) {
-                    estadosRenglones[0] = EstadoRenglon.DESMARCADO;
-                } else {
-                    this.cargarEstadoDeLosChkEnTabla(tbl_Resultado, estadosRenglones);
-                    estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
-                }
-                this.cargarRenglonesAlTable(estadosRenglones);
-                this.calcularResultados();
-                txt_CodigoProducto.setText("");
+        } else if (productoService.existeStockDisponible(producto.getId_Producto(), 1)) {
+            RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
+            this.agregarRenglon(renglon);
+            EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
+            if (tbl_Resultado.getRowCount() == 0) {
+                estadosRenglones[0] = EstadoRenglon.DESMARCADO;
             } else {
-                JOptionPane.showMessageDialog(this, "No existe disponibilidad para el producto buscado.", "Error", JOptionPane.ERROR_MESSAGE);
+                this.cargarEstadoDeLosChkEnTabla(tbl_Resultado, estadosRenglones);
+                estadosRenglones[tbl_Resultado.getRowCount()] = EstadoRenglon.DESMARCADO;
             }
+            this.cargarRenglonesAlTable(estadosRenglones);
+            this.calcularResultados();
+            txt_CodigoProducto.setText("");
+        } else {
+            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_producto_sin_stock_suficiente"), "Error", JOptionPane.ERROR_MESSAGE);            
         }
     }
 
@@ -1356,19 +1338,32 @@ public class GUI_PuntoDeVenta extends JDialog {
     }//GEN-LAST:event_txt_Recargo_porcentajeActionPerformed
 
     private void btn_ContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ContinuarActionPerformed
-        if (!cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")) {
-            GUI_CerrarVenta gui_CerrarVenta = new GUI_CerrarVenta(this, true);
-            gui_CerrarVenta.setVisible(true);
-            if (gui_CerrarVenta.isExito()) {
-                this.limpiarYRecargarComponentes();
-            }
-        } else {
+        if (cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")) {
             this.construirPedido();
             try {
                 this.lanzarReportePedido(this.guardarPedido(this.pedido));
                 this.limpiarYRecargarComponentes();
             } catch (ServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            List<RenglonFactura> productosFaltantes = new ArrayList();
+            for (RenglonFactura renglon : renglones) {
+                if (!productoService.existeStockDisponible(renglon.getId_ProductoItem(), renglon.getCantidad())) {
+                    productosFaltantes.add(renglon);
+                }
+            }
+            if (productosFaltantes.isEmpty()) {
+                GUI_CerrarVenta gui_CerrarVenta = new GUI_CerrarVenta(this, true);
+                gui_CerrarVenta.setVisible(true);
+                if (gui_CerrarVenta.isExito()) {
+                    this.limpiarYRecargarComponentes();
+                }
+            } else {
+                GUI_ProductosFaltantes gui_MensajeProductosFaltantes = new GUI_ProductosFaltantes(productosFaltantes);
+                gui_MensajeProductosFaltantes.setModal(true);
+                gui_MensajeProductosFaltantes.setLocationRelativeTo(this);
+                gui_MensajeProductosFaltantes.setVisible(true);
             }
         }
     }//GEN-LAST:event_btn_ContinuarActionPerformed
