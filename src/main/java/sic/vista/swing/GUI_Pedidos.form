@@ -41,9 +41,8 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="panel_Filtros" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="panel_resultados" max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -62,15 +61,15 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="chk_Vendedor" linkSize="9" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="cmb_Vendedor" max="32767" attributes="0"/>
                       </Group>
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="0" attributes="0">
                           <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="lbl_CantRegistrosEncontrados" max="32767" attributes="0"/>
@@ -97,14 +96,13 @@
                           <Component id="cmb_Cliente" max="32767" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_Desde" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="dc_FechaDesde" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -129,10 +127,9 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="lbl_CantRegistrosEncontrados" alignment="2" max="32767" attributes="0"/>
+                      <Component id="lbl_CantRegistrosEncontrados" alignment="2" pref="35" max="32767" attributes="0"/>
                       <Component id="btn_Buscar" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -278,9 +275,9 @@
                       <Component id="lbl_cantidadMostrar" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="sp_Pedidos" pref="119" max="32767" attributes="0"/>
+                  <Component id="sp_Pedidos" pref="136" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="sp_RenglonesDelPedido" pref="120" max="32767" attributes="0"/>
+                  <Component id="sp_RenglonesDelPedido" pref="136" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="pb_Filtro" alignment="1" min="-2" pref="23" max="-2" attributes="0"/>
