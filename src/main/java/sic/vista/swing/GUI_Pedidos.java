@@ -65,11 +65,11 @@ public class GUI_Pedidos extends JInternalFrame {
             @Override
             protected List<Pedido> doInBackground() throws Exception {
                 try {
-                    BusquedaPedidoCriteria criteria = new BusquedaPedidoCriteria();                    
+                    BusquedaPedidoCriteria criteria = new BusquedaPedidoCriteria();
                     criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
                     criteria.setFechaDesde(dc_FechaDesde.getDate());
                     criteria.setFechaHasta(dc_FechaHasta.getDate());
-                    criteria.setNroPedido(Long.valueOf(txt_NumeroPedido.getText()));                    
+                    criteria.setNroPedido(Long.valueOf(txt_NumeroPedido.getText()));
                     criteria.setBuscaCliente(chk_Cliente.isSelected());
                     if (chk_Cliente.isSelected()) {
                         criteria.setCliente((Cliente) cmb_Cliente.getSelectedItem());
@@ -339,6 +339,7 @@ public class GUI_Pedidos extends JInternalFrame {
         btn_Facturar = new javax.swing.JButton();
         pb_Filtro = new javax.swing.JProgressBar();
         btn_detallePedido = new javax.swing.JButton();
+        bnt_modificaPedido = new javax.swing.JButton();
 
         setClosable(true);
         setMaximizable(true);
@@ -557,7 +558,7 @@ public class GUI_Pedidos extends JInternalFrame {
 
         btn_Facturar.setForeground(java.awt.Color.blue);
         btn_Facturar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/PedidoFacturar_16x16.png"))); // NOI18N
-        btn_Facturar.setText("Facturar/Modificar");
+        btn_Facturar.setText("Facturar");
         btn_Facturar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_FacturarActionPerformed(evt);
@@ -570,6 +571,15 @@ public class GUI_Pedidos extends JInternalFrame {
         btn_detallePedido.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_detallePedidoActionPerformed(evt);
+            }
+        });
+
+        bnt_modificaPedido.setForeground(new java.awt.Color(0, 0, 225));
+        bnt_modificaPedido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/modificarPedido16x16.png"))); // NOI18N
+        bnt_modificaPedido.setText("Modificar");
+        bnt_modificaPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bnt_modificaPedidoActionPerformed(evt);
             }
         });
 
@@ -594,13 +604,15 @@ public class GUI_Pedidos extends JInternalFrame {
                         .addGap(0, 0, 0)
                         .addComponent(btn_Facturar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
+                        .addComponent(bnt_modificaPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
                         .addComponent(btn_detallePedido)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
                         .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
-        panel_resultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Facturar, btn_NuevoPedido, btn_VerFacturas, btn_detallePedido});
+        panel_resultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {bnt_modificaPedido, btn_Facturar, btn_NuevoPedido, btn_VerFacturas, btn_detallePedido});
 
         panel_resultadosLayout.setVerticalGroup(
             panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -609,19 +621,21 @@ public class GUI_Pedidos extends JInternalFrame {
                     .addComponent(cmb_cantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_cantidadMostrar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Pedidos, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                .addComponent(sp_Pedidos, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_RenglonesDelPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                .addComponent(sp_RenglonesDelPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pb_Filtro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_detallePedido, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btn_Facturar, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_Facturar)
+                        .addComponent(btn_detallePedido)
+                        .addComponent(bnt_modificaPedido))
                     .addComponent(btn_VerFacturas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_NuevoPedido, javax.swing.GroupLayout.Alignment.TRAILING)))
         );
 
-        panel_resultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Facturar, btn_NuevoPedido, btn_VerFacturas, btn_detallePedido});
+        panel_resultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {bnt_modificaPedido, btn_Facturar, btn_NuevoPedido, btn_VerFacturas, btn_detallePedido});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -725,6 +739,7 @@ public class GUI_Pedidos extends JInternalFrame {
                 } else {
                     if (this.existeClienteDisponible()) {
                         GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
+                        pedido.setObservaciones("");
                         gui_puntoDeVenta.setPedido(pedido);
                         gui_puntoDeVenta.setModal(true);
                         gui_puntoDeVenta.setLocationRelativeTo(this);
@@ -783,7 +798,36 @@ public class GUI_Pedidos extends JInternalFrame {
         }
     }//GEN-LAST:event_btn_detallePedidoActionPerformed
 
+    private void bnt_modificaPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnt_modificaPedidoActionPerformed
+        try {
+            if (tbl_Pedidos.getSelectedRow() != -1) {
+                long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
+                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+                if (pedido.getEstado() == EstadoPedido.CERRADO) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Aviso",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    if (this.existeClienteDisponible()) {
+                        GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
+                        gui_puntoDeVenta.setPedido(pedido);
+                        gui_puntoDeVenta.setModal(true);
+                        gui_puntoDeVenta.setLocationRelativeTo(this);
+                        gui_puntoDeVenta.setVisible(true);
+                    } else {
+                        String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
+                        JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+
+        } catch (PersistenceException ex) {
+            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_bnt_modificaPedidoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bnt_modificaPedido;
     private javax.swing.JButton btn_Buscar;
     private javax.swing.JButton btn_Facturar;
     private javax.swing.JButton btn_NuevoPedido;

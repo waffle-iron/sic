@@ -487,8 +487,13 @@ public class GUI_PuntoDeVenta extends JDialog {
                 cmb_TipoComprobante.removeAllItems();
                 cmb_TipoComprobante.addItem("Pedido");
             } else {
-                if (this.pedido.getEstado() == EstadoPedido.ENPROCESO) {
-                    cmb_TipoComprobante.removeItem("Pedido");
+                if (this.pedido.getObservaciones().length() > 0) {
+                    cmb_TipoComprobante.removeAllItems();
+                    cmb_TipoComprobante.addItem("Pedido");
+                } else {
+                    if (this.pedido.getEstado() == EstadoPedido.ENPROCESO || this.pedido.getEstado() == EstadoPedido.INICIADO) {
+                        cmb_TipoComprobante.removeItem("Pedido");
+                    }
                 }
             }
         }
