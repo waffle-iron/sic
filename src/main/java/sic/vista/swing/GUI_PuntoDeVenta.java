@@ -401,7 +401,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             this.calcularResultados();
             txt_CodigoProducto.setText("");
         } else {
-            JOptionPane.showMessageDialog(this, "No existe disponibilidad para el producto buscado.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_producto_sin_stock_suficiente"), "Error", JOptionPane.ERROR_MESSAGE);            
         }
     }
 
