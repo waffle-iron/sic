@@ -359,7 +359,7 @@ public class GUI_Pedidos extends JInternalFrame {
             }
         });
 
-        panel_Filtros.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        panel_Filtros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
 
         chk_NumeroPedido.setText("Nº Pedido:");
         chk_NumeroPedido.addItemListener(new java.awt.event.ItemListener() {
@@ -605,9 +605,9 @@ public class GUI_Pedidos extends JInternalFrame {
                     .addComponent(cmb_cantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_cantidadMostrar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Pedidos, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                .addComponent(sp_Pedidos, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_RenglonesDelPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                .addComponent(sp_RenglonesDelPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pb_Filtro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)

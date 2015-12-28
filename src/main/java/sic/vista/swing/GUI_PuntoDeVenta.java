@@ -1255,7 +1255,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                 btn_NuevoCliente.setEnabled(false);
                 btn_BuscarCliente.setEnabled(false);
                 this.calcularResultados();
-                this.txta_Observaciones.setText(pedido.getObservaciones());
+                this.txta_Observaciones.setText("");
             }
 
         } catch (PersistenceException ex) {
