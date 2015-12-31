@@ -27,7 +27,6 @@ import sic.modelo.Usuario;
 import sic.service.ClienteService;
 import sic.service.EmpresaService;
 import sic.service.PedidoService;
-import sic.service.RenglonDeFacturaService;
 import sic.service.ServiceException;
 import sic.service.UsuarioService;
 import sic.service.EstadoPedido;
@@ -39,7 +38,6 @@ public class GUI_Pedidos extends JInternalFrame {
     private final PedidoService pedidoService = new PedidoService();
     private final ClienteService clienteService = new ClienteService();
     private final UsuarioService usuarioSercice = new UsuarioService();
-    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
     private List<Pedido> pedidos;
     private ModeloTabla modeloTablaPedidos;
     private ModeloTabla modeloTablaRenglones;
@@ -254,7 +252,7 @@ public class GUI_Pedidos extends JInternalFrame {
         //Tamanios de columnas
         tbl_Pedidos.getColumnModel().getColumn(0).setPreferredWidth(25);
         tbl_Pedidos.getColumnModel().getColumn(1).setPreferredWidth(25);
-        tbl_Pedidos.getColumnModel().getColumn(2).setPreferredWidth(150);
+        tbl_Pedidos.getColumnModel().getColumn(2).setPreferredWidth(35);
         tbl_Pedidos.getColumnModel().getColumn(3).setPreferredWidth(150);
         tbl_Pedidos.getColumnModel().getColumn(4).setPreferredWidth(25);
         tbl_Pedidos.getColumnModel().getColumn(5).setPreferredWidth(25);

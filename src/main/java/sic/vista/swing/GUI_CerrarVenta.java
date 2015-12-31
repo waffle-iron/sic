@@ -457,10 +457,10 @@ public class GUI_CerrarVenta extends JDialog {
                         this.lanzarReporteFactura(this.guardarFactura(factura));
                         exito = true;
                     }
-                    this.actualizarEstadoPedido(gui_puntoDeVenta.getPedido());
                 }
             }
             if (gui_puntoDeVenta.getPedido() != null) {
+                this.actualizarEstadoPedido(gui_puntoDeVenta.getPedido());
                 gui_puntoDeVenta.dispose();
             }
             this.dispose();
