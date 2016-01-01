@@ -345,24 +345,24 @@ public class GUI_Pedidos extends JInternalFrame {
         setTitle("Administrar Pedidos");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/PedidoFacturar_16x16.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
-            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
-            }
-            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
-            }
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
                 formInternalFrameOpened(evt);
             }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
         });
 
-        panel_Filtros.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        panel_Filtros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
 
         chk_NumeroPedido.setText("Nº Pedido:");
         chk_NumeroPedido.addItemListener(new java.awt.event.ItemListener() {
@@ -416,9 +416,9 @@ public class GUI_Pedidos extends JInternalFrame {
         panel_Filtros.setLayout(panel_FiltrosLayout);
         panel_FiltrosLayout.setHorizontalGroup(
             panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel_FiltrosLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel_FiltrosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panel_FiltrosLayout.createSequentialGroup()
                         .addComponent(chk_Vendedor)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -445,7 +445,7 @@ public class GUI_Pedidos extends JInternalFrame {
                         .addComponent(chk_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(cmb_Cliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         panel_FiltrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {dc_FechaDesde, dc_FechaHasta});
@@ -455,7 +455,6 @@ public class GUI_Pedidos extends JInternalFrame {
         panel_FiltrosLayout.setVerticalGroup(
             panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel_FiltrosLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_Desde)
                     .addComponent(dc_FechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -476,9 +475,8 @@ public class GUI_Pedidos extends JInternalFrame {
                     .addComponent(cmb_Vendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(lbl_CantRegistrosEncontrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btn_Buscar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lbl_CantRegistrosEncontrados, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                    .addComponent(btn_Buscar)))
         );
 
         panel_FiltrosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {cmb_Cliente, cmb_Vendedor, txt_NumeroPedido});
@@ -647,7 +645,6 @@ public class GUI_Pedidos extends JInternalFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(panel_Filtros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panel_resultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -805,15 +802,20 @@ public class GUI_Pedidos extends JInternalFrame {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Aviso",
                             JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    if (this.existeClienteDisponible()) {
-                        GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
-                        gui_puntoDeVenta.setPedido(pedido);
-                        gui_puntoDeVenta.setModal(true);
-                        gui_puntoDeVenta.setLocationRelativeTo(this);
-                        gui_puntoDeVenta.setVisible(true);
+                    if (pedido.getEstado() == EstadoPedido.ENPROCESO) {
+                        JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_procesado"), "Aviso",
+                                JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
-                        JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+                        if (this.existeClienteDisponible()) {
+                            GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
+                            gui_puntoDeVenta.setPedido(pedido);
+                            gui_puntoDeVenta.setModal(true);
+                            gui_puntoDeVenta.setLocationRelativeTo(this);
+                            gui_puntoDeVenta.setVisible(true);
+                        } else {
+                            String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
+                            JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                     }
                 }
             }

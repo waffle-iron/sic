@@ -380,7 +380,7 @@ public class GUI_Productos extends JInternalFrame {
             }
         });
 
-        panelFiltros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros de Busqueda"));
+        panelFiltros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
 
         chk_Codigo.setText("Código:");
         chk_Codigo.addItemListener(new java.awt.event.ItemListener() {

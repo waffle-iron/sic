@@ -346,7 +346,7 @@ public class FacturaService {
 
     public double calcularIva_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones, double iva_porcentaje) {
         double resultado = 0;
-        if (tipoDeFactura.equals("Factura A")) {
+        if (tipoDeFactura.charAt(tipoDeFactura.length() - 1) == 'A') {
             for (RenglonFactura renglon : renglones) {
                 //descuento
                 double descuento = 0;
@@ -370,7 +370,7 @@ public class FacturaService {
 
     public double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones) {
         double resultado = 0;
-        if (tipoDeFactura.equals("Factura A")) {
+        if (tipoDeFactura.charAt(tipoDeFactura.length() - 1) == 'A') {
             for (RenglonFactura renglon : renglones) {
                 //descuento
                 double descuento = 0;

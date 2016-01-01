@@ -458,9 +458,9 @@ public class GUI_CerrarVenta extends JDialog {
                         exito = true;
                     }
                 }
+                this.actualizarEstadoPedido(gui_puntoDeVenta.getPedido());
             }
             if (gui_puntoDeVenta.getPedido() != null) {
-                this.actualizarEstadoPedido(gui_puntoDeVenta.getPedido());
                 gui_puntoDeVenta.dispose();
             }
             this.dispose();

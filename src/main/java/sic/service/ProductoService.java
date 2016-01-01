@@ -161,7 +161,7 @@ public class ProductoService {
                             result = 0;
                         }
                         producto.setCantidad(result);
-                        
+
                     }
                 }
 
@@ -255,8 +255,13 @@ public class ProductoService {
         return modeloProducto.getProductosQueContengaCodigoDescripcion(criteria, cantRegistros, empresa);
     }
 
+    public boolean existeStockDisponible(long idProducto, double cantidad) {
+        return (this.getProductoPorId(idProducto).getCantidad() >= cantidad) || this.getProductoPorId(idProducto).isIlimitado();
+    }
+
     //**************************************************************************
     //Calculos
+
     public double calcularGanancia_Porcentaje(double precioCosto, double PVP) {
         //evita la division por cero
         if (precioCosto == 0) {
