@@ -107,7 +107,7 @@ public class RenglonDeFacturaService {
         return this.calcularRenglon(tipoComprobante, Movimiento.VENTA, renglon.getCantidad(), renglon.getProducto(), renglon.getDescuento_porcentaje());
     }
 
-    public List<RenglonFactura> getRenglonesDePedidoConvertidosARenglonesFactura(Pedido pedido, String tipoComprobante) {
+    public List<RenglonFactura> convertirRenglonesPedidoARenglonesFactura(Pedido pedido, String tipoComprobante) {
         List<RenglonFactura> renglonesRestantes = new ArrayList<>();
         HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getNroPedido());
         List<RenglonPedido> renglonesDelPedido = pedidoService.getRenglonesDelPedido(pedido.getNroPedido());

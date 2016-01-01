@@ -91,7 +91,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.cargarCliente(pedido.getCliente());
         this.cargarTiposDeComprobantesDisponibles();
         this.tipoDeFactura = cmb_TipoComprobante.getSelectedItem().toString();
-        this.renglones = renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(pedido, this.tipoDeFactura);
+        this.renglones = renglonDeFacturaService.convertirRenglonesPedidoARenglonesFactura(pedido, this.tipoDeFactura);
         EstadoRenglon[] marcaDeRenglonesDelPedido = new EstadoRenglon[renglones.size()];
         for (int i = 0; i < renglones.size(); i++) {
             marcaDeRenglonesDelPedido[i] = EstadoRenglon.DESMARCADO;
@@ -1379,6 +1379,8 @@ public class GUI_PuntoDeVenta extends JDialog {
                 gui_MensajeProductosFaltantes.setVisible(true);
             }
         } else {
+            //Es null cuando, se genera un pedido desde el punto de venta entrando por el menu sistemas.
+            //El Id es 0 cuando, se genera un pedido desde el punto de venta entrando por el botón nuevo de administrar pedidos.
             if (this.pedido == null || this.pedido.getId_Pedido() == 0) {
                 this.construirPedido();
             }
