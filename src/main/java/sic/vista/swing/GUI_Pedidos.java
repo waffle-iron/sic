@@ -734,7 +734,6 @@ public class GUI_Pedidos extends JInternalFrame {
                 } else {
                     if (this.existeClienteDisponible()) {
                         GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
-                        pedido.setObservaciones("");
                         gui_puntoDeVenta.setPedido(pedido);
                         gui_puntoDeVenta.setModal(true);
                         gui_puntoDeVenta.setLocationRelativeTo(this);
@@ -809,6 +808,7 @@ public class GUI_Pedidos extends JInternalFrame {
                         if (this.existeClienteDisponible()) {
                             GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
                             gui_puntoDeVenta.setPedido(pedido);
+                            gui_puntoDeVenta.paraMofificarPedido(true);
                             gui_puntoDeVenta.setModal(true);
                             gui_puntoDeVenta.setLocationRelativeTo(this);
                             gui_puntoDeVenta.setVisible(true);

@@ -47,6 +47,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     private static final Logger log = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());
     private final RenglonDePedidoService renglonDePedidoService = new RenglonDePedidoService();
     private Pedido pedido;
+    private boolean modificarPedido;
 
     public GUI_PuntoDeVenta() {
         this.initComponents();
@@ -151,6 +152,14 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     public Date getFechaVencimiento() {
         return this.dc_fechaVencimiento.getDate();
+    }
+
+    public void paraMofificarPedido(boolean modificarPedido) {
+        this.modificarPedido = modificarPedido;
+    }
+
+    public boolean getModificarPedido() {
+        return this.modificarPedido;
     }
 
     private void prepararComponentes() {
@@ -469,13 +478,10 @@ public class GUI_PuntoDeVenta extends JDialog {
                 cmb_TipoComprobante.removeAllItems();
                 cmb_TipoComprobante.addItem("Pedido");
             } else {
-                if (this.pedido.getEstado() == EstadoPedido.INICIADO) {
+                cmb_TipoComprobante.removeItem("Pedido");
+                if (this.getModificarPedido() == true) {
                     cmb_TipoComprobante.removeAllItems();
                     cmb_TipoComprobante.addItem("Pedido");
-                } else {
-                    if (this.pedido.getEstado() == EstadoPedido.ENPROCESO) {
-                        cmb_TipoComprobante.removeItem("Pedido");
-                    }
                 }
             }
         }
@@ -1270,7 +1276,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                 btn_NuevoCliente.setEnabled(false);
                 btn_BuscarCliente.setEnabled(false);
                 this.calcularResultados();
-                this.txta_Observaciones.setText("");
+                this.txta_Observaciones.setText(this.pedido.getObservaciones());
             }
 
         } catch (PersistenceException ex) {

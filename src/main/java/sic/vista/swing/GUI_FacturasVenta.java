@@ -28,7 +28,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private final EmpresaService empresaService = new EmpresaService();
     private final ClienteService clienteService = new ClienteService();
     private final UsuarioService usuarioService = new UsuarioService();
-    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
     private final PedidoService pedidoService = new PedidoService();
     private static final Logger log = Logger.getLogger(GUI_FacturasVenta.class.getPackage().getName());
 
@@ -46,7 +45,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }
 
     public void actualizarEstadoPedido(Pedido pedido) {
-        if (pedido.getFacturas().isEmpty()) {
+        if (pedidoService.getFacturasDelPedido(pedido.getNroPedido()).isEmpty()) {
             pedido.setEstado(EstadoPedido.INICIADO);
         } else {
             pedido.setEstado(EstadoPedido.ENPROCESO);
@@ -842,7 +841,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
-                    Pedido pedidoDeFactura = pedidoService.getPedidoPorNumeroConFacturas(facturas.get(indexFilaSeleccionada).getPedido().getNroPedido());
+                    Pedido pedidoDeFactura = pedidoService.getPedidoPorNumero(facturas.get(indexFilaSeleccionada).getPedido().getNroPedido(),empresaService.getEmpresaActiva().getEmpresa().getId_Empresa() );
                     facturaService.eliminar(facturas.get(indexFilaSeleccionada));
                     this.actualizarEstadoPedido(pedidoDeFactura);
                     this.buscar(this.getCriteriaDeComponentes());
