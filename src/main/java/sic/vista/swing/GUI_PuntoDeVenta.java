@@ -154,11 +154,11 @@ public class GUI_PuntoDeVenta extends JDialog {
         return this.dc_fechaVencimiento.getDate();
     }
 
-    public void paraMofificarPedido(boolean modificarPedido) {
+    public void setModificarPedido(boolean modificarPedido) {
         this.modificarPedido = modificarPedido;
     }
 
-    public boolean getModificarPedido() {
+    public boolean modificandoPedido() {
         return this.modificarPedido;
     }
 
@@ -479,7 +479,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                 cmb_TipoComprobante.addItem("Pedido");
             } else {
                 cmb_TipoComprobante.removeItem("Pedido");
-                if (this.getModificarPedido() == true) {
+                if (this.modificandoPedido() == true) {
                     cmb_TipoComprobante.removeAllItems();
                     cmb_TipoComprobante.addItem("Pedido");
                 }
@@ -1276,7 +1276,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                 btn_NuevoCliente.setEnabled(false);
                 btn_BuscarCliente.setEnabled(false);
                 this.calcularResultados();
-                this.txta_Observaciones.setText(this.pedido.getObservaciones());
+                this.txta_Observaciones.setText("");
             }
 
         } catch (PersistenceException ex) {

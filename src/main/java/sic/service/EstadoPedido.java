@@ -12,9 +12,9 @@ public enum EstadoPedido {
     /**
      * Para el caso en que el pedido fue facturado parcialmente.
      */
-    ENPROCESO,
+    ACTIVO,
     /**
-     * Para el caso en que el pedido fue facturado en su totalidad.
+     * Para el caso en que el pedido fue facturado totalmente.
      */
     CERRADO;
 }

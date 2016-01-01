@@ -69,7 +69,7 @@ public class GUI_CerrarVenta extends JDialog {
         if (renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(gui_puntoDeVenta.getPedido(), "Factura A").isEmpty()) {
             pedido.setEstado(EstadoPedido.CERRADO);
         } else {
-            pedido.setEstado(EstadoPedido.ENPROCESO);
+            pedido.setEstado(EstadoPedido.ACTIVO);
         }
         pedidoService.actualizar(pedido);
     }

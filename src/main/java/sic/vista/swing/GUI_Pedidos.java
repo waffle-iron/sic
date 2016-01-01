@@ -159,7 +159,7 @@ public class GUI_Pedidos extends JInternalFrame {
             modeloTablaPedidos.addRow(fila);
         }
         tbl_Pedidos.setModel(modeloTablaPedidos);
-        tbl_Pedidos.setDefaultRenderer(EstadoPedido.class, new MiRenderParaColores());
+        tbl_Pedidos.setDefaultRenderer(EstadoPedido.class, new ColoresEstadosPedidoRenderer());
         lbl_CantRegistrosEncontrados.setText(pedidos.size() + " pedidos encontrados.");
     }
 
@@ -252,10 +252,11 @@ public class GUI_Pedidos extends JInternalFrame {
         //Tamanios de columnas
         tbl_Pedidos.getColumnModel().getColumn(0).setPreferredWidth(25);
         tbl_Pedidos.getColumnModel().getColumn(1).setPreferredWidth(25);
-        tbl_Pedidos.getColumnModel().getColumn(2).setPreferredWidth(35);
+        tbl_Pedidos.getColumnModel().getColumn(2).setPreferredWidth(25);
         tbl_Pedidos.getColumnModel().getColumn(3).setPreferredWidth(150);
-        tbl_Pedidos.getColumnModel().getColumn(4).setPreferredWidth(25);
+        tbl_Pedidos.getColumnModel().getColumn(4).setPreferredWidth(100);
         tbl_Pedidos.getColumnModel().getColumn(5).setPreferredWidth(25);
+        tbl_Pedidos.getColumnModel().getColumn(6).setPreferredWidth(25);
     }
 
     private void cargarComboBoxClientes() {
@@ -729,8 +730,8 @@ public class GUI_Pedidos extends JInternalFrame {
                 long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
                 Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
                 if (pedido.getEstado() == EstadoPedido.CERRADO) {
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Aviso",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 } else {
                     if (this.existeClienteDisponible()) {
                         GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
@@ -798,17 +799,17 @@ public class GUI_Pedidos extends JInternalFrame {
                 long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
                 Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
                 if (pedido.getEstado() == EstadoPedido.CERRADO) {
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Aviso",
-                            JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 } else {
-                    if (pedido.getEstado() == EstadoPedido.ENPROCESO) {
-                        JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_procesado"), "Aviso",
-                                JOptionPane.INFORMATION_MESSAGE);
+                    if (pedido.getEstado() == EstadoPedido.ACTIVO) {
+                        JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_procesado"), "Error",
+                                JOptionPane.ERROR_MESSAGE);
                     } else {
                         if (this.existeClienteDisponible()) {
                             GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
                             gui_puntoDeVenta.setPedido(pedido);
-                            gui_puntoDeVenta.paraMofificarPedido(true);
+                            gui_puntoDeVenta.setModificarPedido(true);
                             gui_puntoDeVenta.setModal(true);
                             gui_puntoDeVenta.setLocationRelativeTo(this);
                             gui_puntoDeVenta.setVisible(true);
