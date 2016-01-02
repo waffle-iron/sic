@@ -8,7 +8,7 @@ public enum EstadoPedido {
     /**
      * Para el caso en que el pedido no haya pasado por ningún proceso de facturación
      */
-    INICIADO,
+    ABIERTO,
     /**
      * Para el caso en que el pedido fue facturado parcialmente.
      */

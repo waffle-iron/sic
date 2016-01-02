@@ -17,7 +17,7 @@ public class ColoresEstadosPedidoRenderer extends DefaultTableCellRenderer {
         JLabel cell = (JLabel) super.getTableCellRendererComponent(tabla, valor, isSelected, hasFocus, row, column);
         if (valor instanceof EstadoPedido) {
             EstadoPedido estado = (EstadoPedido) valor;
-            if (estado == EstadoPedido.INICIADO) {
+            if (estado == EstadoPedido.ABIERTO) {
                 cell.setBackground(Color.GREEN);
             }
             if (estado == EstadoPedido.ACTIVO) {

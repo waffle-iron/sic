@@ -524,7 +524,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.pedido.setUsuario(usuarioService.getUsuarioActivo().getUsuario());
         this.pedido.setNroPedido(pedidoService.calcularNumeroPedido());
         this.pedido.setTotalEstimado(facturaService.calcularSubTotal(renglones));
-        this.pedido.setEstado(EstadoPedido.INICIADO);
+        this.pedido.setEstado(EstadoPedido.ABIERTO);
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
         for (RenglonFactura renglonFactura : renglones) {
             renglonesPedido.add(renglonDePedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura, this.pedido));
@@ -1392,7 +1392,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                if (this.pedido.getEstado() == EstadoPedido.INICIADO || this.pedido.getEstado() == null) {
+                if (this.pedido.getEstado() == EstadoPedido.ABIERTO || this.pedido.getEstado() == null) {
                     this.actualizarPedido(this.pedido);
                     JOptionPane.showMessageDialog(this, "El pedido se actualizó correctamente.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                     this.dispose();

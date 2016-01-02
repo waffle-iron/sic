@@ -46,7 +46,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
     public void actualizarEstadoPedido(Pedido pedido) {
         if (pedidoService.getFacturasDelPedido(pedido.getNroPedido()).isEmpty()) {
-            pedido.setEstado(EstadoPedido.INICIADO);
+            pedido.setEstado(EstadoPedido.ABIERTO);
         } else {
             pedido.setEstado(EstadoPedido.ACTIVO);
         }
