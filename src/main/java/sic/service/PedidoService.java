@@ -24,6 +24,7 @@ public class PedidoService {
 
     private final PedidoRepository pedidoRepository = new PedidoRepository();
     private final EmpresaService empresaService = new EmpresaService();
+    private final FacturaService facturaService = new FacturaService();
 
     private void validarPedido(Pedido pedido) {
         //Entrada de Datos
@@ -84,7 +85,7 @@ public class PedidoService {
     }
 
     public List<Factura> getFacturasDelPedido(long nroPedido) {
-        return pedidoRepository.getFacturasDelPedido(nroPedido);
+        return pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido).getFacturas();
     }
 
     public void guardar(Pedido pedido) {
@@ -160,7 +161,7 @@ public class PedidoService {
         HashMap<Long, RenglonFactura> listaRenglonesUnificados = new HashMap<>();
         if (!facturas.isEmpty()) {
             for (Factura factura : facturas) {
-                renglonesDeFacturas.addAll(factura.getRenglones());
+                renglonesDeFacturas.addAll(facturaService.getRenglonesDeLaFactura(factura));
             }
             for (RenglonFactura renglon : renglonesDeFacturas) {
                 if (listaRenglonesUnificados.containsKey(renglon.getId_ProductoItem())) {

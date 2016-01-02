@@ -66,15 +66,6 @@ public class PedidoRepository {
         }
     }
 
-    public List<Factura> getFacturasDelPedido(long nroPedido) {
-        EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Factura> typedQuery = em.createNamedQuery("Pedido.buscarPedidoConFacturas", Factura.class);
-        typedQuery.setParameter("nroPedido", nroPedido);
-        List<Factura> facturas = typedQuery.getResultList();
-        em.close();
-        return facturas;
-    }
-
     public void guardar(Pedido pedido) {
         EntityManager em = PersistenceUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();

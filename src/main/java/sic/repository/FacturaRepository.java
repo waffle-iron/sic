@@ -96,7 +96,7 @@ public class FacturaRepository {
         }
         //Pedido
         if (criteria.isBuscarPorPedido() == true) {
-            query += " AND f.pedido = " + criteria.getNroPedido();
+            query += " AND f.pedido.nroPedido = " + criteria.getNroPedido();
         }
         //Inpagas
         if (criteria.isBuscaSoloInpagas() == true) {
