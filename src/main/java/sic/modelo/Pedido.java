@@ -26,8 +26,6 @@ import sic.service.EstadoPedido;
 @NamedQueries({
     @NamedQuery(name = "Pedido.buscarMayorNroPedido",
             query = "SELECT MAX(p.nroPedido) FROM Pedido p WHERE p.empresa.id_Empresa = :idEmpresa"),
-    @NamedQuery(name = "Pedido.buscarPedidoConFacturas",
-            query = "SELECT f FROM Factura f LEFT JOIN FETCH f.renglones WHERE f.eliminada = false AND f.pedido.nroPedido = :nroPedido"),
     @NamedQuery(name = "Pedido.buscarRenglonesDelPedido",
             query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones WHERE p.nroPedido = :nroPedido"),
     @NamedQuery(name = "Pedido.buscarPorId",
