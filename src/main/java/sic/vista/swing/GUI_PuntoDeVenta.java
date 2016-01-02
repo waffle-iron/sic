@@ -1276,7 +1276,9 @@ public class GUI_PuntoDeVenta extends JDialog {
                 btn_NuevoCliente.setEnabled(false);
                 btn_BuscarCliente.setEnabled(false);
                 this.calcularResultados();
-                this.txta_Observaciones.setText("");
+                if (cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")) {
+                    txta_Observaciones.setText(this.pedido.getObservaciones());
+                }
             }
 
         } catch (PersistenceException ex) {
@@ -1392,7 +1394,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                if (this.pedido.getEstado() == EstadoPedido.ABIERTO || this.pedido.getEstado() == null) {
+                if ((this.pedido.getEstado() == EstadoPedido.ABIERTO || this.pedido.getEstado() == null) && this.modificarPedido == true) {
                     this.actualizarPedido(this.pedido);
                     JOptionPane.showMessageDialog(this, "El pedido se actualizó correctamente.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                     this.dispose();
