@@ -27,11 +27,10 @@ import sic.modelo.Usuario;
 import sic.service.ClienteService;
 import sic.service.EmpresaService;
 import sic.service.PedidoService;
-import sic.service.RenglonDeFacturaService;
 import sic.service.ServiceException;
 import sic.service.UsuarioService;
+import sic.service.EstadoPedido;
 import sic.util.RenderTabla;
-import sic.util.Utilidades;
 
 public class GUI_Pedidos extends JInternalFrame {
 
@@ -39,7 +38,6 @@ public class GUI_Pedidos extends JInternalFrame {
     private final PedidoService pedidoService = new PedidoService();
     private final ClienteService clienteService = new ClienteService();
     private final UsuarioService usuarioSercice = new UsuarioService();
-    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
     private List<Pedido> pedidos;
     private ModeloTabla modeloTablaPedidos;
     private ModeloTabla modeloTablaRenglones;
@@ -65,11 +63,11 @@ public class GUI_Pedidos extends JInternalFrame {
             @Override
             protected List<Pedido> doInBackground() throws Exception {
                 try {
-                    BusquedaPedidoCriteria criteria = new BusquedaPedidoCriteria();                    
+                    BusquedaPedidoCriteria criteria = new BusquedaPedidoCriteria();
                     criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
                     criteria.setFechaDesde(dc_FechaDesde.getDate());
                     criteria.setFechaHasta(dc_FechaHasta.getDate());
-                    criteria.setNroPedido(Long.valueOf(txt_NumeroPedido.getText()));                    
+                    criteria.setNroPedido(Long.valueOf(txt_NumeroPedido.getText()));
                     criteria.setBuscaCliente(chk_Cliente.isSelected());
                     if (chk_Cliente.isSelected()) {
                         criteria.setCliente((Cliente) cmb_Cliente.getSelectedItem());
@@ -129,7 +127,7 @@ public class GUI_Pedidos extends JInternalFrame {
             gui_facturaVenta.setLocation(getDesktopPane().getWidth() / 2 - gui_facturaVenta.getWidth() / 2,
                     getDesktopPane().getHeight() / 2 - gui_facturaVenta.getHeight() / 2);
             getDesktopPane().add(gui_facturaVenta);
-            long numeroDePedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1);
+            long numeroDePedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
             gui_facturaVenta.setVisible(true);
             BusquedaFacturaVentaCriteria criteria = new BusquedaFacturaVentaCriteria();
             criteria.setBuscarPorPedido(true);
@@ -150,16 +148,18 @@ public class GUI_Pedidos extends JInternalFrame {
     private void cargarResultadosAlTable() {
         this.limpiarJTables();
         for (Pedido pedido : pedidos) {
-            Object[] fila = new Object[6];
-            fila[0] = pedido.getFecha();
-            fila[1] = pedido.getNroPedido();
-            fila[2] = pedido.getCliente().getRazonSocial();
-            fila[3] = pedido.getUsuario().getNombre();
-            fila[4] = pedido.getTotalEstimado();
-            fila[5] = pedido.getTotalActual();
+            Object[] fila = new Object[7];
+            fila[0] = pedido.getEstado();
+            fila[1] = pedido.getFecha();
+            fila[2] = pedido.getNroPedido();
+            fila[3] = pedido.getCliente().getRazonSocial();
+            fila[4] = pedido.getUsuario().getNombre();
+            fila[5] = pedido.getTotalEstimado();
+            fila[6] = pedido.getTotalActual();
             modeloTablaPedidos.addRow(fila);
         }
         tbl_Pedidos.setModel(modeloTablaPedidos);
+        tbl_Pedidos.setDefaultRenderer(EstadoPedido.class, new ColoresEstadosPedidoRenderer());
         lbl_CantRegistrosEncontrados.setText(pedidos.size() + " pedidos encontrados.");
     }
 
@@ -222,24 +222,26 @@ public class GUI_Pedidos extends JInternalFrame {
         tbl_Pedidos.setAutoCreateRowSorter(true);
 
         //nombres de columnas
-        String[] encabezados = new String[6];
-        encabezados[0] = "Fecha Pedido";
-        encabezados[1] = "Nº Pedido";
-        encabezados[2] = "Cliente";
-        encabezados[3] = "Usuario (Vendedor)";
-        encabezados[4] = "Total Estimado";
-        encabezados[5] = "Total Actual";
+        String[] encabezados = new String[7];
+        encabezados[0] = "Estado";
+        encabezados[1] = "Fecha Pedido";
+        encabezados[2] = "Nº Pedido";
+        encabezados[3] = "Cliente";
+        encabezados[4] = "Usuario (Vendedor)";
+        encabezados[5] = "Total Estimado";
+        encabezados[6] = "Total Actual";
         modeloTablaPedidos.setColumnIdentifiers(encabezados);
         tbl_Pedidos.setModel(modeloTablaPedidos);
 
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaPedidos.getColumnCount()];
-        tipos[0] = Date.class;
-        tipos[1] = Long.class;
-        tipos[2] = String.class;
+        tipos[0] = EstadoPedido.class;
+        tipos[1] = Date.class;
+        tipos[2] = Long.class;
         tipos[3] = String.class;
-        tipos[4] = Double.class;
+        tipos[4] = String.class;
         tipos[5] = Double.class;
+        tipos[6] = Double.class;
         modeloTablaPedidos.setClaseColumnas(tipos);
         tbl_Pedidos.getTableHeader().setReorderingAllowed(false);
         tbl_Pedidos.getTableHeader().setResizingAllowed(true);
@@ -250,10 +252,11 @@ public class GUI_Pedidos extends JInternalFrame {
         //Tamanios de columnas
         tbl_Pedidos.getColumnModel().getColumn(0).setPreferredWidth(25);
         tbl_Pedidos.getColumnModel().getColumn(1).setPreferredWidth(25);
-        tbl_Pedidos.getColumnModel().getColumn(2).setPreferredWidth(150);
+        tbl_Pedidos.getColumnModel().getColumn(2).setPreferredWidth(25);
         tbl_Pedidos.getColumnModel().getColumn(3).setPreferredWidth(150);
-        tbl_Pedidos.getColumnModel().getColumn(4).setPreferredWidth(25);
+        tbl_Pedidos.getColumnModel().getColumn(4).setPreferredWidth(100);
         tbl_Pedidos.getColumnModel().getColumn(5).setPreferredWidth(25);
+        tbl_Pedidos.getColumnModel().getColumn(6).setPreferredWidth(25);
     }
 
     private void cargarComboBoxClientes() {
@@ -290,7 +293,7 @@ public class GUI_Pedidos extends JInternalFrame {
         }
         this.limpiarTablaRenglones();
         this.setColumnasRenglonesPedido();
-        long nroPedido = (long) tbl_Pedidos.getValueAt(row, 1);
+        long nroPedido = (long) tbl_Pedidos.getValueAt(row, 2);
         Pedido paraListarRenglones = pedidoService.getPedidoPorNumeroConRenglones(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
         for (RenglonPedido renglon : paraListarRenglones.getRenglones()) {
             Object[] fila = new Object[6];
@@ -335,6 +338,7 @@ public class GUI_Pedidos extends JInternalFrame {
         btn_Facturar = new javax.swing.JButton();
         pb_Filtro = new javax.swing.JProgressBar();
         btn_detallePedido = new javax.swing.JButton();
+        bnt_modificaPedido = new javax.swing.JButton();
 
         setClosable(true);
         setMaximizable(true);
@@ -567,6 +571,15 @@ public class GUI_Pedidos extends JInternalFrame {
             }
         });
 
+        bnt_modificaPedido.setForeground(new java.awt.Color(0, 0, 225));
+        bnt_modificaPedido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/modificarPedido16x16.png"))); // NOI18N
+        bnt_modificaPedido.setText("Modificar");
+        bnt_modificaPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bnt_modificaPedidoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel_resultadosLayout = new javax.swing.GroupLayout(panel_resultados);
         panel_resultados.setLayout(panel_resultadosLayout);
         panel_resultadosLayout.setHorizontalGroup(
@@ -588,13 +601,15 @@ public class GUI_Pedidos extends JInternalFrame {
                         .addGap(0, 0, 0)
                         .addComponent(btn_Facturar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
+                        .addComponent(bnt_modificaPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
                         .addComponent(btn_detallePedido)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 73, Short.MAX_VALUE)
                         .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
-        panel_resultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Facturar, btn_NuevoPedido, btn_VerFacturas, btn_detallePedido});
+        panel_resultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {bnt_modificaPedido, btn_Facturar, btn_NuevoPedido, btn_VerFacturas, btn_detallePedido});
 
         panel_resultadosLayout.setVerticalGroup(
             panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -603,19 +618,21 @@ public class GUI_Pedidos extends JInternalFrame {
                     .addComponent(cmb_cantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_cantidadMostrar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Pedidos, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                .addComponent(sp_Pedidos, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_RenglonesDelPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+                .addComponent(sp_RenglonesDelPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pb_Filtro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_detallePedido, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btn_Facturar, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_Facturar)
+                        .addComponent(btn_detallePedido)
+                        .addComponent(bnt_modificaPedido))
                     .addComponent(btn_VerFacturas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_NuevoPedido, javax.swing.GroupLayout.Alignment.TRAILING)))
         );
 
-        panel_resultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Facturar, btn_NuevoPedido, btn_VerFacturas, btn_detallePedido});
+        panel_resultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {bnt_modificaPedido, btn_Facturar, btn_NuevoPedido, btn_VerFacturas, btn_detallePedido});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -710,11 +727,11 @@ public class GUI_Pedidos extends JInternalFrame {
     private void btn_FacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FacturarActionPerformed
         try {
             if (tbl_Pedidos.getSelectedRow() != -1) {
-                long nroPedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1);
+                long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
                 Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-                if (renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(pedido, "Pedido").isEmpty()) {
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Aviso",
-                            JOptionPane.INFORMATION_MESSAGE);
+                if (pedido.getEstado() == EstadoPedido.CERRADO) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
+                            JOptionPane.ERROR_MESSAGE);
                 } else {
                     if (this.existeClienteDisponible()) {
                         GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
@@ -770,13 +787,48 @@ public class GUI_Pedidos extends JInternalFrame {
 
     private void btn_detallePedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_detallePedidoActionPerformed
         if (tbl_Pedidos.getSelectedRow() != -1) {
-            long nroPedido = (long) tbl_Pedidos.getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Pedidos), 1);
+            long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
             Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
             this.lanzarReportePedido(pedido);
         }
     }//GEN-LAST:event_btn_detallePedidoActionPerformed
 
+    private void bnt_modificaPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnt_modificaPedidoActionPerformed
+        try {
+            if (tbl_Pedidos.getSelectedRow() != -1) {
+                long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
+                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+                if (pedido.getEstado() == EstadoPedido.CERRADO) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                } else {
+                    if (pedido.getEstado() == EstadoPedido.ACTIVO) {
+                        JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_procesado"), "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        if (this.existeClienteDisponible()) {
+                            GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
+                            gui_puntoDeVenta.setPedido(pedido);
+                            gui_puntoDeVenta.setModificarPedido(true);
+                            gui_puntoDeVenta.setModal(true);
+                            gui_puntoDeVenta.setLocationRelativeTo(this);
+                            gui_puntoDeVenta.setVisible(true);
+                        } else {
+                            String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
+                            JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            }
+
+        } catch (PersistenceException ex) {
+            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_bnt_modificaPedidoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bnt_modificaPedido;
     private javax.swing.JButton btn_Buscar;
     private javax.swing.JButton btn_Facturar;
     private javax.swing.JButton btn_NuevoPedido;

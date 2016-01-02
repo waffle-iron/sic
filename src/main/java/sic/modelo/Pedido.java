@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -17,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import sic.service.EstadoPedido;
 
 @Entity
 @Table(name = "pedido")
@@ -24,7 +27,7 @@ import lombok.Data;
     @NamedQuery(name = "Pedido.buscarMayorNroPedido",
             query = "SELECT MAX(p.nroPedido) FROM Pedido p WHERE p.empresa.id_Empresa = :idEmpresa"),
     @NamedQuery(name = "Pedido.buscarPedidoConFacturas",
-            query = "SELECT f FROM Factura f WHERE f.eliminada = false AND f.pedido.nroPedido = :nroPedido"),
+            query = "SELECT f FROM Factura f LEFT JOIN FETCH f.renglones WHERE f.eliminada = false AND f.pedido.nroPedido = :nroPedido"),
     @NamedQuery(name = "Pedido.buscarRenglonesDelPedido",
             query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones WHERE p.nroPedido = :nroPedido"),
     @NamedQuery(name = "Pedido.buscarPorId",
@@ -72,11 +75,14 @@ public class Pedido implements Serializable {
     @OneToMany(mappedBy = "pedido")
     private List<Factura> facturas;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "pedido")
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "pedido", orphanRemoval = true)
     private List<RenglonPedido> renglones;
 
     private double totalEstimado;
 
     private double totalActual;
+    
+    @Enumerated(EnumType.STRING)
+    private EstadoPedido estado;
 
 }

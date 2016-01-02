@@ -1,5 +1,7 @@
 package sic.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import sic.modelo.Pedido;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
@@ -21,4 +23,11 @@ public class RenglonDePedidoService {
         return nuevoRenglon;
     }
 
+    public List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(List<RenglonFactura> renglonesDeFactura, Pedido pedido) {
+        List<RenglonPedido> renglonesPedido = new ArrayList();
+        for (RenglonFactura renglonFactura : renglonesDeFactura) {
+            renglonesPedido.add(this.convertirRenglonFacturaARenglonPedido(renglonFactura, pedido));
+        }
+        return renglonesPedido;
+    }
 }

@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import sic.modelo.Factura;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
+import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.service.*;
@@ -27,6 +28,7 @@ public class GUI_CerrarVenta extends JDialog {
     private final TransportistaService transportistaService = new TransportistaService();
     private final FacturaService facturaService = new FacturaService();
     private final UsuarioService usuarioService = new UsuarioService();
+    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private final PedidoService pedidoService = new PedidoService();
     private static final Logger log = Logger.getLogger(GUI_CerrarVenta.class.getPackage().getName());
@@ -61,6 +63,15 @@ public class GUI_CerrarVenta extends JDialog {
 
     public boolean isExito() {
         return exito;
+    }
+
+    public void actualizarEstadoPedido(Pedido pedido) {
+        if (renglonDeFacturaService.convertirRenglonesPedidoARenglonesFactura(gui_puntoDeVenta.getPedido(), "Factura A").isEmpty()) {
+            pedido.setEstado(EstadoPedido.CERRADO);
+        } else {
+            pedido.setEstado(EstadoPedido.ACTIVO);
+        }
+        pedidoService.actualizar(pedido);
     }
 
     private void setIcon() {
@@ -428,8 +439,13 @@ public class GUI_CerrarVenta extends JDialog {
                 FacturaVenta factura = this.construirFactura();
                 if (gui_puntoDeVenta.getPedido() != null) {
                     factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido(), gui_puntoDeVenta.getEmpresa().getId_Empresa()));
+                    this.guardarFactura(factura);
+                    Pedido pedido = gui_puntoDeVenta.getPedido();
+                    this.actualizarEstadoPedido(pedido);
+                } else {
+                    this.guardarFactura(factura);
                 }
-                this.lanzarReporteFactura(this.guardarFactura(factura));
+                this.lanzarReporteFactura(facturaService.getFacturaVentaPorTipoSerieNum(facturaService.getTipoFactura(factura), factura.getNumSerie(), factura.getNumFactura()));
                 exito = true;
             } else {
                 List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), indicesParaDividir);
@@ -442,6 +458,7 @@ public class GUI_CerrarVenta extends JDialog {
                         exito = true;
                     }
                 }
+                this.actualizarEstadoPedido(gui_puntoDeVenta.getPedido());
             }
             if (gui_puntoDeVenta.getPedido() != null) {
                 gui_puntoDeVenta.dispose();
@@ -503,15 +520,12 @@ public class GUI_CerrarVenta extends JDialog {
         gui_DetalleTransportista.setModal(true);
         gui_DetalleTransportista.setLocationRelativeTo(this);
         gui_DetalleTransportista.setVisible(true);
-
         try {
             this.cargarTransportistas();
-
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
-
     }//GEN-LAST:event_btn_nuevoTransporteActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

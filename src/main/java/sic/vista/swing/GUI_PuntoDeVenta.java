@@ -47,6 +47,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     private static final Logger log = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());
     private final RenglonDePedidoService renglonDePedidoService = new RenglonDePedidoService();
     private Pedido pedido;
+    private boolean modificarPedido;
 
     public GUI_PuntoDeVenta() {
         this.initComponents();
@@ -90,7 +91,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.cargarCliente(pedido.getCliente());
         this.cargarTiposDeComprobantesDisponibles();
         this.tipoDeFactura = cmb_TipoComprobante.getSelectedItem().toString();
-        this.renglones = renglonDeFacturaService.getRenglonesDePedidoConvertidosARenglonesFactura(pedido, this.tipoDeFactura);
+        this.renglones = renglonDeFacturaService.convertirRenglonesPedidoARenglonesFactura(pedido, this.tipoDeFactura);
         EstadoRenglon[] marcaDeRenglonesDelPedido = new EstadoRenglon[renglones.size()];
         for (int i = 0; i < renglones.size(); i++) {
             marcaDeRenglonesDelPedido[i] = EstadoRenglon.DESMARCADO;
@@ -151,6 +152,14 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     public Date getFechaVencimiento() {
         return this.dc_fechaVencimiento.getDate();
+    }
+
+    public void setModificarPedido(boolean modificarPedido) {
+        this.modificarPedido = modificarPedido;
+    }
+
+    public boolean modificandoPedido() {
+        return this.modificarPedido;
     }
 
     private void prepararComponentes() {
@@ -404,7 +413,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             this.calcularResultados();
             txt_CodigoProducto.setText("");
         } else {
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_producto_sin_stock_suficiente"), "Error", JOptionPane.ERROR_MESSAGE);            
+            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_producto_sin_stock_suficiente"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -470,6 +479,10 @@ public class GUI_PuntoDeVenta extends JDialog {
                 cmb_TipoComprobante.addItem("Pedido");
             } else {
                 cmb_TipoComprobante.removeItem("Pedido");
+                if (this.modificandoPedido() == true) {
+                    cmb_TipoComprobante.removeAllItems();
+                    cmb_TipoComprobante.addItem("Pedido");
+                }
             }
         }
     }
@@ -511,6 +524,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.pedido.setUsuario(usuarioService.getUsuarioActivo().getUsuario());
         this.pedido.setNroPedido(pedidoService.calcularNumeroPedido());
         this.pedido.setTotalEstimado(facturaService.calcularSubTotal(renglones));
+        this.pedido.setEstado(EstadoPedido.INICIADO);
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
         for (RenglonFactura renglonFactura : renglones) {
             renglonesPedido.add(renglonDePedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura, this.pedido));
@@ -539,6 +553,13 @@ public class GUI_PuntoDeVenta extends JDialog {
             log.error(msjError + " - " + jre.getMessage());
             JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void actualizarPedido(Pedido pedido) {
+        pedido = pedidoService.getPedidoPorNumeroConRenglones(pedido.getNroPedido(), this.empresa.getId_Empresa());
+        pedido.getRenglones().clear();
+        pedido.getRenglones().addAll(renglonDePedidoService.convertirRenglonesFacturaARenglonesPedido(this.renglones, pedido));
+        pedidoService.actualizar(pedido);
     }
 
     /**
@@ -1338,15 +1359,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     }//GEN-LAST:event_txt_Recargo_porcentajeActionPerformed
 
     private void btn_ContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ContinuarActionPerformed
-        if (cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")) {
-            this.construirPedido();
-            try {
-                this.lanzarReportePedido(this.guardarPedido(this.pedido));
-                this.limpiarYRecargarComponentes();
-            } catch (ServiceException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
+        if (!cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")) {
             List<RenglonFactura> productosFaltantes = new ArrayList();
             for (RenglonFactura renglon : renglones) {
                 if (!productoService.existeStockDisponible(renglon.getId_ProductoItem(), renglon.getCantidad())) {
@@ -1364,6 +1377,26 @@ public class GUI_PuntoDeVenta extends JDialog {
                 gui_MensajeProductosFaltantes.setModal(true);
                 gui_MensajeProductosFaltantes.setLocationRelativeTo(this);
                 gui_MensajeProductosFaltantes.setVisible(true);
+            }
+        } else {
+            //Es null cuando, se genera un pedido desde el punto de venta entrando por el menu sistemas.
+            //El Id es 0 cuando, se genera un pedido desde el punto de venta entrando por el botón nuevo de administrar pedidos.
+            if (this.pedido == null || this.pedido.getId_Pedido() == 0) {
+                this.construirPedido();
+            }
+            if (pedidoService.getPedidoPorNumero(this.pedido.getNroPedido(), this.empresa.getId_Empresa()) == null) {
+                try {
+                    this.lanzarReportePedido(this.guardarPedido(this.pedido));
+                    this.limpiarYRecargarComponentes();
+                } catch (ServiceException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } else {
+                if (this.pedido.getEstado() == EstadoPedido.INICIADO || this.pedido.getEstado() == null) {
+                    this.actualizarPedido(this.pedido);
+                    JOptionPane.showMessageDialog(this, "El pedido se actualizó correctamente.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    this.dispose();
+                }
             }
         }
     }//GEN-LAST:event_btn_ContinuarActionPerformed

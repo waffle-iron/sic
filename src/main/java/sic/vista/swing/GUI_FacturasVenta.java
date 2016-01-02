@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.FacturaVenta;
+import sic.modelo.Pedido;
 import sic.modelo.Usuario;
 import sic.service.*;
 import sic.util.RenderTabla;
@@ -27,6 +28,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private final EmpresaService empresaService = new EmpresaService();
     private final ClienteService clienteService = new ClienteService();
     private final UsuarioService usuarioService = new UsuarioService();
+    private final PedidoService pedidoService = new PedidoService();
     private static final Logger log = Logger.getLogger(GUI_FacturasVenta.class.getPackage().getName());
 
     public GUI_FacturasVenta() {
@@ -40,6 +42,15 @@ public class GUI_FacturasVenta extends JInternalFrame {
         this.setEstadoDeComponentes(criteria);
         this.buscar(criteria);
         this.calcularResultados();
+    }
+
+    public void actualizarEstadoPedido(Pedido pedido) {
+        if (pedidoService.getFacturasDelPedido(pedido.getNroPedido()).isEmpty()) {
+            pedido.setEstado(EstadoPedido.INICIADO);
+        } else {
+            pedido.setEstado(EstadoPedido.ACTIVO);
+        }
+        pedidoService.actualizar(pedido);
     }
 
     private void setEstadoDeComponentes(BusquedaFacturaVentaCriteria criteria) {
@@ -107,7 +118,9 @@ public class GUI_FacturasVenta extends JInternalFrame {
             criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
             criteria.setCantRegistros(Integer.parseInt(cmb_cantidadAMostrar.getSelectedItem().toString()));
             criteria.setBuscarPorPedido(chk_NumeroPedido.isSelected());
-            criteria.setNroPedido(Long.parseLong(txt_NumeroPedido.getText()));
+            if (chk_NumeroPedido.isSelected()) {
+                criteria.setNroPedido(Long.parseLong(txt_NumeroPedido.getText()));
+            }
 
         } catch (ParseException | ServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -209,7 +222,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                         "Mensajes").getString("mensaje_busqueda_sin_resultados"),
                         "Aviso", JOptionPane.INFORMATION_MESSAGE);
             }
-            
+
         } catch (ServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
@@ -828,7 +841,9 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
+                    Pedido pedidoDeFactura = pedidoService.getPedidoPorNumero(facturas.get(indexFilaSeleccionada).getPedido().getNroPedido(),empresaService.getEmpresaActiva().getEmpresa().getId_Empresa() );
                     facturaService.eliminar(facturas.get(indexFilaSeleccionada));
+                    this.actualizarEstadoPedido(pedidoDeFactura);
                     this.buscar(this.getCriteriaDeComponentes());
                     this.calcularResultados();
 
