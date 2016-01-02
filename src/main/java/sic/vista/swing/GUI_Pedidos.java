@@ -294,7 +294,7 @@ public class GUI_Pedidos extends JInternalFrame {
         this.limpiarTablaRenglones();
         this.setColumnasRenglonesPedido();
         long nroPedido = (long) tbl_Pedidos.getValueAt(row, 2);
-        Pedido paraListarRenglones = pedidoService.getPedidoPorNumeroConRenglones(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        Pedido paraListarRenglones = pedidoService.getPedidoPorNumeroConRenglonesActualizandoSubtotales(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
         for (RenglonPedido renglon : paraListarRenglones.getRenglones()) {
             Object[] fila = new Object[6];
             fila[0] = renglon.getProducto().getCodigo();
@@ -792,7 +792,7 @@ public class GUI_Pedidos extends JInternalFrame {
         if (tbl_Pedidos.getSelectedRow() != -1) {
             long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
             Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-            this.lanzarReportePedido(pedido);
+            this.lanzarReportePedido(pedidoService.calcularTotalActualDePedido(pedido));
         }
     }//GEN-LAST:event_btn_imprimirPedidoActionPerformed
 

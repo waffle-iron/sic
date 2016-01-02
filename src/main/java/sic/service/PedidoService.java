@@ -52,16 +52,31 @@ public class PedidoService {
     }
 
     private List<Pedido> calcularTotalActualDePedidos(List<Pedido> pedidos) {
-        double porcentajeDescuento = 0;
         for (Pedido pedido : pedidos) {
-            double totalActual = 0;
-            for (RenglonPedido renglonPedido : pedidoRepository.getRenglonesDelPedido(pedido.getNroPedido())) {
-                porcentajeDescuento = (1 - (renglonPedido.getDescuento_porcentaje() / 100));
-                totalActual += (renglonPedido.getProducto().getPrecioLista() * renglonPedido.getCantidad() * porcentajeDescuento);
-            }
-            pedido.setTotalActual(totalActual);
+            this.calcularTotalActualDePedido(pedido);
         }
         return pedidos;
+    }
+
+    private Pedido actualizarSubTotalRenglonesPedido(Pedido pedido) {
+        double porcentajeDescuento;
+        for (RenglonPedido renglonPedido : pedido.getRenglones()) {
+            porcentajeDescuento = (1 - (renglonPedido.getDescuento_porcentaje() / 100));
+            renglonPedido.setSubTotal(renglonPedido.getCantidad() * renglonPedido.getProducto().getPrecioLista() * porcentajeDescuento);
+        }
+        return pedido;
+    }
+
+    public Pedido calcularTotalActualDePedido(Pedido pedido) {
+        double porcentajeDescuento;
+        double totalActual = 0;
+        for (RenglonPedido renglonPedido : pedidoRepository.getRenglonesDelPedido(pedido.getNroPedido())) {
+            porcentajeDescuento = (1 - (renglonPedido.getDescuento_porcentaje() / 100));
+            renglonPedido.setSubTotal((renglonPedido.getProducto().getPrecioLista() * renglonPedido.getCantidad() * porcentajeDescuento));
+            totalActual += renglonPedido.getSubTotal();
+        }
+        pedido.setTotalActual(totalActual);
+        return pedido;
     }
 
     public long calcularNumeroPedido() {
@@ -133,6 +148,10 @@ public class PedidoService {
 
     public List<RenglonPedido> getRenglonesDelPedido(long nroPedido) {
         return pedidoRepository.getRenglonesDelPedido(nroPedido);
+    }
+
+    public Pedido getPedidoPorNumeroConRenglonesActualizandoSubtotales(long nroPedido, long idEmpresa) {
+        return this.actualizarSubTotalRenglonesPedido(this.getPedidoPorNumeroConRenglones(nroPedido, idEmpresa));
     }
 
     public HashMap<Long, RenglonFactura> getRenglonesDeFacturasUnificadosPorNroPedido(long nroPedido) {

@@ -559,6 +559,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         pedido = pedidoService.getPedidoPorNumeroConRenglones(pedido.getNroPedido(), this.empresa.getId_Empresa());
         pedido.getRenglones().clear();
         pedido.getRenglones().addAll(renglonDePedidoService.convertirRenglonesFacturaARenglonesPedido(this.renglones, pedido));
+        pedido.setTotalEstimado(facturaService.calcularSubTotal(this.renglones));
         pedidoService.actualizar(pedido);
     }
 
