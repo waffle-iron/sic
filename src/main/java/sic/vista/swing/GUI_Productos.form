@@ -82,8 +82,8 @@
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lbl_CantRegistrosEncontrados" max="32767" attributes="0"/>
+                          <EmptySpace pref="216" max="32767" attributes="0"/>
+                          <Component id="pg_progreso" min="-2" pref="100" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
@@ -113,10 +113,14 @@
                       <Component id="cmb_Proveedor" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="btn_Buscar" max="32767" attributes="0"/>
-                      <Component id="lbl_CantRegistrosEncontrados" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      </Group>
+                      <Component id="pg_progreso" max="32767" attributes="0"/>
                   </Group>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -194,10 +198,7 @@
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="lbl_CantRegistrosEncontrados">
-          <Properties>
-            <Property name="horizontalAlignment" type="int" value="4"/>
-          </Properties>
+        <Component class="javax.swing.JProgressBar" name="pg_progreso">
         </Component>
       </SubComponents>
     </Container>
@@ -222,8 +223,7 @@
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="lbl_CantidadMostrar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="cmb_CantidadMostrar" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="cmb_CantidadMostrar" min="-2" pref="81" max="-2" attributes="0"/>
               </Group>
               <Group type="102" attributes="0">
                   <Component id="btn_Nuevo" linkSize="1" min="-2" max="-2" attributes="0"/>
@@ -233,8 +233,7 @@
                   <Component id="btn_Eliminar" linkSize="1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                   <Component id="btn_ReporteListaPrecios" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="pg_progreso" min="-2" pref="77" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -248,14 +247,13 @@
                       <Component id="lbl_CantidadMostrar" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="sp_Resultados" pref="174" max="32767" attributes="0"/>
+                  <Component id="sp_Resultados" pref="165" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="btn_Eliminar" linkSize="2" alignment="2" max="32767" attributes="0"/>
                       <Component id="btn_Modificar" linkSize="2" alignment="2" max="32767" attributes="0"/>
                       <Component id="btn_Nuevo" linkSize="2" alignment="2" max="32767" attributes="0"/>
                       <Component id="btn_ReporteListaPrecios" linkSize="2" alignment="2" max="32767" attributes="0"/>
-                      <Component id="pg_progreso" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -356,10 +354,10 @@
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="4">
-                <StringItem index="0" value="500"/>
-                <StringItem index="1" value="1000"/>
-                <StringItem index="2" value="5000"/>
-                <StringItem index="3" value="Sin Limite"/>
+                <StringItem index="0" value="100"/>
+                <StringItem index="1" value="500"/>
+                <StringItem index="2" value="1000"/>
+                <StringItem index="3" value="5000"/>
               </StringArray>
             </Property>
           </Properties>
@@ -370,7 +368,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lbl_CantidadMostrar">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Cantidad a mostrar:"/>
+            <Property name="text" type="java.lang.String" value="Mostrar los primeros:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btn_ReporteListaPrecios">
@@ -386,8 +384,6 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_ReporteListaPreciosActionPerformed"/>
           </Events>
-        </Component>
-        <Component class="javax.swing.JProgressBar" name="pg_progreso">
         </Component>
       </SubComponents>
     </Container>

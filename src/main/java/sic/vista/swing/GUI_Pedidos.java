@@ -46,7 +46,7 @@ public class GUI_Pedidos extends JInternalFrame {
 
     public GUI_Pedidos() {
         initComponents();
-        this.setSize(850, 450);
+        this.setSize(850, 600);
         this.limpiarJTables();
         cmb_Cliente.addItem("Seleccione un Cliente...");
         cmb_Vendedor.addItem("Seleccione un Vendedor...");
@@ -159,8 +159,7 @@ public class GUI_Pedidos extends JInternalFrame {
             modeloTablaPedidos.addRow(fila);
         }
         tbl_Pedidos.setModel(modeloTablaPedidos);
-        tbl_Pedidos.setDefaultRenderer(EstadoPedido.class, new ColoresEstadosPedidoRenderer());
-        lbl_CantRegistrosEncontrados.setText(pedidos.size() + " pedidos encontrados.");
+        tbl_Pedidos.setDefaultRenderer(EstadoPedido.class, new ColoresEstadosPedidoRenderer());        
     }
 
     private void limpiarJTables() {
@@ -307,6 +306,24 @@ public class GUI_Pedidos extends JInternalFrame {
         }
         tbl_RenglonesPedido.setModel(modeloTablaRenglones);
     }
+    
+    private void lanzarReportePedido(Pedido pedido) {
+        try {
+            JasperPrint report = pedidoService.getReportePedido(pedido);
+            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+            viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
+            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+            viewer.setIconImage(iconoVentana.getImage());
+            viewer.setLocationRelativeTo(null);
+            JRViewer jrv = new JRViewer(report);
+            viewer.getContentPane().add(jrv);
+            viewer.setVisible(true);
+        } catch (JRException jre) {
+            String msjError = "Se produjo un error procesando el reporte.";
+            log.error(msjError + " - " + jre.getMessage());
+            JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -324,8 +341,8 @@ public class GUI_Pedidos extends JInternalFrame {
         cmb_Vendedor = new javax.swing.JComboBox();
         chk_Vendedor = new javax.swing.JCheckBox();
         btn_Buscar = new javax.swing.JButton();
-        lbl_CantRegistrosEncontrados = new javax.swing.JLabel();
         txt_NumeroPedido = new javax.swing.JFormattedTextField();
+        pb_Filtro = new javax.swing.JProgressBar();
         panel_resultados = new javax.swing.JPanel();
         sp_RenglonesDelPedido = new javax.swing.JScrollPane();
         tbl_RenglonesPedido = new javax.swing.JTable();
@@ -336,9 +353,9 @@ public class GUI_Pedidos extends JInternalFrame {
         btn_NuevoPedido = new javax.swing.JButton();
         btn_VerFacturas = new javax.swing.JButton();
         btn_Facturar = new javax.swing.JButton();
-        pb_Filtro = new javax.swing.JProgressBar();
         btn_imprimirPedido = new javax.swing.JButton();
         bnt_modificaPedido = new javax.swing.JButton();
+        btn_eliminarPedido = new javax.swing.JButton();
 
         setClosable(true);
         setMaximizable(true);
@@ -408,8 +425,6 @@ public class GUI_Pedidos extends JInternalFrame {
             }
         });
 
-        lbl_CantRegistrosEncontrados.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-
         txt_NumeroPedido.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
         txt_NumeroPedido.setText("0");
 
@@ -426,8 +441,8 @@ public class GUI_Pedidos extends JInternalFrame {
                         .addComponent(cmb_Vendedor, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(panel_FiltrosLayout.createSequentialGroup()
                         .addComponent(btn_Buscar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbl_CantRegistrosEncontrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panel_FiltrosLayout.createSequentialGroup()
                         .addComponent(chk_Fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -475,12 +490,15 @@ public class GUI_Pedidos extends JInternalFrame {
                     .addComponent(chk_Vendedor)
                     .addComponent(cmb_Vendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(lbl_CantRegistrosEncontrados, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-                    .addComponent(btn_Buscar)))
+                .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btn_Buscar)
+                    .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panel_FiltrosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {cmb_Cliente, cmb_Vendedor, txt_NumeroPedido});
+
+        panel_FiltrosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Buscar, pb_Filtro});
 
         panel_resultados.setBorder(javax.swing.BorderFactory.createTitledBorder("Resultados"));
 
@@ -521,9 +539,9 @@ public class GUI_Pedidos extends JInternalFrame {
         });
         sp_Pedidos.setViewportView(tbl_Pedidos);
 
-        lbl_cantidadMostrar.setText("Cantidad a mostrar:");
+        lbl_cantidadMostrar.setText("Mostrar los primeros:");
 
-        cmb_cantidadMostrar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "50", "100", "500" }));
+        cmb_cantidadMostrar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "100", "500", "1000", "5000" }));
         cmb_cantidadMostrar.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmb_cantidadMostrarItemStateChanged(evt);
@@ -580,37 +598,40 @@ public class GUI_Pedidos extends JInternalFrame {
             }
         });
 
+        btn_eliminarPedido.setForeground(new java.awt.Color(0, 0, 255));
+        btn_eliminarPedido.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Cancel_16x16.png"))); // NOI18N
+        btn_eliminarPedido.setText("Eliminar");
+        btn_eliminarPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_eliminarPedidoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel_resultadosLayout = new javax.swing.GroupLayout(panel_resultados);
         panel_resultados.setLayout(panel_resultadosLayout);
         panel_resultadosLayout.setHorizontalGroup(
             panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel_resultadosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel_resultadosLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(lbl_cantidadMostrar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmb_cantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(sp_Pedidos, javax.swing.GroupLayout.DEFAULT_SIZE, 906, Short.MAX_VALUE)
-                    .addComponent(sp_RenglonesDelPedido)
-                    .addGroup(panel_resultadosLayout.createSequentialGroup()
-                        .addComponent(btn_NuevoPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(btn_VerFacturas)
-                        .addGap(0, 0, 0)
-                        .addComponent(btn_Facturar, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(bnt_modificaPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(btn_imprimirPedido)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbl_cantidadMostrar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmb_cantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(sp_Pedidos, javax.swing.GroupLayout.DEFAULT_SIZE, 930, Short.MAX_VALUE)
+            .addComponent(sp_RenglonesDelPedido)
+            .addGroup(panel_resultadosLayout.createSequentialGroup()
+                .addComponent(btn_NuevoPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(btn_VerFacturas)
+                .addGap(0, 0, 0)
+                .addComponent(btn_Facturar)
+                .addGap(0, 0, 0)
+                .addComponent(bnt_modificaPedido)
+                .addGap(0, 0, 0)
+                .addComponent(btn_eliminarPedido)
+                .addGap(0, 0, 0)
+                .addComponent(btn_imprimirPedido)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
-
-        panel_resultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {bnt_modificaPedido, btn_Facturar, btn_NuevoPedido, btn_VerFacturas, btn_imprimirPedido});
-
         panel_resultadosLayout.setVerticalGroup(
             panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel_resultadosLayout.createSequentialGroup()
@@ -622,15 +643,13 @@ public class GUI_Pedidos extends JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sp_RenglonesDelPedido, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pb_Filtro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btn_Facturar)
-                            .addComponent(btn_imprimirPedido)
-                            .addComponent(bnt_modificaPedido))
-                        .addComponent(btn_VerFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btn_NuevoPedido, javax.swing.GroupLayout.Alignment.TRAILING)))
+                .addGroup(panel_resultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_NuevoPedido)
+                    .addComponent(btn_VerFacturas, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_Facturar)
+                    .addComponent(bnt_modificaPedido)
+                    .addComponent(btn_imprimirPedido)
+                    .addComponent(btn_eliminarPedido)))
         );
 
         panel_resultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {bnt_modificaPedido, btn_Facturar, btn_NuevoPedido, btn_VerFacturas, btn_imprimirPedido});
@@ -642,7 +661,7 @@ public class GUI_Pedidos extends JInternalFrame {
             .addComponent(panel_resultados, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(panel_Filtros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 355, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -831,12 +850,17 @@ public class GUI_Pedidos extends JInternalFrame {
         }
     }//GEN-LAST:event_bnt_modificaPedidoActionPerformed
 
+    private void btn_eliminarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarPedidoActionPerformed
+        
+    }//GEN-LAST:event_btn_eliminarPedidoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bnt_modificaPedido;
     private javax.swing.JButton btn_Buscar;
     private javax.swing.JButton btn_Facturar;
     private javax.swing.JButton btn_NuevoPedido;
     private javax.swing.JButton btn_VerFacturas;
+    private javax.swing.JButton btn_eliminarPedido;
     private javax.swing.JButton btn_imprimirPedido;
     private javax.swing.JCheckBox chk_Cliente;
     private javax.swing.JCheckBox chk_Fecha;
@@ -847,7 +871,6 @@ public class GUI_Pedidos extends JInternalFrame {
     private javax.swing.JComboBox cmb_cantidadMostrar;
     private com.toedter.calendar.JDateChooser dc_FechaDesde;
     private com.toedter.calendar.JDateChooser dc_FechaHasta;
-    private javax.swing.JLabel lbl_CantRegistrosEncontrados;
     private javax.swing.JLabel lbl_Desde;
     private javax.swing.JLabel lbl_Hasta;
     private javax.swing.JLabel lbl_cantidadMostrar;
@@ -860,22 +883,4 @@ public class GUI_Pedidos extends JInternalFrame {
     private javax.swing.JTable tbl_RenglonesPedido;
     private javax.swing.JFormattedTextField txt_NumeroPedido;
     // End of variables declaration//GEN-END:variables
-
-    private void lanzarReportePedido(Pedido pedido) {
-        try {
-            JasperPrint report = pedidoService.getReportePedido(pedido);
-            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-            viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
-            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-            viewer.setIconImage(iconoVentana.getImage());
-            viewer.setLocationRelativeTo(null);
-            JRViewer jrv = new JRViewer(report);
-            viewer.getContentPane().add(jrv);
-            viewer.setVisible(true);
-        } catch (JRException jre) {
-            String msjError = "Se produjo un error procesando el reporte.";
-            log.error(msjError + " - " + jre.getMessage());
-            JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
 }

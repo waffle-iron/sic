@@ -34,7 +34,7 @@
           <Component id="panel_resultados" alignment="1" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
               <Component id="panel_Filtros" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="355" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -71,8 +71,8 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lbl_CantRegistrosEncontrados" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="pb_Filtro" min="-2" pref="100" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="chk_Fecha" linkSize="9" min="-2" pref="123" max="-2" attributes="0"/>
@@ -126,10 +126,11 @@
                       <Component id="cmb_Vendedor" linkSize="12" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="lbl_CantRegistrosEncontrados" alignment="2" pref="35" max="32767" attributes="0"/>
-                      <Component id="btn_Buscar" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="btn_Buscar" linkSize="13" min="-2" max="-2" attributes="0"/>
+                      <Component id="pb_Filtro" linkSize="13" min="-2" pref="23" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -213,11 +214,6 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_BuscarActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JLabel" name="lbl_CantRegistrosEncontrados">
-          <Properties>
-            <Property name="horizontalAlignment" type="int" value="4"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JFormattedTextField" name="txt_NumeroPedido">
           <Properties>
             <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
@@ -225,6 +221,8 @@
             </Property>
             <Property name="text" type="java.lang.String" value="0"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JProgressBar" name="pb_Filtro">
         </Component>
       </SubComponents>
     </Container>
@@ -241,31 +239,26 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="lbl_cantidadMostrar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="lbl_cantidadMostrar" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="cmb_cantidadMostrar" min="-2" pref="57" max="-2" attributes="0"/>
-                      </Group>
-                      <Component id="sp_Pedidos" alignment="0" pref="906" max="32767" attributes="0"/>
-                      <Component id="sp_RenglonesDelPedido" alignment="0" max="32767" attributes="0"/>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="btn_NuevoPedido" linkSize="10" min="-2" pref="115" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="btn_VerFacturas" linkSize="10" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="btn_Facturar" linkSize="10" min="-2" pref="115" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="bnt_modificaPedido" linkSize="10" min="-2" pref="127" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="btn_imprimirPedido" linkSize="10" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="pb_Filtro" min="-2" pref="93" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="cmb_cantidadMostrar" min="-2" pref="81" max="-2" attributes="0"/>
+              </Group>
+              <Component id="sp_Pedidos" pref="930" max="32767" attributes="0"/>
+              <Component id="sp_RenglonesDelPedido" alignment="0" max="32767" attributes="0"/>
+              <Group type="102" alignment="0" attributes="0">
+                  <Component id="btn_NuevoPedido" min="-2" pref="110" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                  <Component id="btn_VerFacturas" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                  <Component id="btn_Facturar" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                  <Component id="bnt_modificaPedido" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                  <Component id="btn_eliminarPedido" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                  <Component id="btn_imprimirPedido" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -281,17 +274,13 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="sp_RenglonesDelPedido" pref="130" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="pb_Filtro" alignment="1" min="-2" pref="23" max="-2" attributes="0"/>
-                      <Group type="103" alignment="1" groupAlignment="0" attributes="0">
-                          <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                              <Component id="btn_Facturar" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="btn_imprimirPedido" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="bnt_modificaPedido" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="btn_VerFacturas" linkSize="7" min="-2" pref="26" max="-2" attributes="0"/>
-                      </Group>
-                      <Component id="btn_NuevoPedido" linkSize="7" alignment="1" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="btn_NuevoPedido" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_VerFacturas" linkSize="7" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
+                      <Component id="btn_Facturar" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="bnt_modificaPedido" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_imprimirPedido" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_eliminarPedido" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -349,16 +338,17 @@
         </Container>
         <Component class="javax.swing.JLabel" name="lbl_cantidadMostrar">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Cantidad a mostrar:"/>
+            <Property name="text" type="java.lang.String" value="Mostrar los primeros:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="cmb_cantidadMostrar">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="3">
-                <StringItem index="0" value="50"/>
-                <StringItem index="1" value="100"/>
-                <StringItem index="2" value="500"/>
+              <StringArray count="4">
+                <StringItem index="0" value="100"/>
+                <StringItem index="1" value="500"/>
+                <StringItem index="2" value="1000"/>
+                <StringItem index="3" value="5000"/>
               </StringArray>
             </Property>
           </Properties>
@@ -409,8 +399,6 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_FacturarActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JProgressBar" name="pb_Filtro">
-        </Component>
         <Component class="javax.swing.JButton" name="btn_imprimirPedido">
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -437,6 +425,20 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bnt_modificaPedidoActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="btn_eliminarPedido">
+          <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="0" red="0" type="rgb"/>
+            </Property>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/sic/icons/Cancel_16x16.png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Eliminar"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_eliminarPedidoActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

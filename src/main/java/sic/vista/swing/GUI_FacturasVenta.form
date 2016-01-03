@@ -79,8 +79,7 @@
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="lbl_cantidadAMostrar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="cmb_cantidadAMostrar" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="cmb_cantidadAMostrar" min="-2" pref="81" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -256,16 +255,17 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lbl_cantidadAMostrar">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Cantidad a mostrar:"/>
+            <Property name="text" type="java.lang.String" value="Mostrar los primeros:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="cmb_cantidadAMostrar">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="3">
+              <StringArray count="4">
                 <StringItem index="0" value="100"/>
                 <StringItem index="1" value="500"/>
                 <StringItem index="2" value="1000"/>
+                <StringItem index="3" value="5000"/>
               </StringArray>
             </Property>
           </Properties>
@@ -291,12 +291,12 @@
                   <Component id="subPanelFiltros1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="subPanelFiltros2" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
               </Group>
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="lbl_CantRegistrosEncontrados" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -308,10 +308,8 @@
                       <Component id="subPanelFiltros2" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="btn_Buscar" max="32767" attributes="0"/>
-                      <Component id="lbl_CantRegistrosEncontrados" min="-2" pref="29" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -621,11 +619,6 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_BuscarActionPerformed"/>
           </Events>
-        </Component>
-        <Component class="javax.swing.JLabel" name="lbl_CantRegistrosEncontrados">
-          <Properties>
-            <Property name="horizontalAlignment" type="int" value="4"/>
-          </Properties>
         </Component>
       </SubComponents>
     </Container>
