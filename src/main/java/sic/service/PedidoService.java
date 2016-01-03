@@ -85,7 +85,13 @@ public class PedidoService {
     }
 
     public List<Factura> getFacturasDelPedido(long nroPedido) {
-        return pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido).getFacturas();
+        List<Factura> facturasSinEliminar = new ArrayList<>();
+        for (Factura factura : pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido).getFacturas()) {
+            if (!factura.isEliminada()) {
+                facturasSinEliminar.add(factura);
+            }
+        }
+        return facturasSinEliminar;
     }
 
     public void guardar(Pedido pedido) {
@@ -142,9 +148,12 @@ public class PedidoService {
         return pedidoRepository.getPedidoPorNumeroConRenglones(nroPedido, idEmpresa);
     }
 
-    public void eliminar(Pedido pedido) {
-        pedido.setEliminado(true);
-        pedidoRepository.actualizar(pedido);
+    public boolean eliminar(Pedido pedido) {
+        if (pedido.getEstado() == EstadoPedido.ABIERTO) {
+            pedido.setEliminado(true);
+            pedidoRepository.actualizar(pedido);
+        }
+        return pedido.isEliminado();
     }
 
     public List<RenglonPedido> getRenglonesDelPedido(long nroPedido) {
