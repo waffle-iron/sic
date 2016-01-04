@@ -440,8 +440,6 @@ public class GUI_CerrarVenta extends JDialog {
                 if (gui_puntoDeVenta.getPedido() != null) {
                     factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido(), gui_puntoDeVenta.getEmpresa().getId_Empresa()));
                     this.guardarFactura(factura);
-                    Pedido pedido = gui_puntoDeVenta.getPedido();
-                    this.actualizarEstadoPedido(pedido);
                 } else {
                     this.guardarFactura(factura);
                 }
@@ -458,9 +456,9 @@ public class GUI_CerrarVenta extends JDialog {
                         exito = true;
                     }
                 }
-                this.actualizarEstadoPedido(gui_puntoDeVenta.getPedido());
             }
             if (gui_puntoDeVenta.getPedido() != null) {
+                this.actualizarEstadoPedido(gui_puntoDeVenta.getPedido());
                 gui_puntoDeVenta.dispose();
             }
             this.dispose();
