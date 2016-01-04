@@ -37,7 +37,7 @@ public class GUI_Pedidos extends JInternalFrame {
     private final EmpresaService empresaService = new EmpresaService();
     private final PedidoService pedidoService = new PedidoService();
     private final ClienteService clienteService = new ClienteService();
-    private final UsuarioService usuarioSercice = new UsuarioService();
+    private final UsuarioService usuarioService = new UsuarioService();
     private List<Pedido> pedidos;
     private ModeloTabla modeloTablaPedidos;
     private ModeloTabla modeloTablaRenglones;
@@ -270,7 +270,7 @@ public class GUI_Pedidos extends JInternalFrame {
     private void cargarComboBoxUsuarios() {
         cmb_Vendedor.removeAllItems();
         List<Usuario> usuarios;
-        usuarios = usuarioSercice.getUsuarios();
+        usuarios = usuarioService.getUsuarios();
         for (Usuario usuario : usuarios) {
             cmb_Vendedor.addItem(usuario);
         }
@@ -753,18 +753,16 @@ public class GUI_Pedidos extends JInternalFrame {
                 if (pedido.getEstado() == EstadoPedido.CERRADO) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
                             JOptionPane.ERROR_MESSAGE);
+                } else if (this.existeClienteDisponible()) {
+                    GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
+                    gui_puntoDeVenta.setPedido(pedido);
+                    gui_puntoDeVenta.setModal(true);
+                    gui_puntoDeVenta.setLocationRelativeTo(this);
+                    gui_puntoDeVenta.setVisible(true);
+                    this.buscar();
                 } else {
-                    if (this.existeClienteDisponible()) {
-                        GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
-                        gui_puntoDeVenta.setPedido(pedido);
-                        gui_puntoDeVenta.setModal(true);
-                        gui_puntoDeVenta.setLocationRelativeTo(this);
-                        gui_puntoDeVenta.setVisible(true);
-                        this.buscar();
-                    } else {
-                        String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
-                        JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
-                    }
+                    String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
+                    JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
 
@@ -793,6 +791,7 @@ public class GUI_Pedidos extends JInternalFrame {
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
         try {
             this.setMaximum(true);
+
         } catch (PropertyVetoException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";
             log.error(msjError + " - " + ex.getMessage());
@@ -823,24 +822,20 @@ public class GUI_Pedidos extends JInternalFrame {
                 if (pedido.getEstado() == EstadoPedido.CERRADO) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
                             JOptionPane.ERROR_MESSAGE);
+                } else if (pedido.getEstado() == EstadoPedido.ACTIVO) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_procesado"), "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                } else if (this.existeClienteDisponible()) {
+                    GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
+                    gui_puntoDeVenta.setPedido(pedido);
+                    gui_puntoDeVenta.setModificarPedido(true);
+                    gui_puntoDeVenta.setModal(true);
+                    gui_puntoDeVenta.setLocationRelativeTo(this);
+                    gui_puntoDeVenta.setVisible(true);
+                    this.buscar();
                 } else {
-                    if (pedido.getEstado() == EstadoPedido.ACTIVO) {
-                        JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_procesado"), "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        if (this.existeClienteDisponible()) {
-                            GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
-                            gui_puntoDeVenta.setPedido(pedido);
-                            gui_puntoDeVenta.setModificarPedido(true);
-                            gui_puntoDeVenta.setModal(true);
-                            gui_puntoDeVenta.setLocationRelativeTo(this);
-                            gui_puntoDeVenta.setVisible(true);
-                            this.buscar();
-                        } else {
-                            String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
-                            JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    }
+                    String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
+                    JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
 
@@ -858,23 +853,22 @@ public class GUI_Pedidos extends JInternalFrame {
                 if (pedido.getEstado() == EstadoPedido.CERRADO) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
                             JOptionPane.ERROR_MESSAGE);
-                } else {
-                    if (pedido.getEstado() == EstadoPedido.ACTIVO) {
-                        JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_procesado"), "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        if (this.existeClienteDisponible()) {
-                            if (pedidoService.eliminar(pedido)) {
-                                JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_eliminado"), "Aviso",
-                                        JOptionPane.INFORMATION_MESSAGE);
-                            }
-                            this.buscar();
-                        } else {
-                            String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
-                            JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
-                        }
+                } else if (pedido.getEstado() == EstadoPedido.ACTIVO) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_procesado"), "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                } else if (this.existeClienteDisponible()) {
+                    int respuesta = JOptionPane.showConfirmDialog(this,
+                            "¿Esta seguro que desea eliminar el pedido seleccionado?",
+                            "Eliminar", JOptionPane.YES_NO_OPTION);
+                    if (respuesta == JOptionPane.YES_OPTION) {
+                        pedidoService.eliminar(pedido);
+                        this.buscar();
                     }
+                } else {
+                    String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
+                    JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
                 }
+
             }
 
         } catch (PersistenceException ex) {
