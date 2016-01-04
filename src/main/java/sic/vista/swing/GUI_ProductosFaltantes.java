@@ -101,7 +101,7 @@ public class GUI_ProductosFaltantes extends JDialog {
         sp_faltantes.setViewportView(tbl_Faltantes);
 
         btn_volver.setForeground(java.awt.Color.blue);
-        btn_volver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Back_16x16.png"))); // NOI18N
+        btn_volver.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/ArrowLeft_16x16.png"))); // NOI18N
         btn_volver.setText("Volver");
         btn_volver.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

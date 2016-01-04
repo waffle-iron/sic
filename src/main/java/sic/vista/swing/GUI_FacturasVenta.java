@@ -2,7 +2,6 @@ package sic.vista.swing;
 
 import java.beans.PropertyVetoException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -14,7 +13,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
 import sic.modelo.BusquedaFacturaVentaCriteria;
-import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Pedido;
@@ -43,8 +41,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
     public void buscarConCriteria(BusquedaFacturaVentaCriteria criteria) {
         this.setEstadoDeComponentes(criteria);
-        this.buscar(criteria);
-        this.calcularResultados();
+        this.buscar(criteria);        
     }
 
     public void actualizarEstadoPedido(Pedido pedido) {
@@ -215,24 +212,51 @@ public class GUI_FacturasVenta extends JInternalFrame {
         }
     }
 
-    private void buscar(BusquedaFacturaVentaCriteria criteria) {                     
-        try {
-            facturas = facturaService.buscarFacturaVenta(criteria);
-            this.cargarResultadosAlTable();
+    private void buscar(final BusquedaFacturaVentaCriteria criteria) {
+        pb_Filtro.setIndeterminate(true);        
+        SwingWorker<List<FacturaVenta>, Void> worker = new SwingWorker<List<FacturaVenta>, Void>() {
+            
+            @Override
+            protected List<FacturaVenta> doInBackground() throws Exception {
+                try {
+                    facturas = facturaService.buscarFacturaVenta(criteria);                                        
+                    calcularResultados();
+                    cargarResultadosAlTable();                          
 
-            if (facturas.isEmpty()) {
-                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle(
-                        "Mensajes").getString("mensaje_busqueda_sin_resultados"),
-                        "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                } catch (ServiceException ex) {
+                    JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+                } catch (PersistenceException ex) {
+                    log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+                    JOptionPane.showInternalMessageDialog(getParent(), ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                
+                return facturas;
             }
 
-        } catch (ServiceException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            @Override
+            protected void done() {
+                pb_Filtro.setIndeterminate(false);
+                try {
+                    if (get().isEmpty()) {
+                        JOptionPane.showInternalMessageDialog(getParent(), ResourceBundle.getBundle("Mensajes").getString("mensaje_busqueda_sin_resultados"),
+                                "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    }
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+                } catch (InterruptedException ex) {
+                    String msjError = "La tarea que se estaba realizando fue interrumpida. Intente nuevamente.";
+                    log.error(msjError + " - " + ex.getMessage());
+                    JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+
+                } catch (ExecutionException ex) {
+                    String msjError = "Se produjo un error en la ejecución de la tarea solicitada. Intente nuevamente.";
+                    log.error(msjError + " - " + ex.getMessage());
+                    JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        };
+        
+        worker.execute();      
     }
 
     private void cargarResultadosAlTable() {
@@ -258,7 +282,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             fila[16] = factura.getTotal();
             modeloTablaFacturas.addRow(fila);
         }
-        tbl_Resultados.setModel(modeloTablaFacturas);        
+        tbl_Resultados.setModel(modeloTablaFacturas);
     }
 
     private void limpiarJTable() {
@@ -364,6 +388,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         rb_soloImpagas = new javax.swing.JRadioButton();
         rb_soloPagadas = new javax.swing.JRadioButton();
         btn_Buscar = new javax.swing.JButton();
+        pb_Filtro = new javax.swing.JProgressBar();
 
         setClosable(true);
         setMaximizable(true);
@@ -519,7 +544,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     .addComponent(cmb_cantidadAMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_cantidadAMostrar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -753,7 +778,9 @@ public class GUI_FacturasVenta extends JInternalFrame {
             .addGroup(panelFiltrosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btn_Buscar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         panelFiltrosLayout.setVerticalGroup(
             panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -762,9 +789,13 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     .addComponent(subPanelFiltros1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(subPanelFiltros2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_Buscar)
-                .addGap(6, 6, 6))
+                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btn_Buscar)
+                    .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
+
+        panelFiltrosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Buscar, pb_Filtro});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -810,8 +841,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
 }//GEN-LAST:event_chk_ClienteItemStateChanged
 
     private void btn_BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarActionPerformed
-        this.buscar(this.getCriteriaDeComponentes());
-        this.calcularResultados();
+        this.buscar(this.getCriteriaDeComponentes());        
 }//GEN-LAST:event_btn_BuscarActionPerformed
 
     private void btn_VerDetalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerDetalleActionPerformed
@@ -837,11 +867,10 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
-                    Pedido pedidoDeFactura = pedidoService.getPedidoPorNumero(facturas.get(indexFilaSeleccionada).getPedido().getNroPedido(),empresaService.getEmpresaActiva().getEmpresa().getId_Empresa() );
+                    Pedido pedidoDeFactura = pedidoService.getPedidoPorNumero(facturas.get(indexFilaSeleccionada).getPedido().getNroPedido(), empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
                     facturaService.eliminar(facturas.get(indexFilaSeleccionada));
                     this.actualizarEstadoPedido(pedidoDeFactura);
-                    this.buscar(this.getCriteriaDeComponentes());
-                    this.calcularResultados();
+                    this.buscar(this.getCriteriaDeComponentes());                    
 
                 } catch (PersistenceException ex) {
                     log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
@@ -947,8 +976,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }//GEN-LAST:event_chk_EstadoFacturaItemStateChanged
 
     private void cmb_cantidadAMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_cantidadAMostrarActionPerformed
-        this.buscar(this.getCriteriaDeComponentes());
-        this.calcularResultados();
+        this.buscar(this.getCriteriaDeComponentes());        
     }//GEN-LAST:event_cmb_cantidadAMostrarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -979,6 +1007,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private javax.swing.JPanel panelFiltros;
     private javax.swing.JPanel panelNumeros;
     private javax.swing.JPanel panelResultados;
+    private javax.swing.JProgressBar pb_Filtro;
     private javax.swing.JRadioButton rb_soloImpagas;
     private javax.swing.JRadioButton rb_soloPagadas;
     private javax.swing.JLabel separador;
