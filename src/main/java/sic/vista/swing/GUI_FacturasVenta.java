@@ -41,7 +41,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
     public void buscarConCriteria(BusquedaFacturaVentaCriteria criteria) {
         this.setEstadoDeComponentes(criteria);
-        this.buscar(criteria);        
+        this.buscar(criteria);
     }
 
     public void actualizarEstadoPedido(Pedido pedido) {
@@ -213,15 +213,15 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }
 
     private void buscar(final BusquedaFacturaVentaCriteria criteria) {
-        pb_Filtro.setIndeterminate(true);        
+        pb_Filtro.setIndeterminate(true);
         SwingWorker<List<FacturaVenta>, Void> worker = new SwingWorker<List<FacturaVenta>, Void>() {
-            
+
             @Override
             protected List<FacturaVenta> doInBackground() throws Exception {
                 try {
-                    facturas = facturaService.buscarFacturaVenta(criteria);                                        
+                    facturas = facturaService.buscarFacturaVenta(criteria);
                     calcularResultados();
-                    cargarResultadosAlTable();                          
+                    cargarResultadosAlTable();
 
                 } catch (ServiceException ex) {
                     JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -230,7 +230,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
                     JOptionPane.showInternalMessageDialog(getParent(), ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                
+
                 return facturas;
             }
 
@@ -255,8 +255,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 }
             }
         };
-        
-        worker.execute();      
+
+        worker.execute();
     }
 
     private void cargarResultadosAlTable() {
@@ -841,7 +841,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
 }//GEN-LAST:event_chk_ClienteItemStateChanged
 
     private void btn_BuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarActionPerformed
-        this.buscar(this.getCriteriaDeComponentes());        
+        this.buscar(this.getCriteriaDeComponentes());
 }//GEN-LAST:event_btn_BuscarActionPerformed
 
     private void btn_VerDetalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerDetalleActionPerformed
@@ -867,10 +867,12 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
-                    Pedido pedidoDeFactura = pedidoService.getPedidoPorNumero(facturas.get(indexFilaSeleccionada).getPedido().getNroPedido(), empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
                     facturaService.eliminar(facturas.get(indexFilaSeleccionada));
-                    this.actualizarEstadoPedido(pedidoDeFactura);
-                    this.buscar(this.getCriteriaDeComponentes());                    
+                    if (facturas.get(indexFilaSeleccionada).getPedido() != null) {
+                        Pedido pedidoDeFactura = pedidoService.getPedidoPorNumero(facturas.get(indexFilaSeleccionada).getPedido().getNroPedido(), empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+                        this.actualizarEstadoPedido(pedidoDeFactura);
+                    }
+                    this.buscar(this.getCriteriaDeComponentes());
 
                 } catch (PersistenceException ex) {
                     log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
@@ -976,7 +978,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }//GEN-LAST:event_chk_EstadoFacturaItemStateChanged
 
     private void cmb_cantidadAMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_cantidadAMostrarActionPerformed
-        this.buscar(this.getCriteriaDeComponentes());        
+        this.buscar(this.getCriteriaDeComponentes());
     }//GEN-LAST:event_cmb_cantidadAMostrarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
