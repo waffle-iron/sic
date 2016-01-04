@@ -159,7 +159,7 @@ public class GUI_Pedidos extends JInternalFrame {
             modeloTablaPedidos.addRow(fila);
         }
         tbl_Pedidos.setModel(modeloTablaPedidos);
-        tbl_Pedidos.setDefaultRenderer(EstadoPedido.class, new ColoresEstadosPedidoRenderer());        
+        tbl_Pedidos.setDefaultRenderer(EstadoPedido.class, new ColoresEstadosPedidoRenderer());
     }
 
     private void limpiarJTables() {
@@ -306,7 +306,7 @@ public class GUI_Pedidos extends JInternalFrame {
         }
         tbl_RenglonesPedido.setModel(modeloTablaRenglones);
     }
-    
+
     private void lanzarReportePedido(Pedido pedido) {
         try {
             JasperPrint report = pedidoService.getReportePedido(pedido);
@@ -851,7 +851,36 @@ public class GUI_Pedidos extends JInternalFrame {
     }//GEN-LAST:event_bnt_modificaPedidoActionPerformed
 
     private void btn_eliminarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarPedidoActionPerformed
-        
+        try {
+            if (tbl_Pedidos.getSelectedRow() != -1) {
+                long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
+                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+                if (pedido.getEstado() == EstadoPedido.CERRADO) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                } else {
+                    if (pedido.getEstado() == EstadoPedido.ACTIVO) {
+                        JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_procesado"), "Error",
+                                JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        if (this.existeClienteDisponible()) {
+                            if (pedidoService.eliminar(pedido)) {
+                                JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_eliminado"), "Aviso",
+                                        JOptionPane.INFORMATION_MESSAGE);
+                            }
+                            this.buscar();
+                        } else {
+                            String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
+                            JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                }
+            }
+
+        } catch (PersistenceException ex) {
+            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btn_eliminarPedidoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
