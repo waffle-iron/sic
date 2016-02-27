@@ -43,6 +43,8 @@ public class ControlCaja implements Serializable {
     
     private boolean cerrado;
     
+    private double totalEfectivo;
+    
     @OneToOne
     @JoinColumn(name = "id_Usuario", referencedColumnName = "id_Usuario")
     private Usuario usuario;
