@@ -77,6 +77,7 @@ public class GUI_Principal extends JFrame {
         mnu_Administracion = new javax.swing.JMenu();
         mnuItm_Transportistas = new javax.swing.JMenuItem();
         mnuItm_FormasDePago = new javax.swing.JMenuItem();
+        mnuItm_ControlDeCaja = new javax.swing.JMenuItem();
         mnu_Stock = new javax.swing.JMenu();
         mnuItm_Productos = new javax.swing.JMenuItem();
         mnu_Estadisticas = new javax.swing.JMenu();
@@ -247,6 +248,9 @@ public class GUI_Principal extends JFrame {
             }
         });
         mnu_Administracion.add(mnuItm_FormasDePago);
+
+        mnuItm_ControlDeCaja.setText("Control de Caja");
+        mnu_Administracion.add(mnuItm_ControlDeCaja);
 
         mb_BarraMenues.add(mnu_Administracion);
 
@@ -562,6 +566,7 @@ public class GUI_Principal extends JFrame {
     private javax.swing.JMenuItem mnuItm_CambiarUser;
     private javax.swing.JMenuItem mnuItm_Clientes;
     private javax.swing.JMenuItem mnuItm_Configuracion;
+    private javax.swing.JMenuItem mnuItm_ControlDeCaja;
     private javax.swing.JMenuItem mnuItm_Empresas;
     private javax.swing.JMenuItem mnuItm_FacturasCompra;
     private javax.swing.JMenuItem mnuItm_FacturasVenta;
