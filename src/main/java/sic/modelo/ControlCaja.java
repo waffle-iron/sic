@@ -22,32 +22,31 @@ public class ControlCaja implements Serializable {
     @Id
     @GeneratedValue
     private long id_ControlCaja;
-    
+
     private long nroCaja;
-    
+
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
-    
-    @Column(nullable = false)
-    private String observaciones;
-    
+
     @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
-    
-    @OneToMany(mappedBy = "controlCaja")
-    private List<Factura> facturas;
-    
-    private FormaDePago formaDePago;
-    
-    private boolean cerrado;
-    
-    private double totalEfectivo;
-    
+
     @OneToOne
     @JoinColumn(name = "id_Usuario", referencedColumnName = "id_Usuario")
     private Usuario usuario;
-    
-    
+
+    @OneToMany(mappedBy = "controlCaja")
+    private List<Factura> facturas;
+
+    @Column(nullable = false)
+    private String observaciones;
+
+    private FormaDePago formaDePago;
+
+    private boolean cerrado;
+
+    private double totalEfectivo;
+
 }

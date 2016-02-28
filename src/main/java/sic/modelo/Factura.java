@@ -78,6 +78,10 @@ public abstract class Factura implements Serializable {
     @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
     private Pedido pedido;
 
+    @ManyToOne
+    @JoinColumn(name = "id_ControlCaja", referencedColumnName = "id_ControlCaja")
+    private ControlCaja controlCaja;
+
     public Factura() {
     }
 
@@ -87,6 +91,14 @@ public abstract class Factura implements Serializable {
 
     public void setPedido(Pedido pedido) {
         this.pedido = pedido;
+    }
+
+    public ControlCaja getControlCaja() {
+        return controlCaja;
+    }
+
+    public void setControlCaja(ControlCaja controlCaja) {
+        this.controlCaja = controlCaja;
     }
 
     public List<RenglonFactura> getRenglones() {
