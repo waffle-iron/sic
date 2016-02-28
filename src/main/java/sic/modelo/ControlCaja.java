@@ -9,13 +9,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
 
 @Entity
+@Table(name = "controlCaja")
+@NamedQueries({
+    @NamedQuery(name = "ControlCaja.cajaSinArqueo",
+            query = "SELECT c FROM ControlCaja c LEFT JOIN FETCH c.facturas WHERE c.empresa.id_Empresa :id_Empresa AND c.cerrado = false ORDER BY c.fecha ASC")
+})
 @Data
 public class ControlCaja implements Serializable {
 
