@@ -2,7 +2,6 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -19,10 +17,14 @@ import javax.persistence.TemporalType;
 import lombok.Data;
 
 @Entity
-@Table(name = "controlCaja")
+@Table(name = "controlcaja")  //cambiar de nombre a Caja, controlar las query
 @NamedQueries({
     @NamedQuery(name = "ControlCaja.cajaSinArqueo",
-            query = "SELECT c FROM ControlCaja c LEFT JOIN FETCH c.facturas WHERE c.empresa.id_Empresa :id_Empresa AND c.cerrado = false ORDER BY c.fecha ASC")
+            query = "SELECT c FROM ControlCaja c WHERE c.cerrada = false AND c.empresa.id_Empresa = :id_Empresa"),
+    @NamedQuery(name = "ControlCaja.buscarPorNumero",
+            query = "SELECT c FROM ControlCaja c WHERE c.nroCaja = :nroCaja AND c.empresa.id_Empresa = :id_Empresa ORDER BY c.fechaApertura ASC"),
+    @NamedQuery(name = "ControlCaja.cajaSinArqueoPorFormaDepago",
+            query = "SELECT c FROM ControlCaja c WHERE c.empresa.id_Empresa = :id_Empresa AND c.formaDePago.id_FormaDePago = :idFormaDePago AND c.cerrada = false ORDER BY c.fechaApertura ASC")
 })
 @Data
 public class ControlCaja implements Serializable {
@@ -31,11 +33,15 @@ public class ControlCaja implements Serializable {
     @GeneratedValue
     private long id_ControlCaja;
 
-    private long nroCaja;
+    private int nroCaja;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date fecha;
+    private Date fechaApertura;
+
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaCierre;
 
     @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
@@ -45,15 +51,18 @@ public class ControlCaja implements Serializable {
     @JoinColumn(name = "id_Usuario", referencedColumnName = "id_Usuario")
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "controlCaja")
-    private List<Factura> facturas;
-
     @Column(nullable = false)
-    private String observaciones;
+    private String concepto;
 
+    @OneToOne
+    @JoinColumn(name = "id_FormaDePago", referencedColumnName = "id_FormaDePAgo")
     private FormaDePago formaDePago;
 
-    private boolean cerrado;
+    private boolean cerrada;
+
+    private boolean saldoInicial;
+
+    private boolean saldoFinal;
 
     private double totalEfectivo;
 
