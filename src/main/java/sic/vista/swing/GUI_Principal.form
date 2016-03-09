@@ -181,10 +181,13 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuItm_FormasDePagoActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="mnuItm_ControlDeCaja">
+            <MenuItem class="javax.swing.JMenuItem" name="mnuItm_Caja">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Control de Caja"/>
+                <Property name="text" type="java.lang.String" value="Caja"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mnuItm_CajaActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>

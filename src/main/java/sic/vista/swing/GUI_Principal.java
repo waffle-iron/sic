@@ -77,7 +77,7 @@ public class GUI_Principal extends JFrame {
         mnu_Administracion = new javax.swing.JMenu();
         mnuItm_Transportistas = new javax.swing.JMenuItem();
         mnuItm_FormasDePago = new javax.swing.JMenuItem();
-        mnuItm_ControlDeCaja = new javax.swing.JMenuItem();
+        mnuItm_Caja = new javax.swing.JMenuItem();
         mnu_Stock = new javax.swing.JMenu();
         mnuItm_Productos = new javax.swing.JMenuItem();
         mnu_Estadisticas = new javax.swing.JMenu();
@@ -249,8 +249,13 @@ public class GUI_Principal extends JFrame {
         });
         mnu_Administracion.add(mnuItm_FormasDePago);
 
-        mnuItm_ControlDeCaja.setText("Control de Caja");
-        mnu_Administracion.add(mnuItm_ControlDeCaja);
+        mnuItm_Caja.setText("Caja");
+        mnuItm_Caja.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mnuItm_CajaActionPerformed(evt);
+            }
+        });
+        mnu_Administracion.add(mnuItm_Caja);
 
         mb_BarraMenues.add(mnu_Administracion);
 
@@ -553,6 +558,12 @@ public class GUI_Principal extends JFrame {
         }
     }//GEN-LAST:event_mnuItm_PedidosActionPerformed
 
+    private void mnuItm_CajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_CajaActionPerformed
+        GUI_Caja caja = new GUI_Caja(this, true);
+        caja.setVisible(true);
+        caja.setLocationRelativeTo(this);
+    }//GEN-LAST:event_mnuItm_CajaActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator Separador1;
     private javax.swing.JPopupMenu.Separator Separador2;
@@ -562,11 +573,11 @@ public class GUI_Principal extends JFrame {
     private javax.swing.JLabel lbl_Separador;
     private javax.swing.JLabel lbl_UsuarioActivo;
     private javax.swing.JMenuBar mb_BarraMenues;
+    private javax.swing.JMenuItem mnuItm_Caja;
     private javax.swing.JMenuItem mnuItm_CambiarEmpresa;
     private javax.swing.JMenuItem mnuItm_CambiarUser;
     private javax.swing.JMenuItem mnuItm_Clientes;
     private javax.swing.JMenuItem mnuItm_Configuracion;
-    private javax.swing.JMenuItem mnuItm_ControlDeCaja;
     private javax.swing.JMenuItem mnuItm_Empresas;
     private javax.swing.JMenuItem mnuItm_FacturasCompra;
     private javax.swing.JMenuItem mnuItm_FacturasVenta;

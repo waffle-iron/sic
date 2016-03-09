@@ -1,5 +1,6 @@
 package sic.repository;
 
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -159,5 +160,20 @@ public class FacturaRepository {
         List<Object[]> resultado = typedQuery.getResultList();
         em.close();
         return resultado;
+    }
+
+    public List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta) {
+        EntityManager em = PersistenceUtil.getEntityManager();
+        TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.buscarEntreFechas", Factura.class);
+        typedQuery.setParameter("id_Empresa", id_Empresa);
+        typedQuery.setParameter("desde", desde);
+        typedQuery.setParameter("hasta", hasta);
+        List<Factura> facturas = typedQuery.getResultList();
+        em.close();
+        if (facturas.isEmpty()) {
+            return null;
+        } else {
+            return facturas;
+        }
     }
 }

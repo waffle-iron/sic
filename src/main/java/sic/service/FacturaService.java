@@ -44,8 +44,8 @@ public class FacturaService {
                 tiposPermitidos[1] = 'X';
                 return tiposPermitidos;
             }
-        } else {
-            //cuando la Empresa NO discrimina IVA
+        } else //cuando la Empresa NO discrimina IVA
+        {
             if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Proveedor SI
                 char[] tiposPermitidos = new char[2];
@@ -83,8 +83,8 @@ public class FacturaService {
                 tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
-        } else {
-            //cuando la Empresa NO discrimina IVA
+        } else //cuando la Empresa NO discrimina IVA
+        {
             if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Cliente SI
                 String[] tiposPermitidos = new String[4];
@@ -430,6 +430,10 @@ public class FacturaService {
         return total;
     }
 
+    public List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta) {
+        return facturaRepository.getFacturasPorFechas(id_Empresa, desde, hasta);
+    }
+
     //**************************************************************************
     //Estadisticas
     public List<Object[]> listarProductosMasVendidosPorAnio(int anio) {
@@ -474,21 +478,17 @@ public class FacturaService {
             if (numeroDeRenglon == indices[renglonMarcado]) {
                 if (renglon.getCantidad() < 1) {
                     FacturaABC = renglon.getCantidad();
+                } else if (renglon.getCantidad() - Math.ceil(renglon.getCantidad()) == 0) {
+                    FacturaABC = Math.ceil(renglon.getCantidad() / 2);
+                    FacturaX = Math.floor(renglon.getCantidad() / 2);
+                } else if ((renglon.getCantidad() % 2) == 0) {
+                    FacturaABC = renglon.getCantidad() / 2;
+                    FacturaX = renglon.getCantidad() - FacturaABC;
+                    FacturaX = (double) Math.round(FacturaX * 100) / 100;
                 } else {
-                    if (renglon.getCantidad() - Math.ceil(renglon.getCantidad()) == 0) {
-                        FacturaABC = Math.ceil(renglon.getCantidad() / 2);
-                        FacturaX = Math.floor(renglon.getCantidad() / 2);
-                    } else {
-                        if ((renglon.getCantidad() % 2) == 0) {
-                            FacturaABC = renglon.getCantidad() / 2;
-                            FacturaX = renglon.getCantidad() - FacturaABC;
-                            FacturaX = (double) Math.round(FacturaX * 100) / 100;
-                        } else {
-                            FacturaABC = Math.ceil(renglon.getCantidad() / 2);
-                            FacturaX = renglon.getCantidad() - FacturaABC;
-                            FacturaX = (double) Math.round(FacturaX * 100) / 100;
-                        }
-                    }
+                    FacturaABC = Math.ceil(renglon.getCantidad() / 2);
+                    FacturaX = renglon.getCantidad() - FacturaABC;
+                    FacturaX = (double) Math.round(FacturaX * 100) / 100;
                 }
                 RenglonFactura nuevoRenglonConIVA = renglonService.calcularRenglon(this.getTipoFactura(factura), Movimiento.VENTA, FacturaABC, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
                 nuevoRenglonConIVA.setFactura(facturaConIVA);

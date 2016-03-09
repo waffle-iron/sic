@@ -17,21 +17,23 @@ import javax.persistence.TemporalType;
 import lombok.Data;
 
 @Entity
-@Table(name = "controlcaja")  //cambiar de nombre a Caja, controlar las query
+@Table(name = "caja")
 @NamedQueries({
-    @NamedQuery(name = "ControlCaja.cajaSinArqueo",
-            query = "SELECT c FROM ControlCaja c WHERE c.cerrada = false AND c.empresa.id_Empresa = :id_Empresa"),
-    @NamedQuery(name = "ControlCaja.buscarPorNumero",
-            query = "SELECT c FROM ControlCaja c WHERE c.nroCaja = :nroCaja AND c.empresa.id_Empresa = :id_Empresa ORDER BY c.fechaApertura ASC"),
-    @NamedQuery(name = "ControlCaja.cajaSinArqueoPorFormaDepago",
-            query = "SELECT c FROM ControlCaja c WHERE c.empresa.id_Empresa = :id_Empresa AND c.formaDePago.id_FormaDePago = :idFormaDePago AND c.cerrada = false ORDER BY c.fechaApertura ASC")
+    @NamedQuery(name = "Caja.cajaSinArqueo",
+            query = "SELECT c FROM Caja c WHERE c.cerrada = false AND c.empresa.id_Empresa = :id_Empresa"),
+    @NamedQuery(name = "ControlCaja.buscarCajaPorID",
+            query = "SELECT c FROM Caja c WHERE c.id_Caja = :id_caja AND c.empresa.id_Empresa = :id_Empresa ORDER BY c.fechaApertura ASC"),
+    @NamedQuery(name = "Caja.cajaSinArqueoPorFormaDepago",
+            query = "SELECT c FROM Caja c WHERE c.empresa.id_Empresa = :id_Empresa AND c.formaDePago.id_FormaDePago = :id_FormaDePago AND c.cerrada = false ORDER BY c.fechaApertura DESC"),
+    @NamedQuery(name = "Caja.ultimoNumeroDeCaja",
+            query = "SELECT max(c.nroCaja) FROM Caja c WHERE c.empresa.id_Empresa = :id_Empresa")
 })
 @Data
-public class ControlCaja implements Serializable {
+public class Caja implements Serializable {
 
     @Id
     @GeneratedValue
-    private long id_ControlCaja;
+    private long id_Caja;
 
     private int nroCaja;
 
@@ -39,7 +41,7 @@ public class ControlCaja implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaApertura;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaCierre;
 
@@ -60,10 +62,10 @@ public class ControlCaja implements Serializable {
 
     private boolean cerrada;
 
-    private boolean saldoInicial;
+    private double saldoInicial;
 
-    private boolean saldoFinal;
+    private double saldoFinal;
 
-    private double totalEfectivo;
+    private double total;
 
 }

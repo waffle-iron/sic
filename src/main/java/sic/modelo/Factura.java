@@ -13,6 +13,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -20,6 +22,10 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "factura")
+@NamedQueries({
+    @NamedQuery(name = "Factura.buscarEntreFechas",
+            query = "SELECT f FROM Factura f WHERE f.empresa.id_Empresa = :id_Empresa AND f.fecha BETWEEN :desde AND :hasta")
+})
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Factura implements Serializable {
 
@@ -78,10 +84,6 @@ public abstract class Factura implements Serializable {
     @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
     private Pedido pedido;
 
-    @ManyToOne
-    @JoinColumn(name = "id_ControlCaja", referencedColumnName = "id_ControlCaja")
-    private ControlCaja controlCaja;
-
     public Factura() {
     }
 
@@ -91,14 +93,6 @@ public abstract class Factura implements Serializable {
 
     public void setPedido(Pedido pedido) {
         this.pedido = pedido;
-    }
-
-    public ControlCaja getControlCaja() {
-        return controlCaja;
-    }
-
-    public void setControlCaja(ControlCaja controlCaja) {
-        this.controlCaja = controlCaja;
     }
 
     public List<RenglonFactura> getRenglones() {
