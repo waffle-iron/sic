@@ -430,8 +430,8 @@ public class FacturaService {
         return total;
     }
 
-    public List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta) {
-        return facturaRepository.getFacturasPorFechas(id_Empresa, desde, hasta);
+    public List<Factura> getFacturasPorFechas(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
+        return facturaRepository.getFacturasPorFechas(id_Empresa, id_FormaDePago, desde, hasta);
     }
 
     //**************************************************************************

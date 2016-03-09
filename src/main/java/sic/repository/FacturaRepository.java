@@ -162,18 +162,15 @@ public class FacturaRepository {
         return resultado;
     }
 
-    public List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta) {
+    public List<Factura> getFacturasPorFechas(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.buscarEntreFechas", Factura.class);
         typedQuery.setParameter("id_Empresa", id_Empresa);
+        typedQuery.setParameter("id_FormaDePago", id_FormaDePago);
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
         List<Factura> facturas = typedQuery.getResultList();
         em.close();
-        if (facturas.isEmpty()) {
-            return null;
-        } else {
-            return facturas;
-        }
+        return facturas;
     }
 }
