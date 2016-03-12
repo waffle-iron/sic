@@ -6,23 +6,21 @@ import sic.modelo.Caja;
 import sic.modelo.FormaDePago;
 import sic.service.CajaService;
 import sic.service.EmpresaService;
-import sic.service.FormaDePagoService;
 import sic.service.UsuarioService;
 
-public class GUI_abrirCaja extends javax.swing.JDialog {
+public class GUI_AbrirCaja extends javax.swing.JDialog {
 
     private final CajaService cajaService = new CajaService();
     private final EmpresaService empresaService = new EmpresaService();
-    private final FormaDePagoService formaDePagoService = new FormaDePagoService();
     private final UsuarioService usuarioService = new UsuarioService();
     private FormaDePago formaDePago;
 
-    public GUI_abrirCaja(java.awt.Frame parent, boolean modal) {
+    public GUI_AbrirCaja(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
 
-    public GUI_abrirCaja(JDialog parent, boolean modal, FormaDePago formaDePago) {
+    public GUI_AbrirCaja(JDialog parent, boolean modal, FormaDePago formaDePago) {
         super(parent, modal);
         this.formaDePago = formaDePago;
         initComponents();
@@ -43,12 +41,14 @@ public class GUI_abrirCaja extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
 
-        jLabel1.setText("Monto para apertura de caja");
+        jLabel1.setText("Monto para apertura de caja:");
 
         ftxt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        ftxt_Monto.setText("0.0");
 
-        lbl_tituloFormaDePago.setText("Forma De Pago");
+        lbl_tituloFormaDePago.setText("Forma De Pago:");
 
+        lbl_formaDePago.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_formaDePago.setText(this.formaDePago.getNombre());
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -60,7 +60,7 @@ public class GUI_abrirCaja extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ftxt_Monto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbl_tituloFormaDePago)
                     .addComponent(lbl_formaDePago))
@@ -174,7 +174,7 @@ public class GUI_abrirCaja extends javax.swing.JDialog {
         nueva.setNroCaja(cajaService.getUltimoNumeroDeCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()) + 1);
         nueva.setSaldoInicial(Double.parseDouble(ftxt_Monto.getValue().toString()));
         nueva.setSaldoFinal(Double.parseDouble(ftxt_Monto.getValue().toString()));
-        nueva.setTotal(Double.parseDouble(ftxt_Monto.getValue().toString()));
+        nueva.setSaldoReal(Double.parseDouble(ftxt_Monto.getValue().toString()));
         nueva.setUsuario(usuarioService.getUsuarioActivo().getUsuario());
         return nueva;
     }

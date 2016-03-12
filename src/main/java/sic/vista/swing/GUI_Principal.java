@@ -560,8 +560,8 @@ public class GUI_Principal extends JFrame {
 
     private void mnuItm_CajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_CajaActionPerformed
         GUI_Caja caja = new GUI_Caja(this, true);
-        caja.setVisible(true);
         caja.setLocationRelativeTo(this);
+        caja.setVisible(true);
     }//GEN-LAST:event_mnuItm_CajaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

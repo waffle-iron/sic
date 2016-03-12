@@ -66,6 +66,6 @@ public class Caja implements Serializable {
 
     private double saldoFinal;
 
-    private double total;
+    private double SaldoReal;
 
 }

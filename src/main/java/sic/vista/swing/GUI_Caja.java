@@ -1,10 +1,8 @@
 package sic.vista.swing;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.swing.JComboBox;
 import sic.modelo.Caja;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
@@ -33,39 +31,34 @@ public class GUI_Caja extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
+        pbl_Cabecera = new javax.swing.JPanel();
+        lbl_FormaDePago = new javax.swing.JLabel();
         cmb_FormasDePago = new javax.swing.JComboBox<>();
         btn_abrirCaja = new javax.swing.JButton();
-        jPanel4 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        pnl_Tabla = new javax.swing.JPanel();
+        sp_Tabla = new javax.swing.JScrollPane();
         tbl_balance = new javax.swing.JTable();
         lbl_aviso = new javax.swing.JLabel();
-        jPanel5 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        pnl_Arqueo = new javax.swing.JPanel();
+        lbl_Total = new javax.swing.JLabel();
         btn_RealizarArqueo = new javax.swing.JButton();
         ftxt_Total = new javax.swing.JFormattedTextField();
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 562, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 172, Short.MAX_VALUE)
-        );
-
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowFocusListener(new java.awt.event.WindowFocusListener() {
+            public void windowGainedFocus(java.awt.event.WindowEvent evt) {
+                formWindowGainedFocus(evt);
+            }
+            public void windowLostFocus(java.awt.event.WindowEvent evt) {
+            }
+        });
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
             }
         });
 
-        jLabel2.setText("Forma de Pago:");
+        lbl_FormaDePago.setText("Forma de Pago:");
 
         cmb_FormasDePago.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -80,62 +73,65 @@ public class GUI_Caja extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
+        javax.swing.GroupLayout pbl_CabeceraLayout = new javax.swing.GroupLayout(pbl_Cabecera);
+        pbl_Cabecera.setLayout(pbl_CabeceraLayout);
+        pbl_CabeceraLayout.setHorizontalGroup(
+            pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pbl_CabeceraLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                .addGroup(pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pbl_CabeceraLayout.createSequentialGroup()
+                        .addComponent(lbl_FormaDePago)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addGroup(pbl_CabeceraLayout.createSequentialGroup()
                         .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btn_abrirCaja)))
                 .addContainerGap())
         );
 
-        jPanel3Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cmb_FormasDePago, jLabel2});
+        pbl_CabeceraLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cmb_FormasDePago, lbl_FormaDePago});
 
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jLabel2)
+        pbl_CabeceraLayout.setVerticalGroup(
+            pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pbl_CabeceraLayout.createSequentialGroup()
+                .addComponent(lbl_FormaDePago)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_abrirCaja)))
         );
 
-        jScrollPane1.setViewportView(tbl_balance);
+        sp_Tabla.setViewportView(tbl_balance);
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+        lbl_aviso.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
+        javax.swing.GroupLayout pnl_TablaLayout = new javax.swing.GroupLayout(pnl_Tabla);
+        pnl_Tabla.setLayout(pnl_TablaLayout);
+        pnl_TablaLayout.setHorizontalGroup(
+            pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl_TablaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 676, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(sp_Tabla, javax.swing.GroupLayout.PREFERRED_SIZE, 676, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel4Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jScrollPane1, lbl_aviso});
+        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_aviso, sp_Tabla});
 
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+        pnl_TablaLayout.setVerticalGroup(
+            pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_TablaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(sp_Tabla, javax.swing.GroupLayout.PREFERRED_SIZE, 279, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
-        jLabel3.setText("Total:");
+        lbl_Total.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_Total.setText("Total:");
 
         btn_RealizarArqueo.setText("Realizar Arqueo");
         btn_RealizarArqueo.addActionListener(new java.awt.event.ActionListener() {
@@ -144,13 +140,13 @@ public class GUI_Caja extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+        javax.swing.GroupLayout pnl_ArqueoLayout = new javax.swing.GroupLayout(pnl_Arqueo);
+        pnl_Arqueo.setLayout(pnl_ArqueoLayout);
+        pnl_ArqueoLayout.setHorizontalGroup(
+            pnl_ArqueoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_ArqueoLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel3)
+                .addComponent(lbl_Total)
                 .addGap(3, 3, 3)
                 .addComponent(ftxt_Total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -158,20 +154,20 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        jPanel5Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_RealizarArqueo, ftxt_Total, jLabel3});
+        pnl_ArqueoLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_RealizarArqueo, ftxt_Total, lbl_Total});
 
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+        pnl_ArqueoLayout.setVerticalGroup(
+            pnl_ArqueoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_ArqueoLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
+                .addGroup(pnl_ArqueoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_Total)
                     .addComponent(btn_RealizarArqueo)
                     .addComponent(ftxt_Total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
-        jPanel5Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_RealizarArqueo, jLabel3});
+        pnl_ArqueoLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_RealizarArqueo, lbl_Total});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -180,20 +176,20 @@ public class GUI_Caja extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pnl_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pbl_Cabecera, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnl_Arqueo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pbl_Cabecera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnl_Tabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnl_Arqueo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
 
@@ -203,32 +199,48 @@ public class GUI_Caja extends javax.swing.JDialog {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
         for (FormaDePago formaDePago : formasDePago) {
-            cmb_FormasDePago.addItem(formaDePago);
+            if (formaDePago.isAfectaCaja()) {
+                cmb_FormasDePago.addItem(formaDePago);
+            }
         }
         tbl_balance.setEnabled(false);
         this.cambiarEstadoAviso();
     }//GEN-LAST:event_formWindowOpened
 
     private void btn_abrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_abrirCajaActionPerformed
-        GUI_abrirCaja abrirCaja = new GUI_abrirCaja(this, true, (FormaDePago) cmb_FormasDePago.getSelectedItem());
-        abrirCaja.setVisible(true);
+        GUI_AbrirCaja abrirCaja = new GUI_AbrirCaja(this, true, (FormaDePago) cmb_FormasDePago.getSelectedItem());
         abrirCaja.setLocationRelativeTo(this);
+        abrirCaja.setVisible(true);
     }//GEN-LAST:event_btn_abrirCajaActionPerformed
 
     private void cmb_FormasDePagoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_FormasDePagoItemStateChanged
+        this.limpiarTabla();
         this.cambiarEstadoAviso();
     }//GEN-LAST:event_cmb_FormasDePagoItemStateChanged
 
     private void btn_RealizarArqueoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_RealizarArqueoActionPerformed
-        // TODO add your handling code here:
+        Caja cajaACerrar = controlCajaService.getCajaSinArqueoPorFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago());
+        GUI_CerrarCaja cerrarCaja = new GUI_CerrarCaja(this, true, cajaACerrar, this.calcularTotal(cajaACerrar)[2]);
+        cerrarCaja.setLocationRelativeTo(this);
+        cerrarCaja.setVisible(true);
+        this.limpiarTabla();
+        this.cambiarEstadoAviso();
     }//GEN-LAST:event_btn_RealizarArqueoActionPerformed
+
+    private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
+        this.limpiarTabla();
+        this.cambiarEstadoAviso();
+    }//GEN-LAST:event_formWindowGainedFocus
 
     private void cambiarEstadoAviso() {
         Caja consulta = controlCajaService.getCajaSinArqueoPorFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago());
         if (consulta == null) {
             lbl_aviso.setText("Caja sin abrir");
             lbl_aviso.setForeground(Color.RED);
+            this.ftxt_Total.setText("0.0");
+            this.btn_abrirCaja.setEnabled(true);
         } else {
+            this.btn_abrirCaja.setEnabled(false);
             List<Factura> facturas = facturaService.getFacturasPorFechas(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), consulta.getFechaApertura(), new Date());
             lbl_aviso.setText("Caja abierta -- Saldo Inicial: " + consulta.getSaldoInicial());
             lbl_aviso.setForeground(Color.GREEN);
@@ -243,14 +255,13 @@ public class GUI_Caja extends javax.swing.JDialog {
     private javax.swing.JButton btn_abrirCaja;
     private javax.swing.JComboBox<FormaDePago> cmb_FormasDePago;
     private javax.swing.JFormattedTextField ftxt_Total;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lbl_FormaDePago;
+    private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_aviso;
+    private javax.swing.JPanel pbl_Cabecera;
+    private javax.swing.JPanel pnl_Arqueo;
+    private javax.swing.JPanel pnl_Tabla;
+    private javax.swing.JScrollPane sp_Tabla;
     private javax.swing.JTable tbl_balance;
     // End of variables declaration//GEN-END:variables
 
@@ -301,7 +312,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         this.limpiarTabla();
         for (Factura factura : facturas) {
             Object[] fila = new Object[6];
-            if (factura instanceof FacturaVenta) {  //revisar, agrega dificultades
+            if (factura instanceof FacturaVenta) {
                 fila[0] = ((FacturaVenta) factura).getUsuario().getNombre();
             } else {
                 fila[0] = ((FacturaCompra) factura).getProveedor().getRazonSocial();
@@ -309,7 +320,7 @@ public class GUI_Caja extends javax.swing.JDialog {
 
             fila[1] = factura.getFecha();
             fila[2] = factura.getObservaciones();
-            if (factura instanceof FacturaVenta) {  //revisar, agrega dificultades
+            if (factura instanceof FacturaVenta) {
                 fila[3] = factura.getTotal();
                 fila[4] = 0.0;
             } else {
@@ -322,14 +333,18 @@ public class GUI_Caja extends javax.swing.JDialog {
         tbl_balance.setModel(modeloTablaBalance);
     }
 
-    private void calcularTotal(Caja caja) {
-        double totalDebe = 0;
-        double totalHaber = 0;
+    private double[] calcularTotal(Caja caja) {
+        double totalDebe = 0.0;
+        double totalHaber = 0.0;
+        double totalBalance = 0.0;
         int cantidadDeFilas = tbl_balance.getRowCount();
         for (int i = 0; i < cantidadDeFilas; i++) {
             totalDebe += (double) tbl_balance.getValueAt(i, 3);
             totalHaber += (double) tbl_balance.getValueAt(i, 4);
         }
-        this.ftxt_Total.setText(String.valueOf(caja.getSaldoInicial() + totalDebe - totalHaber));
+        totalBalance = caja.getSaldoInicial() + totalDebe - totalHaber;
+        this.ftxt_Total.setText(String.valueOf(totalBalance));
+        double valores[] = {totalDebe, totalHaber, totalBalance};
+        return valores;
     }
 }
