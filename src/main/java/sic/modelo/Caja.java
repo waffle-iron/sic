@@ -20,11 +20,9 @@ import lombok.Data;
 @Table(name = "caja")
 @NamedQueries({
     @NamedQuery(name = "Caja.cajaSinArqueo",
-            query = "SELECT c FROM Caja c WHERE c.cerrada = false AND c.empresa.id_Empresa = :id_Empresa"),
-    @NamedQuery(name = "ControlCaja.buscarCajaPorID",
+            query = "SELECT c FROM Caja c WHERE c.cerrada = false AND c.empresa.id_Empresa = :id_Empresa ORDER BY c.fechaApertura DESC"), 
+    @NamedQuery(name = "Caja.buscarCajaPorID",
             query = "SELECT c FROM Caja c WHERE c.id_Caja = :id_caja AND c.empresa.id_Empresa = :id_Empresa ORDER BY c.fechaApertura ASC"),
-    @NamedQuery(name = "Caja.cajaSinArqueoPorFormaDepago",
-            query = "SELECT c FROM Caja c WHERE c.empresa.id_Empresa = :id_Empresa AND c.formaDePago.id_FormaDePago = :id_FormaDePago AND c.cerrada = false ORDER BY c.fechaApertura DESC"),
     @NamedQuery(name = "Caja.ultimoNumeroDeCaja",
             query = "SELECT max(c.nroCaja) FROM Caja c WHERE c.empresa.id_Empresa = :id_Empresa")
 })
@@ -55,10 +53,6 @@ public class Caja implements Serializable {
 
     @Column(nullable = false)
     private String concepto;
-
-    @OneToOne
-    @JoinColumn(name = "id_FormaDePago", referencedColumnName = "id_FormaDePAgo")
-    private FormaDePago formaDePago;
 
     private boolean cerrada;
 

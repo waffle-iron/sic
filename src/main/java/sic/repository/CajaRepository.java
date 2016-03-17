@@ -18,7 +18,7 @@ public class CajaRepository {
         em.close();
     }
 
-    public Caja getControlCajaSinArqueo(Long id_Empresa) {
+    public Caja getCajaSinArqueo(Long id_Empresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.cajaSinArqueo", Caja.class);
         typedQuery.setParameter("id_Empresa", id_Empresa);
@@ -42,7 +42,7 @@ public class CajaRepository {
 
     public Caja getCajaPorID(long id_Caja, long id_Empresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Caja> typedQuery = em.createNamedQuery("ControlCaja.buscarCajaPorID", Caja.class);
+        TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.buscarCajaPorID", Caja.class);
         typedQuery.setParameter("id_caja", id_Caja);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         List<Caja> cajas = typedQuery.getResultList();
@@ -54,20 +54,6 @@ public class CajaRepository {
         }
     }
 
-//    public Caja getCajaPorNroYFormaDePago(long nroCaja, long idEmpresa, long idFormaDePago) {
-//        EntityManager em = PersistenceUtil.getEntityManager();
-//        TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.cajaSinArqueoPorFormaDepago", Caja.class);
-//        typedQuery.setParameter("nroCaja", nroCaja);
-//        typedQuery.setParameter("id_Empresa", idEmpresa);
-//        typedQuery.setParameter("id_FormaDePago", idFormaDePago);
-//        List<Caja> cajas = typedQuery.getResultList();
-//        em.close();
-//        if (cajas.isEmpty()) {
-//            return null;
-//        } else {
-//            return cajas.get(0);
-//        }
-//    }
     public Caja getCajaPorFormaDePago(long idEmpresa, long idFormaDePago) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.cajaSinArqueoPorFormaDepago", Caja.class);

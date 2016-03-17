@@ -1,12 +1,16 @@
 package sic.service;
 
+import java.util.List;
 import java.util.ResourceBundle;
 import sic.modelo.Caja;
+import sic.modelo.FacturaCompra;
+import sic.modelo.FacturaVenta;
+import sic.modelo.Gasto;
 import sic.repository.CajaRepository;
 
 public class CajaService {
 
-    private final CajaRepository controlCajaRepository = new CajaRepository();
+    private final CajaRepository CajaRepository = new CajaRepository();
 
     public void validarCaja(Caja caja) {
         //Entrada de Datos
@@ -24,7 +28,7 @@ public class CajaService {
                     .getString("mensaje_caja_usuario_vacio"));
         }
         //Duplicados
-        if (controlCajaRepository.getCajaPorID(caja.getId_Caja(), caja.getEmpresa().getId_Empresa()) != null) {
+        if (CajaRepository.getCajaPorID(caja.getId_Caja(), caja.getEmpresa().getId_Empresa()) != null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_duplicada"));
         }
@@ -32,23 +36,35 @@ public class CajaService {
 
     public void guardar(Caja caja) {
         this.validarCaja(caja);
-        controlCajaRepository.guardar(caja);
+        CajaRepository.guardar(caja);
     }
 
     public void actualizar(Caja caja) {
-        controlCajaRepository.actualizar(caja);
+        CajaRepository.actualizar(caja);
     }
 
     public Caja getCajaSinArqueo(long id_Empresa) {
-        return controlCajaRepository.getControlCajaSinArqueo(id_Empresa);
-    }
-
-    public Caja getCajaSinArqueoPorFormaDePago(long id_Empresa, long id_FormaDePago) {
-        return controlCajaRepository.getCajaPorFormaDePago(id_Empresa, id_FormaDePago);
+        return CajaRepository.getCajaSinArqueo(id_Empresa);
     }
 
     public int getUltimoNumeroDeCaja(long id_Empresa) {
-        return controlCajaRepository.getUltimoNumeroDeCaja(id_Empresa);
+        return CajaRepository.getUltimoNumeroDeCaja(id_Empresa);
+    }
+
+    public double calcularTotalPorMovimiento(List<Object> movimientos) {
+        double total = 0.0;
+        for (Object movimiento : movimientos) {
+            if (movimiento instanceof FacturaVenta) {
+                total += ((FacturaVenta) movimiento).getTotal();
+            }
+            if (movimiento instanceof FacturaCompra) {
+                total -= ((FacturaCompra) movimiento).getTotal();
+            }
+            if (movimiento instanceof Gasto) {
+                total -= ((Gasto) movimiento).getMonto();
+            }
+        }
+        return total;
     }
 
 }
