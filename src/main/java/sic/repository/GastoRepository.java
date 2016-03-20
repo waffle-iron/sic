@@ -19,19 +19,31 @@ public class GastoRepository {
         em.close();
     }
 
-    public List<Gasto> getGastosPorFecha(Long id_Empresa, Date desde, Date hasta) {
+    public List<Object> getGastosPorFecha(Long id_Empresa, Date desde, Date hasta) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.gastosSinArqueoPorFecha", Gasto.class);
+        TypedQuery<Object> typedQuery = (TypedQuery<Object>) em.createNamedQuery("Gasto.gastosSinArqueoPorFecha");
         typedQuery.setParameter("id_Empresa", id_Empresa);
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
-        List<Gasto> Gastos = typedQuery.getResultList();
+        List<Object> Gastos = typedQuery.getResultList();
         em.close();
         if (Gastos.isEmpty()) {
             return null;
         } else {
             return Gastos;
         }
+    }
+
+    public List<Object> getGastosPorFechaYFormaDePago(Long id_Empresa, Long id_FormaDePago, Date desde, Date hasta) {
+        EntityManager em = PersistenceUtil.getEntityManager();
+        TypedQuery<Object> typedQuery = (TypedQuery<Object>) em.createNamedQuery("Gasto.gastosSinArqueoPorFormaDePagoYFecha");
+        typedQuery.setParameter("id_Empresa", id_Empresa);
+        typedQuery.setParameter("id_FormaDePago", id_FormaDePago);
+        typedQuery.setParameter("desde", desde);
+        typedQuery.setParameter("hasta", hasta);
+        List<Object> Gastos = typedQuery.getResultList();
+        em.close();
+        return Gastos;
     }
 
     public void actualizar(Gasto gasto) {
@@ -59,7 +71,7 @@ public class GastoRepository {
 
     public int getUltimoNumeroDeGasto(long idEmpresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Integer> typedQuery = em.createNamedQuery("Gasto.ultimoNumeroDeCaja", Integer.class);
+        TypedQuery<Integer> typedQuery = em.createNamedQuery("Gasto.ultimoNumeroDeGasto", Integer.class);
         typedQuery.setParameter("id_Empresa", idEmpresa);
         Integer ultimoNumeroDeGasto = typedQuery.getSingleResult();
         em.close();

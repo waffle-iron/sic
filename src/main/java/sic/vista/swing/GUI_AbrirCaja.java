@@ -3,7 +3,6 @@ package sic.vista.swing;
 import java.util.Date;
 import javax.swing.JDialog;
 import sic.modelo.Caja;
-import sic.modelo.FormaDePago;
 import sic.service.CajaService;
 import sic.service.EmpresaService;
 import sic.service.UsuarioService;

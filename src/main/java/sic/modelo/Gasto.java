@@ -27,7 +27,7 @@ import lombok.Data;
             query = "SELECT g FROM Gasto g WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa AND g.fecha BETWEEN :desde AND :hasta"),
     @NamedQuery(name = "Gasto.gastoPorId",
             query = "SELECT g FROM Gasto g WHERE g.id_Gasto = :id_Gasto AND g.empresa.id_Empresa = :id_Empresa ORDER BY g.fecha ASC"),
-    @NamedQuery(name = "Gasto.ultimoNumeroDeCaja",
+    @NamedQuery(name = "Gasto.ultimoNumeroDeGasto",
             query = "SELECT max(g.nroGasto) FROM Gasto g WHERE g.empresa.id_Empresa = :id_Empresa")
 })
 @Data
