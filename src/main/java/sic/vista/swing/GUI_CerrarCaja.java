@@ -42,7 +42,7 @@ public class GUI_CerrarCaja extends javax.swing.JDialog {
         ftxt_SaldoReal.setText("0.0");
 
         ftxt_SaldoDelSistema.setEditable(false);
-        ftxt_SaldoDelSistema.setEnabled(false);
+        ftxt_SaldoDelSistema.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
         btn_Aceptar.setText("Aceptar");
         btn_Aceptar.addActionListener(new java.awt.event.ActionListener() {
@@ -98,7 +98,7 @@ public class GUI_CerrarCaja extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_Aceptar)
                     .addComponent(btn_Cancelar))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {ftxt_SaldoDelSistema, ftxt_SaldoReal});
@@ -114,7 +114,9 @@ public class GUI_CerrarCaja extends javax.swing.JDialog {
         this.caja.setSaldoReal(Double.parseDouble(this.ftxt_SaldoReal.getValue().toString()));
         this.caja.setFechaCierre(new Date());
         this.caja.setCerrada(true);
-        cajaService.actualizar(caja);
+        GUI_impresionCaja informe = new GUI_impresionCaja(this, true, this.caja);
+        informe.setLocationRelativeTo(null);
+        informe.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_AceptarActionPerformed
 

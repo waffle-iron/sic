@@ -1,6 +1,9 @@
 package sic.vista.swing;
 
 import java.awt.Color;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,20 +63,24 @@ public class GUI_Caja extends javax.swing.JDialog {
         pbl_Cabecera = new javax.swing.JPanel();
         lbl_FormaDePago = new javax.swing.JLabel();
         cmb_FormasDePago = new javax.swing.JComboBox<>();
+        lbl_aviso = new javax.swing.JLabel();
+        btn_abrirCaja = new javax.swing.JButton();
+        btn_AgregarGasto = new javax.swing.JButton();
         pnl_Tabla = new javax.swing.JPanel();
         sp_Tabla = new javax.swing.JScrollPane();
         tbl_Balance = new javax.swing.JTable();
-        lbl_aviso = new javax.swing.JLabel();
+        btn_VerDetalle = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        ftxt_Detalle = new javax.swing.JTextField();
+        pnl_Resumen = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_Resumen = new javax.swing.JTable();
-        btn_abrirCaja = new javax.swing.JButton();
-        btn_AgregarGasto = new javax.swing.JButton();
         ftxt_Total = new javax.swing.JFormattedTextField();
-        btn_VerDetalle = new javax.swing.JButton();
         lbl_Total = new javax.swing.JLabel();
         btn_RealizarArqueo = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Arqueo de Caja");
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -87,11 +94,29 @@ public class GUI_Caja extends javax.swing.JDialog {
             }
         });
 
-        lbl_FormaDePago.setText("Filtrar por forma de pago:");
+        lbl_FormaDePago.setText("Forma de Pago:");
 
         cmb_FormasDePago.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmb_FormasDePagoActionPerformed(evt);
+            }
+        });
+
+        lbl_aviso.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+
+        btn_abrirCaja.setForeground(java.awt.Color.blue);
+        btn_abrirCaja.setText("Abrir Caja");
+        btn_abrirCaja.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_abrirCajaActionPerformed(evt);
+            }
+        });
+
+        btn_AgregarGasto.setForeground(java.awt.Color.blue);
+        btn_AgregarGasto.setText("Agregar Gasto");
+        btn_AgregarGasto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_AgregarGastoActionPerformed(evt);
             }
         });
 
@@ -100,25 +125,87 @@ public class GUI_Caja extends javax.swing.JDialog {
         pbl_CabeceraLayout.setHorizontalGroup(
             pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pbl_CabeceraLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbl_FormaDePago)
-                    .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
+                .addComponent(lbl_FormaDePago)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btn_abrirCaja)
+                .addGap(0, 0, 0)
+                .addComponent(btn_AgregarGasto)
+                .addGap(20, 20, 20))
         );
 
-        pbl_CabeceraLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cmb_FormasDePago, lbl_FormaDePago});
+        pbl_CabeceraLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AgregarGasto, btn_abrirCaja});
 
         pbl_CabeceraLayout.setVerticalGroup(
             pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pbl_CabeceraLayout.createSequentialGroup()
-                .addComponent(lbl_FormaDePago)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lbl_FormaDePago)
+                        .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_abrirCaja)
+                        .addComponent(btn_AgregarGasto)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        pbl_CabeceraLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_AgregarGasto, btn_abrirCaja});
+
+        pnl_Tabla.setBorder(javax.swing.BorderFactory.createTitledBorder("Detalle por Forma de Pago"));
 
         tbl_Balance.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         sp_Tabla.setViewportView(tbl_Balance);
+
+        btn_VerDetalle.setForeground(java.awt.Color.blue);
+        btn_VerDetalle.setText("Ver Detalle");
+        btn_VerDetalle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_VerDetalleActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Total:");
+
+        ftxt_Detalle.setEditable(false);
+        ftxt_Detalle.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        ftxt_Detalle.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+
+        javax.swing.GroupLayout pnl_TablaLayout = new javax.swing.GroupLayout(pnl_Tabla);
+        pnl_Tabla.setLayout(pnl_TablaLayout);
+        pnl_TablaLayout.setHorizontalGroup(
+            pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl_TablaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sp_Tabla)
+                    .addGroup(pnl_TablaLayout.createSequentialGroup()
+                        .addComponent(btn_VerDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, 0)
+                        .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        pnl_TablaLayout.setVerticalGroup(
+            pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_TablaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btn_VerDetalle)
+                    .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1)))
+                .addContainerGap())
+        );
+
+        pnl_Resumen.setBorder(javax.swing.BorderFactory.createTitledBorder("Resumen"));
 
         tbl_Resumen.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -131,33 +218,15 @@ public class GUI_Caja extends javax.swing.JDialog {
         jScrollPane1.setViewportView(tbl_Resumen);
         tbl_Resumen.getAccessibleContext().setAccessibleParent(sp_Tabla);
 
-        btn_abrirCaja.setText("Abrir Caja");
-        btn_abrirCaja.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_abrirCajaActionPerformed(evt);
-            }
-        });
-
-        btn_AgregarGasto.setText("Agregar Gasto");
-        btn_AgregarGasto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_AgregarGastoActionPerformed(evt);
-            }
-        });
-
         ftxt_Total.setEditable(false);
         ftxt_Total.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-
-        btn_VerDetalle.setText("Ver Detalle");
-        btn_VerDetalle.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_VerDetalleActionPerformed(evt);
-            }
-        });
+        ftxt_Total.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        ftxt_Total.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
         lbl_Total.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Total.setText("Total:");
 
+        btn_RealizarArqueo.setForeground(java.awt.Color.blue);
         btn_RealizarArqueo.setText("Realizar Arqueo");
         btn_RealizarArqueo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -165,69 +234,38 @@ public class GUI_Caja extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout pnl_TablaLayout = new javax.swing.GroupLayout(pnl_Tabla);
-        pnl_Tabla.setLayout(pnl_TablaLayout);
-        pnl_TablaLayout.setHorizontalGroup(
-            pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_TablaLayout.createSequentialGroup()
+        javax.swing.GroupLayout pnl_ResumenLayout = new javax.swing.GroupLayout(pnl_Resumen);
+        pnl_Resumen.setLayout(pnl_ResumenLayout);
+        pnl_ResumenLayout.setHorizontalGroup(
+            pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl_ResumenLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnl_TablaLayout.createSequentialGroup()
-                        .addComponent(btn_abrirCaja)
+                .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_ResumenLayout.createSequentialGroup()
+                        .addComponent(btn_RealizarArqueo, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lbl_Total)
                         .addGap(0, 0, 0)
-                        .addComponent(btn_AgregarGasto)
-                        .addGap(4, 4, 4)
-                        .addComponent(lbl_aviso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(68, 68, 68))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_TablaLayout.createSequentialGroup()
-                        .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(sp_Tabla))
-                        .addContainerGap())))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_TablaLayout.createSequentialGroup()
-                .addContainerGap(177, Short.MAX_VALUE)
-                .addComponent(btn_VerDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(lbl_Total)
-                .addGap(0, 0, 0)
-                .addComponent(ftxt_Total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(btn_RealizarArqueo, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ftxt_Total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
-        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_RealizarArqueo, btn_VerDetalle, ftxt_Total, lbl_Total});
+        pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_RealizarArqueo, ftxt_Total, lbl_Total});
 
-        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AgregarGasto, btn_abrirCaja});
-
-        pnl_TablaLayout.setVerticalGroup(
-            pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_TablaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_abrirCaja)
-                        .addComponent(btn_AgregarGasto))
-                    .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+        pnl_ResumenLayout.setVerticalGroup(
+            pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl_ResumenLayout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Tabla, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btn_RealizarArqueo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ftxt_Total, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_VerDetalle)
-                        .addComponent(lbl_Total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(ftxt_Total)
+                        .addComponent(lbl_Total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
-        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_RealizarArqueo, ftxt_Total, lbl_Total});
-
-        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_AgregarGasto, btn_abrirCaja});
-
-        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jScrollPane1, sp_Tabla});
+        pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_RealizarArqueo, ftxt_Total, lbl_Total});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -235,9 +273,10 @@ public class GUI_Caja extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnl_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pbl_Cabecera, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnl_Tabla, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pnl_Resumen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -246,7 +285,10 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(pbl_Cabecera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnl_Tabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(pnl_Tabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnl_Resumen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18))
         );
 
         pack();
@@ -348,7 +390,7 @@ public class GUI_Caja extends javax.swing.JDialog {
             this.listaMovimientos = facturas;
             List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), caja.getFechaApertura(), new Date());
             this.listaMovimientos.addAll(gastos);
-            lbl_aviso.setText("Caja abierta -- Saldo Inicial: " + caja.getSaldoInicial());
+            lbl_aviso.setText("Caja abierta");
             lbl_aviso.setForeground(Color.GREEN);
             this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
         }
@@ -360,12 +402,15 @@ public class GUI_Caja extends javax.swing.JDialog {
     private javax.swing.JButton btn_VerDetalle;
     private javax.swing.JButton btn_abrirCaja;
     private javax.swing.JComboBox<FormaDePago> cmb_FormasDePago;
+    private javax.swing.JTextField ftxt_Detalle;
     private javax.swing.JFormattedTextField ftxt_Total;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_FormaDePago;
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_aviso;
     private javax.swing.JPanel pbl_Cabecera;
+    private javax.swing.JPanel pnl_Resumen;
     private javax.swing.JPanel pnl_Tabla;
     private javax.swing.JScrollPane sp_Tabla;
     javax.swing.JTable tbl_Balance;
@@ -391,7 +436,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         //nombres de columnas
         String[] encabezados = new String[6];
         encabezados[0] = "Fecha y Hora";
-        encabezados[1] = "Numero";
+        encabezados[1] = "Concepto";
         encabezados[2] = "Debe";
         encabezados[3] = "Haber";
         encabezados[4] = "Saldo";
@@ -413,10 +458,10 @@ public class GUI_Caja extends javax.swing.JDialog {
 
         //Tamanios de columnas
         tbl_Balance.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tbl_Balance.getColumnModel().getColumn(1).setPreferredWidth(50);
+        tbl_Balance.getColumnModel().getColumn(1).setPreferredWidth(100);
         tbl_Balance.getColumnModel().getColumn(2).setPreferredWidth(50);
-        tbl_Balance.getColumnModel().getColumn(3).setPreferredWidth(100);
-        tbl_Balance.getColumnModel().getColumn(4).setPreferredWidth(100);
+        tbl_Balance.getColumnModel().getColumn(3).setPreferredWidth(50);
+        tbl_Balance.getColumnModel().getColumn(4).setPreferredWidth(50);
 
     }
 
@@ -446,9 +491,15 @@ public class GUI_Caja extends javax.swing.JDialog {
                 fila[3] = ((Gasto) movimiento).getMonto();
             }
             if (movimiento instanceof FacturaVenta || movimiento instanceof FacturaCompra) {
-                fila[1] = ((Factura) movimiento).getNumSerie() + " - " + ((Factura) movimiento).getNumFactura();
+                String tipoFactura;
+                if (movimiento instanceof FacturaVenta) {
+                    tipoFactura = "Venta   ";
+                } else {
+                    tipoFactura = "Compra";
+                }
+                fila[1] = "Factura " + tipoFactura + " Nº " + ((Factura) movimiento).getNumSerie() + " - " + ((Factura) movimiento).getNumFactura();
             } else if (movimiento instanceof Gasto) {
-                fila[1] = ((Gasto) movimiento).getNroGasto();
+                fila[1] = ((Gasto) movimiento).getConcepto();
             }
             fila[4] = (double) fila[2] - (double) fila[3];
             fila[5] = movimiento;
@@ -475,7 +526,7 @@ public class GUI_Caja extends javax.swing.JDialog {
 
         //nombres de columnas
         String[] encabezados = new String[2];
-        encabezados[0] = "Resumen";
+        encabezados[0] = "Forma de Pago";
         encabezados[1] = "Monto";
         modeloTablaResumen.setColumnIdentifiers(encabezados);
         tbl_Resumen.setModel(modeloTablaResumen);
@@ -513,29 +564,27 @@ public class GUI_Caja extends javax.swing.JDialog {
             total += totalParcial;
             modeloTablaResumen.addRow(fila);
         }
-        Object[] fila = new Object[2];
-        fila[0] = "TOTAL";
-        fila[1] = total;
         this.totalCaja = total;
-        this.ftxt_Total.setText(String.valueOf(this.totalCaja));
-        modeloTablaResumen.addRow(fila);
+        this.ftxt_Total.setText(formatoNumeros(this.totalCaja));
         tbl_Resumen.setModel(modeloTablaResumen);
         tbl_Resumen.setDefaultRenderer(Double.class, new ColoresTablaResumenCaja());
     }
 
     private void calcularTotalBalance() {
-        Object[] fila = new Object[6];
         double totalDebe = 0.0;
         double totalHaber = 0.0;
         for (int i = 0; i < modeloTablaBalance.getRowCount(); i++) {
             totalDebe += (Double) modeloTablaBalance.getValueAt(i, 2);
             totalHaber += (Double) modeloTablaBalance.getValueAt(i, 3);
         }
-        fila[0] = "Total";
-        fila[1] = "--";
-        fila[2] = totalDebe;
-        fila[3] = totalHaber;
-        fila[4] = totalDebe - totalHaber;
-        modeloTablaBalance.addRow(fila);
+        ftxt_Detalle.setText(formatoNumeros(totalDebe - totalHaber));
+    }
+
+    public static String formatoNumeros(Number n) {
+        NumberFormat format = DecimalFormat.getInstance();
+        format.setRoundingMode(RoundingMode.FLOOR);
+        format.setMinimumFractionDigits(0);
+        format.setMaximumFractionDigits(2);
+        return format.format(n);
     }
 }

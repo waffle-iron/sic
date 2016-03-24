@@ -249,7 +249,7 @@ public class GUI_Principal extends JFrame {
         });
         mnu_Administracion.add(mnuItm_FormasDePago);
 
-        mnuItm_Caja.setText("Caja");
+        mnuItm_Caja.setText("Arqueo de Caja");
         mnuItm_Caja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnuItm_CajaActionPerformed(evt);
