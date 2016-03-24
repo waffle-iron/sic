@@ -18,7 +18,6 @@ import sic.service.EmpresaService;
 import sic.service.FacturaService;
 import sic.service.FormaDePagoService;
 import sic.service.GastoService;
-import static sic.vista.swing.GUI_Caja.formatoNumeros;
 
 public class GUI_impresionCaja extends javax.swing.JDialog {
 
@@ -287,6 +286,7 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
             this.listaMovimientos.addAll(gastos);
             this.cargarMovimientosEnLaTablaInforme(this.listaMovimientos, formaDePago);
         }
+        this.cargarFinalInforme();
 
     }
 
@@ -351,5 +351,30 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         tbl_Informe.setModel(modeloTablaInforme);
         tbl_Informe.setDefaultRenderer(Double.class, new ColoresTablaResumenCaja());
 
+    }
+
+    private void cargarFinalInforme() {
+        Empresa empresaActiva = empresaService.getEmpresaActiva().getEmpresa();
+        this.caja = cajaService.getCajaSinArqueo(empresaActiva.getId_Empresa());
+        double total = this.caja.getSaldoInicial();
+        Object[] saldoInicial = new Object[5];
+        saldoInicial[0] = "Saldo Apertura";
+        saldoInicial[4] = total;
+        modeloTablaInforme.addRow(saldoInicial);
+        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaActiva);
+        for (FormaDePago formaDePago : formasDePago) {
+            Object[] fila = new Object[5];
+            List<Object> facturasPorFormaDePago = facturaService.getFacturasPorFechasYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), new Date());
+            List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), new Date());
+            fila[0] = formaDePago.getNombre();
+            double totalParcial = cajaService.calcularTotalPorMovimiento(facturasPorFormaDePago) + cajaService.calcularTotalPorMovimiento(gastos);
+            fila[4] = totalParcial;
+            total += totalParcial;
+            modeloTablaInforme.addRow(fila);
+        }
+        Object[] Total = new Object[5];
+        saldoInicial[0] = "Saldo Total";
+        saldoInicial[4] = total;
+        tbl_Informe.setModel(modeloTablaInforme);
     }
 }
