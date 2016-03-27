@@ -5,7 +5,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import sic.modelo.BusquedaPedidoCriteria;
-import sic.modelo.Factura;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonPedido;
 import sic.util.FormatterFechaHora;

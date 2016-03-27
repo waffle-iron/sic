@@ -1,5 +1,6 @@
 package sic.vista.swing;
 
+import java.awt.Font;
 import java.awt.print.PrinterException;
 import java.text.MessageFormat;
 import java.util.Date;
@@ -18,6 +19,8 @@ import sic.service.EmpresaService;
 import sic.service.FacturaService;
 import sic.service.FormaDePagoService;
 import sic.service.GastoService;
+import sic.util.ColoresParaImprimir;
+import sic.util.Utilidades;
 
 public class GUI_impresionCaja extends javax.swing.JDialog {
 
@@ -40,6 +43,7 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         super(parent, modal);
         this.caja = caja;
         initComponents();
+        this.prepararConfiguracionPorDefecto();
     }
 
     @SuppressWarnings("unchecked")
@@ -191,9 +195,7 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
 
     private void btn_imprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_imprimirActionPerformed
         MessageFormat header = null;
-        /* Si vamos a imprimir una cabecera */
         if (chk_Cabecera.isSelected()) {
-            /* crea un MessageFormat alrrededor de la cabezera del texto */
             header = new MessageFormat(txt_Cabecera.getText());
         }
 
@@ -207,15 +209,17 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         boolean mostrarDialoDeImpresion = chk_MostrarDialogo.isSelected();
         boolean interactivo = chk_MuestraDialogoDeEstado.isSelected();
         JTable.PrintMode mode = ajustarAncho ? JTable.PrintMode.FIT_WIDTH : JTable.PrintMode.NORMAL;
+        tbl_Informe.setFont(new Font("Font", Font.BOLD, 24));
+        tbl_Informe.setRowHeight(tbl_Informe.getRowHeight() + 8);
 
         try {
             /* imprime la tabla */
-            boolean complete = tbl_Informe.print(mode, header, footer,
+            boolean completado = tbl_Informe.print(mode, header, footer,
                     mostrarDialoDeImpresion, null,
                     interactivo, null);
 
             /* si la impresión se completa */
-            if (complete) {
+            if (completado) {
                 /* muestra un mensaje de exito */
                 JOptionPane.showMessageDialog(this,
                         "Impresión completa",
@@ -235,8 +239,6 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
                     "Resultado De La Impresión",
                     JOptionPane.ERROR_MESSAGE);
         }
-
-        //this.cajaService.actualizar(caja);
     }//GEN-LAST:event_btn_imprimirActionPerformed
 
     public void setColumnasInforme() {
@@ -244,12 +246,10 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         tbl_Informe.setAutoCreateRowSorter(true);
 
         //nombres de columnas
-        String[] encabezados = new String[5];
-        encabezados[0] = "Fecha y Hora";
-        encabezados[1] = "Concepto";
-        encabezados[2] = "Debe";
-        encabezados[3] = "Haber";
-        encabezados[4] = "Saldo";
+        String[] encabezados = new String[3];
+        encabezados[0] = "Forma De Pago";
+        encabezados[1] = "Fecha";
+        encabezados[2] = "Saldo";
         modeloTablaInforme.setColumnIdentifiers(encabezados);
         tbl_Informe.setModel(modeloTablaInforme);
 
@@ -257,9 +257,7 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         Class[] tipos = new Class[modeloTablaInforme.getColumnCount()];
         tipos[0] = String.class;
         tipos[1] = String.class;
-        tipos[2] = Double.class;
-        tipos[3] = Double.class;
-        tipos[4] = Double.class;
+        tipos[2] = String.class;
         modeloTablaInforme.setClaseColumnas(tipos);
         tbl_Informe.getTableHeader().setReorderingAllowed(false);
         tbl_Informe.getTableHeader().setResizingAllowed(true);
@@ -268,8 +266,7 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         tbl_Informe.getColumnModel().getColumn(0).setPreferredWidth(100);
         tbl_Informe.getColumnModel().getColumn(1).setPreferredWidth(100);
         tbl_Informe.getColumnModel().getColumn(2).setPreferredWidth(50);
-        tbl_Informe.getColumnModel().getColumn(3).setPreferredWidth(50);
-        tbl_Informe.getColumnModel().getColumn(4).setPreferredWidth(50);
+
     }
 
     private void limpiarTablaInforme() {
@@ -307,32 +304,32 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void cargarMovimientosEnLaTablaInforme(List<Object> listaMovimientos, FormaDePago formaDePago) {
-        Object[] encabezado = new Object[5];
-        encabezado[0] = "Forma de Pago ";
-        encabezado[1] = formaDePago.getNombre();
+        Double total = 0.0;
+        Object[] encabezado = new Object[3];
+        encabezado[0] = formaDePago.getNombre();
         modeloTablaInforme.addRow(encabezado);
         for (Object movimiento : listaMovimientos) {
-            Object[] fila = new Object[5];
+            Object[] fila = new Object[3];
             if (movimiento instanceof FacturaCompra) {
-                fila[0] = ((FacturaCompra) movimiento).getFecha().toString();
+                fila[1] = Utilidades.formatoFecha(((FacturaCompra) movimiento).getFecha());
             }
             if (movimiento instanceof FacturaVenta) {
-                fila[0] = ((FacturaVenta) movimiento).getFecha().toString();
+                fila[1] = Utilidades.formatoFecha(((FacturaVenta) movimiento).getFecha());
             }
             if (movimiento instanceof Gasto) {
-                fila[0] = ((Gasto) movimiento).getFecha().toString();
-            }
-            if (movimiento instanceof FacturaCompra) {
-                fila[2] = 0.0;
-                fila[3] = ((FacturaCompra) movimiento).getTotal();
+                fila[1] = Utilidades.formatoFecha(((Gasto) movimiento).getFecha());
             }
             if (movimiento instanceof FacturaVenta) {
                 fila[2] = ((FacturaVenta) movimiento).getTotal();
-                fila[3] = 0.0;
+                total += ((FacturaVenta) movimiento).getTotal();
+            }
+            if (movimiento instanceof FacturaCompra) {
+                fila[2] = 0 - ((FacturaCompra) movimiento).getTotal();
+                total -= ((FacturaCompra) movimiento).getTotal();
             }
             if (movimiento instanceof Gasto) {
-                fila[2] = 0.0;
-                fila[3] = ((Gasto) movimiento).getMonto();
+                fila[2] = 0 - ((Gasto) movimiento).getMonto();
+                total -= ((Gasto) movimiento).getMonto();
             }
             if (movimiento instanceof FacturaVenta || movimiento instanceof FacturaCompra) {
                 String tipoFactura;
@@ -341,40 +338,61 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
                 } else {
                     tipoFactura = "Compra";
                 }
-                fila[1] = "Factura " + tipoFactura + " Nº " + ((Factura) movimiento).getNumSerie() + " - " + ((Factura) movimiento).getNumFactura();
+                fila[0] = "Factura " + tipoFactura + " Nº " + ((Factura) movimiento).getNumSerie() + " - " + ((Factura) movimiento).getNumFactura();
             } else if (movimiento instanceof Gasto) {
-                fila[1] = ((Gasto) movimiento).getConcepto();
+                fila[0] = ((Gasto) movimiento).getConcepto();
             }
-            fila[4] = (double) fila[2] - (double) fila[3];
             modeloTablaInforme.addRow(fila);
         }
+        Object[] totalPorFormaDePago = new Object[3];
+        totalPorFormaDePago[1] = "TOTAL:";
+        totalPorFormaDePago[2] = Utilidades.formatoNumeros(total);
+        modeloTablaInforme.addRow(totalPorFormaDePago);
         tbl_Informe.setModel(modeloTablaInforme);
-        tbl_Informe.setDefaultRenderer(Double.class, new ColoresTablaResumenCaja());
+        tbl_Informe.setDefaultRenderer(String.class, new ColoresParaImprimir());
 
     }
 
     private void cargarFinalInforme() {
+        Object[] resumen = new Object[3];
+        resumen[0] = "RESUMEN POR FORMA DE PAGO";
+        modeloTablaInforme.addRow(resumen);
+        Object[] espacio = new Object[3];
+        modeloTablaInforme.addRow(espacio);
         Empresa empresaActiva = empresaService.getEmpresaActiva().getEmpresa();
-        this.caja = cajaService.getCajaSinArqueo(empresaActiva.getId_Empresa());
         double total = this.caja.getSaldoInicial();
-        Object[] saldoInicial = new Object[5];
+        Object[] saldoInicial = new Object[3];
         saldoInicial[0] = "Saldo Apertura";
-        saldoInicial[4] = total;
+        saldoInicial[1] = Utilidades.formatoFecha(this.caja.getFechaApertura());
+        saldoInicial[2] = total;
         modeloTablaInforme.addRow(saldoInicial);
         List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaActiva);
         for (FormaDePago formaDePago : formasDePago) {
-            Object[] fila = new Object[5];
+            Object[] fila = new Object[3];
             List<Object> facturasPorFormaDePago = facturaService.getFacturasPorFechasYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), new Date());
             List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), new Date());
             fila[0] = formaDePago.getNombre();
             double totalParcial = cajaService.calcularTotalPorMovimiento(facturasPorFormaDePago) + cajaService.calcularTotalPorMovimiento(gastos);
-            fila[4] = totalParcial;
+            fila[1] = Utilidades.formatoFecha(new Date());
+            fila[2] = Utilidades.formatoNumeros(totalParcial);
             total += totalParcial;
             modeloTablaInforme.addRow(fila);
         }
-        Object[] Total = new Object[5];
-        saldoInicial[0] = "Saldo Total";
-        saldoInicial[4] = total;
+        Object[] Total = new Object[3];
+        Total[1] = "Saldo Total";
+        Total[2] = Utilidades.formatoNumeros(total);
+        modeloTablaInforme.addRow(Total);
         tbl_Informe.setModel(modeloTablaInforme);
+    }
+
+    private void prepararConfiguracionPorDefecto() {
+        chk_Cabecera.setSelected(true);
+        txt_Cabecera.setText(empresaService.getEmpresaActiva().getEmpresa().getNombre());
+        chk_AjustarALaPagina.setSelected(true);
+        chk_MostrarDialogo.setSelected(true);
+        chk_MuestraDialogoDeEstado.setSelected(true);
+        chk_PieDePagina.setSelected(true);
+        txt_PieDePagina.setText("{0}");
+        btn_imprimir.requestFocus();
     }
 }

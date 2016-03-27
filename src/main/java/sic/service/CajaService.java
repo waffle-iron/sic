@@ -1,7 +1,11 @@
 package sic.service;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ResourceBundle;
+import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
@@ -10,7 +14,7 @@ import sic.repository.CajaRepository;
 
 public class CajaService {
 
-    private final CajaRepository CajaRepository = new CajaRepository();
+    private final CajaRepository cajaRepository = new CajaRepository();
 
     public void validarCaja(Caja caja) {
         //Entrada de Datos
@@ -28,7 +32,7 @@ public class CajaService {
                     .getString("mensaje_caja_usuario_vacio"));
         }
         //Duplicados
-        if (CajaRepository.getCajaPorID(caja.getId_Caja(), caja.getEmpresa().getId_Empresa()) != null) {
+        if (cajaRepository.getCajaPorID(caja.getId_Caja(), caja.getEmpresa().getId_Empresa()) != null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_duplicada"));
         }
@@ -36,19 +40,23 @@ public class CajaService {
 
     public void guardar(Caja caja) {
         this.validarCaja(caja);
-        CajaRepository.guardar(caja);
+        cajaRepository.guardar(caja);
     }
 
     public void actualizar(Caja caja) {
-        CajaRepository.actualizar(caja);
+        cajaRepository.actualizar(caja);
     }
 
     public Caja getCajaSinArqueo(long id_Empresa) {
-        return CajaRepository.getCajaSinArqueo(id_Empresa);
+        return cajaRepository.getCajaSinArqueo(id_Empresa);
+    }
+
+    public Caja getCajaPorId(long id_Caja, long id_Empresa) {
+        return cajaRepository.getCajaPorID(id_Caja, id_Empresa);
     }
 
     public int getUltimoNumeroDeCaja(long id_Empresa) {
-        return CajaRepository.getUltimoNumeroDeCaja(id_Empresa);
+        return cajaRepository.getUltimoNumeroDeCaja(id_Empresa);
     }
 
     public double calcularTotalPorMovimiento(List<Object> movimientos) {
@@ -65,6 +73,31 @@ public class CajaService {
             }
         }
         return total;
+    }
+
+    public List<Caja> getCajas(long id_Empresa, Date desde, Date hasta) {
+        return cajaRepository.getCajas(id_Empresa, desde, hasta);
+    }
+
+    public List<Caja> getCajasCriteria(BusquedaCajaCriteria criteria) {
+        if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
+            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_caja_fechas_invalidas"));
+        }
+        if (criteria.isBuscaPorFecha() == true) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(criteria.getFechaDesde());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            criteria.setFechaDesde(cal.getTime());
+            cal.setTime(criteria.getFechaHasta());
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            criteria.setFechaHasta(cal.getTime());
+        }
+        return cajaRepository.getCajasCriteria(criteria);
     }
 
 }

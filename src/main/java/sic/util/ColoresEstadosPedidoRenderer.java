@@ -1,4 +1,4 @@
-package sic.vista.swing;
+package sic.util;
 
 import java.awt.Color;
 import java.awt.Component;

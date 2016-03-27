@@ -36,15 +36,15 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="btn_Aceptar" min="-2" max="-2" attributes="0"/>
+                              <Component id="btn_Aceptar" linkSize="6" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="btn_Cancelar" min="-2" max="-2" attributes="0"/>
+                              <Component id="btn_Cancelar" linkSize="6" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Component id="ftxt_SaldoReal" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace pref="30" max="32767" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -63,8 +63,8 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="btn_Aceptar" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btn_Cancelar" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btn_Aceptar" linkSize="5" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btn_Cancelar" linkSize="5" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="21" max="32767" attributes="0"/>
           </Group>
@@ -100,7 +100,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btn_Aceptar">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Aceptar"/>
+        <Property name="text" type="java.lang.String" value="Cerrar Caja"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_AceptarActionPerformed"/>

@@ -1,13 +1,16 @@
 package sic.vista.swing;
 
 import java.util.Date;
+import javax.swing.JOptionPane;
 import sic.modelo.Caja;
 import sic.service.CajaService;
+import sic.service.UsuarioService;
 
 public class GUI_CerrarCaja extends javax.swing.JDialog {
 
     private Caja caja;
     private final CajaService cajaService = new CajaService();
+    private final UsuarioService usuarioService = new UsuarioService();
 
     public GUI_CerrarCaja(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -44,7 +47,7 @@ public class GUI_CerrarCaja extends javax.swing.JDialog {
         ftxt_SaldoDelSistema.setEditable(false);
         ftxt_SaldoDelSistema.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
-        btn_Aceptar.setText("Aceptar");
+        btn_Aceptar.setText("Cerrar Caja");
         btn_Aceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_AceptarActionPerformed(evt);
@@ -78,10 +81,12 @@ public class GUI_CerrarCaja extends javax.swing.JDialog {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btn_Cancelar))
                             .addComponent(ftxt_SaldoReal))))
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_SaldoDelSistema, lbl_SaldoReal});
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Aceptar, btn_Cancelar});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -103,6 +108,8 @@ public class GUI_CerrarCaja extends javax.swing.JDialog {
 
         layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {ftxt_SaldoDelSistema, ftxt_SaldoReal});
 
+        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Aceptar, btn_Cancelar});
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -113,10 +120,10 @@ public class GUI_CerrarCaja extends javax.swing.JDialog {
     private void btn_AceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AceptarActionPerformed
         this.caja.setSaldoReal(Double.parseDouble(this.ftxt_SaldoReal.getValue().toString()));
         this.caja.setFechaCierre(new Date());
+        this.caja.setUsuarioCierra(usuarioService.getUsuarioActivo().getUsuario());
         this.caja.setCerrada(true);
-        GUI_impresionCaja informe = new GUI_impresionCaja(this, true, this.caja);
-        informe.setLocationRelativeTo(null);
-        informe.setVisible(true);
+        this.cajaService.actualizar(caja);
+        JOptionPane.showMessageDialog(this, "Caja Cerrada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
         this.dispose();
     }//GEN-LAST:event_btn_AceptarActionPerformed
 
