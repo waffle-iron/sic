@@ -24,6 +24,12 @@ public class GUI_CerrarCaja extends javax.swing.JDialog {
         this.ftxt_SaldoDelSistema.setText(String.valueOf(saldoFinal));
     }
 
+    public GUI_CerrarCaja(Caja caja, double saldoFinal) {
+        initComponents();
+        this.caja = caja;
+        this.ftxt_SaldoDelSistema.setText(String.valueOf(saldoFinal));
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -36,6 +42,7 @@ public class GUI_CerrarCaja extends javax.swing.JDialog {
         btn_Cancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Cerrar Caja");
 
         lbl_SaldoDelSistema.setText("Saldo del Sistema");
 

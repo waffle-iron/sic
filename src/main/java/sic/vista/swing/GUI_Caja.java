@@ -50,6 +50,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.caja = cajaService.getCajaSinArqueo(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        this.setTitle("Arqueo de Caja - Apertura: " + Utilidades.formatoFecha(this.caja.getFechaApertura()));
         this.limpiarTablaBalance();
     }
 
@@ -57,12 +58,14 @@ public class GUI_Caja extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.caja = caja;
+        this.setTitle("Arqueo de Caja - Apertura: " + Utilidades.formatoFecha(this.caja.getFechaApertura()));
         this.limpiarTablaBalance();
     }
 
     public GUI_Caja(Caja caja) {
         initComponents();
         this.caja = caja;
+        this.setTitle("Arqueo de Caja - Apertura: " + Utilidades.formatoFecha(this.caja.getFechaApertura()));
         this.limpiarTablaBalance();
     }
 
@@ -75,13 +78,13 @@ public class GUI_Caja extends javax.swing.JDialog {
         cmb_FormasDePago = new javax.swing.JComboBox<>();
         lbl_aviso = new javax.swing.JLabel();
         btn_abrirCaja = new javax.swing.JButton();
-        btn_AgregarGasto = new javax.swing.JButton();
         pnl_Tabla = new javax.swing.JPanel();
         sp_Tabla = new javax.swing.JScrollPane();
         tbl_Balance = new javax.swing.JTable();
         btn_VerDetalle = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
-        jtxt_Detalle = new javax.swing.JTextField();
+        btn_AgregarGasto = new javax.swing.JButton();
+        ftxt_Detalle = new javax.swing.JFormattedTextField();
         pnl_Resumen = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_Resumen = new javax.swing.JTable();
@@ -91,7 +94,6 @@ public class GUI_Caja extends javax.swing.JDialog {
         btn_Imprimir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Arqueo de Caja");
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -123,14 +125,6 @@ public class GUI_Caja extends javax.swing.JDialog {
             }
         });
 
-        btn_AgregarGasto.setForeground(java.awt.Color.blue);
-        btn_AgregarGasto.setText("Agregar Gasto");
-        btn_AgregarGasto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_AgregarGastoActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout pbl_CabeceraLayout = new javax.swing.GroupLayout(pbl_Cabecera);
         pbl_Cabecera.setLayout(pbl_CabeceraLayout);
         pbl_CabeceraLayout.setHorizontalGroup(
@@ -140,16 +134,14 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addComponent(lbl_FormaDePago)
                 .addGap(0, 0, 0)
                 .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8)
-                .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btn_abrirCaja)
-                .addGap(0, 0, 0)
-                .addComponent(btn_AgregarGasto)
-                .addGap(20, 20, 20))
+                .addGap(218, 218, 218)
+                .addComponent(btn_abrirCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
-        pbl_CabeceraLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AgregarGasto, btn_abrirCaja});
+        pbl_CabeceraLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_abrirCaja, lbl_aviso});
 
         pbl_CabeceraLayout.setVerticalGroup(
             pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,13 +151,9 @@ public class GUI_Caja extends javax.swing.JDialog {
                         .addComponent(lbl_FormaDePago)
                         .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_abrirCaja)
-                        .addComponent(btn_AgregarGasto)))
+                    .addComponent(btn_abrirCaja))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        pbl_CabeceraLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_AgregarGasto, btn_abrirCaja});
 
         pnl_Tabla.setBorder(javax.swing.BorderFactory.createTitledBorder("Movimientos por Forma de Pago"));
 
@@ -182,9 +170,18 @@ public class GUI_Caja extends javax.swing.JDialog {
 
         jLabel1.setText("Total:");
 
-        jtxt_Detalle.setEditable(false);
-        jtxt_Detalle.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-        jtxt_Detalle.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        btn_AgregarGasto.setForeground(java.awt.Color.blue);
+        btn_AgregarGasto.setText("Agregar Gasto");
+        btn_AgregarGasto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_AgregarGastoActionPerformed(evt);
+            }
+        });
+
+        ftxt_Detalle.setEditable(false);
+        ftxt_Detalle.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        ftxt_Detalle.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        ftxt_Detalle.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
         javax.swing.GroupLayout pnl_TablaLayout = new javax.swing.GroupLayout(pnl_Tabla);
         pnl_Tabla.setLayout(pnl_TablaLayout);
@@ -195,11 +192,13 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sp_Tabla)
                     .addGroup(pnl_TablaLayout.createSequentialGroup()
-                        .addComponent(btn_VerDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_VerDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_AgregarGasto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel1)
                         .addGap(0, 0, 0)
-                        .addComponent(jtxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         pnl_TablaLayout.setVerticalGroup(
@@ -209,8 +208,9 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_VerDetalle)
-                    .addComponent(jtxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)))
+                    .addComponent(jLabel1)
+                    .addComponent(btn_AgregarGasto)
+                    .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         pnl_Resumen.setBorder(javax.swing.BorderFactory.createTitledBorder("Resumen"));
@@ -227,7 +227,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         tbl_Resumen.getAccessibleContext().setAccessibleParent(sp_Tabla);
 
         ftxt_Total.setEditable(false);
-        ftxt_Total.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        ftxt_Total.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
         ftxt_Total.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         ftxt_Total.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
@@ -268,9 +268,6 @@ public class GUI_Caja extends javax.swing.JDialog {
                         .addComponent(ftxt_Total, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
-
-        pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_RealizarArqueo, lbl_Total});
-
         pnl_ResumenLayout.setVerticalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
@@ -305,7 +302,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(pbl_Cabecera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnl_Tabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(pnl_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(pnl_Resumen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18))
@@ -431,10 +428,10 @@ public class GUI_Caja extends javax.swing.JDialog {
     private javax.swing.JButton btn_VerDetalle;
     private javax.swing.JButton btn_abrirCaja;
     private javax.swing.JComboBox<FormaDePago> cmb_FormasDePago;
+    private javax.swing.JFormattedTextField ftxt_Detalle;
     private javax.swing.JFormattedTextField ftxt_Total;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jtxt_Detalle;
     private javax.swing.JLabel lbl_FormaDePago;
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_aviso;
@@ -464,7 +461,7 @@ public class GUI_Caja extends javax.swing.JDialog {
 
         //nombres de columnas
         String[] encabezados = new String[5];
-        encabezados[0] = "Fecha y Hora";
+        encabezados[0] = "Fecha";
         encabezados[1] = "Concepto";
         encabezados[2] = "Debe";
         encabezados[3] = "Haber";
@@ -594,7 +591,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                 modeloTablaResumen.addRow(fila);
             }
             this.caja.setSaldoFinal(total);
-            this.ftxt_Total.setText(sic.util.Utilidades.formatoNumeros(this.caja.getSaldoFinal()));
+            this.ftxt_Total.setValue(this.caja.getSaldoFinal());
             tbl_Resumen.setModel(modeloTablaResumen);
             tbl_Resumen.setDefaultRenderer(Double.class, new ColoresNumerosTabla());
         }
@@ -607,7 +604,7 @@ public class GUI_Caja extends javax.swing.JDialog {
             totalDebe += (Double) modeloTablaBalance.getValueAt(i, 2);
             totalHaber += (Double) modeloTablaBalance.getValueAt(i, 3);
         }
-        jtxt_Detalle.setText(sic.util.Utilidades.formatoNumeros(totalDebe - totalHaber));
+        ftxt_Detalle.setValue(totalDebe - totalHaber);
     }
 
     private void cargarElementosVista() {

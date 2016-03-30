@@ -51,7 +51,7 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
     private void initComponents() {
 
         pnl_TablaGeneral = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        jsp_Impresion = new javax.swing.JScrollPane();
         tbl_Informe = new javax.swing.JTable();
         pnl_ComandosEImpresion = new javax.swing.JPanel();
         chk_Cabecera = new javax.swing.JCheckBox();
@@ -59,7 +59,6 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         txt_Cabecera = new javax.swing.JTextField();
         txt_PieDePagina = new javax.swing.JTextField();
         chk_MostrarDialogo = new javax.swing.JCheckBox();
-        chk_AjustarALaPagina = new javax.swing.JCheckBox();
         chk_MuestraDialogoDeEstado = new javax.swing.JCheckBox();
         btn_imprimir = new javax.swing.JButton();
 
@@ -78,18 +77,18 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
 
             }
         ));
-        jScrollPane1.setViewportView(tbl_Informe);
+        jsp_Impresion.setViewportView(tbl_Informe);
 
         javax.swing.GroupLayout pnl_TablaGeneralLayout = new javax.swing.GroupLayout(pnl_TablaGeneral);
         pnl_TablaGeneral.setLayout(pnl_TablaGeneralLayout);
         pnl_TablaGeneralLayout.setHorizontalGroup(
             pnl_TablaGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addComponent(jsp_Impresion)
         );
         pnl_TablaGeneralLayout.setVerticalGroup(
             pnl_TablaGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_TablaGeneralLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+                .addComponent(jsp_Impresion, javax.swing.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
 
@@ -100,8 +99,6 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         chk_PieDePagina.setText("Pie de Página:");
 
         chk_MostrarDialogo.setText("Mostrar dialogo de Impresión.");
-
-        chk_AjustarALaPagina.setText("Ajustar con la página impresa.");
 
         chk_MuestraDialogoDeEstado.setText("Interactivo (Muestra dialogo de estado)");
 
@@ -132,16 +129,12 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
                         .addComponent(chk_PieDePagina)
                         .addGap(0, 0, 0)
                         .addComponent(txt_PieDePagina, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(chk_AjustarALaPagina)
-                        .addGap(264, 264, 264)
+                        .addGap(495, 495, 495)
                         .addComponent(btn_imprimir, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
         pnl_ComandosEImpresionLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {chk_Cabecera, chk_PieDePagina, txt_Cabecera, txt_PieDePagina});
-
-        pnl_ComandosEImpresionLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {chk_AjustarALaPagina, chk_MostrarDialogo});
 
         pnl_ComandosEImpresionLayout.setVerticalGroup(
             pnl_ComandosEImpresionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -156,7 +149,6 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
                 .addGroup(pnl_ComandosEImpresionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chk_PieDePagina)
                     .addComponent(txt_PieDePagina, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chk_AjustarALaPagina)
                     .addComponent(btn_imprimir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(34, 34, 34))
         );
@@ -205,10 +197,10 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
             /* Crea un MessageFormat alrrededor del pie del texto*/
             footer = new MessageFormat(txt_PieDePagina.getText());
         }
-        boolean ajustarAncho = chk_AjustarALaPagina.isSelected();
+        boolean ajustarAnchoAPagina = true;
         boolean mostrarDialoDeImpresion = chk_MostrarDialogo.isSelected();
         boolean interactivo = chk_MuestraDialogoDeEstado.isSelected();
-        JTable.PrintMode mode = ajustarAncho ? JTable.PrintMode.FIT_WIDTH : JTable.PrintMode.NORMAL;
+        JTable.PrintMode mode = ajustarAnchoAPagina ? JTable.PrintMode.FIT_WIDTH : JTable.PrintMode.NORMAL;
         tbl_Informe.setFont(new Font("Font", Font.BOLD, 24));
         tbl_Informe.setRowHeight(tbl_Informe.getRowHeight() + 8);
 
@@ -290,12 +282,11 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_imprimir;
-    private javax.swing.JCheckBox chk_AjustarALaPagina;
     private javax.swing.JCheckBox chk_Cabecera;
     private javax.swing.JCheckBox chk_MostrarDialogo;
     private javax.swing.JCheckBox chk_MuestraDialogoDeEstado;
     private javax.swing.JCheckBox chk_PieDePagina;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jsp_Impresion;
     private javax.swing.JPanel pnl_ComandosEImpresion;
     private javax.swing.JPanel pnl_TablaGeneral;
     private javax.swing.JTable tbl_Informe;
@@ -388,7 +379,6 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
     private void prepararConfiguracionPorDefecto() {
         chk_Cabecera.setSelected(true);
         txt_Cabecera.setText(empresaService.getEmpresaActiva().getEmpresa().getNombre());
-        chk_AjustarALaPagina.setSelected(true);
         chk_MostrarDialogo.setSelected(true);
         chk_MuestraDialogoDeEstado.setSelected(true);
         chk_PieDePagina.setSelected(true);
