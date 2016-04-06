@@ -27,7 +27,7 @@ public class CajaService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_empresa_vacia"));
         }
-        if (caja.getUsuario() == null) {
+        if (caja.getUsuarioAbreCaja() == null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_usuario_vacio"));
         }
@@ -47,8 +47,8 @@ public class CajaService {
         cajaRepository.actualizar(caja);
     }
 
-    public Caja getCajaSinArqueo(long id_Empresa) {
-        return cajaRepository.getCajaSinArqueo(id_Empresa);
+    public Caja getUltimaCaja(long id_Empresa) {
+        return cajaRepository.getUltimaCaja(id_Empresa);
     }
 
     public Caja getCajaPorId(long id_Caja, long id_Empresa) {

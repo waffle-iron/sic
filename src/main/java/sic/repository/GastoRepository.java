@@ -19,31 +19,31 @@ public class GastoRepository {
         em.close();
     }
 
-    public List<Object> getGastosPorFecha(Long id_Empresa, Date desde, Date hasta) {
+    public List<Object> getGastosPorFecha(long id_Empresa, Date desde, Date hasta) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Object> typedQuery = (TypedQuery<Object>) em.createNamedQuery("Gasto.gastosSinArqueoPorFecha");
+        TypedQuery<Object> typedQuery = (TypedQuery<Object>) em.createNamedQuery("Gasto.getGastosSinArqueoPorFecha");
         typedQuery.setParameter("id_Empresa", id_Empresa);
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
-        List<Object> Gastos = typedQuery.getResultList();
+        List<Object> gastos = typedQuery.getResultList();
         em.close();
-        if (Gastos.isEmpty()) {
+        if (gastos.isEmpty()) {
             return null;
         } else {
-            return Gastos;
+            return gastos;
         }
     }
 
-    public List<Object> getGastosPorFechaYFormaDePago(Long id_Empresa, Long id_FormaDePago, Date desde, Date hasta) {
+    public List<Object> getGastosPorFechaYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Object> typedQuery = (TypedQuery<Object>) em.createNamedQuery("Gasto.gastosSinArqueoPorFormaDePagoYFecha");
+        TypedQuery<Object> typedQuery = (TypedQuery<Object>) em.createNamedQuery("Gasto.getGastosSinArqueoPorFormaDePagoYFecha");
         typedQuery.setParameter("id_Empresa", id_Empresa);
         typedQuery.setParameter("id_FormaDePago", id_FormaDePago);
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
-        List<Object> Gastos = typedQuery.getResultList();
+        List<Object> gastos = typedQuery.getResultList();
         em.close();
-        return Gastos;
+        return gastos;
     }
 
     public void actualizar(Gasto gasto) {
@@ -57,7 +57,7 @@ public class GastoRepository {
 
     public Gasto getCajaPorID(long id_Gasto, long id_Empresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.gastoPorId", Gasto.class);
+        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastoPorId", Gasto.class);
         typedQuery.setParameter("id_Gasto", id_Gasto);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         List<Gasto> gastos = typedQuery.getResultList();
@@ -71,7 +71,7 @@ public class GastoRepository {
 
     public int getUltimoNumeroDeGasto(long idEmpresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Integer> typedQuery = em.createNamedQuery("Gasto.ultimoNumeroDeGasto", Integer.class);
+        TypedQuery<Integer> typedQuery = em.createNamedQuery("Gasto.getUltimoNumeroDeGasto", Integer.class);
         typedQuery.setParameter("id_Empresa", idEmpresa);
         Integer ultimoNumeroDeGasto = typedQuery.getSingleResult();
         em.close();

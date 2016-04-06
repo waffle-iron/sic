@@ -12,18 +12,18 @@ import sic.util.PersistenceUtil;
 
 public class CajaRepository {
 
-    public void guardar(Caja controlCaja) {
+    public void guardar(Caja caja) {
         EntityManager em = PersistenceUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
-        em.persist(em.merge(controlCaja));
+        em.persist(em.merge(caja));
         tx.commit();
         em.close();
     }
 
-    public Caja getCajaSinArqueo(Long id_Empresa) {
+    public Caja getUltimaCaja(long id_Empresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.cajaSinArqueo", Caja.class);
+        TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.getUltimaCaja", Caja.class);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         List<Caja> ControlesCaja = typedQuery.getResultList();
         em.close();
@@ -34,7 +34,7 @@ public class CajaRepository {
         }
     }
 
-    public List<Caja> getCajas(Long id_Empresa, Date desde, Date hasta) {
+    public List<Caja> getCajas(long id_Empresa, Date desde, Date hasta) {
         EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.getCajas", Caja.class);
         typedQuery.setParameter("id_Empresa", id_Empresa);
@@ -49,11 +49,11 @@ public class CajaRepository {
         }
     }
 
-    public void actualizar(Caja controlCaja) {
+    public void actualizar(Caja caja) {
         EntityManager em = PersistenceUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
-        em.merge(controlCaja);
+        em.merge(caja);
         tx.commit();
         em.close();
     }
@@ -88,7 +88,7 @@ public class CajaRepository {
 
     public int getUltimoNumeroDeCaja(long idEmpresa) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Integer> typedQuery = em.createNamedQuery("Caja.ultimoNumeroDeCaja", Integer.class);
+        TypedQuery<Integer> typedQuery = em.createNamedQuery("Caja.getUltimoNumeroDeCaja", Integer.class);
         typedQuery.setParameter("id_Empresa", idEmpresa);
         Integer ultimoNumeroDeCaja = typedQuery.getSingleResult();
         em.close();

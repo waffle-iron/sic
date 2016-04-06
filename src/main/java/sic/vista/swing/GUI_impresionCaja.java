@@ -269,8 +269,8 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
 
     private void cargarDatosInformePorFormaDePago() {
         for (FormaDePago formaDePago : this.formasDePago) {
-            List<Object> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), caja.getFechaApertura(), new Date());
-            this.listaMovimientos = facturas;
+            List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), caja.getFechaApertura(), new Date());
+            this.listaMovimientos.addAll(facturas);
             List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), caja.getFechaApertura(), new Date());
             this.listaMovimientos.addAll(gastos);
             this.cargarMovimientosEnLaTablaInforme(this.listaMovimientos, formaDePago);
@@ -302,13 +302,13 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         for (Object movimiento : listaMovimientos) {
             Object[] fila = new Object[3];
             if (movimiento instanceof FacturaCompra) {
-                fila[1] = Utilidades.formatoFecha(((FacturaCompra) movimiento).getFecha());
+                fila[1] = Utilidades.darFormatoAFechas(((FacturaCompra) movimiento).getFecha());
             }
             if (movimiento instanceof FacturaVenta) {
-                fila[1] = Utilidades.formatoFecha(((FacturaVenta) movimiento).getFecha());
+                fila[1] = Utilidades.darFormatoAFechas(((FacturaVenta) movimiento).getFecha());
             }
             if (movimiento instanceof Gasto) {
-                fila[1] = Utilidades.formatoFecha(((Gasto) movimiento).getFecha());
+                fila[1] = Utilidades.darFormatoAFechas(((Gasto) movimiento).getFecha());
             }
             if (movimiento instanceof FacturaVenta) {
                 fila[2] = ((FacturaVenta) movimiento).getTotal();
@@ -337,7 +337,7 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         }
         Object[] totalPorFormaDePago = new Object[3];
         totalPorFormaDePago[1] = "TOTAL:";
-        totalPorFormaDePago[2] = Utilidades.formatoNumeros(total);
+        totalPorFormaDePago[2] = Utilidades.darFormatoANumeros(total);
         modeloTablaInforme.addRow(totalPorFormaDePago);
         tbl_Informe.setModel(modeloTablaInforme);
         tbl_Informe.setDefaultRenderer(String.class, new ColoresParaImprimir());
@@ -354,24 +354,27 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         double total = this.caja.getSaldoInicial();
         Object[] saldoInicial = new Object[3];
         saldoInicial[0] = "Saldo Apertura";
-        saldoInicial[1] = Utilidades.formatoFecha(this.caja.getFechaApertura());
+        saldoInicial[1] = Utilidades.darFormatoAFechas(this.caja.getFechaApertura());
         saldoInicial[2] = total;
         modeloTablaInforme.addRow(saldoInicial);
         List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaActiva);
         for (FormaDePago formaDePago : formasDePago) {
             Object[] fila = new Object[3];
-            List<Object> facturasPorFormaDePago = facturaService.getFacturasPorFechasYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), new Date());
+            List<Factura> facturasPorFormaDePago = facturaService.getFacturasPorFechasYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), new Date());
             List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), new Date());
             fila[0] = formaDePago.getNombre();
-            double totalParcial = cajaService.calcularTotalPorMovimiento(facturasPorFormaDePago) + cajaService.calcularTotalPorMovimiento(gastos);
-            fila[1] = Utilidades.formatoFecha(new Date());
-            fila[2] = Utilidades.formatoNumeros(totalParcial);
+            this.listaMovimientos.clear();
+            this.listaMovimientos.addAll(facturasPorFormaDePago);
+            this.listaMovimientos.addAll(gastos);
+            double totalParcial = cajaService.calcularTotalPorMovimiento(this.listaMovimientos);
+            fila[1] = Utilidades.darFormatoAFechas(new Date());
+            fila[2] = Utilidades.darFormatoANumeros(totalParcial);
             total += totalParcial;
             modeloTablaInforme.addRow(fila);
         }
         Object[] Total = new Object[3];
         Total[1] = "Saldo Total";
-        Total[2] = Utilidades.formatoNumeros(total);
+        Total[2] = Utilidades.darFormatoANumeros(total);
         modeloTablaInforme.addRow(Total);
         tbl_Informe.setModel(modeloTablaInforme);
     }

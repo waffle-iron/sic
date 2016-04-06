@@ -58,19 +58,4 @@ public class GastoService {
         return gastoRepository.getUltimoNumeroDeGasto(id_Empresa);
     }
 
-    public Gasto construirGasto(String concepto, double monto, FormaDePago formaDePago) {
-        Empresa empresa = empresaService.getEmpresaActiva().getEmpresa();
-        Usuario usuario = usuarioService.getUsuarioActivo().getUsuario();
-        int nroDeGasto = gastoRepository.getUltimoNumeroDeGasto(empresa.getId_Empresa()) + 1;
-        Gasto gasto = new Gasto();
-        gasto.setConcepto(concepto);
-        gasto.setEliminado(false);
-        gasto.setEmpresa(empresa);
-        gasto.setFecha(new Date());
-        gasto.setFormaDePago(formaDePago);
-        gasto.setMonto(monto);
-        gasto.setNroGasto(nroDeGasto);
-        gasto.setUsuario(usuario);
-        return gasto;
-    }
 }

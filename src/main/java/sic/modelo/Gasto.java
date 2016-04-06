@@ -19,15 +19,15 @@ import lombok.Data;
 @Entity
 @Table(name = "gasto")
 @NamedQueries({
-    @NamedQuery(name = "Gasto.gastoSinArqueoPorFormaDePago",
+    @NamedQuery(name = "Gasto.getGastoSinArqueoPorFormaDePago",
             query = "SELECT g FROM Gasto g WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa AND g.formaDePago.id_FormaDePago = :id_FormaDePago"),
-    @NamedQuery(name = "Gasto.gastosSinArqueoPorFormaDePagoYFecha",
+    @NamedQuery(name = "Gasto.getGastosSinArqueoPorFormaDePagoYFecha",
             query = "SELECT g FROM Gasto g WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa AND g.formaDePago.id_FormaDePago = :id_FormaDePago AND g.fecha BETWEEN :desde AND :hasta"),
-    @NamedQuery(name = "Gasto.gastosSinArqueoPorFecha",
+    @NamedQuery(name = "Gasto.getGastosSinArqueoPorFecha",
             query = "SELECT g FROM Gasto g WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa AND g.fecha BETWEEN :desde AND :hasta"),
-    @NamedQuery(name = "Gasto.gastoPorId",
+    @NamedQuery(name = "Gasto.getGastoPorId",
             query = "SELECT g FROM Gasto g WHERE g.id_Gasto = :id_Gasto AND g.empresa.id_Empresa = :id_Empresa ORDER BY g.fecha ASC"),
-    @NamedQuery(name = "Gasto.ultimoNumeroDeGasto",
+    @NamedQuery(name = "Gasto.getUltimoNumeroDeGasto",
             query = "SELECT max(g.nroGasto) FROM Gasto g WHERE g.empresa.id_Empresa = :id_Empresa")
 })
 @Data
@@ -55,7 +55,7 @@ public class Gasto implements Serializable {
     private Usuario usuario;
 
     @OneToOne
-    @JoinColumn(name = "id_FormaDePago", referencedColumnName = "id_FormaDePAgo")
+    @JoinColumn(name = "id_FormaDePago", referencedColumnName = "id_FormaDePago")
     private FormaDePago formaDePago;
 
     private double monto;

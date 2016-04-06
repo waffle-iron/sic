@@ -42,15 +42,15 @@ public class GUI_Caja extends javax.swing.JDialog {
     private final GastoService gastoService = new GastoService();
     private ModeloTabla modeloTablaBalance;
     private ModeloTabla modeloTablaResumen;
-    private List<Object> listaMovimientos;
+    private List<Object> listaMovimientos = new ArrayList<>();
     private Caja caja;
     private static final Logger log = Logger.getLogger(GUI_Caja.class.getPackage().getName());
 
     public GUI_Caja(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        this.caja = cajaService.getCajaSinArqueo(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        this.setTitle("Arqueo de Caja - Apertura: " + Utilidades.formatoFecha(this.caja.getFechaApertura()));
+        this.caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        this.setTitle("Arqueo de Caja - Apertura: " + Utilidades.darFormatoAFechas(this.caja.getFechaApertura()));
         this.limpiarTablaBalance();
     }
 
@@ -58,14 +58,14 @@ public class GUI_Caja extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.caja = caja;
-        this.setTitle("Arqueo de Caja - Apertura: " + Utilidades.formatoFecha(this.caja.getFechaApertura()));
+        this.setTitle("Arqueo de Caja - Apertura: " + Utilidades.darFormatoAFechas(this.caja.getFechaApertura()));
         this.limpiarTablaBalance();
     }
 
     public GUI_Caja(Caja caja) {
         initComponents();
         this.caja = caja;
-        this.setTitle("Arqueo de Caja - Apertura: " + Utilidades.formatoFecha(this.caja.getFechaApertura()));
+        this.setTitle("Arqueo de Caja - Apertura: " + Utilidades.darFormatoAFechas(this.caja.getFechaApertura()));
         this.limpiarTablaBalance();
     }
 
@@ -319,7 +319,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         GUI_AbrirCaja abrirCaja = new GUI_AbrirCaja(this, true);
         abrirCaja.setLocationRelativeTo(this);
         abrirCaja.setVisible(true);
-        this.caja = cajaService.getCajaSinArqueo(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        this.caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
         this.cargarElementosVista();
     }//GEN-LAST:event_btn_abrirCajaActionPerformed
 
@@ -402,16 +402,16 @@ public class GUI_Caja extends javax.swing.JDialog {
         this.btn_AgregarGasto.setEnabled(false);
         if (this.caja != null) {
             if (this.caja.isCerrada()) {
-                List<Object> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCierre());
-                this.listaMovimientos = facturas;
+                List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCierre());
+                this.listaMovimientos.addAll(facturas);
                 List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCierre());
                 this.listaMovimientos.addAll(gastos);
                 this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
             } else {
                 this.btn_abrirCaja.setEnabled(false);
                 this.btn_AgregarGasto.setEnabled(true);
-                List<Object> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), caja.getFechaApertura(), new Date());
-                this.listaMovimientos = facturas;
+                List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), caja.getFechaApertura(), new Date());
+                this.listaMovimientos.addAll(facturas);
                 List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), caja.getFechaApertura(), new Date());
                 this.listaMovimientos.addAll(gastos);
                 lbl_aviso.setText("Estado: Abierta");
@@ -494,13 +494,13 @@ public class GUI_Caja extends javax.swing.JDialog {
         for (Object movimiento : movimientos) {
             Object[] fila = new Object[5];
             if (movimiento instanceof FacturaCompra) {
-                fila[0] = Utilidades.formatoFecha(((FacturaCompra) movimiento).getFecha());
+                fila[0] = Utilidades.darFormatoAFechas(((FacturaCompra) movimiento).getFecha());
             }
             if (movimiento instanceof FacturaVenta) {
-                fila[0] = Utilidades.formatoFecha(((FacturaVenta) movimiento).getFecha());
+                fila[0] = Utilidades.darFormatoAFechas(((FacturaVenta) movimiento).getFecha());
             }
             if (movimiento instanceof Gasto) {
-                fila[0] = Utilidades.formatoFecha(((Gasto) movimiento).getFecha());
+                fila[0] = Utilidades.darFormatoAFechas(((Gasto) movimiento).getFecha());
             }
             if (movimiento instanceof FacturaCompra) {
                 fila[2] = 0.0;
@@ -582,10 +582,13 @@ public class GUI_Caja extends javax.swing.JDialog {
                 } else {
                     hasta = new Date();
                 }
-                List<Object> facturasPorFormaDePago = facturaService.getFacturasPorFechasYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+                List<Factura> facturasPorFormaDePago = facturaService.getFacturasPorFechasYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
                 List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
                 fila[0] = formaDePago.getNombre();
-                double totalParcial = cajaService.calcularTotalPorMovimiento(facturasPorFormaDePago) + cajaService.calcularTotalPorMovimiento(gastos);
+                this.listaMovimientos.clear();
+                this.listaMovimientos.addAll(facturasPorFormaDePago);
+                this.listaMovimientos.addAll(gastos);
+                double totalParcial = cajaService.calcularTotalPorMovimiento(this.listaMovimientos);
                 fila[1] = totalParcial;
                 total += totalParcial;
                 modeloTablaResumen.addRow(fila);

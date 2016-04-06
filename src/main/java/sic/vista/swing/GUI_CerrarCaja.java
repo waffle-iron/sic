@@ -127,7 +127,7 @@ public class GUI_CerrarCaja extends javax.swing.JDialog {
     private void btn_AceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AceptarActionPerformed
         this.caja.setSaldoReal(Double.parseDouble(this.ftxt_SaldoReal.getValue().toString()));
         this.caja.setFechaCierre(new Date());
-        this.caja.setUsuarioCierra(usuarioService.getUsuarioActivo().getUsuario());
+        this.caja.setUsuarioCierraCaja(usuarioService.getUsuarioActivo().getUsuario());
         this.caja.setCerrada(true);
         this.cajaService.actualizar(caja);
         JOptionPane.showMessageDialog(this, "Caja Cerrada", "Aviso", JOptionPane.INFORMATION_MESSAGE);

@@ -22,7 +22,7 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
     }
-    
+
     public GUI_AbrirCaja() {
         initComponents();
     }
@@ -138,7 +138,7 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         nueva.setSaldoInicial(Double.parseDouble(ftxt_Monto.getValue().toString()));
         nueva.setSaldoFinal(Double.parseDouble(ftxt_Monto.getValue().toString()));
         nueva.setSaldoReal(Double.parseDouble(ftxt_Monto.getValue().toString()));
-        nueva.setUsuario(usuarioService.getUsuarioActivo().getUsuario());
+        nueva.setUsuarioAbreCaja(usuarioService.getUsuarioActivo().getUsuario());
         return nueva;
     }
 

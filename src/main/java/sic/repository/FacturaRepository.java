@@ -162,25 +162,25 @@ public class FacturaRepository {
         return resultado;
     }
 
-    public List<Object> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
+    public List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Object> typedQuery = (TypedQuery<Object>) em.createNamedQuery("Factura.buscarEntreFechasYFormaDePago");
+        TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.buscarEntreFechasYFormaDePago", Factura.class);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         typedQuery.setParameter("id_FormaDePago", id_FormaDePago);
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
-        List<Object> facturas = typedQuery.getResultList();
+        List<Factura> facturas = typedQuery.getResultList();
         em.close();
         return facturas;
     }
 
-    public List<Object> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta) {
+    public List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta) {
         EntityManager em = PersistenceUtil.getEntityManager();
-        TypedQuery<Object> typedQuery = (TypedQuery<Object>) em.createNamedQuery("Factura.buscarEntreFechas");
+        TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.buscarEntreFechas", Factura.class);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
-        List<Object> facturas = typedQuery.getResultList();
+        List<Factura> facturas = typedQuery.getResultList();
         em.close();
         return facturas;
     }

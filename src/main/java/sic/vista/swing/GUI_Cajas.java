@@ -275,7 +275,6 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ftxt_TotalCierre, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnl_BotonesLayout.createSequentialGroup()
-                        .addGap(0, 0, 0)
                         .addComponent(btn_ArquearCaja)
                         .addGap(0, 0, 0)
                         .addComponent(btn_AbrirCaja)
@@ -299,14 +298,15 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         pnl_BotonesLayout.setVerticalGroup(
             pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_BotonesLayout.createSequentialGroup()
-                .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(ftxt_TotalFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btn_verDetalle)
                         .addComponent(btn_eliminarCaja)
                         .addComponent(btn_AbrirCaja)
-                        .addComponent(btn_ArquearCaja)))
+                        .addComponent(btn_ArquearCaja))
+                    .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(ftxt_TotalFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
@@ -399,14 +399,14 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_chk_UsuarioItemStateChanged
 
     private void btn_AbrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AbrirCajaActionPerformed
-        Caja abierta = cajaService.getCajaSinArqueo(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        if (abierta == null) {
+        Caja abierta = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        if (abierta.isCerrada()) {
             GUI_AbrirCaja abrirCaja = new GUI_AbrirCaja();
             abrirCaja.setLocationRelativeTo(this);
             abrirCaja.setModal(true);
             abrirCaja.setVisible(true);
         }
-        if (abierta != null) {
+        if (!abierta.isCerrada()) {
             GUI_Caja caja = new GUI_Caja(abierta);
             caja.setLocationRelativeTo(this);
             caja.setModal(true);
@@ -427,12 +427,14 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_internalFrameOpened
 
     private void btn_ArquearCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ArquearCajaActionPerformed
-        Caja abierta = cajaService.getCajaSinArqueo(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        if (abierta != null) {
-            GUI_CerrarCaja abrirCaja = new GUI_CerrarCaja(abierta, abierta.getSaldoFinal());
-            abrirCaja.setLocationRelativeTo(this);
-            abrirCaja.setModal(true);
-            abrirCaja.setVisible(true);
+        Caja caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        if (caja != null) {
+            if (!caja.isCerrada()) {
+                GUI_CerrarCaja abrirCaja = new GUI_CerrarCaja(caja, caja.getSaldoFinal());
+                abrirCaja.setLocationRelativeTo(this);
+                abrirCaja.setModal(true);
+                abrirCaja.setVisible(true);
+            }
         }
     }//GEN-LAST:event_btn_ArquearCajaActionPerformed
 
@@ -571,7 +573,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             if (caja.getFechaCierre() != null) {
                 fila[1] = caja.getFechaCierre();
             }
-            fila[2] = caja.getUsuario();
+            fila[2] = caja.getUsuarioAbreCaja();
             fila[3] = (caja.isCerrada() ? "Cerrada" : "Abierta");
             fila[4] = caja.getSaldoInicial();
             fila[5] = (caja.isCerrada() ? caja.getSaldoFinal() : 0.0);

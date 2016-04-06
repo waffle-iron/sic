@@ -1,15 +1,23 @@
 package sic.vista.swing;
 
+import java.util.Date;
+import sic.modelo.Empresa;
 import sic.modelo.FormaDePago;
+import sic.modelo.Gasto;
+import sic.modelo.Usuario;
+import sic.repository.GastoRepository;
 import sic.service.EmpresaService;
 import sic.service.FormaDePagoService;
 import sic.service.GastoService;
+import sic.service.UsuarioService;
 
 public class GUI_AgregarGasto extends javax.swing.JDialog {
 
     private final FormaDePagoService formaDePagoService = new FormaDePagoService();
     private final EmpresaService empresaService = new EmpresaService();
     private final GastoService gastoService = new GastoService();
+    private final UsuarioService usuarioService = new UsuarioService();
+    private final GastoRepository gastoRepository = new GastoRepository();
 
     public GUI_AgregarGasto(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
@@ -164,10 +172,25 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_CancelarActionPerformed
 
     private void lbl_AceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_AceptarActionPerformed
-        gastoService.guardar(gastoService.construirGasto(txtf_Concepto.getText(), Double.parseDouble(ftxt_Monto.getValue().toString()), (FormaDePago) cmb_FormaDePago.getSelectedItem()));
+        gastoService.guardar(this.construirGasto(txtf_Concepto.getText(), Double.parseDouble(ftxt_Monto.getValue().toString()), (FormaDePago) cmb_FormaDePago.getSelectedItem()));
         this.dispose();
     }//GEN-LAST:event_lbl_AceptarActionPerformed
 
+    public Gasto construirGasto(String concepto, double monto, FormaDePago formaDePago) {
+        Empresa empresa = empresaService.getEmpresaActiva().getEmpresa();
+        Usuario usuario = usuarioService.getUsuarioActivo().getUsuario();
+        int nroDeGasto = gastoRepository.getUltimoNumeroDeGasto(empresa.getId_Empresa()) + 1;
+        Gasto gasto = new Gasto();
+        gasto.setConcepto(concepto);
+        gasto.setEliminado(false);
+        gasto.setEmpresa(empresa);
+        gasto.setFecha(new Date());
+        gasto.setFormaDePago(formaDePago);
+        gasto.setMonto(monto);
+        gasto.setNroGasto(nroDeGasto);
+        gasto.setUsuario(usuario);
+        return gasto;
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Cancelar;
     private javax.swing.JComboBox<FormaDePago> cmb_FormaDePago;
