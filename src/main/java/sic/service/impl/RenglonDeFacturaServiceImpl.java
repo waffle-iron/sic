@@ -1,16 +1,30 @@
 package sic.service.impl;
 
 import org.springframework.stereotype.Service;
-import sic.modelo.Producto;
-import sic.modelo.RenglonFactura;
 import sic.service.IRenglonDeFacturaService;
 import sic.service.Movimiento;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import sic.modelo.Pedido;
+import sic.modelo.Producto;
+import sic.modelo.RenglonFactura;
+import sic.modelo.RenglonPedido;
+import sic.service.IPedidoService;
 
 @Service
 public class RenglonDeFacturaServiceImpl implements IRenglonDeFacturaService {
 
+    private final IPedidoService pedidoService;
+
+    @Autowired
+    RenglonDeFacturaServiceImpl(IPedidoService pedidoService) {
+        this.pedidoService = pedidoService;
+    }
+
     @Override
-    public RenglonFactura calcularRenglon(char tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje) {
+    public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje) {
         RenglonFactura nuevoRenglon = new RenglonFactura();
         nuevoRenglon.setId_ProductoItem(producto.getId_Producto());
         nuevoRenglon.setCodigoItem(producto.getCodigo());
@@ -21,7 +35,7 @@ public class RenglonDeFacturaServiceImpl implements IRenglonDeFacturaService {
         nuevoRenglon.setDescuento_porcentaje(descuento_porcentaje);
         nuevoRenglon.setDescuento_neto(this.calcularDescuento_neto(nuevoRenglon.getPrecioUnitario(), descuento_porcentaje));
         nuevoRenglon.setIva_porcentaje(producto.getIva_porcentaje());
-        if (tipoDeFactura == 'Y') {
+        if (tipoDeFactura.equals("Factura Y")) {
             nuevoRenglon.setIva_porcentaje(producto.getIva_porcentaje() / 2);
         }
         nuevoRenglon.setIva_neto(this.calcularIVA_neto(movimiento, producto, nuevoRenglon.getDescuento_neto()));
@@ -65,13 +79,13 @@ public class RenglonDeFacturaServiceImpl implements IRenglonDeFacturaService {
         return Math.round(resultado * 1000.0) / 1000.0;
     }
 
-    private double calcularPrecioUnitario(Movimiento movimiento, char tipoDeFactura, Producto producto) {
+    private double calcularPrecioUnitario(Movimiento movimiento, String tipoDeFactura, Producto producto) {
         double iva_resultado;
         double impInterno_resultado;
         double resultado = 0;
 
         if (movimiento == Movimiento.COMPRA) {
-            if (tipoDeFactura == 'A' || tipoDeFactura == 'X') {
+            if (tipoDeFactura.equals("Factura A") || tipoDeFactura.equals("Factura X")) {
                 resultado = producto.getPrecioCosto();
             } else {
                 iva_resultado = (producto.getPrecioCosto() * producto.getIva_porcentaje()) / 100;
@@ -81,16 +95,14 @@ public class RenglonDeFacturaServiceImpl implements IRenglonDeFacturaService {
         }
 
         if (movimiento == Movimiento.VENTA) {
-            if (tipoDeFactura == 'A' || tipoDeFactura == 'X') {
+            if (tipoDeFactura.equals("Factura A") || tipoDeFactura.equals("Factura X")) {
                 resultado = producto.getPrecioVentaPublico();
+            } else if (tipoDeFactura.equals("Factura Y")) {
+                iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje() / 2) / 100;
+                impInterno_resultado = (producto.getPrecioVentaPublico() * producto.getImpuestoInterno_porcentaje()) / 100;
+                resultado = producto.getPrecioVentaPublico() + iva_resultado + impInterno_resultado;
             } else {
-                if (tipoDeFactura == 'Y') {
-                    iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje()/2) / 100;
-                    impInterno_resultado = (producto.getPrecioVentaPublico() * producto.getImpuestoInterno_porcentaje()) / 100;
-                    resultado = producto.getPrecioVentaPublico() + iva_resultado + impInterno_resultado;
-                } else {
-                    resultado = producto.getPrecioLista();
-                }
+                resultado = producto.getPrecioLista();
             }
         }
         return Math.round(resultado * 1000.0) / 1000.0;
@@ -99,5 +111,28 @@ public class RenglonDeFacturaServiceImpl implements IRenglonDeFacturaService {
     private double calcularImporte(double cantidad, double precioUnitario, double descuento_neto) {
         double resultado = (precioUnitario - descuento_neto) * cantidad;
         return Math.round(resultado * 1000.0) / 1000.0;
+    }
+
+    @Override
+    public RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante) {
+        return this.calcularRenglon(tipoComprobante, Movimiento.VENTA, renglon.getCantidad(), renglon.getProducto(), renglon.getDescuento_porcentaje());
+    }
+
+    @Override
+    public List<RenglonFactura> convertirRenglonesPedidoARenglonesFactura(Pedido pedido, String tipoComprobante) {
+        List<RenglonFactura> renglonesRestantes = new ArrayList<>();
+        HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getNroPedido());
+        List<RenglonPedido> renglonesDelPedido = pedidoService.getRenglonesDelPedido(pedido.getNroPedido());
+        for (RenglonPedido renglon : renglonesDelPedido) {
+            if (renglonesDeFacturas.containsKey(renglon.getProducto().getId_Producto())) {
+                if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
+                    renglon.setCantidad(renglon.getCantidad() - renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad());
+                    renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon, tipoComprobante));
+                }
+            } else {
+                renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon, tipoComprobante));
+            }
+        }
+        return renglonesRestantes;
     }
 }

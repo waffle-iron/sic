@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -46,7 +45,7 @@ public class Empresa implements Serializable {
     @Column(nullable = false)
     private String direccion;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_CondicionIVA", referencedColumnName = "id_CondicionIVA")
     private CondicionIVA condicionIVA;
 
@@ -63,38 +62,38 @@ public class Empresa implements Serializable {
     @Column(nullable = false)
     private String telefono;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Localidad", referencedColumnName = "id_Localidad")
     private Localidad localidad;
 
     @Lob
     private byte[] logo;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
+    @OneToMany(mappedBy = "empresa")
     private Set<Producto> productos;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
+    @OneToMany(mappedBy = "empresa")
     private Set<Proveedor> proveedores;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
+    @OneToMany(mappedBy = "empresa")
     private Set<Factura> facturas;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
+    @OneToMany(mappedBy = "empresa")
     private Set<Transportista> transportistas;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
+    @OneToMany(mappedBy = "empresa")
     private Set<Cliente> clientes;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
+    @OneToMany(mappedBy = "empresa")
     private Set<FormaDePago> formasDePago;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
+    @OneToMany(mappedBy = "empresa")
     private Set<Medida> medidas;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
+    @OneToMany(mappedBy = "empresa")
     private Set<Rubro> rubros;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "empresa")
+    @OneToMany(mappedBy = "empresa")
     private Set<ConfiguracionDelSistema> configuraciones;
 
     private boolean eliminada;

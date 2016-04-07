@@ -1,7 +1,6 @@
 package sic.modelo;
 
 import java.io.Serializable;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -13,7 +12,7 @@ import javax.persistence.Table;
 @Table(name = "facturaventa")
 @NamedQueries({
     @NamedQuery(name = "Factura.buscarPorTipoSerieNum",
-            query = "SELECT f FROM FacturaVenta f WHERE f.tipoFactura = :tipo AND f.numSerie = :serie AND f.numFactura = :num"),
+            query = "SELECT f FROM FacturaVenta f LEFT JOIN FETCH f.renglones WHERE f.tipoFactura = :tipo AND f.numSerie = :serie AND f.numFactura = :num"),
     @NamedQuery(name = "Factura.buscarMayorNumFacturaSegunTipo",
             query = "SELECT max(fv.numFactura) FROM FacturaVenta fv WHERE fv.tipoFactura = :tipo AND fv.numSerie = :serie"),
     @NamedQuery(name = "Factura.buscarTopProductosMasVendidosPorAnio",
@@ -24,11 +23,11 @@ import javax.persistence.Table;
 })
 public class FacturaVenta extends Factura implements Serializable {
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Cliente", referencedColumnName = "id_Cliente")
     private Cliente cliente;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Usuario", referencedColumnName = "id_Usuario")
     private Usuario usuario;
 

@@ -2,7 +2,6 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,7 +30,7 @@ public class PagoFacturaCompra implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fecha;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Factura", referencedColumnName = "id_Factura")
     private FacturaCompra facturaCompra;
 

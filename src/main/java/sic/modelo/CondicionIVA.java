@@ -3,7 +3,6 @@ package sic.modelo;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,13 +31,13 @@ public class CondicionIVA implements Serializable {
 
     private boolean discriminaIVA;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "condicionIVA")
+    @OneToMany(mappedBy = "condicionIVA")
     private Set<Proveedor> proveedores;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "condicionIVA")
+    @OneToMany(mappedBy = "condicionIVA")
     private Set<Empresa> empresas;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "condicionIVA")
+    @OneToMany(mappedBy = "condicionIVA")
     private Set<Cliente> clientes;
 
     private boolean eliminada;

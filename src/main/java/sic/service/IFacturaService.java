@@ -10,8 +10,10 @@ import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
+import sic.modelo.Pedido;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
+import sic.modelo.RenglonPedido;
 
 public interface IFacturaService {
 
@@ -25,13 +27,17 @@ public interface IFacturaService {
 
     double calcularIVA_Venta(List<FacturaVenta> facturas);
 
-    double calcularImpInterno_neto(char tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones);
+    double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones);
 
-    double calcularIva_neto(char tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones, double iva_porcentaje);
+    double calcularIva_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones, double iva_porcentaje);
 
-    long calcularNumeroFactura(char tipoDeFactura, long serie);
+    long calcularNumeroFactura(String tipoDeFactura, long serie);
 
     double calcularRecargo_neto(double subtotal, double recargo_porcentaje);
+
+    public List<RenglonFactura> convertirRenglonesPedidoARenglonesFactura(Pedido pedido, String tipoComprobante);
+
+    public RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante);
 
     //**************************************************************************
     //Calculos
@@ -53,7 +59,7 @@ public interface IFacturaService {
 
     void eliminar(Factura factura);
 
-    FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num);
+    FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num);
 
     List<RenglonFactura> getRenglonesDeLaFactura(Factura factura);
 
@@ -63,9 +69,11 @@ public interface IFacturaService {
 
     char[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor);
 
-    char[] getTipoFacturaVenta(Empresa empresa, Cliente cliente);
+    String[] getTipoFacturaVenta(Empresa empresa, Cliente cliente);
 
     char[] getTiposFacturaSegunEmpresa(Empresa empresa);
+
+    public String getTipoFactura(Factura factura);
 
     void guardar(Factura factura);
 
@@ -74,5 +82,5 @@ public interface IFacturaService {
     List<Object[]> listarProductosMasVendidosPorAnio(int anio);
 
     boolean validarCantidadMaximaDeRenglones(int cantidad);
-    
+
 }

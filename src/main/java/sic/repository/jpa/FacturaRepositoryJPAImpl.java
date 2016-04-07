@@ -20,22 +20,22 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
 
     @PersistenceContext
     private EntityManager em;
-    
+
     @Override
-    public List<RenglonFactura> getRenglonesDeLaFactura(Factura factura) {        
+    public List<RenglonFactura> getRenglonesDeLaFactura(Factura factura) {
         TypedQuery<RenglonFactura> typedQuery = em.createNamedQuery("RenglonFactura.getRenglonesDeLaFactura", RenglonFactura.class);
         typedQuery.setParameter("factura", factura);
-        List<RenglonFactura> renglones = typedQuery.getResultList();        
+        List<RenglonFactura> renglones = typedQuery.getResultList();
         return renglones;
     }
-    
+
     @Override
-    public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {        
+    public FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num) {
         TypedQuery<FacturaVenta> typedQuery = em.createNamedQuery("Factura.buscarPorTipoSerieNum", FacturaVenta.class);
         typedQuery.setParameter("tipo", tipo);
         typedQuery.setParameter("serie", serie);
         typedQuery.setParameter("num", num);
-        List<FacturaVenta> facturasVenta = typedQuery.getResultList();        
+        List<FacturaVenta> facturasVenta = typedQuery.getResultList();
         if (facturasVenta.isEmpty()) {
             return null;
         } else {
@@ -63,14 +63,14 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.isBuscarSoloInpagas() == true) {
             query += " AND f.pagada = false";
         }
-        query += " ORDER BY f.fecha ASC";        
+        query += " ORDER BY f.fecha ASC";
         TypedQuery<FacturaCompra> typedQuery = em.createQuery(query, FacturaCompra.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
         //si es 0, recupera TODOS los registros
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        List<FacturaCompra> facturasCompra = typedQuery.getResultList();        
+        List<FacturaCompra> facturasCompra = typedQuery.getResultList();
         return facturasCompra;
     }
 
@@ -98,56 +98,60 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.isBuscaPorNumeroFactura() == true) {
             query += " AND f.numSerie = " + criteria.getNumSerie() + " AND f.numFactura = " + criteria.getNumFactura();
         }
+        //Pedido
+        if (criteria.isBuscarPorPedido() == true) {
+            query += " AND f.pedido.nroPedido = " + criteria.getNroPedido();
+        }
         //Inpagas
-        if (criteria.isBuscaSoloInpagas() == true) {
+        if (criteria.isBuscaSoloImpagas() == true) {
             query += " AND f.pagada = false";
         }
-        query += " ORDER BY f.fecha ASC";        
+        query += " ORDER BY f.fecha ASC";
         TypedQuery<FacturaVenta> typedQuery = em.createQuery(query, FacturaVenta.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
         //si es 0, recupera TODOS los registros
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        List<FacturaVenta> facturasVenta = typedQuery.getResultList();        
+        List<FacturaVenta> facturasVenta = typedQuery.getResultList();
         return facturasVenta;
     }
 
     @Override
-    public long getMayorNumFacturaSegunTipo(char tipoDeFactura, long serie) {        
+    public long getMayorNumFacturaSegunTipo(String tipoDeFactura, long serie) {
         TypedQuery<Long> typedQuery = em.createNamedQuery("Factura.buscarMayorNumFacturaSegunTipo", Long.class);
         typedQuery.setParameter("tipo", tipoDeFactura);
         typedQuery.setParameter("serie", serie);
-        Long resultado = typedQuery.getSingleResult();        
+        Long resultado = typedQuery.getSingleResult();
         if (resultado == null) {
-            return 1;
+            return 0;
         } else {
-            return resultado + 1;
+            return resultado;
         }
     }
 
     @Override
-    public void guardar(Factura factura) {        
+    public void guardar(Factura factura) {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(em.merge(factura));
-        tx.commit();        
+        tx.commit();
     }
 
     @Override
-    public void actualizar(Factura factura) {        
+    public void actualizar(Factura factura) {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.merge(factura);
-        tx.commit();        
+        tx.commit();
     }
 
     @Override
-    public List<Object[]> listarProductosMasVendidosPorAnio(int anio) {        
+    public List<Object[]> listarProductosMasVendidosPorAnio(int anio) {
         TypedQuery<Object[]> typedQuery = (TypedQuery<Object[]>) em.createNamedQuery("Factura.buscarTopProductosMasVendidosPorAnio");
         typedQuery.setParameter("anio", anio);
         typedQuery.setMaxResults(5);
-        List<Object[]> resultado = typedQuery.getResultList();        
+        List<Object[]> resultado = typedQuery.getResultList();
         return resultado;
     }
 }

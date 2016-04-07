@@ -3,7 +3,6 @@ package sic.modelo;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,7 +41,7 @@ public class Proveedor implements Serializable {
     @Column(nullable = false)
     private String direccion;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_CondicionIVA", referencedColumnName = "id_CondicionIVA")
     private CondicionIVA condicionIVA;
 
@@ -64,17 +63,17 @@ public class Proveedor implements Serializable {
     @Column(nullable = false)
     private String web;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Localidad", referencedColumnName = "id_Localidad")
     private Localidad localidad;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "proveedor")
+    @OneToMany(mappedBy = "proveedor")
     private Set<Producto> productos;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "proveedor")
+    @OneToMany(mappedBy = "proveedor")
     private Set<FacturaCompra> facturasCompra;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
 

@@ -7,7 +7,6 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -39,18 +38,18 @@ public abstract class Factura implements Serializable {
 
     private long numFactura;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_FormaDePago", referencedColumnName = "id_FormaDePago")
     private FormaDePago formaPago;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaVencimiento;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Transportista", referencedColumnName = "id_Transportista")
     private Transportista transportista;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura", fetch = FetchType.EAGER)
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura")
     private List<RenglonFactura> renglones;
 
     private double subTotal;
@@ -69,13 +68,25 @@ public abstract class Factura implements Serializable {
 
     private boolean pagada;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
 
     private boolean eliminada;
 
+    @ManyToOne
+    @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
+    private Pedido pedido;
+
     public Factura() {
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public void setPedido(Pedido pedido) {
+        this.pedido = pedido;
     }
 
     public List<RenglonFactura> getRenglones() {

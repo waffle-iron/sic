@@ -3,7 +3,6 @@ package sic.modelo;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,20 +36,20 @@ public class Localidad implements Serializable {
     @Column(nullable = false)
     private String codigoPostal;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Provincia", referencedColumnName = "id_Provincia")
     private Provincia provincia;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "localidad")
+    @OneToMany(mappedBy = "localidad")
     private Set<Proveedor> proveedores;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "localidad")
+    @OneToMany(mappedBy = "localidad")
     private Set<Transportista> transportistas;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "localidad")
+    @OneToMany(mappedBy = "localidad")
     private Set<Empresa> empresas;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "localidad")
+    @OneToMany(mappedBy = "localidad")
     private Set<Cliente> clientes;
 
     private boolean eliminada = false;

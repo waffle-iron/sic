@@ -22,6 +22,8 @@ public interface IProductoService {
 
     double calcularGanancia_Neto(double precioCosto, double ganancia_porcentaje);
 
+    public boolean existeStockDisponible(long idProducto, double cantidad);
+
     //**************************************************************************
     //Calculos
     double calcularGanancia_Porcentaje(double precioCosto, double PVP);
@@ -51,5 +53,5 @@ public interface IProductoService {
     void guardar(Producto producto);
 
     void modificarMultiplesProductos(List<Producto> productos, boolean checkPrecios, PreciosProducto preciosProducto, boolean checkMedida, Medida medida, boolean checkRubro, Rubro rubro, boolean checkProveedor, Proveedor proveedor);
-    
+
 }

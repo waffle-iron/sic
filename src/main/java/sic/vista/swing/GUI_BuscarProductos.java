@@ -90,9 +90,14 @@ public class GUI_BuscarProductos extends JDialog {
     private void aceptarProducto() {
         this.actualizarEstadoSeleccion();
         if (prodSeleccionado != null) {
-            if (this.existeStockDisponible(renglon.getCantidad(), prodSeleccionado)) {
+            boolean existeStock = productoService.existeStockDisponible(prodSeleccionado.getId_Producto(), renglon.getCantidad());
+            if (existeStock || gui_PrincipalTPV.getTipoDeComprobante().equals("Pedido")) {
                 debeCargarRenglon = true;
                 this.dispose();
+            } else {
+                if (!existeStock) {
+                    JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_producto_sin_stock_suficiente"), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         } else {
             debeCargarRenglon = false;
@@ -101,33 +106,14 @@ public class GUI_BuscarProductos extends JDialog {
     }
 
     private void actualizarProductosCargadosEnFactura() {
-        for (RenglonFactura renglonFactura : renglonesFactura) {
-            for (Producto producto : productos) {
-                if (renglonFactura.getDescripcionItem().equals(producto.getDescripcion()) && producto.isIlimitado() == false) {
-                    producto.setCantidad(producto.getCantidad() - renglonFactura.getCantidad());
+        if (!gui_PrincipalTPV.getTipoDeComprobante().equals("Pedido") && gui_PrincipalTPV.getPedido() == null) {
+            for (RenglonFactura renglonFactura : renglonesFactura) {
+                for (Producto producto : productos) {
+                    if (renglonFactura.getDescripcionItem().equals(producto.getDescripcion()) && producto.isIlimitado() == false) {
+                        producto.setCantidad(producto.getCantidad() - renglonFactura.getCantidad());
+                    }
                 }
             }
-        }
-    }
-
-    private boolean existeStockDisponible(double cantRequerida, Producto producto) {
-        if (cantRequerida > 0) {
-            if (prodSeleccionado.isIlimitado() == false) {
-                if (cantRequerida > producto.getCantidad()) {
-                    JOptionPane.showMessageDialog(this,
-                            "La cantidad ingresada es mayor a la disponible para el producto seleccionado.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                    return false;
-                } else {
-                    return true;
-                }
-            } else {
-                return true;
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "La cantidad ingresada debe ser mayor a 0.",
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
         }
     }
 
@@ -137,7 +123,7 @@ public class GUI_BuscarProductos extends JDialog {
             txt_PorcentajeDescuento.commitEdit();
 
             if (prodSeleccionado != null) {
-                renglon = renglonDeFacturaService.calcularRenglon(gui_PrincipalTPV.getTipoDeFactura(), Movimiento.VENTA,
+                renglon = renglonDeFacturaService.calcularRenglon(gui_PrincipalTPV.getTipoDeComprobante(), Movimiento.VENTA,
                         Double.parseDouble(txt_Cantidad.getValue().toString()), prodSeleccionado,
                         Double.parseDouble(txt_PorcentajeDescuento.getValue().toString()));
             }

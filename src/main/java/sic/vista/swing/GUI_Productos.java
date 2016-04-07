@@ -200,11 +200,6 @@ public class GUI_Productos extends JInternalFrame {
         tbl_Resultados.setModel(modeloTablaResultados);
     }
 
-    private void actualizarContadorDeRegistros() {
-        String mensaje = productos.size() + " productos encontrados.";
-        lbl_CantRegistrosEncontrados.setText(mensaje);
-    }
-
     private void limpiarJTable() {
         modeloTablaResultados = new ModeloTabla();
         tbl_Resultados.setModel(modeloTablaResultados);
@@ -250,7 +245,6 @@ public class GUI_Productos extends JInternalFrame {
     private void buscar() {
         cambiarEstadoEnabled(false);
         pg_progreso.setIndeterminate(true);
-        lbl_CantRegistrosEncontrados.setText("");
 
         SwingWorker<List<Producto>, Void> worker = new SwingWorker<List<Producto>, Void>() {
             @Override
@@ -286,7 +280,6 @@ public class GUI_Productos extends JInternalFrame {
             @Override
             protected void done() {
                 cargarResultadosAlTable();
-                actualizarContadorDeRegistros();
                 cambiarEstadoEnabled(true);
                 pg_progreso.setIndeterminate(false);
                 try {
@@ -351,7 +344,7 @@ public class GUI_Productos extends JInternalFrame {
         chk_Descripcion = new javax.swing.JCheckBox();
         chk_Rubro = new javax.swing.JCheckBox();
         cmb_Rubro = new javax.swing.JComboBox();
-        lbl_CantRegistrosEncontrados = new javax.swing.JLabel();
+        pg_progreso = new javax.swing.JProgressBar();
         panelResultados = new javax.swing.JPanel();
         sp_Resultados = new javax.swing.JScrollPane();
         tbl_Resultados = new javax.swing.JTable();
@@ -363,7 +356,6 @@ public class GUI_Productos extends JInternalFrame {
         cmb_CantidadMostrar = new javax.swing.JComboBox();
         lbl_CantidadMostrar = new javax.swing.JLabel();
         btn_ReporteListaPrecios = new javax.swing.JButton();
-        pg_progreso = new javax.swing.JProgressBar();
 
         setClosable(true);
         setMaximizable(true);
@@ -388,7 +380,7 @@ public class GUI_Productos extends JInternalFrame {
             }
         });
 
-        panelFiltros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros de Busqueda"));
+        panelFiltros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
 
         chk_Codigo.setText("Código:");
         chk_Codigo.addItemListener(new java.awt.event.ItemListener() {
@@ -435,8 +427,6 @@ public class GUI_Productos extends JInternalFrame {
 
         cmb_Rubro.setEnabled(false);
 
-        lbl_CantRegistrosEncontrados.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-
         javax.swing.GroupLayout panelFiltrosLayout = new javax.swing.GroupLayout(panelFiltros);
         panelFiltros.setLayout(panelFiltrosLayout);
         panelFiltrosLayout.setHorizontalGroup(
@@ -458,8 +448,8 @@ public class GUI_Productos extends JInternalFrame {
                             .addComponent(txt_Codigo)))
                     .addGroup(panelFiltrosLayout.createSequentialGroup()
                         .addComponent(btn_Buscar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbl_CantRegistrosEncontrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 216, Short.MAX_VALUE)
+                        .addComponent(pg_progreso, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelFiltrosLayout.setVerticalGroup(
@@ -481,9 +471,12 @@ public class GUI_Productos extends JInternalFrame {
                     .addComponent(chk_Proveedor)
                     .addComponent(cmb_Proveedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btn_Buscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_CantRegistrosEncontrados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelFiltrosLayout.createSequentialGroup()
+                        .addComponent(btn_Buscar)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(pg_progreso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         panelResultados.setBorder(javax.swing.BorderFactory.createTitledBorder("Resultados"));
@@ -547,7 +540,7 @@ public class GUI_Productos extends JInternalFrame {
             }
         });
 
-        cmb_CantidadMostrar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "500", "1000", "5000", "Sin Limite" }));
+        cmb_CantidadMostrar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "100", "500", "1000", "5000" }));
         cmb_CantidadMostrar.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmb_CantidadMostrarItemStateChanged(evt);
@@ -559,7 +552,7 @@ public class GUI_Productos extends JInternalFrame {
             }
         });
 
-        lbl_CantidadMostrar.setText("Cantidad a mostrar:");
+        lbl_CantidadMostrar.setText("Mostrar los primeros:");
 
         btn_ReporteListaPrecios.setForeground(new java.awt.Color(0, 0, 255));
         btn_ReporteListaPrecios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Printer_16x16.png"))); // NOI18N
@@ -583,8 +576,7 @@ public class GUI_Productos extends JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lbl_CantidadMostrar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmb_CantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(cmb_CantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(panelResultadosLayout.createSequentialGroup()
                 .addComponent(btn_Nuevo)
                 .addGap(0, 0, 0)
@@ -593,8 +585,7 @@ public class GUI_Productos extends JInternalFrame {
                 .addComponent(btn_Eliminar)
                 .addGap(0, 0, 0)
                 .addComponent(btn_ReporteListaPrecios)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(pg_progreso, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Eliminar, btn_Modificar, btn_Nuevo});
@@ -608,14 +599,13 @@ public class GUI_Productos extends JInternalFrame {
                     .addComponent(cmb_CantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_CantidadMostrar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btn_Eliminar, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btn_Modificar, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btn_Nuevo, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btn_ReporteListaPrecios, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pg_progreso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(btn_ReporteListaPrecios, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_Modificar, btn_Nuevo, btn_ReporteListaPrecios});
@@ -684,14 +674,14 @@ public class GUI_Productos extends JInternalFrame {
 
             int respuesta = JOptionPane.showInternalConfirmDialog(this,
                     ResourceBundle.getBundle(
-                    "Mensajes").getString("mensaje_pregunta_eliminar_productos"),
+                            "Mensajes").getString("mensaje_pregunta_eliminar_productos"),
                     "Eliminar", JOptionPane.YES_NO_OPTION);
 
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
                     productoService.eliminarMultiplesProductos(
                             this.getSeleccionMultipleDeProductos(
-                            Utilidades.getSelectedRowsModelIndices(tbl_Resultados)));
+                                    Utilidades.getSelectedRowsModelIndices(tbl_Resultados)));
                     buscar();
 
                 } catch (PersistenceException ex) {
@@ -708,7 +698,7 @@ public class GUI_Productos extends JInternalFrame {
                 //seleccion multiple
                 GUI_ModificacionProductosBulk modificarProductosBulk = new GUI_ModificacionProductosBulk(
                         this.getSeleccionMultipleDeProductos(
-                        Utilidades.getSelectedRowsModelIndices(tbl_Resultados)));
+                                Utilidades.getSelectedRowsModelIndices(tbl_Resultados)));
                 modificarProductosBulk.setModal(true);
                 modificarProductosBulk.setLocationRelativeTo(this);
                 modificarProductosBulk.setVisible(true);
@@ -784,21 +774,7 @@ public class GUI_Productos extends JInternalFrame {
     }//GEN-LAST:event_rb_FaltantesActionPerformed
 
     private void cmb_CantidadMostrarItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_CantidadMostrarItemStateChanged
-        if (cmb_CantidadMostrar.getSelectedItem().equals("Sin Limite")) {
-            cantidadResultadosParaMostrar = 0;
-        }
-
-        if (cmb_CantidadMostrar.getSelectedItem().equals("500")) {
-            cantidadResultadosParaMostrar = 500;
-        }
-
-        if (cmb_CantidadMostrar.getSelectedItem().equals("1000")) {
-            cantidadResultadosParaMostrar = 1000;
-        }
-
-        if (cmb_CantidadMostrar.getSelectedItem().equals("5000")) {
-            cantidadResultadosParaMostrar = 5000;
-        }
+        cantidadResultadosParaMostrar = Integer.parseInt(cmb_CantidadMostrar.getSelectedItem().toString());
     }//GEN-LAST:event_cmb_CantidadMostrarItemStateChanged
 
     private void btn_ReporteListaPreciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ReporteListaPreciosActionPerformed
@@ -833,7 +809,6 @@ public class GUI_Productos extends JInternalFrame {
     private javax.swing.JComboBox cmb_CantidadMostrar;
     private javax.swing.JComboBox cmb_Proveedor;
     private javax.swing.JComboBox cmb_Rubro;
-    private javax.swing.JLabel lbl_CantRegistrosEncontrados;
     private javax.swing.JLabel lbl_CantidadMostrar;
     private javax.swing.JPanel panelFiltros;
     private javax.swing.JPanel panelResultados;

@@ -2,9 +2,8 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
+import java.util.List;
 import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.Data;
 
 @Entity
 @Table(name = "cliente")
@@ -38,6 +38,7 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Cliente.buscarPredeterminado",
             query = "SELECT c FROM Cliente c WHERE c.predeterminado = true AND c.eliminado = false AND c.empresa = :empresa")
 })
+@Data
 public class Cliente implements Serializable {
 
     @Id
@@ -52,7 +53,7 @@ public class Cliente implements Serializable {
     @Column(nullable = false)
     private String direccion;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_CondicionIVA", referencedColumnName = "id_CondicionIVA")
     private CondicionIVA condicionIVA;
 
@@ -68,7 +69,7 @@ public class Cliente implements Serializable {
     @Column(nullable = false)
     private String telSecundario;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Localidad", referencedColumnName = "id_Localidad")
     private Localidad localidad;
 
@@ -79,7 +80,7 @@ public class Cliente implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaAlta;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
 
@@ -87,168 +88,14 @@ public class Cliente implements Serializable {
 
     private boolean predeterminado;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "cliente")
+    @OneToMany(mappedBy = "cliente")
     private Set<FacturaVenta> facturasVenta;
 
-    public Cliente() {
-    }
-
-    public Set<FacturaVenta> getFacturasVenta() {
-        return facturasVenta;
-    }
-
-    public void setFacturasVenta(Set<FacturaVenta> facturasVenta) {
-        this.facturasVenta = facturasVenta;
-    }
-
-    public CondicionIVA getCondicionIVA() {
-        return condicionIVA;
-    }
-
-    public void setCondicionIVA(CondicionIVA condicionIVA) {
-        this.condicionIVA = condicionIVA;
-    }
-
-    public String getContacto() {
-        return contacto;
-    }
-
-    public void setContacto(String contacto) {
-        this.contacto = contacto;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Date getFechaAlta() {
-        return fechaAlta;
-    }
-
-    public void setFechaAlta(Date fechaAlta) {
-        this.fechaAlta = fechaAlta;
-    }
-
-    public long getId_Cliente() {
-        return id_Cliente;
-    }
-
-    public void setId_Cliente(long id_Cliente) {
-        this.id_Cliente = id_Cliente;
-    }
-
-    public String getId_Fiscal() {
-        return id_Fiscal;
-    }
-
-    public void setId_Fiscal(String id_Fiscal) {
-        this.id_Fiscal = id_Fiscal;
-    }
-
-    public Localidad getLocalidad() {
-        return localidad;
-    }
-
-    public void setLocalidad(Localidad localidad) {
-        this.localidad = localidad;
-    }
-
-    public String getRazonSocial() {
-        return razonSocial;
-    }
-
-    public void setRazonSocial(String razonSocial) {
-        this.razonSocial = razonSocial;
-    }
-
-    public String getNombreFantasia() {
-        return nombreFantasia;
-    }
-
-    public void setNombreFantasia(String nombreFantasia) {
-        this.nombreFantasia = nombreFantasia;
-    }
-
-    public String getTelPrimario() {
-        return telPrimario;
-    }
-
-    public void setTelPrimario(String telPrimario) {
-        this.telPrimario = telPrimario;
-    }
-
-    public String getTelSecundario() {
-        return telSecundario;
-    }
-
-    public void setTelSecundario(String telSecundario) {
-        this.telSecundario = telSecundario;
-    }
-
-    public boolean isEliminado() {
-        return eliminado;
-    }
-
-    public void setEliminado(boolean eliminado) {
-        this.eliminado = eliminado;
-    }
-
-    public boolean isPredeterminado() {
-        return predeterminado;
-    }
-
-    public void setPredeterminado(boolean predeterminado) {
-        this.predeterminado = predeterminado;
-    }
-
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
+    @OneToMany(mappedBy = "cliente")
+    private List<Pedido> pedidos;
 
     @Override
     public String toString() {
         return razonSocial;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 97 * hash + (int) (this.id_Cliente ^ (this.id_Cliente >>> 32));
-        hash = 97 * hash + Objects.hashCode(this.razonSocial);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Cliente other = (Cliente) obj;
-        if (this.id_Cliente != other.id_Cliente) {
-            return false;
-        }
-        if (!Objects.equals(this.razonSocial, other.razonSocial)) {
-            return false;
-        }
-        return true;
-    }
+    }    
 }

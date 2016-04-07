@@ -16,14 +16,14 @@ public interface IFacturaRepository {
 
     List<FacturaVenta> buscarFacturasVenta(BusquedaFacturaVentaCriteria criteria);
 
-    FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num);
+    FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num);
 
-    long getMayorNumFacturaSegunTipo(char tipoDeFactura, long serie);
+    long getMayorNumFacturaSegunTipo(String tipoDeFactura, long serie);
 
     List<RenglonFactura> getRenglonesDeLaFactura(Factura factura);
 
     void guardar(Factura factura);
 
     List<Object[]> listarProductosMasVendidosPorAnio(int anio);
-    
+
 }

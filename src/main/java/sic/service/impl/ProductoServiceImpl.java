@@ -37,7 +37,7 @@ public class ProductoServiceImpl implements IProductoService {
     public ProductoServiceImpl(IProductoRepository productoRepository, IEmpresaService empresaService) {
         this.productoRepository = productoRepository;
         this.empresaService = empresaService;
-    }   
+    }
 
     private void validarOperacion(TipoDeOperacion operacion, Producto producto) {
         //Entrada de Datos
@@ -178,7 +178,7 @@ public class ProductoServiceImpl implements IProductoService {
                             result = 0;
                         }
                         producto.setCantidad(result);
-                        
+
                     }
                 }
 
@@ -276,6 +276,11 @@ public class ProductoServiceImpl implements IProductoService {
     @Override
     public List<Producto> getProductosPorDescripcionQueContenga(String criteria, int cantRegistros, Empresa empresa) {
         return productoRepository.getProductosQueContengaCodigoDescripcion(criteria, cantRegistros, empresa);
+    }
+
+    @Override
+    public boolean existeStockDisponible(long idProducto, double cantidad) {
+        return (this.getProductoPorId(idProducto).getCantidad() >= cantidad) || this.getProductoPorId(idProducto).isIlimitado();
     }
 
     //**************************************************************************
