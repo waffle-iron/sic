@@ -10,24 +10,15 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
-import sic.repository.XMLException;
-import sic.modelo.DatosConexion;
-import sic.modelo.XMLFileConfig;
 import sic.modelo.Usuario;
-import sic.service.IConexionService;
-import sic.service.IConfiguracionDelSistemaService;
 import sic.service.IUsuarioService;
 import sic.service.ServiceException;
-import sic.util.Validator;
 
 public class GUI_LogIn extends JFrame {
     
-    private boolean configDesplegada;
     private Usuario usuario;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
-    private final IConfiguracionDelSistemaService configuracionService = appContext.getBean(IConfiguracionDelSistemaService.class);
-    private final IConexionService conexionService = appContext.getBean(IConexionService.class);
     private static final Logger log = Logger.getLogger(GUI_LogIn.class.getPackage().getName());
 
     public GUI_LogIn() {        
@@ -37,11 +28,6 @@ public class GUI_LogIn extends JFrame {
         ImageIcon iconoVentana = new ImageIcon(GUI_LogIn.class.getResource("/sic/icons/SIC_24_square.png"));
         this.setIconImage(iconoVentana.getImage());
         this.setLocationRelativeTo(null);
-        txt_Host.setEnabled(false);
-        txt_Puerto.setEnabled(false);
-        txt_BD.setEnabled(false);
-        btn_Guardar.setEnabled(false);
-        this.cargarDatosConexion();
     }
 
     private void validarUsuario() {
@@ -82,51 +68,6 @@ public class GUI_LogIn extends JFrame {
         this.txt_Contrasenia.setText("");
     }
 
-    private void desplegarPlegarConfig() {
-        if (configDesplegada == true) {
-            this.setSize(290, 150);
-            txt_Host.setEnabled(false);
-            txt_Puerto.setEnabled(false);
-            txt_BD.setEnabled(false);
-            btn_Guardar.setEnabled(false);
-            configDesplegada = false;
-            btn_Ingresar.setEnabled(true);
-            btn_Salir.setEnabled(true);
-            txt_Usuario.setEnabled(true);
-            txt_Contrasenia.setEnabled(true);
-            txt_Usuario.requestFocus();
-        } else {
-            this.setSize(290, 270);
-            configDesplegada = true;
-            txt_Host.setEnabled(true);
-            txt_Puerto.setEnabled(true);
-            txt_BD.setEnabled(true);
-            btn_Guardar.setEnabled(true);
-            btn_Ingresar.setEnabled(false);
-            btn_Salir.setEnabled(false);
-            txt_Usuario.setEnabled(false);
-            txt_Contrasenia.setEnabled(false);
-            txt_Host.requestFocus();
-            this.cargarDatosConexion();
-        }
-    }
-
-    private void cargarDatosConexion() {
-        try {
-            configuracionService.leerXML();
-            txt_Host.setText(XMLFileConfig.getHostConexion());
-            if (XMLFileConfig.getPuertoConexion() == 0) {
-                txt_Puerto.setText("");
-            } else {
-                txt_Puerto.setText(String.valueOf(XMLFileConfig.getPuertoConexion()));
-            }
-            txt_BD.setText(XMLFileConfig.getBdConexion());
-
-        } catch (XMLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     private void capturaTeclaEnter(KeyEvent evt) {
         //tecla ENTER
         if (evt.getKeyCode() == 10) {
@@ -143,14 +84,6 @@ public class GUI_LogIn extends JFrame {
         txt_Usuario = new javax.swing.JTextField();
         btn_Salir = new javax.swing.JButton();
         btn_Ingresar = new javax.swing.JButton();
-        btn_Configuracion = new javax.swing.JButton();
-        lblHost = new javax.swing.JLabel();
-        lblPuerto = new javax.swing.JLabel();
-        lblBD = new javax.swing.JLabel();
-        txt_Host = new javax.swing.JTextField();
-        txt_Puerto = new javax.swing.JTextField();
-        txt_BD = new javax.swing.JTextField();
-        btn_Guardar = new javax.swing.JButton();
         txt_Contrasenia = new javax.swing.JPasswordField();
         pb_Conectando = new javax.swing.JProgressBar();
 
@@ -188,31 +121,6 @@ public class GUI_LogIn extends JFrame {
             }
         });
 
-        btn_Configuracion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Plug_16x16.png"))); // NOI18N
-        btn_Configuracion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_ConfiguracionActionPerformed(evt);
-            }
-        });
-
-        lblHost.setForeground(java.awt.Color.red);
-        lblHost.setText("Host ó IP:");
-
-        lblPuerto.setForeground(java.awt.Color.red);
-        lblPuerto.setText("Puerto:");
-
-        lblBD.setForeground(java.awt.Color.red);
-        lblBD.setText("Base de Datos:");
-
-        btn_Guardar.setForeground(java.awt.Color.blue);
-        btn_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Save_16x16.png"))); // NOI18N
-        btn_Guardar.setText("Guardar");
-        btn_Guardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_GuardarActionPerformed(evt);
-            }
-        });
-
         txt_Contrasenia.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txt_ContraseniaKeyPressed(evt);
@@ -230,7 +138,7 @@ public class GUI_LogIn extends JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pb_Conectando, javax.swing.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
+                        .addComponent(pb_Conectando, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -238,31 +146,18 @@ public class GUI_LogIn extends JFrame {
                             .addComponent(lblContrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txt_Usuario, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
-                            .addComponent(txt_Contrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE))
+                            .addComponent(txt_Usuario)
+                            .addComponent(txt_Contrasenia))
                         .addGap(12, 12, 12))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btn_Configuracion)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_Ingresar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_Salir, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(lblHost, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(lblPuerto, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(lblBD, javax.swing.GroupLayout.Alignment.TRAILING))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(txt_BD, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
-                                    .addComponent(txt_Puerto, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
-                                    .addComponent(txt_Host, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)))
-                            .addComponent(btn_Guardar, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addComponent(btn_Ingresar, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btn_Salir, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
+
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Ingresar, btn_Salir});
+
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
@@ -278,61 +173,17 @@ public class GUI_LogIn extends JFrame {
                 .addComponent(pb_Conectando, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(btn_Configuracion)
                     .addComponent(btn_Ingresar)
                     .addComponent(btn_Salir))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
-                    .addComponent(lblHost)
-                    .addComponent(txt_Host, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
-                    .addComponent(lblPuerto)
-                    .addComponent(txt_Puerto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
-                    .addComponent(lblBD)
-                    .addComponent(txt_BD, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_Guardar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btn_ConfiguracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ConfiguracionActionPerformed
-        this.desplegarPlegarConfig();
-    }//GEN-LAST:event_btn_ConfiguracionActionPerformed
-
     private void btn_SalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SalirActionPerformed
         System.exit(0);
     }//GEN-LAST:event_btn_SalirActionPerformed
-
-    private void btn_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_GuardarActionPerformed
-        try {
-            //TO DO - Esta validacion debería ser hecha por un componente swing
-            String puertoIngresado = txt_Puerto.getText().trim();
-            if (puertoIngresado.equals("") || !Validator.esNumericoPositivo(puertoIngresado)) {
-                throw new ServiceException("El puerto ingresado es inválido.");
-            }
-
-            DatosConexion datosConexion = new DatosConexion();
-            datosConexion.setHost(txt_Host.getText().trim());
-            datosConexion.setNombreBaseDeDatos(txt_BD.getText().trim());
-            datosConexion.setPuerto(Integer.parseInt(txt_Puerto.getText().trim()));
-
-            conexionService.guardar(datosConexion);
-            JOptionPane.showMessageDialog(this, "La configuración de conexion se guardo correctamente!",
-                    "Informacion", JOptionPane.INFORMATION_MESSAGE);
-            this.cargarDatosConexion();
-            this.desplegarPlegarConfig();
-
-        } catch (ServiceException | XMLException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
-        }
-    }//GEN-LAST:event_btn_GuardarActionPerformed
 
     private void btn_IngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_IngresarActionPerformed
         Thread hiloLogIn = new Thread(new Runnable() {
@@ -340,7 +191,6 @@ public class GUI_LogIn extends JFrame {
             public void run() {
                 pb_Conectando.setIndeterminate(true);
                 pb_Conectando.setString("Conectando...");
-                btn_Configuracion.setEnabled(false);
                 btn_Ingresar.setEnabled(false);
                 btn_Salir.setEnabled(false);
                 txt_Usuario.setEnabled(false);
@@ -349,7 +199,6 @@ public class GUI_LogIn extends JFrame {
                 validarUsuario();
                 pb_Conectando.setIndeterminate(false);
                 pb_Conectando.setString("");
-                btn_Configuracion.setEnabled(true);
                 btn_Ingresar.setEnabled(true);
                 btn_Salir.setEnabled(true);
                 txt_Usuario.setEnabled(true);
@@ -374,20 +223,12 @@ public class GUI_LogIn extends JFrame {
         this.capturaTeclaEnter(evt);
     }//GEN-LAST:event_txt_UsuarioKeyPressed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_Configuracion;
-    private javax.swing.JButton btn_Guardar;
     private javax.swing.JButton btn_Ingresar;
     private javax.swing.JButton btn_Salir;
-    private javax.swing.JLabel lblBD;
     private javax.swing.JLabel lblContrasenia;
-    private javax.swing.JLabel lblHost;
-    private javax.swing.JLabel lblPuerto;
     private javax.swing.JLabel lblUsuario;
     private javax.swing.JProgressBar pb_Conectando;
-    private javax.swing.JTextField txt_BD;
     private javax.swing.JPasswordField txt_Contrasenia;
-    private javax.swing.JTextField txt_Host;
-    private javax.swing.JTextField txt_Puerto;
     private javax.swing.JTextField txt_Usuario;
     // End of variables declaration//GEN-END:variables
 }

@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
 import sic.repository.IConfiguracionDelSistemaRepository;
-import sic.repository.XMLException;
 import sic.service.IConfiguracionDelSistemaService;
 
 @Service
@@ -17,16 +16,6 @@ public class ConfiguracionDelSistemaServiceImpl implements IConfiguracionDelSist
     @Autowired
     public ConfiguracionDelSistemaServiceImpl(IConfiguracionDelSistemaRepository configuracionRepository) {
         this.configuracionRepository = configuracionRepository;
-    }
-
-    @Override
-    public void guardarXML(String pathEtiqueta, String valor) throws XMLException {
-        configuracionRepository.guardarXMLconDOM(pathEtiqueta, valor);
-    }
-
-    @Override
-    public void leerXML() throws XMLException {
-        configuracionRepository.leerXMLconDOM();
     }
 
     @Override

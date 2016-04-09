@@ -2,7 +2,6 @@ package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -11,7 +10,6 @@ import sic.modelo.Pedido;
 import sic.modelo.RenglonPedido;
 import sic.repository.IPedidoRepository;
 import sic.util.FormatterFechaHora;
-import sic.util.PersistenceUtil;
 
 @Repository
 public class PedidoRepositoryJPAImpl implements IPedidoRepository {
@@ -49,7 +47,7 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
             query += " AND p.nroPedido = " + criteria.getNroPedido();
         }
         query += " ORDER BY p.fecha DESC";
-        EntityManager em = PersistenceUtil.getEntityManager();
+        
         TypedQuery<Pedido> typedQuery = em.createQuery(query, Pedido.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
         if (criteria.getCantRegistros() != 0) {

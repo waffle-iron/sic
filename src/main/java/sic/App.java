@@ -16,7 +16,6 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
 import sic.vista.swing.GUI_LogIn;
 
 /**
@@ -32,7 +31,10 @@ public class App {
         //properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
         properties.setProperty("hibernate.show_sql", "false");
-        properties.setProperty("hibernate.format_sql", "true");
+        properties.setProperty("hibernate.format_sql", "true");        
+        properties.setProperty("hibernate.connection.CharSet", "utf8");
+        properties.setProperty("hibernate.connection.characterEncoding", "utf8");
+        properties.setProperty("hibernate.connection.useUnicode", "true");
         return properties;
     }
 
@@ -42,6 +44,7 @@ public class App {
         em.setDataSource(this.getDataSource());
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
+        em.setPackagesToScan("sic.modelo");
         em.setJpaProperties(this.getAdditionalProperties());
         return em;
     }
@@ -50,9 +53,9 @@ public class App {
     public DataSource getDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/sic");
-        dataSource.setUsername("admin12345");
-        dataSource.setPassword("sic12345");
+        dataSource.setUrl("jdbc:mysql://" + System.getenv("SIC_HOST") + ":3306/sic");
+        dataSource.setUsername(System.getenv("SIC_USERNAME"));
+        dataSource.setPassword(System.getenv("SIC_PASSWORD"));
         return dataSource;
     }
 

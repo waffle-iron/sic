@@ -12,9 +12,5 @@ public interface IConfiguracionDelSistemaRepository {
     ConfiguracionDelSistema getConfiguracionDelSistemaPorId(long id_ConfiguracionDelSistema);
 
     void guardar(ConfiguracionDelSistema cds);
-
-    void guardarXMLconDOM(String pathEtiqueta, String valor) throws XMLException;
-
-    void leerXMLconDOM() throws XMLException;
     
 }
