@@ -42,26 +42,18 @@ import sic.util.Validator;
 @Service
 public class FacturaServiceImpl implements IFacturaService {
 
-    private final IFacturaRepository facturaRepository;
-    
-    private final IProductoService productoService;
-    private final IConfiguracionDelSistemaService configuracionDelSistemaService;
-    private final IEmpresaService empresaService;
-    private final IRenglonDeFacturaService renglonDeFacturaService;
-    private final IPedidoService pedidoService;
-
     @Autowired
-    public FacturaServiceImpl(IFacturaRepository facturaRepository, IProductoService productoService,
-            IConfiguracionDelSistemaService configuracionDelSistemaService, IEmpresaService empresaService,
-            IRenglonDeFacturaService renglonDeFacturaService, IPedidoService pedidoService) {
-
-        this.facturaRepository = facturaRepository;
-        this.productoService = productoService;
-        this.configuracionDelSistemaService = configuracionDelSistemaService;
-        this.empresaService = empresaService;
-        this.renglonDeFacturaService = renglonDeFacturaService;
-        this.pedidoService = pedidoService;
-    }
+    private IFacturaRepository facturaRepository;
+    @Autowired
+    private IProductoService productoService;
+    @Autowired
+    private IConfiguracionDelSistemaService configuracionDelSistemaService;
+    @Autowired
+    private IEmpresaService empresaService;
+    @Autowired
+    private IRenglonDeFacturaService renglonDeFacturaService;
+    @Autowired
+    private IPedidoService pedidoService;
 
     @Override
     public char[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor) {
@@ -82,7 +74,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-         if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
+        {
+            if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Proveedor SI
                 char[] tiposPermitidos = new char[2];
                 tiposPermitidos[0] = 'B';
@@ -95,6 +88,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = 'X';
                 return tiposPermitidos;
             }
+        }
     }
 
     @Override
@@ -120,7 +114,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-         if (cliente.getCondicionIVA().isDiscriminaIVA()) {
+        {
+            if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Cliente SI
                 String[] tiposPermitidos = new String[4];
                 tiposPermitidos[0] = "Factura C";
@@ -137,6 +132,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
+        }
     }
 
     @Override
