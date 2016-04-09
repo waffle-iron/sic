@@ -13,22 +13,22 @@ import sic.service.ServiceException;
 
 @Repository
 public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {
-    
+
     @PersistenceContext
     private EntityManager em;
 
     @Override
-    public List<Usuario> getUsuarios() {        
+    public List<Usuario> getUsuarios() {
         TypedQuery<Usuario> typedQuery = em.createNamedQuery("Usuario.buscarTodos", Usuario.class);
-        List<Usuario> usuarios = typedQuery.getResultList();        
+        List<Usuario> usuarios = typedQuery.getResultList();
         return usuarios;
     }
 
     @Override
-    public Usuario getUsuarioPorNombre(String nombre) {        
+    public Usuario getUsuarioPorNombre(String nombre) {
         TypedQuery<Usuario> typedQuery = em.createNamedQuery("Usuario.buscarPorNombre", Usuario.class);
         typedQuery.setParameter("nombre", nombre);
-        List<Usuario> usuarios = typedQuery.getResultList();        
+        List<Usuario> usuarios = typedQuery.getResultList();
         if (usuarios.isEmpty()) {
             return null;
         } else {
@@ -37,18 +37,18 @@ public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {
     }
 
     @Override
-    public List<Usuario> getUsuariosAdministradores() {        
+    public List<Usuario> getUsuariosAdministradores() {
         TypedQuery<Usuario> typedQuery = em.createNamedQuery("Usuario.buscarUsuariosAdministradores", Usuario.class);
-        List<Usuario> usuarios = typedQuery.getResultList();        
+        List<Usuario> usuarios = typedQuery.getResultList();
         return usuarios;
     }
 
     @Override
-    public Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) throws ServiceException {        
+    public Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) throws ServiceException {
         TypedQuery<Usuario> typedQuery = em.createNamedQuery("Usuario.buscarPorNombreContrasenia", Usuario.class);
         typedQuery.setParameter("nombre", nombre);
         typedQuery.setParameter("password", contrasenia);
-        List<Usuario> usuarios = typedQuery.getResultList();        
+        List<Usuario> usuarios = typedQuery.getResultList();
         if (usuarios.isEmpty()) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_logInInvalido"));
         } else {
@@ -57,18 +57,12 @@ public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {
     }
 
     @Override
-    public void actualizar(Usuario usuario) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void actualizar(Usuario usuario) {
         em.merge(usuario);
-        tx.commit();        
     }
 
     @Override
-    public void guardar(Usuario usuario) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void guardar(Usuario usuario) {
         em.persist(usuario);
-        tx.commit();        
     }
 }

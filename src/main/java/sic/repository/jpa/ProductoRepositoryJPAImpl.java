@@ -2,7 +2,6 @@ package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -117,27 +116,19 @@ public class ProductoRepositoryJPAImpl implements IProductoRepository {
 
     @Override
     public void guardar(Producto producto) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         em.persist(em.merge(producto));
-        tx.commit();
     }
 
     @Override
     public void actualizar(Producto producto) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         em.merge(producto);
-        tx.commit();
     }
 
     @Override
     public void actualizarMultiplesProductos(List<Producto> productos) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         for (Producto producto : productos) {
             em.merge(producto);
         }
-        tx.commit();
+
     }
 }

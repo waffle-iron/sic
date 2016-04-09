@@ -2,7 +2,6 @@ package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -14,19 +13,19 @@ public class CondicionIVARepositoryJPAImpl implements ICondicionIVARepository {
 
     @PersistenceContext
     private EntityManager em;
-    
+
     @Override
-    public List<CondicionIVA> getCondicionesIVA() {        
+    public List<CondicionIVA> getCondicionesIVA() {
         TypedQuery<CondicionIVA> typedQuery = em.createNamedQuery("CondicionIVA.buscarTodas", CondicionIVA.class);
-        List<CondicionIVA> condicionesIVA = typedQuery.getResultList();        
+        List<CondicionIVA> condicionesIVA = typedQuery.getResultList();
         return condicionesIVA;
     }
 
     @Override
-    public CondicionIVA getCondicionIVAPorNombre(String nombre) {        
+    public CondicionIVA getCondicionIVAPorNombre(String nombre) {
         TypedQuery<CondicionIVA> typedQuery = em.createNamedQuery("CondicionIVA.buscarPorNombre", CondicionIVA.class);
         typedQuery.setParameter("nombre", nombre);
-        List<CondicionIVA> condicionesIVA = typedQuery.getResultList();        
+        List<CondicionIVA> condicionesIVA = typedQuery.getResultList();
         if (condicionesIVA.isEmpty()) {
             return null;
         } else {
@@ -35,18 +34,12 @@ public class CondicionIVARepositoryJPAImpl implements ICondicionIVARepository {
     }
 
     @Override
-    public void actualizar(CondicionIVA condicionIVA) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void actualizar(CondicionIVA condicionIVA) {
         em.merge(condicionIVA);
-        tx.commit();        
     }
 
     @Override
-    public void guardar(CondicionIVA condicionIVA) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void guardar(CondicionIVA condicionIVA) {
         em.persist(condicionIVA);
-        tx.commit();        
     }
 }

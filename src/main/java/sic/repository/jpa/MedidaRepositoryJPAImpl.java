@@ -2,7 +2,6 @@ package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -15,21 +14,21 @@ public class MedidaRepositoryJPAImpl implements IMedidaRepository {
 
     @PersistenceContext
     private EntityManager em;
-    
+
     @Override
-    public List<Medida> getUnidadMedidas(Empresa empresa) {        
+    public List<Medida> getUnidadMedidas(Empresa empresa) {
         TypedQuery<Medida> typedQuery = em.createNamedQuery("Medida.buscarTodas", Medida.class);
         typedQuery.setParameter("empresa", empresa);
-        List<Medida> medidas = typedQuery.getResultList();        
+        List<Medida> medidas = typedQuery.getResultList();
         return medidas;
     }
 
     @Override
-    public Medida getMedidaPorNombre(String nombreMedida, Empresa empresa) {        
+    public Medida getMedidaPorNombre(String nombreMedida, Empresa empresa) {
         TypedQuery<Medida> typedQuery = em.createNamedQuery("Medida.buscarPorNombre", Medida.class);
         typedQuery.setParameter("nombre", nombreMedida);
         typedQuery.setParameter("empresa", empresa);
-        List<Medida> medidas = typedQuery.getResultList();        
+        List<Medida> medidas = typedQuery.getResultList();
         if (medidas.isEmpty()) {
             return null;
         } else {
@@ -38,18 +37,12 @@ public class MedidaRepositoryJPAImpl implements IMedidaRepository {
     }
 
     @Override
-    public void guardar(Medida medida) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void guardar(Medida medida) {
         em.persist(em.merge(medida));
-        tx.commit();        
     }
 
     @Override
-    public void actualizar(Medida medida) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void actualizar(Medida medida) {
         em.merge(medida);
-        tx.commit();        
     }
 }

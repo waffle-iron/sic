@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Empresa;
 import sic.modelo.Transportista;
 import sic.repository.ITransportistaRepository;
@@ -82,18 +83,21 @@ public class TransportistaServiceImpl implements ITransportistaService {
     }
 
     @Override
+    @Transactional
     public void guardar(Transportista transportista) {
         this.validarOperacion(TipoDeOperacion.ALTA, transportista);
         transportistaRepository.guardar(transportista);
     }
 
     @Override
+    @Transactional
     public void actualizar(Transportista transportista) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, transportista);
         transportistaRepository.actualizar(transportista);
     }
 
     @Override
+    @Transactional
     public void eliminar(Transportista transportista) {
         transportista.setEliminado(true);
         transportistaRepository.actualizar(transportista);

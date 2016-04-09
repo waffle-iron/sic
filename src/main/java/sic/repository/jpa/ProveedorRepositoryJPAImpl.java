@@ -2,7 +2,6 @@ package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -16,21 +15,21 @@ public class ProveedorRepositoryJPAImpl implements IProveedorRepository {
 
     @PersistenceContext
     private EntityManager em;
-    
+
     @Override
-    public List<Proveedor> getProveedores(Empresa empresa) {        
+    public List<Proveedor> getProveedores(Empresa empresa) {
         TypedQuery<Proveedor> typedQuery = em.createNamedQuery("Proveedor.buscarTodos", Proveedor.class);
         typedQuery.setParameter("empresa", empresa);
-        List<Proveedor> proveedores = typedQuery.getResultList();        
+        List<Proveedor> proveedores = typedQuery.getResultList();
         return proveedores;
     }
 
     @Override
-    public Proveedor getProveedorPorCodigo(String codigo, Empresa empresa) {        
+    public Proveedor getProveedorPorCodigo(String codigo, Empresa empresa) {
         TypedQuery<Proveedor> typedQuery = em.createNamedQuery("Proveedor.buscarPorCodigo", Proveedor.class);
         typedQuery.setParameter("codigo", codigo);
         typedQuery.setParameter("empresa", empresa);
-        List<Proveedor> proveedores = typedQuery.getResultList();        
+        List<Proveedor> proveedores = typedQuery.getResultList();
         if (proveedores.isEmpty()) {
             return null;
         } else {
@@ -39,11 +38,11 @@ public class ProveedorRepositoryJPAImpl implements IProveedorRepository {
     }
 
     @Override
-    public Proveedor getProveedorPorRazonSocial(String razonSocial, Empresa empresa) {        
+    public Proveedor getProveedorPorRazonSocial(String razonSocial, Empresa empresa) {
         TypedQuery<Proveedor> typedQuery = em.createNamedQuery("Proveedor.buscarPorRazonSocial", Proveedor.class);
         typedQuery.setParameter("razonSocial", razonSocial);
         typedQuery.setParameter("empresa", empresa);
-        List<Proveedor> proveedores = typedQuery.getResultList();        
+        List<Proveedor> proveedores = typedQuery.getResultList();
         if (proveedores.isEmpty()) {
             return null;
         } else {
@@ -52,11 +51,11 @@ public class ProveedorRepositoryJPAImpl implements IProveedorRepository {
     }
 
     @Override
-    public Proveedor getProveedorPorId_Fiscal(String id_Fiscal, Empresa empresa) {        
+    public Proveedor getProveedorPorId_Fiscal(String id_Fiscal, Empresa empresa) {
         TypedQuery<Proveedor> typedQuery = em.createNamedQuery("Proveedor.buscarPorIdFiscal", Proveedor.class);
         typedQuery.setParameter("idFiscal", id_Fiscal);
         typedQuery.setParameter("empresa", empresa);
-        List<Proveedor> proveedores = typedQuery.getResultList();        
+        List<Proveedor> proveedores = typedQuery.getResultList();
         if (proveedores.isEmpty()) {
             return null;
         } else {
@@ -94,30 +93,24 @@ public class ProveedorRepositoryJPAImpl implements IProveedorRepository {
         if (criteria.isBuscaPorPais() == true) {
             query = query + " AND p.localidad.provincia.pais = " + criteria.getPais().getId_Pais();
         }
-        query = query + " ORDER BY p.razonSocial ASC";        
+        query = query + " ORDER BY p.razonSocial ASC";
         TypedQuery<Proveedor> typedQuery = em.createQuery(query, Proveedor.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
         //si es 0, recupera TODOS los registros
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        List<Proveedor> proveedores = typedQuery.getResultList();        
+        List<Proveedor> proveedores = typedQuery.getResultList();
         return proveedores;
     }
 
     @Override
-    public void guardar(Proveedor proveedor) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void guardar(Proveedor proveedor) {
         em.persist(em.merge(proveedor));
-        tx.commit();        
     }
 
     @Override
-    public void actualizar(Proveedor proveedor) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void actualizar(Proveedor proveedor) {
         em.merge(proveedor);
-        tx.commit();        
     }
 }

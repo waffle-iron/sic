@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Empresa;
 import sic.modelo.Proveedor;
 import sic.repository.IProveedorRepository;
@@ -21,8 +22,8 @@ public class ProveedorServiceImpl implements IProveedorService {
     @Autowired
     public ProveedorServiceImpl(IProveedorRepository proveedorRepository) {
         this.proveedorRepository = proveedorRepository;
-    }    
-    
+    }
+
     @Override
     public List<Proveedor> getProveedores(Empresa empresa) {
         return proveedorRepository.getProveedores(empresa);
@@ -132,18 +133,21 @@ public class ProveedorServiceImpl implements IProveedorService {
     }
 
     @Override
+    @Transactional
     public void guardar(Proveedor proveedor) {
         this.validarOperacion(TipoDeOperacion.ALTA, proveedor);
         proveedorRepository.guardar(proveedor);
     }
 
     @Override
+    @Transactional
     public void actualizar(Proveedor proveedor) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, proveedor);
         proveedorRepository.actualizar(proveedor);
     }
 
     @Override
+    @Transactional
     public void eliminar(Proveedor proveedor) {
         proveedor.setEliminado(true);
         proveedorRepository.actualizar(proveedor);

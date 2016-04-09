@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
 import sic.repository.IConfiguracionDelSistemaRepository;
@@ -23,10 +24,10 @@ public class EmpresaServiceImpl implements IEmpresaService {
     @Autowired
     public EmpresaServiceImpl(IEmpresaRepository empresaRepository,
             IConfiguracionDelSistemaRepository configuracionDelSistemaRepository) {
-        
+
         this.empresaRepository = empresaRepository;
         this.configuracionDelSistemaRepository = configuracionDelSistemaRepository;
-    }       
+    }
 
     @Override
     public List<Empresa> getEmpresas() {
@@ -113,6 +114,7 @@ public class EmpresaServiceImpl implements IEmpresaService {
     }
 
     @Override
+    @Transactional
     public void guardar(Empresa empresa) {
         validarOperacion(TipoDeOperacion.ALTA, empresa);
         empresaRepository.guardar(empresa);
@@ -120,12 +122,14 @@ public class EmpresaServiceImpl implements IEmpresaService {
     }
 
     @Override
+    @Transactional
     public void actualizar(Empresa empresa) {
         validarOperacion(TipoDeOperacion.ACTUALIZACION, empresa);
         empresaRepository.actualizar(empresa);
     }
 
     @Override
+    @Transactional
     public void eliminar(Empresa empresa) {
         empresa.setEliminada(true);
         empresaRepository.actualizar(empresa);

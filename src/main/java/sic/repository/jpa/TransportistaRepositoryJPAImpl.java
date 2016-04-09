@@ -16,21 +16,21 @@ public class TransportistaRepositoryJPAImpl implements ITransportistaRepository 
 
     @PersistenceContext
     private EntityManager em;
-    
+
     @Override
-    public List<Transportista> getTransportistas(Empresa empresa) {        
+    public List<Transportista> getTransportistas(Empresa empresa) {
         TypedQuery<Transportista> typedQuery = em.createNamedQuery("Transportista.buscarTodos", Transportista.class);
         typedQuery.setParameter("empresa", empresa);
-        List<Transportista> transportistas = typedQuery.getResultList();        
+        List<Transportista> transportistas = typedQuery.getResultList();
         return transportistas;
     }
 
     @Override
-    public Transportista getTransportistaPorNombre(String nombre, Empresa empresa) {        
+    public Transportista getTransportistaPorNombre(String nombre, Empresa empresa) {
         TypedQuery<Transportista> typedQuery = em.createNamedQuery("Transportista.buscarPorNombre", Transportista.class);
         typedQuery.setParameter("nombre", nombre);
         typedQuery.setParameter("empresa", empresa);
-        List<Transportista> transportistas = typedQuery.getResultList();        
+        List<Transportista> transportistas = typedQuery.getResultList();
         if (transportistas.isEmpty()) {
             return null;
         } else {
@@ -46,8 +46,8 @@ public class TransportistaRepositoryJPAImpl implements ITransportistaRepository 
             String[] terminos = criteria.getNombre().split(" ");
             for (int i = 0; i < terminos.length; i++) {
                 query += " AND t.nombre LIKE '%" + terminos[i] + "%'";
-            }            
-        }        
+            }
+        }
         //Localidad
         if (criteria.isBuscarPorLocalidad() == true) {
             query = query + " AND t.localidad = " + criteria.getLocalidad().getId_Localidad();
@@ -60,26 +60,20 @@ public class TransportistaRepositoryJPAImpl implements ITransportistaRepository 
         if (criteria.isBuscarPorPais() == true) {
             query = query + " AND t.localidad.provincia.pais = " + criteria.getPais().getId_Pais();
         }
-        query = query + " ORDER BY t.nombre ASC";        
+        query = query + " ORDER BY t.nombre ASC";
         TypedQuery<Transportista> typedQuery = em.createQuery(query, Transportista.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
-        List<Transportista> transportistas = typedQuery.getResultList();        
+        List<Transportista> transportistas = typedQuery.getResultList();
         return transportistas;
     }
 
     @Override
-    public void guardar(Transportista transportista) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void guardar(Transportista transportista) {
         em.persist(em.merge(transportista));
-        tx.commit();        
     }
 
     @Override
-    public void actualizar(Transportista transportista) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void actualizar(Transportista transportista) {
         em.merge(transportista);
-        tx.commit();        
     }
 }

@@ -3,6 +3,7 @@ package sic.repository.jpa;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import sic.modelo.BusquedaPedidoCriteria;
@@ -15,9 +16,11 @@ import sic.util.PersistenceUtil;
 @Repository
 public class PedidoRepositoryJPAImpl implements IPedidoRepository {
 
+    @PersistenceContext
+    private EntityManager em;
+
     @Override
     public List<RenglonPedido> getRenglonesDelPedido(long nroPedido) {
-        EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarRenglonesDelPedido", Pedido.class);
         typedQuery.setParameter("nroPedido", nroPedido);
         List<Pedido> paraObtenerRenglones = typedQuery.getResultList();
@@ -59,7 +62,6 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
 
     @Override
     public long buscarMayorNroPedido(long idEmpresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Long> typedQuery = em.createNamedQuery("Pedido.buscarMayorNroPedido", Long.class);
         typedQuery.setParameter("idEmpresa", idEmpresa);
         Long resultado = typedQuery.getSingleResult();
@@ -73,17 +75,11 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
 
     @Override
     public void guardar(Pedido pedido) {
-        EntityManager em = PersistenceUtil.getEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         em.persist(em.merge(pedido));
-        tx.commit();
-        em.close();
     }
 
     @Override
     public Pedido getPedidoPorNro(long nroPedido, long idEmpresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumero", Pedido.class);
         typedQuery.setParameter("idEmpresa", idEmpresa);
         typedQuery.setParameter("nroPedido", nroPedido);
@@ -98,17 +94,11 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
 
     @Override
     public void actualizar(Pedido pedido) {
-        EntityManager em = PersistenceUtil.getEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         em.merge(pedido);
-        tx.commit();
-        em.close();
     }
 
     @Override
     public Pedido getPedidoPorNumeroConFacturas(long nroPedido) {
-        EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroConFacturas", Pedido.class);
         typedQuery.setParameter("nroPedido", nroPedido);
         List<Pedido> pedidos = typedQuery.getResultList();
@@ -122,7 +112,6 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
 
     @Override
     public Pedido getPedidoPorNumeroConRenglones(long nroPedido, long idEmpresa) {
-        EntityManager em = PersistenceUtil.getEntityManager();
         TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroConRenglones", Pedido.class);
         typedQuery.setParameter("nroPedido", nroPedido);
         typedQuery.setParameter("idEmpresa", idEmpresa);

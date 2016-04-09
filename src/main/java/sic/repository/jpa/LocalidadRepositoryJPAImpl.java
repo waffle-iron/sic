@@ -15,21 +15,21 @@ public class LocalidadRepositoryJPAImpl implements ILocalidadRepository {
 
     @PersistenceContext
     private EntityManager em;
-    
+
     @Override
-    public List<Localidad> getLocalidadesDeLaProvincia(Provincia provincia) {        
+    public List<Localidad> getLocalidadesDeLaProvincia(Provincia provincia) {
         TypedQuery<Localidad> typedQuery = em.createNamedQuery("Localidad.buscarLocalidadesDeLaProvincia", Localidad.class);
         typedQuery.setParameter("provincia", provincia);
-        List<Localidad> localidades = typedQuery.getResultList();        
+        List<Localidad> localidades = typedQuery.getResultList();
         return localidades;
     }
 
     @Override
-    public Localidad getLocalidadPorNombre(String nombre, Provincia provincia) {        
+    public Localidad getLocalidadPorNombre(String nombre, Provincia provincia) {
         TypedQuery<Localidad> typedQuery = em.createNamedQuery("Localidad.buscarPorNombre", Localidad.class);
         typedQuery.setParameter("nombre", nombre);
         typedQuery.setParameter("provincia", provincia);
-        List<Localidad> localidades = typedQuery.getResultList();        
+        List<Localidad> localidades = typedQuery.getResultList();
         if (localidades.isEmpty()) {
             return null;
         } else {
@@ -38,18 +38,12 @@ public class LocalidadRepositoryJPAImpl implements ILocalidadRepository {
     }
 
     @Override
-    public void actualizar(Localidad localidad) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void actualizar(Localidad localidad) {
         em.merge(localidad);
-        tx.commit();        
     }
 
     @Override
-    public void guardar(Localidad localidad) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void guardar(Localidad localidad) {
         em.persist(em.merge(localidad));
-        tx.commit();        
     }
 }

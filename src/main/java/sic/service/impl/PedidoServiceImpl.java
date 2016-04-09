@@ -14,6 +14,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Factura;
 import sic.modelo.Pedido;
@@ -113,6 +114,7 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
+    @Transactional
     public void guardar(Pedido pedido) {
         this.validarPedido(pedido);
         pedidoRepository.guardar(pedido);
@@ -153,6 +155,7 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
+    @Transactional
     public void actualizar(Pedido pedido) {
         pedidoRepository.actualizar(pedido);
     }
@@ -173,6 +176,7 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
+    @Transactional
     public boolean eliminar(Pedido pedido) {
         if (pedido.getEstado() == EstadoPedido.ABIERTO) {
             pedido.setEliminado(true);

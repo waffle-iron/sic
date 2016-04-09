@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaClienteCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
@@ -15,13 +16,13 @@ import sic.util.Validator;
 
 @Service
 public class ClienteServiceImpl implements IClienteService {
-    
+
     private final IClienteRepository clienteRepository;
 
     @Autowired
     public ClienteServiceImpl(IClienteRepository clienteRepository) {
         this.clienteRepository = clienteRepository;
-    }   
+    }
 
     @Override
     public Cliente getClientePorId(long id_Cliente) {
@@ -61,6 +62,7 @@ public class ClienteServiceImpl implements IClienteService {
      * @param cliente Cliente candidato a predeterminado.
      */
     @Override
+    @Transactional
     public void setClientePredeterminado(Cliente cliente) {
         Cliente clientePredeterminadoAnterior = clienteRepository.getClientePredeterminado(cliente.getEmpresa());
         if (clientePredeterminadoAnterior != null) {
@@ -144,18 +146,21 @@ public class ClienteServiceImpl implements IClienteService {
     }
 
     @Override
+    @Transactional
     public void guardar(Cliente cliente) {
         this.validarOperacion(TipoDeOperacion.ALTA, cliente);
         clienteRepository.guardar(cliente);
     }
 
     @Override
+    @Transactional
     public void actualizar(Cliente cliente) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, cliente);
         clienteRepository.actualizar(cliente);
     }
 
     @Override
+    @Transactional
     public void eliminar(Cliente cliente) {
         cliente.setEliminado(true);
         clienteRepository.actualizar(cliente);

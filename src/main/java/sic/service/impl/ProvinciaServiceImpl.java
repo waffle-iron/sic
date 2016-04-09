@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
 import sic.repository.IProvinciaRepository;
@@ -20,7 +21,7 @@ public class ProvinciaServiceImpl implements IProvinciaService {
     @Autowired
     public ProvinciaServiceImpl(IProvinciaRepository provinciaRepository) {
         this.provinciaRepository = provinciaRepository;
-    }        
+    }
 
     @Override
     public List<Provincia> getProvinciasDelPais(Pais pais) {
@@ -58,18 +59,21 @@ public class ProvinciaServiceImpl implements IProvinciaService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Provincia provincia) {
         provincia.setEliminada(true);
         provinciaRepository.actualizar(provincia);
     }
 
     @Override
+    @Transactional
     public void actualizar(Provincia provincia) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, provincia);
         provinciaRepository.actualizar(provincia);
     }
 
     @Override
+    @Transactional
     public void guardar(Provincia provincia) {
         this.validarOperacion(TipoDeOperacion.ALTA, provincia);
         provinciaRepository.guardar(provincia);

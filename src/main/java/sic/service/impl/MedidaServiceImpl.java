@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Empresa;
 import sic.modelo.Medida;
 import sic.repository.IMedidaRepository;
@@ -20,7 +21,7 @@ public class MedidaServiceImpl implements IMedidaService {
     @Autowired
     public MedidaServiceImpl(IMedidaRepository medidaRepository) {
         this.medidaRepository = medidaRepository;
-    }   
+    }
 
     @Override
     public List<Medida> getUnidadMedidas(Empresa empresa) {
@@ -54,18 +55,21 @@ public class MedidaServiceImpl implements IMedidaService {
     }
 
     @Override
+    @Transactional
     public void actualizar(Medida medida) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, medida);
         medidaRepository.actualizar(medida);
     }
 
     @Override
+    @Transactional
     public void guardar(Medida medida) {
         this.validarOperacion(TipoDeOperacion.ALTA, medida);
         medidaRepository.guardar(medida);
     }
 
     @Override
+    @Transactional
     public void eliminar(Medida medida) {
         medida.setEliminada(true);
         medidaRepository.actualizar(medida);

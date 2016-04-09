@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.CondicionIVA;
 import sic.repository.ICondicionIVARepository;
 import sic.service.ICondicionIVAService;
@@ -19,7 +20,7 @@ public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
     @Autowired
     public CondicionDeIVAServiceImpl(ICondicionIVARepository condicionIVARepository) {
         this.condicionIVARepository = condicionIVARepository;
-    }   
+    }
 
     @Override
     public List<CondicionIVA> getCondicionesIVA() {
@@ -27,18 +28,21 @@ public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
     }
 
     @Override
+    @Transactional
     public void actualizar(CondicionIVA condicionIVA) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, condicionIVA);
         condicionIVARepository.actualizar(condicionIVA);
     }
 
     @Override
+    @Transactional
     public void guardar(CondicionIVA condicionIVA) {
         this.validarOperacion(TipoDeOperacion.ALTA, condicionIVA);
         condicionIVARepository.guardar(condicionIVA);
     }
 
     @Override
+    @Transactional
     public void eliminar(CondicionIVA condicionIVA) {
         condicionIVA.setEliminada(true);
         condicionIVARepository.actualizar(condicionIVA);

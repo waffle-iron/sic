@@ -2,6 +2,7 @@ package sic.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
 import sic.repository.IConfiguracionDelSistemaRepository;
@@ -16,8 +17,8 @@ public class ConfiguracionDelSistemaServiceImpl implements IConfiguracionDelSist
     @Autowired
     public ConfiguracionDelSistemaServiceImpl(IConfiguracionDelSistemaRepository configuracionRepository) {
         this.configuracionRepository = configuracionRepository;
-    }  
-    
+    }
+
     @Override
     public void guardarXML(String pathEtiqueta, String valor) throws XMLException {
         configuracionRepository.guardarXMLconDOM(pathEtiqueta, valor);
@@ -39,12 +40,14 @@ public class ConfiguracionDelSistemaServiceImpl implements IConfiguracionDelSist
     }
 
     @Override
-    public void guardar(ConfiguracionDelSistema cds) {        
+    @Transactional
+    public void guardar(ConfiguracionDelSistema cds) {
         configuracionRepository.guardar(cds);
     }
 
     @Override
-    public void actualizar(ConfiguracionDelSistema cds) {        
+    @Transactional
+    public void actualizar(ConfiguracionDelSistema cds) {
         configuracionRepository.actualizar(cds);
     }
 }

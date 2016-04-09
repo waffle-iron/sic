@@ -2,7 +2,6 @@ package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -15,21 +14,21 @@ public class ProvinciaRepositoryJPAImpl implements IProvinciaRepository {
 
     @PersistenceContext
     private EntityManager em;
-    
+
     @Override
-    public List<Provincia> getProvinciasDelPais(Pais pais) {        
+    public List<Provincia> getProvinciasDelPais(Pais pais) {
         TypedQuery<Provincia> typedQuery = em.createNamedQuery("Provincia.buscarProvinciasDelPais", Provincia.class);
         typedQuery.setParameter("pais", pais);
-        List<Provincia> provincias = typedQuery.getResultList();        
+        List<Provincia> provincias = typedQuery.getResultList();
         return provincias;
     }
 
     @Override
-    public Provincia getProvinciaPorNombre(String nombreProvincia, Pais paisRelacionado) {        
+    public Provincia getProvinciaPorNombre(String nombreProvincia, Pais paisRelacionado) {
         TypedQuery<Provincia> typedQuery = em.createNamedQuery("Provincia.buscarPorNombre", Provincia.class);
         typedQuery.setParameter("nombre", nombreProvincia);
         typedQuery.setParameter("pais", paisRelacionado);
-        List<Provincia> provincias = typedQuery.getResultList();        
+        List<Provincia> provincias = typedQuery.getResultList();
         if (provincias.isEmpty()) {
             return null;
         } else {
@@ -38,18 +37,12 @@ public class ProvinciaRepositoryJPAImpl implements IProvinciaRepository {
     }
 
     @Override
-    public void actualizar(Provincia provincia) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void actualizar(Provincia provincia) {
         em.merge(provincia);
-        tx.commit();        
     }
 
     @Override
-    public void guardar(Provincia provincia) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void guardar(Provincia provincia) {
         em.persist(em.merge(provincia));
-        tx.commit();        
     }
 }

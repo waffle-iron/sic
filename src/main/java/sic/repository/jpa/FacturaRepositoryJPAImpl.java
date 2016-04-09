@@ -2,7 +2,6 @@ package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -32,7 +31,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     @Override
     public FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num) {
         TypedQuery<FacturaVenta> typedQuery = em.createNamedQuery("Factura.buscarPorTipoSerieNum", FacturaVenta.class);
-        typedQuery.setParameter("tipo", tipo);
+        typedQuery.setParameter("tipo", tipo.charAt(tipo.length() - 1));
         typedQuery.setParameter("serie", serie);
         typedQuery.setParameter("num", num);
         List<FacturaVenta> facturasVenta = typedQuery.getResultList();
@@ -120,7 +119,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     @Override
     public long getMayorNumFacturaSegunTipo(String tipoDeFactura, long serie) {
         TypedQuery<Long> typedQuery = em.createNamedQuery("Factura.buscarMayorNumFacturaSegunTipo", Long.class);
-        typedQuery.setParameter("tipo", tipoDeFactura);
+        typedQuery.setParameter("tipo", tipoDeFactura.charAt(tipoDeFactura.length() - 1));
         typedQuery.setParameter("serie", serie);
         Long resultado = typedQuery.getSingleResult();
         if (resultado == null) {
@@ -131,19 +130,13 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     }
 
     @Override
-    public void guardar(Factura factura) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void guardar(Factura factura) {;
         em.persist(em.merge(factura));
-        tx.commit();
     }
 
     @Override
     public void actualizar(Factura factura) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         em.merge(factura);
-        tx.commit();
     }
 
     @Override

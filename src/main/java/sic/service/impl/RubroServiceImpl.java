@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Empresa;
 import sic.modelo.Rubro;
 import sic.repository.IRubroRepository;
@@ -20,7 +21,7 @@ public class RubroServiceImpl implements IRubroService {
     @Autowired
     public RubroServiceImpl(IRubroRepository rubroRepository) {
         this.rubroRepository = rubroRepository;
-    }       
+    }
 
     @Override
     public List<Rubro> getRubros(Empresa empresa) {
@@ -54,18 +55,21 @@ public class RubroServiceImpl implements IRubroService {
     }
 
     @Override
+    @Transactional
     public void actualizar(Rubro rubro) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, rubro);
         rubroRepository.actualizar(rubro);
     }
 
     @Override
+    @Transactional
     public void guardar(Rubro rubro) {
         this.validarOperacion(TipoDeOperacion.ALTA, rubro);
         rubroRepository.guardar(rubro);
     }
 
     @Override
+    @Transactional
     public void eliminar(Rubro rubro) {
         rubro.setEliminado(true);
         rubroRepository.actualizar(rubro);

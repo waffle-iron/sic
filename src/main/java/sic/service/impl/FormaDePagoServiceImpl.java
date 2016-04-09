@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Empresa;
 import sic.modelo.FormaDePago;
 import sic.repository.IFormaDePagoRepository;
@@ -19,7 +20,7 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
     @Autowired
     public FormaDePagoServiceImpl(IFormaDePagoRepository formaDePagoRepository) {
         this.formaDePagoRepository = formaDePagoRepository;
-    }        
+    }
 
     @Override
     public List<FormaDePago> getFormasDePago(Empresa empresa) {
@@ -37,6 +38,7 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
     }
 
     @Override
+    @Transactional
     public void setFormaDePagoPredeterminada(FormaDePago formaDePago) {
         //antes de setear como predeterminado, busca si ya existe
         //otro como predeterminado y cambia su estado.
@@ -68,12 +70,14 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
     }
 
     @Override
+    @Transactional
     public void guardar(FormaDePago formaDePago) {
         this.validarOperacion(formaDePago);
         formaDePagoRepository.guardar(formaDePago);
     }
 
     @Override
+    @Transactional
     public void eliminar(FormaDePago formaDePago) {
         formaDePago.setEliminada(true);
         formaDePagoRepository.actualizar(formaDePago);

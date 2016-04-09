@@ -16,6 +16,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 import sic.vista.swing.GUI_LogIn;
 
 /**
@@ -38,7 +39,7 @@ public class App {
     @Bean
     public LocalContainerEntityManagerFactoryBean getEntityManagerFactory() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
-        em.setDataSource(this.getDataSource());        
+        em.setDataSource(this.getDataSource());
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
         em.setJpaProperties(this.getAdditionalProperties());
@@ -75,7 +76,7 @@ public class App {
     public static void main(String[] args) {
         ApplicationContext context = new AnnotationConfigApplicationContext(App.class);
         System.out.println("Spring Context inicializado con ID: " + context.getId());
-        GUI_LogIn gui_LogIn = new GUI_LogIn();       
+        GUI_LogIn gui_LogIn = new GUI_LogIn();
         gui_LogIn.setVisible(true);
     }
 }

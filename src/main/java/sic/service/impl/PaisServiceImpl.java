@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Pais;
 import sic.repository.IPaisRepository;
 import sic.service.IPaisService;
@@ -19,8 +20,8 @@ public class PaisServiceImpl implements IPaisService {
     @Autowired
     public PaisServiceImpl(IPaisRepository paisRepository) {
         this.paisRepository = paisRepository;
-    }    
-    
+    }
+
     @Override
     public List<Pais> getPaises() {
         return paisRepository.getPaises();
@@ -53,18 +54,21 @@ public class PaisServiceImpl implements IPaisService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Pais pais) {
         pais.setEliminado(true);
         paisRepository.actualizar(pais);
     }
 
     @Override
+    @Transactional
     public void actualizar(Pais pais) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, pais);
         paisRepository.actualizar(pais);
     }
 
     @Override
+    @Transactional
     public void guardar(Pais pais) {
         this.validarOperacion(TipoDeOperacion.ALTA, pais);
         paisRepository.guardar(pais);

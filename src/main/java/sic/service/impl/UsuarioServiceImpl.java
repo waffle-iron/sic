@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.UsuarioActivo;
 import sic.modelo.Usuario;
 import sic.repository.IUsuarioRepository;
@@ -16,14 +17,14 @@ import sic.util.Validator;
 
 @Service
 public class UsuarioServiceImpl implements IUsuarioService {
-        
+
     private final IUsuarioRepository usuarioRepository;
 
     @Autowired
     public UsuarioServiceImpl(IUsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
-    }      
-    
+    }
+
     @Override
     public List<Usuario> getUsuarios() {
         return usuarioRepository.getUsuarios();
@@ -93,6 +94,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     @Override
+    @Transactional
     public void actualizar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, usuario);
         usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
@@ -100,6 +102,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     @Override
+    @Transactional
     public void guardar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ALTA, usuario);
         usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
@@ -107,6 +110,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ELIMINACION, usuario);
         usuario.setEliminado(true);

@@ -10,6 +10,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
@@ -142,12 +143,14 @@ public class ProductoServiceImpl implements IProductoService {
     }
 
     @Override
+    @Transactional
     public void guardar(Producto producto) {
         this.validarOperacion(TipoDeOperacion.ALTA, producto);
         productoRepository.guardar(producto);
     }
 
     @Override
+    @Transactional
     public void actualizar(Producto producto) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, producto);
         productoRepository.actualizar(producto);
@@ -196,6 +199,7 @@ public class ProductoServiceImpl implements IProductoService {
     }
 
     @Override
+    @Transactional
     public void modificarMultiplesProductos(List<Producto> productos,
             boolean checkPrecios, PreciosProducto preciosProducto,
             boolean checkMedida, Medida medida,

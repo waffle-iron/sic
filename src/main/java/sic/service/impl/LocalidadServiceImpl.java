@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Localidad;
 import sic.modelo.Provincia;
 import sic.repository.ILocalidadRepository;
@@ -20,7 +21,7 @@ public class LocalidadServiceImpl implements ILocalidadService {
     @Autowired
     public LocalidadServiceImpl(ILocalidadRepository localidadRepository) {
         this.localidadRepository = localidadRepository;
-    }    
+    }
 
     @Override
     public List<Localidad> getLocalidadesDeLaProvincia(Provincia provincia) {
@@ -28,6 +29,7 @@ public class LocalidadServiceImpl implements ILocalidadService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Localidad localidad) {
         localidad.setEliminada(true);
         localidadRepository.actualizar(localidad);
@@ -64,12 +66,14 @@ public class LocalidadServiceImpl implements ILocalidadService {
     }
 
     @Override
+    @Transactional
     public void actualizar(Localidad localidad) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, localidad);
         localidadRepository.actualizar(localidad);
     }
 
     @Override
+    @Transactional
     public void guardar(Localidad localidad) {
         this.validarOperacion(TipoDeOperacion.ALTA, localidad);
         localidadRepository.guardar(localidad);

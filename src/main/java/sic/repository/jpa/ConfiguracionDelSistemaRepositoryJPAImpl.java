@@ -37,7 +37,7 @@ import sic.repository.XMLException;
 
 @Repository
 public class ConfiguracionDelSistemaRepositoryJPAImpl implements IConfiguracionDelSistemaRepository {
-    
+
     @PersistenceContext
     private EntityManager em;
     private final String pathConexionConfig = System.getProperty("user.home") + "/conexionConfig.xml";
@@ -210,10 +210,10 @@ public class ConfiguracionDelSistemaRepositoryJPAImpl implements IConfiguracionD
     }
 
     @Override
-    public ConfiguracionDelSistema getConfiguracionDelSistemaPorId(long id_ConfiguracionDelSistema) {        
+    public ConfiguracionDelSistema getConfiguracionDelSistemaPorId(long id_ConfiguracionDelSistema) {
         TypedQuery<ConfiguracionDelSistema> typedQuery = em.createNamedQuery("ConfiguracionDelSistema.buscarPorId", ConfiguracionDelSistema.class);
         typedQuery.setParameter("id", id_ConfiguracionDelSistema);
-        List<ConfiguracionDelSistema> configuraciones = typedQuery.getResultList();        
+        List<ConfiguracionDelSistema> configuraciones = typedQuery.getResultList();
         if (configuraciones.isEmpty()) {
             return null;
         } else {
@@ -222,10 +222,10 @@ public class ConfiguracionDelSistemaRepositoryJPAImpl implements IConfiguracionD
     }
 
     @Override
-    public ConfiguracionDelSistema getConfiguracionDelSistemaPorEmpresa(Empresa empresa) {        
+    public ConfiguracionDelSistema getConfiguracionDelSistemaPorEmpresa(Empresa empresa) {
         TypedQuery<ConfiguracionDelSistema> typedQuery = em.createNamedQuery("ConfiguracionDelSistema.buscarPorEmpresa", ConfiguracionDelSistema.class);
         typedQuery.setParameter("empresa", empresa);
-        List<ConfiguracionDelSistema> configuraciones = typedQuery.getResultList();        
+        List<ConfiguracionDelSistema> configuraciones = typedQuery.getResultList();
         if (configuraciones.isEmpty()) {
             return null;
         } else {
@@ -234,19 +234,13 @@ public class ConfiguracionDelSistemaRepositoryJPAImpl implements IConfiguracionD
     }
 
     @Override
-    public void guardar(ConfiguracionDelSistema cds) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void guardar(ConfiguracionDelSistema cds) {
         em.persist(em.merge(cds));
-        tx.commit();        
     }
 
     @Override
-    public void actualizar(ConfiguracionDelSistema cds) {        
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
+    public void actualizar(ConfiguracionDelSistema cds) {
         em.merge(cds);
-        tx.commit();        
     }
 
 }

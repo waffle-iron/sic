@@ -16,6 +16,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Cliente;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
@@ -42,18 +43,25 @@ import sic.util.Validator;
 @Service
 public class FacturaServiceImpl implements IFacturaService {
 
-    @Autowired
     private IFacturaRepository facturaRepository;
-    @Autowired
     private IProductoService productoService;
-    @Autowired
     private IConfiguracionDelSistemaService configuracionDelSistemaService;
-    @Autowired
     private IEmpresaService empresaService;
-    @Autowired
     private IRenglonDeFacturaService renglonDeFacturaService;
-    @Autowired
     private IPedidoService pedidoService;
+
+    @Autowired
+    public void setDependencias(IFacturaRepository facturaRepository, IProductoService productoService,
+            IConfiguracionDelSistemaService configuracionDelSistemaService, IEmpresaService empresaService,
+            IRenglonDeFacturaService renglonDeFacturaService, IPedidoService pedidoService) {
+
+        this.facturaRepository = facturaRepository;
+        this.productoService = productoService;
+        this.configuracionDelSistemaService = configuracionDelSistemaService;
+        this.empresaService = empresaService;
+        this.renglonDeFacturaService = renglonDeFacturaService;
+        this.pedidoService = pedidoService;
+    }
 
     @Override
     public char[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor) {
@@ -251,6 +259,7 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
+    @Transactional
     public void guardar(Factura factura) {
         this.validarFactura(factura);
         facturaRepository.guardar(factura);
@@ -258,6 +267,7 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
+    @Transactional
     public void eliminar(Factura factura) {
         factura.setEliminada(true);
         facturaRepository.actualizar(factura);
