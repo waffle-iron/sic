@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Factura;
 import sic.modelo.Pedido;
+import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
 import sic.modelo.RenglonPedido;
 import sic.repository.IPedidoRepository;
@@ -25,6 +26,7 @@ import sic.service.EstadoPedido;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IPedidoService;
+import sic.service.IProductoService;
 import sic.service.ServiceException;
 import sic.util.Utilidades;
 
@@ -34,12 +36,15 @@ public class PedidoServiceImpl implements IPedidoService {
     private final IPedidoRepository pedidoRepository;
     private final IEmpresaService empresaService;
     private final IFacturaService facturaService;
+    private final IProductoService productoService;
 
     @Autowired
-    public PedidoServiceImpl(IEmpresaService empresaService, IFacturaService facturaService, IPedidoRepository pedidoRepository) {
+    public PedidoServiceImpl(IEmpresaService empresaService, IFacturaService facturaService,
+            IPedidoRepository pedidoRepository, IProductoService productoService) {
         this.empresaService = empresaService;
         this.facturaService = facturaService;
         this.pedidoRepository = pedidoRepository;
+        this.productoService = productoService;
     }
 
     private void validarPedido(Pedido pedido) {
@@ -227,5 +232,27 @@ public class PedidoServiceImpl implements IPedidoService {
         List<RenglonPedido> renglones = this.getRenglonesDelPedido(pedido.getNroPedido());
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(renglones);
         return JasperFillManager.fillReport(isFileReport, params, ds);
+    }
+
+    @Override
+    public RenglonPedido convertirRenglonFacturaARenglonPedido(RenglonFactura renglonFactura, Pedido pedido) {
+        RenglonPedido nuevoRenglon = new RenglonPedido();
+        nuevoRenglon.setCantidad(renglonFactura.getCantidad());
+        nuevoRenglon.setPedido(pedido);
+        nuevoRenglon.setDescuento_porcentaje(renglonFactura.getDescuento_porcentaje());
+        nuevoRenglon.setDescuento_neto(renglonFactura.getDescuento_neto());
+        Producto producto = productoService.getProductoPorId(renglonFactura.getId_ProductoItem());
+        nuevoRenglon.setProducto(producto);
+        nuevoRenglon.setSubTotal(renglonFactura.getImporte());
+        return nuevoRenglon;
+    }
+
+    @Override
+    public List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(List<RenglonFactura> renglonesDeFactura, Pedido pedido) {
+        List<RenglonPedido> renglonesPedido = new ArrayList();
+        for (RenglonFactura renglonFactura : renglonesDeFactura) {
+            renglonesPedido.add(this.convertirRenglonFacturaARenglonPedido(renglonFactura, pedido));
+        }
+        return renglonesPedido;
     }
 }

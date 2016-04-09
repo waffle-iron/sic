@@ -41,9 +41,8 @@ public class GUI_CerrarVenta extends JDialog {
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
-    private final IRenglonDeFacturaService renglonDeFacturaService = appContext.getBean(IRenglonDeFacturaService.class);
-    private final HotKeysHandler keyHandler = new HotKeysHandler();    
-    
+    private final HotKeysHandler keyHandler = new HotKeysHandler();
+
     private static final Logger log = Logger.getLogger(GUI_CerrarVenta.class.getPackage().getName());
 
     public GUI_CerrarVenta(JDialog parent, boolean modal) {
@@ -79,7 +78,7 @@ public class GUI_CerrarVenta extends JDialog {
     }
 
     public void actualizarEstadoPedido(Pedido pedido) {
-        if (renglonDeFacturaService.convertirRenglonesPedidoARenglonesFactura(gui_puntoDeVenta.getPedido(), "Factura A").isEmpty()) {
+        if (facturaService.convertirRenglonesPedidoARenglonesFactura(gui_puntoDeVenta.getPedido(), "Factura A").isEmpty()) {
             pedido.setEstado(EstadoPedido.CERRADO);
         } else {
             pedido.setEstado(EstadoPedido.ACTIVO);
