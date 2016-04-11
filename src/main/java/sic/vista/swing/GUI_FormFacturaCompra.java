@@ -25,7 +25,6 @@ import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
-import sic.service.IRenglonDeFacturaService;
 import sic.service.ITransportistaService;
 import sic.service.Movimiento;
 import sic.service.ServiceException;
@@ -42,7 +41,6 @@ public class GUI_FormFacturaCompra extends JDialog {
     private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
-    private final IRenglonDeFacturaService renglonDeFacturaService = appContext.getBean(IRenglonDeFacturaService.class);
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private String tipoDeFactura;
     private final boolean operacionAlta;
@@ -420,7 +418,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         this.setColumnas();
         for (RenglonFactura renglon : resguardoRenglones) {
             Producto producto = productoService.getProductoPorId(renglon.getId_ProductoItem());
-            RenglonFactura nuevoRenglon = renglonDeFacturaService.calcularRenglon(tipoDeFactura, Movimiento.COMPRA, renglon.getCantidad(), producto, renglon.getDescuento_porcentaje());
+            RenglonFactura nuevoRenglon = facturaService.calcularRenglon(tipoDeFactura, Movimiento.COMPRA, renglon.getCantidad(), producto, renglon.getDescuento_porcentaje());
             this.agregarRenglon(nuevoRenglon);
         }
     }

@@ -35,7 +35,6 @@ import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IProductoService;
-import sic.service.IRenglonDeFacturaService;
 import sic.service.ITransportistaService;
 import sic.service.IUsuarioService;
 import sic.service.Movimiento;
@@ -43,7 +42,6 @@ import sic.service.ServiceException;
 import sic.modelo.RenglonPedido;
 import sic.service.EstadoPedido;
 import sic.service.IPedidoService;
-import sic.service.IRenglonDePedidoService;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -59,14 +57,12 @@ public class GUI_PuntoDeVenta extends JDialog {
     private final IClienteService clienteService = appContext.getBean(IClienteService.class);
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
-    private final IRenglonDeFacturaService renglonDeFacturaService = appContext.getBean(IRenglonDeFacturaService.class);
-    private final IProductoService productoService = appContext.getBean(IProductoService.class);
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
+    private final IProductoService productoService = appContext.getBean(IProductoService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
-    private final IRenglonDePedidoService renglonDePedidoService = appContext.getBean(IRenglonDePedidoService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
-    private static final Logger log = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());    
+    private static final Logger log = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());
     private Pedido pedido;
     private boolean modificarPedido;
 
@@ -112,7 +108,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.cargarCliente(pedido.getCliente());
         this.cargarTiposDeComprobantesDisponibles();
         this.tipoDeFactura = cmb_TipoComprobante.getSelectedItem().toString();
-        this.renglones = renglonDeFacturaService.convertirRenglonesPedidoARenglonesFactura(pedido, this.tipoDeFactura);
+        this.renglones = facturaService.convertirRenglonesPedidoARenglonesFactura(pedido, this.tipoDeFactura);
         EstadoRenglon[] marcaDeRenglonesDelPedido = new EstadoRenglon[renglones.size()];
         for (int i = 0; i < renglones.size(); i++) {
             marcaDeRenglonesDelPedido[i] = EstadoRenglon.DESMARCADO;
@@ -318,7 +314,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         for (int i = 0; i < renglones.size(); i++) {
             if (renglones.get(i).getId_ProductoItem() == renglon.getId_ProductoItem()) {
                 Producto producto = productoService.getProductoPorId(renglon.getId_ProductoItem());
-                renglones.set(i, renglonDeFacturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, renglones.get(i).getCantidad() + renglon.getCantidad(), producto, renglon.getDescuento_porcentaje()));
+                renglones.set(i, facturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, renglones.get(i).getCantidad() + renglon.getCantidad(), producto, renglon.getDescuento_porcentaje()));
                 agregado = true;
             }
         }
@@ -436,7 +432,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         if (producto == null) {
             JOptionPane.showMessageDialog(this, "No se encontró ningun producto con el codigo ingresado!", "Error", JOptionPane.ERROR_MESSAGE);
         } else if (productoService.existeStockDisponible(producto.getId_Producto(), 1)) {
-            RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
+            RenglonFactura renglon = facturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
             this.agregarRenglon(renglon);
             EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
             if (tbl_Resultado.getRowCount() == 0) {
@@ -529,7 +525,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         renglones = new ArrayList<>();
         for (RenglonFactura renglonFactura : resguardoRenglones) {
             Producto producto = productoService.getProductoPorId(renglonFactura.getId_ProductoItem());
-            RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());
+            RenglonFactura renglon = facturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());
             this.agregarRenglon(renglon);
         }
         EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
@@ -563,7 +559,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.pedido.setEstado(EstadoPedido.ABIERTO);
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
         for (RenglonFactura renglonFactura : renglones) {
-            renglonesPedido.add(renglonDePedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura, this.pedido));
+            renglonesPedido.add(pedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura, this.pedido));
         }
         this.pedido.setRenglones(renglonesPedido);
     }
@@ -594,7 +590,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     private void actualizarPedido(Pedido pedido) {
         pedido = pedidoService.getPedidoPorNumeroConRenglones(pedido.getNroPedido(), this.empresa.getId_Empresa());
         pedido.getRenglones().clear();
-        pedido.getRenglones().addAll(renglonDePedidoService.convertirRenglonesFacturaARenglonesPedido(this.renglones, pedido));
+        pedido.getRenglones().addAll(pedidoService.convertirRenglonesFacturaARenglonesPedido(this.renglones, pedido));
         pedido.setTotalEstimado(facturaService.calcularSubTotal(this.renglones));
         pedidoService.actualizar(pedido);
     }

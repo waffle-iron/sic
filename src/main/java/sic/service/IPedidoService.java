@@ -40,4 +40,8 @@ public interface IPedidoService {
 
     void guardar(Pedido pedido);
 
+    public RenglonPedido convertirRenglonFacturaARenglonPedido(RenglonFactura renglonFactura, Pedido pedido);
+
+    public List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(List<RenglonFactura> renglonesDeFactura, Pedido pedido);
+
 }

@@ -11,6 +11,7 @@ import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Pedido;
+import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.modelo.RenglonPedido;
@@ -82,5 +83,7 @@ public interface IFacturaService {
     List<Object[]> listarProductosMasVendidosPorAnio(int anio);
 
     boolean validarCantidadMaximaDeRenglones(int cantidad);
+    
+    public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje);
 
 }
