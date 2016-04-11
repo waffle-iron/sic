@@ -22,8 +22,7 @@ public class GUI_LogIn extends JFrame {
     private static final Logger log = Logger.getLogger(GUI_LogIn.class.getPackage().getName());
 
     public GUI_LogIn() {        
-        this.initComponents();
-        this.setSize(290, 150);
+        this.initComponents();        
         this.setTitle("S.I.C. " + ResourceBundle.getBundle("Mensajes").getString("version"));
         ImageIcon iconoVentana = new ImageIcon(GUI_LogIn.class.getResource("/sic/icons/SIC_24_square.png"));
         this.setIconImage(iconoVentana.getImage());
@@ -81,11 +80,11 @@ public class GUI_LogIn extends JFrame {
 
         lblUsuario = new javax.swing.JLabel();
         lblContrasenia = new javax.swing.JLabel();
-        txt_Usuario = new javax.swing.JTextField();
-        btn_Salir = new javax.swing.JButton();
-        btn_Ingresar = new javax.swing.JButton();
         txt_Contrasenia = new javax.swing.JPasswordField();
+        txt_Usuario = new javax.swing.JTextField();
         pb_Conectando = new javax.swing.JProgressBar();
+        btn_Ingresar = new javax.swing.JButton();
+        btn_Salir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("S.I.C.");
@@ -97,9 +96,27 @@ public class GUI_LogIn extends JFrame {
         lblContrasenia.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblContrasenia.setText("Contraseña:");
 
+        txt_Contrasenia.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txt_ContraseniaKeyPressed(evt);
+            }
+        });
+
         txt_Usuario.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txt_UsuarioKeyPressed(evt);
+            }
+        });
+
+        pb_Conectando.setString("");
+        pb_Conectando.setStringPainted(true);
+
+        btn_Ingresar.setForeground(java.awt.Color.blue);
+        btn_Ingresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/LogIn_16x16.png"))); // NOI18N
+        btn_Ingresar.setText("Ingresar");
+        btn_Ingresar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_IngresarActionPerformed(evt);
             }
         });
 
@@ -112,56 +129,32 @@ public class GUI_LogIn extends JFrame {
             }
         });
 
-        btn_Ingresar.setForeground(java.awt.Color.blue);
-        btn_Ingresar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/LogIn_16x16.png"))); // NOI18N
-        btn_Ingresar.setText("Ingresar");
-        btn_Ingresar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_IngresarActionPerformed(evt);
-            }
-        });
-
-        txt_Contrasenia.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txt_ContraseniaKeyPressed(evt);
-            }
-        });
-
-        pb_Conectando.setString("");
-        pb_Conectando.setStringPainted(true);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(pb_Conectando, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
+                    .addComponent(pb_Conectando, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(lblUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lblContrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(lblContrasenia))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txt_Usuario)
-                            .addComponent(txt_Contrasenia))
-                        .addGap(12, 12, 12))
+                            .addComponent(txt_Contrasenia)))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btn_Ingresar, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btn_Salir, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())))
+                        .addComponent(btn_Ingresar, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_Salir, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)))
+                .addContainerGap())
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Ingresar, btn_Salir});
-
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
                     .addComponent(lblUsuario)
                     .addComponent(txt_Usuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -175,7 +168,7 @@ public class GUI_LogIn extends JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(btn_Ingresar)
                     .addComponent(btn_Salir))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
