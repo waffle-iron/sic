@@ -7,18 +7,20 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.FormaDePago;
-import sic.service.EmpresaService;
-import sic.service.FormaDePagoService;
+import sic.service.IEmpresaService;
+import sic.service.IFormaDePagoService;
 import sic.service.ServiceException;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_FormasDePago extends JDialog {
 
     private ModeloTabla modeloTablaResultados = new ModeloTabla();
     private List<FormaDePago> formasDePago;
-    private final FormaDePagoService formaDePagoService = new FormaDePagoService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private static final Logger log = Logger.getLogger(GUI_FormasDePago.class.getPackage().getName());
 
     public GUI_FormasDePago() {

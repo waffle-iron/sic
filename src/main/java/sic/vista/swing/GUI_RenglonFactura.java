@@ -6,10 +6,12 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
+import sic.service.IFacturaService;
 import sic.service.Movimiento;
-import sic.service.RenglonDeFacturaService;
 
 public class GUI_RenglonFactura extends JDialog {
 
@@ -18,7 +20,8 @@ public class GUI_RenglonFactura extends JDialog {
     private boolean cargarRenglon;
     private final String tipoDeFactura;
     private final Movimiento movimiento;
-    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IFacturaService renglonDeFacturaService = appContext.getBean(IFacturaService.class);
     private static final Logger log = Logger.getLogger(GUI_RenglonFactura.class.getPackage().getName());
 
     public GUI_RenglonFactura(Producto producto, String tipoDeFactura, Movimiento movimiento) {

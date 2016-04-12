@@ -7,25 +7,31 @@ import javax.persistence.PersistenceException;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.BusquedaTransportistaCriteria;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
 import sic.modelo.Transportista;
-import sic.service.*;
+import sic.service.IEmpresaService;
+import sic.service.ILocalidadService;
+import sic.service.IPaisService;
+import sic.service.IProvinciaService;
+import sic.service.ITransportistaService;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_Transportistas extends JInternalFrame {
 
     private ModeloTabla modeloTablaResultados;
     private List<Transportista> transportistas;
     private Transportista transSeleccionado;
-    private final PaisService paisService = new PaisService();
-    private final ProvinciaService provinciaService = new ProvinciaService();
-    private final LocalidadService localidadService = new LocalidadService();
-    private final TransportistaService transportistaService = new TransportistaService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IPaisService paisService = appContext.getBean(IPaisService.class);
+    private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
+    private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
+    private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private static final Logger log = Logger.getLogger(GUI_Transportistas.class.getPackage().getName());
 
     public GUI_Transportistas() {

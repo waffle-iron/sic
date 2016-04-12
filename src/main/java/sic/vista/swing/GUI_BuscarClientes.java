@@ -10,11 +10,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Cliente;
-import sic.service.ClienteService;
-import sic.service.EmpresaService;
+import sic.service.IClienteService;
+import sic.service.IEmpresaService;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_BuscarClientes extends JDialog {
 
@@ -22,8 +23,9 @@ public class GUI_BuscarClientes extends JDialog {
     private ModeloTabla modeloTablaResultados = new ModeloTabla();
     private List<Cliente> clientes;
     private Cliente clienteSeleccionado;
-    private final ClienteService clienteService = new ClienteService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IClienteService clienteService = appContext.getBean(IClienteService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_BuscarClientes.class.getPackage().getName());
 

@@ -11,12 +11,14 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
-import sic.service.EmpresaService;
+import sic.service.IEmpresaService;
+import sic.service.IFacturaService;
+import sic.service.IProductoService;
 import sic.service.Movimiento;
-import sic.service.ProductoService;
-import sic.service.RenglonDeFacturaService;
 import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
@@ -30,9 +32,10 @@ public class GUI_BuscarProductos extends JDialog {
     private Producto prodSeleccionado;
     private RenglonFactura renglon;
     private boolean debeCargarRenglon;
-    private final ProductoService productoService = new ProductoService();
-    private final EmpresaService empresaService = new EmpresaService();
-    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IProductoService productoService = appContext.getBean(IProductoService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_BuscarProductos.class.getPackage().getName());
 
@@ -91,10 +94,8 @@ public class GUI_BuscarProductos extends JDialog {
             if (existeStock || gui_PrincipalTPV.getTipoDeComprobante().equals("Pedido")) {
                 debeCargarRenglon = true;
                 this.dispose();
-            } else {
-                if (!existeStock) {
-                    JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_producto_sin_stock_suficiente"), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+            } else if (!existeStock) {
+                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_producto_sin_stock_suficiente"), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             debeCargarRenglon = false;
@@ -120,7 +121,7 @@ public class GUI_BuscarProductos extends JDialog {
             txt_PorcentajeDescuento.commitEdit();
 
             if (prodSeleccionado != null) {
-                renglon = renglonDeFacturaService.calcularRenglon(gui_PrincipalTPV.getTipoDeComprobante(), Movimiento.VENTA,
+                renglon = facturaService.calcularRenglon(gui_PrincipalTPV.getTipoDeComprobante(), Movimiento.VENTA,
                         Double.parseDouble(txt_Cantidad.getValue().toString()), prodSeleccionado,
                         Double.parseDouble(txt_PorcentajeDescuento.getValue().toString()));
             }

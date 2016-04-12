@@ -11,19 +11,37 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.*;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
 import sic.modelo.FormaDePago;
 import sic.modelo.Pedido;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
+import sic.service.IClienteService;
+import sic.service.IEmpresaService;
+import sic.service.IFacturaService;
+import sic.service.IFormaDePagoService;
+import sic.service.IProductoService;
+import sic.service.ITransportistaService;
+import sic.service.IUsuarioService;
+import sic.service.Movimiento;
+import sic.service.ServiceException;
 import sic.modelo.RenglonPedido;
-import sic.service.*;
+import sic.service.EstadoPedido;
+import sic.service.IPedidoService;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -34,18 +52,17 @@ public class GUI_PuntoDeVenta extends JDialog {
     private Cliente cliente;
     private List<RenglonFactura> renglones;
     private ModeloTabla modeloTablaResultados;
-    private final EmpresaService empresaService = new EmpresaService();
-    private final ClienteService clienteService = new ClienteService();
-    private final PedidoService pedidoService = new PedidoService();
-    private final FormaDePagoService formaDePagoService = new FormaDePagoService();
-    private final TransportistaService transportistaService = new TransportistaService();
-    private final RenglonDeFacturaService renglonDeFacturaService = new RenglonDeFacturaService();
-    private final ProductoService productoService = new ProductoService();
-    private final FacturaService facturaService = new FacturaService();
-    private final UsuarioService usuarioService = new UsuarioService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IClienteService clienteService = appContext.getBean(IClienteService.class);
+    private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
+    private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
+    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
+    private final IProductoService productoService = appContext.getBean(IProductoService.class);
+    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
+    private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());
-    private final RenglonDePedidoService renglonDePedidoService = new RenglonDePedidoService();
     private Pedido pedido;
     private boolean modificarPedido;
 
@@ -91,7 +108,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.cargarCliente(pedido.getCliente());
         this.cargarTiposDeComprobantesDisponibles();
         this.tipoDeFactura = cmb_TipoComprobante.getSelectedItem().toString();
-        this.renglones = renglonDeFacturaService.convertirRenglonesPedidoARenglonesFactura(pedido, this.tipoDeFactura);
+        this.renglones = facturaService.convertirRenglonesPedidoARenglonesFactura(pedido, this.tipoDeFactura);
         EstadoRenglon[] marcaDeRenglonesDelPedido = new EstadoRenglon[renglones.size()];
         for (int i = 0; i < renglones.size(); i++) {
             marcaDeRenglonesDelPedido[i] = EstadoRenglon.DESMARCADO;
@@ -276,13 +293,28 @@ public class GUI_PuntoDeVenta extends JDialog {
         tbl_Resultado.getColumnModel().getColumn(7).setPreferredWidth(120);
     }
 
+    private boolean existeStockDisponible(double cantRequerida, Producto producto) {
+        double disponibilidad;
+        if (producto.isIlimitado() == false) {
+            disponibilidad = producto.getCantidad();
+            for (RenglonFactura renglon : renglones) {
+                if (renglon.getDescripcionItem().equals(producto.getDescripcion())) {
+                    disponibilidad -= renglon.getCantidad();
+                }
+            }
+            return disponibilidad >= cantRequerida;
+        } else {
+            return true;
+        }
+    }
+
     private void agregarRenglon(RenglonFactura renglon) {
         boolean agregado = false;
         //busca entre los renglones al producto, aumenta la cantidad y recalcula el descuento        
         for (int i = 0; i < renglones.size(); i++) {
             if (renglones.get(i).getId_ProductoItem() == renglon.getId_ProductoItem()) {
                 Producto producto = productoService.getProductoPorId(renglon.getId_ProductoItem());
-                renglones.set(i, renglonDeFacturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, renglones.get(i).getCantidad() + renglon.getCantidad(), producto, renglon.getDescuento_porcentaje()));
+                renglones.set(i, facturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, renglones.get(i).getCantidad() + renglon.getCantidad(), producto, renglon.getDescuento_porcentaje()));
                 agregado = true;
             }
         }
@@ -400,7 +432,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         if (producto == null) {
             JOptionPane.showMessageDialog(this, "No se encontró ningun producto con el codigo ingresado!", "Error", JOptionPane.ERROR_MESSAGE);
         } else if (productoService.existeStockDisponible(producto.getId_Producto(), 1)) {
-            RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
+            RenglonFactura renglon = facturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, 1, producto, 0);
             this.agregarRenglon(renglon);
             EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
             if (tbl_Resultado.getRowCount() == 0) {
@@ -493,7 +525,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         renglones = new ArrayList<>();
         for (RenglonFactura renglonFactura : resguardoRenglones) {
             Producto producto = productoService.getProductoPorId(renglonFactura.getId_ProductoItem());
-            RenglonFactura renglon = renglonDeFacturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());
+            RenglonFactura renglon = facturaService.calcularRenglon(this.tipoDeFactura, Movimiento.VENTA, renglonFactura.getCantidad(), producto, renglonFactura.getDescuento_porcentaje());
             this.agregarRenglon(renglon);
         }
         EstadoRenglon[] estadosRenglones = new EstadoRenglon[renglones.size()];
@@ -527,7 +559,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.pedido.setEstado(EstadoPedido.ABIERTO);
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
         for (RenglonFactura renglonFactura : renglones) {
-            renglonesPedido.add(renglonDePedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura, this.pedido));
+            renglonesPedido.add(pedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura, this.pedido));
         }
         this.pedido.setRenglones(renglonesPedido);
     }
@@ -558,7 +590,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     private void actualizarPedido(Pedido pedido) {
         pedido = pedidoService.getPedidoPorNumeroConRenglones(pedido.getNroPedido(), this.empresa.getId_Empresa());
         pedido.getRenglones().clear();
-        pedido.getRenglones().addAll(renglonDePedidoService.convertirRenglonesFacturaARenglonesPedido(this.renglones, pedido));
+        pedido.getRenglones().addAll(pedidoService.convertirRenglonesFacturaARenglonesPedido(this.renglones, pedido));
         pedido.setTotalEstimado(facturaService.calcularSubTotal(this.renglones));
         pedidoService.actualizar(pedido);
     }
@@ -1281,7 +1313,6 @@ public class GUI_PuntoDeVenta extends JDialog {
                     txta_Observaciones.setText(this.pedido.getObservaciones());
                 }
             }
-
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1394,12 +1425,10 @@ public class GUI_PuntoDeVenta extends JDialog {
                 } catch (ServiceException ex) {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            } else {
-                if ((this.pedido.getEstado() == EstadoPedido.ABIERTO || this.pedido.getEstado() == null) && this.modificarPedido == true) {
-                    this.actualizarPedido(this.pedido);
-                    JOptionPane.showMessageDialog(this, "El pedido se actualizó correctamente.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
-                    this.dispose();
-                }
+            } else if ((this.pedido.getEstado() == EstadoPedido.ABIERTO || this.pedido.getEstado() == null) && this.modificarPedido == true) {
+                this.actualizarPedido(this.pedido);
+                JOptionPane.showMessageDialog(this, "El pedido se actualizó correctamente.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                this.dispose();
             }
         }
     }//GEN-LAST:event_btn_ContinuarActionPerformed

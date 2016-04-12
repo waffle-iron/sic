@@ -14,11 +14,14 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.util.Rotation;
-import sic.service.FacturaService;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
+import sic.service.IFacturaService;
 
 public class GUI_TopProductos extends JInternalFrame {
 
-    private final FacturaService facturaService = new FacturaService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private static final Logger log = Logger.getLogger(GUI_TopProductos.class.getPackage().getName());
 
     public GUI_TopProductos() {

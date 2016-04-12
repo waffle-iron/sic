@@ -3,14 +3,21 @@ package sic.vista.swing;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
-import javax.swing.*;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
-import sic.service.LocalidadService;
-import sic.service.PaisService;
-import sic.service.ProvinciaService;
+import sic.service.ILocalidadService;
+import sic.service.IPaisService;
+import sic.service.IProvinciaService;
 import sic.service.ServiceException;
 
 public class GUI_DetalleLocalidad extends JDialog {
@@ -19,9 +26,10 @@ public class GUI_DetalleLocalidad extends JDialog {
     private final DefaultComboBoxModel modeloComboPaises = new DefaultComboBoxModel();
     private final DefaultComboBoxModel modeloComboProvincias = new DefaultComboBoxModel();
     private final DefaultComboBoxModel modeloComboProvinciasBusqueda = new DefaultComboBoxModel();
-    private final LocalidadService localidadService = new LocalidadService();
-    private final ProvinciaService provinciaService = new ProvinciaService();
-    private final PaisService paisService = new PaisService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
+    private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
+    private final IPaisService paisService = appContext.getBean(IPaisService.class);
     private Localidad localidadSeleccionada;
     private static final Logger log = Logger.getLogger(GUI_DetalleLocalidad.class.getPackage().getName());
 

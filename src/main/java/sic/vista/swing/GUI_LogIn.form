@@ -25,60 +25,35 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="pb_Conectando" alignment="0" max="32767" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="pb_Conectando" pref="301" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="lblUsuario" max="32767" attributes="1"/>
-                          <Component id="lblContrasenia" alignment="0" max="32767" attributes="1"/>
+                          <Component id="lblContrasenia" alignment="0" min="-2" max="-2" attributes="1"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txt_Usuario" pref="204" max="32767" attributes="2"/>
-                          <Component id="txt_Contrasenia" alignment="0" pref="204" max="32767" attributes="2"/>
+                          <Component id="txt_Usuario" max="32767" attributes="2"/>
+                          <Component id="txt_Contrasenia" alignment="0" max="32767" attributes="2"/>
                       </Group>
-                      <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="btn_Configuracion" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btn_Ingresar" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="btn_Salir" min="-2" pref="95" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="lblHost" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lblPuerto" alignment="1" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lblBD" alignment="1" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="txt_BD" pref="186" max="32767" attributes="2"/>
-                                  <Component id="txt_Puerto" alignment="0" pref="186" max="32767" attributes="2"/>
-                                  <Component id="txt_Host" alignment="1" pref="186" max="32767" attributes="2"/>
-                              </Group>
-                          </Group>
-                          <Component id="btn_Guardar" alignment="1" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btn_Ingresar" pref="133" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
+                      <Component id="btn_Salir" pref="133" max="32767" attributes="0"/>
                   </Group>
               </Group>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" max="-2" attributes="0">
                   <Component id="lblUsuario" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txt_Usuario" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -92,28 +67,10 @@
               <Component id="pb_Conectando" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="2" attributes="0">
-                  <Component id="btn_Configuracion" alignment="2" min="-2" max="-2" attributes="0"/>
                   <Component id="btn_Ingresar" alignment="2" min="-2" max="-2" attributes="0"/>
                   <Component id="btn_Salir" alignment="2" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" max="-2" attributes="0">
-                  <Component id="lblHost" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="txt_Host" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" max="-2" attributes="0">
-                  <Component id="lblPuerto" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="txt_Puerto" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" max="-2" attributes="0">
-                  <Component id="lblBD" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="txt_BD" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="btn_Guardar" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -131,24 +88,21 @@
         <Property name="text" type="java.lang.String" value="Contrase&#xf1;a:"/>
       </Properties>
     </Component>
+    <Component class="javax.swing.JPasswordField" name="txt_Contrasenia">
+      <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_ContraseniaKeyPressed"/>
+      </Events>
+    </Component>
     <Component class="javax.swing.JTextField" name="txt_Usuario">
       <Events>
         <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_UsuarioKeyPressed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btn_Salir">
+    <Component class="javax.swing.JProgressBar" name="pb_Conectando">
       <Properties>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
-        </Property>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/sic/icons/LogOut_16x16.png"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Salir"/>
+        <Property name="string" type="java.lang.String" value=""/>
+        <Property name="stringPainted" type="boolean" value="true"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_SalirActionPerformed"/>
-      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btn_Ingresar">
       <Properties>
@@ -164,70 +118,19 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_IngresarActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="btn_Configuracion">
-      <Properties>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/sic/icons/Plug_16x16.png"/>
-        </Property>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_ConfiguracionActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JLabel" name="lblHost">
-      <Properties>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="0" id="red" palette="1" red="ff" type="palette"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Host &#xf3; IP:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="lblPuerto">
-      <Properties>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="0" id="red" palette="1" red="ff" type="palette"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Puerto:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JLabel" name="lblBD">
-      <Properties>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="0" green="0" id="red" palette="1" red="ff" type="palette"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Base de Datos:"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="txt_Host">
-    </Component>
-    <Component class="javax.swing.JTextField" name="txt_Puerto">
-    </Component>
-    <Component class="javax.swing.JTextField" name="txt_BD">
-    </Component>
-    <Component class="javax.swing.JButton" name="btn_Guardar">
+    <Component class="javax.swing.JButton" name="btn_Salir">
       <Properties>
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
         </Property>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/sic/icons/Save_16x16.png"/>
+          <Image iconType="3" name="/sic/icons/LogOut_16x16.png"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Guardar"/>
+        <Property name="text" type="java.lang.String" value="Salir"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_GuardarActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_SalirActionPerformed"/>
       </Events>
-    </Component>
-    <Component class="javax.swing.JPasswordField" name="txt_Contrasenia">
-      <Events>
-        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_ContraseniaKeyPressed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JProgressBar" name="pb_Conectando">
-      <Properties>
-        <Property name="string" type="java.lang.String" value=""/>
-        <Property name="stringPainted" type="boolean" value="true"/>
-      </Properties>
     </Component>
   </SubComponents>
 </Form>

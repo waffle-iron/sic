@@ -18,26 +18,29 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonPedido;
 import sic.modelo.Usuario;
-import sic.service.ClienteService;
-import sic.service.EmpresaService;
-import sic.service.PedidoService;
 import sic.service.ServiceException;
-import sic.service.UsuarioService;
 import sic.service.EstadoPedido;
+import sic.service.IClienteService;
+import sic.service.IEmpresaService;
+import sic.service.IPedidoService;
+import sic.service.IUsuarioService;
 import sic.util.RenderTabla;
 
 public class GUI_Pedidos extends JInternalFrame {
 
-    private final EmpresaService empresaService = new EmpresaService();
-    private final PedidoService pedidoService = new PedidoService();
-    private final ClienteService clienteService = new ClienteService();
-    private final UsuarioService usuarioService = new UsuarioService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
+    private final IClienteService clienteService = appContext.getBean(IClienteService.class);
+    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private List<Pedido> pedidos;
     private ModeloTabla modeloTablaPedidos;
     private ModeloTabla modeloTablaRenglones;

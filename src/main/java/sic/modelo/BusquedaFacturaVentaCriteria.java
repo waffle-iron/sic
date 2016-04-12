@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 public class BusquedaFacturaVentaCriteria {
-    
+
     private boolean buscaPorFecha;
     private Date fechaDesde;
     private Date fechaHasta;
@@ -24,8 +24,8 @@ public class BusquedaFacturaVentaCriteria {
     private int numFactura;
     private boolean buscarPorPedido;
     private long nroPedido;
-    private boolean buscaSoloInpagas;    
+    private boolean buscaSoloImpagas;
     private boolean buscaSoloPagadas;
     private Empresa empresa;
-    private int cantRegistros;       
+    private int cantRegistros;
 }

@@ -7,19 +7,26 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import javax.persistence.PersistenceException;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
-import sic.service.EmpresaService;
-import sic.service.ProductoService;
-import sic.service.ProveedorService;
-import sic.service.RubroService;
+import sic.service.IEmpresaService;
+import sic.service.IProductoService;
+import sic.service.IProveedorService;
+import sic.service.IRubroService;
 import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
@@ -29,11 +36,12 @@ public class GUI_Productos extends JInternalFrame {
     private ModeloTabla modeloTablaResultados;
     private List<Producto> productos;
     private boolean listarSoloFaltantes;
-    private int cantidadResultadosParaMostrar = 100;
-    private final RubroService rubroService = new RubroService();
-    private final EmpresaService empresaService = new EmpresaService();
-    private final ProveedorService proveedorService = new ProveedorService();
-    private final ProductoService productoService = new ProductoService();
+    private int cantidadResultadosParaMostrar = 500;
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IRubroService rubroService = appContext.getBean(IRubroService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
+    private final IProductoService productoService = appContext.getBean(IProductoService.class);
     private static final Logger log = Logger.getLogger(GUI_Productos.class.getPackage().getName());
 
     public GUI_Productos() {
@@ -190,7 +198,7 @@ public class GUI_Productos extends JInternalFrame {
             modeloTablaResultados.addRow(fila);
         }
         tbl_Resultados.setModel(modeloTablaResultados);
-    }    
+    }
 
     private void limpiarJTable() {
         modeloTablaResultados = new ModeloTabla();
@@ -236,7 +244,7 @@ public class GUI_Productos extends JInternalFrame {
 
     private void buscar() {
         cambiarEstadoEnabled(false);
-        pg_progreso.setIndeterminate(true);        
+        pg_progreso.setIndeterminate(true);
 
         SwingWorker<List<Producto>, Void> worker = new SwingWorker<List<Producto>, Void>() {
             @Override
@@ -271,7 +279,7 @@ public class GUI_Productos extends JInternalFrame {
 
             @Override
             protected void done() {
-                cargarResultadosAlTable();                
+                cargarResultadosAlTable();
                 cambiarEstadoEnabled(true);
                 pg_progreso.setIndeterminate(false);
                 try {
@@ -666,14 +674,14 @@ public class GUI_Productos extends JInternalFrame {
 
             int respuesta = JOptionPane.showInternalConfirmDialog(this,
                     ResourceBundle.getBundle(
-                    "Mensajes").getString("mensaje_pregunta_eliminar_productos"),
+                            "Mensajes").getString("mensaje_pregunta_eliminar_productos"),
                     "Eliminar", JOptionPane.YES_NO_OPTION);
 
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
                     productoService.eliminarMultiplesProductos(
                             this.getSeleccionMultipleDeProductos(
-                            Utilidades.getSelectedRowsModelIndices(tbl_Resultados)));
+                                    Utilidades.getSelectedRowsModelIndices(tbl_Resultados)));
                     buscar();
 
                 } catch (PersistenceException ex) {
@@ -690,7 +698,7 @@ public class GUI_Productos extends JInternalFrame {
                 //seleccion multiple
                 GUI_ModificacionProductosBulk modificarProductosBulk = new GUI_ModificacionProductosBulk(
                         this.getSeleccionMultipleDeProductos(
-                        Utilidades.getSelectedRowsModelIndices(tbl_Resultados)));
+                                Utilidades.getSelectedRowsModelIndices(tbl_Resultados)));
                 modificarProductosBulk.setModal(true);
                 modificarProductosBulk.setLocationRelativeTo(this);
                 modificarProductosBulk.setVisible(true);
@@ -766,7 +774,7 @@ public class GUI_Productos extends JInternalFrame {
     }//GEN-LAST:event_rb_FaltantesActionPerformed
 
     private void cmb_CantidadMostrarItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_CantidadMostrarItemStateChanged
-        cantidadResultadosParaMostrar = Integer.parseInt(cmb_CantidadMostrar.getSelectedItem().toString());        
+        cantidadResultadosParaMostrar = Integer.parseInt(cmb_CantidadMostrar.getSelectedItem().toString());
     }//GEN-LAST:event_cmb_CantidadMostrarItemStateChanged
 
     private void btn_ReporteListaPreciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ReporteListaPreciosActionPerformed

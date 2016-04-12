@@ -8,9 +8,11 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Medida;
-import sic.service.EmpresaService;
-import sic.service.MedidaService;
+import sic.service.IEmpresaService;
+import sic.service.IMedidaService;
 import sic.service.ServiceException;
 import sic.util.Utilidades;
 
@@ -18,8 +20,9 @@ public class GUI_DetalleMedida extends JDialog {
 
     private final DefaultListModel modeloList = new DefaultListModel();
     private Medida medidaSeleccionada;
-    private final MedidaService medidaService = new MedidaService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IMedidaService medidaService = appContext.getBean(IMedidaService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private static final Logger log = Logger.getLogger(GUI_DetalleMedida.class.getPackage().getName());
 
     public GUI_DetalleMedida() {

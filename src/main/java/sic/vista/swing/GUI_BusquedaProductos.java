@@ -8,14 +8,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
-import sic.service.*;
+import sic.service.IEmpresaService;
+import sic.service.IProductoService;
+import sic.service.IProveedorService;
+import sic.service.IRubroService;
+import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
-import sic.vista.swing.ModeloTabla;
 
 public class GUI_BusquedaProductos extends JDialog {
 
@@ -23,10 +28,11 @@ public class GUI_BusquedaProductos extends JDialog {
     private List<Producto> productos;
     private Producto productoSeleccionado;
     private int cantidadResultadosParaMostrar = 500;
-    private final RubroService rubroService = new RubroService();
-    private final EmpresaService empresaService = new EmpresaService();
-    private final ProveedorService proveedorService = new ProveedorService();
-    private final ProductoService productoService = new ProductoService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IRubroService rubroService = appContext.getBean(IRubroService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
+    private final IProductoService productoService = appContext.getBean(IProductoService.class);
     private static final Logger log = Logger.getLogger(GUI_BusquedaProductos.class.getPackage().getName());
 
     public GUI_BusquedaProductos() {

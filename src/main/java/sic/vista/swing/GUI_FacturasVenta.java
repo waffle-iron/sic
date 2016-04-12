@@ -7,17 +7,30 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import javax.persistence.PersistenceException;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Pedido;
 import sic.modelo.Usuario;
-import sic.service.*;
+import sic.service.EstadoPedido;
+import sic.service.IClienteService;
+import sic.service.IEmpresaService;
+import sic.service.IFacturaService;
+import sic.service.IPedidoService;
+import sic.service.IUsuarioService;
+import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -25,11 +38,12 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
     private ModeloTabla modeloTablaFacturas;
     private List<FacturaVenta> facturas;
-    private final FacturaService facturaService = new FacturaService();
-    private final EmpresaService empresaService = new EmpresaService();
-    private final ClienteService clienteService = new ClienteService();
-    private final UsuarioService usuarioService = new UsuarioService();
-    private final PedidoService pedidoService = new PedidoService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IClienteService clienteService = appContext.getBean(IClienteService.class);
+    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
+    private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
     private static final Logger log = Logger.getLogger(GUI_FacturasVenta.class.getPackage().getName());
 
     public GUI_FacturasVenta() {
@@ -81,7 +95,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             cmb_TipoFactura.setEnabled(true);
             cmb_TipoFactura.setSelectedItem(criteria.getTipoFactura());
         }
-        if (criteria.isBuscaSoloInpagas()) {
+        if (criteria.isBuscaSoloImpagas()) {
             chk_EstadoFactura.setSelected(true);
             rb_soloImpagas.setSelected(true);
         }
@@ -113,7 +127,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             txt_NroFactura.commitEdit();
             criteria.setNumSerie(Integer.valueOf(txt_SerieFactura.getValue().toString()));
             criteria.setNumFactura(Integer.valueOf(txt_NroFactura.getValue().toString()));
-            criteria.setBuscaSoloInpagas(chk_EstadoFactura.isSelected() && rb_soloImpagas.isSelected());
+            criteria.setBuscaSoloImpagas(chk_EstadoFactura.isSelected() && rb_soloImpagas.isSelected());
             criteria.setBuscaSoloPagadas(chk_EstadoFactura.isSelected() && rb_soloPagadas.isSelected());
             criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
             criteria.setCantRegistros(Integer.parseInt(cmb_cantidadAMostrar.getSelectedItem().toString()));

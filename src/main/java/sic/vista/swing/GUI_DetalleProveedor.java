@@ -7,23 +7,33 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Proveedor;
 import sic.modelo.Provincia;
-import sic.service.*;
+import sic.service.ICondicionIVAService;
+import sic.service.IEmpresaService;
+import sic.service.ILocalidadService;
+import sic.service.IPaisService;
+import sic.service.IProveedorService;
+import sic.service.IProvinciaService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 
 public class GUI_DetalleProveedor extends JDialog {
 
     private Proveedor proveedorModificar;
     private final TipoDeOperacion operacion;
-    private final CondicionDeIVAService condicionDeIVAService = new CondicionDeIVAService();
-    private final PaisService paisService = new PaisService();
-    private final ProvinciaService provinciaService = new ProvinciaService();
-    private final LocalidadService localidadService = new LocalidadService();
-    private final ProveedorService proveedorService = new ProveedorService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final ICondicionIVAService condicionIVAService = appContext.getBean(ICondicionIVAService.class);
+    private final IPaisService paisService = appContext.getBean(IPaisService.class);
+    private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
+    private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
+    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private static final Logger log = Logger.getLogger(GUI_DetalleProveedor.class.getPackage().getName());
 
     public GUI_DetalleProveedor() {
@@ -78,7 +88,7 @@ public class GUI_DetalleProveedor extends JDialog {
 
     public void cargarComboBoxCondicionesIVA() {
         cmb_CondicionIVA.removeAllItems();
-        List<CondicionIVA> condicionesIVA = condicionDeIVAService.getCondicionesIVA();
+        List<CondicionIVA> condicionesIVA = condicionIVAService.getCondicionesIVA();
         for (CondicionIVA cond : condicionesIVA) {
             cmb_CondicionIVA.addItem(cond);
         }

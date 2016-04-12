@@ -3,15 +3,18 @@ package sic.vista.swing;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.RenglonFactura;
-import sic.service.ProductoService;
+import sic.service.IProductoService;
 import sic.util.RenderTabla;
 
 public class GUI_ProductosFaltantes extends JDialog {
 
     private ModeloTabla modeloTablaFaltantes;
     private final List<RenglonFactura> faltantes;
-    private final ProductoService productoService = new ProductoService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IProductoService productoService = appContext.getBean(IProductoService.class);
 
     public GUI_ProductosFaltantes(List<RenglonFactura> faltantes) {
         this.initComponents();

@@ -12,22 +12,29 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.Medida;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
-import sic.service.*;
-import sic.vista.swing.ModeloTabla;
+import sic.service.IEmpresaService;
+import sic.service.IMedidaService;
+import sic.service.IProductoService;
+import sic.service.IProveedorService;
+import sic.service.IRubroService;
+import sic.service.ServiceException;
 
 public class GUI_ModificacionProductosBulk extends JDialog {
 
     private final List<Producto> productosParaModificar;
     private ModeloTabla modeloTablaProductos;
-    private final MedidaService medidaService = new MedidaService();
-    private final EmpresaService empresaService = new EmpresaService();
-    private final RubroService rubroService = new RubroService();
-    private final ProveedorService proveedorService = new ProveedorService();
-    private final ProductoService productoService = new ProductoService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IMedidaService medidaService = appContext.getBean(IMedidaService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IRubroService rubroService = appContext.getBean(IRubroService.class);
+    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
+    private final IProductoService productoService = appContext.getBean(IProductoService.class);
     private static final Logger log = Logger.getLogger(GUI_ModificacionProductosBulk.class.getPackage().getName());
 
     public GUI_ModificacionProductosBulk(List<Producto> productosParaModificar) {

@@ -8,23 +8,30 @@ import javax.persistence.PersistenceException;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.BusquedaClienteCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
-import sic.service.*;
+import sic.service.IClienteService;
+import sic.service.IEmpresaService;
+import sic.service.ILocalidadService;
+import sic.service.IPaisService;
+import sic.service.IProvinciaService;
 import sic.util.Utilidades;
 
 public class GUI_Clientes extends JInternalFrame {
 
     private List<Cliente> clientes;
     private ModeloTabla modeloTablaDeResultados = new ModeloTabla();
-    private final ProvinciaService provinciaService = new ProvinciaService();
-    private final PaisService paisService = new PaisService();
-    private final LocalidadService localidadService = new LocalidadService();
-    private final ClienteService clienteService = new ClienteService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
+    private final IPaisService paisService = appContext.getBean(IPaisService.class);
+    private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
+    private final IClienteService clienteService = appContext.getBean(IClienteService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private static final Logger log = Logger.getLogger(GUI_Clientes.class.getPackage().getName());
 
     public GUI_Clientes() {

@@ -6,15 +6,18 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
 import sic.modelo.ConfiguracionDelSistema;
-import sic.service.ConfiguracionDelSistemaService;
-import sic.service.EmpresaService;
+import sic.service.IConfiguracionDelSistemaService;
+import sic.service.IEmpresaService;
 
 public class GUI_ConfiguracionDelSistema extends JDialog {
 
     private ConfiguracionDelSistema cdsModificar;
-    private final ConfiguracionDelSistemaService configuracionDelSistemaService = new ConfiguracionDelSistemaService();
-    private final EmpresaService empresaService = new EmpresaService();
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IConfiguracionDelSistemaService configuracionDelSistemaService = appContext.getBean(IConfiguracionDelSistemaService.class);
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private static final Logger log = Logger.getLogger(GUI_ConfiguracionDelSistema.class.getPackage().getName());
 
     public GUI_ConfiguracionDelSistema() {
