@@ -1,5 +1,6 @@
 package sic.repository;
 
+import java.util.Date;
 import java.util.List;
 import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;
@@ -25,5 +26,9 @@ public interface IFacturaRepository {
     void guardar(Factura factura);
 
     List<Object[]> listarProductosMasVendidosPorAnio(int anio);
+
+    public List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
+
+    public List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta);
 
 }

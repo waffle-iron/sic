@@ -1,5 +1,6 @@
 package sic.repository.jpa;
 
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -146,5 +147,28 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         typedQuery.setMaxResults(5);
         List<Object[]> resultado = typedQuery.getResultList();
         return resultado;
+    }
+
+    @Override
+    public List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
+        TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.buscarEntreFechasYFormaDePago", Factura.class);
+        typedQuery.setParameter("id_Empresa", id_Empresa);
+        typedQuery.setParameter("id_FormaDePago", id_FormaDePago);
+        typedQuery.setParameter("desde", desde);
+        typedQuery.setParameter("hasta", hasta);
+        List<Factura> facturas = typedQuery.getResultList();
+        em.close();
+        return facturas;
+    }
+
+    @Override
+    public List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta) {
+        TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.buscarEntreFechas", Factura.class);
+        typedQuery.setParameter("id_Empresa", id_Empresa);
+        typedQuery.setParameter("desde", desde);
+        typedQuery.setParameter("hasta", hasta);
+        List<Factura> facturas = typedQuery.getResultList();
+        em.close();
+        return facturas;
     }
 }

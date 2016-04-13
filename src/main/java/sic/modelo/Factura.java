@@ -13,6 +13,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -20,6 +22,12 @@ import javax.persistence.TemporalType;
 
 @Entity
 @Table(name = "factura")
+@NamedQueries({
+    @NamedQuery(name = "Factura.buscarEntreFechasYFormaDePago",
+            query = "SELECT f FROM Factura f WHERE f.empresa.id_Empresa = :id_Empresa AND f.formaPago.id_FormaDePago = :id_FormaDePago AND f.fecha BETWEEN :desde AND :hasta"),
+    @NamedQuery(name = "Factura.buscarEntreFechas",
+            query = "SELECT f FROM Factura f WHERE f.empresa.id_Empresa = :id_Empresa AND f.fecha BETWEEN :desde AND :hasta")
+})
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Factura implements Serializable {
 

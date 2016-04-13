@@ -5,10 +5,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
@@ -177,9 +182,10 @@ public class Utilidades {
         fileInputStream.close();
         return bArchivo;
     }
-    
+
     /**
      * Convierte un array de bytes en una Image.
+     *
      * @param bytesArray Array de byte a ser convertido.
      * @return Array de bytes convertido en Image.
      */
@@ -189,7 +195,7 @@ public class Utilidades {
         } else {
             ImageIcon logoImageIcon = new ImageIcon(bytesArray);
             return logoImageIcon.getImage();
-        }        
+        }
     }
 
     /**
@@ -211,5 +217,18 @@ public class Utilidades {
         } else {
             return true;
         }
+    }
+
+    public static String darFormatoANumeros(Number n) {
+        NumberFormat format = DecimalFormat.getInstance();
+        format.setRoundingMode(RoundingMode.FLOOR);
+        format.setMinimumFractionDigits(0);
+        format.setMaximumFractionDigits(2);
+        return format.format(n);
+    }
+
+    public static String darFormatoAFechas(Date fecha) {
+        SimpleDateFormat mascaraFecha = new SimpleDateFormat("yyyy/MM/dd 'a las' hh:mm a");
+        return mascaraFecha.format(fecha);
     }
 }

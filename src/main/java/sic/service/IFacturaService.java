@@ -1,5 +1,6 @@
 package sic.service;
 
+import java.util.Date;
 import java.util.List;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -39,6 +40,10 @@ public interface IFacturaService {
     public List<RenglonFactura> convertirRenglonesPedidoARenglonesFactura(Pedido pedido, String tipoComprobante);
 
     public RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante);
+
+    public List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
+
+    public List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta);
 
     //**************************************************************************
     //Calculos
@@ -83,7 +88,7 @@ public interface IFacturaService {
     List<Object[]> listarProductosMasVendidosPorAnio(int anio);
 
     boolean validarCantidadMaximaDeRenglones(int cantidad);
-    
+
     public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje);
 
 }

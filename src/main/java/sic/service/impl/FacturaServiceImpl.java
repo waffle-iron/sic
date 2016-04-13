@@ -5,6 +5,7 @@ import sic.modelo.BusquedaFacturaVentaCriteria;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -495,6 +496,16 @@ public class FacturaServiceImpl implements IFacturaService {
             total += factura.getTotal();
         }
         return total;
+    }
+
+    @Override
+    public List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
+        return facturaRepository.getFacturasPorFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
+    }
+
+    @Override
+    public List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta) {
+        return facturaRepository.getFacturasPorFechas(id_Empresa, desde, hasta);
     }
 
     //**************************************************************************
