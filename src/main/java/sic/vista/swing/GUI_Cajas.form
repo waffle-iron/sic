@@ -204,7 +204,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
+              <Component id="sp_TablaCajas" alignment="0" max="32767" attributes="0"/>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="lbl_cantidadMostrar" min="-2" max="-2" attributes="0"/>
@@ -223,14 +223,14 @@
                       <Component id="lbl_cantidadMostrar" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="169" max="32767" attributes="0"/>
+                  <Component id="sp_TablaCajas" pref="169" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+        <Container class="javax.swing.JScrollPane" name="sp_TablaCajas">
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -281,7 +281,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="jLabel1" linkSize="7" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbl_TotalCierre" linkSize="7" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="ftxt_TotalCierre" linkSize="9" min="-2" pref="163" max="-2" attributes="0"/>
                       </Group>
@@ -294,7 +294,7 @@
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           <Component id="btn_eliminarCaja" linkSize="1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace pref="301" max="32767" attributes="0"/>
-                          <Component id="jLabel3" linkSize="7" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbl_TotalFinal" linkSize="7" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="ftxt_TotalFinal" linkSize="9" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -314,13 +314,13 @@
                           <Component id="btn_ArquearCaja" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbl_TotalFinal" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="ftxt_TotalFinal" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbl_TotalCierre" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="ftxt_TotalCierre" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="0" pref="7" max="32767" attributes="0"/>
@@ -329,7 +329,7 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="jLabel3">
+        <Component class="javax.swing.JLabel" name="lbl_TotalFinal">
           <Properties>
             <Property name="text" type="java.lang.String" value="Total Final:"/>
           </Properties>
@@ -367,7 +367,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_eliminarCajaActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JLabel" name="jLabel1">
+        <Component class="javax.swing.JLabel" name="lbl_TotalCierre">
           <Properties>
             <Property name="text" type="java.lang.String" value="Total Cierre:"/>
           </Properties>

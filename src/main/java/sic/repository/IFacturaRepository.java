@@ -27,8 +27,8 @@ public interface IFacturaRepository {
 
     List<Object[]> listarProductosMasVendidosPorAnio(int anio);
 
-    public List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
+    List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
 
-    public List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta);
+    List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta);
 
 }

@@ -23,7 +23,8 @@ import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IGastoService;
 import sic.util.ColoresParaImprimir;
-import sic.util.Utilidades;
+import sic.util.FormatterFechaHora;
+import sic.util.FormatterNumero;
 
 public class GUI_impresionCaja extends javax.swing.JDialog {
 
@@ -34,6 +35,7 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IGastoService gastoService = appContext.getBean(IGastoService.class);
     private final ICajaService cajaService = appContext.getBean(ICajaService.class);
+    private final FormatterFechaHora formatoFechaHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_PERSONALIZADO);
     private List<FormaDePago> formasDePago;
     private List<Object> listaMovimientos = new ArrayList<>();
     private Caja caja;
@@ -306,13 +308,13 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         for (Object movimiento : listaMovimientos) {
             Object[] fila = new Object[3];
             if (movimiento instanceof FacturaCompra) {
-                fila[1] = Utilidades.darFormatoAFechas(((FacturaCompra) movimiento).getFecha());
+                fila[1] = formatoFechaHora.format(((FacturaCompra) movimiento).getFecha());
             }
             if (movimiento instanceof FacturaVenta) {
-                fila[1] = Utilidades.darFormatoAFechas(((FacturaVenta) movimiento).getFecha());
+                fila[1] = formatoFechaHora.format(((FacturaVenta) movimiento).getFecha());
             }
             if (movimiento instanceof Gasto) {
-                fila[1] = Utilidades.darFormatoAFechas(((Gasto) movimiento).getFecha());
+                fila[1] = formatoFechaHora.format(((Gasto) movimiento).getFecha());
             }
             if (movimiento instanceof FacturaVenta) {
                 fila[2] = ((FacturaVenta) movimiento).getTotal();
@@ -341,7 +343,7 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         }
         Object[] totalPorFormaDePago = new Object[3];
         totalPorFormaDePago[1] = "TOTAL:";
-        totalPorFormaDePago[2] = Utilidades.darFormatoANumeros(total);
+        totalPorFormaDePago[2] = FormatterNumero.formatConRedondeo(total);
         modeloTablaInforme.addRow(totalPorFormaDePago);
         tbl_Informe.setModel(modeloTablaInforme);
         tbl_Informe.setDefaultRenderer(String.class, new ColoresParaImprimir());
@@ -358,7 +360,7 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
         double total = this.caja.getSaldoInicial();
         Object[] saldoInicial = new Object[3];
         saldoInicial[0] = "Saldo Apertura";
-        saldoInicial[1] = Utilidades.darFormatoAFechas(this.caja.getFechaApertura());
+        saldoInicial[1] = formatoFechaHora.format(this.caja.getFechaApertura());
         saldoInicial[2] = total;
         modeloTablaInforme.addRow(saldoInicial);
         List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaActiva);
@@ -371,14 +373,14 @@ public class GUI_impresionCaja extends javax.swing.JDialog {
             this.listaMovimientos.addAll(facturasPorFormaDePago);
             this.listaMovimientos.addAll(gastos);
             double totalParcial = cajaService.calcularTotalPorMovimiento(this.listaMovimientos);
-            fila[1] = Utilidades.darFormatoAFechas(new Date());
-            fila[2] = Utilidades.darFormatoANumeros(totalParcial);
+            fila[1] = formatoFechaHora.format(new Date());
+            fila[2] = FormatterNumero.formatConRedondeo(totalParcial);
             total += totalParcial;
             modeloTablaInforme.addRow(fila);
         }
         Object[] Total = new Object[3];
         Total[1] = "Saldo Total";
-        Total[2] = Utilidades.darFormatoANumeros(total);
+        Total[2] = FormatterNumero.formatConRedondeo(total);
         modeloTablaInforme.addRow(Total);
         tbl_Informe.setModel(modeloTablaInforme);
     }

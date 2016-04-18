@@ -4,7 +4,6 @@ import sic.repository.ICajaRepository;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -20,11 +19,7 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
 
     @Override
     public void guardar(Caja caja) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         em.persist(em.merge(caja));
-        tx.commit();
-        em.close();
     }
 
     @Override
@@ -32,7 +27,6 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
         TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.getUltimaCaja", Caja.class);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         List<Caja> ControlesCaja = typedQuery.getResultList();
-        em.close();
         if (ControlesCaja.isEmpty()) {
             return null;
         } else {
@@ -47,7 +41,6 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
         List<Caja> ControlesCaja = typedQuery.getResultList();
-        em.close();
         if (ControlesCaja.isEmpty()) {
             return null;
         } else {
@@ -57,11 +50,7 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
 
     @Override
     public void actualizar(Caja caja) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         em.merge(caja);
-        tx.commit();
-        em.close();
     }
 
     @Override
@@ -70,7 +59,6 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
         typedQuery.setParameter("id_caja", id_Caja);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         List<Caja> cajas = typedQuery.getResultList();
-        em.close();
         if (cajas.isEmpty()) {
             return null;
         } else {
@@ -84,7 +72,6 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
         typedQuery.setParameter("id_Empresa", idEmpresa);
         typedQuery.setParameter("id_FormaDePago", idFormaDePago);
         List<Caja> cajas = typedQuery.getResultList();
-        em.close();
         if (cajas.isEmpty()) {
             return null;
         } else {
@@ -97,7 +84,6 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
         TypedQuery<Integer> typedQuery = em.createNamedQuery("Caja.getUltimoNumeroDeCaja", Integer.class);
         typedQuery.setParameter("id_Empresa", idEmpresa);
         Integer ultimoNumeroDeCaja = typedQuery.getSingleResult();
-        em.close();
         if (ultimoNumeroDeCaja == null) {
             return 0;
         } else {
@@ -122,7 +108,6 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
             typedQuery.setMaxResults(criteria.getCantidadDeRegistros());
         }
         List<Caja> cajas = typedQuery.getResultList();
-        em.close();
         return cajas;
     }
 }

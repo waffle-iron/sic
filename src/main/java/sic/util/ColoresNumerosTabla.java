@@ -19,7 +19,7 @@ public class ColoresNumerosTabla extends DefaultTableCellRenderer {
         this.setHorizontalAlignment(SwingConstants.RIGHT);
         if (valor instanceof Double) {
             Double numero = (Double) valor;
-            cell.setText(Utilidades.darFormatoANumeros(numero));
+            cell.setText(FormatterNumero.formatConRedondeo(numero));
             if (numero > 0) {
                 cell.setForeground(Color.GREEN);
                 cell.setFont(new Font("Font", Font.BOLD, 12));

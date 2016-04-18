@@ -53,16 +53,16 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         cmb_Usuarios = new javax.swing.JComboBox<>();
         pb_barra = new javax.swing.JProgressBar();
         pnl_Cajas = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        sp_TablaCajas = new javax.swing.JScrollPane();
         tbl_Cajas = new javax.swing.JTable();
         cmb_paginado = new javax.swing.JComboBox<>();
         lbl_cantidadMostrar = new javax.swing.JLabel();
         pnl_Botones = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
+        lbl_TotalFinal = new javax.swing.JLabel();
         btn_AbrirCaja = new javax.swing.JButton();
         btn_verDetalle = new javax.swing.JButton();
         btn_eliminarCaja = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        lbl_TotalCierre = new javax.swing.JLabel();
         ftxt_TotalFinal = new javax.swing.JFormattedTextField();
         ftxt_TotalCierre = new javax.swing.JFormattedTextField();
         btn_ArquearCaja = new javax.swing.JButton();
@@ -189,7 +189,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
 
             }
         ));
-        jScrollPane1.setViewportView(tbl_Cajas);
+        sp_TablaCajas.setViewportView(tbl_Cajas);
 
         cmb_paginado.setForeground(java.awt.Color.blue);
         cmb_paginado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "50", "100", "150", "300", "500" }));
@@ -200,7 +200,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         pnl_Cajas.setLayout(pnl_CajasLayout);
         pnl_CajasLayout.setHorizontalGroup(
             pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1)
+            .addComponent(sp_TablaCajas)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_CajasLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lbl_cantidadMostrar)
@@ -216,11 +216,11 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                     .addComponent(cmb_paginado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_cantidadMostrar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                .addComponent(sp_TablaCajas, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
-        jLabel3.setText("Total Final:");
+        lbl_TotalFinal.setText("Total Final:");
 
         btn_AbrirCaja.setForeground(java.awt.Color.blue);
         btn_AbrirCaja.setText("Abrir Caja");
@@ -246,7 +246,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             }
         });
 
-        jLabel1.setText("Total Cierre:");
+        lbl_TotalCierre.setText("Total Cierre:");
 
         ftxt_TotalFinal.setEditable(false);
         ftxt_TotalFinal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
@@ -274,7 +274,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                 .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnl_BotonesLayout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
+                        .addComponent(lbl_TotalCierre)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ftxt_TotalCierre, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(pnl_BotonesLayout.createSequentialGroup()
@@ -286,7 +286,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                         .addGap(0, 0, 0)
                         .addComponent(btn_eliminarCaja)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 301, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
+                        .addComponent(lbl_TotalFinal)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ftxt_TotalFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(20, 20, 20))
@@ -294,7 +294,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
 
         pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AbrirCaja, btn_ArquearCaja, btn_eliminarCaja, btn_verDetalle});
 
-        pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jLabel1, jLabel3});
+        pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_TotalCierre, lbl_TotalFinal});
 
         pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {ftxt_TotalCierre, ftxt_TotalFinal});
 
@@ -308,11 +308,11 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                         .addComponent(btn_AbrirCaja)
                         .addComponent(btn_ArquearCaja))
                     .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel3)
+                        .addComponent(lbl_TotalFinal)
                         .addComponent(ftxt_TotalFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
+                    .addComponent(lbl_TotalCierre)
                     .addComponent(ftxt_TotalCierre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 7, Short.MAX_VALUE))
         );
@@ -455,16 +455,16 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
     private com.toedter.calendar.JDateChooser dc_FechaHasta;
     private javax.swing.JFormattedTextField ftxt_TotalCierre;
     private javax.swing.JFormattedTextField ftxt_TotalFinal;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_Desde;
     private javax.swing.JLabel lbl_Hasta;
+    private javax.swing.JLabel lbl_TotalCierre;
+    private javax.swing.JLabel lbl_TotalFinal;
     private javax.swing.JLabel lbl_cantidadMostrar;
     private javax.swing.JProgressBar pb_barra;
     private javax.swing.JPanel pnl_Botones;
     private javax.swing.JPanel pnl_Cajas;
     private javax.swing.JPanel pnl_Filtros;
+    private javax.swing.JScrollPane sp_TablaCajas;
     private javax.swing.JTable tbl_Cajas;
     // End of variables declaration//GEN-END:variables
 

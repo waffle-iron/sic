@@ -132,17 +132,17 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private Caja construirCaja() {
-        Caja nueva = new Caja();
-        nueva.setCerrada(false);
-        nueva.setConcepto("Apertura De Caja");
-        nueva.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-        nueva.setFechaApertura(new Date());
-        nueva.setNroCaja(cajaService.getUltimoNumeroDeCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()) + 1);
-        nueva.setSaldoInicial(Double.parseDouble(ftxt_Monto.getValue().toString()));
-        nueva.setSaldoFinal(Double.parseDouble(ftxt_Monto.getValue().toString()));
-        nueva.setSaldoReal(Double.parseDouble(ftxt_Monto.getValue().toString()));
-        nueva.setUsuarioAbreCaja(usuarioService.getUsuarioActivo().getUsuario());
-        return nueva;
+        Caja caja = new Caja();
+        caja.setCerrada(false);
+        caja.setObservacion("Apertura De Caja");
+        caja.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+        caja.setFechaApertura(new Date());
+        caja.setNroCaja(cajaService.getUltimoNumeroDeCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()) + 1);
+        caja.setSaldoInicial(Double.parseDouble(ftxt_Monto.getValue().toString()));
+        caja.setSaldoFinal(Double.parseDouble(ftxt_Monto.getValue().toString()));
+        caja.setSaldoReal(Double.parseDouble(ftxt_Monto.getValue().toString()));
+        caja.setUsuarioAbreCaja(usuarioService.getUsuarioActivo().getUsuario());
+        return caja;
     }
 
 }

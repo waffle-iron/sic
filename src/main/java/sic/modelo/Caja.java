@@ -58,7 +58,7 @@ public class Caja implements Serializable {
     private Usuario usuarioCierraCaja;
 
     @Column(nullable = false)
-    private String concepto;
+    private String observacion;
 
     private boolean cerrada;
 

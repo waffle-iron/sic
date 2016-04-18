@@ -18,11 +18,7 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
 
     @Override
     public void guardar(Gasto gasto) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         em.persist(em.merge(gasto));
-        tx.commit();
-        em.close();
     }
 
     @Override
@@ -32,7 +28,6 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
         List<Object> gastos = typedQuery.getResultList();
-        em.close();
         if (gastos.isEmpty()) {
             return null;
         } else {
@@ -48,17 +43,12 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
         List<Object> gastos = typedQuery.getResultList();
-        em.close();
         return gastos;
     }
 
     @Override
     public void actualizar(Gasto gasto) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         em.merge(gasto);
-        tx.commit();
-        em.close();
     }
 
     @Override
@@ -67,7 +57,6 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
         typedQuery.setParameter("id_Gasto", id_Gasto);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         List<Gasto> gastos = typedQuery.getResultList();
-        em.close();
         if (gastos.isEmpty()) {
             return null;
         } else {
@@ -80,7 +69,6 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
         TypedQuery<Integer> typedQuery = em.createNamedQuery("Gasto.getUltimoNumeroDeGasto", Integer.class);
         typedQuery.setParameter("id_Empresa", idEmpresa);
         Integer ultimoNumeroDeGasto = typedQuery.getSingleResult();
-        em.close();
         if (ultimoNumeroDeGasto == null) {
             return 0;
         } else {

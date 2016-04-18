@@ -218,17 +218,4 @@ public class Utilidades {
             return true;
         }
     }
-
-    public static String darFormatoANumeros(Number n) {
-        NumberFormat format = DecimalFormat.getInstance();
-        format.setRoundingMode(RoundingMode.FLOOR);
-        format.setMinimumFractionDigits(0);
-        format.setMaximumFractionDigits(2);
-        return format.format(n);
-    }
-
-    public static String darFormatoAFechas(Date fecha) {
-        SimpleDateFormat mascaraFecha = new SimpleDateFormat("yyyy/MM/dd 'a las' hh:mm a");
-        return mascaraFecha.format(fecha);
-    }
 }

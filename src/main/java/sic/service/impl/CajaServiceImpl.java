@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
 import sic.modelo.FacturaCompra;
@@ -50,12 +51,14 @@ public class CajaServiceImpl implements ICajaService {
     }
 
     @Override
+    @Transactional
     public void guardar(Caja caja) {
         this.validarCaja(caja);
         cajaRepository.guardar(caja);
     }
 
     @Override
+    @Transactional
     public void actualizar(Caja caja) {
         cajaRepository.actualizar(caja);
     }

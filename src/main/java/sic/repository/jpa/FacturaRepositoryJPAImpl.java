@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Factura;
@@ -131,6 +132,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     }
 
     @Override
+    @Transactional
     public void guardar(Factura factura) {;
         em.persist(em.merge(factura));
     }
@@ -157,7 +159,6 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
         List<Factura> facturas = typedQuery.getResultList();
-        em.close();
         return facturas;
     }
 
@@ -168,7 +169,6 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
         List<Factura> facturas = typedQuery.getResultList();
-        em.close();
         return facturas;
     }
 }

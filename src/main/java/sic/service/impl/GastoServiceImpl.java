@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Gasto;
 import sic.repository.IGastoRepository;
 import sic.service.ServiceException;
@@ -44,6 +45,7 @@ public class GastoServiceImpl implements IGastoService {
     }
 
     @Override
+    @Transactional
     public void guardar(Gasto gasto) {
         this.validarGasto(gasto);
         gastoRepository.guardar(gasto);
@@ -60,6 +62,7 @@ public class GastoServiceImpl implements IGastoService {
     }
 
     @Override
+    @Transactional
     public void actualizar(Gasto gasto) {
         gastoRepository.actualizar(gasto);
     }
@@ -67,6 +70,11 @@ public class GastoServiceImpl implements IGastoService {
     @Override
     public long getUltimoNumeroDeCaja(long id_Empresa) {
         return gastoRepository.getUltimoNumeroDeGasto(id_Empresa);
+    }
+
+    @Override
+    public int getUltimoNumeroDeGasto(long id_empresa) {
+        return gastoRepository.getUltimoNumeroDeGasto(id_empresa);
     }
 
 }

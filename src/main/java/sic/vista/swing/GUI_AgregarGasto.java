@@ -20,7 +20,6 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private final IGastoService gastoService = appContext.getBean(IGastoService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
-    private final GastoRepositoryJPAImpl gastoRepository = new GastoRepositoryJPAImpl();
 
     public GUI_AgregarGasto(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
@@ -182,7 +181,7 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
     public Gasto construirGasto(String concepto, double monto, FormaDePago formaDePago) {
         Empresa empresa = empresaService.getEmpresaActiva().getEmpresa();
         Usuario usuario = usuarioService.getUsuarioActivo().getUsuario();
-        int nroDeGasto = gastoRepository.getUltimoNumeroDeGasto(empresa.getId_Empresa()) + 1;
+        int nroDeGasto = gastoService.getUltimoNumeroDeGasto(empresa.getId_Empresa()) + 1;
         Gasto gasto = new Gasto();
         gasto.setConcepto(concepto);
         gasto.setEliminado(false);

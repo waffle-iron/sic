@@ -33,6 +33,7 @@ import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IGastoService;
+import sic.util.FormatterFechaHora;
 import sic.util.Utilidades;
 
 public class GUI_Caja extends javax.swing.JDialog {
@@ -43,6 +44,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IGastoService gastoService = appContext.getBean(IGastoService.class);
+    private final FormatterFechaHora formatoFechaHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_PERSONALIZADO);
     private ModeloTabla modeloTablaBalance;
     private ModeloTabla modeloTablaResumen;
     private List<Object> listaMovimientos = new ArrayList<>();
@@ -53,20 +55,20 @@ public class GUI_Caja extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        this.setTitle("Arqueo de Caja - Apertura: " + Utilidades.darFormatoAFechas(this.caja.getFechaApertura()));
+        this.setTitle("Arqueo de Caja - Apertura: " + formatoFechaHora.format(this.caja.getFechaApertura()));
     }
 
     public GUI_Caja(java.awt.Frame parent, boolean modal, Caja caja) {
         super(parent, modal);
         initComponents();
         this.caja = caja;
-        this.setTitle("Arqueo de Caja - Apertura: " + Utilidades.darFormatoAFechas(this.caja.getFechaApertura()));
+        this.setTitle("Arqueo de Caja - Apertura: " + formatoFechaHora.format(this.caja.getFechaApertura()));
     }
 
     public GUI_Caja(Caja caja) {
         initComponents();
         this.caja = caja;
-        this.setTitle("Arqueo de Caja - Apertura: " + Utilidades.darFormatoAFechas(this.caja.getFechaApertura()));
+        this.setTitle("Arqueo de Caja - Apertura: " + formatoFechaHora.format(this.caja.getFechaApertura()));
     }
 
     @SuppressWarnings("unchecked")
@@ -82,11 +84,11 @@ public class GUI_Caja extends javax.swing.JDialog {
         sp_Tabla = new javax.swing.JScrollPane();
         tbl_Balance = new javax.swing.JTable();
         btn_VerDetalle = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        lbl_total = new javax.swing.JLabel();
         btn_AgregarGasto = new javax.swing.JButton();
         ftxt_Detalle = new javax.swing.JFormattedTextField();
         pnl_Resumen = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        sp_TablaResumen = new javax.swing.JScrollPane();
         tbl_Resumen = new javax.swing.JTable();
         ftxt_Total = new javax.swing.JFormattedTextField();
         lbl_Total = new javax.swing.JLabel();
@@ -168,7 +170,7 @@ public class GUI_Caja extends javax.swing.JDialog {
             }
         });
 
-        jLabel1.setText("Total:");
+        lbl_total.setText("Total:");
 
         btn_AgregarGasto.setForeground(java.awt.Color.blue);
         btn_AgregarGasto.setText("Agregar Gasto");
@@ -196,7 +198,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                         .addGap(0, 0, 0)
                         .addComponent(btn_AgregarGasto)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel1)
+                        .addComponent(lbl_total)
                         .addGap(0, 0, 0)
                         .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
@@ -208,7 +210,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_VerDetalle)
-                    .addComponent(jLabel1)
+                    .addComponent(lbl_total)
                     .addComponent(btn_AgregarGasto)
                     .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
@@ -223,7 +225,7 @@ public class GUI_Caja extends javax.swing.JDialog {
 
             }
         ));
-        jScrollPane1.setViewportView(tbl_Resumen);
+        sp_TablaResumen.setViewportView(tbl_Resumen);
         tbl_Resumen.getAccessibleContext().setAccessibleParent(sp_Tabla);
 
         ftxt_Total.setEditable(false);
@@ -257,7 +259,7 @@ public class GUI_Caja extends javax.swing.JDialog {
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
+                    .addComponent(sp_TablaResumen)
                     .addGroup(pnl_ResumenLayout.createSequentialGroup()
                         .addComponent(btn_RealizarArqueo, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
@@ -271,7 +273,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         pnl_ResumenLayout.setVerticalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -431,15 +433,15 @@ public class GUI_Caja extends javax.swing.JDialog {
     private javax.swing.JComboBox<FormaDePago> cmb_FormasDePago;
     private javax.swing.JFormattedTextField ftxt_Detalle;
     private javax.swing.JFormattedTextField ftxt_Total;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_FormaDePago;
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_aviso;
+    private javax.swing.JLabel lbl_total;
     private javax.swing.JPanel pbl_Cabecera;
     private javax.swing.JPanel pnl_Resumen;
     private javax.swing.JPanel pnl_Tabla;
     private javax.swing.JScrollPane sp_Tabla;
+    private javax.swing.JScrollPane sp_TablaResumen;
     javax.swing.JTable tbl_Balance;
     private javax.swing.JTable tbl_Resumen;
     // End of variables declaration//GEN-END:variables
@@ -495,13 +497,13 @@ public class GUI_Caja extends javax.swing.JDialog {
         for (Object movimiento : movimientos) {
             Object[] fila = new Object[5];
             if (movimiento instanceof FacturaCompra) {
-                fila[0] = Utilidades.darFormatoAFechas(((FacturaCompra) movimiento).getFecha());
+                fila[0] = formatoFechaHora.format(((FacturaCompra) movimiento).getFecha());
             }
             if (movimiento instanceof FacturaVenta) {
-                fila[0] = Utilidades.darFormatoAFechas(((FacturaVenta) movimiento).getFecha());
+                fila[0] = formatoFechaHora.format(((FacturaVenta) movimiento).getFecha());
             }
             if (movimiento instanceof Gasto) {
-                fila[0] = Utilidades.darFormatoAFechas(((Gasto) movimiento).getFecha());
+                fila[0] = formatoFechaHora.format(((Gasto) movimiento).getFecha());
             }
             if (movimiento instanceof FacturaCompra) {
                 fila[2] = 0.0;
