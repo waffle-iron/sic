@@ -35,8 +35,11 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="panelFiltros" min="-2" max="-2" attributes="2"/>
           <Component id="panelResultados" max="32767" attributes="2"/>
+          <Group type="102" alignment="0" attributes="0">
+              <Component id="panelFiltros" min="-2" max="-2" attributes="2"/>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+          </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -63,8 +66,8 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="chk_Rubro" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -73,20 +76,22 @@
                               <Component id="chk_Proveedor" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="txt_Descripcion" alignment="0" max="32767" attributes="2"/>
-                              <Component id="cmb_Rubro" alignment="0" pref="278" max="32767" attributes="0"/>
-                              <Component id="cmb_Proveedor" alignment="0" max="32767" attributes="2"/>
+                              <Component id="cmb_Rubro" alignment="0" max="32767" attributes="0"/>
                               <Component id="txt_Codigo" max="32767" attributes="2"/>
+                              <Component id="cmb_Proveedor" alignment="0" max="32767" attributes="2"/>
                           </Group>
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="216" max="32767" attributes="0"/>
-                          <Component id="pg_progreso" min="-2" pref="100" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Component id="lbl_cantResultados" pref="210" max="32767" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Component id="pg_progreso" min="-2" pref="120" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -112,13 +117,14 @@
                       <Component id="chk_Proveedor" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="cmb_Proveedor" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <Component id="pg_progreso" max="32767" attributes="0"/>
+                      <Component id="lbl_cantResultados" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -200,6 +206,11 @@
         </Component>
         <Component class="javax.swing.JProgressBar" name="pg_progreso">
         </Component>
+        <Component class="javax.swing.JLabel" name="lbl_cantResultados">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="panelResultados">
@@ -216,23 +227,23 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Component id="sp_Resultados" alignment="0" pref="603" max="32767" attributes="0"/>
               <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="rb_Todos" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="rb_Faltantes" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="lbl_CantidadMostrar" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="cmb_CantidadMostrar" min="-2" pref="81" max="-2" attributes="0"/>
-              </Group>
-              <Group type="102" attributes="0">
-                  <Component id="btn_Nuevo" linkSize="1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                  <Component id="btn_Modificar" linkSize="1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                  <Component id="btn_Eliminar" linkSize="1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                  <Component id="btn_ReporteListaPrecios" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="rb_Todos" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="rb_Faltantes" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" attributes="0">
+                          <Component id="btn_Nuevo" linkSize="1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                          <Component id="btn_Modificar" linkSize="1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
+                          <Component id="btn_Eliminar" linkSize="1" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
+                          <Component id="btn_ReporteListaPrecios" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -243,11 +254,9 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="rb_Todos" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="rb_Faltantes" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_CantidadMostrar" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="lbl_CantidadMostrar" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="sp_Resultados" pref="165" max="32767" attributes="0"/>
+                  <Component id="sp_Resultados" pref="180" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="btn_Eliminar" linkSize="2" alignment="2" max="32767" attributes="0"/>
@@ -349,27 +358,6 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rb_TodosActionPerformed"/>
           </Events>
-        </Component>
-        <Component class="javax.swing.JComboBox" name="cmb_CantidadMostrar">
-          <Properties>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="100"/>
-                <StringItem index="1" value="500"/>
-                <StringItem index="2" value="1000"/>
-                <StringItem index="3" value="5000"/>
-              </StringArray>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cmb_CantidadMostrarItemStateChanged"/>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmb_CantidadMostrarActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JLabel" name="lbl_CantidadMostrar">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Mostrar los primeros:"/>
-          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btn_ReporteListaPrecios">
           <Properties>

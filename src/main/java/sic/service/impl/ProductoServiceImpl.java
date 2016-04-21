@@ -139,7 +139,7 @@ public class ProductoServiceImpl implements IProductoService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_producto_vacio_proveedor"));
         }
-        return productoRepository.BuscarProductos(criteria);
+        return productoRepository.buscarProductos(criteria);
     }
 
     @Override

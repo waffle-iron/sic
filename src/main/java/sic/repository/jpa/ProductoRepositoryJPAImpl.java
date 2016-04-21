@@ -17,7 +17,7 @@ public class ProductoRepositoryJPAImpl implements IProductoRepository {
     private EntityManager em;
 
     @Override
-    public List<Producto> BuscarProductos(BusquedaProductoCriteria criteria) {
+    public List<Producto> buscarProductos(BusquedaProductoCriteria criteria) {
         String query = "SELECT p FROM Producto p WHERE p.empresa = :empresa AND p.eliminado = false";
         //Codigo        
         if (criteria.isBuscarPorCodigo() == true) {

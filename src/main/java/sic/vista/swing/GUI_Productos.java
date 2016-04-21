@@ -36,7 +36,7 @@ public class GUI_Productos extends JInternalFrame {
     private ModeloTabla modeloTablaResultados;
     private List<Producto> productos;
     private boolean listarSoloFaltantes;
-    private int cantidadResultadosParaMostrar = 500;
+    private int cantidadResultadosParaMostrar = 0; //deshabilitada momentaneamente
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IRubroService rubroService = appContext.getBean(IRubroService.class);
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
@@ -198,6 +198,7 @@ public class GUI_Productos extends JInternalFrame {
             modeloTablaResultados.addRow(fila);
         }
         tbl_Resultados.setModel(modeloTablaResultados);
+        lbl_cantResultados.setText(productos.size() + " productos encontrados");
     }
 
     private void limpiarJTable() {
@@ -233,8 +234,7 @@ public class GUI_Productos extends JInternalFrame {
         }
         btn_Buscar.setEnabled(status);
         rb_Todos.setEnabled(status);
-        rb_Faltantes.setEnabled(status);
-        cmb_CantidadMostrar.setEnabled(status);
+        rb_Faltantes.setEnabled(status);        
         tbl_Resultados.setEnabled(status);
         btn_Nuevo.setEnabled(status);
         btn_Modificar.setEnabled(status);
@@ -345,6 +345,7 @@ public class GUI_Productos extends JInternalFrame {
         chk_Rubro = new javax.swing.JCheckBox();
         cmb_Rubro = new javax.swing.JComboBox();
         pg_progreso = new javax.swing.JProgressBar();
+        lbl_cantResultados = new javax.swing.JLabel();
         panelResultados = new javax.swing.JPanel();
         sp_Resultados = new javax.swing.JScrollPane();
         tbl_Resultados = new javax.swing.JTable();
@@ -353,8 +354,6 @@ public class GUI_Productos extends JInternalFrame {
         btn_Eliminar = new javax.swing.JButton();
         rb_Faltantes = new javax.swing.JRadioButton();
         rb_Todos = new javax.swing.JRadioButton();
-        cmb_CantidadMostrar = new javax.swing.JComboBox();
-        lbl_CantidadMostrar = new javax.swing.JLabel();
         btn_ReporteListaPrecios = new javax.swing.JButton();
 
         setClosable(true);
@@ -427,13 +426,15 @@ public class GUI_Productos extends JInternalFrame {
 
         cmb_Rubro.setEnabled(false);
 
+        lbl_cantResultados.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
         javax.swing.GroupLayout panelFiltrosLayout = new javax.swing.GroupLayout(panelFiltros);
         panelFiltros.setLayout(panelFiltrosLayout);
         panelFiltrosLayout.setHorizontalGroup(
             panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelFiltrosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelFiltrosLayout.createSequentialGroup()
                         .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(chk_Rubro)
@@ -441,16 +442,18 @@ public class GUI_Productos extends JInternalFrame {
                             .addComponent(chk_Codigo)
                             .addComponent(chk_Proveedor))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(txt_Descripcion, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cmb_Rubro, javax.swing.GroupLayout.Alignment.LEADING, 0, 278, Short.MAX_VALUE)
-                            .addComponent(cmb_Proveedor, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txt_Codigo)))
+                            .addComponent(cmb_Rubro, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txt_Codigo)
+                            .addComponent(cmb_Proveedor, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(panelFiltrosLayout.createSequentialGroup()
                         .addComponent(btn_Buscar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 216, Short.MAX_VALUE)
-                        .addComponent(pg_progreso, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbl_cantResultados, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pg_progreso, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         panelFiltrosLayout.setVerticalGroup(
             panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -470,12 +473,13 @@ public class GUI_Productos extends JInternalFrame {
                 .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(chk_Proveedor)
                     .addComponent(cmb_Proveedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelFiltrosLayout.createSequentialGroup()
                         .addComponent(btn_Buscar)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(pg_progreso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pg_progreso, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_cantResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -540,20 +544,6 @@ public class GUI_Productos extends JInternalFrame {
             }
         });
 
-        cmb_CantidadMostrar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "100", "500", "1000", "5000" }));
-        cmb_CantidadMostrar.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                cmb_CantidadMostrarItemStateChanged(evt);
-            }
-        });
-        cmb_CantidadMostrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmb_CantidadMostrarActionPerformed(evt);
-            }
-        });
-
-        lbl_CantidadMostrar.setText("Mostrar los primeros:");
-
         btn_ReporteListaPrecios.setForeground(new java.awt.Color(0, 0, 255));
         btn_ReporteListaPrecios.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Printer_16x16.png"))); // NOI18N
         btn_ReporteListaPrecios.setText("Imprimir");
@@ -569,22 +559,20 @@ public class GUI_Productos extends JInternalFrame {
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 603, Short.MAX_VALUE)
             .addGroup(panelResultadosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(rb_Todos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rb_Faltantes)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lbl_CantidadMostrar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmb_CantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(panelResultadosLayout.createSequentialGroup()
-                .addComponent(btn_Nuevo)
-                .addGap(0, 0, 0)
-                .addComponent(btn_Modificar)
-                .addGap(0, 0, 0)
-                .addComponent(btn_Eliminar)
-                .addGap(0, 0, 0)
-                .addComponent(btn_ReporteListaPrecios)
+                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelResultadosLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(rb_Todos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(rb_Faltantes))
+                    .addGroup(panelResultadosLayout.createSequentialGroup()
+                        .addComponent(btn_Nuevo)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_Modificar)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_Eliminar)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_ReporteListaPrecios)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -595,11 +583,9 @@ public class GUI_Productos extends JInternalFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(rb_Todos)
-                    .addComponent(rb_Faltantes)
-                    .addComponent(cmb_CantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_CantidadMostrar))
+                    .addComponent(rb_Faltantes))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btn_Eliminar, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -614,8 +600,10 @@ public class GUI_Productos extends JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(panelResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(panelFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -773,10 +761,6 @@ public class GUI_Productos extends JInternalFrame {
         buscar();
     }//GEN-LAST:event_rb_FaltantesActionPerformed
 
-    private void cmb_CantidadMostrarItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_CantidadMostrarItemStateChanged
-        cantidadResultadosParaMostrar = Integer.parseInt(cmb_CantidadMostrar.getSelectedItem().toString());
-    }//GEN-LAST:event_cmb_CantidadMostrarItemStateChanged
-
     private void btn_ReporteListaPreciosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ReporteListaPreciosActionPerformed
         try {
             this.lanzarReporteListaDePrecios();
@@ -792,9 +776,6 @@ public class GUI_Productos extends JInternalFrame {
         }
     }//GEN-LAST:event_btn_ReporteListaPreciosActionPerformed
 
-    private void cmb_CantidadMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_CantidadMostrarActionPerformed
-        buscar();
-    }//GEN-LAST:event_cmb_CantidadMostrarActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bg_TiposDeListados;
     private javax.swing.JButton btn_Buscar;
@@ -806,10 +787,9 @@ public class GUI_Productos extends JInternalFrame {
     private javax.swing.JCheckBox chk_Descripcion;
     private javax.swing.JCheckBox chk_Proveedor;
     private javax.swing.JCheckBox chk_Rubro;
-    private javax.swing.JComboBox cmb_CantidadMostrar;
     private javax.swing.JComboBox cmb_Proveedor;
     private javax.swing.JComboBox cmb_Rubro;
-    private javax.swing.JLabel lbl_CantidadMostrar;
+    private javax.swing.JLabel lbl_cantResultados;
     private javax.swing.JPanel panelFiltros;
     private javax.swing.JPanel panelResultados;
     private javax.swing.JProgressBar pg_progreso;

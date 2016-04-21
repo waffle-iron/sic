@@ -7,7 +7,7 @@ import sic.modelo.Producto;
 
 public interface IProductoRepository {
 
-    List<Producto> BuscarProductos(BusquedaProductoCriteria criteria);
+    List<Producto> buscarProductos(BusquedaProductoCriteria criteria);
 
     void actualizar(Producto producto);
 
