@@ -71,7 +71,9 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="lbl_cantResultados" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Component id="pb_Filtro" min="-2" pref="100" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -126,9 +128,12 @@
                       <Component id="cmb_Vendedor" linkSize="12" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="btn_Buscar" linkSize="13" min="-2" max="-2" attributes="0"/>
-                      <Component id="pb_Filtro" linkSize="13" min="-2" pref="23" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="btn_Buscar" linkSize="13" min="-2" max="-2" attributes="0"/>
+                          <Component id="pb_Filtro" linkSize="13" min="-2" pref="23" max="-2" attributes="0"/>
+                      </Group>
+                      <Component id="lbl_cantResultados" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -224,6 +229,11 @@
         </Component>
         <Component class="javax.swing.JProgressBar" name="pb_Filtro">
         </Component>
+        <Component class="javax.swing.JLabel" name="lbl_cantResultados">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="0"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="panel_resultados">
@@ -238,12 +248,6 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="lbl_cantidadMostrar" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="cmb_cantidadMostrar" min="-2" pref="81" max="-2" attributes="0"/>
-              </Group>
               <Component id="sp_Pedidos" pref="930" max="32767" attributes="0"/>
               <Component id="sp_RenglonesDelPedido" alignment="0" max="32767" attributes="0"/>
               <Group type="102" alignment="0" attributes="0">
@@ -258,22 +262,17 @@
                   <Component id="btn_eliminarPedido" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Component id="btn_imprimirPedido" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="236" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="cmb_cantidadMostrar" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="lbl_cantidadMostrar" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="sp_Pedidos" pref="149" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="sp_Pedidos" pref="130" max="32767" attributes="0"/>
+                  <Component id="sp_RenglonesDelPedido" pref="150" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="sp_RenglonesDelPedido" pref="130" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="btn_NuevoPedido" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_VerFacturas" linkSize="7" alignment="3" min="-2" pref="26" max="-2" attributes="0"/>
@@ -336,27 +335,6 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JLabel" name="lbl_cantidadMostrar">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Mostrar los primeros:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JComboBox" name="cmb_cantidadMostrar">
-          <Properties>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="100"/>
-                <StringItem index="1" value="500"/>
-                <StringItem index="2" value="1000"/>
-                <StringItem index="3" value="5000"/>
-              </StringArray>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cmb_cantidadMostrarItemStateChanged"/>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmb_cantidadMostrarActionPerformed"/>
-          </Events>
-        </Component>
         <Component class="javax.swing.JButton" name="btn_NuevoPedido">
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
