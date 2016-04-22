@@ -38,13 +38,14 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
     private ModeloTabla modeloTablaFacturas;
     private List<FacturaVenta> facturas;
+    private final int cantidadResultadosParaMostrar = 0; //deshabilitada momentaneamente
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private final IClienteService clienteService = appContext.getBean(IClienteService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
-    private static final Logger log = Logger.getLogger(GUI_FacturasVenta.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(GUI_FacturasVenta.class.getPackage().getName());
 
     public GUI_FacturasVenta() {
         this.initComponents();
@@ -130,7 +131,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             criteria.setBuscaSoloImpagas(chk_EstadoFactura.isSelected() && rb_soloImpagas.isSelected());
             criteria.setBuscaSoloPagadas(chk_EstadoFactura.isSelected() && rb_soloPagadas.isSelected());
             criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-            criteria.setCantRegistros(Integer.parseInt(cmb_cantidadAMostrar.getSelectedItem().toString()));
+            criteria.setCantRegistros(cantidadResultadosParaMostrar);
             criteria.setBuscarPorPedido(chk_NumeroPedido.isSelected());
             if (chk_NumeroPedido.isSelected()) {
                 criteria.setNroPedido(Long.parseLong(txt_NumeroPedido.getText()));
@@ -221,30 +222,32 @@ public class GUI_FacturasVenta extends JInternalFrame {
             txt_ResultTotalIVAVenta.setValue(facturaService.calcularIVA_Venta(facturas));
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void buscar(final BusquedaFacturaVentaCriteria criteria) {
+        cambiarEstadoEnabled(false);
         pb_Filtro.setIndeterminate(true);
         SwingWorker<List<FacturaVenta>, Void> worker = new SwingWorker<List<FacturaVenta>, Void>() {
 
             @Override
             protected List<FacturaVenta> doInBackground() throws Exception {
                 try {
-                    facturas = facturaService.buscarFacturaVenta(criteria);
-                    calcularResultados();
+                    facturas = facturaService.buscarFacturaVenta(criteria);                    
                     cargarResultadosAlTable();
+                    calcularResultados();                    
 
                 } catch (ServiceException ex) {
-                    JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);                    
 
                 } catch (PersistenceException ex) {
-                    log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+                    LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
                     JOptionPane.showInternalMessageDialog(getParent(), ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
                 }
 
+                cambiarEstadoEnabled(true);
                 return facturas;
             }
 
@@ -259,12 +262,12 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
                 } catch (InterruptedException ex) {
                     String msjError = "La tarea que se estaba realizando fue interrumpida. Intente nuevamente.";
-                    log.error(msjError + " - " + ex.getMessage());
+                    LOGGER.error(msjError + " - " + ex.getMessage());
                     JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
 
                 } catch (ExecutionException ex) {
                     String msjError = "Se produjo un error en la ejecución de la tarea solicitada. Intente nuevamente.";
-                    log.error(msjError + " - " + ex.getMessage());
+                    LOGGER.error(msjError + " - " + ex.getMessage());
                     JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -273,6 +276,63 @@ public class GUI_FacturasVenta extends JInternalFrame {
         worker.execute();
     }
 
+    private void cambiarEstadoEnabled(boolean status) {
+        chk_Fecha.setEnabled(status);
+        if (status == true && chk_Fecha.isSelected() == true) {            
+            dc_FechaDesde.setEnabled(true);
+            dc_FechaHasta.setEnabled(true);
+        } else {
+            dc_FechaDesde.setEnabled(false);
+            dc_FechaHasta.setEnabled(false);
+        }
+        chk_Cliente.setEnabled(status);
+        if (status == true && chk_Cliente.isSelected() == true) {
+            cmb_Cliente.setEnabled(true);
+        } else {
+            cmb_Cliente.setEnabled(false);
+        }
+        chk_Usuario.setEnabled(status);
+        if (status == true && chk_Usuario.isSelected() == true) {
+            cmb_Usuario.setEnabled(true);
+        } else {
+            cmb_Usuario.setEnabled(false);
+        }
+        chk_NumFactura.setEnabled(status);
+        if (status == true && chk_NumFactura.isSelected() == true) {
+            txt_SerieFactura.setEnabled(true);
+            txt_NroFactura.setEnabled(true);
+        } else {
+            txt_SerieFactura.setEnabled(false);
+            txt_NroFactura.setEnabled(false);
+        }
+        chk_TipoFactura.setEnabled(status);
+        if (status == true && chk_TipoFactura.isSelected() == true) {
+            cmb_TipoFactura.setEnabled(true);
+        } else {
+            cmb_TipoFactura.setEnabled(false);
+        }
+        chk_NumeroPedido.setEnabled(status);
+        if (status == true && chk_NumeroPedido.isSelected() == true) {
+            txt_NumeroPedido.setEnabled(true);
+        } else {
+            txt_NumeroPedido.setEnabled(false);
+        }
+        
+        chk_EstadoFactura.setEnabled(status);
+        if (status == true && chk_EstadoFactura.isSelected() == true) {
+            rb_soloImpagas.setEnabled(true);
+            rb_soloPagadas.setEnabled(true);
+        } else {
+            rb_soloImpagas.setEnabled(false);
+            rb_soloPagadas.setEnabled(false);
+        }        
+        btn_Buscar.setEnabled(status);        
+        tbl_Resultados.setEnabled(status);
+        btn_Nueva.setEnabled(status);
+        btn_Eliminar.setEnabled(status);
+        btn_VerDetalle.setEnabled(status);        
+    }
+    
     private void cargarResultadosAlTable() {
         this.limpiarJTable();
         for (FacturaVenta factura : facturas) {
@@ -297,6 +357,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             modeloTablaFacturas.addRow(fila);
         }
         tbl_Resultados.setModel(modeloTablaFacturas);
+        lbl_cantResultados.setText(facturas.size() + " facturas encontradas");
     }
 
     private void limpiarJTable() {
@@ -376,8 +437,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
         txt_ResultGananciaTotal = new javax.swing.JFormattedTextField();
         txt_ResultTotalIVAVenta = new javax.swing.JFormattedTextField();
         btn_Nueva = new javax.swing.JButton();
-        lbl_cantidadAMostrar = new javax.swing.JLabel();
-        cmb_cantidadAMostrar = new javax.swing.JComboBox();
         panelFiltros = new javax.swing.JPanel();
         subPanelFiltros1 = new javax.swing.JPanel();
         chk_Fecha = new javax.swing.JCheckBox();
@@ -403,6 +462,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         rb_soloPagadas = new javax.swing.JRadioButton();
         btn_Buscar = new javax.swing.JButton();
         pb_Filtro = new javax.swing.JProgressBar();
+        lbl_cantResultados = new javax.swing.JLabel();
 
         setClosable(true);
         setMaximizable(true);
@@ -520,15 +580,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
             }
         });
 
-        lbl_cantidadAMostrar.setText("Mostrar los primeros:");
-
-        cmb_cantidadAMostrar.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "100", "500", "1000", "5000" }));
-        cmb_cantidadAMostrar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmb_cantidadAMostrarActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout panelResultadosLayout = new javax.swing.GroupLayout(panelResultados);
         panelResultados.setLayout(panelResultadosLayout);
         panelResultadosLayout.setHorizontalGroup(
@@ -542,11 +593,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 176, Short.MAX_VALUE)
                 .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(sp_Resultados)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lbl_cantidadAMostrar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmb_cantidadAMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_VerDetalle});
@@ -554,11 +600,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
-                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmb_cantidadAMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_cantidadAMostrar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -780,6 +822,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
             }
         });
 
+        lbl_cantResultados.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout panelFiltrosLayout = new javax.swing.GroupLayout(panelFiltros);
         panelFiltros.setLayout(panelFiltrosLayout);
         panelFiltrosLayout.setHorizontalGroup(
@@ -792,7 +836,9 @@ public class GUI_FacturasVenta extends JInternalFrame {
             .addGroup(panelFiltrosLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btn_Buscar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbl_cantResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -805,7 +851,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btn_Buscar)
-                    .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_cantResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -864,11 +911,11 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
         } catch (JRException ex) {
             String msjError = "Se produjo un error procesando el reporte.";
-            log.error(msjError + " - " + ex.getMessage());
+            LOGGER.error(msjError + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
 }//GEN-LAST:event_btn_VerDetalleActionPerformed
@@ -889,7 +936,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     this.buscar(this.getCriteriaDeComponentes());
 
                 } catch (PersistenceException ex) {
-                    log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+                    LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -916,13 +963,13 @@ public class GUI_FacturasVenta extends JInternalFrame {
             this.setMaximum(true);
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
 
         } catch (PropertyVetoException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";
-            log.error(msjError + " - " + ex.getMessage());
+            LOGGER.error(msjError + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
@@ -960,7 +1007,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             }
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevaActionPerformed
@@ -991,10 +1038,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
         }
     }//GEN-LAST:event_chk_EstadoFacturaItemStateChanged
 
-    private void cmb_cantidadAMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_cantidadAMostrarActionPerformed
-        this.buscar(this.getCriteriaDeComponentes());
-    }//GEN-LAST:event_cmb_cantidadAMostrarActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bg_estadoFactura;
     private javax.swing.JButton btn_Buscar;
@@ -1011,7 +1054,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private javax.swing.JComboBox cmb_Cliente;
     private javax.swing.JComboBox cmb_TipoFactura;
     private javax.swing.JComboBox cmb_Usuario;
-    private javax.swing.JComboBox cmb_cantidadAMostrar;
     private com.toedter.calendar.JDateChooser dc_FechaDesde;
     private com.toedter.calendar.JDateChooser dc_FechaHasta;
     private javax.swing.JLabel lbl_Desde;
@@ -1019,7 +1061,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private javax.swing.JLabel lbl_Hasta;
     private javax.swing.JLabel lbl_TotalFacturado;
     private javax.swing.JLabel lbl_TotalIVAVenta;
-    private javax.swing.JLabel lbl_cantidadAMostrar;
+    private javax.swing.JLabel lbl_cantResultados;
     private javax.swing.JPanel panelFiltros;
     private javax.swing.JPanel panelNumeros;
     private javax.swing.JPanel panelResultados;
