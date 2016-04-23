@@ -2,6 +2,9 @@ package sic.service;
 
 import java.util.Date;
 import java.util.List;
+import javax.swing.table.TableModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperPrint;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
 
@@ -24,5 +27,7 @@ public interface ICajaService {
     void guardar(Caja caja);
 
     void validarCaja(Caja caja);
+
+    public JasperPrint getReporteCaja(Caja caja, TableModel ds) throws JRException;
 
 }

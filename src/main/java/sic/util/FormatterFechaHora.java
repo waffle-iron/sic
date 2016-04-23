@@ -11,7 +11,6 @@ public class FormatterFechaHora extends SimpleDateFormat {
     public static final String FORMATO_FECHA_HISPANO = "dd/MM/yyyy";
     public static final String FORMATO_FECHAHORA_HISPANO = "dd/MM/yyyy HH:mm:ss";
     public static final String FORMATO_FECHAHORA_LETRAS = "EEE, d MMM yyyy HH:mm";
-    public static final String FORMATO_FECHAHORA_PERSONALIZADO = "yyyy/MM/dd 'a las' hh:mm a";
 
     public FormatterFechaHora(String formato) {
         this.applyPattern(formato);

@@ -21,11 +21,15 @@ public class ColoresNumerosTabla extends DefaultTableCellRenderer {
             Double numero = (Double) valor;
             cell.setText(FormatterNumero.formatConRedondeo(numero));
             if (numero > 0) {
-                cell.setForeground(Color.GREEN);
+                cell.setBackground(Color.GREEN);
                 cell.setFont(new Font("Font", Font.BOLD, 12));
             }
-            if (numero <= 0) {
-                cell.setForeground(Color.RED);
+            if (numero < 0) {
+                cell.setBackground(Color.PINK);
+                cell.setFont(new Font("Font", Font.BOLD, 12));
+            }
+            if (numero == 0) {
+                cell.setBackground(Color.WHITE);
                 cell.setFont(new Font("Font", Font.BOLD, 12));
             }
         }

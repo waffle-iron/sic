@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import sic.service.Movimiento;
 
 @Entity
 @Table(name = "gasto")
@@ -61,5 +62,9 @@ public class Gasto implements Serializable {
     private double monto;
 
     private boolean eliminado;
+
+    public Movimiento getTipoMovimiento() {
+        return Movimiento.GASTO;
+    }
 
 }
