@@ -3,7 +3,6 @@ package sic.vista.swing;
 import sic.util.ColoresEstadosPedidoRenderer;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;

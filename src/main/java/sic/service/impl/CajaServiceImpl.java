@@ -9,11 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.swing.table.TableModel;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.data.JRTableModelDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,15 +131,15 @@ public class CajaServiceImpl implements ICajaService {
     }
 
     @Override
-    public JasperPrint getReporteCaja(Caja caja, TableModel tabla) throws JRException {
+    public JasperPrint getReporteCaja(Caja caja, List<String> dataSource) throws JRException {
         ClassLoader classLoader = PedidoServiceImpl.class.getClassLoader();
         InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/Caja.jasper");
         Map params = new HashMap();
         params.put("empresa", caja.getEmpresa());
         params.put("caja", caja);
         params.put("logo", Utilidades.convertirByteArrayIntoImage(caja.getEmpresa().getLogo()));
-        JRTableModelDataSource ds = new JRTableModelDataSource(tabla);
-        return JasperFillManager.fillReport(isFileReport, params, ds);
+        JRBeanCollectionDataSource listaDS = new JRBeanCollectionDataSource(dataSource);
+        return JasperFillManager.fillReport(isFileReport, params, listaDS);
     }
 
 }

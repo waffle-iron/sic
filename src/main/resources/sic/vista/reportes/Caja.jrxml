@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-04-23T10:00:29 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ListaPreciosProductos" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="608c624e-e655-4a3f-bb85-9c440082766b">
+<!-- 2016-04-28T15:37:54 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Caja" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="608c624e-e655-4a3f-bb85-9c440082766b">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -11,18 +11,7 @@
 	<queryString language="hql">
 		<![CDATA[]]>
 	</queryString>
-	<field name="Forma de Pago" class="java.lang.String">
-		<fieldDescription><![CDATA[forma de pago]]></fieldDescription>
-	</field>
-	<field name="Monto" class="java.lang.Double">
-		<fieldDescription><![CDATA[Monto]]></fieldDescription>
-	</field>
-	<group name="Rubro">
-		<groupExpression><![CDATA[$F{Forma de Pago}]]></groupExpression>
-		<groupHeader>
-			<band/>
-		</groupHeader>
-	</group>
+	<field name="_THIS" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -110,7 +99,7 @@
 				<text><![CDATA[Forma De Pago]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="480" y="0" width="75" height="16" uuid="13c3db5f-c7d4-44df-a633-2b62ed216eea"/>
+				<reportElement x="270" y="0" width="75" height="16" uuid="13c3db5f-c7d4-44df-a633-2b62ed216eea"/>
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
@@ -119,14 +108,15 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="17" splitType="Stretch">
+		<band height="19" splitType="Stretch">
+			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
 			<textField>
-				<reportElement x="0" y="0" width="180" height="17" uuid="0f19fcec-362b-41d2-8e3f-54b36b4d8185"/>
-				<textFieldExpression><![CDATA[$F{Forma de Pago}]]></textFieldExpression>
+				<reportElement x="0" y="0" width="277" height="19" uuid="bed6f4e9-e3b6-4d18-8a0d-aaf104fe9bfa"/>
+				<textFieldExpression><![CDATA[$F{_THIS}.substring(0,$F{_THIS}.indexOf("-"))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="480" y="0" width="75" height="17" uuid="a38c921b-9496-4002-99f6-b681b59792c2"/>
-				<textFieldExpression><![CDATA[$F{Monto}]]></textFieldExpression>
+				<reportElement x="277" y="0" width="277" height="19" uuid="d4b2c3d5-8743-458f-b063-35926cb2146c"/>
+				<textFieldExpression><![CDATA[$F{_THIS}.substring($F{_THIS}.indexOf("-")+1)]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

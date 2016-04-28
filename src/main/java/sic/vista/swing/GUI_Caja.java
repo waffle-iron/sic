@@ -34,6 +34,7 @@ import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IGastoService;
 import sic.util.FormatterFechaHora;
+import sic.util.FormatterNumero;
 import sic.util.Utilidades;
 
 public class GUI_Caja extends javax.swing.JDialog {
@@ -675,7 +676,11 @@ public class GUI_Caja extends javax.swing.JDialog {
     }
 
     private void lanzarReporteCaja() throws JRException {
-        JasperPrint report = cajaService.getReporteCaja(this.caja, tbl_Resumen.getModel());
+        List<String> dataSource = new ArrayList<>();
+        for (int f = 0; f < tbl_Resumen.getRowCount(); f++) {
+            dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 1))));
+        }
+        JasperPrint report = cajaService.getReporteCaja(this.caja, dataSource);
         JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
         viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
         ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
