@@ -28,11 +28,13 @@ import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Gasto;
+import sic.modelo.Usuario;
 import sic.service.ICajaService;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IGastoService;
+import sic.service.IUsuarioService;
 import sic.util.FormatterFechaHora;
 import sic.util.FormatterNumero;
 import sic.util.Utilidades;
@@ -45,6 +47,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IGastoService gastoService = appContext.getBean(IGastoService.class);
+    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final FormatterFechaHora formatoFechaHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_HISPANO);
     private ModeloTabla modeloTablaBalance;
     private ModeloTabla modeloTablaResumen;
@@ -342,19 +345,35 @@ public class GUI_Caja extends javax.swing.JDialog {
     }//GEN-LAST:event_formWindowOpened
 
     private void btn_abrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_abrirCajaActionPerformed
-        GUI_AbrirCaja abrirCaja = new GUI_AbrirCaja(this, true);
-        abrirCaja.setLocationRelativeTo(this);
-        abrirCaja.setVisible(true);
-        this.caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        this.cargarElementosFormaDePago();
+        try {
+            String monto = JOptionPane.showInputDialog(this, "Monto para apertura de Caja:", "Apertura de Caja", JOptionPane.QUESTION_MESSAGE);
+            if (monto != null) {
+                cajaService.guardar(this.construirCaja(Double.parseDouble(monto)));
+                this.caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+                this.cargarElementosFormaDePago();
+            }
+        } catch (java.lang.NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Monto inválido", "Error", JOptionPane.INFORMATION_MESSAGE);
+        }
     }//GEN-LAST:event_btn_abrirCajaActionPerformed
 
     private void btn_RealizarArqueoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_RealizarArqueoActionPerformed
         if (this.caja != null) {
             if (this.caja.isCerrada() == false) {
-                GUI_CerrarCaja cerrarCaja = new GUI_CerrarCaja(this, true, this.caja, this.caja.getSaldoFinal());
-                cerrarCaja.setLocationRelativeTo(this);
-                cerrarCaja.setVisible(true);
+                try {
+                    String monto = JOptionPane.showInputDialog(this, "Saldo del Sistema: " + this.caja.getSaldoFinal() + "\nSaldo Real:", "Cerrar Caja", JOptionPane.QUESTION_MESSAGE);
+                    if (monto != null) {
+                        this.caja.setSaldoReal(Double.parseDouble(monto));
+                        this.caja.setFechaCierre(new Date());
+                        this.caja.setUsuarioCierraCaja(usuarioService.getUsuarioActivo().getUsuario());
+                        this.caja.setCerrada(true);
+                        this.cajaService.actualizar(caja);
+                        JOptionPane.showMessageDialog(this, "Caja Cerrada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                } catch (java.lang.NumberFormatException e) {
+                    JOptionPane.showMessageDialog(this, "Monto inválido", "Error", JOptionPane.INFORMATION_MESSAGE);
+                }
+
             } else {
                 JOptionPane.showMessageDialog(this, "Caja Cerrada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
             }
@@ -689,6 +708,20 @@ public class GUI_Caja extends javax.swing.JDialog {
         JRViewer jrv = new JRViewer(report);
         viewer.getContentPane().add(jrv);
         viewer.setVisible(true);
+    }
+
+    private Caja construirCaja(Double monto) {
+        Caja caja = new Caja();
+        caja.setCerrada(false);
+        caja.setObservacion("Apertura De Caja");
+        caja.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+        caja.setFechaApertura(new Date());
+        caja.setNroCaja(cajaService.getUltimoNumeroDeCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()) + 1);
+        caja.setSaldoInicial(monto);
+        caja.setSaldoFinal(monto);
+        caja.setSaldoReal(monto);
+        caja.setUsuarioAbreCaja(usuarioService.getUsuarioActivo().getUsuario());
+        return caja;
     }
 
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-04-28T15:37:54 -->
+<!-- 2016-04-29T18:43:13 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Caja" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="608c624e-e655-4a3f-bb85-9c440082766b">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -124,14 +124,14 @@
 		<band height="45" splitType="Stretch">
 			<textField>
 				<reportElement x="480" y="2" width="75" height="15" uuid="3cfea114-8a7b-45f9-bff2-fb9e94e72a21"/>
-				<textFieldExpression><![CDATA[$P{caja}.getSaldoFinal()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{caja}.getSaldoReal()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="405" y="1" width="75" height="16" uuid="4c56ce5d-34b3-4ef9-9a92-846de64a4b38"/>
+				<reportElement x="345" y="1" width="135" height="16" uuid="4c56ce5d-34b3-4ef9-9a92-846de64a4b38"/>
 				<textElement>
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Total:]]></text>
+				<text><![CDATA[Total al Cierre:]]></text>
 			</staticText>
 		</band>
 	</columnFooter>
