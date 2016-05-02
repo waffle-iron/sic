@@ -448,6 +448,8 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                         caja.setCerrada(true);
                         this.cajaService.actualizar(caja);
                         JOptionPane.showMessageDialog(this, "Caja Cerrada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                        this.limpiarResultados();
+                        this.buscar();
                     }
                 } catch (java.lang.NumberFormatException e) {
                     JOptionPane.showMessageDialog(this, "Monto inválido", "Error", JOptionPane.INFORMATION_MESSAGE);
