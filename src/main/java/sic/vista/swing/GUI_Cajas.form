@@ -30,7 +30,7 @@
           <Component id="pnl_Cajas" alignment="0" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
               <Component id="pnl_Filtros" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="433" max="32767" attributes="0"/>
           </Group>
           <Group type="102" attributes="0">
               <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
@@ -66,35 +66,33 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Component id="btn_buscar" linkSize="6" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="pb_barra" linkSize="6" min="-2" pref="103" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="chk_Fecha" linkSize="3" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="lbl_Desde" min="-2" max="-2" attributes="1"/>
-                              </Group>
-                              <Component id="chk_Usuario" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="chk_Usuario" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="chk_Fecha" linkSize="3" alignment="0" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="cmb_Usuarios" alignment="0" max="32767" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="lbl_Desde" min="-2" max="-2" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="cmb_Usuarios" max="32767" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <Component id="dc_FechaDesde" min="-2" pref="136" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="lbl_Hasta" min="-2" max="-2" attributes="1"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="dc_FechaHasta" min="-2" pref="136" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
+                          <Component id="dc_FechaDesde" min="-2" pref="136" max="-2" attributes="0"/>
+                          <EmptySpace pref="24" max="32767" attributes="0"/>
+                          <Component id="lbl_Hasta" min="-2" max="-2" attributes="1"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="dc_FechaHasta" min="-2" pref="136" max="-2" attributes="0"/>
                       </Group>
                   </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+              <Group type="102" attributes="0">
+                  <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
+                  <Component id="btn_buscar" linkSize="6" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="86" max="-2" attributes="0"/>
+                  <Component id="lbl_cantidadMostrar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
+                  <Component id="pb_barra" linkSize="6" min="-2" pref="103" max="-2" attributes="0"/>
+                  <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -116,7 +114,10 @@
                   <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="pb_barra" alignment="0" max="32767" attributes="0"/>
-                      <Component id="btn_buscar" alignment="0" max="32767" attributes="0"/>
+                      <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                          <Component id="btn_buscar" alignment="3" max="32767" attributes="0"/>
+                          <Component id="lbl_cantidadMostrar" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -190,6 +191,11 @@
         </Component>
         <Component class="javax.swing.JProgressBar" name="pb_barra">
         </Component>
+        <Component class="javax.swing.JLabel" name="lbl_cantidadMostrar">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Mostrar los primeros:"/>
+          </Properties>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="pnl_Cajas">
@@ -204,26 +210,14 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="sp_TablaCajas" alignment="0" max="32767" attributes="0"/>
-              <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="lbl_cantidadMostrar" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="cmb_paginado" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-              </Group>
+              <Component id="sp_TablaCajas" alignment="0" pref="982" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="cmb_paginado" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="lbl_cantidadMostrar" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="sp_TablaCajas" pref="169" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
+                  <Component id="sp_TablaCajas" pref="172" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -246,30 +240,6 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JComboBox" name="cmb_paginado">
-          <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
-            </Property>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="5">
-                <StringItem index="0" value="50"/>
-                <StringItem index="1" value="100"/>
-                <StringItem index="2" value="150"/>
-                <StringItem index="3" value="300"/>
-                <StringItem index="4" value="500"/>
-              </StringArray>
-            </Property>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-          </AuxValues>
-        </Component>
-        <Component class="javax.swing.JLabel" name="lbl_cantidadMostrar">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Mostrar los primeros:"/>
-          </Properties>
-        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="pnl_Botones">
@@ -277,26 +247,23 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
+                  <Component id="btn_AbrirCaja" linkSize="1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="lbl_TotalCierre" linkSize="7" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="ftxt_TotalCierre" linkSize="9" min="-2" pref="163" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="btn_ArquearCaja" linkSize="1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                          <Component id="btn_AbrirCaja" linkSize="1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
                           <Component id="btn_verDetalle" linkSize="1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           <Component id="btn_eliminarCaja" linkSize="1" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="301" max="32767" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
                           <Component id="lbl_TotalFinal" linkSize="7" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="ftxt_TotalFinal" linkSize="9" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Component id="lbl_TotalCierre" linkSize="7" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="ftxt_TotalCierre" linkSize="9" min="-2" pref="163" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
@@ -311,19 +278,18 @@
                           <Component id="btn_verDetalle" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btn_eliminarCaja" linkSize="2" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btn_AbrirCaja" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btn_ArquearCaja" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="lbl_TotalFinal" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="ftxt_TotalFinal" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="lbl_TotalCierre" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="ftxt_TotalCierre" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="0" pref="7" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -339,7 +305,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Abrir Caja"/>
+            <Property name="text" type="java.lang.String" value="Abrir"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_AbrirCajaActionPerformed"/>
@@ -350,7 +316,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Ver Caja"/>
+            <Property name="text" type="java.lang.String" value="Ver Detalle"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_verDetalleActionPerformed"/>
@@ -361,7 +327,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Eliminar Caja"/>
+            <Property name="text" type="java.lang.String" value="Eliminar"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_eliminarCajaActionPerformed"/>
@@ -395,17 +361,6 @@
               <Font name="Ubuntu" size="15" style="1"/>
             </Property>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="btn_ArquearCaja">
-          <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Arquear Caja"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_ArquearCajaActionPerformed"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>

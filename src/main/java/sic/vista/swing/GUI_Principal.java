@@ -85,7 +85,6 @@ public class GUI_Principal extends JFrame {
         mnu_Administracion = new javax.swing.JMenu();
         mnuItm_Transportistas = new javax.swing.JMenuItem();
         mnuItm_FormasDePago = new javax.swing.JMenuItem();
-        mnuItm_Caja = new javax.swing.JMenuItem();
         jmni_Cajas = new javax.swing.JMenuItem();
         mnu_Stock = new javax.swing.JMenu();
         mnuItm_Productos = new javax.swing.JMenuItem();
@@ -257,14 +256,6 @@ public class GUI_Principal extends JFrame {
             }
         });
         mnu_Administracion.add(mnuItm_FormasDePago);
-
-        mnuItm_Caja.setText("Arqueo de Caja");
-        mnuItm_Caja.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuItm_CajaActionPerformed(evt);
-            }
-        });
-        mnu_Administracion.add(mnuItm_Caja);
 
         jmni_Cajas.setText("Cajas");
         jmni_Cajas.addActionListener(new java.awt.event.ActionListener() {
@@ -575,12 +566,6 @@ public class GUI_Principal extends JFrame {
         }
     }//GEN-LAST:event_mnuItm_PedidosActionPerformed
 
-    private void mnuItm_CajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_CajaActionPerformed
-        GUI_Caja caja = new GUI_Caja(this, true);
-        caja.setLocationRelativeTo(this);
-        caja.setVisible(true);
-    }//GEN-LAST:event_mnuItm_CajaActionPerformed
-
     private void jmni_CajasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmni_CajasActionPerformed
         JInternalFrame gui = Utilidades.estaEnDesktop(getDesktopPane(), GUI_Cajas.class);
         if (gui == null) {
@@ -612,7 +597,6 @@ public class GUI_Principal extends JFrame {
     private javax.swing.JLabel lbl_Separador;
     private javax.swing.JLabel lbl_UsuarioActivo;
     private javax.swing.JMenuBar mb_BarraMenues;
-    private javax.swing.JMenuItem mnuItm_Caja;
     private javax.swing.JMenuItem mnuItm_CambiarEmpresa;
     private javax.swing.JMenuItem mnuItm_CambiarUser;
     private javax.swing.JMenuItem mnuItm_Clientes;

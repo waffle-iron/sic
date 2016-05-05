@@ -17,7 +17,7 @@ public class ColoresNumerosTabla extends DefaultTableCellRenderer {
 
         JLabel cell = (JLabel) super.getTableCellRendererComponent(tabla, valor, isSelected, hasFocus, row, column);
         this.setHorizontalAlignment(SwingConstants.RIGHT);
-        if (valor instanceof Double && (column == (tabla.getColumnCount() - 1))) {
+        if (valor instanceof Double) {
             Double numero = (Double) valor;
             cell.setText(FormatterNumero.formatConRedondeo(numero));
             if (numero > 0) {

@@ -5,9 +5,10 @@ import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import sic.service.EstadoCaja;
 import sic.service.EstadoPedido;
 
-public class ColoresEstadosPedidoRenderer extends DefaultTableCellRenderer {
+public class ColoresEstadosRenderer extends DefaultTableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable tabla,
@@ -24,6 +25,15 @@ public class ColoresEstadosPedidoRenderer extends DefaultTableCellRenderer {
                 cell.setBackground(Color.YELLOW);
             }
             if (estado == EstadoPedido.CERRADO) {
+                cell.setBackground(Color.PINK);
+            }
+        }
+        if (valor instanceof EstadoCaja) {
+            EstadoCaja estado = (EstadoCaja) valor;
+            if (estado == estado.ABIERTA) {
+                cell.setBackground(Color.GREEN);
+            }
+            if (estado == estado.CERRADA) {
                 cell.setBackground(Color.PINK);
             }
         }

@@ -15,10 +15,12 @@ import sic.AppContextProvider;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
 import sic.modelo.Usuario;
+import sic.service.EstadoCaja;
 import sic.service.ICajaService;
 import sic.service.IEmpresaService;
 import sic.service.IUsuarioService;
 import sic.service.ServiceException;
+import sic.util.ColoresEstadosRenderer;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -36,6 +38,11 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         initComponents();
         this.setSize(850, 600);
         this.setColumnasCaja();
+        Usuario paraMostrar = new Usuario();
+        paraMostrar.setNombre("Seleccione un Usuario....");
+        cmb_Usuarios.addItem(paraMostrar);
+        cmb_Usuarios.setEnabled(false);
+        lbl_cantidadMostrar.setVisible(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -52,11 +59,10 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         chk_Usuario = new javax.swing.JCheckBox();
         cmb_Usuarios = new javax.swing.JComboBox<>();
         pb_barra = new javax.swing.JProgressBar();
+        lbl_cantidadMostrar = new javax.swing.JLabel();
         pnl_Cajas = new javax.swing.JPanel();
         sp_TablaCajas = new javax.swing.JScrollPane();
         tbl_Cajas = new javax.swing.JTable();
-        cmb_paginado = new javax.swing.JComboBox<>();
-        lbl_cantidadMostrar = new javax.swing.JLabel();
         pnl_Botones = new javax.swing.JPanel();
         lbl_TotalFinal = new javax.swing.JLabel();
         btn_AbrirCaja = new javax.swing.JButton();
@@ -65,7 +71,6 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         lbl_TotalCierre = new javax.swing.JLabel();
         ftxt_TotalFinal = new javax.swing.JFormattedTextField();
         ftxt_TotalCierre = new javax.swing.JFormattedTextField();
-        btn_ArquearCaja = new javax.swing.JButton();
 
         setClosable(true);
         setMaximizable(true);
@@ -125,34 +130,37 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             }
         });
 
+        lbl_cantidadMostrar.setText("Mostrar los primeros:");
+
         javax.swing.GroupLayout pnl_FiltrosLayout = new javax.swing.GroupLayout(pnl_Filtros);
         pnl_Filtros.setLayout(pnl_FiltrosLayout);
         pnl_FiltrosLayout.setHorizontalGroup(
             pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_FiltrosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chk_Usuario)
+                    .addComponent(chk_Fecha))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cmb_Usuarios, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(pnl_FiltrosLayout.createSequentialGroup()
-                        .addComponent(btn_buscar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(pb_barra, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnl_FiltrosLayout.createSequentialGroup()
-                        .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnl_FiltrosLayout.createSequentialGroup()
-                                .addComponent(chk_Fecha)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lbl_Desde))
-                            .addComponent(chk_Usuario))
+                        .addComponent(lbl_Desde)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cmb_Usuarios, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(pnl_FiltrosLayout.createSequentialGroup()
-                                .addComponent(dc_FechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lbl_Hasta)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(dc_FechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(dc_FechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                        .addComponent(lbl_Hasta)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dc_FechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+            .addGroup(pnl_FiltrosLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addComponent(btn_buscar)
+                .addGap(86, 86, 86)
+                .addComponent(lbl_cantidadMostrar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pb_barra, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12))
         );
 
         pnl_FiltrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {chk_Fecha, chk_Usuario});
@@ -175,7 +183,9 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                 .addGap(7, 7, 7)
                 .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pb_barra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btn_buscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_buscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lbl_cantidadMostrar)))
                 .addContainerGap())
         );
 
@@ -191,39 +201,24 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         ));
         sp_TablaCajas.setViewportView(tbl_Cajas);
 
-        cmb_paginado.setForeground(java.awt.Color.blue);
-        cmb_paginado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "50", "100", "150", "300", "500" }));
-
-        lbl_cantidadMostrar.setText("Mostrar los primeros:");
-
         javax.swing.GroupLayout pnl_CajasLayout = new javax.swing.GroupLayout(pnl_Cajas);
         pnl_Cajas.setLayout(pnl_CajasLayout);
         pnl_CajasLayout.setHorizontalGroup(
             pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp_TablaCajas)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_CajasLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lbl_cantidadMostrar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmb_paginado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21))
+            .addComponent(sp_TablaCajas, javax.swing.GroupLayout.DEFAULT_SIZE, 982, Short.MAX_VALUE)
         );
         pnl_CajasLayout.setVerticalGroup(
             pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_CajasLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmb_paginado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_cantidadMostrar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_TablaCajas, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                .addGap(28, 28, 28)
+                .addComponent(sp_TablaCajas, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         lbl_TotalFinal.setText("Total Final:");
 
         btn_AbrirCaja.setForeground(java.awt.Color.blue);
-        btn_AbrirCaja.setText("Abrir Caja");
+        btn_AbrirCaja.setText("Abrir");
         btn_AbrirCaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_AbrirCajaActionPerformed(evt);
@@ -231,7 +226,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         });
 
         btn_verDetalle.setForeground(java.awt.Color.blue);
-        btn_verDetalle.setText("Ver Caja");
+        btn_verDetalle.setText("Ver Detalle");
         btn_verDetalle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_verDetalleActionPerformed(evt);
@@ -239,7 +234,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         });
 
         btn_eliminarCaja.setForeground(java.awt.Color.blue);
-        btn_eliminarCaja.setText("Eliminar Caja");
+        btn_eliminarCaja.setText("Eliminar");
         btn_eliminarCaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_eliminarCajaActionPerformed(evt);
@@ -258,41 +253,30 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         ftxt_TotalCierre.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         ftxt_TotalCierre.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
-        btn_ArquearCaja.setForeground(java.awt.Color.blue);
-        btn_ArquearCaja.setText("Arquear Caja");
-        btn_ArquearCaja.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_ArquearCajaActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout pnl_BotonesLayout = new javax.swing.GroupLayout(pnl_Botones);
         pnl_Botones.setLayout(pnl_BotonesLayout);
         pnl_BotonesLayout.setHorizontalGroup(
             pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_BotonesLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_BotonesLayout.createSequentialGroup()
+                .addComponent(btn_AbrirCaja)
+                .addGap(0, 0, 0)
                 .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnl_BotonesLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(lbl_TotalCierre)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ftxt_TotalCierre, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnl_BotonesLayout.createSequentialGroup()
-                        .addComponent(btn_ArquearCaja)
-                        .addGap(0, 0, 0)
-                        .addComponent(btn_AbrirCaja)
-                        .addGap(0, 0, 0)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_BotonesLayout.createSequentialGroup()
                         .addComponent(btn_verDetalle)
                         .addGap(0, 0, 0)
                         .addComponent(btn_eliminarCaja)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 301, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lbl_TotalFinal)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ftxt_TotalFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(ftxt_TotalFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_BotonesLayout.createSequentialGroup()
+                        .addComponent(lbl_TotalCierre)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ftxt_TotalCierre, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(20, 20, 20))
         );
 
-        pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AbrirCaja, btn_ArquearCaja, btn_eliminarCaja, btn_verDetalle});
+        pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AbrirCaja, btn_eliminarCaja, btn_verDetalle});
 
         pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_TotalCierre, lbl_TotalFinal});
 
@@ -305,16 +289,15 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                     .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btn_verDetalle)
                         .addComponent(btn_eliminarCaja)
-                        .addComponent(btn_AbrirCaja)
-                        .addComponent(btn_ArquearCaja))
+                        .addComponent(btn_AbrirCaja))
                     .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lbl_TotalFinal)
                         .addComponent(ftxt_TotalFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_TotalCierre)
                     .addComponent(ftxt_TotalCierre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 7, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_eliminarCaja, btn_verDetalle});
@@ -326,7 +309,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             .addComponent(pnl_Cajas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(pnl_Filtros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 433, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addComponent(pnl_Botones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -373,6 +356,8 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             caja.setLocationRelativeTo(this);
             caja.setModal(true);
             caja.setVisible(true);
+            this.limpiarResultados();
+            this.buscar();
         }
     }//GEN-LAST:event_btn_verDetalleActionPerformed
 
@@ -383,7 +368,6 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                 int indiceDelModel = Utilidades.getSelectedRowModelIndice(tbl_Cajas);
                 this.cajas.get(indiceDelModel).setEliminada(true);
                 cajaService.actualizar(this.cajas.get(indiceDelModel));
-                JOptionPane.showMessageDialog(null, "Caja Eliminada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
             }
             this.limpiarResultados();
             this.buscar();
@@ -391,38 +375,46 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btn_eliminarCajaActionPerformed
 
     private void chk_UsuarioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_UsuarioItemStateChanged
+        cmb_Usuarios.setEnabled(false);
+        cmb_Usuarios.removeAllItems();
         if (chk_Usuario.isSelected() == true) {
             cmb_Usuarios.setEnabled(true);
             for (Usuario usuario : usuarioService.getUsuarios()) {
                 cmb_Usuarios.addItem(usuario);
             }
         } else {
-            cmb_Usuarios.setEnabled(false);
+            Usuario paraMostrar = new Usuario();
+            paraMostrar.setNombre("Seleccione un Usuario....");
+            cmb_Usuarios.addItem(paraMostrar);
         }
     }//GEN-LAST:event_chk_UsuarioItemStateChanged
 
     private void btn_AbrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AbrirCajaActionPerformed
         Caja abierta = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        if (abierta.isCerrada()) {
-            try {
-                String monto = JOptionPane.showInputDialog(this, "Monto para apertura de Caja:", "Apertura de Caja", JOptionPane.QUESTION_MESSAGE);
-                if (monto != null) {
-                    cajaService.guardar(this.construirCaja(Double.parseDouble(monto)));
-                    this.limpiarResultados();
-                    this.buscar();
-                }
-            } catch (java.lang.NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Monto inválido", "Error", JOptionPane.INFORMATION_MESSAGE);
-            }
-        }
-        if (!abierta.isCerrada()) {
-            GUI_Caja caja = new GUI_Caja(abierta);
-            caja.setLocationRelativeTo(this);
-            caja.setModal(true);
-            caja.setVisible(true);
+        if (abierta == null) {
+            this.abrirCaja();
+        } else if (abierta.getEstado() == EstadoCaja.CERRADA) {
+            this.abrirCaja();
         }
     }//GEN-LAST:event_btn_AbrirCajaActionPerformed
 
+    private void abrirCaja() {
+        try {
+            String monto = JOptionPane.showInputDialog(this, "Monto para apertura de Caja:", "Apertura de Caja", JOptionPane.QUESTION_MESSAGE);
+            if (monto != null) {
+                cajaService.guardar(this.construirCaja(Double.parseDouble(monto)));
+                GUI_Caja caja = new GUI_Caja(cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()));
+                caja.setLocationRelativeTo(this);
+                caja.setModal(true);
+                caja.setVisible(true);
+                this.limpiarResultados();
+                this.buscar();
+            }
+        } catch (java.lang.NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Monto inválido", "Error", JOptionPane.INFORMATION_MESSAGE);
+        }
+
+    }
     private void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_internalFrameOpened
         try {
             this.setMaximum(true);
@@ -435,42 +427,14 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_internalFrameOpened
 
-    private void btn_ArquearCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ArquearCajaActionPerformed
-        Caja caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        if (caja != null) {
-            if (!caja.isCerrada()) {
-                try {
-                    String monto = JOptionPane.showInputDialog(this, "Saldo del Sistema: " + caja.getSaldoFinal() + "\nSaldo Real:", "Cerrar Caja", JOptionPane.QUESTION_MESSAGE);
-                    if (monto != null) {
-                        caja.setSaldoReal(Double.parseDouble(monto));
-                        caja.setFechaCierre(new Date());
-                        caja.setUsuarioCierraCaja(usuarioService.getUsuarioActivo().getUsuario());
-                        caja.setCerrada(true);
-                        this.cajaService.actualizar(caja);
-                        JOptionPane.showMessageDialog(this, "Caja Cerrada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
-                        this.limpiarResultados();
-                        this.buscar();
-                    }
-                } catch (java.lang.NumberFormatException e) {
-                    JOptionPane.showMessageDialog(this, "Monto inválido", "Error", JOptionPane.INFORMATION_MESSAGE);
-                }
-
-            } else {
-                JOptionPane.showMessageDialog(this, "Caja Cerrada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
-            }
-        }
-    }//GEN-LAST:event_btn_ArquearCajaActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AbrirCaja;
-    private javax.swing.JButton btn_ArquearCaja;
     private javax.swing.JButton btn_buscar;
     private javax.swing.JButton btn_eliminarCaja;
     private javax.swing.JButton btn_verDetalle;
     private javax.swing.JCheckBox chk_Fecha;
     private javax.swing.JCheckBox chk_Usuario;
     private javax.swing.JComboBox<Usuario> cmb_Usuarios;
-    private javax.swing.JComboBox<String> cmb_paginado;
     private com.toedter.calendar.JDateChooser dc_FechaDesde;
     private com.toedter.calendar.JDateChooser dc_FechaHasta;
     private javax.swing.JFormattedTextField ftxt_TotalCierre;
@@ -494,10 +458,10 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
 
         //nombres de columnas
         String[] encabezados = new String[7];
-        encabezados[0] = "Fecha Apertura";
-        encabezados[1] = "Fecha Cierre";
-        encabezados[2] = "Usuario";
-        encabezados[3] = "Estado";
+        encabezados[0] = "Estado";
+        encabezados[1] = "Fecha Apertura";
+        encabezados[2] = "Fecha Cierre";
+        encabezados[3] = "Usuario";
         encabezados[4] = "Saldo Apertura";
         encabezados[5] = "Saldo Final";
         encabezados[6] = "Saldo Cierre";
@@ -506,9 +470,9 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
 
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaCajas.getColumnCount()];
-        tipos[0] = Date.class;
+        tipos[0] = String.class;
         tipos[1] = Date.class;
-        tipos[2] = String.class;
+        tipos[2] = Date.class;
         tipos[3] = String.class;
         tipos[4] = Double.class;
         tipos[5] = Double.class;
@@ -541,7 +505,8 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                     criteria.setFechaDesde(dc_FechaDesde.getDate());
                     criteria.setFechaHasta(dc_FechaHasta.getDate());
                     criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-                    criteria.setCantidadDeRegistros(Integer.parseInt(cmb_paginado.getSelectedItem().toString()));
+                    //criteria.setCantidadDeRegistros(Integer.parseInt(cmb_paginado.getSelectedItem().toString()));
+                    criteria.setCantidadDeRegistros(0);
                     criteria.setBuscaPorUsuario(chk_Usuario.isSelected());
                     criteria.setUsuario((Usuario) cmb_Usuarios.getSelectedItem());
                     List<Caja> cajasResultantes = cajaService.getCajasCriteria(criteria);
@@ -592,20 +557,21 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         double totalCierre = 0.0;
         for (Caja caja : cajas) {
             Object[] fila = new Object[7];
-            fila[0] = caja.getFechaApertura();
+            fila[0] = caja.getEstado();
+            fila[1] = caja.getFechaApertura();
             if (caja.getFechaCierre() != null) {
-                fila[1] = caja.getFechaCierre();
+                fila[2] = caja.getFechaCierre();
             }
-            fila[2] = caja.getUsuarioAbreCaja();
-            fila[3] = (caja.isCerrada() ? "Cerrada" : "Abierta");
+            fila[3] = caja.getUsuarioAbreCaja();
             fila[4] = caja.getSaldoInicial();
-            fila[5] = (caja.isCerrada() ? caja.getSaldoFinal() : 0.0);
-            fila[6] = (caja.isCerrada() ? caja.getSaldoReal() : 0.0);
+            fila[5] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoFinal() : 0.0);
+            fila[6] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoReal() : 0.0);
             totalFinal += caja.getSaldoFinal();
             totalCierre += caja.getSaldoReal();
             modeloTablaCajas.addRow(fila);
         }
         tbl_Cajas.setModel(modeloTablaCajas);
+        tbl_Cajas.getColumnModel().getColumn(0).setCellRenderer(new ColoresEstadosRenderer());
         ftxt_TotalFinal.setValue(totalFinal);
         ftxt_TotalCierre.setValue(totalCierre);
     }
@@ -618,7 +584,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
 
     private Caja construirCaja(Double monto) {
         Caja caja = new Caja();
-        caja.setCerrada(false);
+        caja.setEstado(EstadoCaja.ABIERTA);
         caja.setObservacion("Apertura De Caja");
         caja.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
         caja.setFechaApertura(new Date());
