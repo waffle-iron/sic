@@ -602,7 +602,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         tbl_Resumen.getTableHeader().setResizingAllowed(true);
 
         //Tamanios de columnas
-        tbl_Resumen.getColumnModel().getColumn(0).setPreferredWidth(145);
+        tbl_Resumen.getColumnModel().getColumn(0).setPreferredWidth(200);
         tbl_Resumen.getColumnModel().getColumn(1).setPreferredWidth(5);
 
     }

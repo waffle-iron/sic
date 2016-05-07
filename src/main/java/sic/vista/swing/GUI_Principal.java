@@ -2,6 +2,7 @@ package sic.vista.swing;
 
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
@@ -13,17 +14,21 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
+import sic.modelo.Caja;
 import sic.modelo.Empresa;
+import sic.service.EstadoCaja;
+import sic.service.ICajaService;
 import sic.service.IEmpresaService;
 import sic.service.IUsuarioService;
 import sic.util.Utilidades;
 
 public class GUI_Principal extends JFrame {
-    
+
     private final JLabel lbl_Fondo;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);    
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
+    private final ICajaService cajaService = appContext.getBean(ICajaService.class);
     private static final Logger log = Logger.getLogger(GUI_Principal.class.getPackage().getName());
 
     public GUI_Principal() {
@@ -41,7 +46,7 @@ public class GUI_Principal extends JFrame {
 
     public JDesktopPane getDesktopPane() {
         return dp_Escritorio;
-    }     
+    }
 
     private void llamarGUI_SeleccionEmpresa() {
         GUI_SeleccionEmpresa gui_seleccionEmpresa = new GUI_SeleccionEmpresa(this, true);
@@ -53,6 +58,7 @@ public class GUI_Principal extends JFrame {
         } else {
             lbl_EmpresaActiva.setText("Empresa: " + empresa.getNombre());
         }
+        this.cierreDeCajaDiaAnterior();
     }
 
     @SuppressWarnings("unchecked")
@@ -574,6 +580,13 @@ public class GUI_Principal extends JFrame {
                     getDesktopPane().getHeight() / 2 - gui.getHeight() / 2);
             getDesktopPane().add(gui);
             gui.setVisible(true);
+            Caja caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+            if (caja.getEstado() == EstadoCaja.ABIERTA) {
+                GUI_Caja cajaAbierta = new GUI_Caja(this, true, caja);
+                cajaAbierta.setLocationRelativeTo(this);
+                cajaAbierta.setVisible(true);
+            }
+
         } else {
             //selecciona y trae al frente el internalframe
             try {
@@ -620,4 +633,13 @@ public class GUI_Principal extends JFrame {
     private javax.swing.JMenu mnu_Stock;
     private javax.swing.JMenu mnu_Ventas;
     // End of variables declaration//GEN-END:variables
+
+    private void cierreDeCajaDiaAnterior() {
+        Caja cajaACerrar = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        if ((cajaACerrar.getEstado() == EstadoCaja.ABIERTA) && cajaACerrar.getFechaApertura().before(new Date())) {
+            cajaACerrar.setFechaCierre(new Date());
+            cajaACerrar.setEstado(EstadoCaja.CERRADA);
+            cajaService.actualizar(cajaACerrar);
+        }
+    }
 }

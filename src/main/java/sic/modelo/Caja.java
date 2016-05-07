@@ -41,6 +41,10 @@ public class Caja implements Serializable {
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaApertura;
+    
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaCorteInforme;
 
     @Column(nullable = true)
     @Temporal(TemporalType.TIMESTAMP)

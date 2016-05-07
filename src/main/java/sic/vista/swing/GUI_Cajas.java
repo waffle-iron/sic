@@ -21,6 +21,7 @@ import sic.service.IEmpresaService;
 import sic.service.IUsuarioService;
 import sic.service.ServiceException;
 import sic.util.ColoresEstadosRenderer;
+import sic.util.FormatoFechasEnTablas;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -399,26 +400,14 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btn_AbrirCajaActionPerformed
 
     private void abrirCaja() {
-        try {
-            String monto = JOptionPane.showInputDialog(this, "Monto para apertura de Caja:", "Apertura de Caja", JOptionPane.QUESTION_MESSAGE);
-            if (monto != null) {
-                cajaService.guardar(this.construirCaja(Double.parseDouble(monto)));
-                GUI_Caja caja = new GUI_Caja(cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()));
-                caja.setLocationRelativeTo(this);
-                caja.setModal(true);
-                caja.setVisible(true);
-                this.limpiarResultados();
-                this.buscar();
-            }
-        } catch (java.lang.NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Monto inválido", "Error", JOptionPane.INFORMATION_MESSAGE);
-        }
-
+        GUI_AbrirCaja abrirCaja = new GUI_AbrirCaja(true);
+        abrirCaja.setLocationRelativeTo(this);
+        abrirCaja.setVisible(true);
     }
+
     private void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_internalFrameOpened
         try {
             this.setMaximum(true);
-
         } catch (PropertyVetoException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";
             log.error(msjError + " - " + ex.getMessage());
@@ -457,14 +446,15 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         tbl_Cajas.setAutoCreateRowSorter(true);
 
         //nombres de columnas
-        String[] encabezados = new String[7];
+        String[] encabezados = new String[8];
         encabezados[0] = "Estado";
         encabezados[1] = "Fecha Apertura";
-        encabezados[2] = "Fecha Cierre";
-        encabezados[3] = "Usuario";
-        encabezados[4] = "Saldo Apertura";
-        encabezados[5] = "Saldo Final";
-        encabezados[6] = "Saldo Cierre";
+        encabezados[2] = "Fecha Control";
+        encabezados[3] = "Fecha Cierre";
+        encabezados[4] = "Usuario";
+        encabezados[5] = "Saldo Apertura";
+        encabezados[6] = "Saldo Final";
+        encabezados[7] = "Saldo Cierre";
         modeloTablaCajas.setColumnIdentifiers(encabezados);
         tbl_Cajas.setModel(modeloTablaCajas);
 
@@ -473,10 +463,11 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         tipos[0] = String.class;
         tipos[1] = Date.class;
         tipos[2] = Date.class;
-        tipos[3] = String.class;
-        tipos[4] = Double.class;
+        tipos[3] = Date.class;
+        tipos[4] = String.class;
         tipos[5] = Double.class;
         tipos[6] = Double.class;
+        tipos[7] = Double.class;
         modeloTablaCajas.setClaseColumnas(tipos);
         tbl_Cajas.getTableHeader().setReorderingAllowed(false);
         tbl_Cajas.getTableHeader().setResizingAllowed(true);
@@ -485,13 +476,18 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         tbl_Cajas.setDefaultRenderer(Double.class, new RenderTabla());
 
         //Tamanios de columnas
-        tbl_Cajas.getColumnModel().getColumn(0).setPreferredWidth(110);
-        tbl_Cajas.getColumnModel().getColumn(1).setPreferredWidth(110);
+        tbl_Cajas.getColumnModel().getColumn(0).setPreferredWidth(20);
+        tbl_Cajas.getColumnModel().getColumn(1).setPreferredWidth(100);
         tbl_Cajas.getColumnModel().getColumn(2).setPreferredWidth(100);
         tbl_Cajas.getColumnModel().getColumn(3).setPreferredWidth(100);
-        tbl_Cajas.getColumnModel().getColumn(4).setPreferredWidth(50);
-        tbl_Cajas.getColumnModel().getColumn(5).setPreferredWidth(50);
-        tbl_Cajas.getColumnModel().getColumn(6).setPreferredWidth(50);
+        tbl_Cajas.getColumnModel().getColumn(4).setPreferredWidth(20);
+        tbl_Cajas.getColumnModel().getColumn(5).setPreferredWidth(20);
+        tbl_Cajas.getColumnModel().getColumn(6).setPreferredWidth(20);
+        tbl_Cajas.getColumnModel().getColumn(7).setPreferredWidth(20);
+        //renderer fechas
+        tbl_Cajas.getColumnModel().getColumn(1).setCellRenderer(new FormatoFechasEnTablas());
+        tbl_Cajas.getColumnModel().getColumn(2).setCellRenderer(new FormatoFechasEnTablas());
+        tbl_Cajas.getColumnModel().getColumn(3).setCellRenderer(new FormatoFechasEnTablas());
     }
 
     private void buscar() {
@@ -556,16 +552,17 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         double totalFinal = 0.0;
         double totalCierre = 0.0;
         for (Caja caja : cajas) {
-            Object[] fila = new Object[7];
+            Object[] fila = new Object[8];
             fila[0] = caja.getEstado();
             fila[1] = caja.getFechaApertura();
+            fila[2] = caja.getFechaCorteInforme();
             if (caja.getFechaCierre() != null) {
-                fila[2] = caja.getFechaCierre();
+                fila[3] = caja.getFechaCierre();
             }
-            fila[3] = caja.getUsuarioAbreCaja();
-            fila[4] = caja.getSaldoInicial();
-            fila[5] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoFinal() : 0.0);
-            fila[6] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoReal() : 0.0);
+            fila[4] = caja.getUsuarioAbreCaja();
+            fila[5] = caja.getSaldoInicial();
+            fila[6] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoFinal() : 0.0);
+            fila[7] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoReal() : 0.0);
             totalFinal += caja.getSaldoFinal();
             totalCierre += caja.getSaldoReal();
             modeloTablaCajas.addRow(fila);
@@ -582,17 +579,4 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         this.setColumnasCaja();
     }
 
-    private Caja construirCaja(Double monto) {
-        Caja caja = new Caja();
-        caja.setEstado(EstadoCaja.ABIERTA);
-        caja.setObservacion("Apertura De Caja");
-        caja.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-        caja.setFechaApertura(new Date());
-        caja.setNroCaja(cajaService.getUltimoNumeroDeCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()) + 1);
-        caja.setSaldoInicial(monto);
-        caja.setSaldoFinal(monto);
-        caja.setSaldoReal(monto);
-        caja.setUsuarioAbreCaja(usuarioService.getUsuarioActivo().getUsuario());
-        return caja;
-    }
 }
