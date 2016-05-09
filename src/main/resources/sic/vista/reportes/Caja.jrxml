@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-05-02T14:38:20 -->
+<!-- 2016-05-09T00:31:17 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Caja" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="608c624e-e655-4a3f-bb85-9c440082766b">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -76,31 +76,45 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="54" splitType="Stretch">
+		<band height="74" splitType="Stretch">
 			<textField>
-				<reportElement key="" positionType="Float" x="0" y="17" width="555" height="20" uuid="ad630165-db23-454a-a905-20df0796a71f">
+				<reportElement key="" positionType="Float" x="0" y="17" width="277" height="24" uuid="ad630165-db23-454a-a905-20df0796a71f">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Bottom">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 					<paragraph lineSpacing="1_1_2"/>
 				</textElement>
-				<textFieldExpression><![CDATA["CAJA Nº "+$P{caja}.getNroCaja()+" - Fecha Apertura: "+(new java.text.SimpleDateFormat("dd/M/yyyy").format($P{caja}.getFechaApertura()))]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Fecha Apertura: "+(new java.text.SimpleDateFormat("dd/M/yyyy hh:mm").format($P{caja}.getFechaApertura()))]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement positionType="Float" x="0" y="41" width="277" height="33" uuid="902de916-6b99-4db3-b9f4-9c2055e1126e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{caja}.getEstado().toString().equals("CERRADA"))?"Caja Cerrada":"Caja en actividad"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="277" y="17" width="280" height="24" uuid="1f199f3b-fa02-4a9e-8700-c57c6d86f0cc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{caja}.getEstado().toString().equals("CERRADA"))?"Fecha Cierre: "+(new java.text.SimpleDateFormat("dd/M/yyyy hh:mm").format($P{caja}.getFechaCierre())):""]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="16" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="277" height="16" uuid="a6f36f44-ee0b-4eb3-ab7d-b4a7fbdf35df"/>
+				<reportElement x="0" y="0" width="353" height="16" uuid="a6f36f44-ee0b-4eb3-ab7d-b4a7fbdf35df"/>
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Forma De Pago]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="277" y="0" width="277" height="16" uuid="13c3db5f-c7d4-44df-a633-2b62ed216eea"/>
+				<reportElement x="353" y="0" width="201" height="16" uuid="13c3db5f-c7d4-44df-a633-2b62ed216eea"/>
 				<textElement textAlignment="Center">
 					<font isBold="true"/>
 				</textElement>
@@ -109,23 +123,28 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="19" splitType="Stretch">
+		<band height="28" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.grid.JSSGridBagLayout"/>
 			<textField>
-				<reportElement x="0" y="0" width="277" height="19" uuid="bed6f4e9-e3b6-4d18-8a0d-aaf104fe9bfa"/>
+				<reportElement x="0" y="0" width="350" height="28" uuid="bed6f4e9-e3b6-4d18-8a0d-aaf104fe9bfa">
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
 				<textFieldExpression><![CDATA[$F{_THIS}.substring(0,$F{_THIS}.indexOf("-"))]]></textFieldExpression>
 			</textField>
 			<textField pattern="¤ #,##0.00">
-				<reportElement x="277" y="0" width="277" height="19" uuid="d4b2c3d5-8743-458f-b063-35926cb2146c"/>
-				<textElement textAlignment="Right">
+				<reportElement x="353" y="0" width="201" height="28" uuid="d4b2c3d5-8743-458f-b063-35926cb2146c">
+					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["$"+$F{_THIS}.substring($F{_THIS}.indexOf("-")+1)]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{_THIS}.substring($F{_THIS}.indexOf("-")+1).length()>0 ?"$"+$F{_THIS}.substring($F{_THIS}.indexOf("-")+1):""]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="70" splitType="Stretch">
+		<band height="51" splitType="Stretch">
 			<textField pattern="¤ #,##0.00">
 				<reportElement x="115" y="0" width="95" height="17" uuid="3cfea114-8a7b-45f9-bff2-fb9e94e72a21"/>
 				<textElement>
@@ -171,21 +190,32 @@
 		</band>
 	</columnFooter>
 	<pageFooter>
-		<band height="50" splitType="Stretch">
+		<band height="101" splitType="Stretch">
 			<textField pattern="dd/MM/yyyy h:mm a">
-				<reportElement x="0" y="30" width="131" height="20" uuid="e7c10c67-236d-497b-9074-f1f8650df306"/>
+				<reportElement x="0" y="78" width="131" height="20" uuid="e7c10c67-236d-497b-9074-f1f8650df306"/>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="330" y="0" width="224" height="20" uuid="b2bc5d0f-6995-4925-9c78-57bffcf97ee8"/>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Left">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Firma:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="329" y="30" width="225" height="20" uuid="4e84dc53-5190-4611-a032-6d6ebaf31557"/>
+				<reportElement x="330" y="30" width="225" height="20" uuid="4e84dc53-5190-4611-a032-6d6ebaf31557"/>
 				<text><![CDATA[.................................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="80" width="225" height="20" uuid="5128fc04-d000-4790-913b-750d463e03db"/>
+				<text><![CDATA[.................................................................................]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="330" y="50" width="224" height="20" uuid="c8fca7af-1110-426f-969c-a7cf9ee21508"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Aclaración:]]></text>
 			</staticText>
 		</band>
 	</pageFooter>

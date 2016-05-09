@@ -192,7 +192,7 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
     private void setModelSpinner() {
         SpinnerModel spinnerModel = new SpinnerNumberModel(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 24, 1);
         this.spinner_Hora.setModel(spinnerModel);
-        spinnerModel = new SpinnerNumberModel(Calendar.getInstance().get(Calendar.MINUTE), Calendar.getInstance().get(Calendar.MINUTE), 59, 1);
+        spinnerModel = new SpinnerNumberModel(Calendar.getInstance().get(Calendar.MINUTE), 00, 59, 1);
         this.spinner_Minutos.setModel(spinnerModel);
     }
 
@@ -208,8 +208,8 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         caja.setFechaCorteInforme(corte.getTime());
         caja.setNroCaja(cajaService.getUltimoNumeroDeCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()) + 1);
         caja.setSaldoInicial(monto);
-        caja.setSaldoFinal(monto);
-        caja.setSaldoReal(monto);
+        caja.setSaldoFinal(0);
+        caja.setSaldoReal(0);
         caja.setUsuarioAbreCaja(usuarioService.getUsuarioActivo().getUsuario());
         return caja;
     }

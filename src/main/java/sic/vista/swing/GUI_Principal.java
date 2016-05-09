@@ -2,6 +2,7 @@ package sic.vista.swing;
 
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
@@ -581,12 +582,13 @@ public class GUI_Principal extends JFrame {
             getDesktopPane().add(gui);
             gui.setVisible(true);
             Caja caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-            if (caja.getEstado() == EstadoCaja.ABIERTA) {
-                GUI_Caja cajaAbierta = new GUI_Caja(this, true, caja);
-                cajaAbierta.setLocationRelativeTo(this);
-                cajaAbierta.setVisible(true);
+            if (caja != null) {
+                if (caja.getEstado() == EstadoCaja.ABIERTA) {
+                    GUI_Caja cajaAbierta = new GUI_Caja(this, true, caja);
+                    cajaAbierta.setLocationRelativeTo(this);
+                    cajaAbierta.setVisible(true);
+                }
             }
-
         } else {
             //selecciona y trae al frente el internalframe
             try {
@@ -636,10 +638,18 @@ public class GUI_Principal extends JFrame {
 
     private void cierreDeCajaDiaAnterior() {
         Caja cajaACerrar = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        if ((cajaACerrar.getEstado() == EstadoCaja.ABIERTA) && cajaACerrar.getFechaApertura().before(new Date())) {
-            cajaACerrar.setFechaCierre(new Date());
-            cajaACerrar.setEstado(EstadoCaja.CERRADA);
-            cajaService.actualizar(cajaACerrar);
+        if ((cajaACerrar != null) && (cajaACerrar.getEstado() == EstadoCaja.ABIERTA)) {
+            Calendar fechaAperturaMasUnDia = Calendar.getInstance();
+            fechaAperturaMasUnDia.setTime(cajaACerrar.getFechaApertura());
+            fechaAperturaMasUnDia.add(Calendar.DATE, 1);
+            if (fechaAperturaMasUnDia.get(Calendar.DATE) == Calendar.getInstance().get(Calendar.DATE)
+                    || fechaAperturaMasUnDia.before(Calendar.getInstance())) {
+                cajaACerrar.setFechaCierre(new Date());
+                cajaACerrar.setUsuarioCierraCaja(cajaACerrar.getUsuarioAbreCaja());
+                cajaACerrar.setEstado(EstadoCaja.CERRADA);
+                cajaACerrar.setSaldoReal(cajaACerrar.getSaldoFinal());
+                cajaService.actualizar(cajaACerrar);
+            }
         }
     }
 }

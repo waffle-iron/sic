@@ -60,24 +60,20 @@ public class GUI_Caja extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        if (this.caja != null) {
-            this.setTitle("Arqueo de Caja - Apertura: " + formatoFechaHora.format(this.caja.getFechaApertura()));
-        } else {
-            this.setTitle("Arqueo De Caja");
-        }
+        this.iniciarTituloVentana();
     }
 
     public GUI_Caja(java.awt.Frame parent, boolean modal, Caja caja) {
         super(parent, modal);
         initComponents();
         this.caja = caja;
-        this.setTitle("Arqueo de Caja - Apertura: " + formatoFechaHora.format(this.caja.getFechaApertura()));
+        this.iniciarTituloVentana();
     }
 
     public GUI_Caja(Caja caja) {
         initComponents();
         this.caja = caja;
-        this.setTitle("Arqueo de Caja - Apertura: " + formatoFechaHora.format(this.caja.getFechaApertura()));
+        this.iniciarTituloVentana();
     }
 
     @SuppressWarnings("unchecked")
@@ -101,6 +97,8 @@ public class GUI_Caja extends javax.swing.JDialog {
         tbl_Resumen = new javax.swing.JTable();
         ftxt_Total = new javax.swing.JFormattedTextField();
         lbl_Total = new javax.swing.JLabel();
+        chk_horaControl = new javax.swing.JCheckBox();
+        lbl_horaControl = new javax.swing.JLabel();
         btn_CerrarCaja = new javax.swing.JButton();
         btn_Imprimir = new javax.swing.JButton();
 
@@ -131,22 +129,18 @@ public class GUI_Caja extends javax.swing.JDialog {
         pbl_CabeceraLayout.setHorizontalGroup(
             pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pbl_CabeceraLayout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(lbl_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pbl_CabeceraLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_aviso, lbl_estado});
 
         pbl_CabeceraLayout.setVerticalGroup(
             pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pbl_CabeceraLayout.createSequentialGroup()
-                .addGap(0, 12, Short.MAX_VALUE)
-                .addGroup(pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbl_estado)
-                    .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addComponent(lbl_estado)
+            .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pbl_CabeceraLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lbl_aviso, lbl_estado});
@@ -223,7 +217,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                     .addComponent(lbl_FormaDePago)
                     .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_VerDetalle)
@@ -253,11 +247,27 @@ public class GUI_Caja extends javax.swing.JDialog {
         lbl_Total.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Total.setText("Total:");
 
+        chk_horaControl.setText("Filtrar por hora de control");
+        chk_horaControl.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                chk_horaControlStateChanged(evt);
+            }
+        });
+
+        lbl_horaControl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_horaControl.setText("Hora De Control");
+
         javax.swing.GroupLayout pnl_ResumenLayout = new javax.swing.GroupLayout(pnl_Resumen);
         pnl_Resumen.setLayout(pnl_ResumenLayout);
         pnl_ResumenLayout.setHorizontalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(chk_horaControl)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbl_horaControl)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_ResumenLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lbl_Total)
                 .addGap(2, 2, 2)
@@ -271,7 +281,11 @@ public class GUI_Caja extends javax.swing.JDialog {
         pnl_ResumenLayout.setVerticalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
-                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
+                .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chk_horaControl)
+                    .addComponent(lbl_horaControl))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ftxt_Total)
@@ -319,7 +333,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(pbl_Cabecera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnl_Resumen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnl_Resumen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnl_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -421,7 +435,6 @@ public class GUI_Caja extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_AgregarGastoActionPerformed
 
     private void cmb_FormasDePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_FormasDePagoActionPerformed
-        // this.cargarElementosFormaDePago();
         this.limpiarTablaBalance();
         this.cargarDatosBalance();
     }//GEN-LAST:event_cmb_FormasDePagoActionPerformed
@@ -436,28 +449,33 @@ public class GUI_Caja extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btn_ImprimirActionPerformed
 
+    private void chk_horaControlStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_chk_horaControlStateChanged
+        this.filtrarPorHoraControl();
+    }//GEN-LAST:event_chk_horaControlStateChanged
+
     private void cargarDatosBalance() {
         lbl_aviso.setText("Cerrada");
         lbl_aviso.setForeground(Color.RED);
         this.btn_AgregarGasto.setEnabled(false);
         if (this.caja != null) {
-            this.listaMovimientos.clear();
-            if (this.caja.getEstado() == EstadoCaja.CERRADA) {
-                List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCierre());
-                this.listaMovimientos.addAll(facturas);
-                List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCierre());
-                this.listaMovimientos.addAll(gastos);
-                this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
-            } else {
-                this.btn_AgregarGasto.setEnabled(true);
-                List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), caja.getFechaApertura(), new Date());
-                this.listaMovimientos.addAll(facturas);
-                List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), caja.getFechaApertura(), new Date());
-                this.listaMovimientos.addAll(gastos);
+            if (this.caja.getEstado() == EstadoCaja.ABIERTA) {
                 lbl_aviso.setText("Abierta");
                 lbl_aviso.setForeground(Color.GREEN);
-                this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
+                this.btn_AgregarGasto.setEnabled(true);
             }
+            this.listaMovimientos.clear();
+            Date hasta = new Date();
+            if (chk_horaControl.isSelected()) {
+                hasta = this.caja.getFechaCorteInforme();
+            } else if (this.caja.getEstado() == EstadoCaja.CERRADA) {
+                hasta = this.caja.getFechaCierre();
+            }
+            List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+            this.listaMovimientos.addAll(facturas);
+            List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+            this.listaMovimientos.addAll(gastos);
+            this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
+
         }
     }
 
@@ -466,6 +484,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     private javax.swing.JButton btn_CerrarCaja;
     private javax.swing.JButton btn_Imprimir;
     private javax.swing.JButton btn_VerDetalle;
+    private javax.swing.JCheckBox chk_horaControl;
     private javax.swing.JComboBox<FormaDePago> cmb_FormasDePago;
     private javax.swing.JFormattedTextField ftxt_Detalle;
     private javax.swing.JFormattedTextField ftxt_Total;
@@ -473,6 +492,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_aviso;
     private javax.swing.JLabel lbl_estado;
+    private javax.swing.JLabel lbl_horaControl;
     private javax.swing.JLabel lbl_total;
     private javax.swing.JPanel pbl_Cabecera;
     private javax.swing.JPanel pnl_Resumen;
@@ -619,19 +639,22 @@ public class GUI_Caja extends javax.swing.JDialog {
             for (FormaDePago formaDePago : formasDePago) {
                 if (formaDePago.isAfectaCaja()) {
                     Date hasta;
-                    if (this.caja.getEstado() == EstadoCaja.CERRADA) {
+                    if (chk_horaControl.isSelected()) {
+                        hasta = this.caja.getFechaCorteInforme();
+                    } else if (this.caja.getEstado() == EstadoCaja.CERRADA) {
                         hasta = this.caja.getFechaCierre();
                     } else {
                         hasta = new Date();
                     }
+
                     List<Factura> facturasPorFormaDePago = facturaService.getFacturasPorFechasYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
-                    List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
-                    if (facturasPorFormaDePago.size() > 0 || gastos.size() > 0) {
+                    List<Object> gastosPorFormaDePago = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+                    if (facturasPorFormaDePago.size() > 0 || gastosPorFormaDePago.size() > 0) {
                         Object[] fila = new Object[2];
                         fila[0] = formaDePago.getNombre();
                         this.listaMovimientos.clear();
                         this.listaMovimientos.addAll(facturasPorFormaDePago);
-                        this.listaMovimientos.addAll(gastos);
+                        this.listaMovimientos.addAll(gastosPorFormaDePago);
                         double totalParcial = cajaService.calcularTotalPorMovimiento(this.listaMovimientos);
                         fila[1] = totalParcial;
                         total += totalParcial;
@@ -639,8 +662,11 @@ public class GUI_Caja extends javax.swing.JDialog {
                     }
                 }
             }
-            this.caja.setSaldoFinal(total);
+            this.caja.setSaldoFinal(Math.floor(total * 100) / 100);
             this.ftxt_Total.setValue(this.caja.getSaldoFinal());
+            if (!chk_horaControl.isSelected()) {
+                cajaService.actualizar(this.caja);
+            }
             if (this.caja.getSaldoFinal() < 0) {
                 ftxt_Total.setBackground(Color.PINK);
             }
@@ -688,9 +714,18 @@ public class GUI_Caja extends javax.swing.JDialog {
 
     private void lanzarReporteCaja() throws JRException {
         List<String> dataSource = new ArrayList<>();
+        this.chk_horaControl.setSelected(true);
+        this.filtrarPorHoraControl();
         for (int f = 0; f < tbl_Resumen.getRowCount(); f++) {
             dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 1))));
         }
+        dataSource.add("..........................Corte a las: " + formatoFechaHora.format(this.caja.getFechaCorteInforme()) + "...........................-");
+        this.chk_horaControl.setSelected(false);
+        this.limpiarYCargarTablas();
+        for (int f = 0; f < tbl_Resumen.getRowCount(); f++) {
+            dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 1))));
+        }
+
         JasperPrint report = cajaService.getReporteCaja(this.caja, dataSource);
         JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
         viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
@@ -702,18 +737,18 @@ public class GUI_Caja extends javax.swing.JDialog {
         viewer.setVisible(true);
     }
 
-    private Caja construirCaja(Double monto) {
-        Caja caja = new Caja();
-        caja.setEstado(EstadoCaja.ABIERTA);
-        caja.setObservacion("Apertura De Caja");
-        caja.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-        caja.setFechaApertura(new Date());
-        caja.setNroCaja(cajaService.getUltimoNumeroDeCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()) + 1);
-        caja.setSaldoInicial(monto);
-        caja.setSaldoFinal(monto);
-        caja.setSaldoReal(monto);
-        caja.setUsuarioAbreCaja(usuarioService.getUsuarioActivo().getUsuario());
-        return caja;
+    private void iniciarTituloVentana() {
+        if (this.caja != null) {
+            this.setTitle("Arqueo de Caja - Apertura: " + formatoFechaHora.format(this.caja.getFechaApertura()));
+        } else {
+            this.setTitle("Arqueo De Caja");
+        }
+        this.lbl_horaControl.setVisible(false);
     }
 
+    private void filtrarPorHoraControl() {
+        this.limpiarYCargarTablas();
+        this.lbl_horaControl.setText("Hora de Control: " + formatoFechaHora.format(this.caja.getFechaCorteInforme()));
+        this.lbl_horaControl.setVisible(this.chk_horaControl.isSelected());
+    }
 }
