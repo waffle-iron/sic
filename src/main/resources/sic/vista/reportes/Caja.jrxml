@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-05-09T00:31:17 -->
+<!-- 2016-05-10T18:33:46 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Caja" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="608c624e-e655-4a3f-bb85-9c440082766b">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -8,6 +8,7 @@
 	<parameter name="empresa" class="sic.modelo.Empresa"/>
 	<parameter name="logo" class="java.awt.Image"/>
 	<parameter name="caja" class="sic.modelo.Caja"/>
+	<parameter name="usuario" class="sic.modelo.Usuario"/>
 	<queryString language="hql">
 		<![CDATA[]]>
 	</queryString>
@@ -76,7 +77,7 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="74" splitType="Stretch">
+		<band height="77" splitType="Stretch">
 			<textField>
 				<reportElement key="" positionType="Float" x="0" y="17" width="277" height="24" uuid="ad630165-db23-454a-a905-20df0796a71f">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
@@ -89,7 +90,7 @@
 				<textFieldExpression><![CDATA["Fecha Apertura: "+(new java.text.SimpleDateFormat("dd/M/yyyy hh:mm").format($P{caja}.getFechaApertura()))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="0" y="41" width="277" height="33" uuid="902de916-6b99-4db3-b9f4-9c2055e1126e"/>
+				<reportElement positionType="Float" x="0" y="41" width="277" height="36" uuid="902de916-6b99-4db3-b9f4-9c2055e1126e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -101,6 +102,13 @@
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($P{caja}.getEstado().toString().equals("CERRADA"))?"Fecha Cierre: "+(new java.text.SimpleDateFormat("dd/M/yyyy hh:mm").format($P{caja}.getFechaCierre())):""]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="277" y="42" width="280" height="35" uuid="93287ff4-147a-454d-8824-ce8125bd0b19"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Usuario: "+$P{usuario}.getNombre()]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

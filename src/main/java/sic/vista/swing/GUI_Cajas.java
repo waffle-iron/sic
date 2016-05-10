@@ -216,7 +216,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        lbl_TotalFinal.setText("Total Final:");
+        lbl_TotalFinal.setText("Total Sistema:");
 
         btn_AbrirCaja.setForeground(java.awt.Color.blue);
         btn_AbrirCaja.setText("Abrir");
@@ -242,7 +242,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             }
         });
 
-        lbl_TotalCierre.setText("Total Cierre:");
+        lbl_TotalCierre.setText("Total Real:");
 
         ftxt_TotalFinal.setEditable(false);
         ftxt_TotalFinal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));

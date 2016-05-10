@@ -63,8 +63,4 @@ public class Gasto implements Serializable {
 
     private boolean eliminado;
 
-    public Movimiento getTipoMovimiento() {
-        return Movimiento.GASTO;
-    }
-
 }

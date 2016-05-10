@@ -21,6 +21,7 @@ import sic.modelo.Caja;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Gasto;
+import sic.modelo.Usuario;
 import sic.repository.ICajaRepository;
 import sic.service.ServiceException;
 import sic.util.Utilidades;
@@ -131,12 +132,13 @@ public class CajaServiceImpl implements ICajaService {
     }
 
     @Override
-    public JasperPrint getReporteCaja(Caja caja, List<String> dataSource) throws JRException {
+    public JasperPrint getReporteCaja(Caja caja, List<String> dataSource, Usuario usuario) throws JRException {
         ClassLoader classLoader = PedidoServiceImpl.class.getClassLoader();
         InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/Caja.jasper");
         Map params = new HashMap();
         params.put("empresa", caja.getEmpresa());
         params.put("caja", caja);
+        params.put("usuario", usuario);
         params.put("logo", Utilidades.convertirByteArrayIntoImage(caja.getEmpresa().getLogo()));
         JRBeanCollectionDataSource listaDS = new JRBeanCollectionDataSource(dataSource);
         return JasperFillManager.fillReport(isFileReport, params, listaDS);

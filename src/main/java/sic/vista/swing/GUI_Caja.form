@@ -256,13 +256,6 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="chk_horaControl" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="lbl_horaControl" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-              </Group>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="lbl_Total" min="-2" max="-2" attributes="0"/>
@@ -280,12 +273,8 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="chk_horaControl" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="lbl_horaControl" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="sp_TablaResumen" pref="148" max="32767" attributes="0"/>
+                  <Component id="sp_TablaResumen" pref="166" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="ftxt_Total" linkSize="1" alignment="3" max="32767" attributes="0"/>
@@ -333,20 +322,6 @@
           <Properties>
             <Property name="horizontalAlignment" type="int" value="4"/>
             <Property name="text" type="java.lang.String" value="Total:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JCheckBox" name="chk_horaControl">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Filtrar por hora de control"/>
-          </Properties>
-          <Events>
-            <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="chk_horaControlStateChanged"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JLabel" name="lbl_horaControl">
-          <Properties>
-            <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="text" type="java.lang.String" value="Hora De Control"/>
           </Properties>
         </Component>
       </SubComponents>

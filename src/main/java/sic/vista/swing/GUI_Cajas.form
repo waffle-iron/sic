@@ -297,7 +297,7 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="lbl_TotalFinal">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Total Final:"/>
+            <Property name="text" type="java.lang.String" value="Total Sistema:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btn_AbrirCaja">
@@ -335,7 +335,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lbl_TotalCierre">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Total Cierre:"/>
+            <Property name="text" type="java.lang.String" value="Total Real:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JFormattedTextField" name="ftxt_TotalFinal">

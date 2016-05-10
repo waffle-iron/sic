@@ -14,10 +14,6 @@ public enum Movimiento {
      */
     VENTA,
     /**
-     * Para el caso en que se realize un gasto.
-     */
-    GASTO,
-    /**
      * Para el caso en que se este realizando un pedido.
      */
     PEDIDO;

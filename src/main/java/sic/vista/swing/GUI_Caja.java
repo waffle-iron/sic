@@ -49,7 +49,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IGastoService gastoService = appContext.getBean(IGastoService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
-    private final FormatterFechaHora formatoFechaHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_HISPANO);
+    private final FormatterFechaHora formatoHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_HORA_INTERNACIONAL);
     private ModeloTabla modeloTablaBalance;
     private ModeloTabla modeloTablaResumen;
     private List<Object> listaMovimientos = new ArrayList<>();
@@ -97,8 +97,6 @@ public class GUI_Caja extends javax.swing.JDialog {
         tbl_Resumen = new javax.swing.JTable();
         ftxt_Total = new javax.swing.JFormattedTextField();
         lbl_Total = new javax.swing.JLabel();
-        chk_horaControl = new javax.swing.JCheckBox();
-        lbl_horaControl = new javax.swing.JLabel();
         btn_CerrarCaja = new javax.swing.JButton();
         btn_Imprimir = new javax.swing.JButton();
 
@@ -247,26 +245,10 @@ public class GUI_Caja extends javax.swing.JDialog {
         lbl_Total.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Total.setText("Total:");
 
-        chk_horaControl.setText("Filtrar por hora de control");
-        chk_horaControl.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                chk_horaControlStateChanged(evt);
-            }
-        });
-
-        lbl_horaControl.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lbl_horaControl.setText("Hora De Control");
-
         javax.swing.GroupLayout pnl_ResumenLayout = new javax.swing.GroupLayout(pnl_Resumen);
         pnl_Resumen.setLayout(pnl_ResumenLayout);
         pnl_ResumenLayout.setHorizontalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_ResumenLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(chk_horaControl)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lbl_horaControl)
-                .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_ResumenLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lbl_Total)
@@ -281,11 +263,8 @@ public class GUI_Caja extends javax.swing.JDialog {
         pnl_ResumenLayout.setVerticalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
-                .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chk_horaControl)
-                    .addComponent(lbl_horaControl))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ftxt_Total)
@@ -449,10 +428,6 @@ public class GUI_Caja extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btn_ImprimirActionPerformed
 
-    private void chk_horaControlStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_chk_horaControlStateChanged
-        this.filtrarPorHoraControl();
-    }//GEN-LAST:event_chk_horaControlStateChanged
-
     private void cargarDatosBalance() {
         lbl_aviso.setText("Cerrada");
         lbl_aviso.setForeground(Color.RED);
@@ -465,9 +440,7 @@ public class GUI_Caja extends javax.swing.JDialog {
             }
             this.listaMovimientos.clear();
             Date hasta = new Date();
-            if (chk_horaControl.isSelected()) {
-                hasta = this.caja.getFechaCorteInforme();
-            } else if (this.caja.getEstado() == EstadoCaja.CERRADA) {
+            if (this.caja.getEstado() == EstadoCaja.CERRADA) {
                 hasta = this.caja.getFechaCierre();
             }
             List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
@@ -484,7 +457,6 @@ public class GUI_Caja extends javax.swing.JDialog {
     private javax.swing.JButton btn_CerrarCaja;
     private javax.swing.JButton btn_Imprimir;
     private javax.swing.JButton btn_VerDetalle;
-    private javax.swing.JCheckBox chk_horaControl;
     private javax.swing.JComboBox<FormaDePago> cmb_FormasDePago;
     private javax.swing.JFormattedTextField ftxt_Detalle;
     private javax.swing.JFormattedTextField ftxt_Total;
@@ -492,7 +464,6 @@ public class GUI_Caja extends javax.swing.JDialog {
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_aviso;
     private javax.swing.JLabel lbl_estado;
-    private javax.swing.JLabel lbl_horaControl;
     private javax.swing.JLabel lbl_total;
     private javax.swing.JPanel pbl_Cabecera;
     private javax.swing.JPanel pnl_Resumen;
@@ -638,15 +609,10 @@ public class GUI_Caja extends javax.swing.JDialog {
             List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaActiva);
             for (FormaDePago formaDePago : formasDePago) {
                 if (formaDePago.isAfectaCaja()) {
-                    Date hasta;
-                    if (chk_horaControl.isSelected()) {
-                        hasta = this.caja.getFechaCorteInforme();
-                    } else if (this.caja.getEstado() == EstadoCaja.CERRADA) {
+                    Date hasta = new Date();
+                    if (this.caja.getEstado() == EstadoCaja.CERRADA) {
                         hasta = this.caja.getFechaCierre();
-                    } else {
-                        hasta = new Date();
                     }
-
                     List<Factura> facturasPorFormaDePago = facturaService.getFacturasPorFechasYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
                     List<Object> gastosPorFormaDePago = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
                     if (facturasPorFormaDePago.size() > 0 || gastosPorFormaDePago.size() > 0) {
@@ -664,9 +630,8 @@ public class GUI_Caja extends javax.swing.JDialog {
             }
             this.caja.setSaldoFinal(Math.floor(total * 100) / 100);
             this.ftxt_Total.setValue(this.caja.getSaldoFinal());
-            if (!chk_horaControl.isSelected()) {
-                cajaService.actualizar(this.caja);
-            }
+            //Guarda el monto final del último calculo en la caja
+            cajaService.actualizar(this.caja);
             if (this.caja.getSaldoFinal() < 0) {
                 ftxt_Total.setBackground(Color.PINK);
             }
@@ -714,19 +679,32 @@ public class GUI_Caja extends javax.swing.JDialog {
 
     private void lanzarReporteCaja() throws JRException {
         List<String> dataSource = new ArrayList<>();
-        this.chk_horaControl.setSelected(true);
-        this.filtrarPorHoraControl();
-        for (int f = 0; f < tbl_Resumen.getRowCount(); f++) {
-            dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 1))));
+        dataSource.add((String) tbl_Resumen.getValueAt(0, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(0, 1))));
+        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
+        Double totalPorCorte = 0.0;
+        for (FormaDePago formaDePago : formasDePago) {
+            Double totalPorCorteFormaDePago = 0.0;
+            if (formaDePago.isAfectaCaja()) {
+                List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
+                List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
+                for (Factura factura : facturas) {
+                    totalPorCorteFormaDePago += factura.getTotal();
+                }
+                for (Object gasto : gastos) {
+                    totalPorCorteFormaDePago += ((Gasto) gasto).getMonto();
+                }
+                dataSource.add(formaDePago.getNombre() + "-" + totalPorCorteFormaDePago);
+            }
+            totalPorCorte += totalPorCorteFormaDePago;
         }
-        dataSource.add("..........................Corte a las: " + formatoFechaHora.format(this.caja.getFechaCorteInforme()) + "...........................-");
-        this.chk_horaControl.setSelected(false);
-        this.limpiarYCargarTablas();
-        for (int f = 0; f < tbl_Resumen.getRowCount(); f++) {
+        dataSource.add("Total hasta la hora de control:-" + totalPorCorte);
+        dataSource.add("..........................Corte a las: " + formatoHora.format(this.caja.getFechaCorteInforme()) + "...........................-");
+
+        for (int f = 1; f < tbl_Resumen.getRowCount(); f++) {
             dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 1))));
         }
 
-        JasperPrint report = cajaService.getReporteCaja(this.caja, dataSource);
+        JasperPrint report = cajaService.getReporteCaja(this.caja, dataSource, usuarioService.getUsuarioActivo().getUsuario());
         JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
         viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
         ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
@@ -739,16 +717,10 @@ public class GUI_Caja extends javax.swing.JDialog {
 
     private void iniciarTituloVentana() {
         if (this.caja != null) {
-            this.setTitle("Arqueo de Caja - Apertura: " + formatoFechaHora.format(this.caja.getFechaApertura()));
+            this.setTitle("Arqueo de Caja - Apertura: " + formatoHora.format(this.caja.getFechaApertura()));
         } else {
             this.setTitle("Arqueo De Caja");
         }
-        this.lbl_horaControl.setVisible(false);
     }
 
-    private void filtrarPorHoraControl() {
-        this.limpiarYCargarTablas();
-        this.lbl_horaControl.setText("Hora de Control: " + formatoFechaHora.format(this.caja.getFechaCorteInforme()));
-        this.lbl_horaControl.setVisible(this.chk_horaControl.isSelected());
-    }
 }

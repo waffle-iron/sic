@@ -190,7 +190,7 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private void setModelSpinner() {
-        SpinnerModel spinnerModel = new SpinnerNumberModel(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 24, 1);
+        SpinnerModel spinnerModel = new SpinnerNumberModel(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 00, 23, 1);
         this.spinner_Hora.setModel(spinnerModel);
         spinnerModel = new SpinnerNumberModel(Calendar.getInstance().get(Calendar.MINUTE), 00, 59, 1);
         this.spinner_Minutos.setModel(spinnerModel);
