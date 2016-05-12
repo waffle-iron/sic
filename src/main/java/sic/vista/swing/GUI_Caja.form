@@ -119,18 +119,13 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="lbl_FormaDePago" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                  <Component id="cmb_FormasDePago" min="-2" pref="270" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
-              </Group>
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="btn_VerDetalle" linkSize="11" min="-2" pref="160" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Component id="btn_AgregarGasto" linkSize="11" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                  <Component id="lbl_EliminarGasto" linkSize="11" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
                   <Component id="lbl_total" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
@@ -141,6 +136,13 @@
                   <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
                   <Component id="sp_Tabla" max="32767" attributes="0"/>
                   <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
+              </Group>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="lbl_FormaDePago" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                  <Component id="cmb_FormasDePago" min="-2" pref="270" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -158,8 +160,9 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="btn_VerDetalle" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="lbl_total" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="btn_AgregarGasto" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_AgregarGasto" linkSize="12" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="ftxt_Detalle" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbl_EliminarGasto" linkSize="12" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -241,6 +244,17 @@
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;FormaDePago&gt;"/>
           </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="lbl_EliminarGasto">
+          <Properties>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="Eliminar Gasto"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="lbl_EliminarGastoActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

@@ -365,7 +365,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
     private void btn_eliminarCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarCajaActionPerformed
         if (tbl_Cajas.getSelectedRow() != -1) {
             int confirmacionEliminacion = JOptionPane.showConfirmDialog(this,
-                    "¿Esta seguro que desea eliminar el pedido seleccionado?",
+                    "¿Esta seguro que desea eliminar la caja seleccionada?",
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (confirmacionEliminacion == JOptionPane.YES_OPTION) {
                 int indiceDelModel = Utilidades.getSelectedRowModelIndice(tbl_Cajas);

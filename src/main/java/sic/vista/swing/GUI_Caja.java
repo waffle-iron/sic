@@ -92,6 +92,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         ftxt_Detalle = new javax.swing.JFormattedTextField();
         lbl_FormaDePago = new javax.swing.JLabel();
         cmb_FormasDePago = new javax.swing.JComboBox<>();
+        lbl_EliminarGasto = new javax.swing.JButton();
         pnl_Resumen = new javax.swing.JPanel();
         sp_TablaResumen = new javax.swing.JScrollPane();
         tbl_Resumen = new javax.swing.JTable();
@@ -179,21 +180,25 @@ public class GUI_Caja extends javax.swing.JDialog {
             }
         });
 
+        lbl_EliminarGasto.setForeground(java.awt.Color.blue);
+        lbl_EliminarGasto.setText("Eliminar Gasto");
+        lbl_EliminarGasto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lbl_EliminarGastoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnl_TablaLayout = new javax.swing.GroupLayout(pnl_Tabla);
         pnl_Tabla.setLayout(pnl_TablaLayout);
         pnl_TablaLayout.setHorizontalGroup(
             pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_TablaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbl_FormaDePago)
-                .addGap(2, 2, 2)
-                .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(pnl_TablaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btn_VerDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(btn_AgregarGasto)
+                .addGap(0, 0, 0)
+                .addComponent(lbl_EliminarGasto)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lbl_total)
                 .addGap(2, 2, 2)
@@ -203,9 +208,15 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addGap(12, 12, 12)
                 .addComponent(sp_Tabla)
                 .addGap(12, 12, 12))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_TablaLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lbl_FormaDePago)
+                .addGap(2, 2, 2)
+                .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AgregarGasto, btn_VerDetalle});
+        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AgregarGasto, btn_VerDetalle, lbl_EliminarGasto});
 
         pnl_TablaLayout.setVerticalGroup(
             pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -221,8 +232,11 @@ public class GUI_Caja extends javax.swing.JDialog {
                     .addComponent(btn_VerDetalle)
                     .addComponent(lbl_total)
                     .addComponent(btn_AgregarGasto)
-                    .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_EliminarGasto)))
         );
+
+        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_AgregarGasto, lbl_EliminarGasto});
 
         pnl_Resumen.setBorder(javax.swing.BorderFactory.createTitledBorder("Resumen General"));
 
@@ -426,6 +440,23 @@ public class GUI_Caja extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btn_ImprimirActionPerformed
 
+    private void lbl_EliminarGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_EliminarGastoActionPerformed
+        if (tbl_Balance.getSelectedRow() != -1) {
+            Object movimientoDeTabla = this.listaMovimientos.get(Utilidades.getSelectedRowModelIndice(tbl_Balance));
+            if (movimientoDeTabla instanceof Gasto) {
+                int confirmacionEliminacion = JOptionPane.showConfirmDialog(this,
+                        "¿Esta seguro que desea eliminar el gasto seleccionado?",
+                        "Eliminar", JOptionPane.YES_NO_OPTION);
+                if (confirmacionEliminacion == JOptionPane.YES_OPTION) {
+                    Gasto gasto = (Gasto) movimientoDeTabla;
+                    gasto.setEliminado(true);
+                    gastoService.actualizar(gasto);
+                    this.limpiarYCargarTablas();
+                }
+            }
+        }
+    }//GEN-LAST:event_lbl_EliminarGastoActionPerformed
+
     private void cargarDatosBalance() {
         lbl_aviso.setText("Cerrada");
         lbl_aviso.setForeground(Color.RED);
@@ -458,6 +489,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     private javax.swing.JComboBox<FormaDePago> cmb_FormasDePago;
     private javax.swing.JFormattedTextField ftxt_Detalle;
     private javax.swing.JFormattedTextField ftxt_Total;
+    private javax.swing.JButton lbl_EliminarGasto;
     private javax.swing.JLabel lbl_FormaDePago;
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_aviso;
