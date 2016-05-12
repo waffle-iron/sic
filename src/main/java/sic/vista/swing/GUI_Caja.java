@@ -322,8 +322,6 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_CerrarCaja, btn_Imprimir});
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -681,7 +679,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         List<String> dataSource = new ArrayList<>();
         dataSource.add((String) tbl_Resumen.getValueAt(0, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(0, 1))));
         List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
-        Double totalPorCorte = 0.0;
+        Double totalPorCorte = this.caja.getSaldoInicial();
         for (FormaDePago formaDePago : formasDePago) {
             Double totalPorCorteFormaDePago = 0.0;
             if (formaDePago.isAfectaCaja()) {
@@ -697,7 +695,7 @@ public class GUI_Caja extends javax.swing.JDialog {
             }
             totalPorCorte += totalPorCorteFormaDePago;
         }
-        dataSource.add("Total hasta la hora de control:-" + totalPorCorte);
+        dataSource.add("Total hasta la hora de control:-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) totalPorCorte)));
         dataSource.add("..........................Corte a las: " + formatoHora.format(this.caja.getFechaCorteInforme()) + "...........................-");
 
         for (int f = 1; f < tbl_Resumen.getRowCount(); f++) {

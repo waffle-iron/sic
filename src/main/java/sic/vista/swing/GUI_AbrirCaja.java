@@ -2,6 +2,7 @@ package sic.vista.swing;
 
 import java.util.Calendar;
 import java.util.Date;
+import javax.swing.JOptionPane;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import org.springframework.context.ApplicationContext;
@@ -49,6 +50,7 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         lbl_separador.setText(":");
 
         ftxt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
+        ftxt_Monto.setText("0.0");
         ftxt_Monto.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 ftxt_MontoKeyTyped(evt);
@@ -168,12 +170,16 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_CancelarActionPerformed
 
     private void btn_AbrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AbrirCajaActionPerformed
-        cajaService.guardar(this.construirCaja(((Long) ftxt_Monto.getValue()).doubleValue()));
-        GUI_Caja abrirCaja = new GUI_Caja(cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()));
-        abrirCaja.setModal(true);
-        abrirCaja.setLocationRelativeTo(this);
-        abrirCaja.setVisible(true);
-        this.dispose();
+        if (((Long) ftxt_Monto.getValue()) != null) {
+            cajaService.guardar(this.construirCaja(((Long) ftxt_Monto.getValue()).doubleValue()));
+            GUI_Caja abrirCaja = new GUI_Caja(cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()));
+            abrirCaja.setModal(true);
+            abrirCaja.setLocationRelativeTo(this);
+            abrirCaja.setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Monto inválido", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btn_AbrirCajaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

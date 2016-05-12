@@ -22,6 +22,7 @@ import sic.service.IUsuarioService;
 import sic.service.ServiceException;
 import sic.util.ColoresEstadosRenderer;
 import sic.util.FormatoFechasEnTablas;
+import sic.util.FormatterFechaHora;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -75,7 +76,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
 
         setClosable(true);
         setMaximizable(true);
-        setTitle("Cajas");
+        setTitle("Administrar Cajas");
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
                 GUI_Cajas.this.internalFrameOpened(evt);
@@ -131,8 +132,6 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             }
         });
 
-        lbl_cantidadMostrar.setText("Mostrar los primeros:");
-
         javax.swing.GroupLayout pnl_FiltrosLayout = new javax.swing.GroupLayout(pnl_Filtros);
         pnl_Filtros.setLayout(pnl_FiltrosLayout);
         pnl_FiltrosLayout.setHorizontalGroup(
@@ -157,9 +156,9 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             .addGroup(pnl_FiltrosLayout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addComponent(btn_buscar)
-                .addGap(86, 86, 86)
-                .addComponent(lbl_cantidadMostrar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbl_cantidadMostrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pb_barra, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12))
         );
@@ -177,18 +176,19 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                     .addComponent(dc_FechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_Hasta)
                     .addComponent(dc_FechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chk_Usuario)
                     .addComponent(cmb_Usuarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(7, 7, 7)
                 .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pb_barra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_buscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lbl_cantidadMostrar)))
+                    .addComponent(btn_buscar)
+                    .addComponent(lbl_cantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
+
+        pnl_FiltrosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_buscar, lbl_cantidadMostrar});
 
         pnl_Cajas.setBorder(javax.swing.BorderFactory.createTitledBorder("Cajas"));
 
@@ -364,7 +364,9 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
 
     private void btn_eliminarCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarCajaActionPerformed
         if (tbl_Cajas.getSelectedRow() != -1) {
-            int confirmacionEliminacion = JOptionPane.showConfirmDialog(null, "¿Desea eliminar la caja?", "Atención", 1);
+            int confirmacionEliminacion = JOptionPane.showConfirmDialog(this,
+                    "¿Esta seguro que desea eliminar el pedido seleccionado?",
+                    "Eliminar", JOptionPane.YES_NO_OPTION);
             if (confirmacionEliminacion == JOptionPane.YES_OPTION) {
                 int indiceDelModel = Utilidades.getSelectedRowModelIndice(tbl_Cajas);
                 this.cajas.get(indiceDelModel).setEliminada(true);
@@ -403,11 +405,14 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         GUI_AbrirCaja abrirCaja = new GUI_AbrirCaja(true);
         abrirCaja.setLocationRelativeTo(this);
         abrirCaja.setVisible(true);
+        this.limpiarResultados();
+        this.buscar();
     }
 
     private void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_internalFrameOpened
         try {
             this.setMaximum(true);
+            this.buscar();
         } catch (PropertyVetoException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";
             log.error(msjError + " - " + ex.getMessage());
@@ -449,7 +454,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         String[] encabezados = new String[8];
         encabezados[0] = "Estado";
         encabezados[1] = "Fecha Apertura";
-        encabezados[2] = "Fecha Control";
+        encabezados[2] = "Hora Control";
         encabezados[3] = "Fecha Cierre";
         encabezados[4] = "Usuario";
         encabezados[5] = "Saldo Apertura";
@@ -462,7 +467,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         Class[] tipos = new Class[modeloTablaCajas.getColumnCount()];
         tipos[0] = String.class;
         tipos[1] = Date.class;
-        tipos[2] = Date.class;
+        tipos[2] = String.class;
         tipos[3] = Date.class;
         tipos[4] = String.class;
         tipos[5] = Double.class;
@@ -555,7 +560,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             Object[] fila = new Object[8];
             fila[0] = caja.getEstado();
             fila[1] = caja.getFechaApertura();
-            fila[2] = caja.getFechaCorteInforme();
+            fila[2] = (new FormatterFechaHora(FormatterFechaHora.FORMATO_HORA_INTERNACIONAL)).format(caja.getFechaCorteInforme());
             if (caja.getFechaCierre() != null) {
                 fila[3] = caja.getFechaCierre();
             }
@@ -567,10 +572,18 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             totalCierre += caja.getSaldoReal();
             modeloTablaCajas.addRow(fila);
         }
+        if (cajas.size() > 0) {
+            if (cajas.get(0).getEstado() == EstadoCaja.ABIERTA) {
+                this.btn_AbrirCaja.setEnabled(false);
+            } else {
+                this.btn_AbrirCaja.setEnabled(true);
+            }
+        }
         tbl_Cajas.setModel(modeloTablaCajas);
         tbl_Cajas.getColumnModel().getColumn(0).setCellRenderer(new ColoresEstadosRenderer());
         ftxt_TotalFinal.setValue(totalFinal);
         ftxt_TotalCierre.setValue(totalCierre);
+        lbl_cantidadMostrar.setText(this.cajas.size() + " Cajas encontradas.");
     }
 
     private void limpiarResultados() {
