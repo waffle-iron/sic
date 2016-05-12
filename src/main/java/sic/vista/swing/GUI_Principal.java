@@ -264,6 +264,7 @@ public class GUI_Principal extends JFrame {
         });
         mnu_Administracion.add(mnuItm_FormasDePago);
 
+        jmni_Cajas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Caja_16x16.png"))); // NOI18N
         jmni_Cajas.setText("Cajas");
         jmni_Cajas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

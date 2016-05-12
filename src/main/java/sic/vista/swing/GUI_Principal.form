@@ -183,6 +183,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmni_Cajas">
               <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/sic/icons/Caja_16x16.png"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Cajas"/>
               </Properties>
               <Events>
