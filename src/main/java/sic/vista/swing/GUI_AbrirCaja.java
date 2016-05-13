@@ -39,7 +39,6 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         lbl_monto = new javax.swing.JLabel();
         pnl_Botones = new javax.swing.JPanel();
         btn_AbrirCaja = new javax.swing.JButton();
-        btn_Cancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Abrir Caja");
@@ -78,11 +77,11 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
                     .addGroup(pnl_separadorLayout.createSequentialGroup()
                         .addComponent(lbl_CorteControl, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spinner_Hora)
+                        .addComponent(spinner_Hora, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
                         .addGap(0, 0, 0)
                         .addComponent(lbl_separador)
                         .addGap(0, 0, 0)
-                        .addComponent(spinner_Minutos)))
+                        .addComponent(spinner_Minutos, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -98,7 +97,7 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
                         .addComponent(spinner_Minutos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(lbl_separador))
                     .addComponent(lbl_CorteControl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_separadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_monto)
                     .addComponent(ftxt_Monto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -107,6 +106,7 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
 
         pnl_separadorLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {ftxt_Monto, lbl_CorteControl, lbl_monto, spinner_Hora, spinner_Minutos});
 
+        btn_AbrirCaja.setForeground(java.awt.Color.blue);
         btn_AbrirCaja.setText("Abrir Caja");
         btn_AbrirCaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -114,34 +114,18 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
             }
         });
 
-        btn_Cancelar.setText("Cancelar");
-        btn_Cancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_CancelarActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout pnl_BotonesLayout = new javax.swing.GroupLayout(pnl_Botones);
         pnl_Botones.setLayout(pnl_BotonesLayout);
         pnl_BotonesLayout.setHorizontalGroup(
             pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_BotonesLayout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_BotonesLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btn_AbrirCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(btn_Cancelar)
                 .addContainerGap())
         );
-
-        pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AbrirCaja, btn_Cancelar});
-
         pnl_BotonesLayout.setVerticalGroup(
             pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_BotonesLayout.createSequentialGroup()
-                .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_AbrirCaja)
-                    .addComponent(btn_Cancelar))
-                .addGap(0, 12, Short.MAX_VALUE))
+            .addComponent(btn_AbrirCaja, javax.swing.GroupLayout.Alignment.TRAILING)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -170,21 +154,16 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_ftxt_MontoKeyTyped
 
-    private void btn_CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_CancelarActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_btn_CancelarActionPerformed
-
     private void btn_AbrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AbrirCajaActionPerformed
-        if (ftxt_Monto.getValue() != null) {
-            cajaService.guardar(this.construirCaja(((Number) ftxt_Monto.getValue()).doubleValue()));
-            GUI_Caja abrirCaja = new GUI_Caja(cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()));
-            abrirCaja.setModal(true);
-            abrirCaja.setLocationRelativeTo(this);
-            abrirCaja.setVisible(true);
-            this.dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "Monto inválido", "Error", JOptionPane.ERROR_MESSAGE);
+        if (ftxt_Monto.getValue() == null) {
+            ftxt_Monto.setValue(0);
         }
+        cajaService.guardar(this.construirCaja(((Number) ftxt_Monto.getValue()).doubleValue()));
+        GUI_Caja abrirCaja = new GUI_Caja(cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()));
+        abrirCaja.setModal(true);
+        abrirCaja.setLocationRelativeTo(this);
+        abrirCaja.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btn_AbrirCajaActionPerformed
 
     private void ftxt_MontoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ftxt_MontoFocusLost
@@ -195,7 +174,6 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AbrirCaja;
-    private javax.swing.JButton btn_Cancelar;
     private javax.swing.JFormattedTextField ftxt_Monto;
     private javax.swing.JLabel lbl_CorteControl;
     private javax.swing.JLabel lbl_monto;
