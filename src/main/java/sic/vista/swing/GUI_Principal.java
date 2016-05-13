@@ -2,6 +2,8 @@ package sic.vista.swing;
 
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
@@ -13,17 +15,21 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
+import sic.modelo.Caja;
 import sic.modelo.Empresa;
+import sic.service.EstadoCaja;
+import sic.service.ICajaService;
 import sic.service.IEmpresaService;
 import sic.service.IUsuarioService;
 import sic.util.Utilidades;
 
 public class GUI_Principal extends JFrame {
-    
+
     private final JLabel lbl_Fondo;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);    
+    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
+    private final ICajaService cajaService = appContext.getBean(ICajaService.class);
     private static final Logger log = Logger.getLogger(GUI_Principal.class.getPackage().getName());
 
     public GUI_Principal() {
@@ -41,7 +47,7 @@ public class GUI_Principal extends JFrame {
 
     public JDesktopPane getDesktopPane() {
         return dp_Escritorio;
-    }     
+    }
 
     private void llamarGUI_SeleccionEmpresa() {
         GUI_SeleccionEmpresa gui_seleccionEmpresa = new GUI_SeleccionEmpresa(this, true);
@@ -53,6 +59,7 @@ public class GUI_Principal extends JFrame {
         } else {
             lbl_EmpresaActiva.setText("Empresa: " + empresa.getNombre());
         }
+        this.cierreDeCajaDiaAnterior();
     }
 
     @SuppressWarnings("unchecked")
@@ -85,7 +92,6 @@ public class GUI_Principal extends JFrame {
         mnu_Administracion = new javax.swing.JMenu();
         mnuItm_Transportistas = new javax.swing.JMenuItem();
         mnuItm_FormasDePago = new javax.swing.JMenuItem();
-        mnuItm_Caja = new javax.swing.JMenuItem();
         jmni_Cajas = new javax.swing.JMenuItem();
         mnu_Stock = new javax.swing.JMenu();
         mnuItm_Productos = new javax.swing.JMenuItem();
@@ -258,14 +264,7 @@ public class GUI_Principal extends JFrame {
         });
         mnu_Administracion.add(mnuItm_FormasDePago);
 
-        mnuItm_Caja.setText("Arqueo de Caja");
-        mnuItm_Caja.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuItm_CajaActionPerformed(evt);
-            }
-        });
-        mnu_Administracion.add(mnuItm_Caja);
-
+        jmni_Cajas.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Caja_16x16.png"))); // NOI18N
         jmni_Cajas.setText("Cajas");
         jmni_Cajas.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -575,12 +574,6 @@ public class GUI_Principal extends JFrame {
         }
     }//GEN-LAST:event_mnuItm_PedidosActionPerformed
 
-    private void mnuItm_CajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_CajaActionPerformed
-        GUI_Caja caja = new GUI_Caja(this, true);
-        caja.setLocationRelativeTo(this);
-        caja.setVisible(true);
-    }//GEN-LAST:event_mnuItm_CajaActionPerformed
-
     private void jmni_CajasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmni_CajasActionPerformed
         JInternalFrame gui = Utilidades.estaEnDesktop(getDesktopPane(), GUI_Cajas.class);
         if (gui == null) {
@@ -589,6 +582,14 @@ public class GUI_Principal extends JFrame {
                     getDesktopPane().getHeight() / 2 - gui.getHeight() / 2);
             getDesktopPane().add(gui);
             gui.setVisible(true);
+            Caja caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+            if (caja != null) {
+                if (caja.getEstado() == EstadoCaja.ABIERTA) {
+                    GUI_Caja cajaAbierta = new GUI_Caja(this, true, caja);
+                    cajaAbierta.setLocationRelativeTo(this);
+                    cajaAbierta.setVisible(true);
+                }
+            }
         } else {
             //selecciona y trae al frente el internalframe
             try {
@@ -612,7 +613,6 @@ public class GUI_Principal extends JFrame {
     private javax.swing.JLabel lbl_Separador;
     private javax.swing.JLabel lbl_UsuarioActivo;
     private javax.swing.JMenuBar mb_BarraMenues;
-    private javax.swing.JMenuItem mnuItm_Caja;
     private javax.swing.JMenuItem mnuItm_CambiarEmpresa;
     private javax.swing.JMenuItem mnuItm_CambiarUser;
     private javax.swing.JMenuItem mnuItm_Clientes;
@@ -636,4 +636,21 @@ public class GUI_Principal extends JFrame {
     private javax.swing.JMenu mnu_Stock;
     private javax.swing.JMenu mnu_Ventas;
     // End of variables declaration//GEN-END:variables
+
+    private void cierreDeCajaDiaAnterior() {
+        Caja cajaACerrar = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        if ((cajaACerrar != null) && (cajaACerrar.getEstado() == EstadoCaja.ABIERTA)) {
+            Calendar fechaAperturaMasUnDia = Calendar.getInstance();
+            fechaAperturaMasUnDia.setTime(cajaACerrar.getFechaApertura());
+            fechaAperturaMasUnDia.add(Calendar.DATE, 1);
+            if (fechaAperturaMasUnDia.get(Calendar.DATE) == Calendar.getInstance().get(Calendar.DATE)
+                    || fechaAperturaMasUnDia.before(Calendar.getInstance())) {
+                cajaACerrar.setFechaCierre(new Date());
+                cajaACerrar.setUsuarioCierraCaja(cajaACerrar.getUsuarioAbreCaja());
+                cajaACerrar.setEstado(EstadoCaja.CERRADA);
+                cajaACerrar.setSaldoReal(cajaACerrar.getSaldoFinal());
+                cajaService.actualizar(cajaACerrar);
+            }
+        }
+    }
 }

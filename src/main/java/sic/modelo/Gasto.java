@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import sic.service.Movimiento;
 
 @Entity
 @Table(name = "gasto")

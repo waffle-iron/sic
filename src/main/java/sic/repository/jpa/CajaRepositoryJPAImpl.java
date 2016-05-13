@@ -95,7 +95,7 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
     public List<Caja> getCajasCriteria(BusquedaCajaCriteria criteria) {
         String query = "SELECT c FROM Caja c WHERE c.empresa = :empresa AND c.eliminada = false";
         if (criteria.isBuscaPorUsuario() == true) {
-            query += " AND (c.usuario.id_Usuario = " + criteria.getUsuario().getId_Usuario() + " OR c.usuarioCierra.id_Usuario = " + criteria.getUsuario().getId_Usuario() + ")";
+            query += " AND c.usuarioCierraCaja.id_Usuario = " + criteria.getUsuario().getId_Usuario();
         }
         if (criteria.isBuscaPorFecha() == true) {
             FormatterFechaHora formateadorFecha = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_INTERNACIONAL);

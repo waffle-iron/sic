@@ -7,7 +7,6 @@ import sic.modelo.Empresa;
 import sic.modelo.FormaDePago;
 import sic.modelo.Gasto;
 import sic.modelo.Usuario;
-import sic.repository.jpa.GastoRepositoryJPAImpl;
 import sic.service.IEmpresaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IGastoService;
@@ -35,14 +34,14 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
         lbl_Concepto = new javax.swing.JLabel();
         lbl_Monto = new javax.swing.JLabel();
         cmb_FormaDePago = new javax.swing.JComboBox<>();
-        txtf_Concepto = new javax.swing.JTextField();
+        ftxt_Concepto = new javax.swing.JTextField();
         ftxt_Monto = new javax.swing.JFormattedTextField();
         pnl_Botones = new javax.swing.JPanel();
-        btn_Cancelar = new javax.swing.JButton();
         lbl_Aceptar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Nuevo Gasto");
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -55,15 +54,15 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
 
         lbl_Monto.setText("Monto:");
 
-        ftxt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
-        ftxt_Monto.setText("0.0");
+        ftxt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
+        ftxt_Monto.setText("0");
 
         javax.swing.GroupLayout pnl_ParametrosLayout = new javax.swing.GroupLayout(pnl_Parametros);
         pnl_Parametros.setLayout(pnl_ParametrosLayout);
         pnl_ParametrosLayout.setHorizontalGroup(
             pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_ParametrosLayout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_ParametrosLayout.createSequentialGroup()
+                .addContainerGap(25, Short.MAX_VALUE)
                 .addGroup(pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnl_ParametrosLayout.createSequentialGroup()
                         .addComponent(lbl_FormaDePago)
@@ -76,39 +75,32 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
                     .addGroup(pnl_ParametrosLayout.createSequentialGroup()
                         .addComponent(lbl_Concepto)
                         .addGap(18, 18, 18)
-                        .addComponent(txtf_Concepto, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(ftxt_Concepto, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
 
         pnl_ParametrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_Concepto, lbl_FormaDePago, lbl_Monto});
 
-        pnl_ParametrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cmb_FormaDePago, ftxt_Monto, txtf_Concepto});
+        pnl_ParametrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cmb_FormaDePago, ftxt_Concepto, ftxt_Monto});
 
         pnl_ParametrosLayout.setVerticalGroup(
             pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ParametrosLayout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_FormaDePago)
                     .addComponent(cmb_FormaDePago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_Concepto)
-                    .addComponent(txtf_Concepto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ftxt_Concepto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_Monto)
-                    .addComponent(ftxt_Monto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                    .addComponent(ftxt_Monto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
-        btn_Cancelar.setText("Cancelar");
-        btn_Cancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_CancelarActionPerformed(evt);
-            }
-        });
-
+        lbl_Aceptar.setForeground(java.awt.Color.blue);
         lbl_Aceptar.setText("Aceptar");
         lbl_Aceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -122,21 +114,12 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
             pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_BotonesLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_Cancelar)
-                .addGap(0, 0, 0)
                 .addComponent(lbl_Aceptar)
                 .addContainerGap())
         );
-
-        pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Cancelar, lbl_Aceptar});
-
         pnl_BotonesLayout.setVerticalGroup(
             pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_BotonesLayout.createSequentialGroup()
-                .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_Cancelar)
-                    .addComponent(lbl_Aceptar))
-                .addGap(0, 9, Short.MAX_VALUE))
+            .addComponent(lbl_Aceptar)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -144,20 +127,17 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnl_Parametros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnl_Botones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addComponent(pnl_Parametros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(pnl_Botones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(pnl_Parametros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnl_Botones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 12, Short.MAX_VALUE))
         );
 
         pack();
@@ -169,12 +149,14 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_formWindowOpened
 
-    private void btn_CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_CancelarActionPerformed
-        this.dispose();
-    }//GEN-LAST:event_btn_CancelarActionPerformed
-
     private void lbl_AceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_AceptarActionPerformed
-        gastoService.guardar(this.construirGasto(txtf_Concepto.getText(), Double.parseDouble(ftxt_Monto.getValue().toString()), (FormaDePago) cmb_FormaDePago.getSelectedItem()));
+        if (ftxt_Monto.getValue() == null) {
+            ftxt_Monto.setText("0");
+        }
+        if (ftxt_Concepto.getText() == null) {
+            ftxt_Concepto.setText("");
+        }
+        gastoService.guardar(this.construirGasto(ftxt_Concepto.getText(), Double.parseDouble(ftxt_Monto.getValue().toString()), (FormaDePago) cmb_FormaDePago.getSelectedItem()));
         this.dispose();
     }//GEN-LAST:event_lbl_AceptarActionPerformed
 
@@ -194,8 +176,8 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
         return gasto;
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_Cancelar;
     private javax.swing.JComboBox<FormaDePago> cmb_FormaDePago;
+    private javax.swing.JTextField ftxt_Concepto;
     private javax.swing.JFormattedTextField ftxt_Monto;
     private javax.swing.JButton lbl_Aceptar;
     private javax.swing.JLabel lbl_Concepto;
@@ -203,6 +185,5 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
     private javax.swing.JLabel lbl_Monto;
     private javax.swing.JPanel pnl_Botones;
     private javax.swing.JPanel pnl_Parametros;
-    private javax.swing.JTextField txtf_Concepto;
     // End of variables declaration//GEN-END:variables
 }

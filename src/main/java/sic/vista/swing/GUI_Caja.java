@@ -28,12 +28,16 @@ import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Gasto;
+import sic.service.EstadoCaja;
 import sic.service.ICajaService;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IGastoService;
+import sic.service.IUsuarioService;
+import sic.util.FormatoFechasEnTablas;
 import sic.util.FormatterFechaHora;
+import sic.util.FormatterNumero;
 import sic.util.Utilidades;
 
 public class GUI_Caja extends javax.swing.JDialog {
@@ -44,7 +48,8 @@ public class GUI_Caja extends javax.swing.JDialog {
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IGastoService gastoService = appContext.getBean(IGastoService.class);
-    private final FormatterFechaHora formatoFechaHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_PERSONALIZADO);
+    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
+    private final FormatterFechaHora formatoHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_HORA_INTERNACIONAL);
     private ModeloTabla modeloTablaBalance;
     private ModeloTabla modeloTablaResumen;
     private List<Object> listaMovimientos = new ArrayList<>();
@@ -55,20 +60,20 @@ public class GUI_Caja extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        this.setTitle("Arqueo de Caja - Apertura: " + formatoFechaHora.format(this.caja.getFechaApertura()));
+        this.iniciarTituloVentana();
     }
 
     public GUI_Caja(java.awt.Frame parent, boolean modal, Caja caja) {
         super(parent, modal);
         initComponents();
         this.caja = caja;
-        this.setTitle("Arqueo de Caja - Apertura: " + formatoFechaHora.format(this.caja.getFechaApertura()));
+        this.iniciarTituloVentana();
     }
 
     public GUI_Caja(Caja caja) {
         initComponents();
         this.caja = caja;
-        this.setTitle("Arqueo de Caja - Apertura: " + formatoFechaHora.format(this.caja.getFechaApertura()));
+        this.iniciarTituloVentana();
     }
 
     @SuppressWarnings("unchecked")
@@ -76,10 +81,8 @@ public class GUI_Caja extends javax.swing.JDialog {
     private void initComponents() {
 
         pbl_Cabecera = new javax.swing.JPanel();
-        lbl_FormaDePago = new javax.swing.JLabel();
-        cmb_FormasDePago = new javax.swing.JComboBox<>();
         lbl_aviso = new javax.swing.JLabel();
-        btn_abrirCaja = new javax.swing.JButton();
+        lbl_estado = new javax.swing.JLabel();
         pnl_Tabla = new javax.swing.JPanel();
         sp_Tabla = new javax.swing.JScrollPane();
         tbl_Balance = new javax.swing.JTable();
@@ -87,15 +90,19 @@ public class GUI_Caja extends javax.swing.JDialog {
         lbl_total = new javax.swing.JLabel();
         btn_AgregarGasto = new javax.swing.JButton();
         ftxt_Detalle = new javax.swing.JFormattedTextField();
+        lbl_FormaDePago = new javax.swing.JLabel();
+        cmb_FormasDePago = new javax.swing.JComboBox<>();
+        btn_EliminarGasto = new javax.swing.JButton();
+        btn_Imprimir = new javax.swing.JButton();
+        btn_CerrarCaja = new javax.swing.JButton();
         pnl_Resumen = new javax.swing.JPanel();
         sp_TablaResumen = new javax.swing.JScrollPane();
         tbl_Resumen = new javax.swing.JTable();
         ftxt_Total = new javax.swing.JFormattedTextField();
         lbl_Total = new javax.swing.JLabel();
-        btn_RealizarArqueo = new javax.swing.JButton();
-        btn_Imprimir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1050, 678));
         addWindowFocusListener(new java.awt.event.WindowFocusListener() {
             public void windowGainedFocus(java.awt.event.WindowEvent evt) {
                 formWindowGainedFocus(evt);
@@ -109,53 +116,33 @@ public class GUI_Caja extends javax.swing.JDialog {
             }
         });
 
-        lbl_FormaDePago.setText("Forma de Pago:");
-
-        cmb_FormasDePago.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmb_FormasDePagoActionPerformed(evt);
-            }
-        });
-
         lbl_aviso.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        lbl_aviso.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 
-        btn_abrirCaja.setForeground(java.awt.Color.blue);
-        btn_abrirCaja.setText("Abrir Caja");
-        btn_abrirCaja.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_abrirCajaActionPerformed(evt);
-            }
-        });
+        lbl_estado.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        lbl_estado.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbl_estado.setText("Estado:");
 
         javax.swing.GroupLayout pbl_CabeceraLayout = new javax.swing.GroupLayout(pbl_Cabecera);
         pbl_Cabecera.setLayout(pbl_CabeceraLayout);
         pbl_CabeceraLayout.setHorizontalGroup(
             pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pbl_CabeceraLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(lbl_FormaDePago)
-                .addGap(0, 0, 0)
-                .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(218, 218, 218)
-                .addComponent(btn_abrirCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(lbl_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
-        pbl_CabeceraLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_abrirCaja, lbl_aviso});
+        pbl_CabeceraLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_aviso, lbl_estado});
 
         pbl_CabeceraLayout.setVerticalGroup(
             pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pbl_CabeceraLayout.createSequentialGroup()
-                .addGroup(pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pbl_CabeceraLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lbl_FormaDePago)
-                        .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_abrirCaja))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(lbl_estado)
+            .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
+
+        pbl_CabeceraLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lbl_aviso, lbl_estado});
 
         pnl_Tabla.setBorder(javax.swing.BorderFactory.createTitledBorder("Movimientos por Forma de Pago"));
 
@@ -185,37 +172,91 @@ public class GUI_Caja extends javax.swing.JDialog {
         ftxt_Detalle.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         ftxt_Detalle.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
+        lbl_FormaDePago.setText("Forma de Pago:");
+
+        cmb_FormasDePago.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmb_FormasDePagoActionPerformed(evt);
+            }
+        });
+
+        btn_EliminarGasto.setForeground(java.awt.Color.blue);
+        btn_EliminarGasto.setText("Eliminar Gasto");
+        btn_EliminarGasto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_EliminarGastoActionPerformed(evt);
+            }
+        });
+
+        btn_Imprimir.setForeground(java.awt.Color.blue);
+        btn_Imprimir.setText("Imprimir");
+        btn_Imprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ImprimirActionPerformed(evt);
+            }
+        });
+
+        btn_CerrarCaja.setForeground(java.awt.Color.blue);
+        btn_CerrarCaja.setText("Cerrar Caja");
+        btn_CerrarCaja.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_CerrarCajaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout pnl_TablaLayout = new javax.swing.GroupLayout(pnl_Tabla);
         pnl_Tabla.setLayout(pnl_TablaLayout);
         pnl_TablaLayout.setHorizontalGroup(
             pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(sp_Tabla)
             .addGroup(pnl_TablaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sp_Tabla)
-                    .addGroup(pnl_TablaLayout.createSequentialGroup()
-                        .addComponent(btn_VerDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(btn_AgregarGasto)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lbl_total)
-                        .addGap(0, 0, 0)
-                        .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .addComponent(lbl_FormaDePago)
+                .addGap(2, 2, 2)
+                .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(pnl_TablaLayout.createSequentialGroup()
+                .addComponent(btn_VerDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(btn_AgregarGasto)
+                .addGap(0, 0, 0)
+                .addComponent(btn_EliminarGasto)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbl_total)
+                .addGap(2, 2, 2)
+                .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_TablaLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btn_Imprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(btn_CerrarCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
+
+        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AgregarGasto, btn_EliminarGasto, btn_VerDetalle});
+
         pnl_TablaLayout.setVerticalGroup(
             pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_TablaLayout.createSequentialGroup()
-                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_FormaDePago)
+                    .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_VerDetalle)
-                    .addComponent(lbl_total)
                     .addComponent(btn_AgregarGasto)
-                    .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btn_EliminarGasto)
+                    .addComponent(lbl_total)
+                    .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(31, 31, 31)
+                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_CerrarCaja, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btn_Imprimir)))
         );
 
-        pnl_Resumen.setBorder(javax.swing.BorderFactory.createTitledBorder("Resumen"));
+        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_AgregarGasto, btn_EliminarGasto});
+
+        pnl_Resumen.setBorder(javax.swing.BorderFactory.createTitledBorder("Resumen General"));
 
         tbl_Resumen.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -236,67 +277,38 @@ public class GUI_Caja extends javax.swing.JDialog {
         lbl_Total.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Total.setText("Total:");
 
-        btn_RealizarArqueo.setForeground(java.awt.Color.blue);
-        btn_RealizarArqueo.setText("Realizar Arqueo");
-        btn_RealizarArqueo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_RealizarArqueoActionPerformed(evt);
-            }
-        });
-
-        btn_Imprimir.setForeground(java.awt.Color.blue);
-        btn_Imprimir.setText("Imprimir");
-        btn_Imprimir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_ImprimirActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout pnl_ResumenLayout = new javax.swing.GroupLayout(pnl_Resumen);
         pnl_Resumen.setLayout(pnl_ResumenLayout);
         pnl_ResumenLayout.setHorizontalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sp_TablaResumen)
-                    .addGroup(pnl_ResumenLayout.createSequentialGroup()
-                        .addComponent(btn_RealizarArqueo, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(btn_Imprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(lbl_Total)
-                        .addGap(0, 0, 0)
-                        .addComponent(ftxt_Total, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbl_Total)
+                .addGap(2, 2, 2)
+                .addComponent(ftxt_Total, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 818, Short.MAX_VALUE)
         );
         pnl_ResumenLayout.setVerticalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
-                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_RealizarArqueo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn_Imprimir))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(ftxt_Total)
-                        .addComponent(lbl_Total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ftxt_Total)
+                    .addComponent(lbl_Total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
-        pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Imprimir, btn_RealizarArqueo, ftxt_Total, lbl_Total});
+        pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {ftxt_Total, lbl_Total});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pnl_Resumen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnl_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pbl_Cabecera, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnl_Resumen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addComponent(pbl_Cabecera, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(pnl_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -304,10 +316,9 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(pbl_Cabecera, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnl_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
-                .addComponent(pnl_Resumen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18))
+                .addComponent(pnl_Resumen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnl_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -317,25 +328,37 @@ public class GUI_Caja extends javax.swing.JDialog {
         this.limpiarYCargarTablas();
     }//GEN-LAST:event_formWindowOpened
 
-    private void btn_abrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_abrirCajaActionPerformed
-        GUI_AbrirCaja abrirCaja = new GUI_AbrirCaja(this, true);
-        abrirCaja.setLocationRelativeTo(this);
-        abrirCaja.setVisible(true);
-        this.caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        this.cargarElementosFormaDePago();
-    }//GEN-LAST:event_btn_abrirCajaActionPerformed
-
-    private void btn_RealizarArqueoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_RealizarArqueoActionPerformed
+    private void btn_CerrarCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_CerrarCajaActionPerformed
         if (this.caja != null) {
-            if (this.caja.isCerrada() == false) {
-                GUI_CerrarCaja cerrarCaja = new GUI_CerrarCaja(this, true, this.caja, this.caja.getSaldoFinal());
-                cerrarCaja.setLocationRelativeTo(this);
-                cerrarCaja.setVisible(true);
+            if (this.caja.getEstado() == EstadoCaja.ABIERTA) {
+                try {
+                    String monto = JOptionPane.showInputDialog(this, "Saldo del Sistema: " + this.caja.getSaldoFinal() + "\nSaldo Real:", "Cerrar Caja", JOptionPane.QUESTION_MESSAGE);
+                    if (monto != null) {
+                        this.caja.setSaldoReal(Double.parseDouble(monto));
+                        this.caja.setFechaCierre(new Date());
+                        this.caja.setUsuarioCierraCaja(usuarioService.getUsuarioActivo().getUsuario());
+                        this.caja.setEstado(EstadoCaja.CERRADA);
+                        this.cajaService.actualizar(caja);
+                        try {
+                            this.lanzarReporteCaja();
+                            this.dispose();
+                        } catch (JRException ex) {
+                            String msjError = "Se produjo un error procesando el reporte.";
+                            log.error(msjError + " - " + ex.getMessage());
+                            JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } catch (java.lang.NumberFormatException e) {
+                    String msjError = "Monto inválido";
+                    log.error(msjError + " - " + e.getMessage());
+                    JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.INFORMATION_MESSAGE);
+                }
+
             } else {
                 JOptionPane.showMessageDialog(this, "Caja Cerrada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
             }
         }
-    }//GEN-LAST:event_btn_RealizarArqueoActionPerformed
+    }//GEN-LAST:event_btn_CerrarCajaActionPerformed
 
     private void formWindowGainedFocus(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowGainedFocus
         this.limpiarYCargarTablas();
@@ -375,9 +398,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                 String mensaje = "En Concepto de: " + ((Gasto) movimientoDeTabla).getConcepto() + "\nMonto: " + ((Gasto) movimientoDeTabla).getMonto() + "\nUsuario: " + ((Gasto) movimientoDeTabla).getUsuario().getNombre();
                 JOptionPane.showMessageDialog(this, mensaje, "Resumen de Gasto", JOptionPane.INFORMATION_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un movimiento!", "Información", JOptionPane.INFORMATION_MESSAGE);
-        }
+        } 
     }//GEN-LAST:event_btn_VerDetalleActionPerformed
 
     private void btn_AgregarGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AgregarGastoActionPerformed
@@ -388,54 +409,76 @@ public class GUI_Caja extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_AgregarGastoActionPerformed
 
     private void cmb_FormasDePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_FormasDePagoActionPerformed
-        this.cargarElementosFormaDePago();
+        this.limpiarTablaBalance();
+        this.cargarDatosBalance();
     }//GEN-LAST:event_cmb_FormasDePagoActionPerformed
 
     private void btn_ImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ImprimirActionPerformed
-        GUI_impresionCaja informe = new GUI_impresionCaja(this, true, this.caja);
-        informe.setLocationRelativeTo(null);
-        informe.setVisible(true);
+        try {
+            this.lanzarReporteCaja();
+        } catch (JRException ex) {
+            String msjError = "Se produjo un error procesando el reporte.";
+            log.error(msjError + " - " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btn_ImprimirActionPerformed
 
-    private void cargarDatosBalance() {
-        lbl_aviso.setText("Estado: Cerrada");
-        lbl_aviso.setForeground(Color.RED);
-        this.btn_abrirCaja.setEnabled(true);
-        this.btn_AgregarGasto.setEnabled(false);
-        if (this.caja != null) {
-            this.listaMovimientos.clear();
-            if (this.caja.isCerrada()) {
-                List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCierre());
-                this.listaMovimientos.addAll(facturas);
-                List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCierre());
-                this.listaMovimientos.addAll(gastos);
-                this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
-            } else {
-                this.btn_abrirCaja.setEnabled(false);
-                this.btn_AgregarGasto.setEnabled(true);
-                List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), caja.getFechaApertura(), new Date());
-                this.listaMovimientos.addAll(facturas);
-                List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), caja.getFechaApertura(), new Date());
-                this.listaMovimientos.addAll(gastos);
-                lbl_aviso.setText("Estado: Abierta");
-                lbl_aviso.setForeground(Color.GREEN);
-                this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
+    private void btn_EliminarGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarGastoActionPerformed
+        if (tbl_Balance.getSelectedRow() != -1) {
+            Object movimientoDeTabla = this.listaMovimientos.get(Utilidades.getSelectedRowModelIndice(tbl_Balance));
+            if (movimientoDeTabla instanceof Gasto) {
+                int confirmacionEliminacion = JOptionPane.showConfirmDialog(this,
+                        "¿Esta seguro que desea eliminar el gasto seleccionado?",
+                        "Eliminar", JOptionPane.YES_NO_OPTION);
+                if (confirmacionEliminacion == JOptionPane.YES_OPTION) {
+                    Gasto gasto = (Gasto) movimientoDeTabla;
+                    gasto.setEliminado(true);
+                    gastoService.actualizar(gasto);
+                    this.limpiarYCargarTablas();
+                }
             }
+        }
+    }//GEN-LAST:event_btn_EliminarGastoActionPerformed
+
+    private void cargarDatosBalance() {
+        lbl_aviso.setText("Cerrada");
+        lbl_aviso.setForeground(Color.RED);
+        this.btn_AgregarGasto.setEnabled(false);
+        this.btn_EliminarGasto.setEnabled(false);
+        if (this.caja != null) {
+            if (this.caja.getEstado() == EstadoCaja.ABIERTA) {
+                lbl_aviso.setText("Abierta");
+                lbl_aviso.setForeground(Color.GREEN);
+                this.btn_AgregarGasto.setEnabled(true);
+                this.btn_EliminarGasto.setEnabled(true);
+            }
+            this.listaMovimientos.clear();
+            Date hasta = new Date();
+            if (this.caja.getEstado() == EstadoCaja.CERRADA) {
+                hasta = this.caja.getFechaCierre();
+            }
+            List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+            this.listaMovimientos.addAll(facturas);
+            List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+            this.listaMovimientos.addAll(gastos);
+            this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
+
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AgregarGasto;
+    private javax.swing.JButton btn_CerrarCaja;
+    private javax.swing.JButton btn_EliminarGasto;
     private javax.swing.JButton btn_Imprimir;
-    private javax.swing.JButton btn_RealizarArqueo;
     private javax.swing.JButton btn_VerDetalle;
-    private javax.swing.JButton btn_abrirCaja;
     private javax.swing.JComboBox<FormaDePago> cmb_FormasDePago;
     private javax.swing.JFormattedTextField ftxt_Detalle;
     private javax.swing.JFormattedTextField ftxt_Total;
     private javax.swing.JLabel lbl_FormaDePago;
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_aviso;
+    private javax.swing.JLabel lbl_estado;
     private javax.swing.JLabel lbl_total;
     private javax.swing.JPanel pbl_Cabecera;
     private javax.swing.JPanel pnl_Resumen;
@@ -455,7 +498,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     private void limpiarTablaResumen() {
         modeloTablaResumen = new ModeloTabla();
         tbl_Resumen.setModel(modeloTablaResumen);
-        this.setColumnasDeTablaResumen();
+        this.setColumnasDeTablaResumenGeneral();
     }
 
     private void setColumnasDeTablaFormaDePago() {
@@ -474,7 +517,7 @@ public class GUI_Caja extends javax.swing.JDialog {
 
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaBalance.getColumnCount()];
-        tipos[0] = String.class;
+        tipos[0] = Date.class;
         tipos[1] = String.class;
         tipos[2] = Double.class;
         tipos[3] = Double.class;
@@ -484,11 +527,11 @@ public class GUI_Caja extends javax.swing.JDialog {
         tbl_Balance.getTableHeader().setResizingAllowed(true);
 
         //Tamanios de columnas
-        tbl_Balance.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tbl_Balance.getColumnModel().getColumn(1).setPreferredWidth(100);
-        tbl_Balance.getColumnModel().getColumn(2).setPreferredWidth(50);
-        tbl_Balance.getColumnModel().getColumn(3).setPreferredWidth(50);
-        tbl_Balance.getColumnModel().getColumn(4).setPreferredWidth(50);
+        tbl_Balance.getColumnModel().getColumn(0).setPreferredWidth(15);
+        tbl_Balance.getColumnModel().getColumn(1).setPreferredWidth(150);
+        tbl_Balance.getColumnModel().getColumn(2).setPreferredWidth(15);
+        tbl_Balance.getColumnModel().getColumn(3).setPreferredWidth(15);
+        tbl_Balance.getColumnModel().getColumn(4).setPreferredWidth(15);
 
     }
 
@@ -497,13 +540,13 @@ public class GUI_Caja extends javax.swing.JDialog {
         for (Object movimiento : movimientos) {
             Object[] fila = new Object[5];
             if (movimiento instanceof FacturaCompra) {
-                fila[0] = formatoFechaHora.format(((FacturaCompra) movimiento).getFecha());
+                fila[0] = ((FacturaCompra) movimiento).getFecha();
             }
             if (movimiento instanceof FacturaVenta) {
-                fila[0] = formatoFechaHora.format(((FacturaVenta) movimiento).getFecha());
+                fila[0] = ((FacturaVenta) movimiento).getFecha();
             }
             if (movimiento instanceof Gasto) {
-                fila[0] = formatoFechaHora.format(((Gasto) movimiento).getFecha());
+                fila[0] = ((Gasto) movimiento).getFecha();
             }
             if (movimiento instanceof FacturaCompra) {
                 fila[2] = 0.0;
@@ -520,7 +563,7 @@ public class GUI_Caja extends javax.swing.JDialog {
             if (movimiento instanceof FacturaVenta || movimiento instanceof FacturaCompra) {
                 String tipoFactura;
                 if (movimiento instanceof FacturaVenta) {
-                    tipoFactura = "Venta   ";
+                    tipoFactura = "Venta";
                 } else {
                     tipoFactura = "Compra";
                 }
@@ -533,17 +576,19 @@ public class GUI_Caja extends javax.swing.JDialog {
         }
         this.calcularTotalBalance();
         tbl_Balance.setModel(modeloTablaBalance);
+        tbl_Balance.getColumnModel().getColumn(4).setCellRenderer(new ColoresNumerosTabla());
+        tbl_Balance.getColumnModel().getColumn(0).setCellRenderer(new FormatoFechasEnTablas());
         //Ordena la tabla segun la Fecha
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(tbl_Balance.getModel());
         tbl_Balance.setRowSorter(sorter);
         List<RowSorter.SortKey> sortKeys = new ArrayList<>();
         int columnIndexToSort = 0;
-        sortKeys.add(new RowSorter.SortKey(columnIndexToSort, SortOrder.ASCENDING));
+        sortKeys.add(new RowSorter.SortKey(columnIndexToSort, SortOrder.DESCENDING));
         sorter.setSortKeys(sortKeys);
         sorter.sort();
     }
 
-    private void setColumnasDeTablaResumen() {
+    private void setColumnasDeTablaResumenGeneral() {
         //sorting
         tbl_Resumen.setAutoCreateRowSorter(true);
 
@@ -563,12 +608,12 @@ public class GUI_Caja extends javax.swing.JDialog {
         tbl_Resumen.getTableHeader().setResizingAllowed(true);
 
         //Tamanios de columnas
-        tbl_Resumen.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tbl_Resumen.getColumnModel().getColumn(1).setPreferredWidth(50);
+        tbl_Resumen.getColumnModel().getColumn(0).setPreferredWidth(200);
+        tbl_Resumen.getColumnModel().getColumn(1).setPreferredWidth(5);
 
     }
 
-    private void cargarTablaResumen() {
+    private void cargarTablaResumenGeneral() {
         if (this.caja != null) {
             Empresa empresaActiva = empresaService.getEmpresaActiva().getEmpresa();
             double total = this.caja.getSaldoInicial();
@@ -578,26 +623,36 @@ public class GUI_Caja extends javax.swing.JDialog {
             modeloTablaResumen.addRow(saldoInicial);
             List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaActiva);
             for (FormaDePago formaDePago : formasDePago) {
-                Object[] fila = new Object[2];
-                Date hasta;
-                if (this.caja.isCerrada()) {
-                    hasta = this.caja.getFechaCierre();
-                } else {
-                    hasta = new Date();
+                if (formaDePago.isAfectaCaja()) {
+                    Date hasta = new Date();
+                    if (this.caja.getEstado() == EstadoCaja.CERRADA) {
+                        hasta = this.caja.getFechaCierre();
+                    }
+                    List<Factura> facturasPorFormaDePago = facturaService.getFacturasPorFechasYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+                    List<Object> gastosPorFormaDePago = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+                    if (facturasPorFormaDePago.size() > 0 || gastosPorFormaDePago.size() > 0) {
+                        Object[] fila = new Object[2];
+                        fila[0] = formaDePago.getNombre();
+                        this.listaMovimientos.clear();
+                        this.listaMovimientos.addAll(facturasPorFormaDePago);
+                        this.listaMovimientos.addAll(gastosPorFormaDePago);
+                        double totalParcial = cajaService.calcularTotalPorMovimiento(this.listaMovimientos);
+                        fila[1] = totalParcial;
+                        total += totalParcial;
+                        modeloTablaResumen.addRow(fila);
+                    }
                 }
-                List<Factura> facturasPorFormaDePago = facturaService.getFacturasPorFechasYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
-                List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
-                fila[0] = formaDePago.getNombre();
-                this.listaMovimientos.clear();
-                this.listaMovimientos.addAll(facturasPorFormaDePago);
-                this.listaMovimientos.addAll(gastos);
-                double totalParcial = cajaService.calcularTotalPorMovimiento(this.listaMovimientos);
-                fila[1] = totalParcial;
-                total += totalParcial;
-                modeloTablaResumen.addRow(fila);
             }
-            this.caja.setSaldoFinal(total);
+            this.caja.setSaldoFinal(Math.floor(total * 100) / 100);
             this.ftxt_Total.setValue(this.caja.getSaldoFinal());
+            //Guarda el monto final del último calculo en la caja
+            cajaService.actualizar(this.caja);
+            if (this.caja.getSaldoFinal() < 0) {
+                ftxt_Total.setBackground(Color.PINK);
+            }
+            if (this.caja.getSaldoFinal() > 0) {
+                ftxt_Total.setBackground(Color.GREEN);
+            }
             tbl_Resumen.setModel(modeloTablaResumen);
             tbl_Resumen.setDefaultRenderer(Double.class, new ColoresNumerosTabla());
         }
@@ -611,6 +666,12 @@ public class GUI_Caja extends javax.swing.JDialog {
             totalHaber += (Double) modeloTablaBalance.getValueAt(i, 3);
         }
         ftxt_Detalle.setValue(totalDebe - totalHaber);
+        if ((Double) ftxt_Detalle.getValue() < 0) {
+            ftxt_Detalle.setBackground(Color.PINK);
+        }
+        if ((Double) ftxt_Detalle.getValue() > 0) {
+            ftxt_Detalle.setBackground(Color.GREEN);
+        }
     }
 
     private void cargarElementosFormaDePago() {
@@ -626,9 +687,55 @@ public class GUI_Caja extends javax.swing.JDialog {
     }
 
     private void limpiarYCargarTablas() {
-        this.cargarElementosFormaDePago();
         this.limpiarTablaResumen();
-        this.cargarTablaResumen();
+        this.cargarTablaResumenGeneral();
+        this.cargarElementosFormaDePago();
+    }
+
+    private void lanzarReporteCaja() throws JRException {
+        List<String> dataSource = new ArrayList<>();
+        dataSource.add((String) tbl_Resumen.getValueAt(0, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(0, 1))));
+        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
+        Double totalPorCorte = this.caja.getSaldoInicial();
+        for (FormaDePago formaDePago : formasDePago) {
+            Double totalPorCorteFormaDePago = 0.0;
+            if (formaDePago.isAfectaCaja()) {
+                List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
+                List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
+                for (Factura factura : facturas) {
+                    totalPorCorteFormaDePago += factura.getTotal();
+                }
+                for (Object gasto : gastos) {
+                    totalPorCorteFormaDePago += ((Gasto) gasto).getMonto();
+                }
+                dataSource.add(formaDePago.getNombre() + "-" + totalPorCorteFormaDePago);
+            }
+            totalPorCorte += totalPorCorteFormaDePago;
+        }
+        dataSource.add("Total hasta la hora de control:-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) totalPorCorte)));
+        dataSource.add("..........................Corte a las: " + formatoHora.format(this.caja.getFechaCorteInforme()) + "...........................-");
+
+        for (int f = 1; f < tbl_Resumen.getRowCount(); f++) {
+            dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 1))));
+        }
+
+        JasperPrint report = cajaService.getReporteCaja(this.caja, dataSource, usuarioService.getUsuarioActivo().getUsuario());
+        JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+        viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
+        ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+        viewer.setIconImage(iconoVentana.getImage());
+        viewer.setLocationRelativeTo(null);
+        JRViewer jrv = new JRViewer(report);
+        viewer.getContentPane().add(jrv);
+        viewer.setVisible(true);
+    }
+
+    private void iniciarTituloVentana() {
+        if (this.caja != null) {
+            this.setTitle("Arqueo de Caja - Apertura: " + formatoHora.format(this.caja.getFechaApertura()));
+        } else {
+            this.setTitle("Arqueo De Caja");
+        }
     }
 
 }

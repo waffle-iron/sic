@@ -2,6 +2,7 @@ package sic.vista.swing;
 
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -15,10 +16,14 @@ import sic.AppContextProvider;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
 import sic.modelo.Usuario;
+import sic.service.EstadoCaja;
 import sic.service.ICajaService;
 import sic.service.IEmpresaService;
 import sic.service.IUsuarioService;
 import sic.service.ServiceException;
+import sic.util.ColoresEstadosRenderer;
+import sic.util.FormatoFechasEnTablas;
+import sic.util.FormatterFechaHora;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -36,6 +41,10 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         initComponents();
         this.setSize(850, 600);
         this.setColumnasCaja();
+        Usuario paraMostrar = new Usuario();
+        paraMostrar.setNombre("Seleccione un Usuario....");
+        cmb_Usuarios.addItem(paraMostrar);
+        cmb_Usuarios.setEnabled(false);
     }
 
     @SuppressWarnings("unchecked")
@@ -52,24 +61,22 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         chk_Usuario = new javax.swing.JCheckBox();
         cmb_Usuarios = new javax.swing.JComboBox<>();
         pb_barra = new javax.swing.JProgressBar();
+        lbl_cantidadMostrar = new javax.swing.JLabel();
         pnl_Cajas = new javax.swing.JPanel();
         sp_TablaCajas = new javax.swing.JScrollPane();
         tbl_Cajas = new javax.swing.JTable();
-        cmb_paginado = new javax.swing.JComboBox<>();
-        lbl_cantidadMostrar = new javax.swing.JLabel();
-        pnl_Botones = new javax.swing.JPanel();
-        lbl_TotalFinal = new javax.swing.JLabel();
         btn_AbrirCaja = new javax.swing.JButton();
         btn_verDetalle = new javax.swing.JButton();
         btn_eliminarCaja = new javax.swing.JButton();
-        lbl_TotalCierre = new javax.swing.JLabel();
+        lbl_TotalFinal = new javax.swing.JLabel();
         ftxt_TotalFinal = new javax.swing.JFormattedTextField();
+        lbl_TotalCierre = new javax.swing.JLabel();
         ftxt_TotalCierre = new javax.swing.JFormattedTextField();
-        btn_ArquearCaja = new javax.swing.JButton();
 
         setClosable(true);
         setMaximizable(true);
-        setTitle("Cajas");
+        setTitle("Administrar Cajas");
+        setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Caja_16x16.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
                 GUI_Cajas.this.internalFrameOpened(evt);
@@ -90,7 +97,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
 
         pnl_Filtros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
 
-        chk_Fecha.setText("Fecha Caja");
+        chk_Fecha.setText("Fecha Caja:");
         chk_Fecha.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 chk_FechaItemStateChanged(evt);
@@ -118,46 +125,50 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             }
         });
 
-        chk_Usuario.setText("Usuario");
+        chk_Usuario.setText("Usuario:");
         chk_Usuario.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 chk_UsuarioItemStateChanged(evt);
             }
         });
 
+        lbl_cantidadMostrar.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
         javax.swing.GroupLayout pnl_FiltrosLayout = new javax.swing.GroupLayout(pnl_Filtros);
         pnl_Filtros.setLayout(pnl_FiltrosLayout);
         pnl_FiltrosLayout.setHorizontalGroup(
             pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_FiltrosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnl_FiltrosLayout.createSequentialGroup()
+                        .addGap(12, 12, 12)
                         .addComponent(btn_buscar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(pb_barra, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnl_FiltrosLayout.createSequentialGroup()
-                        .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pnl_FiltrosLayout.createSequentialGroup()
-                                .addComponent(chk_Fecha)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(lbl_Desde))
-                            .addComponent(chk_Usuario))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(lbl_cantidadMostrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pb_barra, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(pnl_FiltrosLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(chk_Usuario)
+                            .addComponent(chk_Fecha))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(cmb_Usuarios, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(pnl_FiltrosLayout.createSequentialGroup()
-                                .addComponent(dc_FechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lbl_Desde)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(dc_FechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                                 .addComponent(lbl_Hasta)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(dc_FechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
-        pnl_FiltrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {chk_Fecha, chk_Usuario});
+        pnl_FiltrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_buscar, chk_Fecha, chk_Usuario});
 
-        pnl_FiltrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_buscar, pb_barra});
+        pnl_FiltrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {dc_FechaHasta, pb_barra});
 
         pnl_FiltrosLayout.setVerticalGroup(
             pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -168,18 +179,23 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                     .addComponent(dc_FechaDesde, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_Hasta)
                     .addComponent(dc_FechaHasta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chk_Usuario)
                     .addComponent(cmb_Usuarios, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(7, 7, 7)
                 .addGroup(pnl_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pb_barra, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btn_buscar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(pb_barra, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_buscar)
+                    .addComponent(lbl_cantidadMostrar, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
-        pnl_Cajas.setBorder(javax.swing.BorderFactory.createTitledBorder("Cajas"));
+        pnl_FiltrosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {chk_Fecha, lbl_cantidadMostrar, pb_barra});
+
+        pnl_FiltrosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_buscar, cmb_Usuarios, dc_FechaDesde, dc_FechaHasta});
+
+        pnl_Cajas.setBorder(javax.swing.BorderFactory.createTitledBorder("Resultados"));
 
         tbl_Cajas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -191,39 +207,8 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         ));
         sp_TablaCajas.setViewportView(tbl_Cajas);
 
-        cmb_paginado.setForeground(java.awt.Color.blue);
-        cmb_paginado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "50", "100", "150", "300", "500" }));
-
-        lbl_cantidadMostrar.setText("Mostrar los primeros:");
-
-        javax.swing.GroupLayout pnl_CajasLayout = new javax.swing.GroupLayout(pnl_Cajas);
-        pnl_Cajas.setLayout(pnl_CajasLayout);
-        pnl_CajasLayout.setHorizontalGroup(
-            pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp_TablaCajas)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_CajasLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lbl_cantidadMostrar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmb_paginado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(21, 21, 21))
-        );
-        pnl_CajasLayout.setVerticalGroup(
-            pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_CajasLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addGroup(pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmb_paginado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_cantidadMostrar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_TablaCajas, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        lbl_TotalFinal.setText("Total Final:");
-
         btn_AbrirCaja.setForeground(java.awt.Color.blue);
-        btn_AbrirCaja.setText("Abrir Caja");
+        btn_AbrirCaja.setText("Abrir");
         btn_AbrirCaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_AbrirCajaActionPerformed(evt);
@@ -231,7 +216,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         });
 
         btn_verDetalle.setForeground(java.awt.Color.blue);
-        btn_verDetalle.setText("Ver Caja");
+        btn_verDetalle.setText("Ver Detalle");
         btn_verDetalle.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_verDetalleActionPerformed(evt);
@@ -239,85 +224,77 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         });
 
         btn_eliminarCaja.setForeground(java.awt.Color.blue);
-        btn_eliminarCaja.setText("Eliminar Caja");
+        btn_eliminarCaja.setText("Eliminar");
         btn_eliminarCaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_eliminarCajaActionPerformed(evt);
             }
         });
 
-        lbl_TotalCierre.setText("Total Cierre:");
+        lbl_TotalFinal.setText("Total Sistema:");
 
         ftxt_TotalFinal.setEditable(false);
         ftxt_TotalFinal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
         ftxt_TotalFinal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         ftxt_TotalFinal.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
+        lbl_TotalCierre.setText("Total Real:");
+
         ftxt_TotalCierre.setEditable(false);
         ftxt_TotalCierre.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
         ftxt_TotalCierre.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         ftxt_TotalCierre.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
-        btn_ArquearCaja.setForeground(java.awt.Color.blue);
-        btn_ArquearCaja.setText("Arquear Caja");
-        btn_ArquearCaja.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_ArquearCajaActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout pnl_BotonesLayout = new javax.swing.GroupLayout(pnl_Botones);
-        pnl_Botones.setLayout(pnl_BotonesLayout);
-        pnl_BotonesLayout.setHorizontalGroup(
-            pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_BotonesLayout.createSequentialGroup()
-                .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnl_BotonesLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+        javax.swing.GroupLayout pnl_CajasLayout = new javax.swing.GroupLayout(pnl_Cajas);
+        pnl_Cajas.setLayout(pnl_CajasLayout);
+        pnl_CajasLayout.setHorizontalGroup(
+            pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl_CajasLayout.createSequentialGroup()
+                .addComponent(btn_AbrirCaja)
+                .addGap(0, 0, 0)
+                .addComponent(btn_verDetalle)
+                .addGap(0, 0, 0)
+                .addComponent(btn_eliminarCaja)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_CajasLayout.createSequentialGroup()
+                        .addComponent(lbl_TotalFinal)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ftxt_TotalFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_CajasLayout.createSequentialGroup()
                         .addComponent(lbl_TotalCierre)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ftxt_TotalCierre, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(pnl_BotonesLayout.createSequentialGroup()
-                        .addComponent(btn_ArquearCaja)
-                        .addGap(0, 0, 0)
-                        .addComponent(btn_AbrirCaja)
-                        .addGap(0, 0, 0)
-                        .addComponent(btn_verDetalle)
-                        .addGap(0, 0, 0)
-                        .addComponent(btn_eliminarCaja)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 301, Short.MAX_VALUE)
-                        .addComponent(lbl_TotalFinal)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ftxt_TotalFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(20, 20, 20))
+                        .addComponent(ftxt_TotalCierre, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))))
+            .addComponent(sp_TablaCajas, javax.swing.GroupLayout.DEFAULT_SIZE, 982, Short.MAX_VALUE)
         );
 
-        pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AbrirCaja, btn_ArquearCaja, btn_eliminarCaja, btn_verDetalle});
+        pnl_CajasLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AbrirCaja, btn_eliminarCaja, btn_verDetalle});
 
-        pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_TotalCierre, lbl_TotalFinal});
+        pnl_CajasLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_TotalCierre, lbl_TotalFinal});
 
-        pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {ftxt_TotalCierre, ftxt_TotalFinal});
+        pnl_CajasLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {ftxt_TotalCierre, ftxt_TotalFinal});
 
-        pnl_BotonesLayout.setVerticalGroup(
-            pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_BotonesLayout.createSequentialGroup()
-                .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_verDetalle)
-                        .addComponent(btn_eliminarCaja)
-                        .addComponent(btn_AbrirCaja)
-                        .addComponent(btn_ArquearCaja))
-                    .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(lbl_TotalFinal)
-                        .addComponent(ftxt_TotalFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        pnl_CajasLayout.setVerticalGroup(
+            pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl_CajasLayout.createSequentialGroup()
+                .addComponent(sp_TablaCajas, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbl_TotalCierre)
-                    .addComponent(ftxt_TotalCierre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 7, Short.MAX_VALUE))
+                .addGroup(pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_verDetalle)
+                        .addComponent(btn_eliminarCaja)
+                        .addComponent(btn_AbrirCaja))
+                    .addGroup(pnl_CajasLayout.createSequentialGroup()
+                        .addGroup(pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lbl_TotalFinal)
+                            .addComponent(ftxt_TotalFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(7, 7, 7)
+                        .addGroup(pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lbl_TotalCierre)
+                            .addComponent(ftxt_TotalCierre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
         );
 
-        pnl_BotonesLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_eliminarCaja, btn_verDetalle});
+        pnl_CajasLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_eliminarCaja, btn_verDetalle});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -327,19 +304,13 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(pnl_Filtros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(pnl_Botones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(pnl_Filtros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnl_Cajas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnl_Botones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(pnl_Cajas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -373,17 +344,20 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             caja.setLocationRelativeTo(this);
             caja.setModal(true);
             caja.setVisible(true);
+            this.limpiarResultados();
+            this.buscar();
         }
     }//GEN-LAST:event_btn_verDetalleActionPerformed
 
     private void btn_eliminarCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarCajaActionPerformed
         if (tbl_Cajas.getSelectedRow() != -1) {
-            int confirmacionEliminacion = JOptionPane.showConfirmDialog(null, "¿Desea eliminar la caja?", "Atención", 1);
+            int confirmacionEliminacion = JOptionPane.showConfirmDialog(this,
+                    "¿Esta seguro que desea eliminar la caja seleccionada?",
+                    "Eliminar", JOptionPane.YES_NO_OPTION);
             if (confirmacionEliminacion == JOptionPane.YES_OPTION) {
                 int indiceDelModel = Utilidades.getSelectedRowModelIndice(tbl_Cajas);
                 this.cajas.get(indiceDelModel).setEliminada(true);
                 cajaService.actualizar(this.cajas.get(indiceDelModel));
-                JOptionPane.showMessageDialog(null, "Caja Eliminada");
             }
             this.limpiarResultados();
             this.buscar();
@@ -391,36 +365,42 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btn_eliminarCajaActionPerformed
 
     private void chk_UsuarioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_UsuarioItemStateChanged
+        cmb_Usuarios.setEnabled(false);
+        cmb_Usuarios.removeAllItems();
         if (chk_Usuario.isSelected() == true) {
             cmb_Usuarios.setEnabled(true);
             for (Usuario usuario : usuarioService.getUsuarios()) {
                 cmb_Usuarios.addItem(usuario);
             }
         } else {
-            cmb_Usuarios.setEnabled(false);
+            Usuario paraMostrar = new Usuario();
+            paraMostrar.setNombre("Seleccione un Usuario....");
+            cmb_Usuarios.addItem(paraMostrar);
         }
     }//GEN-LAST:event_chk_UsuarioItemStateChanged
 
     private void btn_AbrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AbrirCajaActionPerformed
         Caja abierta = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        if (abierta.isCerrada()) {
-            GUI_AbrirCaja abrirCaja = new GUI_AbrirCaja();
-            abrirCaja.setLocationRelativeTo(this);
-            abrirCaja.setModal(true);
-            abrirCaja.setVisible(true);
-        }
-        if (!abierta.isCerrada()) {
-            GUI_Caja caja = new GUI_Caja(abierta);
-            caja.setLocationRelativeTo(this);
-            caja.setModal(true);
-            caja.setVisible(true);
+        if (abierta == null) {
+            this.abrirCaja();
+        } else if (abierta.getEstado() == EstadoCaja.CERRADA) {
+            this.abrirCaja();
         }
     }//GEN-LAST:event_btn_AbrirCajaActionPerformed
+
+    private void abrirCaja() {
+        GUI_AbrirCaja abrirCaja = new GUI_AbrirCaja(true);
+        abrirCaja.setLocationRelativeTo(this);
+        abrirCaja.setVisible(true);
+        this.limpiarResultados();
+        this.buscar();
+    }
 
     private void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_internalFrameOpened
         try {
             this.setMaximum(true);
-
+            this.permitirAbrirCaja();
+            this.buscar();
         } catch (PropertyVetoException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";
             log.error(msjError + " - " + ex.getMessage());
@@ -429,28 +409,14 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_internalFrameOpened
 
-    private void btn_ArquearCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ArquearCajaActionPerformed
-        Caja caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        if (caja != null) {
-            if (!caja.isCerrada()) {
-                GUI_CerrarCaja abrirCaja = new GUI_CerrarCaja(caja, caja.getSaldoFinal());
-                abrirCaja.setLocationRelativeTo(this);
-                abrirCaja.setModal(true);
-                abrirCaja.setVisible(true);
-            }
-        }
-    }//GEN-LAST:event_btn_ArquearCajaActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AbrirCaja;
-    private javax.swing.JButton btn_ArquearCaja;
     private javax.swing.JButton btn_buscar;
     private javax.swing.JButton btn_eliminarCaja;
     private javax.swing.JButton btn_verDetalle;
     private javax.swing.JCheckBox chk_Fecha;
     private javax.swing.JCheckBox chk_Usuario;
     private javax.swing.JComboBox<Usuario> cmb_Usuarios;
-    private javax.swing.JComboBox<String> cmb_paginado;
     private com.toedter.calendar.JDateChooser dc_FechaDesde;
     private com.toedter.calendar.JDateChooser dc_FechaHasta;
     private javax.swing.JFormattedTextField ftxt_TotalCierre;
@@ -461,7 +427,6 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
     private javax.swing.JLabel lbl_TotalFinal;
     private javax.swing.JLabel lbl_cantidadMostrar;
     private javax.swing.JProgressBar pb_barra;
-    private javax.swing.JPanel pnl_Botones;
     private javax.swing.JPanel pnl_Cajas;
     private javax.swing.JPanel pnl_Filtros;
     private javax.swing.JScrollPane sp_TablaCajas;
@@ -473,26 +438,28 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         tbl_Cajas.setAutoCreateRowSorter(true);
 
         //nombres de columnas
-        String[] encabezados = new String[7];
-        encabezados[0] = "Fecha Apertura";
-        encabezados[1] = "Fecha Cierre";
-        encabezados[2] = "Usuario";
-        encabezados[3] = "Estado";
-        encabezados[4] = "Saldo Apertura";
-        encabezados[5] = "Saldo Final";
-        encabezados[6] = "Saldo Cierre";
+        String[] encabezados = new String[8];
+        encabezados[0] = "Estado";
+        encabezados[1] = "Fecha Apertura";
+        encabezados[2] = "Hora Control";
+        encabezados[3] = "Fecha Cierre";
+        encabezados[4] = "Usuario de Cierre";
+        encabezados[5] = "Saldo Apertura";
+        encabezados[6] = "Saldo Final";
+        encabezados[7] = "Saldo Cierre";
         modeloTablaCajas.setColumnIdentifiers(encabezados);
         tbl_Cajas.setModel(modeloTablaCajas);
 
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaCajas.getColumnCount()];
-        tipos[0] = Date.class;
+        tipos[0] = String.class;
         tipos[1] = Date.class;
         tipos[2] = String.class;
-        tipos[3] = String.class;
-        tipos[4] = Double.class;
+        tipos[3] = Date.class;
+        tipos[4] = String.class;
         tipos[5] = Double.class;
         tipos[6] = Double.class;
+        tipos[7] = Double.class;
         modeloTablaCajas.setClaseColumnas(tipos);
         tbl_Cajas.getTableHeader().setReorderingAllowed(false);
         tbl_Cajas.getTableHeader().setResizingAllowed(true);
@@ -501,13 +468,18 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         tbl_Cajas.setDefaultRenderer(Double.class, new RenderTabla());
 
         //Tamanios de columnas
-        tbl_Cajas.getColumnModel().getColumn(0).setPreferredWidth(110);
-        tbl_Cajas.getColumnModel().getColumn(1).setPreferredWidth(110);
-        tbl_Cajas.getColumnModel().getColumn(2).setPreferredWidth(100);
-        tbl_Cajas.getColumnModel().getColumn(3).setPreferredWidth(100);
-        tbl_Cajas.getColumnModel().getColumn(4).setPreferredWidth(50);
-        tbl_Cajas.getColumnModel().getColumn(5).setPreferredWidth(50);
-        tbl_Cajas.getColumnModel().getColumn(6).setPreferredWidth(50);
+        tbl_Cajas.getColumnModel().getColumn(0).setPreferredWidth(20);
+        tbl_Cajas.getColumnModel().getColumn(1).setPreferredWidth(80);
+        tbl_Cajas.getColumnModel().getColumn(2).setPreferredWidth(30);
+        tbl_Cajas.getColumnModel().getColumn(3).setPreferredWidth(80);
+        tbl_Cajas.getColumnModel().getColumn(4).setPreferredWidth(40);
+        tbl_Cajas.getColumnModel().getColumn(5).setPreferredWidth(20);
+        tbl_Cajas.getColumnModel().getColumn(6).setPreferredWidth(20);
+        tbl_Cajas.getColumnModel().getColumn(7).setPreferredWidth(20);
+        //renderer fechas
+        tbl_Cajas.getColumnModel().getColumn(1).setCellRenderer(new FormatoFechasEnTablas());
+        tbl_Cajas.getColumnModel().getColumn(2).setCellRenderer(new FormatoFechasEnTablas());
+        tbl_Cajas.getColumnModel().getColumn(3).setCellRenderer(new FormatoFechasEnTablas());
     }
 
     private void buscar() {
@@ -521,7 +493,8 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                     criteria.setFechaDesde(dc_FechaDesde.getDate());
                     criteria.setFechaHasta(dc_FechaHasta.getDate());
                     criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-                    criteria.setCantidadDeRegistros(Integer.parseInt(cmb_paginado.getSelectedItem().toString()));
+                    //criteria.setCantidadDeRegistros(Integer.parseInt(cmb_paginado.getSelectedItem().toString()));
+                    criteria.setCantidadDeRegistros(0);
                     criteria.setBuscaPorUsuario(chk_Usuario.isSelected());
                     criteria.setUsuario((Usuario) cmb_Usuarios.getSelectedItem());
                     List<Caja> cajasResultantes = cajaService.getCajasCriteria(criteria);
@@ -543,6 +516,8 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             protected void done() {
                 pb_barra.setIndeterminate(false);
                 try {
+                    lbl_cantidadMostrar.setText(cajas.size() + " Cajas encontradas");
+                    permitirAbrirCaja();
                     if (get().isEmpty()) {
                         JOptionPane.showInternalMessageDialog(getParent(),
                                 ResourceBundle.getBundle("Mensajes")
@@ -571,21 +546,23 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         double totalFinal = 0.0;
         double totalCierre = 0.0;
         for (Caja caja : cajas) {
-            Object[] fila = new Object[7];
-            fila[0] = caja.getFechaApertura();
+            Object[] fila = new Object[8];
+            fila[0] = caja.getEstado();
+            fila[1] = caja.getFechaApertura();
+            fila[2] = (new FormatterFechaHora(FormatterFechaHora.FORMATO_HORA_INTERNACIONAL)).format(caja.getFechaCorteInforme());
             if (caja.getFechaCierre() != null) {
-                fila[1] = caja.getFechaCierre();
+                fila[3] = caja.getFechaCierre();
             }
-            fila[2] = caja.getUsuarioAbreCaja();
-            fila[3] = (caja.isCerrada() ? "Cerrada" : "Abierta");
-            fila[4] = caja.getSaldoInicial();
-            fila[5] = (caja.isCerrada() ? caja.getSaldoFinal() : 0.0);
-            fila[6] = (caja.isCerrada() ? caja.getSaldoReal() : 0.0);
+            fila[4] = (caja.getUsuarioCierraCaja() != null ? caja.getUsuarioCierraCaja() : "Caja sin Cierre");
+            fila[5] = caja.getSaldoInicial();
+            fila[6] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoFinal() : 0.0);
+            fila[7] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoReal() : 0.0);
             totalFinal += caja.getSaldoFinal();
             totalCierre += caja.getSaldoReal();
             modeloTablaCajas.addRow(fila);
         }
         tbl_Cajas.setModel(modeloTablaCajas);
+        tbl_Cajas.getColumnModel().getColumn(0).setCellRenderer(new ColoresEstadosRenderer());
         ftxt_TotalFinal.setValue(totalFinal);
         ftxt_TotalCierre.setValue(totalCierre);
     }
@@ -595,4 +572,17 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         tbl_Cajas.setModel(modeloTablaCajas);
         this.setColumnasCaja();
     }
+
+    private void permitirAbrirCaja() {
+        Caja caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        if (caja != null) {
+            String fechaCaja = (new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(caja.getFechaApertura());
+            if (fechaCaja.equals((new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(new Date()))) {
+                btn_AbrirCaja.setEnabled(false);
+            }
+        } else {
+            btn_AbrirCaja.setEnabled(true);
+        }
+    }
+
 }

@@ -1,9 +1,8 @@
 package sic.vista.swing;
 
-import sic.util.ColoresEstadosPedidoRenderer;
+import sic.util.ColoresEstadosRenderer;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -199,7 +198,7 @@ public class GUI_Pedidos extends JInternalFrame {
             modeloTablaPedidos.addRow(fila);
         }
         tbl_Pedidos.setModel(modeloTablaPedidos);
-        tbl_Pedidos.setDefaultRenderer(EstadoPedido.class, new ColoresEstadosPedidoRenderer());
+        tbl_Pedidos.setDefaultRenderer(EstadoPedido.class, new ColoresEstadosRenderer());
         lbl_cantResultados.setText(pedidos.size() + " pedidos encontrados");
     }
 

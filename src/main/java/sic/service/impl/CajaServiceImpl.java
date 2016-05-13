@@ -1,11 +1,18 @@
 package sic.service.impl;
 
+import java.io.InputStream;
 import sic.service.ICajaService;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,8 +21,10 @@ import sic.modelo.Caja;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Gasto;
+import sic.modelo.Usuario;
 import sic.repository.ICajaRepository;
 import sic.service.ServiceException;
+import sic.util.Utilidades;
 
 @Service
 public class CajaServiceImpl implements ICajaService {
@@ -120,6 +129,19 @@ public class CajaServiceImpl implements ICajaService {
             criteria.setFechaHasta(cal.getTime());
         }
         return cajaRepository.getCajasCriteria(criteria);
+    }
+
+    @Override
+    public JasperPrint getReporteCaja(Caja caja, List<String> dataSource, Usuario usuario) throws JRException {
+        ClassLoader classLoader = PedidoServiceImpl.class.getClassLoader();
+        InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/Caja.jasper");
+        Map params = new HashMap();
+        params.put("empresa", caja.getEmpresa());
+        params.put("caja", caja);
+        params.put("usuario", usuario);
+        params.put("logo", Utilidades.convertirByteArrayIntoImage(caja.getEmpresa().getLogo()));
+        JRBeanCollectionDataSource listaDS = new JRBeanCollectionDataSource(dataSource);
+        return JasperFillManager.fillReport(isFileReport, params, listaDS);
     }
 
 }

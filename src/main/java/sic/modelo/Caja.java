@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import sic.service.EstadoCaja;
 
 @Entity
 @Table(name = "caja")
@@ -40,6 +41,10 @@ public class Caja implements Serializable {
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaApertura;
+    
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaCorteInforme;
 
     @Column(nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
@@ -60,7 +65,7 @@ public class Caja implements Serializable {
     @Column(nullable = false)
     private String observacion;
 
-    private boolean cerrada;
+    private EstadoCaja estado;
 
     private double saldoInicial;
 
