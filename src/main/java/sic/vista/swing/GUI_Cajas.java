@@ -512,6 +512,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             protected void done() {
                 pb_barra.setIndeterminate(false);
                 try {
+                    lbl_cantidadMostrar.setText(cajas.size() + " Cajas encontradas.");
                     if (get().isEmpty()) {
                         JOptionPane.showInternalMessageDialog(getParent(),
                                 ResourceBundle.getBundle("Mensajes")
@@ -555,18 +556,15 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             totalCierre += caja.getSaldoReal();
             modeloTablaCajas.addRow(fila);
         }
-        if (cajas.size() > 0) {
-            if (cajas.get(0).getEstado() == EstadoCaja.ABIERTA) {
-                this.btn_AbrirCaja.setEnabled(false);
-            } else {
-                this.btn_AbrirCaja.setEnabled(true);
-            }
+        if (cajas.get(0).getEstado() == EstadoCaja.ABIERTA) {
+            this.btn_AbrirCaja.setEnabled(false);
+        } else {
+            this.btn_AbrirCaja.setEnabled(true);
         }
         tbl_Cajas.setModel(modeloTablaCajas);
         tbl_Cajas.getColumnModel().getColumn(0).setCellRenderer(new ColoresEstadosRenderer());
         ftxt_TotalFinal.setValue(totalFinal);
         ftxt_TotalCierre.setValue(totalCierre);
-        lbl_cantidadMostrar.setText(this.cajas.size() + " Cajas encontradas.");
     }
 
     private void limpiarResultados() {

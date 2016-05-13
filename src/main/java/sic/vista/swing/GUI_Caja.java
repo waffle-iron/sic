@@ -398,9 +398,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                 String mensaje = "En Concepto de: " + ((Gasto) movimientoDeTabla).getConcepto() + "\nMonto: " + ((Gasto) movimientoDeTabla).getMonto() + "\nUsuario: " + ((Gasto) movimientoDeTabla).getUsuario().getNombre();
                 JOptionPane.showMessageDialog(this, mensaje, "Resumen de Gasto", JOptionPane.INFORMATION_MESSAGE);
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Debe seleccionar un movimiento!", "Información", JOptionPane.INFORMATION_MESSAGE);
-        }
+        } 
     }//GEN-LAST:event_btn_VerDetalleActionPerformed
 
     private void btn_AgregarGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AgregarGastoActionPerformed

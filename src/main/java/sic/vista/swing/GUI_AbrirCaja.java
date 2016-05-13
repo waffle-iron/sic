@@ -50,7 +50,12 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         lbl_separador.setText(":");
 
         ftxt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
-        ftxt_Monto.setText("0.0");
+        ftxt_Monto.setText("0");
+        ftxt_Monto.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                ftxt_MontoFocusLost(evt);
+            }
+        });
         ftxt_Monto.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 ftxt_MontoKeyTyped(evt);
@@ -170,8 +175,8 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_CancelarActionPerformed
 
     private void btn_AbrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AbrirCajaActionPerformed
-        if (((Long) ftxt_Monto.getValue()) != null) {
-            cajaService.guardar(this.construirCaja(((Long) ftxt_Monto.getValue()).doubleValue()));
+        if (ftxt_Monto.getValue() != null) {
+            cajaService.guardar(this.construirCaja(((Number) ftxt_Monto.getValue()).doubleValue()));
             GUI_Caja abrirCaja = new GUI_Caja(cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()));
             abrirCaja.setModal(true);
             abrirCaja.setLocationRelativeTo(this);
@@ -181,6 +186,12 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Monto inválido", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_AbrirCajaActionPerformed
+
+    private void ftxt_MontoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ftxt_MontoFocusLost
+        if (ftxt_Monto.getValue() == null) {
+            ftxt_Monto.setValue(0);
+        }
+    }//GEN-LAST:event_ftxt_MontoFocusLost
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AbrirCaja;
