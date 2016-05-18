@@ -31,6 +31,6 @@ public interface ICajaService {
 
     JasperPrint getReporteCaja(Caja caja, List<String> dataSource, Usuario usuario) throws JRException;
 
-    Caja cierreDeCajaDiaAnterior(Empresa empresa);
+    Caja cerrarCajaDiaAnterior(Empresa empresa);
 
 }

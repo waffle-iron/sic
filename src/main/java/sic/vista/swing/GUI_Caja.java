@@ -311,7 +311,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
         double totalPorCorte = this.caja.getSaldoInicial();
         for (FormaDePago formaDePago : formasDePago) {
-            Double totalPorCorteFormaDePago = 0.0;
+            double totalPorCorteFormaDePago = 0.0;
             if (formaDePago.isAfectaCaja()) {
                 List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
                 List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());

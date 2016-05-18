@@ -198,6 +198,14 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         }
     }
 
+    private void abrirCaja() {
+        GUI_AbrirCaja abrirCaja = new GUI_AbrirCaja(true);
+        abrirCaja.setLocationRelativeTo(this);
+        abrirCaja.setVisible(true);
+        this.limpiarResultados();
+        this.buscar();
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -538,14 +546,6 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             this.abrirCaja();
         }
     }//GEN-LAST:event_btn_AbrirCajaActionPerformed
-
-    private void abrirCaja() {
-        GUI_AbrirCaja abrirCaja = new GUI_AbrirCaja(true);
-        abrirCaja.setLocationRelativeTo(this);
-        abrirCaja.setVisible(true);
-        this.limpiarResultados();
-        this.buscar();
-    }
 
     private void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_internalFrameOpened
         try {
