@@ -25,6 +25,22 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
         initComponents();
     }
 
+    public Gasto construirGasto(String concepto, double monto, FormaDePago formaDePago) {
+        Empresa empresa = empresaService.getEmpresaActiva().getEmpresa();
+        Usuario usuario = usuarioService.getUsuarioActivo().getUsuario();
+        int nroDeGasto = gastoService.getUltimoNumeroDeGasto(empresa.getId_Empresa()) + 1;
+        Gasto gasto = new Gasto();
+        gasto.setConcepto(concepto);
+        gasto.setEliminado(false);
+        gasto.setEmpresa(empresa);
+        gasto.setFecha(new Date());
+        gasto.setFormaDePago(formaDePago);
+        gasto.setMonto(monto);
+        gasto.setNroGasto(nroDeGasto);
+        gasto.setUsuario(usuario);
+        return gasto;
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -160,21 +176,6 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_lbl_AceptarActionPerformed
 
-    public Gasto construirGasto(String concepto, double monto, FormaDePago formaDePago) {
-        Empresa empresa = empresaService.getEmpresaActiva().getEmpresa();
-        Usuario usuario = usuarioService.getUsuarioActivo().getUsuario();
-        int nroDeGasto = gastoService.getUltimoNumeroDeGasto(empresa.getId_Empresa()) + 1;
-        Gasto gasto = new Gasto();
-        gasto.setConcepto(concepto);
-        gasto.setEliminado(false);
-        gasto.setEmpresa(empresa);
-        gasto.setFecha(new Date());
-        gasto.setFormaDePago(formaDePago);
-        gasto.setMonto(monto);
-        gasto.setNroGasto(nroDeGasto);
-        gasto.setUsuario(usuario);
-        return gasto;
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<FormaDePago> cmb_FormaDePago;
     private javax.swing.JTextField ftxt_Concepto;

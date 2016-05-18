@@ -8,7 +8,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class ColoresNumerosTabla extends DefaultTableCellRenderer {
+public class ColoresNumerosTablaRenderer extends DefaultTableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable tabla,

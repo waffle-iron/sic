@@ -282,14 +282,6 @@ public abstract class Factura implements Serializable {
         this.iva_21_neto = iva_21_neto;
     }
 
-    public Movimiento getTipoMovimiento() {
-        if (this instanceof FacturaVenta) {
-            return Movimiento.VENTA;
-        } else {
-            return Movimiento.COMPRA;
-        }
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {

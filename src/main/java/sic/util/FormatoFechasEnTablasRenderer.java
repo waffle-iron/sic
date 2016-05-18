@@ -9,7 +9,7 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class FormatoFechasEnTablas extends DefaultTableCellRenderer {
+public class FormatoFechasEnTablasRenderer extends DefaultTableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable tabla,

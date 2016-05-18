@@ -82,6 +82,8 @@ public interface IFacturaService {
     public String getTipoFactura(Factura factura);
 
     void guardar(Factura factura);
+    
+    public Movimiento getTipoMovimiento(Factura factura);
 
     //**************************************************************************
     //Estadisticas

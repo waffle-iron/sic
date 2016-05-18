@@ -194,6 +194,15 @@ public class FacturaServiceImpl implements IFacturaService {
         }
         return tipoComprobante;
     }
+    
+    @Override
+    public Movimiento getTipoMovimiento(Factura factura) {
+        if (factura instanceof FacturaVenta) {
+            return Movimiento.VENTA;
+        } else {
+            return Movimiento.COMPRA;
+        }
+    }
 
     @Override
     public List<FacturaCompra> buscarFacturaCompra(BusquedaFacturaCompraCriteria criteria) {

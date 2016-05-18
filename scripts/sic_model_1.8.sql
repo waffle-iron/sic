@@ -1,10 +1,10 @@
-CREATE DATABASE  IF NOT EXISTS `sic` /*!40100 DEFAULT CHARACTER SET latin1 */;
+CREATE DATABASE  IF NOT EXISTS `sic` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
 USE `sic`;
--- MySQL dump 10.13  Distrib 5.5.47, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.5.49, for debian-linux-gnu (x86_64)
 --
 -- Host: 127.0.0.1    Database: sic
 -- ------------------------------------------------------
--- Server version	5.5.47-0ubuntu0.14.04.1
+-- Server version	5.5.49-0ubuntu0.14.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -27,12 +27,12 @@ DROP TABLE IF EXISTS `caja`;
 CREATE TABLE `caja` (
   `id_Caja` bigint(20) NOT NULL AUTO_INCREMENT,
   `eliminada` bit(1) NOT NULL,
-  `estado` int(11) DEFAULT NULL,
+  `estado` varchar(255) DEFAULT NULL,
   `fechaApertura` datetime NOT NULL,
   `fechaCierre` datetime DEFAULT NULL,
   `fechaCorteInforme` datetime NOT NULL,
   `nroCaja` int(11) NOT NULL,
-  `observacion` varchar(255) NOT NULL,
+  `observacion` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `saldoFinal` double NOT NULL,
   `saldoInicial` double NOT NULL,
   `saldoReal` double NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE `caja` (
   CONSTRAINT `FK2E7A156813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`),
   CONSTRAINT `FK2E7A1519D322D1` FOREIGN KEY (`id_Usuario`) REFERENCES `usuario` (`id_Usuario`),
   CONSTRAINT `FK2E7A153BC38053` FOREIGN KEY (`id_UsuarioCierra`) REFERENCES `usuario` (`id_Usuario`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,7 +185,7 @@ CREATE TABLE `factura` (
   CONSTRAINT `FKBEEB4778C25D6C23` FOREIGN KEY (`id_FormaDePago`) REFERENCES `formadepago` (`id_FormaDePago`),
   CONSTRAINT `FKBEEB4778F66D0F75` FOREIGN KEY (`id_Pedido`) REFERENCES `pedido` (`id_Pedido`),
   CONSTRAINT `FKBEEB4778FBCAB835` FOREIGN KEY (`id_Transportista`) REFERENCES `transportista` (`id_Transportista`)
-) ENGINE=InnoDB AUTO_INCREMENT=8333 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8342 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -256,7 +256,7 @@ DROP TABLE IF EXISTS `gasto`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `gasto` (
   `id_Gasto` bigint(20) NOT NULL AUTO_INCREMENT,
-  `concepto` varchar(255) NOT NULL,
+  `concepto` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `eliminado` bit(1) NOT NULL,
   `fecha` datetime NOT NULL,
   `monto` double NOT NULL,
@@ -271,7 +271,7 @@ CREATE TABLE `gasto` (
   CONSTRAINT `FK5D94B14C25D6C23` FOREIGN KEY (`id_FormaDePago`) REFERENCES `formadepago` (`id_FormaDePago`),
   CONSTRAINT `FK5D94B1419D322D1` FOREIGN KEY (`id_Usuario`) REFERENCES `usuario` (`id_Usuario`),
   CONSTRAINT `FK5D94B146813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -500,7 +500,7 @@ CREATE TABLE `renglonfactura` (
   PRIMARY KEY (`id_RenglonFactura`),
   KEY `FK9F22BDF9A77FCB65` (`id_Factura`),
   CONSTRAINT `FK9F22BDF9A77FCB65` FOREIGN KEY (`id_Factura`) REFERENCES `factura` (`id_Factura`)
-) ENGINE=InnoDB AUTO_INCREMENT=107904 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=107914 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -594,4 +594,5 @@ CREATE TABLE `usuario` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-12 13:54:24
+-- Dump completed on 2016-05-13 20:44:03
+
