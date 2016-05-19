@@ -165,7 +165,7 @@ public class GUI_Proveedores extends JInternalFrame {
         }
 
         tbl_Resultados.setModel(modeloTablaResultados);
-        String mensaje = proveedores.size() + " proveedores encontrados.";
+        String mensaje = proveedores.size() + " proveedores encontrados";
         lbl_cantResultados.setText(mensaje);
     }
 

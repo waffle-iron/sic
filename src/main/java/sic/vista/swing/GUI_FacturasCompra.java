@@ -163,7 +163,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
             modeloTablaFacturas.addRow(fila);
         }
         tbl_Resultados.setModel(modeloTablaFacturas);
-        String mensaje = facturas.size() + " facturas encontradas.";
+        String mensaje = facturas.size() + " facturas encontradas";
         lbl_CantRegistrosEncontrados.setText(mensaje);
     }
 

@@ -155,7 +155,7 @@ public class GUI_Clientes extends JInternalFrame {
         }
         tbl_Resultados.setModel(modeloTablaDeResultados);
         //contador de registros
-        String mensaje = clientes.size() + " clientes encontrados.";
+        String mensaje = clientes.size() + " clientes encontrados";
         lbl_cantResultados.setText(mensaje);
     }
 

@@ -90,11 +90,9 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="lbl_cantResultados" pref="219" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="cmb_Localidad" alignment="0" pref="219" max="32767" attributes="2"/>
-                          <Component id="cmb_Provincia" alignment="0" max="32767" attributes="2"/>
-                          <Component id="cmb_Pais" alignment="0" max="32767" attributes="2"/>
-                      </Group>
+                      <Component id="cmb_Localidad" alignment="0" pref="219" max="32767" attributes="2"/>
+                      <Component id="cmb_Provincia" alignment="0" max="32767" attributes="2"/>
+                      <Component id="cmb_Pais" alignment="0" max="32767" attributes="2"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -103,7 +101,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace pref="11" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="chk_Codigo" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="txt_Codigo" alignment="2" min="-2" max="-2" attributes="0"/>

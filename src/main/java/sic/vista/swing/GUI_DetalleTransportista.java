@@ -218,10 +218,10 @@ public class GUI_DetalleTransportista extends JDialog {
                     .addComponent(txt_Direccion, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
                     .addGroup(panel1Layout.createSequentialGroup()
                         .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cmb_Localidad, 0, 296, Short.MAX_VALUE)
-                            .addComponent(cmb_Provincia, 0, 296, Short.MAX_VALUE)
-                            .addComponent(cmb_Pais, 0, 296, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(cmb_Localidad, 0, 304, Short.MAX_VALUE)
+                            .addComponent(cmb_Provincia, 0, 304, Short.MAX_VALUE)
+                            .addComponent(cmb_Pais, 0, 304, Short.MAX_VALUE))
+                        .addGap(0, 0, 0)
                         .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(btn_NuevaProvincia)
                             .addComponent(btn_NuevoPais)
@@ -265,6 +265,12 @@ public class GUI_DetalleTransportista extends JDialog {
                     .addComponent(txt_Web, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        panel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_NuevoPais, cmb_Pais});
+
+        panel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_NuevaProvincia, cmb_Provincia});
+
+        panel1Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_NuevaLocalidad, cmb_Localidad});
 
         btn_Guardar.setForeground(java.awt.Color.blue);
         btn_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Accept_16x16.png"))); // NOI18N

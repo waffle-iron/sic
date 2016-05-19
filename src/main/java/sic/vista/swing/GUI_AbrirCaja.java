@@ -58,10 +58,8 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         spinner_Hora = new javax.swing.JSpinner();
         spinner_Minutos = new javax.swing.JSpinner();
         lbl_CorteControl = new javax.swing.JLabel();
-        lbl_separador = new javax.swing.JLabel();
         ftxt_Monto = new javax.swing.JFormattedTextField();
         lbl_monto = new javax.swing.JLabel();
-        pnl_Botones = new javax.swing.JPanel();
         btn_AbrirCaja = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -69,8 +67,6 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         setResizable(false);
 
         lbl_CorteControl.setText("Hora de Control:");
-
-        lbl_separador.setText(":");
 
         ftxt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
         ftxt_Monto.setText("0");
@@ -80,50 +76,8 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
             }
         });
 
+        lbl_monto.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_monto.setText("Monto:");
-
-        javax.swing.GroupLayout pnl_separadorLayout = new javax.swing.GroupLayout(pnl_separador);
-        pnl_separador.setLayout(pnl_separadorLayout);
-        pnl_separadorLayout.setHorizontalGroup(
-            pnl_separadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_separadorLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnl_separadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnl_separadorLayout.createSequentialGroup()
-                        .addComponent(lbl_monto, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ftxt_Monto))
-                    .addGroup(pnl_separadorLayout.createSequentialGroup()
-                        .addComponent(lbl_CorteControl, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spinner_Hora, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)
-                        .addComponent(lbl_separador)
-                        .addGap(0, 0, 0)
-                        .addComponent(spinner_Minutos, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-
-        pnl_separadorLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_CorteControl, lbl_monto});
-
-        pnl_separadorLayout.setVerticalGroup(
-            pnl_separadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_separadorLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnl_separadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnl_separadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(spinner_Hora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(spinner_Minutos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lbl_separador))
-                    .addComponent(lbl_CorteControl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnl_separadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbl_monto)
-                    .addComponent(ftxt_Monto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
-
-        pnl_separadorLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {ftxt_Monto, lbl_CorteControl, lbl_monto, spinner_Hora, spinner_Minutos});
 
         btn_AbrirCaja.setForeground(java.awt.Color.blue);
         btn_AbrirCaja.setText("Abrir Caja");
@@ -133,34 +87,53 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
             }
         });
 
-        javax.swing.GroupLayout pnl_BotonesLayout = new javax.swing.GroupLayout(pnl_Botones);
-        pnl_Botones.setLayout(pnl_BotonesLayout);
-        pnl_BotonesLayout.setHorizontalGroup(
-            pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_BotonesLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_AbrirCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+        javax.swing.GroupLayout pnl_separadorLayout = new javax.swing.GroupLayout(pnl_separador);
+        pnl_separador.setLayout(pnl_separadorLayout);
+        pnl_separadorLayout.setHorizontalGroup(
+            pnl_separadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl_separadorLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnl_separadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lbl_monto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_CorteControl, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnl_separadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btn_AbrirCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(pnl_separadorLayout.createSequentialGroup()
+                        .addComponent(spinner_Hora, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(spinner_Minutos))
+                    .addComponent(ftxt_Monto, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        pnl_separadorLayout.setVerticalGroup(
+            pnl_separadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl_separadorLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(pnl_separadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(spinner_Hora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(spinner_Minutos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_CorteControl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnl_separadorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(ftxt_Monto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_monto))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_AbrirCaja)
                 .addContainerGap())
         );
-        pnl_BotonesLayout.setVerticalGroup(
-            pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(btn_AbrirCaja, javax.swing.GroupLayout.Alignment.TRAILING)
-        );
+
+        pnl_separadorLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {ftxt_Monto, lbl_CorteControl, lbl_monto, spinner_Hora, spinner_Minutos});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pnl_Botones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(pnl_separador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(pnl_separador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnl_Botones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(pnl_separador, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -190,8 +163,6 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
     private javax.swing.JFormattedTextField ftxt_Monto;
     private javax.swing.JLabel lbl_CorteControl;
     private javax.swing.JLabel lbl_monto;
-    private javax.swing.JLabel lbl_separador;
-    private javax.swing.JPanel pnl_Botones;
     private javax.swing.JPanel pnl_separador;
     private javax.swing.JSpinner spinner_Hora;
     private javax.swing.JSpinner spinner_Minutos;

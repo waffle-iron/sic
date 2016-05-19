@@ -4,6 +4,7 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="2"/>
     <Property name="title" type="java.lang.String" value="Nuevo Proveedor"/>
+    <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -79,22 +80,22 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="cmb_Localidad" pref="345" max="32767" attributes="1"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="cmb_Localidad" max="32767" attributes="1"/>
+                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           <Component id="btn_NuevaLocalidad" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="cmb_Provincia" alignment="1" pref="344" max="32767" attributes="1"/>
-                              <Component id="cmb_Pais" alignment="1" pref="344" max="32767" attributes="1"/>
+                              <Component id="cmb_Provincia" alignment="1" max="32767" attributes="1"/>
+                              <Component id="cmb_Pais" alignment="1" max="32767" attributes="1"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="btn_NuevoPais" alignment="1" min="-2" max="-2" attributes="0"/>
                               <Component id="btn_NuevaProvincia" alignment="1" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <Component id="txt_Direccion" alignment="0" pref="427" max="32767" attributes="1"/>
+                      <Component id="txt_Direccion" alignment="0" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -111,20 +112,20 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_Pais" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_Pais" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="btn_NuevoPais" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_Pais" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_NuevoPais" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_Provincia" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_Provincia" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="btn_NuevaProvincia" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_Provincia" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_NuevaProvincia" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_Localidad" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_Localidad" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="btn_NuevaLocalidad" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_Localidad" linkSize="3" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_NuevaLocalidad" linkSize="3" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -371,8 +372,8 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="cmb_CondicionIVA" pref="351" max="32767" attributes="1"/>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="cmb_CondicionIVA" pref="357" max="32767" attributes="1"/>
+                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           <Component id="btn_NuevaCondicionIVA" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="txt_Id_Fiscal" alignment="0" pref="433" max="32767" attributes="1"/>
@@ -401,11 +402,11 @@
                       <Component id="txt_Id_Fiscal" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="lbl_Id_Fiscal" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="cmb_CondicionIVA" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_CondicionIVA" linkSize="4" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="lbl_CondicionIVA" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="btn_NuevaCondicionIVA" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_NuevaCondicionIVA" linkSize="4" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>

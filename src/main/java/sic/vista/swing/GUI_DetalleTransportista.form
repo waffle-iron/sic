@@ -80,11 +80,11 @@
                       <Component id="txt_Direccion" alignment="0" pref="381" max="32767" attributes="1"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="cmb_Localidad" pref="296" max="32767" attributes="1"/>
-                              <Component id="cmb_Provincia" alignment="0" pref="296" max="32767" attributes="1"/>
-                              <Component id="cmb_Pais" alignment="0" pref="296" max="32767" attributes="1"/>
+                              <Component id="cmb_Localidad" pref="304" max="32767" attributes="1"/>
+                              <Component id="cmb_Provincia" alignment="0" pref="304" max="32767" attributes="1"/>
+                              <Component id="cmb_Pais" alignment="0" pref="304" max="32767" attributes="1"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Component id="btn_NuevaProvincia" alignment="1" min="-2" max="-2" attributes="0"/>
                               <Component id="btn_NuevoPais" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -113,20 +113,20 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_Pais" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_Pais" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="btn_NuevoPais" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_Pais" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_NuevoPais" linkSize="1" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_Provincia" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_Provincia" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="btn_NuevaProvincia" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_Provincia" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_NuevaProvincia" linkSize="2" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_Localidad" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_Localidad" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="btn_NuevaLocalidad" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_Localidad" linkSize="3" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_NuevaLocalidad" linkSize="3" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
