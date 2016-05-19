@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -41,7 +43,7 @@ public class Caja implements Serializable {
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaApertura;
-    
+
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaCorteInforme;
@@ -65,6 +67,7 @@ public class Caja implements Serializable {
     @Column(nullable = false)
     private String observacion;
 
+    @Enumerated(EnumType.STRING)
     private EstadoCaja estado;
 
     private double saldoInicial;

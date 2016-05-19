@@ -1,6 +1,6 @@
 package sic.vista.swing;
 
-import sic.util.ColoresNumerosTabla;
+import sic.util.ColoresNumerosTablaRenderer;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,7 +35,7 @@ import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IGastoService;
 import sic.service.IUsuarioService;
-import sic.util.FormatoFechasEnTablas;
+import sic.util.FormatoFechasEnTablasRenderer;
 import sic.util.FormatterFechaHora;
 import sic.util.FormatterNumero;
 import sic.util.Utilidades;
@@ -74,6 +74,281 @@ public class GUI_Caja extends javax.swing.JDialog {
         initComponents();
         this.caja = caja;
         this.iniciarTituloVentana();
+    }
+
+    private void cargarDatosBalance() {
+        lbl_aviso.setText("Cerrada");
+        lbl_aviso.setForeground(Color.RED);
+        this.btn_AgregarGasto.setEnabled(false);
+        this.btn_EliminarGasto.setEnabled(false);
+        if (this.caja != null) {
+            if (this.caja.getEstado() == EstadoCaja.ABIERTA) {
+                lbl_aviso.setText("Abierta");
+                lbl_aviso.setForeground(Color.GREEN);
+                this.btn_AgregarGasto.setEnabled(true);
+                this.btn_EliminarGasto.setEnabled(true);
+            }
+            this.listaMovimientos.clear();
+            Date hasta = new Date();
+            if (this.caja.getEstado() == EstadoCaja.CERRADA) {
+                hasta = this.caja.getFechaCierre();
+            }
+            List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+            this.listaMovimientos.addAll(facturas);
+            List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+            this.listaMovimientos.addAll(gastos);
+            this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
+
+        }
+    }
+
+    private void limpiarTablaBalance() {
+        modeloTablaBalance = new ModeloTabla();
+        tbl_Balance.setModel(modeloTablaBalance);
+        this.setColumnasDeTablaFormaDePago();
+    }
+
+    private void limpiarTablaResumen() {
+        modeloTablaResumen = new ModeloTabla();
+        tbl_Resumen.setModel(modeloTablaResumen);
+        this.setColumnasDeTablaResumenGeneral();
+    }
+
+    private void setColumnasDeTablaFormaDePago() {
+        //sorting
+        tbl_Balance.setAutoCreateRowSorter(true);
+
+        //nombres de columnas
+        String[] encabezados = new String[5];
+        encabezados[0] = "Fecha";
+        encabezados[1] = "Concepto";
+        encabezados[2] = "Debe";
+        encabezados[3] = "Haber";
+        encabezados[4] = "Saldo";
+        modeloTablaBalance.setColumnIdentifiers(encabezados);
+        tbl_Balance.setModel(modeloTablaBalance);
+
+        //tipo de dato columnas
+        Class[] tipos = new Class[modeloTablaBalance.getColumnCount()];
+        tipos[0] = Date.class;
+        tipos[1] = String.class;
+        tipos[2] = Double.class;
+        tipos[3] = Double.class;
+        tipos[4] = Double.class;
+        modeloTablaBalance.setClaseColumnas(tipos);
+        tbl_Balance.getTableHeader().setReorderingAllowed(false);
+        tbl_Balance.getTableHeader().setResizingAllowed(true);
+
+        //Tamanios de columnas
+        tbl_Balance.getColumnModel().getColumn(0).setPreferredWidth(15);
+        tbl_Balance.getColumnModel().getColumn(1).setPreferredWidth(150);
+        tbl_Balance.getColumnModel().getColumn(2).setPreferredWidth(15);
+        tbl_Balance.getColumnModel().getColumn(3).setPreferredWidth(15);
+        tbl_Balance.getColumnModel().getColumn(4).setPreferredWidth(15);
+
+    }
+
+    private void cargarMovimientosEnLaTablaBalance(List<Object> movimientos) {
+        this.limpiarTablaBalance();
+        for (Object movimiento : movimientos) {
+            Object[] fila = new Object[5];
+            if (movimiento instanceof FacturaCompra) {
+                fila[0] = ((FacturaCompra) movimiento).getFecha();
+            }
+            if (movimiento instanceof FacturaVenta) {
+                fila[0] = ((FacturaVenta) movimiento).getFecha();
+            }
+            if (movimiento instanceof Gasto) {
+                fila[0] = ((Gasto) movimiento).getFecha();
+            }
+            if (movimiento instanceof FacturaCompra) {
+                fila[2] = 0.0;
+                fila[3] = ((FacturaCompra) movimiento).getTotal();
+            }
+            if (movimiento instanceof FacturaVenta) {
+                fila[2] = ((FacturaVenta) movimiento).getTotal();
+                fila[3] = 0.0;
+            }
+            if (movimiento instanceof Gasto) {
+                fila[2] = 0.0;
+                fila[3] = ((Gasto) movimiento).getMonto();
+            }
+            if (movimiento instanceof FacturaVenta || movimiento instanceof FacturaCompra) {
+                String tipoFactura;
+                if (movimiento instanceof FacturaVenta) {
+                    tipoFactura = "Venta";
+                } else {
+                    tipoFactura = "Compra";
+                }
+                fila[1] = "Factura " + tipoFactura + " Nº " + ((Factura) movimiento).getNumSerie() + " - " + ((Factura) movimiento).getNumFactura();
+            } else if (movimiento instanceof Gasto) {
+                fila[1] = ((Gasto) movimiento).getConcepto();
+            }
+            fila[4] = (double) fila[2] - (double) fila[3];
+            modeloTablaBalance.addRow(fila);
+        }
+        this.calcularTotalBalance();
+        tbl_Balance.setModel(modeloTablaBalance);
+        tbl_Balance.getColumnModel().getColumn(4).setCellRenderer(new ColoresNumerosTablaRenderer());
+        tbl_Balance.getColumnModel().getColumn(0).setCellRenderer(new FormatoFechasEnTablasRenderer());
+        //Ordena la tabla segun la Fecha
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(tbl_Balance.getModel());
+        tbl_Balance.setRowSorter(sorter);
+        List<RowSorter.SortKey> sortKeys = new ArrayList<>();
+        int columnIndexToSort = 0;
+        sortKeys.add(new RowSorter.SortKey(columnIndexToSort, SortOrder.DESCENDING));
+        sorter.setSortKeys(sortKeys);
+        sorter.sort();
+    }
+
+    private void setColumnasDeTablaResumenGeneral() {
+        //sorting
+        tbl_Resumen.setAutoCreateRowSorter(true);
+
+        //nombres de columnas
+        String[] encabezados = new String[2];
+        encabezados[0] = "Forma de Pago";
+        encabezados[1] = "Monto";
+        modeloTablaResumen.setColumnIdentifiers(encabezados);
+        tbl_Resumen.setModel(modeloTablaResumen);
+
+        //tipo de dato columnas
+        Class[] tipos = new Class[modeloTablaResumen.getColumnCount()];
+        tipos[0] = String.class;
+        tipos[1] = Double.class;
+        modeloTablaResumen.setClaseColumnas(tipos);
+        tbl_Resumen.getTableHeader().setReorderingAllowed(false);
+        tbl_Resumen.getTableHeader().setResizingAllowed(true);
+
+        //Tamanios de columnas
+        tbl_Resumen.getColumnModel().getColumn(0).setPreferredWidth(200);
+        tbl_Resumen.getColumnModel().getColumn(1).setPreferredWidth(5);
+
+    }
+
+    private void cargarTablaResumenGeneral() {
+        if (this.caja != null) {
+            Empresa empresaActiva = empresaService.getEmpresaActiva().getEmpresa();
+            double total = this.caja.getSaldoInicial();
+            Object[] saldoInicial = new Object[2];
+            saldoInicial[0] = "Saldo Apertura";
+            saldoInicial[1] = total;
+            modeloTablaResumen.addRow(saldoInicial);
+            List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaActiva);
+            for (FormaDePago formaDePago : formasDePago) {
+                if (formaDePago.isAfectaCaja()) {
+                    Date hasta = new Date();
+                    if (this.caja.getEstado() == EstadoCaja.CERRADA) {
+                        hasta = this.caja.getFechaCierre();
+                    }
+                    List<Factura> facturasPorFormaDePago = facturaService.getFacturasPorFechasYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+                    List<Object> gastosPorFormaDePago = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+                    if (facturasPorFormaDePago.size() > 0 || gastosPorFormaDePago.size() > 0) {
+                        Object[] fila = new Object[2];
+                        fila[0] = formaDePago.getNombre();
+                        this.listaMovimientos.clear();
+                        this.listaMovimientos.addAll(facturasPorFormaDePago);
+                        this.listaMovimientos.addAll(gastosPorFormaDePago);
+                        double totalParcial = cajaService.calcularTotalPorMovimiento(this.listaMovimientos);
+                        fila[1] = totalParcial;
+                        total += totalParcial;
+                        modeloTablaResumen.addRow(fila);
+                    }
+                }
+            }
+            this.caja.setSaldoFinal(Math.floor(total * 100) / 100);
+            this.ftxt_Total.setValue(this.caja.getSaldoFinal());
+            //Guarda el monto final del último calculo en la caja
+            cajaService.actualizar(this.caja);
+            if (this.caja.getSaldoFinal() < 0) {
+                ftxt_Total.setBackground(Color.PINK);
+            }
+            if (this.caja.getSaldoFinal() > 0) {
+                ftxt_Total.setBackground(Color.GREEN);
+            }
+            tbl_Resumen.setModel(modeloTablaResumen);
+            tbl_Resumen.setDefaultRenderer(Double.class, new ColoresNumerosTablaRenderer());
+        }
+    }
+
+    private void calcularTotalBalance() {
+        double totalDebe = 0.0;
+        double totalHaber = 0.0;
+        for (int i = 0; i < modeloTablaBalance.getRowCount(); i++) {
+            totalDebe += (Double) modeloTablaBalance.getValueAt(i, 2);
+            totalHaber += (Double) modeloTablaBalance.getValueAt(i, 3);
+        }
+        ftxt_Detalle.setValue(totalDebe - totalHaber);
+        if ((Double) ftxt_Detalle.getValue() < 0) {
+            ftxt_Detalle.setBackground(Color.PINK);
+        }
+        if ((Double) ftxt_Detalle.getValue() > 0) {
+            ftxt_Detalle.setBackground(Color.GREEN);
+        }
+    }
+
+    private void cargarElementosFormaDePago() {
+        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
+        if (cmb_FormasDePago.getItemCount() != formasDePago.size()) {
+            cmb_FormasDePago.removeAllItems();
+            for (FormaDePago formaDePago : formasDePago) {
+                cmb_FormasDePago.addItem(formaDePago);
+            }
+        }
+        this.limpiarTablaBalance();
+        this.cargarDatosBalance();
+    }
+
+    private void limpiarYCargarTablas() {
+        this.limpiarTablaResumen();
+        this.cargarTablaResumenGeneral();
+        this.cargarElementosFormaDePago();
+    }
+
+    private void lanzarReporteCaja() throws JRException {
+        List<String> dataSource = new ArrayList<>();
+        dataSource.add((String) tbl_Resumen.getValueAt(0, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(0, 1))));
+        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
+        double totalPorCorte = this.caja.getSaldoInicial();
+        for (FormaDePago formaDePago : formasDePago) {
+            double totalPorCorteFormaDePago = 0.0;
+            if (formaDePago.isAfectaCaja()) {
+                List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
+                List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
+                for (Factura factura : facturas) {
+                    totalPorCorteFormaDePago += factura.getTotal();
+                }
+                for (Object gasto : gastos) {
+                    totalPorCorteFormaDePago += ((Gasto) gasto).getMonto();
+                }
+                dataSource.add(formaDePago.getNombre() + "-" + totalPorCorteFormaDePago);
+            }
+            totalPorCorte += totalPorCorteFormaDePago;
+        }
+        dataSource.add("Total hasta la hora de control:-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) totalPorCorte)));
+        dataSource.add("..........................Corte a las: " + formatoHora.format(this.caja.getFechaCorteInforme()) + "...........................-");
+
+        for (int f = 1; f < tbl_Resumen.getRowCount(); f++) {
+            dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 1))));
+        }
+
+        JasperPrint report = cajaService.getReporteCaja(this.caja, dataSource, usuarioService.getUsuarioActivo().getUsuario());
+        JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+        viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
+        ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+        viewer.setIconImage(iconoVentana.getImage());
+        viewer.setLocationRelativeTo(null);
+        JRViewer jrv = new JRViewer(report);
+        viewer.getContentPane().add(jrv);
+        viewer.setVisible(true);
+    }
+
+    private void iniciarTituloVentana() {
+        if (this.caja != null) {
+            this.setTitle("Arqueo de Caja - Apertura: " + formatoHora.format(this.caja.getFechaApertura()));
+        } else {
+            this.setTitle("Arqueo De Caja");
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -398,7 +673,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                 String mensaje = "En Concepto de: " + ((Gasto) movimientoDeTabla).getConcepto() + "\nMonto: " + ((Gasto) movimientoDeTabla).getMonto() + "\nUsuario: " + ((Gasto) movimientoDeTabla).getUsuario().getNombre();
                 JOptionPane.showMessageDialog(this, mensaje, "Resumen de Gasto", JOptionPane.INFORMATION_MESSAGE);
             }
-        } 
+        }
     }//GEN-LAST:event_btn_VerDetalleActionPerformed
 
     private void btn_AgregarGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AgregarGastoActionPerformed
@@ -440,32 +715,6 @@ public class GUI_Caja extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btn_EliminarGastoActionPerformed
 
-    private void cargarDatosBalance() {
-        lbl_aviso.setText("Cerrada");
-        lbl_aviso.setForeground(Color.RED);
-        this.btn_AgregarGasto.setEnabled(false);
-        this.btn_EliminarGasto.setEnabled(false);
-        if (this.caja != null) {
-            if (this.caja.getEstado() == EstadoCaja.ABIERTA) {
-                lbl_aviso.setText("Abierta");
-                lbl_aviso.setForeground(Color.GREEN);
-                this.btn_AgregarGasto.setEnabled(true);
-                this.btn_EliminarGasto.setEnabled(true);
-            }
-            this.listaMovimientos.clear();
-            Date hasta = new Date();
-            if (this.caja.getEstado() == EstadoCaja.CERRADA) {
-                hasta = this.caja.getFechaCierre();
-            }
-            List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
-            this.listaMovimientos.addAll(facturas);
-            List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
-            this.listaMovimientos.addAll(gastos);
-            this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
-
-        }
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AgregarGasto;
     private javax.swing.JButton btn_CerrarCaja;
@@ -488,254 +737,4 @@ public class GUI_Caja extends javax.swing.JDialog {
     javax.swing.JTable tbl_Balance;
     private javax.swing.JTable tbl_Resumen;
     // End of variables declaration//GEN-END:variables
-
-    private void limpiarTablaBalance() {
-        modeloTablaBalance = new ModeloTabla();
-        tbl_Balance.setModel(modeloTablaBalance);
-        this.setColumnasDeTablaFormaDePago();
-    }
-
-    private void limpiarTablaResumen() {
-        modeloTablaResumen = new ModeloTabla();
-        tbl_Resumen.setModel(modeloTablaResumen);
-        this.setColumnasDeTablaResumenGeneral();
-    }
-
-    private void setColumnasDeTablaFormaDePago() {
-        //sorting
-        tbl_Balance.setAutoCreateRowSorter(true);
-
-        //nombres de columnas
-        String[] encabezados = new String[5];
-        encabezados[0] = "Fecha";
-        encabezados[1] = "Concepto";
-        encabezados[2] = "Debe";
-        encabezados[3] = "Haber";
-        encabezados[4] = "Saldo";
-        modeloTablaBalance.setColumnIdentifiers(encabezados);
-        tbl_Balance.setModel(modeloTablaBalance);
-
-        //tipo de dato columnas
-        Class[] tipos = new Class[modeloTablaBalance.getColumnCount()];
-        tipos[0] = Date.class;
-        tipos[1] = String.class;
-        tipos[2] = Double.class;
-        tipos[3] = Double.class;
-        tipos[4] = Double.class;
-        modeloTablaBalance.setClaseColumnas(tipos);
-        tbl_Balance.getTableHeader().setReorderingAllowed(false);
-        tbl_Balance.getTableHeader().setResizingAllowed(true);
-
-        //Tamanios de columnas
-        tbl_Balance.getColumnModel().getColumn(0).setPreferredWidth(15);
-        tbl_Balance.getColumnModel().getColumn(1).setPreferredWidth(150);
-        tbl_Balance.getColumnModel().getColumn(2).setPreferredWidth(15);
-        tbl_Balance.getColumnModel().getColumn(3).setPreferredWidth(15);
-        tbl_Balance.getColumnModel().getColumn(4).setPreferredWidth(15);
-
-    }
-
-    private void cargarMovimientosEnLaTablaBalance(List<Object> movimientos) {
-        this.limpiarTablaBalance();
-        for (Object movimiento : movimientos) {
-            Object[] fila = new Object[5];
-            if (movimiento instanceof FacturaCompra) {
-                fila[0] = ((FacturaCompra) movimiento).getFecha();
-            }
-            if (movimiento instanceof FacturaVenta) {
-                fila[0] = ((FacturaVenta) movimiento).getFecha();
-            }
-            if (movimiento instanceof Gasto) {
-                fila[0] = ((Gasto) movimiento).getFecha();
-            }
-            if (movimiento instanceof FacturaCompra) {
-                fila[2] = 0.0;
-                fila[3] = ((FacturaCompra) movimiento).getTotal();
-            }
-            if (movimiento instanceof FacturaVenta) {
-                fila[2] = ((FacturaVenta) movimiento).getTotal();
-                fila[3] = 0.0;
-            }
-            if (movimiento instanceof Gasto) {
-                fila[2] = 0.0;
-                fila[3] = ((Gasto) movimiento).getMonto();
-            }
-            if (movimiento instanceof FacturaVenta || movimiento instanceof FacturaCompra) {
-                String tipoFactura;
-                if (movimiento instanceof FacturaVenta) {
-                    tipoFactura = "Venta";
-                } else {
-                    tipoFactura = "Compra";
-                }
-                fila[1] = "Factura " + tipoFactura + " Nº " + ((Factura) movimiento).getNumSerie() + " - " + ((Factura) movimiento).getNumFactura();
-            } else if (movimiento instanceof Gasto) {
-                fila[1] = ((Gasto) movimiento).getConcepto();
-            }
-            fila[4] = (double) fila[2] - (double) fila[3];
-            modeloTablaBalance.addRow(fila);
-        }
-        this.calcularTotalBalance();
-        tbl_Balance.setModel(modeloTablaBalance);
-        tbl_Balance.getColumnModel().getColumn(4).setCellRenderer(new ColoresNumerosTabla());
-        tbl_Balance.getColumnModel().getColumn(0).setCellRenderer(new FormatoFechasEnTablas());
-        //Ordena la tabla segun la Fecha
-        TableRowSorter<TableModel> sorter = new TableRowSorter<>(tbl_Balance.getModel());
-        tbl_Balance.setRowSorter(sorter);
-        List<RowSorter.SortKey> sortKeys = new ArrayList<>();
-        int columnIndexToSort = 0;
-        sortKeys.add(new RowSorter.SortKey(columnIndexToSort, SortOrder.DESCENDING));
-        sorter.setSortKeys(sortKeys);
-        sorter.sort();
-    }
-
-    private void setColumnasDeTablaResumenGeneral() {
-        //sorting
-        tbl_Resumen.setAutoCreateRowSorter(true);
-
-        //nombres de columnas
-        String[] encabezados = new String[2];
-        encabezados[0] = "Forma de Pago";
-        encabezados[1] = "Monto";
-        modeloTablaResumen.setColumnIdentifiers(encabezados);
-        tbl_Resumen.setModel(modeloTablaResumen);
-
-        //tipo de dato columnas
-        Class[] tipos = new Class[modeloTablaResumen.getColumnCount()];
-        tipos[0] = String.class;
-        tipos[1] = Double.class;
-        modeloTablaResumen.setClaseColumnas(tipos);
-        tbl_Resumen.getTableHeader().setReorderingAllowed(false);
-        tbl_Resumen.getTableHeader().setResizingAllowed(true);
-
-        //Tamanios de columnas
-        tbl_Resumen.getColumnModel().getColumn(0).setPreferredWidth(200);
-        tbl_Resumen.getColumnModel().getColumn(1).setPreferredWidth(5);
-
-    }
-
-    private void cargarTablaResumenGeneral() {
-        if (this.caja != null) {
-            Empresa empresaActiva = empresaService.getEmpresaActiva().getEmpresa();
-            double total = this.caja.getSaldoInicial();
-            Object[] saldoInicial = new Object[2];
-            saldoInicial[0] = "Saldo Apertura";
-            saldoInicial[1] = total;
-            modeloTablaResumen.addRow(saldoInicial);
-            List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaActiva);
-            for (FormaDePago formaDePago : formasDePago) {
-                if (formaDePago.isAfectaCaja()) {
-                    Date hasta = new Date();
-                    if (this.caja.getEstado() == EstadoCaja.CERRADA) {
-                        hasta = this.caja.getFechaCierre();
-                    }
-                    List<Factura> facturasPorFormaDePago = facturaService.getFacturasPorFechasYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
-                    List<Object> gastosPorFormaDePago = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
-                    if (facturasPorFormaDePago.size() > 0 || gastosPorFormaDePago.size() > 0) {
-                        Object[] fila = new Object[2];
-                        fila[0] = formaDePago.getNombre();
-                        this.listaMovimientos.clear();
-                        this.listaMovimientos.addAll(facturasPorFormaDePago);
-                        this.listaMovimientos.addAll(gastosPorFormaDePago);
-                        double totalParcial = cajaService.calcularTotalPorMovimiento(this.listaMovimientos);
-                        fila[1] = totalParcial;
-                        total += totalParcial;
-                        modeloTablaResumen.addRow(fila);
-                    }
-                }
-            }
-            this.caja.setSaldoFinal(Math.floor(total * 100) / 100);
-            this.ftxt_Total.setValue(this.caja.getSaldoFinal());
-            //Guarda el monto final del último calculo en la caja
-            cajaService.actualizar(this.caja);
-            if (this.caja.getSaldoFinal() < 0) {
-                ftxt_Total.setBackground(Color.PINK);
-            }
-            if (this.caja.getSaldoFinal() > 0) {
-                ftxt_Total.setBackground(Color.GREEN);
-            }
-            tbl_Resumen.setModel(modeloTablaResumen);
-            tbl_Resumen.setDefaultRenderer(Double.class, new ColoresNumerosTabla());
-        }
-    }
-
-    private void calcularTotalBalance() {
-        double totalDebe = 0.0;
-        double totalHaber = 0.0;
-        for (int i = 0; i < modeloTablaBalance.getRowCount(); i++) {
-            totalDebe += (Double) modeloTablaBalance.getValueAt(i, 2);
-            totalHaber += (Double) modeloTablaBalance.getValueAt(i, 3);
-        }
-        ftxt_Detalle.setValue(totalDebe - totalHaber);
-        if ((Double) ftxt_Detalle.getValue() < 0) {
-            ftxt_Detalle.setBackground(Color.PINK);
-        }
-        if ((Double) ftxt_Detalle.getValue() > 0) {
-            ftxt_Detalle.setBackground(Color.GREEN);
-        }
-    }
-
-    private void cargarElementosFormaDePago() {
-        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
-        if (cmb_FormasDePago.getItemCount() != formasDePago.size()) {
-            cmb_FormasDePago.removeAllItems();
-            for (FormaDePago formaDePago : formasDePago) {
-                cmb_FormasDePago.addItem(formaDePago);
-            }
-        }
-        this.limpiarTablaBalance();
-        this.cargarDatosBalance();
-    }
-
-    private void limpiarYCargarTablas() {
-        this.limpiarTablaResumen();
-        this.cargarTablaResumenGeneral();
-        this.cargarElementosFormaDePago();
-    }
-
-    private void lanzarReporteCaja() throws JRException {
-        List<String> dataSource = new ArrayList<>();
-        dataSource.add((String) tbl_Resumen.getValueAt(0, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(0, 1))));
-        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
-        Double totalPorCorte = this.caja.getSaldoInicial();
-        for (FormaDePago formaDePago : formasDePago) {
-            Double totalPorCorteFormaDePago = 0.0;
-            if (formaDePago.isAfectaCaja()) {
-                List<Factura> facturas = facturaService.getFacturasPorFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
-                List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
-                for (Factura factura : facturas) {
-                    totalPorCorteFormaDePago += factura.getTotal();
-                }
-                for (Object gasto : gastos) {
-                    totalPorCorteFormaDePago += ((Gasto) gasto).getMonto();
-                }
-                dataSource.add(formaDePago.getNombre() + "-" + totalPorCorteFormaDePago);
-            }
-            totalPorCorte += totalPorCorteFormaDePago;
-        }
-        dataSource.add("Total hasta la hora de control:-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) totalPorCorte)));
-        dataSource.add("..........................Corte a las: " + formatoHora.format(this.caja.getFechaCorteInforme()) + "...........................-");
-
-        for (int f = 1; f < tbl_Resumen.getRowCount(); f++) {
-            dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 1))));
-        }
-
-        JasperPrint report = cajaService.getReporteCaja(this.caja, dataSource, usuarioService.getUsuarioActivo().getUsuario());
-        JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-        viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
-        ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-        viewer.setIconImage(iconoVentana.getImage());
-        viewer.setLocationRelativeTo(null);
-        JRViewer jrv = new JRViewer(report);
-        viewer.getContentPane().add(jrv);
-        viewer.setVisible(true);
-    }
-
-    private void iniciarTituloVentana() {
-        if (this.caja != null) {
-            this.setTitle("Arqueo de Caja - Apertura: " + formatoHora.format(this.caja.getFechaApertura()));
-        } else {
-            this.setTitle("Arqueo De Caja");
-        }
-    }
-
 }

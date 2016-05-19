@@ -19,7 +19,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import sic.service.Movimiento;
 
 @Entity
 @Table(name = "factura")
@@ -280,14 +279,6 @@ public abstract class Factura implements Serializable {
 
     public void setIva_21_neto(double iva_21_neto) {
         this.iva_21_neto = iva_21_neto;
-    }
-
-    public Movimiento getTipoMovimiento() {
-        if (this instanceof FacturaVenta) {
-            return Movimiento.VENTA;
-        } else {
-            return Movimiento.COMPRA;
-        }
     }
 
     @Override

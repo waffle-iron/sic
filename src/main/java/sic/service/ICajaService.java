@@ -6,6 +6,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
+import sic.modelo.Empresa;
 import sic.modelo.Usuario;
 
 public interface ICajaService {
@@ -28,6 +29,8 @@ public interface ICajaService {
 
     void validarCaja(Caja caja);
 
-    public JasperPrint getReporteCaja(Caja caja, List<String> dataSource, Usuario usuario) throws JRException;
+    JasperPrint getReporteCaja(Caja caja, List<String> dataSource, Usuario usuario) throws JRException;
+
+    Caja cerrarCajaDiaAnterior(Empresa empresa);
 
 }

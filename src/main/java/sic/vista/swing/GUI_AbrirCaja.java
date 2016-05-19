@@ -2,7 +2,6 @@ package sic.vista.swing;
 
 import java.util.Calendar;
 import java.util.Date;
-import javax.swing.JOptionPane;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import org.springframework.context.ApplicationContext;
@@ -24,6 +23,31 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         this.setModal(true);
         initComponents();
         this.setModelSpinner();
+    }
+    
+    private void setModelSpinner() {
+        SpinnerModel spinnerModel = new SpinnerNumberModel(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 00, 23, 1);
+        this.spinner_Hora.setModel(spinnerModel);
+        spinnerModel = new SpinnerNumberModel(Calendar.getInstance().get(Calendar.MINUTE), 00, 59, 1);
+        this.spinner_Minutos.setModel(spinnerModel);
+    }
+
+    private Caja construirCaja(double monto) {
+        Caja caja = new Caja();
+        caja.setEstado(EstadoCaja.ABIERTA);
+        caja.setObservacion("Apertura De Caja");
+        caja.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+        caja.setFechaApertura(new Date());
+        Calendar corte = Calendar.getInstance();
+        corte.set(Calendar.HOUR_OF_DAY, (int) spinner_Hora.getValue());
+        corte.set(Calendar.MINUTE, (int) spinner_Minutos.getValue());
+        caja.setFechaCorteInforme(corte.getTime());
+        caja.setNroCaja(cajaService.getUltimoNumeroDeCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()) + 1);
+        caja.setSaldoInicial(monto);
+        caja.setSaldoFinal(0);
+        caja.setSaldoReal(0);
+        caja.setUsuarioAbreCaja(usuarioService.getUsuarioActivo().getUsuario());
+        return caja;
     }
 
     @SuppressWarnings("unchecked")
@@ -50,11 +74,6 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
 
         ftxt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
         ftxt_Monto.setText("0");
-        ftxt_Monto.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                ftxt_MontoFocusLost(evt);
-            }
-        });
         ftxt_Monto.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 ftxt_MontoKeyTyped(evt);
@@ -166,12 +185,6 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_btn_AbrirCajaActionPerformed
 
-    private void ftxt_MontoFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ftxt_MontoFocusLost
-        if (ftxt_Monto.getValue() == null) {
-            ftxt_Monto.setValue(0);
-        }
-    }//GEN-LAST:event_ftxt_MontoFocusLost
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AbrirCaja;
     private javax.swing.JFormattedTextField ftxt_Monto;
@@ -184,28 +197,4 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
     private javax.swing.JSpinner spinner_Minutos;
     // End of variables declaration//GEN-END:variables
 
-    private void setModelSpinner() {
-        SpinnerModel spinnerModel = new SpinnerNumberModel(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 00, 23, 1);
-        this.spinner_Hora.setModel(spinnerModel);
-        spinnerModel = new SpinnerNumberModel(Calendar.getInstance().get(Calendar.MINUTE), 00, 59, 1);
-        this.spinner_Minutos.setModel(spinnerModel);
-    }
-
-    private Caja construirCaja(Double monto) {
-        Caja caja = new Caja();
-        caja.setEstado(EstadoCaja.ABIERTA);
-        caja.setObservacion("Apertura De Caja");
-        caja.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-        caja.setFechaApertura(new Date());
-        Calendar corte = Calendar.getInstance();
-        corte.set(Calendar.HOUR_OF_DAY, (int) spinner_Hora.getValue());
-        corte.set(Calendar.MINUTE, (int) spinner_Minutos.getValue());
-        caja.setFechaCorteInforme(corte.getTime());
-        caja.setNroCaja(cajaService.getUltimoNumeroDeCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()) + 1);
-        caja.setSaldoInicial(monto);
-        caja.setSaldoFinal(0);
-        caja.setSaldoReal(0);
-        caja.setUsuarioAbreCaja(usuarioService.getUsuarioActivo().getUsuario());
-        return caja;
-    }
 }

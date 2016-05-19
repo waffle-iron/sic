@@ -2,8 +2,6 @@ package sic.vista.swing;
 
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
@@ -59,7 +57,7 @@ public class GUI_Principal extends JFrame {
         } else {
             lbl_EmpresaActiva.setText("Empresa: " + empresa.getNombre());
         }
-        this.cierreDeCajaDiaAnterior();
+        cajaService.actualizar(cajaService.cerrarCajaDiaAnterior(empresa));
     }
 
     @SuppressWarnings("unchecked")
@@ -636,21 +634,4 @@ public class GUI_Principal extends JFrame {
     private javax.swing.JMenu mnu_Stock;
     private javax.swing.JMenu mnu_Ventas;
     // End of variables declaration//GEN-END:variables
-
-    private void cierreDeCajaDiaAnterior() {
-        Caja cajaACerrar = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        if ((cajaACerrar != null) && (cajaACerrar.getEstado() == EstadoCaja.ABIERTA)) {
-            Calendar fechaAperturaMasUnDia = Calendar.getInstance();
-            fechaAperturaMasUnDia.setTime(cajaACerrar.getFechaApertura());
-            fechaAperturaMasUnDia.add(Calendar.DATE, 1);
-            if (fechaAperturaMasUnDia.get(Calendar.DATE) == Calendar.getInstance().get(Calendar.DATE)
-                    || fechaAperturaMasUnDia.before(Calendar.getInstance())) {
-                cajaACerrar.setFechaCierre(new Date());
-                cajaACerrar.setUsuarioCierraCaja(cajaACerrar.getUsuarioAbreCaja());
-                cajaACerrar.setEstado(EstadoCaja.CERRADA);
-                cajaACerrar.setSaldoReal(cajaACerrar.getSaldoFinal());
-                cajaService.actualizar(cajaACerrar);
-            }
-        }
-    }
 }

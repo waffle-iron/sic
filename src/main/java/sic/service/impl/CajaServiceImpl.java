@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -18,17 +20,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
+import sic.modelo.Empresa;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Gasto;
 import sic.modelo.Usuario;
 import sic.repository.ICajaRepository;
+import sic.service.EstadoCaja;
 import sic.service.ServiceException;
 import sic.util.Utilidades;
 
 @Service
 public class CajaServiceImpl implements ICajaService {
 
+    @PersistenceContext
+    private EntityManager em;
     private final ICajaRepository cajaRepository;
 
     @Autowired
@@ -142,6 +148,24 @@ public class CajaServiceImpl implements ICajaService {
         params.put("logo", Utilidades.convertirByteArrayIntoImage(caja.getEmpresa().getLogo()));
         JRBeanCollectionDataSource listaDS = new JRBeanCollectionDataSource(dataSource);
         return JasperFillManager.fillReport(isFileReport, params, listaDS);
+    }
+
+    @Override
+    public Caja cerrarCajaDiaAnterior(Empresa empresa) {
+        Caja cajaACerrar = this.getUltimaCaja(empresa.getId_Empresa());
+        if ((cajaACerrar != null) && (cajaACerrar.getEstado() == EstadoCaja.ABIERTA)) {
+            Calendar fechaAperturaMasUnDia = Calendar.getInstance();
+            fechaAperturaMasUnDia.setTime(cajaACerrar.getFechaApertura());
+            fechaAperturaMasUnDia.add(Calendar.DATE, 1);
+            if (fechaAperturaMasUnDia.get(Calendar.DATE) == Calendar.getInstance().get(Calendar.DATE)
+                    || fechaAperturaMasUnDia.before(Calendar.getInstance())) {
+                cajaACerrar.setFechaCierre(new Date());
+                cajaACerrar.setUsuarioCierraCaja(cajaACerrar.getUsuarioAbreCaja());
+                cajaACerrar.setEstado(EstadoCaja.CERRADA);
+                cajaACerrar.setSaldoReal(cajaACerrar.getSaldoFinal());
+            }
+        }
+        return cajaACerrar;
     }
 
 }

@@ -2,7 +2,6 @@ package sic.vista.swing;
 
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -22,7 +21,7 @@ import sic.service.IEmpresaService;
 import sic.service.IUsuarioService;
 import sic.service.ServiceException;
 import sic.util.ColoresEstadosRenderer;
-import sic.util.FormatoFechasEnTablas;
+import sic.util.FormatoFechasEnTablasRenderer;
 import sic.util.FormatterFechaHora;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
@@ -45,6 +44,166 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         paraMostrar.setNombre("Seleccione un Usuario....");
         cmb_Usuarios.addItem(paraMostrar);
         cmb_Usuarios.setEnabled(false);
+    }
+
+    private void setColumnasCaja() {
+        //sorting
+        tbl_Cajas.setAutoCreateRowSorter(true);
+
+        //nombres de columnas
+        String[] encabezados = new String[8];
+        encabezados[0] = "Estado";
+        encabezados[1] = "Fecha Apertura";
+        encabezados[2] = "Hora Control";
+        encabezados[3] = "Fecha Cierre";
+        encabezados[4] = "Usuario de Cierre";
+        encabezados[5] = "Saldo Apertura";
+        encabezados[6] = "Saldo Final";
+        encabezados[7] = "Saldo Cierre";
+        modeloTablaCajas.setColumnIdentifiers(encabezados);
+        tbl_Cajas.setModel(modeloTablaCajas);
+
+        //tipo de dato columnas
+        Class[] tipos = new Class[modeloTablaCajas.getColumnCount()];
+        tipos[0] = String.class;
+        tipos[1] = Date.class;
+        tipos[2] = String.class;
+        tipos[3] = Date.class;
+        tipos[4] = String.class;
+        tipos[5] = Double.class;
+        tipos[6] = Double.class;
+        tipos[7] = Double.class;
+        modeloTablaCajas.setClaseColumnas(tipos);
+        tbl_Cajas.getTableHeader().setReorderingAllowed(false);
+        tbl_Cajas.getTableHeader().setResizingAllowed(true);
+
+        //render para los tipos de datos
+        tbl_Cajas.setDefaultRenderer(Double.class, new RenderTabla());
+
+        //Tamanios de columnas
+        tbl_Cajas.getColumnModel().getColumn(0).setPreferredWidth(20);
+        tbl_Cajas.getColumnModel().getColumn(1).setPreferredWidth(80);
+        tbl_Cajas.getColumnModel().getColumn(2).setPreferredWidth(30);
+        tbl_Cajas.getColumnModel().getColumn(3).setPreferredWidth(80);
+        tbl_Cajas.getColumnModel().getColumn(4).setPreferredWidth(40);
+        tbl_Cajas.getColumnModel().getColumn(5).setPreferredWidth(20);
+        tbl_Cajas.getColumnModel().getColumn(6).setPreferredWidth(20);
+        tbl_Cajas.getColumnModel().getColumn(7).setPreferredWidth(20);
+        //renderer fechas
+        tbl_Cajas.getColumnModel().getColumn(1).setCellRenderer(new FormatoFechasEnTablasRenderer());
+        tbl_Cajas.getColumnModel().getColumn(2).setCellRenderer(new FormatoFechasEnTablasRenderer());
+        tbl_Cajas.getColumnModel().getColumn(3).setCellRenderer(new FormatoFechasEnTablasRenderer());
+    }
+
+    private void buscar() {
+        pb_barra.setIndeterminate(true);
+        SwingWorker<List<Caja>, Void> worker = new SwingWorker<List<Caja>, Void>() {
+            @Override
+            protected List<Caja> doInBackground() throws Exception {
+                try {
+                    BusquedaCajaCriteria criteria = new BusquedaCajaCriteria();
+                    criteria.setBuscaPorFecha(chk_Fecha.isSelected());
+                    criteria.setFechaDesde(dc_FechaDesde.getDate());
+                    criteria.setFechaHasta(dc_FechaHasta.getDate());
+                    criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                    //criteria.setCantidadDeRegistros(Integer.parseInt(cmb_paginado.getSelectedItem().toString()));
+                    criteria.setCantidadDeRegistros(0);
+                    criteria.setBuscaPorUsuario(chk_Usuario.isSelected());
+                    criteria.setUsuario((Usuario) cmb_Usuarios.getSelectedItem());
+                    List<Caja> cajasResultantes = cajaService.getCajasCriteria(criteria);
+                    cajas = cajasResultantes;
+                    return cajas;
+
+                } catch (ServiceException ex) {
+                    JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+
+                } catch (PersistenceException ex) {
+                    log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+                    JOptionPane.showInternalMessageDialog(getParent(), ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+                }
+                cajas = new ArrayList<>();
+                return cajas;
+            }
+
+            @Override
+            protected void done() {
+                pb_barra.setIndeterminate(false);
+                try {
+                    lbl_cantidadMostrar.setText(cajas.size() + " Cajas encontradas");
+                    permitirAbrirCaja();
+                    if (get().isEmpty()) {
+                        JOptionPane.showInternalMessageDialog(getParent(),
+                                ResourceBundle.getBundle("Mensajes")
+                                .getString("mensaje_busqueda_sin_resultados"),
+                                "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        cargarResultadosAlTable(cajas);
+                    }
+
+                } catch (InterruptedException ex) {
+                    String msjError = "La tarea que se estaba realizando fue interrumpida. Intente nuevamente.";
+                    log.error(msjError + " - " + ex.getMessage());
+                    JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+
+                } catch (ExecutionException ex) {
+                    String msjError = "Se produjo un error en la ejecución de la tarea solicitada. Intente nuevamente.";
+                    log.error(msjError + " - " + ex.getMessage());
+                    JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        };
+        worker.execute();
+    }
+
+    private void cargarResultadosAlTable(List<Caja> cajas) {
+        double totalFinal = 0.0;
+        double totalCierre = 0.0;
+        for (Caja caja : cajas) {
+            Object[] fila = new Object[8];
+            fila[0] = caja.getEstado();
+            fila[1] = caja.getFechaApertura();
+            fila[2] = (new FormatterFechaHora(FormatterFechaHora.FORMATO_HORA_INTERNACIONAL)).format(caja.getFechaCorteInforme());
+            if (caja.getFechaCierre() != null) {
+                fila[3] = caja.getFechaCierre();
+            }
+            fila[4] = (caja.getUsuarioCierraCaja() != null ? caja.getUsuarioCierraCaja() : "Caja sin Cierre");
+            fila[5] = caja.getSaldoInicial();
+            fila[6] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoFinal() : 0.0);
+            fila[7] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoReal() : 0.0);
+            totalFinal += caja.getSaldoFinal();
+            totalCierre += caja.getSaldoReal();
+            modeloTablaCajas.addRow(fila);
+        }
+        tbl_Cajas.setModel(modeloTablaCajas);
+        tbl_Cajas.getColumnModel().getColumn(0).setCellRenderer(new ColoresEstadosRenderer());
+        ftxt_TotalFinal.setValue(totalFinal);
+        ftxt_TotalCierre.setValue(totalCierre);
+    }
+
+    private void limpiarResultados() {
+        modeloTablaCajas = new ModeloTabla();
+        tbl_Cajas.setModel(modeloTablaCajas);
+        this.setColumnasCaja();
+    }
+
+    private void permitirAbrirCaja() {
+        Caja caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        if (caja != null) {
+            String fechaCaja = (new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(caja.getFechaApertura());
+            if (fechaCaja.equals((new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(new Date()))) {
+                btn_AbrirCaja.setEnabled(false);
+            }
+        } else {
+            btn_AbrirCaja.setEnabled(true);
+        }
+    }
+
+    private void abrirCaja() {
+        GUI_AbrirCaja abrirCaja = new GUI_AbrirCaja(true);
+        abrirCaja.setLocationRelativeTo(this);
+        abrirCaja.setVisible(true);
+        this.limpiarResultados();
+        this.buscar();
     }
 
     @SuppressWarnings("unchecked")
@@ -388,14 +547,6 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_btn_AbrirCajaActionPerformed
 
-    private void abrirCaja() {
-        GUI_AbrirCaja abrirCaja = new GUI_AbrirCaja(true);
-        abrirCaja.setLocationRelativeTo(this);
-        abrirCaja.setVisible(true);
-        this.limpiarResultados();
-        this.buscar();
-    }
-
     private void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_internalFrameOpened
         try {
             this.setMaximum(true);
@@ -432,157 +583,4 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane sp_TablaCajas;
     private javax.swing.JTable tbl_Cajas;
     // End of variables declaration//GEN-END:variables
-
-    private void setColumnasCaja() {
-        //sorting
-        tbl_Cajas.setAutoCreateRowSorter(true);
-
-        //nombres de columnas
-        String[] encabezados = new String[8];
-        encabezados[0] = "Estado";
-        encabezados[1] = "Fecha Apertura";
-        encabezados[2] = "Hora Control";
-        encabezados[3] = "Fecha Cierre";
-        encabezados[4] = "Usuario de Cierre";
-        encabezados[5] = "Saldo Apertura";
-        encabezados[6] = "Saldo Final";
-        encabezados[7] = "Saldo Cierre";
-        modeloTablaCajas.setColumnIdentifiers(encabezados);
-        tbl_Cajas.setModel(modeloTablaCajas);
-
-        //tipo de dato columnas
-        Class[] tipos = new Class[modeloTablaCajas.getColumnCount()];
-        tipos[0] = String.class;
-        tipos[1] = Date.class;
-        tipos[2] = String.class;
-        tipos[3] = Date.class;
-        tipos[4] = String.class;
-        tipos[5] = Double.class;
-        tipos[6] = Double.class;
-        tipos[7] = Double.class;
-        modeloTablaCajas.setClaseColumnas(tipos);
-        tbl_Cajas.getTableHeader().setReorderingAllowed(false);
-        tbl_Cajas.getTableHeader().setResizingAllowed(true);
-
-        //render para los tipos de datos
-        tbl_Cajas.setDefaultRenderer(Double.class, new RenderTabla());
-
-        //Tamanios de columnas
-        tbl_Cajas.getColumnModel().getColumn(0).setPreferredWidth(20);
-        tbl_Cajas.getColumnModel().getColumn(1).setPreferredWidth(80);
-        tbl_Cajas.getColumnModel().getColumn(2).setPreferredWidth(30);
-        tbl_Cajas.getColumnModel().getColumn(3).setPreferredWidth(80);
-        tbl_Cajas.getColumnModel().getColumn(4).setPreferredWidth(40);
-        tbl_Cajas.getColumnModel().getColumn(5).setPreferredWidth(20);
-        tbl_Cajas.getColumnModel().getColumn(6).setPreferredWidth(20);
-        tbl_Cajas.getColumnModel().getColumn(7).setPreferredWidth(20);
-        //renderer fechas
-        tbl_Cajas.getColumnModel().getColumn(1).setCellRenderer(new FormatoFechasEnTablas());
-        tbl_Cajas.getColumnModel().getColumn(2).setCellRenderer(new FormatoFechasEnTablas());
-        tbl_Cajas.getColumnModel().getColumn(3).setCellRenderer(new FormatoFechasEnTablas());
-    }
-
-    private void buscar() {
-        pb_barra.setIndeterminate(true);
-        SwingWorker<List<Caja>, Void> worker = new SwingWorker<List<Caja>, Void>() {
-            @Override
-            protected List<Caja> doInBackground() throws Exception {
-                try {
-                    BusquedaCajaCriteria criteria = new BusquedaCajaCriteria();
-                    criteria.setBuscaPorFecha(chk_Fecha.isSelected());
-                    criteria.setFechaDesde(dc_FechaDesde.getDate());
-                    criteria.setFechaHasta(dc_FechaHasta.getDate());
-                    criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-                    //criteria.setCantidadDeRegistros(Integer.parseInt(cmb_paginado.getSelectedItem().toString()));
-                    criteria.setCantidadDeRegistros(0);
-                    criteria.setBuscaPorUsuario(chk_Usuario.isSelected());
-                    criteria.setUsuario((Usuario) cmb_Usuarios.getSelectedItem());
-                    List<Caja> cajasResultantes = cajaService.getCajasCriteria(criteria);
-                    cajas = cajasResultantes;
-                    return cajas;
-
-                } catch (ServiceException ex) {
-                    JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
-                } catch (PersistenceException ex) {
-                    log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                    JOptionPane.showInternalMessageDialog(getParent(), ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-                }
-                cajas = new ArrayList<>();
-                return cajas;
-            }
-
-            @Override
-            protected void done() {
-                pb_barra.setIndeterminate(false);
-                try {
-                    lbl_cantidadMostrar.setText(cajas.size() + " Cajas encontradas");
-                    permitirAbrirCaja();
-                    if (get().isEmpty()) {
-                        JOptionPane.showInternalMessageDialog(getParent(),
-                                ResourceBundle.getBundle("Mensajes")
-                                .getString("mensaje_busqueda_sin_resultados"),
-                                "Aviso", JOptionPane.INFORMATION_MESSAGE);
-                    } else {
-                        cargarResultadosAlTable(cajas);
-                    }
-
-                } catch (InterruptedException ex) {
-                    String msjError = "La tarea que se estaba realizando fue interrumpida. Intente nuevamente.";
-                    log.error(msjError + " - " + ex.getMessage());
-                    JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
-
-                } catch (ExecutionException ex) {
-                    String msjError = "Se produjo un error en la ejecución de la tarea solicitada. Intente nuevamente.";
-                    log.error(msjError + " - " + ex.getMessage());
-                    JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-        };
-        worker.execute();
-    }
-
-    private void cargarResultadosAlTable(List<Caja> cajas) {
-        double totalFinal = 0.0;
-        double totalCierre = 0.0;
-        for (Caja caja : cajas) {
-            Object[] fila = new Object[8];
-            fila[0] = caja.getEstado();
-            fila[1] = caja.getFechaApertura();
-            fila[2] = (new FormatterFechaHora(FormatterFechaHora.FORMATO_HORA_INTERNACIONAL)).format(caja.getFechaCorteInforme());
-            if (caja.getFechaCierre() != null) {
-                fila[3] = caja.getFechaCierre();
-            }
-            fila[4] = (caja.getUsuarioCierraCaja() != null ? caja.getUsuarioCierraCaja() : "Caja sin Cierre");
-            fila[5] = caja.getSaldoInicial();
-            fila[6] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoFinal() : 0.0);
-            fila[7] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoReal() : 0.0);
-            totalFinal += caja.getSaldoFinal();
-            totalCierre += caja.getSaldoReal();
-            modeloTablaCajas.addRow(fila);
-        }
-        tbl_Cajas.setModel(modeloTablaCajas);
-        tbl_Cajas.getColumnModel().getColumn(0).setCellRenderer(new ColoresEstadosRenderer());
-        ftxt_TotalFinal.setValue(totalFinal);
-        ftxt_TotalCierre.setValue(totalCierre);
-    }
-
-    private void limpiarResultados() {
-        modeloTablaCajas = new ModeloTabla();
-        tbl_Cajas.setModel(modeloTablaCajas);
-        this.setColumnasCaja();
-    }
-
-    private void permitirAbrirCaja() {
-        Caja caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        if (caja != null) {
-            String fechaCaja = (new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(caja.getFechaApertura());
-            if (fechaCaja.equals((new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(new Date()))) {
-                btn_AbrirCaja.setEnabled(false);
-            }
-        } else {
-            btn_AbrirCaja.setEnabled(true);
-        }
-    }
-
 }
