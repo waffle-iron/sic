@@ -57,7 +57,10 @@ public class GUI_Principal extends JFrame {
         } else {
             lbl_EmpresaActiva.setText("Empresa: " + empresa.getNombre());
         }
-        cajaService.actualizar(cajaService.cerrarCajaDiaAnterior(empresa));
+        Caja cajaACerrar = cajaService.cerrarCajaDiaAnterior(empresa);
+        if (cajaACerrar != null) {
+            cajaService.actualizar(cajaACerrar);
+        }
     }
 
     @SuppressWarnings("unchecked")

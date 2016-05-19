@@ -551,7 +551,6 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         try {
             this.setMaximum(true);
             this.permitirAbrirCaja();
-            this.buscar();
         } catch (PropertyVetoException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";
             log.error(msjError + " - " + ex.getMessage());

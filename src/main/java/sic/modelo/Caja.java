@@ -67,6 +67,7 @@ public class Caja implements Serializable {
     @Column(nullable = false)
     private String observacion;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private EstadoCaja estado;
 
