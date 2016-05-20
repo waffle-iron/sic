@@ -27,7 +27,7 @@ DROP TABLE IF EXISTS `caja`;
 CREATE TABLE `caja` (
   `id_Caja` bigint(20) NOT NULL AUTO_INCREMENT,
   `eliminada` bit(1) NOT NULL,
-  `estado` varchar(255) DEFAULT NULL,
+  `estado` varchar(255) NOT NULL,
   `fechaApertura` datetime NOT NULL,
   `fechaCierre` datetime DEFAULT NULL,
   `fechaCorteInforme` datetime NOT NULL,
