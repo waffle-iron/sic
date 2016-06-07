@@ -80,8 +80,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-        {
-            if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
+         if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Proveedor SI
                 char[] tiposPermitidos = new char[2];
                 tiposPermitidos[0] = 'B';
@@ -94,7 +93,6 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = 'X';
                 return tiposPermitidos;
             }
-        }
     }
 
     @Override
@@ -120,8 +118,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-        {
-            if (cliente.getCondicionIVA().isDiscriminaIVA()) {
+         if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Cliente SI
                 String[] tiposPermitidos = new String[4];
                 tiposPermitidos[0] = "Factura C";
@@ -138,7 +135,6 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
-        }
     }
 
     @Override
@@ -194,7 +190,7 @@ public class FacturaServiceImpl implements IFacturaService {
         }
         return tipoComprobante;
     }
-    
+
     @Override
     public Movimiento getTipoMovimiento(Factura factura) {
         if (factura instanceof FacturaVenta) {
@@ -352,11 +348,7 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     public long calcularNumeroFactura(String tipoDeFactura, long serie) {
-        if ("Factura Y".equals(tipoDeFactura)) {
-            return 1 + facturaRepository.getMayorNumFacturaSegunTipo("Factura X", serie);
-        } else { //Factura A,B y C
-            return 1 + facturaRepository.getMayorNumFacturaSegunTipo(tipoDeFactura, serie);
-        }
+        return 1 + facturaRepository.getMayorNumFacturaSegunTipo(tipoDeFactura, serie);
     }
 
     @Override
