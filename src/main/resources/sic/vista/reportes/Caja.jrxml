@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-05-12T17:56:41 -->
+<!-- 2016-06-09T21:09:52 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Caja" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="608c624e-e655-4a3f-bb85-9c440082766b">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -94,7 +94,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($P{caja}.getEstado().toString().equals("CERRADA"))?"Caja Cerrada":"Caja en actividad"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($P{caja}.getEstado().toString().equals("CERRADA"))?"Estado de Caja: Cerrada":"Estado de Caja: Abierta"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="277" y="17" width="280" height="24" uuid="1f199f3b-fa02-4a9e-8700-c57c6d86f0cc"/>
@@ -144,7 +144,7 @@
 					<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 				</reportElement>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{_THIS}.substring($F{_THIS}.indexOf("-")+1).length()>0 ?"$"+$F{_THIS}.substring($F{_THIS}.indexOf("-")+1):""]]></textFieldExpression>

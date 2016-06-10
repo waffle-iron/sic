@@ -162,13 +162,4 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         return facturas;
     }
 
-    @Override
-    public List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta) {
-        TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.buscarEntreFechas", Factura.class);
-        typedQuery.setParameter("id_Empresa", id_Empresa);
-        typedQuery.setParameter("desde", desde);
-        typedQuery.setParameter("hasta", hasta);
-        List<Factura> facturas = typedQuery.getResultList();
-        return facturas;
-    }
 }

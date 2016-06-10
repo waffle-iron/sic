@@ -24,9 +24,7 @@ import javax.persistence.TemporalType;
 @Table(name = "factura")
 @NamedQueries({
     @NamedQuery(name = "Factura.buscarEntreFechasYFormaDePago",
-            query = "SELECT f FROM Factura f WHERE f.empresa.id_Empresa = :id_Empresa AND f.formaPago.id_FormaDePago = :id_FormaDePago AND f.fecha BETWEEN :desde AND :hasta"),
-    @NamedQuery(name = "Factura.buscarEntreFechas",
-            query = "SELECT f FROM Factura f WHERE f.empresa.id_Empresa = :id_Empresa AND f.fecha BETWEEN :desde AND :hasta")
+            query = "SELECT f FROM Factura f WHERE f.empresa.id_Empresa = :id_Empresa AND f.formaPago.id_FormaDePago = :id_FormaDePago AND f.eliminada = false AND f.fecha BETWEEN :desde AND :hasta")
 })
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Factura implements Serializable {

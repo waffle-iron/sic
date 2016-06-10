@@ -29,6 +29,4 @@ public interface IFacturaRepository {
 
     List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
 
-    List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta);
-
 }
