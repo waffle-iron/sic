@@ -79,8 +79,9 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = 'X';
                 return tiposPermitidos;
             }
-        } else //cuando la Empresa NO discrimina IVA
-         if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
+        } else {
+             //cuando la Empresa NO discrimina IVA
+            if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Proveedor SI
                 char[] tiposPermitidos = new char[2];
                 tiposPermitidos[0] = 'B';
@@ -93,6 +94,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = 'X';
                 return tiposPermitidos;
             }
+        }
     }
 
     @Override
@@ -117,8 +119,9 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
-        } else //cuando la Empresa NO discrimina IVA
-         if (cliente.getCondicionIVA().isDiscriminaIVA()) {
+        } else {
+             //cuando la Empresa NO discrimina IVA
+            if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Cliente SI
                 String[] tiposPermitidos = new String[4];
                 tiposPermitidos[0] = "Factura C";
@@ -135,6 +138,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
+        }
     }
 
     @Override
@@ -502,11 +506,6 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
         return facturaRepository.getFacturasPorFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
-    }
-
-    @Override
-    public List<Factura> getFacturasPorFechas(long id_Empresa, Date desde, Date hasta) {
-        return facturaRepository.getFacturasPorFechas(id_Empresa, desde, hasta);
     }
 
     //**************************************************************************

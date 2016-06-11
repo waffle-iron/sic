@@ -130,7 +130,6 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                 pb_barra.setIndeterminate(false);
                 try {
                     lbl_cantidadMostrar.setText(cajas.size() + " Cajas encontradas");
-                    permitirAbrirCaja();
                     if (get().isEmpty()) {
                         JOptionPane.showInternalMessageDialog(getParent(),
                                 ResourceBundle.getBundle("Mensajes")
@@ -186,16 +185,20 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         this.setColumnasCaja();
     }
 
-    private void permitirAbrirCaja() {
-        Caja caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+    private void habilitarAperturaDeCaja() {
+        boolean cajaAbierta = true;
+        Caja caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());               
         if (caja != null) {
-            String fechaCaja = (new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(caja.getFechaApertura());
-            if (fechaCaja.equals((new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(new Date()))) {
-                btn_AbrirCaja.setEnabled(false);
+            if (caja.getEstado() == EstadoCaja.CERRADA) {
+                String fechaCaja = (new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(caja.getFechaApertura());
+                if (fechaCaja.equals((new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(new Date()))) {
+                    cajaAbierta = false;                    
+                }
+            } else {
+                cajaAbierta = false;                
             }
-        } else {
-            btn_AbrirCaja.setEnabled(true);
-        }
+        }        
+        btn_AbrirCaja.setEnabled(cajaAbierta);
     }
 
     private void abrirCaja() {
@@ -204,6 +207,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         abrirCaja.setVisible(true);
         this.limpiarResultados();
         this.buscar();
+        this.habilitarAperturaDeCaja();
     }
 
     @SuppressWarnings("unchecked")
@@ -494,6 +498,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
     private void btn_buscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_buscarActionPerformed
         this.limpiarResultados();
         this.buscar();
+        this.habilitarAperturaDeCaja();
     }//GEN-LAST:event_btn_buscarActionPerformed
 
     private void btn_verDetalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_verDetalleActionPerformed
@@ -517,9 +522,11 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                 int indiceDelModel = Utilidades.getSelectedRowModelIndice(tbl_Cajas);
                 this.cajas.get(indiceDelModel).setEliminada(true);
                 cajaService.actualizar(this.cajas.get(indiceDelModel));
+
             }
             this.limpiarResultados();
             this.buscar();
+            this.habilitarAperturaDeCaja();
         }
     }//GEN-LAST:event_btn_eliminarCajaActionPerformed
 
@@ -550,7 +557,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
     private void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_internalFrameOpened
         try {
             this.setMaximum(true);
-            this.permitirAbrirCaja();
+            this.habilitarAperturaDeCaja();
         } catch (PropertyVetoException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";
             log.error(msjError + " - " + ex.getMessage());
