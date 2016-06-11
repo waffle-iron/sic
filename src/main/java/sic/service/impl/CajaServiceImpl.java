@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -32,9 +30,7 @@ import sic.util.Utilidades;
 
 @Service
 public class CajaServiceImpl implements ICajaService {
-
-    @PersistenceContext
-    private EntityManager em;
+    
     private final ICajaRepository cajaRepository;
 
     @Autowired

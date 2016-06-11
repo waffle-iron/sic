@@ -16,6 +16,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Cliente;
@@ -44,22 +45,25 @@ import sic.util.Validator;
 @Service
 public class FacturaServiceImpl implements IFacturaService {
 
-    private IFacturaRepository facturaRepository;
-    private IProductoService productoService;
-    private IConfiguracionDelSistemaService configuracionDelSistemaService;
-    private IEmpresaService empresaService;
-    private IPedidoService pedidoService;
+    private final IFacturaRepository facturaRepository;
+    private final IProductoService productoService;
+    private final IConfiguracionDelSistemaService configuracionDelSistemaService;
+    private final IEmpresaService empresaService;
+    private final IPedidoService pedidoService;
 
     @Autowired
-    public void setDependencias(IFacturaRepository facturaRepository, IProductoService productoService,
-            IConfiguracionDelSistemaService configuracionDelSistemaService, IEmpresaService empresaService, IPedidoService pedidoService) {
-
+    @Lazy
+    public FacturaServiceImpl(IFacturaRepository facturaRepository,
+            IProductoService productoService,
+            IConfiguracionDelSistemaService configuracionDelSistemaService,
+            IEmpresaService empresaService, IPedidoService pedidoService) {
+        
         this.facturaRepository = facturaRepository;
         this.productoService = productoService;
         this.configuracionDelSistemaService = configuracionDelSistemaService;
         this.empresaService = empresaService;
         this.pedidoService = pedidoService;
-    }
+    }    
 
     @Override
     public char[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor) {

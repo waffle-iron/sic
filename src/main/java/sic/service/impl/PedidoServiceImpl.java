@@ -41,6 +41,7 @@ public class PedidoServiceImpl implements IPedidoService {
     @Autowired
     public PedidoServiceImpl(IEmpresaService empresaService, IFacturaService facturaService,
             IPedidoRepository pedidoRepository, IProductoService productoService) {
+        
         this.empresaService = empresaService;
         this.facturaService = facturaService;
         this.pedidoRepository = pedidoRepository;
