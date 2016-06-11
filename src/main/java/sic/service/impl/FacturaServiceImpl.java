@@ -79,8 +79,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = 'X';
                 return tiposPermitidos;
             }
-        } else //cuando la Empresa NO discrimina IVA
-        {
+        } else {
+             //cuando la Empresa NO discrimina IVA
             if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Proveedor SI
                 char[] tiposPermitidos = new char[2];
@@ -119,8 +119,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
-        } else //cuando la Empresa NO discrimina IVA
-        {
+        } else {
+             //cuando la Empresa NO discrimina IVA
             if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Cliente SI
                 String[] tiposPermitidos = new String[4];

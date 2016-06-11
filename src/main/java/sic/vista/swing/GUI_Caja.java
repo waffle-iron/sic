@@ -262,7 +262,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                     modeloTablaResumen.addRow(fila);
                 }
             }
-            this.jtxt_saldoCaja.setValue(totalCaja); //revisar que dato va al informe
+            this.ftxt_saldoCaja.setValue(totalCaja); //revisar que dato va al informe
             caja.setSaldoFinal(totalCaja);
             this.ftxt_TotalGeneral.setValue(Math.floor(totalGeneral * 100) / 100);
             //Guarda el monto final del último calculo en la caja
@@ -274,10 +274,10 @@ public class GUI_Caja extends javax.swing.JDialog {
                 ftxt_TotalGeneral.setBackground(Color.GREEN);
             }
             if (totalCaja > 0) {
-                jtxt_saldoCaja.setBackground(Color.GREEN);
+                ftxt_saldoCaja.setBackground(Color.GREEN);
             }
             if (totalCaja < 0) {
-                jtxt_saldoCaja.setBackground(Color.PINK);
+                ftxt_saldoCaja.setBackground(Color.PINK);
             }
             tbl_Resumen.setModel(modeloTablaResumen);
             tbl_Resumen.setDefaultRenderer(Double.class, new ColoresNumerosTablaRenderer());
@@ -389,7 +389,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         ftxt_TotalGeneral = new javax.swing.JFormattedTextField();
         lbl_Total = new javax.swing.JLabel();
         lbl_totalCaja = new javax.swing.JLabel();
-        jtxt_saldoCaja = new javax.swing.JFormattedTextField();
+        ftxt_saldoCaja = new javax.swing.JFormattedTextField();
         lbl_estado = new javax.swing.JLabel();
         lbl_aviso = new javax.swing.JLabel();
 
@@ -543,10 +543,10 @@ public class GUI_Caja extends javax.swing.JDialog {
         lbl_totalCaja.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbl_totalCaja.setText("Total que afecta Caja:");
 
-        jtxt_saldoCaja.setEditable(false);
-        jtxt_saldoCaja.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
-        jtxt_saldoCaja.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        jtxt_saldoCaja.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        ftxt_saldoCaja.setEditable(false);
+        ftxt_saldoCaja.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        ftxt_saldoCaja.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        ftxt_saldoCaja.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
         javax.swing.GroupLayout pnl_ResumenLayout = new javax.swing.GroupLayout(pnl_Resumen);
         pnl_Resumen.setLayout(pnl_ResumenLayout);
@@ -563,10 +563,10 @@ public class GUI_Caja extends javax.swing.JDialog {
                     .addGroup(pnl_ResumenLayout.createSequentialGroup()
                         .addComponent(lbl_totalCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(jtxt_saldoCaja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(ftxt_saldoCaja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
-        pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {ftxt_TotalGeneral, jtxt_saldoCaja});
+        pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {ftxt_TotalGeneral, ftxt_saldoCaja});
 
         pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_Total, lbl_totalCaja});
 
@@ -577,7 +577,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_totalCaja)
-                    .addComponent(jtxt_saldoCaja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ftxt_saldoCaja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_Total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -585,7 +585,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addContainerGap())
         );
 
-        pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {ftxt_TotalGeneral, jtxt_saldoCaja, lbl_Total, lbl_totalCaja});
+        pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {ftxt_TotalGeneral, ftxt_saldoCaja, lbl_Total, lbl_totalCaja});
 
         lbl_estado.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         lbl_estado.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -751,7 +751,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     private javax.swing.JComboBox<FormaDePago> cmb_FormasDePago;
     private javax.swing.JFormattedTextField ftxt_Detalle;
     private javax.swing.JFormattedTextField ftxt_TotalGeneral;
-    private javax.swing.JFormattedTextField jtxt_saldoCaja;
+    private javax.swing.JFormattedTextField ftxt_saldoCaja;
     private javax.swing.JLabel lbl_FormaDePago;
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_aviso;
