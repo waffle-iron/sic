@@ -1,8 +1,6 @@
 package sic.vista.swing;
 
 import java.util.List;
-import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -20,7 +18,7 @@ public class GUI_DetalleCondicionIVA extends JDialog {
     private final DefaultListModel modeloList = new DefaultListModel();
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final ICondicionIVAService condicionIVAService = appContext.getBean(ICondicionIVAService.class);
-    private static final Logger log = Logger.getLogger(GUI_DetalleCondicionIVA.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(GUI_DetalleCondicionIVA.class.getPackage().getName());
 
     public GUI_DetalleCondicionIVA() {
         this.initComponents();
@@ -35,8 +33,8 @@ public class GUI_DetalleCondicionIVA extends JDialog {
     private void cargarListCondiciones() {
         modeloList.clear();
         List<CondicionIVA> condicionesIVA = condicionIVAService.getCondicionesIVA();
-        for (CondicionIVA cond : condicionesIVA) {
-            modeloList.addElement(cond);
+        for (CondicionIVA c : condicionesIVA) {
+            modeloList.addElement(c);
         }
         lst_Condiciones.setModel(modeloList);
     }
@@ -62,9 +60,11 @@ public class GUI_DetalleCondicionIVA extends JDialog {
         btn_Agregar = new javax.swing.JButton();
         btn_Actualizar = new javax.swing.JButton();
         btn_Eliminar = new javax.swing.JButton();
+        lbl_MisCondicionesDeIVA = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Condiciones de IVA");
+        setTitle("Administrar Condiciones de IVA");
+        setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -86,37 +86,8 @@ public class GUI_DetalleCondicionIVA extends JDialog {
 
         chk_DiscriminaIVA.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
 
+        lbl_Discrimina_IVA.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Discrimina_IVA.setText("Discrimina IVA:");
-
-        javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
-        panel.setLayout(panelLayout);
-        panelLayout.setHorizontalGroup(
-            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelLayout.createSequentialGroup()
-                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelLayout.createSequentialGroup()
-                        .addGap(51, 51, 51)
-                        .addComponent(lbl_Nombre)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txt_Nombre))
-                    .addGroup(panelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lbl_Discrimina_IVA)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(chk_DiscriminaIVA)))
-                .addContainerGap())
-        );
-        panelLayout.setVerticalGroup(
-            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelLayout.createSequentialGroup()
-                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txt_Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_Nombre))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(chk_DiscriminaIVA)
-                    .addComponent(lbl_Discrimina_IVA)))
-        );
 
         btn_Agregar.setForeground(java.awt.Color.blue);
         btn_Agregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddMoney_16x16.png"))); // NOI18N
@@ -145,38 +116,75 @@ public class GUI_DetalleCondicionIVA extends JDialog {
             }
         });
 
+        javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
+        panel.setLayout(panelLayout);
+        panelLayout.setHorizontalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelLayout.createSequentialGroup()
+                        .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lbl_Discrimina_IVA, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                            .addComponent(lbl_Nombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txt_Nombre)
+                            .addComponent(chk_DiscriminaIVA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(panelLayout.createSequentialGroup()
+                        .addComponent(btn_Agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_Actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_Eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
+        panelLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Actualizar, btn_Agregar, btn_Eliminar});
+
+        panelLayout.setVerticalGroup(
+            panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txt_Nombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_Nombre))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(chk_DiscriminaIVA)
+                    .addComponent(lbl_Discrimina_IVA))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_Agregar)
+                    .addComponent(btn_Actualizar)
+                    .addComponent(btn_Eliminar))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        lbl_MisCondicionesDeIVA.setText("Condiciones de IVA:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(0, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(sp_ListaMedidas, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btn_Agregar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_Actualizar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 0, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_Eliminar)))
-                .addContainerGap(0, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lbl_MisCondicionesDeIVA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(sp_ListaMedidas, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE))
+                .addContainerGap())
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Actualizar, btn_Agregar, btn_Eliminar});
-
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(sp_ListaMedidas, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbl_MisCondicionesDeIVA)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(sp_ListaMedidas, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_Agregar)
-                    .addComponent(btn_Actualizar)
-                    .addComponent(btn_Eliminar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -199,14 +207,11 @@ public class GUI_DetalleCondicionIVA extends JDialog {
         condicionIVA.setDiscriminaIVA(chk_DiscriminaIVA.isSelected());
         try {
             condicionIVAService.guardar(condicionIVA);
-            this.limpiarYRecargarComponentes();
+            LOGGER.warn("La condicion de IVA " + txt_Nombre.getText().trim() + " se guardó correctamente.");
+            this.limpiarYRecargarComponentes();            
 
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_AgregarActionPerformed
 
@@ -221,15 +226,12 @@ public class GUI_DetalleCondicionIVA extends JDialog {
                 condicionIVASeleccionada.setNombre(txt_Nombre.getText().trim());
                 condicionIVASeleccionada.setDiscriminaIVA(chk_DiscriminaIVA.isSelected());
                 condicionIVAService.actualizar(condicionIVASeleccionada);
-                this.limpiarYRecargarComponentes();
+                LOGGER.warn("La condicion de IVA " + txt_Nombre.getText().trim() + " se actualizó correctamente.");
+                this.limpiarYRecargarComponentes();                
             }
 
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_ActualizarActionPerformed
 
@@ -241,14 +243,20 @@ public class GUI_DetalleCondicionIVA extends JDialog {
                         + " Condicion de IVA de la lista para poder continuar",
                         "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                //eliminar                
-                condicionIVAService.eliminar(condicionIVASeleccionada);
-                this.limpiarYRecargarComponentes();
+                //eliminar                                              
+                int respuesta = JOptionPane.showConfirmDialog(this,
+                    "¿Esta seguro que desea eliminar la condicion de IVA: "
+                    + condicionIVASeleccionada.getNombre() + "?",
+                    "Eliminar", JOptionPane.YES_NO_OPTION);
+                if (respuesta == JOptionPane.YES_OPTION) {                    
+                    condicionIVAService.eliminar(condicionIVASeleccionada);
+                    LOGGER.warn("La condicion de IVA " + txt_Nombre.getText().trim() + " se eliminó correctamente.");
+                    this.limpiarYRecargarComponentes();                
+                }
             }
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_EliminarActionPerformed
 
@@ -256,9 +264,8 @@ public class GUI_DetalleCondicionIVA extends JDialog {
         try {
             this.cargarListCondiciones();
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
     }//GEN-LAST:event_formWindowOpened
@@ -268,6 +275,7 @@ public class GUI_DetalleCondicionIVA extends JDialog {
     private javax.swing.JButton btn_Eliminar;
     private javax.swing.JCheckBox chk_DiscriminaIVA;
     private javax.swing.JLabel lbl_Discrimina_IVA;
+    private javax.swing.JLabel lbl_MisCondicionesDeIVA;
     private javax.swing.JLabel lbl_Nombre;
     private javax.swing.JList lst_Condiciones;
     private javax.swing.JPanel panel;
