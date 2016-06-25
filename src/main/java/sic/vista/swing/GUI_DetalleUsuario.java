@@ -1,34 +1,82 @@
 package sic.vista.swing;
 
-import java.awt.Frame;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
+import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import sic.AppContextProvider;
+import sic.modelo.Usuario;
+import sic.service.IUsuarioService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 
 public class GUI_DetalleUsuario extends JDialog {
+    
+    private Usuario usuarioModificar;
+    private final TipoDeOperacion operacion;    
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
+    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
+    private static final Logger LOGGER = Logger.getLogger(GUI_DetalleUsuario.class.getPackage().getName());
 
-    public GUI_DetalleUsuario(Frame parent, boolean modal) {
-        super(parent, modal);
-        initComponents();
+    public GUI_DetalleUsuario() {
+        this.initComponents();
+        operacion = TipoDeOperacion.ALTA;
+        this.setIcon();
+        this.setTitle("Nuevo Usuario");
     }
 
+    public GUI_DetalleUsuario(Usuario usuario) {
+        this.initComponents();
+        this.usuarioModificar = usuario;
+        operacion = TipoDeOperacion.ACTUALIZACION;
+        this.setIcon();
+        this.setTitle("Modificar Usuario");
+    }    
+
+    private void setIcon() {
+        ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/Group_16x16.png"));
+        this.setIconImage(iconoVentana.getImage());
+    }
+    
+    private void cargarUsuarioParaModificar() {
+        txt_Usuario.setText(usuarioModificar.getNombre());        
+        chk_Administrador.setSelected(usuarioModificar.getPermisosAdministrador());
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panel2 = new javax.swing.JPanel();
+        btn_Guardar = new javax.swing.JButton();
+        panelPrincipal = new javax.swing.JPanel();
         lbl_Usuario = new javax.swing.JLabel();
-        lbl_Contrasenia = new javax.swing.JLabel();
         txt_Usuario = new javax.swing.JTextField();
+        lbl_Contrasenia = new javax.swing.JLabel();
         txt_Contrasenia = new javax.swing.JPasswordField();
-        txt_RepetirContrasenia = new javax.swing.JPasswordField();
         lbl_RepetirContrasenia = new javax.swing.JLabel();
+        txt_RepetirContrasenia = new javax.swing.JPasswordField();
+        lbl_Administrador = new javax.swing.JLabel();
         chk_Administrador = new javax.swing.JCheckBox();
-        btn_Aceptar = new javax.swing.JButton();
-        btn_Cancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
-        panel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-        panel2.setPreferredSize(new java.awt.Dimension(403, 118));
+        btn_Guardar.setForeground(java.awt.Color.blue);
+        btn_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Accept_16x16.png"))); // NOI18N
+        btn_Guardar.setText("Guardar");
+        btn_Guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_GuardarActionPerformed(evt);
+            }
+        });
+
+        panelPrincipal.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         lbl_Usuario.setForeground(java.awt.Color.red);
         lbl_Usuario.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -40,74 +88,60 @@ public class GUI_DetalleUsuario extends JDialog {
 
         txt_Contrasenia.setPreferredSize(new java.awt.Dimension(125, 20));
 
-        txt_RepetirContrasenia.setPreferredSize(new java.awt.Dimension(125, 20));
-
         lbl_RepetirContrasenia.setForeground(java.awt.Color.red);
         lbl_RepetirContrasenia.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_RepetirContrasenia.setText("* Repetir:");
 
-        chk_Administrador.setText("Administrador: ");
+        txt_RepetirContrasenia.setPreferredSize(new java.awt.Dimension(125, 20));
+
+        lbl_Administrador.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_Administrador.setText("Administrador:");
+
         chk_Administrador.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         chk_Administrador.setMargin(new java.awt.Insets(2, -2, 2, 2));
 
-        javax.swing.GroupLayout panel2Layout = new javax.swing.GroupLayout(panel2);
-        panel2.setLayout(panel2Layout);
-        panel2Layout.setHorizontalGroup(
-            panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel2Layout.createSequentialGroup()
-                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panel2Layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lbl_RepetirContrasenia)
-                            .addComponent(lbl_Contrasenia)
-                            .addComponent(lbl_Usuario, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txt_RepetirContrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txt_Contrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txt_Usuario, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)))
-                    .addGroup(panel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(chk_Administrador)))
-                .addContainerGap(14, Short.MAX_VALUE))
+        javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
+        panelPrincipal.setLayout(panelPrincipalLayout);
+        panelPrincipalLayout.setHorizontalGroup(
+            panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelPrincipalLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lbl_Administrador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_RepetirContrasenia, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_Contrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_Usuario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txt_RepetirContrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                    .addComponent(txt_Contrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txt_Usuario)
+                    .addComponent(chk_Administrador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
-        panel2Layout.setVerticalGroup(
-            panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panel2Layout.createSequentialGroup()
-                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+        panelPrincipalLayout.setVerticalGroup(
+            panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelPrincipalLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_Usuario)
                     .addComponent(txt_Usuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_Contrasenia)
                     .addComponent(txt_Contrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txt_RepetirContrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_RepetirContrasenia))
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(lbl_RepetirContrasenia)
+                    .addComponent(txt_RepetirContrasenia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chk_Administrador)
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(chk_Administrador)
+                    .addComponent(lbl_Administrador))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        btn_Aceptar.setForeground(java.awt.Color.blue);
-        btn_Aceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Accept_16x16.png"))); // NOI18N
-        btn_Aceptar.setText("Aceptar");
-        btn_Aceptar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_AceptarActionPerformed(evt);
-            }
-        });
-
-        btn_Cancelar.setForeground(java.awt.Color.blue);
-        btn_Cancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Cancel_16x16.png"))); // NOI18N
-        btn_Cancelar.setText("quitar este boton");
-        btn_Cancelar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_CancelarActionPerformed(evt);
-            }
-        });
+        panelPrincipalLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {chk_Administrador, txt_Contrasenia, txt_RepetirContrasenia, txt_Usuario});
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -116,41 +150,26 @@ public class GUI_DetalleUsuario extends JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, 378, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(panelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btn_Cancelar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_Aceptar)))
+                        .addComponent(btn_Guardar)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_Aceptar)
-                    .addComponent(btn_Cancelar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btn_Guardar)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btn_CancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_CancelarActionPerformed
-        this.plegarDetalle();
-        this.activarComponentesSuperiores();
-        this.desactivarComponentesInferiores();
-        this.limpiarDatos();
-        usuarioSeleccionado = null;
-        lst_Usuarios.clearSelection();
-    }//GEN-LAST:event_btn_CancelarActionPerformed
-
-    private void btn_AceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AceptarActionPerformed
+    private void btn_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_GuardarActionPerformed
         try {
             if (operacion == TipoDeOperacion.ALTA) {
                 if (new String(txt_Contrasenia.getPassword()).equals(new String(txt_RepetirContrasenia.getPassword()))) {
@@ -158,63 +177,52 @@ public class GUI_DetalleUsuario extends JDialog {
                     usuario.setNombre(txt_Usuario.getText().trim());
                     usuario.setPassword(new String(txt_Contrasenia.getPassword()));
                     usuario.setPermisosAdministrador(chk_Administrador.isSelected());
-                    usuarioService.guardar(usuario);
-                    this.cargarListUsuarios();
-                    this.desactivarComponentesInferiores();
-                    this.activarComponentesSuperiores();
-                    this.limpiarDatos();
-                    this.plegarDetalle();
-                    this.centrarInternalFrame();
+                    usuarioService.guardar(usuario);                    
+                    LOGGER.warn("El usuario " + usuario.getNombre() + " se creo correctamente.");
+                    this.dispose();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Las contraseñas introducidas deben ser las mismas.",
+                    JOptionPane.showMessageDialog(this, 
+                        "Las contraseñas introducidas deben ser las mismas.",
                         "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
 
             if (operacion == TipoDeOperacion.ACTUALIZACION) {
                 if (new String(txt_Contrasenia.getPassword()).equals(new String(txt_RepetirContrasenia.getPassword()))) {
-                    this.desactivarComponentesSuperiores();
-                    this.activarComponentesInferiores();
                     Usuario usuarioModificado = new Usuario();
-                    usuarioModificado.setId_Usuario(usuarioSeleccionado.getId_Usuario());
+                    usuarioModificado.setId_Usuario(usuarioModificar.getId_Usuario());
                     usuarioModificado.setNombre(txt_Usuario.getText().trim());
                     usuarioModificado.setPassword(new String(txt_Contrasenia.getPassword()));
                     usuarioModificado.setPermisosAdministrador(chk_Administrador.isSelected());
                     usuarioService.actualizar(usuarioModificado);
-                    if (mismoUsuarioActivo == true) {
-                        usuarioService.setUsuarioActivo(usuarioModificado);
-                    }
-                    this.cargarListUsuarios();
-                    this.desactivarComponentesInferiores();
-                    this.activarComponentesSuperiores();
-                    this.limpiarDatos();
-                    usuarioSeleccionado = null;
-                    this.plegarDetalle();
-                    this.centrarInternalFrame();
+                    LOGGER.warn("El usuario " + usuarioModificado.getNombre() + " se modifico correctamente.");
+                    this.dispose();                    
                 } else {
-                    JOptionPane.showMessageDialog(this, "Las contraseñas introducidas deben ser las mismas.",
+                    JOptionPane.showMessageDialog(this,
+                        "Las contraseñas introducidas deben ser las mismas.",
                         "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
+                }                
+            }            
 
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_btn_AceptarActionPerformed
+    }//GEN-LAST:event_btn_GuardarActionPerformed
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        if (operacion == TipoDeOperacion.ACTUALIZACION) {
+            this.cargarUsuarioParaModificar();
+        }
+    }//GEN-LAST:event_formWindowOpened
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_Aceptar;
-    private javax.swing.JButton btn_Cancelar;
+    private javax.swing.JButton btn_Guardar;
     private javax.swing.JCheckBox chk_Administrador;
+    private javax.swing.JLabel lbl_Administrador;
     private javax.swing.JLabel lbl_Contrasenia;
     private javax.swing.JLabel lbl_RepetirContrasenia;
     private javax.swing.JLabel lbl_Usuario;
-    private javax.swing.JPanel panel2;
+    private javax.swing.JPanel panelPrincipal;
     private javax.swing.JPasswordField txt_Contrasenia;
     private javax.swing.JPasswordField txt_RepetirContrasenia;
     private javax.swing.JTextField txt_Usuario;
