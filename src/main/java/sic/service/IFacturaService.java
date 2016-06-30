@@ -57,6 +57,8 @@ public interface IFacturaService {
 
     double calcularVuelto(double importeAPagar, double importeAbonado);
 
+    double calcularImporte(double cantidad, double precioUnitario, double descuento_neto);
+
     //**************************************************************************
     //Division de Factura
     List<FacturaVenta> dividirFactura(FacturaVenta factura, int[] indices);

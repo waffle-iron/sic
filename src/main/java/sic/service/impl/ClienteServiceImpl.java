@@ -91,7 +91,8 @@ public class ClienteServiceImpl implements IClienteService {
         return clienteRepository.buscarClientes(criteria);
     }
 
-    private void validarOperacion(TipoDeOperacion operacion, Cliente cliente) {
+    @Override
+    public void validarOperacion(TipoDeOperacion operacion, Cliente cliente) {
         //Entrada de Datos
         if (!Validator.esEmailValido(cliente.getEmail())) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")

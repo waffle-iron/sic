@@ -20,23 +20,22 @@ import sic.service.impl.FacturaServiceImpl;
 import sic.service.impl.ProductoServiceImpl;
 
 public class FacturaServiceTest {
-
+    
     private IFacturaService facturaService;
     private IProductoService productoService;
-    private Producto producto;
-
+    
     @Before
     public void before() {
         productoService = Mockito.mock(ProductoServiceImpl.class);
         IFacturaRepository facturaRepository = Mockito.mock(IFacturaRepository.class);
         when(facturaRepository.getMayorNumFacturaSegunTipo("", (long) 1)).thenReturn((long) 1);
-
+        
         facturaService = new FacturaServiceImpl(facturaRepository, productoService, null, null, null);
-
+        
     }
-
+    
     @Test
-    public void testGetTipoFacturaCompraCuandoEmpresaYProveedorDiscriminan() {
+    public void shouldGetTipoFacturaCompraCuandoEmpresaYProveedorDiscriminanIVA() {
         Empresa empresa = Mockito.mock(Empresa.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
         when(condicionIVAqueDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.TRUE);
@@ -48,9 +47,9 @@ public class FacturaServiceTest {
         char[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
-
+    
     @Test
-    public void testGetTipoFacturaCompraCuandoEmpresaDiscriminaYProveedorNO() {
+    public void shouldGetTipoFacturaCompraCuandoEmpresaDiscriminaIVAYProveedorNO() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Proveedor proveedor = Mockito.mock(Proveedor.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -63,9 +62,9 @@ public class FacturaServiceTest {
         char[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
-
+    
     @Test
-    public void testGetTipoFacturaCompraCuandoEmpresaNoDiscriminaYProveedorSI() {
+    public void souldGetTipoFacturaCompraCuandoEmpresaNoDiscriminaIVAYProveedorSI() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Proveedor proveedor = Mockito.mock(Proveedor.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -79,7 +78,7 @@ public class FacturaServiceTest {
         char[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
-
+    
     @Test
     public void testGetTipoFacturaCompraCuandoEmpresaNoDiscriminaYProveedorTampoco() {
         Empresa empresa = Mockito.mock(Empresa.class);
@@ -93,9 +92,9 @@ public class FacturaServiceTest {
         char[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
-
+    
     @Test
-    public void testGetTipoFacturaVentaCuandoEmpresaDiscriminaYClienteTambien() {
+    public void souldGetTipoFacturaVentaCuandoEmpresaDiscriminaYClienteTambien() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Cliente cliente = Mockito.mock(Cliente.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -106,9 +105,9 @@ public class FacturaServiceTest {
         String[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
         assertArrayEquals(expResult, result);
     }
-
+    
     @Test
-    public void testGetTipoFacturaVentaEmpresaDiscriminaYClienteNo() {
+    public void shouldGetTipoFacturaVentaEmpresaDiscriminaYClienteNo() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Cliente cliente = Mockito.mock(Cliente.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -121,9 +120,9 @@ public class FacturaServiceTest {
         String[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
         assertArrayEquals(expResult, result);
     }
-
+    
     @Test
-    public void testGetTipoFacturaVentaEmpresaNoDiscriminaYClienteSi() {
+    public void shouldGetTipoFacturaVentaEmpresaNoDiscriminaYClienteSi() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Cliente cliente = Mockito.mock(Cliente.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -136,9 +135,9 @@ public class FacturaServiceTest {
         String[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
         assertArrayEquals(expResult, result);
     }
-
+    
     @Test
-    public void testGetTipoFacturaVentaEmpresaNoDiscriminaYClienteNO() {
+    public void shouldGetTipoFacturaVentaEmpresaNoDiscriminaIVAYClienteNO() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Cliente cliente = Mockito.mock(Cliente.class);
         CondicionIVA condicionIVAqueNoDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -150,9 +149,9 @@ public class FacturaServiceTest {
         String[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
         assertArrayEquals(expResult, result);
     }
-
+    
     @Test
-    public void testGetTiposFacturaSegunEmpresaSiDiscriminaIVA() {
+    public void shloudGetTiposFacturaSegunEmpresaSiDiscriminaIVA() {
         Empresa empresa = Mockito.mock(Empresa.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
         when(condicionIVAqueDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.TRUE);
@@ -161,9 +160,9 @@ public class FacturaServiceTest {
         char[] result = facturaService.getTiposFacturaSegunEmpresa(empresa);
         assertArrayEquals(expResult, result);
     }
-
+    
     @Test
-    public void testGetTiposFacturaSegunEmpresaSiNoDiscriminaIVA() {
+    public void shouldGetTiposFacturaSegunEmpresaSiNoDiscriminaIVA() {
         Empresa empresa = Mockito.mock(Empresa.class);
         CondicionIVA condicionIVAqueNoDiscrimina = Mockito.mock(CondicionIVA.class);
         when(condicionIVAqueNoDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.FALSE);
@@ -172,14 +171,14 @@ public class FacturaServiceTest {
         char[] result = facturaService.getTiposFacturaSegunEmpresa(empresa);
         assertArrayEquals(expResult, result);
     }
-
+    
     @Test
-    public void testDividirFactura() {
+    public void shouldDividirFactura() {
         System.out.println("dividirFactura");
         FacturaVenta factura = Mockito.mock(FacturaVenta.class);
         RenglonFactura uno = Mockito.mock(RenglonFactura.class);
         RenglonFactura dos = Mockito.mock(RenglonFactura.class);
-        producto = Mockito.mock(Producto.class);
+        Producto producto = Mockito.mock(Producto.class);
         when(producto.getId_Producto()).thenReturn((long) 1);
         when(producto.getCodigo()).thenReturn("1");
         when(producto.getDescripcion()).thenReturn("producto test");
@@ -202,6 +201,24 @@ public class FacturaServiceTest {
         int[] indices = {0, 1};
         int cantidadDeFacturasEsperadas = 2;
         List<FacturaVenta> result = facturaService.dividirFactura(factura, indices);
+        double cantidadRenglonUnoPrimeraFactura = result.get(0).getRenglones().get(0).getCantidad();
+        double cantidadRenglonDosPrimeraFactura = result.get(0).getRenglones().get(1).getCantidad();
+        double cantidadRenglonUnoSegundaFactura = result.get(1).getRenglones().get(0).getCantidad();
+        double cantidadRenglonDosSegundaFactura = result.get(1).getRenglones().get(1).getCantidad();
         assertEquals(cantidadDeFacturasEsperadas, result.size());
+        assertEquals(2, cantidadRenglonUnoPrimeraFactura, 0);
+        assertEquals(4, cantidadRenglonDosPrimeraFactura, 0);
+        assertEquals(2, cantidadRenglonUnoSegundaFactura, 0);
+        assertEquals(3, cantidadRenglonDosSegundaFactura, 0);
+    }
+    
+    @Test
+    public void shouldCalcularImporte() {
+        double resultadoEsperado = 90;
+        double cantidad = 10;
+        double precioUnitario = 10;
+        double descuento = 1;
+        double resultadoObtenido = facturaService.calcularImporte(cantidad, precioUnitario, descuento);
+        assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 }

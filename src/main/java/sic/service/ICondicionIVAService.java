@@ -14,5 +14,7 @@ public interface ICondicionIVAService {
     List<CondicionIVA> getCondicionesIVA();
 
     void guardar(CondicionIVA condicionIVA);
-    
+
+    void validarOperacion(TipoDeOperacion operacion, CondicionIVA condicionIVA);
+
 }

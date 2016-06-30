@@ -15,5 +15,7 @@ public interface IMedidaService {
     List<Medida> getUnidadMedidas(Empresa empresa);
 
     void guardar(Medida medida);
-    
+
+    void validarOperacion(TipoDeOperacion operacion, Medida medida);
+
 }
