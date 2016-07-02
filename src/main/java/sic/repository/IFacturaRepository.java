@@ -29,4 +29,5 @@ public interface IFacturaRepository {
 
     List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
 
+    FacturaCompra getFacturaCompraPorTipoSerieNum(String tipo, long serie, long num);
 }

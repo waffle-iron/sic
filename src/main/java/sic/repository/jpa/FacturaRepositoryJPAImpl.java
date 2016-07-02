@@ -45,6 +45,20 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     }
 
     @Override
+    public FacturaCompra getFacturaCompraPorTipoSerieNum(String tipo, long serie, long num) {
+        TypedQuery<FacturaCompra> typedQuery = em.createNamedQuery("FacturaCompra.buscar", FacturaCompra.class);
+        typedQuery.setParameter("tipo", tipo.charAt(tipo.length() - 1));
+        typedQuery.setParameter("serie", serie);
+        typedQuery.setParameter("num", num);
+        List<FacturaCompra> facturasVenta = typedQuery.getResultList();
+        if (facturasVenta.isEmpty()) {
+            return null;
+        } else {
+            return facturasVenta.get(0);
+        }
+    }
+
+    @Override
     public List<FacturaCompra> buscarFacturasCompra(BusquedaFacturaCompraCriteria criteria) {
         String query = "SELECT f FROM FacturaCompra f WHERE f.empresa = :empresa AND f.eliminada = false";
         //Fecha Factura

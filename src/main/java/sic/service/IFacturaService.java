@@ -65,6 +65,8 @@ public interface IFacturaService {
 
     FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num);
 
+    FacturaCompra getFacturaCompraPorTipoSerieNum(String tipo, long serie, long num);
+
     List<RenglonFactura> getRenglonesDeLaFactura(Factura factura);
 
     //**************************************************************************

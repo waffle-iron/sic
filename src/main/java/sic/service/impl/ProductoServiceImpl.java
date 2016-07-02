@@ -191,6 +191,7 @@ public class ProductoServiceImpl implements IProductoService {
     }
 
     @Override
+    @Transactional
     public void eliminarMultiplesProductos(List<Producto> productos) {
         for (Producto producto : productos) {
             producto.setEliminado(true);

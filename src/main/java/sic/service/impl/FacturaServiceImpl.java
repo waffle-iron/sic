@@ -57,13 +57,13 @@ public class FacturaServiceImpl implements IFacturaService {
             IProductoService productoService,
             IConfiguracionDelSistemaService configuracionDelSistemaService,
             IEmpresaService empresaService, IPedidoService pedidoService) {
-        
+
         this.facturaRepository = facturaRepository;
         this.productoService = productoService;
         this.configuracionDelSistemaService = configuracionDelSistemaService;
         this.empresaService = empresaService;
         this.pedidoService = pedidoService;
-    }    
+    }
 
     @Override
     public char[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor) {
@@ -83,9 +83,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = 'X';
                 return tiposPermitidos;
             }
-        } else {
-             //cuando la Empresa NO discrimina IVA
-            if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
+        } else //cuando la Empresa NO discrimina IVA
+         if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Proveedor SI
                 char[] tiposPermitidos = new char[2];
                 tiposPermitidos[0] = 'B';
@@ -98,7 +97,6 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = 'X';
                 return tiposPermitidos;
             }
-        }
     }
 
     @Override
@@ -123,9 +121,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
-        } else {
-             //cuando la Empresa NO discrimina IVA
-            if (cliente.getCondicionIVA().isDiscriminaIVA()) {
+        } else //cuando la Empresa NO discrimina IVA
+         if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Cliente SI
                 String[] tiposPermitidos = new String[4];
                 tiposPermitidos[0] = "Factura C";
@@ -142,7 +139,6 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
-        }
     }
 
     @Override
@@ -171,6 +167,11 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num) {
         return facturaRepository.getFacturaVentaPorTipoSerieNum(tipo, serie, num);
+    }
+
+    @Override
+    public FacturaCompra getFacturaCompraPorTipoSerieNum(String tipo, long serie, long num) {
+        return facturaRepository.getFacturaCompraPorTipoSerieNum(tipo, serie, num);
     }
 
     @Override
@@ -281,8 +282,8 @@ public class FacturaServiceImpl implements IFacturaService {
     @Transactional
     public void eliminar(Factura factura) {
         factura.setEliminada(true);
+        Factura facturaConRenglones = this.getFacturaCompraPorTipoSerieNum(this.getTipoFactura(factura), factura.getNumSerie(), factura.getNumFactura());
         facturaRepository.actualizar(factura);
-        Factura facturaConRenglones = this.getFacturaVentaPorTipoSerieNum(this.getTipoFactura(factura), factura.getNumSerie(), factura.getNumFactura());
         productoService.actualizarStock(facturaConRenglones, TipoDeOperacion.ELIMINACION);
     }
 
