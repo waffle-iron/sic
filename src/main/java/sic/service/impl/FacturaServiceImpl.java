@@ -84,7 +84,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-         if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
+        {
+            if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Proveedor SI
                 char[] tiposPermitidos = new char[2];
                 tiposPermitidos[0] = 'B';
@@ -97,6 +98,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = 'X';
                 return tiposPermitidos;
             }
+        }
     }
 
     @Override
@@ -122,7 +124,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-         if (cliente.getCondicionIVA().isDiscriminaIVA()) {
+        {
+            if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Cliente SI
                 String[] tiposPermitidos = new String[4];
                 tiposPermitidos[0] = "Factura C";
@@ -139,6 +142,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
+        }
     }
 
     @Override
@@ -282,9 +286,13 @@ public class FacturaServiceImpl implements IFacturaService {
     @Transactional
     public void eliminar(Factura factura) {
         factura.setEliminada(true);
-        Factura facturaConRenglones = this.getFacturaCompraPorTipoSerieNum(this.getTipoFactura(factura), factura.getNumSerie(), factura.getNumFactura());
         facturaRepository.actualizar(factura);
-        productoService.actualizarStock(facturaConRenglones, TipoDeOperacion.ELIMINACION);
+        if (factura instanceof FacturaVenta) {
+            factura = this.getFacturaVentaPorTipoSerieNum(this.getTipoFactura(factura), factura.getNumSerie(), factura.getNumFactura());
+        } else if (factura instanceof FacturaCompra) {
+            factura = this.getFacturaCompraPorTipoSerieNum(this.getTipoFactura(factura), factura.getNumSerie(), factura.getNumFactura());
+        }
+        productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);
     }
 
     private void validarFactura(Factura factura) {
