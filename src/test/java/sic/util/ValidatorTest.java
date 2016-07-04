@@ -15,14 +15,6 @@ public class ValidatorTest {
     }
 
     @Test
-    public void shouldEsNumericoDecimalWhenNoDecimal() {
-        String cadena = "f";
-        boolean expResult = false;
-        boolean result = Validator.esNumericoDecimal(cadena, '$');
-        assertEquals(expResult, result);
-    }
-
-    @Test
     public void shouldEsVacioWhenNoEsVacio() {
         String campo = "no Vacio";
         boolean expResult = false;

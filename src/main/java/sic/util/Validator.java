@@ -15,20 +15,6 @@ public class Validator {
         return true;
     }
 
-    public static boolean esNumericoDecimal(String cadena, char simboloDecimal) {
-        try {
-            if (cadena.equals("")) {
-                return true;
-            }
-            cadena = cadena.replace(",", "");
-            Double test = Double.valueOf(cadena);
-            return true;
-
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
     public static boolean esVacio(String campo) {
         if (campo == null) {
             return true;

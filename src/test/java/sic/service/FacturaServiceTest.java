@@ -20,20 +20,20 @@ import sic.service.impl.FacturaServiceImpl;
 import sic.service.impl.ProductoServiceImpl;
 
 public class FacturaServiceTest {
-    
+
     private IFacturaService facturaService;
     private IProductoService productoService;
-    
+
     @Before
     public void before() {
         productoService = Mockito.mock(ProductoServiceImpl.class);
         IFacturaRepository facturaRepository = Mockito.mock(IFacturaRepository.class);
         when(facturaRepository.getMayorNumFacturaSegunTipo("", (long) 1)).thenReturn((long) 1);
-        
+
         facturaService = new FacturaServiceImpl(facturaRepository, productoService, null, null, null);
-        
+
     }
-    
+
     @Test
     public void shouldGetTipoFacturaCompraCuandoEmpresaYProveedorDiscriminanIVA() {
         Empresa empresa = Mockito.mock(Empresa.class);
@@ -47,7 +47,7 @@ public class FacturaServiceTest {
         char[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
-    
+
     @Test
     public void shouldGetTipoFacturaCompraCuandoEmpresaDiscriminaIVAYProveedorNO() {
         Empresa empresa = Mockito.mock(Empresa.class);
@@ -62,7 +62,7 @@ public class FacturaServiceTest {
         char[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
-    
+
     @Test
     public void souldGetTipoFacturaCompraCuandoEmpresaNoDiscriminaIVAYProveedorSI() {
         Empresa empresa = Mockito.mock(Empresa.class);
@@ -78,7 +78,7 @@ public class FacturaServiceTest {
         char[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
-    
+
     @Test
     public void testGetTipoFacturaCompraCuandoEmpresaNoDiscriminaYProveedorTampoco() {
         Empresa empresa = Mockito.mock(Empresa.class);
@@ -92,7 +92,7 @@ public class FacturaServiceTest {
         char[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
-    
+
     @Test
     public void souldGetTipoFacturaVentaCuandoEmpresaDiscriminaYClienteTambien() {
         Empresa empresa = Mockito.mock(Empresa.class);
@@ -105,7 +105,7 @@ public class FacturaServiceTest {
         String[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
         assertArrayEquals(expResult, result);
     }
-    
+
     @Test
     public void shouldGetTipoFacturaVentaEmpresaDiscriminaYClienteNo() {
         Empresa empresa = Mockito.mock(Empresa.class);
@@ -120,7 +120,7 @@ public class FacturaServiceTest {
         String[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
         assertArrayEquals(expResult, result);
     }
-    
+
     @Test
     public void shouldGetTipoFacturaVentaEmpresaNoDiscriminaYClienteSi() {
         Empresa empresa = Mockito.mock(Empresa.class);
@@ -135,7 +135,7 @@ public class FacturaServiceTest {
         String[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
         assertArrayEquals(expResult, result);
     }
-    
+
     @Test
     public void shouldGetTipoFacturaVentaEmpresaNoDiscriminaIVAYClienteNO() {
         Empresa empresa = Mockito.mock(Empresa.class);
@@ -149,7 +149,7 @@ public class FacturaServiceTest {
         String[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
         assertArrayEquals(expResult, result);
     }
-    
+
     @Test
     public void shloudGetTiposFacturaSegunEmpresaSiDiscriminaIVA() {
         Empresa empresa = Mockito.mock(Empresa.class);
@@ -160,7 +160,7 @@ public class FacturaServiceTest {
         char[] result = facturaService.getTiposFacturaSegunEmpresa(empresa);
         assertArrayEquals(expResult, result);
     }
-    
+
     @Test
     public void shouldGetTiposFacturaSegunEmpresaSiNoDiscriminaIVA() {
         Empresa empresa = Mockito.mock(Empresa.class);
@@ -171,10 +171,9 @@ public class FacturaServiceTest {
         char[] result = facturaService.getTiposFacturaSegunEmpresa(empresa);
         assertArrayEquals(expResult, result);
     }
-    
+
     @Test
     public void shouldDividirFactura() {
-        System.out.println("dividirFactura");
         FacturaVenta factura = Mockito.mock(FacturaVenta.class);
         RenglonFactura uno = Mockito.mock(RenglonFactura.class);
         RenglonFactura dos = Mockito.mock(RenglonFactura.class);
@@ -211,7 +210,7 @@ public class FacturaServiceTest {
         assertEquals(2, cantidadRenglonUnoSegundaFactura, 0);
         assertEquals(3, cantidadRenglonDosSegundaFactura, 0);
     }
-    
+
     @Test
     public void shouldCalcularImporte() {
         double resultadoEsperado = 90;
@@ -219,6 +218,97 @@ public class FacturaServiceTest {
         double precioUnitario = 10;
         double descuento = 1;
         double resultadoObtenido = facturaService.calcularImporte(cantidad, precioUnitario, descuento);
+        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+    }
+
+    @Test
+    public void shouldCalcularIVANetoWhenCompra() {
+        Producto productoPrueba = new Producto();
+        productoPrueba.setPrecioCosto(100.00);
+        productoPrueba.setImpuestoInterno_neto(0.0);
+        productoPrueba.setIva_porcentaje(21);
+        double resultadoEsperado = 21;
+        double resultadoObtenido = facturaService.calcularIVA_neto(Movimiento.COMPRA, productoPrueba, 0.0);
+        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+    }
+
+    @Test
+    public void shouldCalcularIVANetoWhenVenta() {
+        Producto productoPrueba = new Producto();
+        productoPrueba.setPrecioVentaPublico(100.00);
+        productoPrueba.setImpuestoInterno_neto(0.0);
+        productoPrueba.setIva_porcentaje(21);
+        double resultadoEsperado = 21;
+        double resultadoObtenido = facturaService.calcularIVA_neto(Movimiento.VENTA, productoPrueba, 0.0);
+        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+    }
+
+    @Test
+    public void shouldCalcularPrecioUnitarioWhenVentaYFacturaAOX() {
+        Producto productoPrueba = new Producto();
+        productoPrueba.setPrecioCosto(100.00);
+        productoPrueba.setPrecioVentaPublico(121.00);
+        productoPrueba.setImpuestoInterno_neto(0.0);
+        productoPrueba.setIva_porcentaje(21);
+        double resultadoEsperado = 121;
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, "Factura A", productoPrueba);
+        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+    }
+
+    @Test
+    public void shouldCalcularPrecioUnitarioWhenCompraYFacturaAOX() {
+        Producto productoPrueba = new Producto();
+        productoPrueba.setPrecioCosto(100.00);
+        productoPrueba.setPrecioVentaPublico(121.00);
+        productoPrueba.setImpuestoInterno_neto(0.0);
+        productoPrueba.setIva_porcentaje(21);
+        double resultadoEsperado = 100;
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, "Factura A", productoPrueba);
+        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+    }
+
+    @Test
+    public void shouldCalcularPrecioUnitarioWhenCompraYFacturaOtras() {
+        Producto productoPrueba = new Producto();
+        productoPrueba.setPrecioCosto(100.00);
+        productoPrueba.setGanancia_neto(100);
+        productoPrueba.setIva_neto(42);
+        productoPrueba.setPrecioVentaPublico(200);
+        productoPrueba.setPrecioLista(242);
+        productoPrueba.setImpuestoInterno_neto(0.0);
+        productoPrueba.setIva_porcentaje(21);
+        double resultadoEsperado = 121;
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, "Factura B", productoPrueba);
+        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+    }
+
+    @Test
+    public void shouldCalcularPrecioUnitarioWhenVentaYFacturaOtras() {
+        Producto productoPrueba = new Producto();
+        productoPrueba.setPrecioCosto(100.00);
+        productoPrueba.setGanancia_neto(100);
+        productoPrueba.setIva_neto(42);
+        productoPrueba.setPrecioVentaPublico(200);
+        productoPrueba.setPrecioLista(242);
+        productoPrueba.setImpuestoInterno_neto(0.0);
+        productoPrueba.setIva_porcentaje(21);
+        double resultadoEsperado = 242;
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, "Factura B", productoPrueba);
+        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+    }
+
+    @Test
+    public void shouldCalcularPrecioUnitarioWhenVentaYFacturaY() {
+        Producto productoPrueba = new Producto();
+        productoPrueba.setPrecioCosto(100.00);
+        productoPrueba.setGanancia_neto(100);
+        productoPrueba.setIva_neto(42);
+        productoPrueba.setPrecioVentaPublico(200);
+        productoPrueba.setPrecioLista(242);
+        productoPrueba.setImpuestoInterno_neto(0.0);
+        productoPrueba.setIva_porcentaje(21);
+        double resultadoEsperado = 221;
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, "Factura Y", productoPrueba);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 }

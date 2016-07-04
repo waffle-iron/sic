@@ -59,6 +59,12 @@ public interface IFacturaService {
 
     double calcularImporte(double cantidad, double precioUnitario, double descuento_neto);
 
+    public double calcularIVA_neto(Movimiento movimiento, Producto producto, double descuento_neto);
+
+    double calcularImpInterno_neto(Movimiento movimiento, Producto producto, double descuento_neto);
+
+    double calcularPrecioUnitario(Movimiento movimiento, String tipoDeFactura, Producto producto);
+
     //**************************************************************************
     //Division de Factura
     List<FacturaVenta> dividirFactura(FacturaVenta factura, int[] indices);

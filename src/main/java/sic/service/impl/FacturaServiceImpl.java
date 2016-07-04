@@ -84,18 +84,20 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-        if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
-            //cuando Empresa NO discrimina IVA y el Proveedor SI
-            char[] tiposPermitidos = new char[2];
-            tiposPermitidos[0] = 'B';
-            tiposPermitidos[1] = 'X';
-            return tiposPermitidos;
-        } else {
-            //cuando la Empresa NO discrminina IVA y el Proveedor tampoco
-            char[] tiposPermitidos = new char[2];
-            tiposPermitidos[0] = 'C';
-            tiposPermitidos[1] = 'X';
-            return tiposPermitidos;
+        {
+            if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
+                //cuando Empresa NO discrimina IVA y el Proveedor SI
+                char[] tiposPermitidos = new char[2];
+                tiposPermitidos[0] = 'B';
+                tiposPermitidos[1] = 'X';
+                return tiposPermitidos;
+            } else {
+                //cuando la Empresa NO discrminina IVA y el Proveedor tampoco
+                char[] tiposPermitidos = new char[2];
+                tiposPermitidos[0] = 'C';
+                tiposPermitidos[1] = 'X';
+                return tiposPermitidos;
+            }
         }
     }
 
@@ -122,22 +124,24 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-        if (cliente.getCondicionIVA().isDiscriminaIVA()) {
-            //cuando Empresa NO discrimina IVA y el Cliente SI
-            String[] tiposPermitidos = new String[4];
-            tiposPermitidos[0] = "Factura C";
-            tiposPermitidos[1] = "Factura X";
-            tiposPermitidos[2] = "Factura Y";
-            tiposPermitidos[3] = "Pedido";
-            return tiposPermitidos;
-        } else {
-            //cuando la Empresa NO discrminina IVA y el Cliente tampoco
-            String[] tiposPermitidos = new String[4];
-            tiposPermitidos[0] = "Factura C";
-            tiposPermitidos[1] = "Factura X";
-            tiposPermitidos[2] = "Factura Y";
-            tiposPermitidos[3] = "Pedido";
-            return tiposPermitidos;
+        {
+            if (cliente.getCondicionIVA().isDiscriminaIVA()) {
+                //cuando Empresa NO discrimina IVA y el Cliente SI
+                String[] tiposPermitidos = new String[4];
+                tiposPermitidos[0] = "Factura C";
+                tiposPermitidos[1] = "Factura X";
+                tiposPermitidos[2] = "Factura Y";
+                tiposPermitidos[3] = "Pedido";
+                return tiposPermitidos;
+            } else {
+                //cuando la Empresa NO discrminina IVA y el Cliente tampoco
+                String[] tiposPermitidos = new String[4];
+                tiposPermitidos[0] = "Factura C";
+                tiposPermitidos[1] = "Factura X";
+                tiposPermitidos[2] = "Factura Y";
+                tiposPermitidos[3] = "Pedido";
+                return tiposPermitidos;
+            }
         }
     }
 
@@ -691,7 +695,8 @@ public class FacturaServiceImpl implements IFacturaService {
         return nuevoRenglon;
     }
 
-    private double calcularIVA_neto(Movimiento movimiento, Producto producto, double descuento_neto) {
+    @Override
+    public double calcularIVA_neto(Movimiento movimiento, Producto producto, double descuento_neto) {
         double resultado = 0;
 
         if (movimiento == Movimiento.COMPRA) {
@@ -704,7 +709,8 @@ public class FacturaServiceImpl implements IFacturaService {
         return Math.round(resultado * 1000.0) / 1000.0;
     }
 
-    private double calcularImpInterno_neto(Movimiento movimiento, Producto producto, double descuento_neto) {
+    @Override
+    public double calcularImpInterno_neto(Movimiento movimiento, Producto producto, double descuento_neto) {
         double resultado = 0;
 
         if (movimiento == Movimiento.COMPRA) {
@@ -717,7 +723,8 @@ public class FacturaServiceImpl implements IFacturaService {
         return Math.round(resultado * 1000.0) / 1000.0;
     }
 
-    private double calcularPrecioUnitario(Movimiento movimiento, String tipoDeFactura, Producto producto) {
+    @Override
+    public double calcularPrecioUnitario(Movimiento movimiento, String tipoDeFactura, Producto producto) {
         double iva_resultado;
         double impInterno_resultado;
         double resultado = 0;
