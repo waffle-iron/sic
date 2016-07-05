@@ -169,12 +169,12 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num) {
+    public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {
         return facturaRepository.getFacturaVentaPorTipoSerieNum(tipo, serie, num);
     }
 
     @Override
-    public FacturaCompra getFacturaCompraPorTipoSerieNum(String tipo, long serie, long num) {
+    public FacturaCompra getFacturaCompraPorTipoSerieNum(char tipo, long serie, long num) {
         return facturaRepository.getFacturaCompraPorTipoSerieNum(tipo, serie, num);
     }
 
@@ -288,9 +288,9 @@ public class FacturaServiceImpl implements IFacturaService {
         factura.setEliminada(true);
         facturaRepository.actualizar(factura);
         if (factura instanceof FacturaVenta) {
-            factura = this.getFacturaVentaPorTipoSerieNum(this.getTipoFactura(factura), factura.getNumSerie(), factura.getNumFactura());
+            factura = this.getFacturaVentaPorTipoSerieNum(factura.getTipoFactura(), factura.getNumSerie(), factura.getNumFactura());
         } else if (factura instanceof FacturaCompra) {
-            factura = this.getFacturaCompraPorTipoSerieNum(this.getTipoFactura(factura), factura.getNumSerie(), factura.getNumFactura());
+            factura = this.getFacturaCompraPorTipoSerieNum(factura.getTipoFactura(), factura.getNumSerie(), factura.getNumFactura());
         }
         productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);
     }

@@ -31,9 +31,9 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     }
 
     @Override
-    public FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num) {
+    public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {
         TypedQuery<FacturaVenta> typedQuery = em.createNamedQuery("Factura.buscarPorTipoSerieNum", FacturaVenta.class);
-        typedQuery.setParameter("tipo", tipo.charAt(tipo.length() - 1));
+        typedQuery.setParameter("tipo", tipo);
         typedQuery.setParameter("serie", serie);
         typedQuery.setParameter("num", num);
         List<FacturaVenta> facturasVenta = typedQuery.getResultList();
@@ -45,9 +45,9 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     }
 
     @Override
-    public FacturaCompra getFacturaCompraPorTipoSerieNum(String tipo, long serie, long num) {
+    public FacturaCompra getFacturaCompraPorTipoSerieNum(char tipo, long serie, long num) {
         TypedQuery<FacturaCompra> typedQuery = em.createNamedQuery("FacturaCompra.buscar", FacturaCompra.class);
-        typedQuery.setParameter("tipo", tipo.charAt(tipo.length() - 1));
+        typedQuery.setParameter("tipo", tipo);
         typedQuery.setParameter("serie", serie);
         typedQuery.setParameter("num", num);
         List<FacturaCompra> facturasVenta = typedQuery.getResultList();
