@@ -15,14 +15,11 @@ import sic.repository.IClienteRepository;
 import sic.service.impl.ClienteServiceImpl;
 
 @Service
-public class IClienteServiceTest {
+public class ClienteServiceImplTest {
 
     private IClienteService clienteService;
-
     private final Empresa empresa = new Empresa();
-
     private final Cliente cliente = new Cliente();
-
     private final Cliente clienteDuplicado = new Cliente();
 
     @Mock

@@ -9,12 +9,10 @@ import sic.modelo.CondicionIVA;
 import sic.repository.ICondicionIVARepository;
 import sic.service.impl.CondicionDeIVAServiceImpl;
 
-public class ICondicionIVAServiceTest {
+public class CondicionIVAServiceImplTest {
 
     private final CondicionIVA condicionIVA = new CondicionIVA();
-
     private final CondicionIVA condicionIVADuplicada = new CondicionIVA();
-
     private ICondicionIVAService condicionIVAService;
 
     @Mock

@@ -10,10 +10,9 @@ import sic.repository.ILocalidadRepository;
 import sic.repository.jpa.LocalidadRepositoryJPAImpl;
 import sic.service.impl.LocalidadServiceImpl;
 
-public class ILocalidadServiceTest {
+public class LocalidadServiceImplTest {
 
     private ILocalidadService localidadService;
-
     private final Provincia provincia = new Provincia();
 
     @Before

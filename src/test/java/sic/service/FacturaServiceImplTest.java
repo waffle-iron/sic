@@ -19,7 +19,7 @@ import sic.repository.IFacturaRepository;
 import sic.service.impl.FacturaServiceImpl;
 import sic.service.impl.ProductoServiceImpl;
 
-public class FacturaServiceTest {
+public class FacturaServiceImplTest {
 
     private IFacturaService facturaService;
     private IProductoService productoService;
@@ -64,7 +64,7 @@ public class FacturaServiceTest {
     }
 
     @Test
-    public void souldGetTipoFacturaCompraCuandoEmpresaNoDiscriminaIVAYProveedorSI() {
+    public void shouldGetTipoFacturaCompraCuandoEmpresaNoDiscriminaIVAYProveedorSI() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Proveedor proveedor = Mockito.mock(Proveedor.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -94,7 +94,7 @@ public class FacturaServiceTest {
     }
 
     @Test
-    public void souldGetTipoFacturaVentaCuandoEmpresaDiscriminaYClienteTambien() {
+    public void shouldGetTipoFacturaVentaCuandoEmpresaDiscriminaYClienteTambien() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Cliente cliente = Mockito.mock(Cliente.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);

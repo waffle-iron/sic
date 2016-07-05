@@ -12,25 +12,22 @@ import sic.repository.IMedidaRepository;
 import sic.repository.jpa.MedidaRepositoryJPAImpl;
 import sic.service.impl.MedidaServiceImpl;
 
-public class IMedidaServiceTest {
+public class MedidaServiceImplTest {
 
     private MedidaServiceImpl medidaService;
+    private Empresa empresa;
+    private Medida medida;
 
     @Mock
     private Medida medidaParaTest;
+
     @Mock
     private IMedidaRepository medidaRepository;
 
-    private final Empresa empresa = new Empresa();
-
-    private final Medida medida = new Medida();
-
-    public IMedidaServiceTest() {
-
-    }
-
     @Before
     public void setUp() {
+        empresa = new Empresa();
+        medida = new Medida();
         MockitoAnnotations.initMocks(this);
         medidaRepository = Mockito.mock(MedidaRepositoryJPAImpl.class);
     }

@@ -15,7 +15,7 @@ import sic.modelo.EmpresaActiva;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = App.class)
 @Service
-public class EmpresaServiceTest {
+public class EmpresaServiceImplTest {
 
     @Autowired
     private IEmpresaService empresaService;
