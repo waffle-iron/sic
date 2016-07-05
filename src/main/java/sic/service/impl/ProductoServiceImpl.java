@@ -8,6 +8,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,7 @@ public class ProductoServiceImpl implements IProductoService {
 
     private final IProductoRepository productoRepository;
     private final IEmpresaService empresaService;
+    private static final Logger LOGGER = Logger.getLogger(ProductoServiceImpl.class.getPackage().getName());
 
     @Autowired
     public ProductoServiceImpl(IProductoRepository productoRepository, IEmpresaService empresaService) {
@@ -160,7 +162,10 @@ public class ProductoServiceImpl implements IProductoService {
     public void actualizarStock(Factura factura, TipoDeOperacion operacion) {
         for (RenglonFactura renglon : factura.getRenglones()) {
             Producto producto = productoRepository.getProductoPorId(renglon.getId_ProductoItem());
-            if (producto.isIlimitado() == false) {
+            if (producto == null) {
+                LOGGER.warn("Se intenta actualizar el stock de un producto eliminado.");
+            }
+            if (producto != null && producto.isIlimitado() == false) {
 
                 if (renglon.getFactura() instanceof FacturaVenta) {
                     if (operacion == TipoDeOperacion.ALTA) {
@@ -184,7 +189,6 @@ public class ProductoServiceImpl implements IProductoService {
 
                     }
                 }
-
                 productoRepository.actualizar(producto);
             }
         }
