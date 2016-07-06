@@ -73,7 +73,7 @@ public interface IFacturaService {
     //Reportes
     JasperPrint getReporteFacturaVenta(Factura factura) throws JRException;
 
-    char[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor);
+    String[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor);
 
     String[] getTipoFacturaVenta(Empresa empresa, Cliente cliente);
 

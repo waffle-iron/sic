@@ -66,36 +66,36 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public char[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor) {
+    public String[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor) {
         //cuando la Empresa discrimina IVA
         if (empresa.getCondicionIVA().isDiscriminaIVA()) {
             if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando la Empresa discrimina IVA y el Proveedor tambien
-                char[] tiposPermitidos = new char[3];
-                tiposPermitidos[0] = 'A';
-                tiposPermitidos[1] = 'B';
-                tiposPermitidos[2] = 'X';
+                String[] tiposPermitidos = new String[3];
+                tiposPermitidos[0] = "Factura A";
+                tiposPermitidos[1] = "Factura B";
+                tiposPermitidos[2] = "Factura X";
                 return tiposPermitidos;
             } else {
                 //cuando la Empresa discrminina IVA y el Proveedor NO
-                char[] tiposPermitidos = new char[2];
-                tiposPermitidos[0] = 'C';
-                tiposPermitidos[1] = 'X';
+                String[] tiposPermitidos = new String[2];
+                tiposPermitidos[0] = "Factura C";
+                tiposPermitidos[1] = "Factura X";
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
         {
             if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Proveedor SI
-                char[] tiposPermitidos = new char[2];
-                tiposPermitidos[0] = 'B';
-                tiposPermitidos[1] = 'X';
+                String[] tiposPermitidos = new String[2];
+                tiposPermitidos[0] = "Factura B";
+                tiposPermitidos[1] = "Factura X";
                 return tiposPermitidos;
             } else {
                 //cuando la Empresa NO discrminina IVA y el Proveedor tampoco
-                char[] tiposPermitidos = new char[2];
-                tiposPermitidos[0] = 'C';
-                tiposPermitidos[1] = 'X';
+                String[] tiposPermitidos = new String[2];
+                tiposPermitidos[0] = "Factura C";
+                tiposPermitidos[1] = "Factura X";
                 return tiposPermitidos;
             }
         }
