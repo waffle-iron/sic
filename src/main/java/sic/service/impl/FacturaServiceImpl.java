@@ -287,11 +287,7 @@ public class FacturaServiceImpl implements IFacturaService {
     public void eliminar(Factura factura) {
         factura.setEliminada(true);
         facturaRepository.actualizar(factura);
-        if (factura instanceof FacturaVenta) {
-            factura = this.getFacturaVentaPorTipoSerieNum(factura.getTipoFactura(), factura.getNumSerie(), factura.getNumFactura());
-        } else if (factura instanceof FacturaCompra) {
-            factura = this.getFacturaCompraPorTipoSerieNum(factura.getTipoFactura(), factura.getNumSerie(), factura.getNumFactura());
-        }
+        factura.setRenglones(this.getRenglonesDeLaFactura(factura));
         productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);
     }
 

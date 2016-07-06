@@ -46,7 +46,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
 
     @Override
     public FacturaCompra getFacturaCompraPorTipoSerieNum(char tipo, long serie, long num) {
-        TypedQuery<FacturaCompra> typedQuery = em.createNamedQuery("FacturaCompra.buscar", FacturaCompra.class);
+        TypedQuery<FacturaCompra> typedQuery = em.createNamedQuery("FacturaCompra.buscarPorTipoSerieNum", FacturaCompra.class);
         typedQuery.setParameter("tipo", tipo);
         typedQuery.setParameter("serie", serie);
         typedQuery.setParameter("num", num);

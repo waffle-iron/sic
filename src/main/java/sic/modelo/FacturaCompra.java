@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "facturacompra")
 @NamedQueries({
-    @NamedQuery(name = "FacturaCompra.buscar",
+    @NamedQuery(name = "FacturaCompra.buscarPorTipoSerieNum",
             query = "SELECT f FROM FacturaCompra f WHERE f.tipoFactura= :tipo AND f.numSerie= :serie AND f.numFactura= :num")
 })
 public class FacturaCompra extends Factura implements Serializable {
