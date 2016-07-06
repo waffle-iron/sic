@@ -121,7 +121,7 @@ public class GUI_CerrarVenta extends JDialog {
 
     private Factura guardarFactura(Factura facturaVenta) throws ServiceException {
         facturaService.guardar(facturaVenta);
-        return facturaService.getFacturaVentaPorTipoSerieNum(facturaService.getTipoFactura(facturaVenta), facturaVenta.getNumSerie(), facturaVenta.getNumFactura());
+        return facturaService.getFacturaVentaPorTipoSerieNum(facturaVenta.getTipoFactura(), facturaVenta.getNumSerie(), facturaVenta.getNumFactura());
     }
 
     private void calcularVuelto() {
@@ -455,7 +455,7 @@ public class GUI_CerrarVenta extends JDialog {
                 } else {
                     this.guardarFactura(factura);
                 }
-                this.lanzarReporteFactura(facturaService.getFacturaVentaPorTipoSerieNum(facturaService.getTipoFactura(factura), factura.getNumSerie(), factura.getNumFactura()));
+                this.lanzarReporteFactura(facturaService.getFacturaVentaPorTipoSerieNum(factura.getTipoFactura(), factura.getNumSerie(), factura.getNumFactura()));
                 exito = true;
             } else {
                 List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), indicesParaDividir);

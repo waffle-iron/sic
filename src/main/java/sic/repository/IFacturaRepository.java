@@ -17,8 +17,10 @@ public interface IFacturaRepository {
 
     List<FacturaVenta> buscarFacturasVenta(BusquedaFacturaVentaCriteria criteria);
 
-    FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num);
+    FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num);
 
+    FacturaCompra getFacturaCompraPorTipoSerieNum(char tipo, long serie, long num);
+    
     long getMayorNumFacturaSegunTipo(String tipoDeFactura, long serie);
 
     List<RenglonFactura> getRenglonesDeLaFactura(Factura factura);
@@ -28,5 +30,5 @@ public interface IFacturaRepository {
     List<Object[]> listarProductosMasVendidosPorAnio(int anio);
 
     List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
-
+    
 }

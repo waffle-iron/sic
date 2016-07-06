@@ -63,7 +63,9 @@ public interface IFacturaService {
 
     void eliminar(Factura factura);
 
-    FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num);
+    FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num);
+
+    FacturaCompra getFacturaCompraPorTipoSerieNum(char tipo, long serie, long num);
 
     List<RenglonFactura> getRenglonesDeLaFactura(Factura factura);
 
