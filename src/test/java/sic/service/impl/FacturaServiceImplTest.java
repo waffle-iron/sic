@@ -1,4 +1,4 @@
-package sic.service;
+package sic.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +16,9 @@ import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.repository.IFacturaRepository;
-import sic.service.impl.FacturaServiceImpl;
-import sic.service.impl.ProductoServiceImpl;
+import sic.service.IFacturaService;
+import sic.service.IProductoService;
+import sic.service.Movimiento;
 
 public class FacturaServiceImplTest {
 
@@ -29,13 +30,11 @@ public class FacturaServiceImplTest {
         productoService = Mockito.mock(ProductoServiceImpl.class);
         IFacturaRepository facturaRepository = Mockito.mock(IFacturaRepository.class);
         when(facturaRepository.getMayorNumFacturaSegunTipo("", (long) 1)).thenReturn((long) 1);
-
         facturaService = new FacturaServiceImpl(facturaRepository, productoService, null, null, null);
-
     }
 
     @Test
-    public void shouldGetTipoFacturaCompraCuandoEmpresaYProveedorDiscriminanIVA() {
+    public void shouldGetTipoFacturaCompraWhenEmpresaYProveedorDiscriminanIVA() {
         Empresa empresa = Mockito.mock(Empresa.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
         when(condicionIVAqueDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.TRUE);
@@ -49,7 +48,7 @@ public class FacturaServiceImplTest {
     }
 
     @Test
-    public void shouldGetTipoFacturaCompraCuandoEmpresaDiscriminaIVAYProveedorNO() {
+    public void shouldGetTipoFacturaCompraWhenEmpresaDiscriminaIVAYProveedorNO() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Proveedor proveedor = Mockito.mock(Proveedor.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -64,7 +63,7 @@ public class FacturaServiceImplTest {
     }
 
     @Test
-    public void shouldGetTipoFacturaCompraCuandoEmpresaNoDiscriminaIVAYProveedorSI() {
+    public void shouldGetTipoFacturaCompraWhenEmpresaNoDiscriminaIVAYProveedorSI() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Proveedor proveedor = Mockito.mock(Proveedor.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -80,7 +79,7 @@ public class FacturaServiceImplTest {
     }
 
     @Test
-    public void testGetTipoFacturaCompraCuandoEmpresaNoDiscriminaYProveedorTampoco() {
+    public void shouldGetTipoFacturaCompraWhenEmpresaNoDiscriminaYProveedorTampoco() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Proveedor proveedor = Mockito.mock(Proveedor.class);
         CondicionIVA condicionIVAqueNoDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -94,7 +93,7 @@ public class FacturaServiceImplTest {
     }
 
     @Test
-    public void shouldGetTipoFacturaVentaCuandoEmpresaDiscriminaYClienteTambien() {
+    public void shouldGetTipoFacturaVentaWhenEmpresaDiscriminaYClienteTambien() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Cliente cliente = Mockito.mock(Cliente.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -107,7 +106,7 @@ public class FacturaServiceImplTest {
     }
 
     @Test
-    public void shouldGetTipoFacturaVentaEmpresaDiscriminaYClienteNo() {
+    public void shouldGetTipoFacturaVentaWhenEmpresaDiscriminaYClienteNo() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Cliente cliente = Mockito.mock(Cliente.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -122,7 +121,7 @@ public class FacturaServiceImplTest {
     }
 
     @Test
-    public void shouldGetTipoFacturaVentaEmpresaNoDiscriminaYClienteSi() {
+    public void shouldGetTipoFacturaVentaWhenEmpresaNoDiscriminaYClienteSi() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Cliente cliente = Mockito.mock(Cliente.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -137,7 +136,7 @@ public class FacturaServiceImplTest {
     }
 
     @Test
-    public void shouldGetTipoFacturaVentaEmpresaNoDiscriminaIVAYClienteNO() {
+    public void shouldGetTipoFacturaVentaWhenEmpresaNoDiscriminaIVAYClienteNO() {
         Empresa empresa = Mockito.mock(Empresa.class);
         Cliente cliente = Mockito.mock(Cliente.class);
         CondicionIVA condicionIVAqueNoDiscrimina = Mockito.mock(CondicionIVA.class);
@@ -151,7 +150,7 @@ public class FacturaServiceImplTest {
     }
 
     @Test
-    public void shloudGetTiposFacturaSegunEmpresaSiDiscriminaIVA() {
+    public void shouldGetTiposFacturaWhenEmpresaDiscriminaIVA() {
         Empresa empresa = Mockito.mock(Empresa.class);
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
         when(condicionIVAqueDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.TRUE);
@@ -162,7 +161,7 @@ public class FacturaServiceImplTest {
     }
 
     @Test
-    public void shouldGetTiposFacturaSegunEmpresaSiNoDiscriminaIVA() {
+    public void shouldGetTiposFacturaWhenEmpresaNoDiscriminaIVA() {
         Empresa empresa = Mockito.mock(Empresa.class);
         CondicionIVA condicionIVAqueNoDiscrimina = Mockito.mock(CondicionIVA.class);
         when(condicionIVAqueNoDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.FALSE);
@@ -175,8 +174,8 @@ public class FacturaServiceImplTest {
     @Test
     public void shouldDividirFactura() {
         FacturaVenta factura = Mockito.mock(FacturaVenta.class);
-        RenglonFactura uno = Mockito.mock(RenglonFactura.class);
-        RenglonFactura dos = Mockito.mock(RenglonFactura.class);
+        RenglonFactura renglon1 = Mockito.mock(RenglonFactura.class);
+        RenglonFactura renglon2 = Mockito.mock(RenglonFactura.class);
         Producto producto = Mockito.mock(Producto.class);
         when(producto.getId_Producto()).thenReturn((long) 1);
         when(producto.getCodigo()).thenReturn("1");
@@ -188,29 +187,31 @@ public class FacturaServiceImplTest {
         when(producto.getImpuestoInterno_porcentaje()).thenReturn(0.0);
         when(producto.getPrecioLista()).thenReturn(1.0);
         when(productoService.getProductoPorId((long) 1)).thenReturn(producto);
-        when(uno.getId_ProductoItem()).thenReturn((long) 1);
-        when(dos.getId_ProductoItem()).thenReturn((long) 1);
-        when(uno.getCantidad()).thenReturn(4.00);
-        when(dos.getCantidad()).thenReturn(7.00);
+        when(renglon1.getId_ProductoItem()).thenReturn((long) 1);
+        when(renglon2.getId_ProductoItem()).thenReturn((long) 1);
+        when(renglon1.getCantidad()).thenReturn(4.00);
+        when(renglon2.getCantidad()).thenReturn(7.00);
         List<RenglonFactura> renglones = new ArrayList<>();
-        renglones.add(uno);
-        renglones.add(dos);
+        renglones.add(renglon1);
+        renglones.add(renglon2);
         when(factura.getRenglones()).thenReturn(renglones);
         when(factura.getTipoFactura()).thenReturn('A');
         int[] indices = {0, 1};
         int cantidadDeFacturasEsperadas = 2;
         List<FacturaVenta> result = facturaService.dividirFactura(factura, indices);
-        double cantidadRenglonUnoPrimeraFactura = result.get(0).getRenglones().get(0).getCantidad();
-        double cantidadRenglonDosPrimeraFactura = result.get(0).getRenglones().get(1).getCantidad();
-        double cantidadRenglonUnoSegundaFactura = result.get(1).getRenglones().get(0).getCantidad();
-        double cantidadRenglonDosSegundaFactura = result.get(1).getRenglones().get(1).getCantidad();
+        double cantidadRenglon1PrimeraFactura = result.get(0).getRenglones().get(0).getCantidad();
+        double cantidadRenglon2PrimeraFactura = result.get(0).getRenglones().get(1).getCantidad();
+        double cantidadRenglon1SegundaFactura = result.get(1).getRenglones().get(0).getCantidad();
+        double cantidadRenglon2SegundaFactura = result.get(1).getRenglones().get(1).getCantidad();
         assertEquals(cantidadDeFacturasEsperadas, result.size());
-        assertEquals(2, cantidadRenglonUnoPrimeraFactura, 0);
-        assertEquals(4, cantidadRenglonDosPrimeraFactura, 0);
-        assertEquals(2, cantidadRenglonUnoSegundaFactura, 0);
-        assertEquals(3, cantidadRenglonDosSegundaFactura, 0);
+        assertEquals(2, cantidadRenglon1PrimeraFactura, 0);
+        assertEquals(4, cantidadRenglon2PrimeraFactura, 0);
+        assertEquals(2, cantidadRenglon1SegundaFactura, 0);
+        assertEquals(3, cantidadRenglon2SegundaFactura, 0);
     }
 
+    
+    //Calculos
     @Test
     public void shouldCalcularImporte() {
         double resultadoEsperado = 90;

@@ -1,4 +1,4 @@
-package sic.service;
+package sic.service.impl;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -11,6 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import sic.App;
 import sic.modelo.Empresa;
 import sic.modelo.EmpresaActiva;
+import sic.service.IEmpresaService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = App.class)
@@ -21,7 +22,7 @@ public class EmpresaServiceImplTest {
     private IEmpresaService empresaService;
 
     @Test
-    public void testGetEmpresaActiva() {
+    public void shouldGetEmpresaActiva() {
         Empresa empresa = Mockito.mock(Empresa.class);
         empresaService.setEmpresaActiva(empresa);
         Empresa expResult = empresa;

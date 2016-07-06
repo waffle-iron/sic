@@ -1,4 +1,4 @@
-package sic.service;
+package sic.service.impl;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,12 +7,14 @@ import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import sic.modelo.CondicionIVA;
 import sic.repository.ICondicionIVARepository;
-import sic.service.impl.CondicionDeIVAServiceImpl;
+import sic.service.ICondicionIVAService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 
 public class CondicionIVAServiceImplTest {
 
-    private final CondicionIVA condicionIVA = new CondicionIVA();
-    private final CondicionIVA condicionIVADuplicada = new CondicionIVA();
+    private CondicionIVA condicionIVA;
+    private CondicionIVA condicionIVADuplicada;
     private ICondicionIVAService condicionIVAService;
 
     @Mock
@@ -21,6 +23,8 @@ public class CondicionIVAServiceImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        condicionIVA = new CondicionIVA();
+        condicionIVADuplicada = new CondicionIVA();
     }
 
     @Test(expected = ServiceException.class)

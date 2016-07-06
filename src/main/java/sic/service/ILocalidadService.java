@@ -16,6 +16,6 @@ public interface ILocalidadService {
 
     void guardar(Localidad localidad);
 
-    public void validarOperacion(TipoDeOperacion operacion, Localidad localidad);
+    void validarOperacion(TipoDeOperacion operacion, Localidad localidad);
 
 }

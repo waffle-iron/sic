@@ -37,11 +37,11 @@ public interface IFacturaService {
 
     double calcularRecargo_neto(double subtotal, double recargo_porcentaje);
 
-    public List<RenglonFactura> convertirRenglonesPedidoARenglonesFactura(Pedido pedido, String tipoComprobante);
+    List<RenglonFactura> convertirRenglonesPedidoARenglonesFactura(Pedido pedido, String tipoComprobante);
 
-    public RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante);
+    RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante);
 
-    public List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
+    List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
 
     //**************************************************************************
     //Calculos
@@ -59,7 +59,7 @@ public interface IFacturaService {
 
     double calcularImporte(double cantidad, double precioUnitario, double descuento_neto);
 
-    public double calcularIVA_neto(Movimiento movimiento, Producto producto, double descuento_neto);
+    double calcularIVA_neto(Movimiento movimiento, Producto producto, double descuento_neto);
 
     double calcularImpInterno_neto(Movimiento movimiento, Producto producto, double descuento_neto);
 
@@ -85,11 +85,11 @@ public interface IFacturaService {
 
     char[] getTiposFacturaSegunEmpresa(Empresa empresa);
 
-    public String getTipoFactura(Factura factura);
+    String getTipoFactura(Factura factura);
 
     void guardar(Factura factura);
 
-    public Movimiento getTipoMovimiento(Factura factura);
+    Movimiento getTipoMovimiento(Factura factura);
 
     //**************************************************************************
     //Estadisticas
@@ -97,6 +97,6 @@ public interface IFacturaService {
 
     boolean validarCantidadMaximaDeRenglones(int cantidad);
 
-    public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje);
+    RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje);
 
 }

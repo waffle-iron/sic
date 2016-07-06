@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 public class UtilidadesTest {
 
     @Test
-    public void shouldTestEncriptarConMD5() {
+    public void shouldEncriptarConMD5() {
         String md51 = Utilidades.encriptarConMD5("Test");
         String md52 = Utilidades.encriptarConMD5("Test");
         String md53 = Utilidades.encriptarConMD5("TesT");

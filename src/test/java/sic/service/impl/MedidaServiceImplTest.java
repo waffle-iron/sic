@@ -1,4 +1,4 @@
-package sic.service;
+package sic.service.impl;
 
 import org.junit.Test;
 import org.junit.Before;
@@ -10,7 +10,8 @@ import sic.modelo.Empresa;
 import sic.modelo.Medida;
 import sic.repository.IMedidaRepository;
 import sic.repository.jpa.MedidaRepositoryJPAImpl;
-import sic.service.impl.MedidaServiceImpl;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 
 public class MedidaServiceImplTest {
 

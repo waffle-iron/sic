@@ -1,4 +1,4 @@
-package sic.service;
+package sic.service.impl;
 
 import org.junit.Test;
 import org.junit.Before;
@@ -8,15 +8,18 @@ import sic.modelo.Localidad;
 import sic.modelo.Provincia;
 import sic.repository.ILocalidadRepository;
 import sic.repository.jpa.LocalidadRepositoryJPAImpl;
-import sic.service.impl.LocalidadServiceImpl;
+import sic.service.ILocalidadService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 
 public class LocalidadServiceImplTest {
 
     private ILocalidadService localidadService;
-    private final Provincia provincia = new Provincia();
+    private Provincia provincia;
 
     @Before
     public void setUp() {
+        provincia = new Provincia();
     }
 
     @Test(expected = ServiceException.class)

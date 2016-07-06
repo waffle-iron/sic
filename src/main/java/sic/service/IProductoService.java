@@ -22,7 +22,7 @@ public interface IProductoService {
 
     double calcularGanancia_Neto(double precioCosto, double ganancia_porcentaje);
 
-    public boolean existeStockDisponible(long idProducto, double cantidad);
+    boolean existeStockDisponible(long idProducto, double cantidad);
 
     //**************************************************************************
     //Calculos

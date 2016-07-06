@@ -1,4 +1,4 @@
-package sic.service;
+package sic.service.impl;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -12,15 +12,17 @@ import sic.modelo.CondicionIVA;
 import sic.modelo.Empresa;
 import sic.modelo.Localidad;
 import sic.repository.IClienteRepository;
-import sic.service.impl.ClienteServiceImpl;
+import sic.service.IClienteService;
+import sic.service.ServiceException;
+import sic.service.TipoDeOperacion;
 
 @Service
 public class ClienteServiceImplTest {
 
     private IClienteService clienteService;
-    private final Empresa empresa = new Empresa();
-    private final Cliente cliente = new Cliente();
-    private final Cliente clienteDuplicado = new Cliente();
+    private Empresa empresa;
+    private Cliente cliente;
+    private Cliente clienteDuplicado;
 
     @Mock
     private IClienteRepository clienteRepository;
@@ -28,6 +30,9 @@ public class ClienteServiceImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        empresa = new Empresa();
+        cliente = new Cliente();
+        clienteDuplicado = new Cliente();
     }
 
     @Test
@@ -40,14 +45,14 @@ public class ClienteServiceImplTest {
     }
 
     @Test(expected = ServiceException.class)
-    public void shouldValidarOperacionWhenEmailValido() {
+    public void shouldValidarOperacionWhenEmailInvalido() {
         cliente.setEmail("");
         clienteService = new ClienteServiceImpl(clienteRepository);
         clienteService.validarOperacion(TipoDeOperacion.ELIMINACION, cliente);
     }
 
     @Test(expected = ServiceException.class)
-    public void shouldValidarOperacionWhenCondicionIVANoNull() {
+    public void shouldValidarOperacionWhenCondicionIVAesNull() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");
         cliente.setCondicionIVA(null);
@@ -56,7 +61,7 @@ public class ClienteServiceImplTest {
     }
 
     @Test(expected = ServiceException.class)
-    public void shouldValidarOperacionWhenLocalidadNoNull() {
+    public void shouldValidarOperacionWhenLocalidadEsNull() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");
         cliente.setCondicionIVA(new CondicionIVA());
@@ -66,7 +71,7 @@ public class ClienteServiceImplTest {
     }
 
     @Test(expected = ServiceException.class)
-    public void shouldValidarOperacionWhenEmpresaNoNull() {
+    public void shouldValidarOperacionWhenEmpresaEsNull() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");
         cliente.setCondicionIVA(new CondicionIVA());
@@ -77,39 +82,39 @@ public class ClienteServiceImplTest {
     }
 
     @Test(expected = ServiceException.class)
-    public void shouldValidarOperacionWhenDuplicadoAltaIdFiscal() {
+    public void shouldValidarOperacionWhenIdFiscalDuplicadoEnAlta() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");
         cliente.setCondicionIVA(new CondicionIVA());
         cliente.setLocalidad(new Localidad());
         cliente.setEmpresa(new Empresa());
-        cliente.setId_Fiscal("id Fiscal Cliente");
+        cliente.setId_Fiscal("23111111119");
         clienteDuplicado.setEmail("emailValido@email.com");
         clienteDuplicado.setRazonSocial("razon Social");
         clienteDuplicado.setCondicionIVA(new CondicionIVA());
         clienteDuplicado.setLocalidad(new Localidad());
         clienteDuplicado.setEmpresa(new Empresa());
-        clienteDuplicado.setId_Fiscal("id Fiscal Cliente");
+        clienteDuplicado.setId_Fiscal("23111111119");
         when(clienteRepository.getClientePorId_Fiscal(cliente.getId_Fiscal(), cliente.getEmpresa())).thenReturn(cliente);
         clienteService = new ClienteServiceImpl(clienteRepository);
         clienteService.validarOperacion(TipoDeOperacion.ALTA, clienteDuplicado);
     }
 
     @Test(expected = ServiceException.class)
-    public void shouldValidarOperacionWhenDuplicadoActualizacionIdFiscal() {
+    public void shouldValidarOperacionWhenIdFiscalDuplicadoEnActualizacion() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");
         cliente.setCondicionIVA(new CondicionIVA());
         cliente.setLocalidad(new Localidad());
         cliente.setEmpresa(new Empresa());
-        cliente.setId_Fiscal("id Fiscal Cliente");
+        cliente.setId_Fiscal("23111111119");
         cliente.setId_Cliente(Long.MIN_VALUE);
         clienteDuplicado.setEmail("emailValido@email.com");
         clienteDuplicado.setRazonSocial("razon Social");
         clienteDuplicado.setCondicionIVA(new CondicionIVA());
         clienteDuplicado.setLocalidad(new Localidad());
         clienteDuplicado.setEmpresa(new Empresa());
-        clienteDuplicado.setId_Fiscal("id Fiscal Cliente");
+        clienteDuplicado.setId_Fiscal("23111111119");
         clienteDuplicado.setId_Cliente(Long.MAX_VALUE);
         when(clienteRepository.getClientePorId_Fiscal(cliente.getId_Fiscal(), cliente.getEmpresa())).thenReturn(cliente);
         clienteService = new ClienteServiceImpl(clienteRepository);
@@ -117,20 +122,20 @@ public class ClienteServiceImplTest {
     }
 
     @Test(expected = ServiceException.class)
-    public void shouldValidarOperacionWhenDuplicadoAltaRazonSocial() {
+    public void shouldValidarOperacionWhenRazonSocialDuplicadaEnAlta() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");
         cliente.setCondicionIVA(new CondicionIVA());
         cliente.setLocalidad(new Localidad());
         cliente.setEmpresa(new Empresa());
-        cliente.setId_Fiscal("id Fiscal Cliente");
+        cliente.setId_Fiscal("23111111119");
         cliente.setId_Cliente(Long.MIN_VALUE);
         clienteDuplicado.setEmail("emailValido@email.com");
         clienteDuplicado.setRazonSocial("razon Social");
         clienteDuplicado.setCondicionIVA(new CondicionIVA());
         clienteDuplicado.setLocalidad(new Localidad());
         clienteDuplicado.setEmpresa(new Empresa());
-        clienteDuplicado.setId_Fiscal("id Fiscal Cliente");
+        clienteDuplicado.setId_Fiscal("23111111119");
         clienteDuplicado.setId_Cliente(Long.MAX_VALUE);
         when(clienteRepository.getClientePorRazonSocial(cliente.getRazonSocial(), cliente.getEmpresa())).thenReturn(cliente);
         clienteService = new ClienteServiceImpl(clienteRepository);
@@ -138,20 +143,20 @@ public class ClienteServiceImplTest {
     }
 
     @Test(expected = ServiceException.class)
-    public void shouldValidarOperacionWhenDuplicadoActualizacionRazonSocial() {
+    public void shouldValidarOperacionWhenRazonSocialDuplicadaEnActualizacion() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");
         cliente.setCondicionIVA(new CondicionIVA());
         cliente.setLocalidad(new Localidad());
         cliente.setEmpresa(new Empresa());
-        cliente.setId_Fiscal("id Fiscal Cliente");
+        cliente.setId_Fiscal("23111111119");
         cliente.setId_Cliente(Long.MIN_VALUE);
         clienteDuplicado.setEmail("emailValido@email.com");
         clienteDuplicado.setRazonSocial("razon Social");
         clienteDuplicado.setCondicionIVA(new CondicionIVA());
         clienteDuplicado.setLocalidad(new Localidad());
         clienteDuplicado.setEmpresa(new Empresa());
-        clienteDuplicado.setId_Fiscal("id Fiscal Cliente");
+        clienteDuplicado.setId_Fiscal("23111111119");
         clienteDuplicado.setId_Cliente(Long.MAX_VALUE);
         when(clienteRepository.getClientePorRazonSocial(cliente.getRazonSocial(), cliente.getEmpresa())).thenReturn(cliente);
         clienteService = new ClienteServiceImpl(clienteRepository);
