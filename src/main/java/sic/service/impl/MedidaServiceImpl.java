@@ -33,7 +33,8 @@ public class MedidaServiceImpl implements IMedidaService {
         return medidaRepository.getMedidaPorNombre(nombre, empresa);
     }
 
-    private void validarOperacion(TipoDeOperacion operacion, Medida medida) {
+    @Override
+    public void validarOperacion(TipoDeOperacion operacion, Medida medida) {
         //Requeridos
         if (Validator.esVacio(medida.getNombre())) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")

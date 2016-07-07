@@ -40,7 +40,8 @@ public class LocalidadServiceImpl implements ILocalidadService {
         return localidadRepository.getLocalidadPorNombre(nombre, provincia);
     }
 
-    private void validarOperacion(TipoDeOperacion operacion, Localidad localidad) {
+    @Override
+    public void validarOperacion(TipoDeOperacion operacion, Localidad localidad) {
         //Requeridos
         if (Validator.esVacio(localidad.getNombre())) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")

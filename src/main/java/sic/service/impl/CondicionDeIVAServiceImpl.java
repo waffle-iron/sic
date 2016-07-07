@@ -53,7 +53,8 @@ public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
         return condicionIVARepository.getCondicionIVAPorNombre(nombre);
     }
 
-    private void validarOperacion(TipoDeOperacion operacion, CondicionIVA condicionIVA) {
+    @Override
+    public void validarOperacion(TipoDeOperacion operacion, CondicionIVA condicionIVA) {
         //Requeridos
         if (Validator.esVacio(condicionIVA.getNombre())) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")

@@ -28,5 +28,7 @@ public interface IClienteService {
     void guardar(Cliente cliente);
 
     void setClientePredeterminado(Cliente cliente);
-    
+
+    void validarOperacion(TipoDeOperacion operacion, Cliente cliente);
+
 }
