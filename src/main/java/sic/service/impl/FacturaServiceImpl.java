@@ -270,6 +270,11 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
+    public List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
+        return facturaRepository.getFacturasPorFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
+    }
+
+    @Override
     @Transactional
     public void guardar(Factura factura) {
         this.validarFactura(factura);
@@ -355,26 +360,6 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public long calcularNumeroFactura(String tipoDeFactura, long serie) {
-        return 1 + facturaRepository.getMayorNumFacturaSegunTipo(tipoDeFactura, serie);
-    }
-
-    @Override
-    public double calcularVuelto(double importeAPagar, double importeAbonado) {
-        if (importeAbonado <= importeAPagar) {
-            return 0;
-        } else {
-            return importeAbonado - importeAPagar;
-        }
-    }
-
-    @Override
-    public double calcularImporte(double cantidad, double precioUnitario, double descuento_neto) {
-        double resultado = (precioUnitario - descuento_neto) * cantidad;
-        return Math.round(resultado * 1000.0) / 1000.0;
-    }
-
-    @Override
     public boolean validarCantidadMaximaDeRenglones(int cantidad) {
         ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
                 empresaService.getEmpresaActiva().getEmpresa());
@@ -399,7 +384,7 @@ public class FacturaServiceImpl implements IFacturaService {
         if (descuento_porcentaje != 0) {
             resultado = (subtotal * descuento_porcentaje) / 100;
         }
-        return Math.round(resultado * 1000.0) / 1000.0;
+        return Utilidades.truncarDecimal(resultado, 2);
     }
 
     @Override
@@ -408,7 +393,7 @@ public class FacturaServiceImpl implements IFacturaService {
         if (recargo_porcentaje != 0) {
             resultado = (subtotal * recargo_porcentaje) / 100;
         }
-        return Math.round(resultado * 1000.0) / 1000.0;
+        return Utilidades.truncarDecimal(resultado, 2);
     }
 
     @Override
@@ -438,7 +423,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 resultado += iva_neto;
             }
         }
-        return Math.round(resultado * 1000.0) / 1000.0;
+        return Utilidades.truncarDecimal(resultado, 2);
     }
 
     @Override
@@ -460,14 +445,14 @@ public class FacturaServiceImpl implements IFacturaService {
                 resultado += impInterno_neto;
             }
         }
-        return Math.round(resultado * 1000.0) / 1000.0;
+        return Utilidades.truncarDecimal(resultado, 2);
     }
 
     @Override
     public double calcularTotal(double subTotal, double descuento_neto, double recargo_neto, double iva105_neto, double iva21_neto, double impInterno_neto) {
         double resultado;
         resultado = (subTotal + recargo_neto - descuento_neto) + iva105_neto + iva21_neto + impInterno_neto;
-        return Math.round(resultado * 1000.0) / 1000.0;
+        return Utilidades.truncarDecimal(resultado, 2);
     }
 
     @Override
@@ -500,17 +485,82 @@ public class FacturaServiceImpl implements IFacturaService {
         return resultado;
     }
 
-    public double calcularTotal(List<FacturaVenta> facturas) {
-        double total = 0;
-        for (Factura factura : facturas) {
-            total += factura.getTotal();
+    @Override
+    public double calcularIVA_neto(Movimiento movimiento, Producto producto, double descuento_neto) {
+        double resultado = 0;
+
+        if (movimiento == Movimiento.COMPRA) {
+            resultado = ((producto.getPrecioCosto() - descuento_neto) * producto.getIva_porcentaje()) / 100;
         }
-        return total;
+
+        if (movimiento == Movimiento.VENTA) {
+            resultado = ((producto.getPrecioVentaPublico() - descuento_neto) * producto.getIva_porcentaje()) / 100;
+        }
+        return Utilidades.truncarDecimal(resultado, 2);
     }
 
     @Override
-    public List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
-        return facturaRepository.getFacturasPorFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
+    public double calcularImpInterno_neto(Movimiento movimiento, Producto producto, double descuento_neto) {
+        double resultado = 0;
+
+        if (movimiento == Movimiento.COMPRA) {
+            resultado = ((producto.getPrecioCosto() - descuento_neto) * producto.getImpuestoInterno_porcentaje()) / 100;
+        }
+
+        if (movimiento == Movimiento.VENTA) {
+            resultado = ((producto.getPrecioVentaPublico() - descuento_neto) * producto.getImpuestoInterno_porcentaje()) / 100;
+        }
+        return Utilidades.truncarDecimal(resultado, 2);
+    }
+
+    @Override
+    public double calcularPrecioUnitario(Movimiento movimiento, String tipoDeFactura, Producto producto) {
+        double iva_resultado;
+        double impInterno_resultado;
+        double resultado = 0;
+
+        if (movimiento == Movimiento.COMPRA) {
+            if (tipoDeFactura.equals("Factura A") || tipoDeFactura.equals("Factura X")) {
+                resultado = producto.getPrecioCosto();
+            } else {
+                iva_resultado = (producto.getPrecioCosto() * producto.getIva_porcentaje()) / 100;
+                impInterno_resultado = (producto.getPrecioCosto() * producto.getImpuestoInterno_porcentaje()) / 100;
+                resultado = producto.getPrecioCosto() + iva_resultado + impInterno_resultado;
+            }
+        }
+
+        if (movimiento == Movimiento.VENTA) {
+            if (tipoDeFactura.equals("Factura A") || tipoDeFactura.equals("Factura X")) {
+                resultado = producto.getPrecioVentaPublico();
+            } else if (tipoDeFactura.equals("Factura Y")) {
+                iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje() / 2) / 100;
+                impInterno_resultado = (producto.getPrecioVentaPublico() * producto.getImpuestoInterno_porcentaje()) / 100;
+                resultado = producto.getPrecioVentaPublico() + iva_resultado + impInterno_resultado;
+            } else {
+                resultado = producto.getPrecioLista();
+            }
+        }
+        return Utilidades.truncarDecimal(resultado, 2);
+    }
+
+    @Override
+    public long calcularNumeroFactura(String tipoDeFactura, long serie) {
+        return 1 + facturaRepository.getMayorNumFacturaSegunTipo(tipoDeFactura, serie);
+    }
+
+    @Override
+    public double calcularVuelto(double importeAPagar, double importeAbonado) {
+        if (importeAbonado <= importeAPagar) {
+            return 0;
+        } else {
+            return importeAbonado - importeAPagar;
+        }
+    }
+
+    @Override
+    public double calcularImporte(double cantidad, double precioUnitario, double descuento_neto) {
+        double resultado = (precioUnitario - descuento_neto) * cantidad;
+        return Utilidades.truncarDecimal(resultado, 2);
     }
 
     //**************************************************************************
@@ -639,15 +689,6 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public double calcularTotalFacturas(List<FacturaVenta> facturas) {
-        double total = 0;
-        for (Factura factura : facturas) {
-            total += factura.getTotal();
-        }
-        return total;
-    }
-
-    @Override
     public RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante) {
         return this.calcularRenglon(tipoComprobante, Movimiento.VENTA, renglon.getCantidad(), renglon.getProducto(), renglon.getDescuento_porcentaje());
     }
@@ -693,64 +734,6 @@ public class FacturaServiceImpl implements IFacturaService {
         nuevoRenglon.setGanancia_neto(producto.getGanancia_neto());
         nuevoRenglon.setImporte(this.calcularImporte(cantidad, nuevoRenglon.getPrecioUnitario(), nuevoRenglon.getDescuento_neto()));
         return nuevoRenglon;
-    }
-
-    @Override
-    public double calcularIVA_neto(Movimiento movimiento, Producto producto, double descuento_neto) {
-        double resultado = 0;
-
-        if (movimiento == Movimiento.COMPRA) {
-            resultado = ((producto.getPrecioCosto() - descuento_neto) * producto.getIva_porcentaje()) / 100;
-        }
-
-        if (movimiento == Movimiento.VENTA) {
-            resultado = ((producto.getPrecioVentaPublico() - descuento_neto) * producto.getIva_porcentaje()) / 100;
-        }
-        return Math.round(resultado * 1000.0) / 1000.0;
-    }
-
-    @Override
-    public double calcularImpInterno_neto(Movimiento movimiento, Producto producto, double descuento_neto) {
-        double resultado = 0;
-
-        if (movimiento == Movimiento.COMPRA) {
-            resultado = ((producto.getPrecioCosto() - descuento_neto) * producto.getImpuestoInterno_porcentaje()) / 100;
-        }
-
-        if (movimiento == Movimiento.VENTA) {
-            resultado = ((producto.getPrecioVentaPublico() - descuento_neto) * producto.getImpuestoInterno_porcentaje()) / 100;
-        }
-        return Math.round(resultado * 1000.0) / 1000.0;
-    }
-
-    @Override
-    public double calcularPrecioUnitario(Movimiento movimiento, String tipoDeFactura, Producto producto) {
-        double iva_resultado;
-        double impInterno_resultado;
-        double resultado = 0;
-
-        if (movimiento == Movimiento.COMPRA) {
-            if (tipoDeFactura.equals("Factura A") || tipoDeFactura.equals("Factura X")) {
-                resultado = producto.getPrecioCosto();
-            } else {
-                iva_resultado = (producto.getPrecioCosto() * producto.getIva_porcentaje()) / 100;
-                impInterno_resultado = (producto.getPrecioCosto() * producto.getImpuestoInterno_porcentaje()) / 100;
-                resultado = producto.getPrecioCosto() + iva_resultado + impInterno_resultado;
-            }
-        }
-
-        if (movimiento == Movimiento.VENTA) {
-            if (tipoDeFactura.equals("Factura A") || tipoDeFactura.equals("Factura X")) {
-                resultado = producto.getPrecioVentaPublico();
-            } else if (tipoDeFactura.equals("Factura Y")) {
-                iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje() / 2) / 100;
-                impInterno_resultado = (producto.getPrecioVentaPublico() * producto.getImpuestoInterno_porcentaje()) / 100;
-                resultado = producto.getPrecioVentaPublico() + iva_resultado + impInterno_resultado;
-            } else {
-                resultado = producto.getPrecioLista();
-            }
-        }
-        return Math.round(resultado * 1000.0) / 1000.0;
     }
 
 }

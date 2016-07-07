@@ -43,6 +43,8 @@ public interface IFacturaService {
 
     List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
 
+    RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje);
+
     //**************************************************************************
     //Calculos
     double calcularSubTotal(List<RenglonFactura> renglones);
@@ -52,8 +54,6 @@ public interface IFacturaService {
     double calcularTotal(double subTotal, double descuento_neto, double recargo_neto, double iva105_neto, double iva21_neto, double impInterno_neto);
 
     double calcularTotalFacturado(List<FacturaVenta> facturas);
-
-    double calcularTotalFacturas(List<FacturaVenta> facturas);
 
     double calcularVuelto(double importeAPagar, double importeAbonado);
 
@@ -96,7 +96,5 @@ public interface IFacturaService {
     List<Object[]> listarProductosMasVendidosPorAnio(int anio);
 
     boolean validarCantidadMaximaDeRenglones(int cantidad);
-
-    RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje);
 
 }

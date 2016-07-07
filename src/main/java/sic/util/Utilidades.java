@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.security.MessageDigest;
@@ -88,6 +89,9 @@ public class Utilidades {
      * Busca un archivo especificado en el directorio donde se encuentra el JAR
      *
      * @param archivo Nombre del archivo que se desea buscar
+     * @return archivo encontrado
+     * @throws java.io.FileNotFoundException
+     * @throws java.net.URISyntaxException
      */
     public static File getArchivoDelDirectorioDelJAR(String archivo) throws FileNotFoundException, URISyntaxException {
         File fileBuscado = null;
@@ -130,6 +134,7 @@ public class Utilidades {
      * ordenamiento, devuelve mal los indices.
      *
      * @param table JTable donde debe buscar los indices correctos
+     * @return indices seleccionados
      */
     public static int[] getSelectedRowsModelIndices(JTable table) {
         if (table == null) {
@@ -152,6 +157,7 @@ public class Utilidades {
      * devuelve mal el indice.
      *
      * @param table JTable donde debe buscar el indice correcto
+     * @return indice seleccionado
      */
     public static int getSelectedRowModelIndice(JTable table) {
         if (table == null) {
@@ -169,6 +175,7 @@ public class Utilidades {
      *
      * @param archivo Archivo a ser convertido.
      * @return Array de byte representando al archivo.
+     * @throws java.io.IOException
      */
     public static byte[] convertirFileIntoByteArray(File archivo) throws IOException {
         byte[] bArchivo = new byte[(int) archivo.length()];
@@ -211,6 +218,21 @@ public class Utilidades {
             return false;
         } else {
             return true;
+        }
+    }
+
+    /**
+     * Trunca los decimales de un double, segun la cantidad que uno requiera
+     *
+     * @param valor para ser truncado
+     * @param cantidadDecimales cantidad de decimales que debe mantener
+     * @return numero truncado
+     */
+    public static double truncarDecimal(double valor, int cantidadDecimales) {
+        if (valor > 0) {
+            return (new BigDecimal(String.valueOf(valor)).setScale(cantidadDecimales, BigDecimal.ROUND_FLOOR)).doubleValue();
+        } else {
+            return (new BigDecimal(String.valueOf(valor)).setScale(cantidadDecimales, BigDecimal.ROUND_CEILING)).doubleValue();
         }
     }
 }
