@@ -42,8 +42,11 @@ public class FacturaServiceImplTest {
         empresa.setCondicionIVA(condicionIVAqueDiscrimina);
         Proveedor proveedor = Mockito.mock(Proveedor.class);
         when(proveedor.getCondicionIVA()).thenReturn(condicionIVAqueDiscrimina);
-        char[] expResult = {'A', 'B', 'X'};
-        char[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
+        String[] expResult = new String[3];
+        expResult[0] = "Factura A";
+        expResult[1] = "Factura B";
+        expResult[2] = "Factura X";
+        String[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
 
@@ -57,8 +60,10 @@ public class FacturaServiceImplTest {
         when(condicionIVAqueNoDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.FALSE);
         when(empresa.getCondicionIVA()).thenReturn(condicionIVAqueDiscrimina);
         when(proveedor.getCondicionIVA()).thenReturn(condicionIVAqueNoDiscrimina);
-        char[] expResult = {'C', 'X'};
-        char[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
+        String[] expResult = new String[2];
+        expResult[0] = "Factura C";
+        expResult[1] = "Factura X";
+        String[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
 
@@ -72,9 +77,11 @@ public class FacturaServiceImplTest {
         when(condicionIVAqueNoDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.FALSE);
         when(empresa.getCondicionIVA()).thenReturn(condicionIVAqueNoDiscrimina);
         when(proveedor.getCondicionIVA()).thenReturn(condicionIVAqueDiscrimina);
-        char[] expResult = {'B', 'X'};
+        String[] expResult = new String[2];
+        expResult[0] = "Factura B";
+        expResult[1] = "Factura X";
         empresa.getCondicionIVA().isDiscriminaIVA();
-        char[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
+        String[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
 
@@ -86,9 +93,11 @@ public class FacturaServiceImplTest {
         when(condicionIVAqueNoDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.FALSE);
         when(empresa.getCondicionIVA()).thenReturn(condicionIVAqueNoDiscrimina);
         when(proveedor.getCondicionIVA()).thenReturn(condicionIVAqueNoDiscrimina);
-        char[] expResult = {'C', 'X'};
+        String[] expResult = new String[2];
+        expResult[0] = "Factura C";
+        expResult[1] = "Factura X";
         empresa.getCondicionIVA().isDiscriminaIVA();
-        char[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
+        String[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
 
