@@ -71,7 +71,9 @@ public interface IFacturaService {
 
     void eliminar(Factura factura);
 
-    FacturaVenta getFacturaVentaPorTipoSerieNum(String tipo, long serie, long num);
+    FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num);
+
+    FacturaCompra getFacturaCompraPorTipoSerieNum(char tipo, long serie, long num);
 
     List<RenglonFactura> getRenglonesDeLaFactura(Factura factura);
 
@@ -79,7 +81,7 @@ public interface IFacturaService {
     //Reportes
     JasperPrint getReporteFacturaVenta(Factura factura) throws JRException;
 
-    char[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor);
+    String[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor);
 
     String[] getTipoFacturaVenta(Empresa empresa, Cliente cliente);
 

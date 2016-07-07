@@ -381,7 +381,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         }
         cmb_Proveedor.setSelectedItem(facturaParaMostrar.getProveedor());
         cmb_TipoFactura.removeAllItems();
-        cmb_TipoFactura.addItem(facturaParaMostrar.getTipoFactura());
+        cmb_TipoFactura.addItem(facturaService.getTipoFactura(facturaParaMostrar));
         cmb_Transportista.setSelectedItem(facturaParaMostrar.getTransportista());
         cmb_FormaDePago.setSelectedItem(facturaParaMostrar.getFormaPago());
         dc_FechaFactura.setDate(facturaParaMostrar.getFecha());
@@ -403,7 +403,7 @@ public class GUI_FormFacturaCompra extends JDialog {
     }
 
     private void cargarTiposDeFacturaDisponibles() {
-        char[] tiposFactura = facturaService.getTipoFacturaCompra(empresaService.getEmpresaActiva().getEmpresa(), (Proveedor) cmb_Proveedor.getSelectedItem());
+        String[] tiposFactura = facturaService.getTipoFacturaCompra(empresaService.getEmpresaActiva().getEmpresa(), (Proveedor) cmb_Proveedor.getSelectedItem());
         cmb_TipoFactura.removeAllItems();
         for (int i = 0; tiposFactura.length > i; i++) {
             cmb_TipoFactura.addItem(tiposFactura[i]);
