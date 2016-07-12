@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-06-09T21:09:52 -->
+<!-- 2016-07-12T11:42:06 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Caja" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="608c624e-e655-4a3f-bb85-9c440082766b">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -19,11 +19,11 @@
 	<title>
 		<band height="142" splitType="Stretch">
 			<image>
-				<reportElement x="0" y="0" width="158" height="142" uuid="33e8c96a-1306-4242-b063-7ea538992edc"/>
+				<reportElement x="0" y="0" width="158" height="134" uuid="33e8c96a-1306-4242-b063-7ea538992edc"/>
 				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
 			</image>
 			<rectangle>
-				<reportElement x="160" y="0" width="397" height="142" uuid="17eeab7f-475f-47f7-a9cb-fe3e752d1203"/>
+				<reportElement x="160" y="0" width="394" height="134" uuid="17eeab7f-475f-47f7-a9cb-fe3e752d1203"/>
 			</rectangle>
 			<textField>
 				<reportElement x="168" y="7" width="370" height="27" uuid="bca1cc0f-82e0-4c5e-b252-bb5e6bb24856"/>
@@ -77,9 +77,9 @@
 		</band>
 	</title>
 	<pageHeader>
-		<band height="77" splitType="Stretch">
+		<band height="87" splitType="Stretch">
 			<textField>
-				<reportElement key="" positionType="Float" x="0" y="17" width="277" height="24" uuid="ad630165-db23-454a-a905-20df0796a71f">
+				<reportElement key="" positionType="Float" x="0" y="30" width="277" height="30" uuid="ad630165-db23-454a-a905-20df0796a71f">
 					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 				</reportElement>
@@ -90,26 +90,33 @@
 				<textFieldExpression><![CDATA["Fecha Apertura: "+(new java.text.SimpleDateFormat("dd/M/yyyy hh:mm").format($P{caja}.getFechaApertura()))]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement positionType="Float" x="0" y="41" width="277" height="36" uuid="902de916-6b99-4db3-b9f4-9c2055e1126e"/>
+				<reportElement positionType="Float" x="0" y="60" width="277" height="27" uuid="902de916-6b99-4db3-b9f4-9c2055e1126e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($P{caja}.getEstado().toString().equals("CERRADA"))?"Estado de Caja: Cerrada":"Estado de Caja: Abierta"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="277" y="17" width="280" height="24" uuid="1f199f3b-fa02-4a9e-8700-c57c6d86f0cc"/>
+				<reportElement x="277" y="30" width="280" height="30" uuid="1f199f3b-fa02-4a9e-8700-c57c6d86f0cc"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[($P{caja}.getEstado().toString().equals("CERRADA"))?"Fecha Cierre: "+(new java.text.SimpleDateFormat("dd/M/yyyy hh:mm").format($P{caja}.getFechaCierre())):""]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="277" y="42" width="280" height="35" uuid="93287ff4-147a-454d-8824-ce8125bd0b19"/>
+				<reportElement x="277" y="60" width="280" height="27" uuid="93287ff4-147a-454d-8824-ce8125bd0b19"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Usuario de Cierre: "+$P{usuario}.getNombre()]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="0" y="10" width="554" height="20" uuid="559ac2ed-2558-4822-805e-29d9e13f9fda"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[ARQUEO DE CAJA]]></text>
+			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
