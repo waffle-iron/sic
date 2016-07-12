@@ -263,7 +263,7 @@ public class FacturaServiceImplTest {
         for (int i = 0; i < 5; i++) {
             renglones.add(renglon);
         }
-        double resultadoEsperado = 18.83;
+        double resultadoEsperado = 18.837;
         double resultadoObtenido = facturaService.calcularIva_neto("Factura A", 10, 25, renglones, 21);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
@@ -291,7 +291,7 @@ public class FacturaServiceImplTest {
         for (int i = 0; i < 5; i++) {
             renglones.add(renglon);
         }
-        double resultadoEsperado = 13.45;
+        double resultadoEsperado = 13.455;
         double resultadoObtenido = facturaService.calcularImpInterno_neto("Factura A", 10, 25, renglones);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
 
@@ -299,7 +299,7 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularTotal() {
-        double resultadoEsperado = 449.52;
+        double resultadoEsperado = 449.525;
         double resultadoObtenido = facturaService.calcularTotal(350, 10, 25, 0, 84.525, 0);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
