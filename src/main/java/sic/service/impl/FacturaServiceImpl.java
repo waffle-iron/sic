@@ -407,7 +407,9 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public double calcularIva_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones, double iva_porcentaje) {
+    public double calcularIva_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje,
+            List<RenglonFactura> renglones, double iva_porcentaje) {
+        
         double resultado = 0;
         if (tipoDeFactura.charAt(tipoDeFactura.length() - 1) == 'A') {
             for (RenglonFactura renglon : renglones) {
@@ -432,7 +434,9 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones) {
+    public double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje,
+            double recargo_porcentaje, List<RenglonFactura> renglones) {
+        
         double resultado = 0;
         if (tipoDeFactura.charAt(tipoDeFactura.length() - 1) == 'A') {
             for (RenglonFactura renglon : renglones) {
@@ -454,7 +458,9 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public double calcularTotal(double subTotal, double descuento_neto, double recargo_neto, double iva105_neto, double iva21_neto, double impInterno_neto) {
+    public double calcularTotal(double subTotal, double descuento_neto, double recargo_neto,
+            double iva105_neto, double iva21_neto, double impInterno_neto) {
+        
         double resultado;
         resultado = (subTotal + recargo_neto - descuento_neto) + iva105_neto + iva21_neto + impInterno_neto;
         return Utilidades.truncarDecimal(resultado, 3);
@@ -718,7 +724,9 @@ public class FacturaServiceImpl implements IFacturaService {
 
     //**************************************************************************
     @Override
-    public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje) {
+    public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento,
+            double cantidad, Producto producto, double descuento_porcentaje) {
+        
         RenglonFactura nuevoRenglon = new RenglonFactura();
         nuevoRenglon.setId_ProductoItem(producto.getId_Producto());
         nuevoRenglon.setCodigoItem(producto.getCodigo());
