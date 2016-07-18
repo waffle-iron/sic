@@ -37,7 +37,7 @@ public class GUI_BuscarProductos extends JDialog {
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
-    private static final Logger log = Logger.getLogger(GUI_BuscarProductos.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(GUI_BuscarProductos.class.getPackage().getName());
 
     public GUI_BuscarProductos(JDialog parent, boolean modal, List<RenglonFactura> renglones) {
         super(parent, modal);
@@ -116,19 +116,19 @@ public class GUI_BuscarProductos extends JDialog {
     }
 
     private void actualizarEstadoSeleccion() {
-        try {
-            txt_Cantidad.commitEdit();
-            txt_PorcentajeDescuento.commitEdit();
-
-            if (prodSeleccionado != null) {
-                renglon = facturaService.calcularRenglon(gui_PrincipalTPV.getTipoDeComprobante(), Movimiento.VENTA,
-                        Double.parseDouble(txt_Cantidad.getValue().toString()), prodSeleccionado,
-                        Double.parseDouble(txt_PorcentajeDescuento.getValue().toString()));
+        if (txt_Cantidad.isEditValid() && txt_PorcentajeDescuento.isEditValid()) {
+            try {
+                txt_Cantidad.commitEdit();
+                txt_PorcentajeDescuento.commitEdit();
+            } catch (ParseException ex) {
+                String msjError = "Se produjo un error analizando los campos.";
+                LOGGER.error(msjError + " - " + ex.getMessage());
             }
-
-        } catch (ParseException ex) {
-            String msjError = "Se produjo un error analizando los campos.";
-            log.error(msjError + " - " + ex.getMessage());
+        }
+        if (prodSeleccionado != null) {
+            renglon = facturaService.calcularRenglon(gui_PrincipalTPV.getTipoDeComprobante(), Movimiento.VENTA,
+                    Double.parseDouble(txt_Cantidad.getValue().toString()), prodSeleccionado,
+                    Double.parseDouble(txt_PorcentajeDescuento.getValue().toString()));
         }
     }
 
@@ -457,7 +457,7 @@ public class GUI_BuscarProductos extends JDialog {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_BuscarActionPerformed
@@ -484,7 +484,7 @@ public class GUI_BuscarProductos extends JDialog {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_txt_CampoBusquedaActionPerformed
@@ -528,7 +528,7 @@ public class GUI_BuscarProductos extends JDialog {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_txt_CampoBusquedaKeyReleased
@@ -544,7 +544,7 @@ public class GUI_BuscarProductos extends JDialog {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
