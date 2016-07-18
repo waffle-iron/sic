@@ -380,7 +380,7 @@ public class FacturaServiceImpl implements IFacturaService {
         for (RenglonFactura renglon : renglones) {
             resultado += renglon.getImporte();
         }
-        return resultado;
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
@@ -389,7 +389,7 @@ public class FacturaServiceImpl implements IFacturaService {
         if (descuento_porcentaje != 0) {
             resultado = (subtotal * descuento_porcentaje) / 100;
         }
-        return Utilidades.truncarDecimal(resultado, 2);
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
@@ -398,16 +398,18 @@ public class FacturaServiceImpl implements IFacturaService {
         if (recargo_porcentaje != 0) {
             resultado = (subtotal * recargo_porcentaje) / 100;
         }
-        return Utilidades.truncarDecimal(resultado, 2);
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
     public double calcularSubTotal_neto(double subtotal, double recargo_neto, double descuento_neto) {
-        return subtotal + recargo_neto - descuento_neto;
+        return Utilidades.truncarDecimal((subtotal + recargo_neto - descuento_neto), 3);
     }
 
     @Override
-    public double calcularIva_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones, double iva_porcentaje) {
+    public double calcularIva_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje,
+            List<RenglonFactura> renglones, double iva_porcentaje) {
+        
         double resultado = 0;
         if (tipoDeFactura.charAt(tipoDeFactura.length() - 1) == 'A') {
             for (RenglonFactura renglon : renglones) {
@@ -428,11 +430,13 @@ public class FacturaServiceImpl implements IFacturaService {
                 resultado += iva_neto;
             }
         }
-        return Utilidades.truncarDecimal(resultado, 2);
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
-    public double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones) {
+    public double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje,
+            double recargo_porcentaje, List<RenglonFactura> renglones) {
+        
         double resultado = 0;
         if (tipoDeFactura.charAt(tipoDeFactura.length() - 1) == 'A') {
             for (RenglonFactura renglon : renglones) {
@@ -450,14 +454,16 @@ public class FacturaServiceImpl implements IFacturaService {
                 resultado += impInterno_neto;
             }
         }
-        return Utilidades.truncarDecimal(resultado, 2);
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
-    public double calcularTotal(double subTotal, double descuento_neto, double recargo_neto, double iva105_neto, double iva21_neto, double impInterno_neto) {
+    public double calcularTotal(double subTotal, double descuento_neto, double recargo_neto,
+            double iva105_neto, double iva21_neto, double impInterno_neto) {
+        
         double resultado;
         resultado = (subTotal + recargo_neto - descuento_neto) + iva105_neto + iva21_neto + impInterno_neto;
-        return Utilidades.truncarDecimal(resultado, 2);
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
@@ -466,7 +472,7 @@ public class FacturaServiceImpl implements IFacturaService {
         for (FacturaVenta facturaVenta : facturas) {
             resultado += facturaVenta.getTotal();
         }
-        return resultado;
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
@@ -475,7 +481,7 @@ public class FacturaServiceImpl implements IFacturaService {
         for (FacturaVenta facturaVenta : facturas) {
             resultado += (facturaVenta.getIva_105_neto() + facturaVenta.getIva_21_neto());
         }
-        return resultado;
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
@@ -487,7 +493,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 resultado += renglon.getGanancia_neto() * renglon.getCantidad();
             }
         }
-        return resultado;
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
@@ -501,7 +507,7 @@ public class FacturaServiceImpl implements IFacturaService {
         if (movimiento == Movimiento.VENTA) {
             resultado = ((producto.getPrecioVentaPublico() - descuento_neto) * producto.getIva_porcentaje()) / 100;
         }
-        return Utilidades.truncarDecimal(resultado, 2);
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
@@ -515,7 +521,7 @@ public class FacturaServiceImpl implements IFacturaService {
         if (movimiento == Movimiento.VENTA) {
             resultado = ((producto.getPrecioVentaPublico() - descuento_neto) * producto.getImpuestoInterno_porcentaje()) / 100;
         }
-        return Utilidades.truncarDecimal(resultado, 2);
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
@@ -545,7 +551,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 resultado = producto.getPrecioLista();
             }
         }
-        return Utilidades.truncarDecimal(resultado, 2);
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
@@ -565,7 +571,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public double calcularImporte(double cantidad, double precioUnitario, double descuento_neto) {
         double resultado = (precioUnitario - descuento_neto) * cantidad;
-        return Utilidades.truncarDecimal(resultado, 2);
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     //**************************************************************************
@@ -718,7 +724,9 @@ public class FacturaServiceImpl implements IFacturaService {
 
     //**************************************************************************
     @Override
-    public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje) {
+    public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento,
+            double cantidad, Producto producto, double descuento_porcentaje) {
+        
         RenglonFactura nuevoRenglon = new RenglonFactura();
         nuevoRenglon.setId_ProductoItem(producto.getId_Producto());
         nuevoRenglon.setCodigoItem(producto.getCodigo());
