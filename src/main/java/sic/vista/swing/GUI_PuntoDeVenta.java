@@ -62,7 +62,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
-    private static final Logger log = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());
     private Pedido pedido;
     private boolean modificarPedido;
 
@@ -450,12 +450,14 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     private void validarComponentesDeResultados() {
-        try {
-            txt_Recargo_porcentaje.commitEdit();
+        if (txt_Recargo_porcentaje.isEditValid()) {
+            try {
+                txt_Recargo_porcentaje.commitEdit();
 
-        } catch (ParseException ex) {
-            String msjError = "Se produjo un error analizando los campos.";
-            log.error(msjError + " - " + ex.getMessage());
+            } catch (ParseException ex) {
+                String msjError = "Se produjo un error analizando los campos.";
+                LOGGER.error(msjError + " - " + ex.getMessage());
+            }
         }
     }
 
@@ -582,7 +584,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             viewer.setVisible(true);
         } catch (JRException jre) {
             String msjError = "Se produjo un error procesando el reporte.";
-            log.error(msjError + " - " + jre.getMessage());
+            LOGGER.error(msjError + " - " + jre.getMessage());
             JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -1269,7 +1271,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             }
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_BuscarClienteActionPerformed
@@ -1284,7 +1286,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             }
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoClienteActionPerformed
@@ -1314,7 +1316,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                 }
             }
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
@@ -1338,7 +1340,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             }
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_cmb_TipoComprobanteItemStateChanged
@@ -1351,7 +1353,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_BuscarPorCodigoProductoActionPerformed
@@ -1364,7 +1366,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_txt_CodigoProductoActionPerformed
@@ -1463,7 +1465,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             this.buscarProductoConVentanaAuxiliar();
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_BuscarProductosActionPerformed
