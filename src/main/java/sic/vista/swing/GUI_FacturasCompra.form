@@ -62,26 +62,37 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
+                          <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="lbl_CantRegistrosEncontrados" max="32767" attributes="0"/>
+                      </Group>
+                      <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="chk_Proveedor" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="chk_NumFactura" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="chk_Fecha" alignment="0" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="txt_SerieFactura" linkSize="4" min="-2" pref="96" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="txt_NroFactura" linkSize="4" min="-2" pref="97" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="chk_Proveedor" linkSize="5" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="chk_NumFactura" linkSize="5" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="chk_estadoFactura" linkSize="5" alignment="0" min="-2" max="-2" attributes="0"/>
+                                      <Component id="chk_Fecha" linkSize="5" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="cmb_Proveedor" alignment="0" min="-2" pref="388" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="txt_SerieFactura" linkSize="4" min="-2" pref="96" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Component id="txt_NroFactura" linkSize="4" min="-2" pref="97" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
                               </Group>
-                              <Component id="cmb_Proveedor" max="32767" attributes="0"/>
-                              <Group type="102" alignment="1" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
+                                  <EmptySpace min="144" pref="144" max="-2" attributes="0"/>
                                   <Component id="lbl_Desde" min="-2" max="-2" attributes="1"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="dc_FechaDesde" min="-2" pref="136" max="-2" attributes="0"/>
@@ -90,23 +101,19 @@
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="dc_FechaHasta" min="-2" pref="136" max="-2" attributes="0"/>
                               </Group>
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="144" pref="144" max="-2" attributes="0"/>
+                                  <Component id="rb_soloPagadas" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" attributes="0">
+                                  <EmptySpace min="144" pref="144" max="-2" attributes="0"/>
+                                  <Component id="rb_soloImpagas" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lbl_CantRegistrosEncontrados" max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="chk_estadoFactura" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="rb_soloImpagas" min="-2" max="-2" attributes="0"/>
-                              <Component id="rb_soloPagadas" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="156" max="32767" attributes="0"/>
                       </Group>
                   </Group>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -114,16 +121,14 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="chk_Fecha" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="lbl_Desde" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="dc_FechaDesde" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="lbl_Hasta" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="dc_FechaHasta" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="cmb_Proveedor" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="chk_Proveedor" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="chk_Proveedor" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_Proveedor" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -145,6 +150,14 @@
                       <Component id="lbl_CantRegistrosEncontrados" alignment="0" min="-2" pref="25" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
+              </Group>
+              <Group type="102" alignment="2" attributes="0">
+                  <EmptySpace min="1" pref="1" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="chk_Fecha" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbl_Desde" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="177" pref="177" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -307,7 +320,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="sp_Resultados" pref="225" max="32767" attributes="0"/>
+                  <Component id="sp_Resultados" pref="228" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Component id="btn_Nuevo" linkSize="1" min="-2" max="-2" attributes="0"/>
