@@ -222,13 +222,17 @@ public class FacturaServiceImplTest {
     //Calculos
     @Test
     public void shouldCalcularSubTotal() {
+        RenglonFactura renglon1 = new RenglonFactura();
+        renglon1.setImporte(5.601);        
+        RenglonFactura renglon2 = new RenglonFactura();
+        renglon2.setImporte(18.052);        
+        RenglonFactura renglon3 = new RenglonFactura();
+        renglon3.setImporte(10.011);        
         List<RenglonFactura> renglones = new ArrayList<>();
-        RenglonFactura renglon = new RenglonFactura();
-        renglon.setImporte(15.605);
-        for (int i = 0; i < 5; i++) {
-            renglones.add(renglon);
-        }
-        double resultadoEsperado = 78.025;
+        renglones.add(renglon1);
+        renglones.add(renglon2);
+        renglones.add(renglon3);               
+        double resultadoEsperado = 33.664;
         double resultadoObtenido = facturaService.calcularSubTotal(renglones);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
@@ -325,12 +329,16 @@ public class FacturaServiceImplTest {
     @Test
     public void shouldCalcularTotalFacturado() {
         List<FacturaVenta> facturasDeVenta = new ArrayList<>();
-        FacturaVenta factura = new FacturaVenta();
-        factura.setTotal(412.30);
-        for (int i = 0; i < 5; i++) {
-            facturasDeVenta.add(factura);
-        }
-        double resultadoEsperado = 2061.5;
+        FacturaVenta factura1 = new FacturaVenta();
+        FacturaVenta factura2 = new FacturaVenta();
+        FacturaVenta factura3 = new FacturaVenta();
+        factura1.setTotal(1024.759);
+        factura2.setTotal(3424.089);
+        factura3.setTotal(21124.504);
+        facturasDeVenta.add(factura1);
+        facturasDeVenta.add(factura2);
+        facturasDeVenta.add(factura3);        
+        double resultadoEsperado = 25573.352;
         double resultadoObtenido = facturaService.calcularTotalFacturado(facturasDeVenta);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
@@ -338,17 +346,19 @@ public class FacturaServiceImplTest {
     @Test
     public void shouldCalcularIvaVenta() {
         List<FacturaVenta> facturasDeVenta = new ArrayList<>();
-        FacturaVenta facturaUno = new FacturaVenta();
-        FacturaVenta facturaDos = new FacturaVenta();
-        facturaUno.setIva_105_neto(0);
-        facturaUno.setIva_21_neto(35);
-        facturaDos.setIva_105_neto(0);
-        facturaDos.setIva_21_neto(30);
-        for (int i = 0; i < 4; i++) {
-            facturasDeVenta.add(facturaUno);
-            facturasDeVenta.add(facturaDos);
-        }
-        double resultadoEsperado = 260;
+        FacturaVenta factura1 = new FacturaVenta();
+        FacturaVenta factura2 = new FacturaVenta();
+        FacturaVenta factura3 = new FacturaVenta();
+        factura1.setIva_105_neto(0);
+        factura1.setIva_21_neto(35);
+        factura2.setIva_105_neto(0);
+        factura2.setIva_21_neto(30);
+        factura3.setIva_105_neto(25);
+        factura3.setIva_21_neto(0);
+        facturasDeVenta.add(factura1);
+        facturasDeVenta.add(factura2);
+        facturasDeVenta.add(factura3);
+        double resultadoEsperado = 90;
         double resultadoObtenido = facturaService.calcularIVA_Venta(facturasDeVenta);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
@@ -375,14 +385,14 @@ public class FacturaServiceImplTest {
         renglones.add(renglon1);
         renglones.add(renglon2);
         List<FacturaVenta> facturas = new ArrayList<>();
-        FacturaVenta facturaUno = new FacturaVenta();
-        facturaUno.setRenglones(renglones);
-        FacturaVenta facturaDos = new FacturaVenta();
-        facturaDos.setRenglones(renglones);
-        facturas.add(facturaUno);
-        facturas.add(facturaDos);
-        when(facturaService.getRenglonesDeLaFactura(facturaUno)).thenReturn(renglones);
-        when(facturaService.getRenglonesDeLaFactura(facturaDos)).thenReturn(renglones);
+        FacturaVenta factura1 = new FacturaVenta();
+        factura1.setRenglones(renglones);
+        FacturaVenta factura2 = new FacturaVenta();
+        factura2.setRenglones(renglones);
+        facturas.add(factura1);
+        facturas.add(factura2);
+        when(facturaService.getRenglonesDeLaFactura(factura1)).thenReturn(renglones);
+        when(facturaService.getRenglonesDeLaFactura(factura2)).thenReturn(renglones);
         double resultadoEsperado = 300;
         double resultadoObtenido = facturaService.calcularGananciaTotal(facturas);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
