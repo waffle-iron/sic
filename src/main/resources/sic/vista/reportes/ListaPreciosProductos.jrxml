@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-07-12T10:11:09 -->
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-07-18T22:56:59 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ListaPreciosProductos" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="608c624e-e655-4a3f-bb85-9c440082766b">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -33,14 +33,15 @@
 		<groupHeader>
 			<band height="20">
 				<textField>
-					<reportElement x="80" y="0" width="220" height="20" uuid="b295240e-06cb-4769-9863-cea6df1dc627"/>
-					<textElement>
+					<reportElement x="80" y="0" width="474" height="20" uuid="b295240e-06cb-4769-9863-cea6df1dc627"/>
+					<textElement verticalAlignment="Middle">
 						<font size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{rubro}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="0" y="0" width="80" height="20" uuid="4e4200d1-2f71-43ad-9562-41ca8e3860ce"/>
+					<textElement verticalAlignment="Middle"/>
 					<text><![CDATA[+++++++++++++]]></text>
 				</staticText>
 			</band>
@@ -113,8 +114,8 @@
 		<band height="34" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="5" width="555" height="25" uuid="ff46f7f7-85b2-4514-afda-a8394f7c5111"/>
-				<textElement textAlignment="Center">
-					<font fontName="Arial" size="16" isUnderline="false"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Arial" size="16" isBold="true" isUnderline="false"/>
 				</textElement>
 				<text><![CDATA[LISTA DE PRECIOS]]></text>
 			</staticText>
@@ -124,38 +125,38 @@
 		<band height="16" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="80" height="16" uuid="a6f36f44-ee0b-4eb3-ab7d-b4a7fbdf35df"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Código]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="80" y="0" width="220" height="16" uuid="ed30d880-1bf1-4eb5-b02a-7e89ca2dca0a"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Descripción]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="379" y="0" width="100" height="16" uuid="312f8893-3250-455a-b9d3-d7cfb8ce21ac"/>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Precio (sin Imp.)]]></text>
+				<text><![CDATA[Precio (sin IVA)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="480" y="0" width="75" height="16" uuid="13c3db5f-c7d4-44df-a633-2b62ed216eea"/>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
 				<text><![CDATA[Precio]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="300" y="0" width="79" height="16" uuid="241e3991-3e42-4a45-91a0-232d936071ec"/>
-				<textElement textAlignment="Left">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[U. de Medida]]></text>
+				<text><![CDATA[Medida]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -163,24 +164,27 @@
 		<band height="20" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="80" height="20" uuid="2262bb39-310b-4963-a571-c18185df4c80"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{codigo}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="80" y="0" width="220" height="20" uuid="711ae2af-b035-46a2-a2e5-425295ca3e78"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
 			</textField>
 			<textField pattern="¤ #,##0.00">
 				<reportElement x="380" y="0" width="100" height="20" uuid="cfbeba3e-0903-4c40-9c26-8d13b98cfa1d"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{precioVentaPublico}]]></textFieldExpression>
 			</textField>
 			<textField pattern="¤ #,##0.00">
 				<reportElement x="480" y="0" width="75" height="20" uuid="87b3f1e2-6d18-4fe6-b5e8-90706d7bd888"/>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{precioLista}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="300" y="0" width="79" height="20" uuid="009f171c-19d7-4c35-a69b-3fe1a41fe09a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[""+$F{medida}]]></textFieldExpression>
 			</textField>
 		</band>
