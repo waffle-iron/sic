@@ -78,7 +78,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.isBuscarSoloInpagas() == true) {
             query += " AND f.pagada = false";
         }
-        //pagas
+        //Pagas
         if (criteria.isBuscaSoloPagadas() == true) {
             query += " AND f.pagada = true";
         }
