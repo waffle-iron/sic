@@ -9,6 +9,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "facturacompra")
@@ -16,6 +18,8 @@ import javax.persistence.Table;
     @NamedQuery(name = "FacturaCompra.buscarPorTipoSerieNum",
             query = "SELECT f FROM FacturaCompra f WHERE f.tipoFactura= :tipo AND f.numSerie= :serie AND f.numFactura= :num")
 })
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class FacturaCompra extends Factura implements Serializable {
 
     @ManyToOne
@@ -25,22 +29,4 @@ public class FacturaCompra extends Factura implements Serializable {
     @OneToMany(mappedBy = "facturaCompra")
     private List<PagoFacturaCompra> pagosFacturaCompra;
 
-    public FacturaCompra() {
-    }
-
-    public List<PagoFacturaCompra> getPagosFacturaCompra() {
-        return pagosFacturaCompra;
-    }
-
-    public void setPagosFacturaCompra(List<PagoFacturaCompra> pagosFacturaCompra) {
-        this.pagosFacturaCompra = pagosFacturaCompra;
-    }
-
-    public Proveedor getProveedor() {
-        return proveedor;
-    }
-
-    public void setProveedor(Proveedor proveedor) {
-        this.proveedor = proveedor;
-    }
 }

@@ -13,6 +13,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import lombok.Data;
 
 @Entity
 @Table(name = "formadepago")
@@ -26,6 +27,7 @@ import javax.persistence.Table;
     @NamedQuery(name = "FormaDePago.buscarPredeterminada",
             query = "SELECT f FROM FormaDePago f WHERE f.predeterminado = true and f.empresa = :empresa and f.eliminada = false")
 })
+@Data
 public class FormaDePago implements Serializable {
 
     @Id
@@ -48,93 +50,9 @@ public class FormaDePago implements Serializable {
 
     private boolean eliminada;
 
-    public FormaDePago() {
-    }
-
-    public long getId_FormaDePago() {
-        return id_FormaDePago;
-    }
-
-    public void setId_FormaDePago(long id_FormaDePago) {
-        this.id_FormaDePago = id_FormaDePago;
-    }
-
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
-
-    public boolean isEliminada() {
-        return eliminada;
-    }
-
-    public void setEliminada(boolean eliminada) {
-        this.eliminada = eliminada;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public boolean isPredeterminado() {
-        return predeterminado;
-    }
-
-    public void setPredeterminado(boolean predeterminado) {
-        this.predeterminado = predeterminado;
-    }
-
-    public boolean isAfectaCaja() {
-        return afectaCaja;
-    }
-
-    public void setAfectaCaja(boolean afectaCaja) {
-        this.afectaCaja = afectaCaja;
-    }
-
-    public Set<Factura> getFacturas() {
-        return facturas;
-    }
-
-    public void setFacturas(Set<Factura> facturas) {
-        this.facturas = facturas;
-    }
-
     @Override
     public String toString() {
         return nombre;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 59 * hash + (int) (this.id_FormaDePago ^ (this.id_FormaDePago >>> 32));
-        hash = 59 * hash + Objects.hashCode(this.nombre);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final FormaDePago other = (FormaDePago) obj;
-        if (this.id_FormaDePago != other.id_FormaDePago) {
-            return false;
-        }
-        if (!Objects.equals(this.nombre, other.nombre)) {
-            return false;
-        }
-        return true;
-    }
 }

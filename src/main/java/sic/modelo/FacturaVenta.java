@@ -7,6 +7,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "facturaventa")
@@ -21,6 +23,8 @@ import javax.persistence.Table;
             + "WHERE year(factura.fecha) = :anio AND factura.eliminada = false "
             + "GROUP BY renglones.descripcionItem ORDER BY sum(renglones.cantidad) DESC")
 })
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class FacturaVenta extends Factura implements Serializable {
 
     @ManyToOne
@@ -31,22 +35,4 @@ public class FacturaVenta extends Factura implements Serializable {
     @JoinColumn(name = "id_Usuario", referencedColumnName = "id_Usuario")
     private Usuario usuario;
 
-    public FacturaVenta() {
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
 }

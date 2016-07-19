@@ -1,23 +1,15 @@
 package sic.modelo;
 
+import lombok.Data;
+
+@Data
 public class EmpresaActiva {
 
     private static final EmpresaActiva INSTANCE = new EmpresaActiva();
     private Empresa empresa;
 
-    private EmpresaActiva() {
-    }
-
     public static EmpresaActiva getInstance() {
         return INSTANCE;
-    }
-
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
     }
 
     @Override
