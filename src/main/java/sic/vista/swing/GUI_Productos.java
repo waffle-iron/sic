@@ -234,7 +234,7 @@ public class GUI_Productos extends JInternalFrame {
         }
         btn_Buscar.setEnabled(status);
         rb_Todos.setEnabled(status);
-        rb_Faltantes.setEnabled(status);        
+        rb_Faltantes.setEnabled(status);
         tbl_Resultados.setEnabled(status);
         btn_Nuevo.setEnabled(status);
         btn_Modificar.setEnabled(status);
@@ -315,17 +315,19 @@ public class GUI_Productos extends JInternalFrame {
     }
 
     private void lanzarReporteListaDePrecios() throws JRException {
-        if (!productos.isEmpty()) {
-            JasperPrint report = productoService.getReporteListaDePrecios(productos);
+        if (productos != null) {
+            if (!productos.isEmpty()) {
+                JasperPrint report = productoService.getReporteListaDePrecios(productos);
 
-            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-            viewer.setSize(this.getWidth(), this.getHeight());
-            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-            viewer.setIconImage(iconoVentana.getImage());
-            viewer.setLocationRelativeTo(null);
-            JRViewer jrv = new JRViewer(report);
-            viewer.getContentPane().add(jrv);
-            viewer.setVisible(true);
+                JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+                viewer.setSize(this.getWidth(), this.getHeight());
+                ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+                viewer.setIconImage(iconoVentana.getImage());
+                viewer.setLocationRelativeTo(null);
+                JRViewer jrv = new JRViewer(report);
+                viewer.getContentPane().add(jrv);
+                viewer.setVisible(true);
+            }
         }
     }
 
