@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.0.1.final using JasperReports Library version 6.0.0  -->
-<!-- 2015-04-15T04:58:28 -->
+<!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
+<!-- 2016-07-19T19:35:48 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="FacturaVenta" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e47a212f-3954-4de9-aca2-5bd71a6098c5">
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
@@ -163,8 +163,7 @@
 					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{preImpresa} ? "" : "Nº de Comprobante:"
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{preImpresa} ? "" : "Nº de Comprobante:"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Transparent" x="360" y="45" width="99" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="34060e07-4183-4c14-80ef-15158a1f1673"/>
@@ -173,8 +172,7 @@
 					<font fontName="SansSerif" size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{preImpresa} ? "" : "CUIT:"
-]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{preImpresa} ? "" : "CUIT:"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Transparent" x="360" y="60" width="99" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="c662feca-b805-4d85-8cf0-d1712c337889"/>
@@ -327,7 +325,7 @@
 				<text><![CDATA[Código]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="0" width="285" height="15" uuid="01f242fd-85d5-4c4e-9b09-f1c09d95b55a">
+				<reportElement x="75" y="0" width="275" height="15" uuid="01f242fd-85d5-4c4e-9b09-f1c09d95b55a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -338,7 +336,7 @@
 				<text><![CDATA[Descripción]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="360" y="0" width="47" height="15" uuid="e2f0a5f2-9774-4ad4-962c-8b064818b692">
+				<reportElement x="350" y="0" width="57" height="15" uuid="e2f0a5f2-9774-4ad4-962c-8b064818b692">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left">
@@ -391,7 +389,7 @@
 				<textFieldExpression><![CDATA[$F{codigoItem}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="75" y="0" width="285" height="15" uuid="f2bfc27d-700e-40b7-a73b-6303c546d09a">
+				<reportElement x="75" y="0" width="275" height="15" uuid="f2bfc27d-700e-40b7-a73b-6303c546d09a">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -403,7 +401,7 @@
 				<textFieldExpression><![CDATA[$F{descripcionItem}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="360" y="0" width="47" height="15" uuid="5dc407ad-61c0-4c06-bc77-1ab3136f8e40">
+				<reportElement x="350" y="0" width="57" height="15" uuid="5dc407ad-61c0-4c06-bc77-1ab3136f8e40">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center">
