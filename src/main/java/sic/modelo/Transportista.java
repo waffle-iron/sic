@@ -28,7 +28,7 @@ import lombok.EqualsAndHashCode;
                     + "ORDER BY t.nombre ASC")
 })
 @Data
-@EqualsAndHashCode(of = {"nombre"})
+@EqualsAndHashCode(of = {"nombre", "empresa"})
 public class Transportista implements Serializable {
 
     @Id

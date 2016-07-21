@@ -25,7 +25,7 @@ import lombok.EqualsAndHashCode;
                     + "ORDER BY p.fecha ASC")
 })
 @Data
-@EqualsAndHashCode(of = {"fecha"})
+@EqualsAndHashCode(of = {"fecha", "facturaCompra"})
 public class PagoFacturaCompra implements Serializable {
 
     @Id

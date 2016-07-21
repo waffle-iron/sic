@@ -32,7 +32,7 @@ import lombok.EqualsAndHashCode;
 })
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
-@EqualsAndHashCode(of = {"tipoFactura", "numSerie", "numFactura"})
+@EqualsAndHashCode(of = {"tipoFactura", "numSerie", "numFactura", "empresa"})
 public abstract class Factura implements Serializable {
 
     @Id

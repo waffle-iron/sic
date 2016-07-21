@@ -33,7 +33,7 @@ import lombok.EqualsAndHashCode;
                     + "WHERE f.predeterminado = true and f.empresa = :empresa and f.eliminada = false")
 })
 @Data
-@EqualsAndHashCode(of = {"nombre"})
+@EqualsAndHashCode(of = {"nombre", "empresa"})
 public class FormaDePago implements Serializable {
 
     @Id

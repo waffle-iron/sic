@@ -41,7 +41,7 @@ import sic.service.EstadoCaja;
                     + "ORDER BY c.fechaApertura DESC")
 })
 @Data
-@EqualsAndHashCode(of = {"nroCaja"})
+@EqualsAndHashCode(of = {"nroCaja", "empresa"})
 public class Caja implements Serializable {
 
     @Id

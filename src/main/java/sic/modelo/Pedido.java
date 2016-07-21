@@ -45,7 +45,7 @@ import sic.service.EstadoPedido;
                     + "WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa")
 })
 @Data
-@EqualsAndHashCode(of = {"nroPedido"})
+@EqualsAndHashCode(of = {"nroPedido", "empresa"})
 public class Pedido implements Serializable {
 
     @Id

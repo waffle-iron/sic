@@ -28,7 +28,7 @@ import lombok.EqualsAndHashCode;
                     + "ORDER BY m.nombre ASC")
 })
 @Data
-@EqualsAndHashCode(of = {"nombre"})
+@EqualsAndHashCode(of = {"nombre", "empresa"})
 public class Medida implements Serializable {
 
     @Id

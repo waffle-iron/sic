@@ -28,7 +28,7 @@ import lombok.EqualsAndHashCode;
                     + "ORDER BY r.nombre ASC")
 })
 @Data
-@EqualsAndHashCode(of = {"nombre"})
+@EqualsAndHashCode(of = {"nombre", "empresa"})
 public class Rubro implements Serializable {
 
     @Id

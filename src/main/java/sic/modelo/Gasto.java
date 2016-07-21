@@ -42,7 +42,7 @@ import lombok.EqualsAndHashCode;
                     + "WHERE g.empresa.id_Empresa = :id_Empresa")
 })
 @Data
-@EqualsAndHashCode(of = {"nroGasto"})
+@EqualsAndHashCode(of = {"nroGasto", "empresa"})
 public class Gasto implements Serializable {
 
     @Id

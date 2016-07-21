@@ -56,10 +56,6 @@ public class Usuario implements Serializable {
 
     private boolean eliminado;
 
-    public boolean isPermisosAdministrador() {
-        return permisosAdministrador;
-    }
-
     @Override
     public String toString() {
         return nombre;

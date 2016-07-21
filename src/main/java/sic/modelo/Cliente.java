@@ -47,7 +47,7 @@ import lombok.EqualsAndHashCode;
                     + "WHERE c.predeterminado = true AND c.eliminado = false AND c.empresa = :empresa")
 })
 @Data
-@EqualsAndHashCode(of = {"razonSocial", "id_Fiscal"})
+@EqualsAndHashCode(of = {"razonSocial", "id_Fiscal", "empresa"})
 public class Cliente implements Serializable {
 
     @Id

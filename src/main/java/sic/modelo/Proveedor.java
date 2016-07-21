@@ -33,7 +33,7 @@ import lombok.EqualsAndHashCode;
                     + "WHERE p.id_Fiscal = :idFiscal AND p.empresa = :empresa AND p.eliminado = false")
 })
 @Data
-@EqualsAndHashCode(of = {"razonSocial"})
+@EqualsAndHashCode(of = {"razonSocial", "empresa"})
 public class Proveedor implements Serializable {
 
     @Id
