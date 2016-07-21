@@ -19,9 +19,13 @@ import lombok.EqualsAndHashCode;
 @Table(name = "transportista")
 @NamedQueries({
     @NamedQuery(name = "Transportista.buscarTodos",
-            query = "SELECT t FROM Transportista t WHERE t.empresa = :empresa AND t.eliminado = false ORDER BY t.nombre ASC"),
+            query = "SELECT t FROM Transportista t "
+                    + "WHERE t.empresa = :empresa AND t.eliminado = false "
+                    + "ORDER BY t.nombre ASC"),
     @NamedQuery(name = "Transportista.buscarPorNombre",
-            query = "SELECT t FROM Transportista t WHERE t.empresa = :empresa AND t.nombre = :nombre AND t.eliminado = false ORDER BY t.nombre ASC")
+            query = "SELECT t FROM Transportista t "
+                    + "WHERE t.empresa = :empresa AND t.nombre = :nombre AND t.eliminado = false "
+                    + "ORDER BY t.nombre ASC")
 })
 @Data
 @EqualsAndHashCode(of = {"nombre"})

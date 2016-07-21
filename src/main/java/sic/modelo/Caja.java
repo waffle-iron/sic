@@ -23,13 +23,21 @@ import sic.service.EstadoCaja;
 @Table(name = "caja")
 @NamedQueries({
     @NamedQuery(name = "Caja.getUltimaCaja",
-            query = "SELECT c FROM Caja c WHERE c.empresa.id_Empresa = :id_Empresa AND c.eliminada = false ORDER BY c.fechaApertura DESC"),
+            query = "SELECT c FROM Caja c "
+                    + "WHERE c.empresa.id_Empresa = :id_Empresa AND c.eliminada = false "
+                    + "ORDER BY c.fechaApertura DESC"),
     @NamedQuery(name = "Caja.buscarCajaPorID",
-            query = "SELECT c FROM Caja c WHERE c.id_Caja = :id_caja AND c.empresa.id_Empresa = :id_Empresa ORDER BY c.fechaApertura ASC"),
+            query = "SELECT c FROM Caja c "
+                    + "WHERE c.id_Caja = :id_caja AND c.empresa.id_Empresa = :id_Empresa "
+                    + "ORDER BY c.fechaApertura ASC"),
     @NamedQuery(name = "Caja.getUltimoNumeroDeCaja",
-            query = "SELECT max(c.nroCaja) FROM Caja c WHERE c.empresa.id_Empresa = :id_Empresa"),
+            query = "SELECT max(c.nroCaja) FROM Caja c "
+                    + "WHERE c.empresa.id_Empresa = :id_Empresa"),
     @NamedQuery(name = "Caja.getCajas",
-            query = "SELECT c FROM Caja c WHERE c.empresa.id_Empresa = :id_Empresa AND c.eliminada = false AND c.fechaApertura BETWEEN :desde AND :hasta ORDER BY c.fechaApertura DESC")
+            query = "SELECT c FROM Caja c "
+                    + "WHERE c.empresa.id_Empresa = :id_Empresa AND c.eliminada = false "
+                    + "AND c.fechaApertura BETWEEN :desde AND :hasta "
+                    + "ORDER BY c.fechaApertura DESC")
 })
 @Data
 public class Caja implements Serializable {

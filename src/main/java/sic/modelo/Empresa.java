@@ -2,7 +2,6 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,13 +24,15 @@ import lombok.EqualsAndHashCode;
 @NamedQueries({
     @NamedQuery(name = "Empresa.buscarTodas",
             query = "SELECT e FROM Empresa e "
-                    + "WHERE e.eliminada = false ORDER BY e.nombre ASC"),
+                    + "WHERE e.eliminada = false "
+                    + "ORDER BY e.nombre ASC"),
     @NamedQuery(name = "Empresa.buscarPorId",
             query = "SELECT e FROM Empresa e "
                     + "WHERE e.id_Empresa = :id AND e.eliminada = false"),
     @NamedQuery(name = "Empresa.buscarPorNombre",
             query = "SELECT e FROM Empresa e "
-                    + "WHERE e.nombre LIKE :nombre AND e.eliminada = false ORDER BY e.nombre ASC"),
+                    + "WHERE e.nombre LIKE :nombre AND e.eliminada = false "
+                    + "ORDER BY e.nombre ASC"),
     @NamedQuery(name = "Empresa.buscarPorCUIP",
             query = "SELECT e FROM Empresa e "
                     + "WHERE e.cuip = :cuip AND e.eliminada = false")

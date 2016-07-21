@@ -15,21 +15,30 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
-import sic.service.Movimiento;
 
 @Entity
 @Table(name = "gasto")
 @NamedQueries({
     @NamedQuery(name = "Gasto.getGastoSinArqueoPorFormaDePago",
-            query = "SELECT g FROM Gasto g WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa AND g.formaDePago.id_FormaDePago = :id_FormaDePago"),
+            query = "SELECT g FROM Gasto g "
+                    + "WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa "
+                    + "AND g.formaDePago.id_FormaDePago = :id_FormaDePago"),
     @NamedQuery(name = "Gasto.getGastosSinArqueoPorFormaDePagoYFecha",
-            query = "SELECT g FROM Gasto g WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa AND g.formaDePago.id_FormaDePago = :id_FormaDePago AND g.fecha BETWEEN :desde AND :hasta"),
+            query = "SELECT g FROM Gasto g "
+                    + "WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa "
+                    + "AND g.formaDePago.id_FormaDePago = :id_FormaDePago "
+                    + "AND g.fecha BETWEEN :desde AND :hasta"),
     @NamedQuery(name = "Gasto.getGastosSinArqueoPorFecha",
-            query = "SELECT g FROM Gasto g WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa AND g.fecha BETWEEN :desde AND :hasta"),
+            query = "SELECT g FROM Gasto g "
+                    + "WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa "
+                    + "AND g.fecha BETWEEN :desde AND :hasta"),
     @NamedQuery(name = "Gasto.getGastoPorId",
-            query = "SELECT g FROM Gasto g WHERE g.id_Gasto = :id_Gasto AND g.empresa.id_Empresa = :id_Empresa ORDER BY g.fecha ASC"),
+            query = "SELECT g FROM Gasto g "
+                    + "WHERE g.id_Gasto = :id_Gasto AND g.empresa.id_Empresa = :id_Empresa "
+                    + "ORDER BY g.fecha ASC"),
     @NamedQuery(name = "Gasto.getUltimoNumeroDeGasto",
-            query = "SELECT max(g.nroGasto) FROM Gasto g WHERE g.empresa.id_Empresa = :id_Empresa")
+            query = "SELECT max(g.nroGasto) FROM Gasto g "
+                    + "WHERE g.empresa.id_Empresa = :id_Empresa")
 })
 @Data
 public class Gasto implements Serializable {

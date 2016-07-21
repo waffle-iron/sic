@@ -16,7 +16,8 @@ import lombok.EqualsAndHashCode;
 @Table(name = "facturacompra")
 @NamedQueries({
     @NamedQuery(name = "FacturaCompra.buscarPorTipoSerieNum",
-            query = "SELECT f FROM FacturaCompra f WHERE f.tipoFactura= :tipo AND f.numSerie= :serie AND f.numFactura= :num")
+            query = "SELECT f FROM FacturaCompra f "
+                    + "WHERE f.tipoFactura= :tipo AND f.numSerie= :serie AND f.numFactura= :num")
 })
 @Data
 @EqualsAndHashCode(callSuper = true)

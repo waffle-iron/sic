@@ -4,13 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/*
- * Se utiliza como estructura de transporte, para no estar pasando los campos de
- * manera individual.
- */
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class BusquedaTransportistaCriteria {
 
     private boolean buscarPorNombre;

@@ -17,7 +17,8 @@ import lombok.EqualsAndHashCode;
 @Table(name = "renglonfactura")
 @NamedQueries({
     @NamedQuery(name = "RenglonFactura.getRenglonesDeLaFactura",
-            query = "SELECT r FROM RenglonFactura r WHERE r.factura = :factura")
+            query = "SELECT r FROM RenglonFactura r "
+                    + "WHERE r.factura = :factura")
 })
 @Data
 @EqualsAndHashCode(of = {"id_ProductoItem", "codigoItem"})

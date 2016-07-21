@@ -2,10 +2,6 @@ package sic.modelo;
 
 import lombok.Data;
 
-/**
- * Se utiliza como estructura de transporte, para no estar pasando los campos de
- * manera individual.
- */
 @Data
 public class PreciosProducto {
 

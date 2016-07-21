@@ -19,7 +19,9 @@ import lombok.Data;
 @Table(name = "pagofacturacompra")
 @NamedQueries({
     @NamedQuery(name = "PagoFacturaCompra.buscarPorFactura",
-            query = "SELECT p FROM PagoFacturaCompra p WHERE p.facturaCompra = :factura AND p.eliminado = false ORDER BY p.fecha ASC")
+            query = "SELECT p FROM PagoFacturaCompra p "
+                    + "WHERE p.facturaCompra = :factura AND p.eliminado = false "
+                    + "ORDER BY p.fecha ASC")
 })
 @Data
 public class PagoFacturaCompra implements Serializable {

@@ -19,7 +19,8 @@ import lombok.EqualsAndHashCode;
 @NamedQueries({
     @NamedQuery(name = "Usuario.buscarTodos",
             query = "SELECT u FROM Usuario u "
-                    + "WHERE u.eliminado = false ORDER BY u.nombre ASC"),
+                    + "WHERE u.eliminado = false "
+                    + "ORDER BY u.nombre ASC"),
     @NamedQuery(name = "Usuario.buscarPorNombre",
             query = "SELECT u FROM Usuario u "
                     + "WHERE u.eliminado = false AND u.nombre = :nombre"),

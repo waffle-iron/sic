@@ -1,7 +1,6 @@
 package sic.modelo;
 
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +19,8 @@ import lombok.EqualsAndHashCode;
 @Table(name = "localidad")
 @NamedQueries({
     @NamedQuery(name = "Localidad.buscarTodas",
-            query = "SELECT l FROM Localidad l WHERE l.eliminada = false "
+            query = "SELECT l FROM Localidad l "
+                    + "WHERE l.eliminada = false "
                     + "ORDER BY l.nombre ASC"),
     @NamedQuery(name = "Localidad.buscarLocalidadesDeLaProvincia",
             query = "SELECT l FROM Localidad l "

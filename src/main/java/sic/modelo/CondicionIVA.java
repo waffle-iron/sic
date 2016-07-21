@@ -18,7 +18,8 @@ import lombok.EqualsAndHashCode;
 @NamedQueries({
     @NamedQuery(name = "CondicionIVA.buscarTodas",
             query = "SELECT c FROM CondicionIVA c "
-                    + "WHERE c.eliminada = false ORDER BY c.nombre ASC"),
+                    + "WHERE c.eliminada = false "
+                    + "ORDER BY c.nombre ASC"),
     @NamedQuery(name = "CondicionIVA.buscarPorNombre",
             query = "SELECT c FROM CondicionIVA c "
                     + "WHERE c.nombre LIKE :nombre AND c.eliminada = false")

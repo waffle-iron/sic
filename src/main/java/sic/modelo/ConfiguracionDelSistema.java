@@ -15,9 +15,11 @@ import lombok.Data;
 @Table(name = "configuraciondelsistema")
 @NamedQueries({
     @NamedQuery(name = "ConfiguracionDelSistema.buscarPorId",
-            query = "SELECT cds FROM ConfiguracionDelSistema cds WHERE cds.id_ConfiguracionDelSistema = :id"),
+            query = "SELECT cds FROM ConfiguracionDelSistema cds "
+                    + "WHERE cds.id_ConfiguracionDelSistema = :id"),
     @NamedQuery(name = "ConfiguracionDelSistema.buscarPorEmpresa",
-            query = "SELECT cds FROM ConfiguracionDelSistema cds WHERE cds.empresa = :empresa")
+            query = "SELECT cds FROM ConfiguracionDelSistema cds "
+                    + "WHERE cds.empresa = :empresa")
 })
 @Data
 public class ConfiguracionDelSistema implements Serializable {

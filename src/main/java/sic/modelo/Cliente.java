@@ -31,13 +31,14 @@ import lombok.EqualsAndHashCode;
                     + "WHERE c.id_Cliente = :id AND c.eliminado = false"),
     @NamedQuery(name = "Cliente.buscarQueContengaRazonSocialNombreFantasiaIdFiscal",
             query = "SELECT c FROM Cliente c "
-            + "WHERE (c.razonSocial LIKE :criteria OR c.nombreFantasia LIKE :criteria OR c.id_Fiscal LIKE :criteria) "
-            + "AND c.empresa = :empresa AND c.eliminado = false "
-            + "ORDER BY c.razonSocial ASC"),
+                    + "WHERE (c.razonSocial LIKE :criteria OR c.nombreFantasia "
+                    + "LIKE :criteria OR c.id_Fiscal LIKE :criteria) "
+                    + "AND c.empresa = :empresa AND c.eliminado = false "
+                    + "ORDER BY c.razonSocial ASC"),
     @NamedQuery(name = "Cliente.buscarPorRazonSocial",
             query = "SELECT c FROM Cliente c "
                     + "WHERE c.razonSocial = :razonSocial AND c.empresa = :empresa AND c.eliminado = false "
-            + "ORDER BY c.razonSocial ASC"),
+                    + "ORDER BY c.razonSocial ASC"),
     @NamedQuery(name = "Cliente.buscarPorIdFiscal",
             query = "SELECT c FROM Cliente c "
                     + "WHERE c.id_Fiscal = :id_Fiscal AND c.eliminado = false AND c.empresa = :empresa"),

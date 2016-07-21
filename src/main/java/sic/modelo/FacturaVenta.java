@@ -14,9 +14,11 @@ import lombok.EqualsAndHashCode;
 @Table(name = "facturaventa")
 @NamedQueries({
     @NamedQuery(name = "Factura.buscarPorTipoSerieNum",
-            query = "SELECT f FROM FacturaVenta f LEFT JOIN FETCH f.renglones WHERE f.tipoFactura = :tipo AND f.numSerie = :serie AND f.numFactura = :num"),
+            query = "SELECT f FROM FacturaVenta f LEFT JOIN FETCH f.renglones "
+                    + "WHERE f.tipoFactura = :tipo AND f.numSerie = :serie AND f.numFactura = :num"),
     @NamedQuery(name = "Factura.buscarMayorNumFacturaSegunTipo",
-            query = "SELECT max(fv.numFactura) FROM FacturaVenta fv WHERE fv.tipoFactura = :tipo AND fv.numSerie = :serie"),
+            query = "SELECT max(fv.numFactura) FROM FacturaVenta fv "
+                    + "WHERE fv.tipoFactura = :tipo AND fv.numSerie = :serie"),
     @NamedQuery(name = "Factura.buscarTopProductosMasVendidosPorAnio",
             query = "SELECT renglones.descripcionItem, sum(renglones.cantidad) as suma "
             + "FROM FacturaVenta factura INNER JOIN factura.renglones renglones "
