@@ -34,7 +34,7 @@ public class GUI_Usuarios extends JDialog {
 
     private void comprobarPrivilegiosUsuarioActivo() {
         //Comprueba si el usuario es Administrador
-        if (UsuarioActivo.getInstance().getUsuario().getPermisosAdministrador() == true) {
+        if (UsuarioActivo.getInstance().getUsuario().isPermisosAdministrador() == true) {
             this.cargarUsuarios();            
         } else {
             JOptionPane.showMessageDialog(this,

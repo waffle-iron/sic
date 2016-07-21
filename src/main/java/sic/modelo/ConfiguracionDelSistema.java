@@ -36,8 +36,4 @@ public class ConfiguracionDelSistema implements Serializable {
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
 
-    public boolean usarFacturaVentaPreImpresa() {
-        return usarFacturaVentaPreImpresa;
-    }
-
 }

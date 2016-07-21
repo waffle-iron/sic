@@ -56,7 +56,7 @@ public class Usuario implements Serializable {
 
     private boolean eliminado;
 
-    public boolean getPermisosAdministrador() {
+    public boolean isPermisosAdministrador() {
         return permisosAdministrador;
     }
 

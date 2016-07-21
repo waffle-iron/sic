@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "gasto")
@@ -41,6 +42,7 @@ import lombok.Data;
                     + "WHERE g.empresa.id_Empresa = :id_Empresa")
 })
 @Data
+@EqualsAndHashCode(of = {"nroGasto"})
 public class Gasto implements Serializable {
 
     @Id

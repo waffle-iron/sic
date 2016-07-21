@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import sic.service.EstadoPedido;
 
 @Entity
@@ -44,6 +45,7 @@ import sic.service.EstadoPedido;
                     + "WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa")
 })
 @Data
+@EqualsAndHashCode(of = {"nroPedido"})
 public class Pedido implements Serializable {
 
     @Id

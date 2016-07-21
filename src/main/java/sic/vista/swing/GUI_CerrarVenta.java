@@ -56,7 +56,7 @@ public class GUI_CerrarVenta extends JDialog {
         lbl_Vuelto.setValue(0);
 
         //verificación de Usuario
-        if (!usuarioService.getUsuarioActivo().getUsuario().getPermisosAdministrador()) {
+        if (!usuarioService.getUsuarioActivo().getUsuario().isPermisosAdministrador()) {
             btn_nuevaFormaDePago.setEnabled(false);
             btn_nuevoTransporte.setEnabled(false);
         }

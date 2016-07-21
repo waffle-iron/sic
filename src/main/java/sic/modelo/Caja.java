@@ -17,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import sic.service.EstadoCaja;
 
 @Entity
@@ -40,6 +41,7 @@ import sic.service.EstadoCaja;
                     + "ORDER BY c.fechaApertura DESC")
 })
 @Data
+@EqualsAndHashCode(of = {"nroCaja"})
 public class Caja implements Serializable {
 
     @Id
