@@ -339,7 +339,7 @@ public class FacturaServiceImplTest {
         facturasDeVenta.add(factura2);
         facturasDeVenta.add(factura3);        
         double resultadoEsperado = 25573.352;
-        double resultadoObtenido = facturaService.calcularTotalFacturado(facturasDeVenta);
+        double resultadoObtenido = facturaService.calcularTotalFacturadoVenta(facturasDeVenta);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
