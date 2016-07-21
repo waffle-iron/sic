@@ -13,16 +13,22 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "rubro")
 @NamedQueries({
     @NamedQuery(name = "Rubro.buscarTodos",
-            query = "SELECT r FROM Rubro r WHERE r.eliminado = false AND r.empresa = :empresa ORDER BY r.nombre ASC"),
+            query = "SELECT r FROM Rubro r "
+                    + "WHERE r.eliminado = false AND r.empresa = :empresa "
+                    + "ORDER BY r.nombre ASC"),
     @NamedQuery(name = "Rubro.buscarPorNombre",
-            query = "SELECT r FROM Rubro r WHERE r.eliminado = false AND r.nombre LIKE :nombre AND r.empresa = :empresa ORDER BY r.nombre ASC")
+            query = "SELECT r FROM Rubro r "
+                    + "WHERE r.eliminado = false AND r.nombre LIKE :nombre AND r.empresa = :empresa "
+                    + "ORDER BY r.nombre ASC")
 })
 @Data
+@EqualsAndHashCode(of = {"nombre"})
 public class Rubro implements Serializable {
 
     @Id

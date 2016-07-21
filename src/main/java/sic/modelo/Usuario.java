@@ -12,20 +12,27 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "usuario")
 @NamedQueries({
     @NamedQuery(name = "Usuario.buscarTodos",
-            query = "SELECT u FROM Usuario u WHERE u.eliminado = false ORDER BY u.nombre ASC"),
+            query = "SELECT u FROM Usuario u "
+                    + "WHERE u.eliminado = false ORDER BY u.nombre ASC"),
     @NamedQuery(name = "Usuario.buscarPorNombre",
-            query = "SELECT u FROM Usuario u WHERE u.eliminado = false AND u.nombre = :nombre"),
+            query = "SELECT u FROM Usuario u "
+                    + "WHERE u.eliminado = false AND u.nombre = :nombre"),
     @NamedQuery(name = "Usuario.buscarUsuariosAdministradores",
-            query = "SELECT u FROM Usuario u WHERE u.eliminado = false AND u.permisosAdministrador = true ORDER BY u.nombre ASC"),
+            query = "SELECT u FROM Usuario u "
+                    + "WHERE u.eliminado = false AND u.permisosAdministrador = true "
+                    + "ORDER BY u.nombre ASC"),
     @NamedQuery(name = "Usuario.buscarPorNombreContrasenia",
-            query = "SELECT u FROM Usuario u WHERE u.eliminado = false AND u.nombre = :nombre AND u.password = :password")
+            query = "SELECT u FROM Usuario u "
+                    + "WHERE u.eliminado = false AND u.nombre = :nombre AND u.password = :password")
 })
 @Data
+@EqualsAndHashCode(of = {"nombre"})
 public class Usuario implements Serializable {
 
     @Id

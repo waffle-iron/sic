@@ -13,16 +13,22 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "provincia")
 @NamedQueries({
     @NamedQuery(name = "Provincia.buscarProvinciasDelPais",
-            query = "SELECT p FROM Provincia p WHERE p.pais = :pais AND p.eliminada = false ORDER BY p.nombre ASC"),
+            query = "SELECT p FROM Provincia p "
+                    + "WHERE p.pais = :pais AND p.eliminada = false "
+                    + "ORDER BY p.nombre ASC"),
     @NamedQuery(name = "Provincia.buscarPorNombre",
-            query = "SELECT p FROM Provincia p WHERE p.pais = :pais AND p.eliminada = false AND p.nombre = :nombre ORDER BY p.nombre ASC")
+            query = "SELECT p FROM Provincia p W"
+                    + "HERE p.pais = :pais AND p.eliminada = false AND p.nombre = :nombre "
+                    + "ORDER BY p.nombre ASC")
 })
 @Data
+@EqualsAndHashCode(of = {"nombre"})
 public class Provincia implements Serializable {
 
     @Id

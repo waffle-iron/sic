@@ -18,20 +18,26 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "empresa")
 @NamedQueries({
     @NamedQuery(name = "Empresa.buscarTodas",
-            query = "SELECT e FROM Empresa e WHERE e.eliminada = false ORDER BY e.nombre ASC"),
+            query = "SELECT e FROM Empresa e "
+                    + "WHERE e.eliminada = false ORDER BY e.nombre ASC"),
     @NamedQuery(name = "Empresa.buscarPorId",
-            query = "SELECT e FROM Empresa e WHERE e.id_Empresa = :id AND e.eliminada = false"),
+            query = "SELECT e FROM Empresa e "
+                    + "WHERE e.id_Empresa = :id AND e.eliminada = false"),
     @NamedQuery(name = "Empresa.buscarPorNombre",
-            query = "SELECT e FROM Empresa e WHERE e.nombre LIKE :nombre AND e.eliminada = false ORDER BY e.nombre ASC"),
+            query = "SELECT e FROM Empresa e "
+                    + "WHERE e.nombre LIKE :nombre AND e.eliminada = false ORDER BY e.nombre ASC"),
     @NamedQuery(name = "Empresa.buscarPorCUIP",
-            query = "SELECT e FROM Empresa e WHERE e.cuip = :cuip AND e.eliminada = false")
+            query = "SELECT e FROM Empresa e "
+                    + "WHERE e.cuip = :cuip AND e.eliminada = false")
 })
 @Data
+@EqualsAndHashCode(of = {"nombre"})
 public class Empresa implements Serializable {
 
     @Id

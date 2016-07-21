@@ -20,15 +20,20 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "factura")
 @NamedQueries({
     @NamedQuery(name = "Factura.buscarEntreFechasYFormaDePago",
-            query = "SELECT f FROM Factura f WHERE f.empresa.id_Empresa = :id_Empresa AND f.formaPago.id_FormaDePago = :id_FormaDePago AND f.eliminada = false AND f.fecha BETWEEN :desde AND :hasta")
+            query = "SELECT f FROM Factura f "
+                    + "WHERE f.empresa.id_Empresa = :id_Empresa "
+                    + "AND f.formaPago.id_FormaDePago = :id_FormaDePago "
+                    + "AND f.eliminada = false AND f.fecha BETWEEN :desde AND :hasta")
 })
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
+@EqualsAndHashCode(of = {"tipoFactura", "numSerie", "numFactura"})
 public abstract class Factura implements Serializable {
 
     @Id

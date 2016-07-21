@@ -13,20 +13,27 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "proveedor")
 @NamedQueries({
     @NamedQuery(name = "Proveedor.buscarTodos",
-            query = "SELECT p FROM Proveedor p WHERE p.empresa = :empresa AND p.eliminado = false ORDER BY p.razonSocial ASC"),
+            query = "SELECT p FROM Proveedor p "
+                    + "WHERE p.empresa = :empresa AND p.eliminado = false "
+                    + "ORDER BY p.razonSocial ASC"),
     @NamedQuery(name = "Proveedor.buscarPorCodigo",
-            query = "SELECT p FROM Proveedor p WHERE p.codigo = :codigo AND p.empresa = :empresa AND p.eliminado = false"),
+            query = "SELECT p FROM Proveedor p "
+                    + "WHERE p.codigo = :codigo AND p.empresa = :empresa AND p.eliminado = false"),
     @NamedQuery(name = "Proveedor.buscarPorRazonSocial",
-            query = "SELECT p FROM Proveedor p WHERE p.razonSocial = :razonSocial AND p.empresa = :empresa AND p.eliminado = false"),
+            query = "SELECT p FROM Proveedor p "
+                    + "WHERE p.razonSocial = :razonSocial AND p.empresa = :empresa AND p.eliminado = false"),
     @NamedQuery(name = "Proveedor.buscarPorIdFiscal",
-            query = "SELECT p FROM Proveedor p WHERE p.id_Fiscal = :idFiscal AND p.empresa = :empresa AND p.eliminado = false")
+            query = "SELECT p FROM Proveedor p "
+                    + "WHERE p.id_Fiscal = :idFiscal AND p.empresa = :empresa AND p.eliminado = false")
 })
 @Data
+@EqualsAndHashCode(of = {"razonSocial"})
 public class Proveedor implements Serializable {
 
     @Id
@@ -84,5 +91,4 @@ public class Proveedor implements Serializable {
     public String toString() {
         return razonSocial;
     }
-
 }

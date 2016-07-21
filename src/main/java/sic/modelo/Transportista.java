@@ -13,6 +13,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "transportista")
@@ -23,6 +24,7 @@ import lombok.Data;
             query = "SELECT t FROM Transportista t WHERE t.empresa = :empresa AND t.nombre = :nombre AND t.eliminado = false ORDER BY t.nombre ASC")
 })
 @Data
+@EqualsAndHashCode(of = {"nombre"})
 public class Transportista implements Serializable {
 
     @Id
