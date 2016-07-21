@@ -27,31 +27,34 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="panelMisc" alignment="0" max="32767" attributes="0"/>
-                  <Component id="panelRenglones" alignment="0" max="32767" attributes="2"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="panelDatosComprobante" max="32767" attributes="0"/>
+                      <Component id="panelDatosComprobanteIzquierdo" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
+                      <Component id="panelDatosComprobanteDerecho" max="32767" attributes="0"/>
                   </Group>
+                  <Component id="panelRenglones" max="32767" attributes="2"/>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="panelResultados" min="-2" max="-2" attributes="1"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="panelMisc" alignment="0" max="32767" attributes="0"/>
+                          <Component id="panelResultados" alignment="0" max="32767" attributes="1"/>
+                      </Group>
+                      <EmptySpace pref="70" max="32767" attributes="0"/>
                       <Component id="btn_Guardar" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jPanel1" max="32767" attributes="0"/>
-                  <Component id="panelDatosComprobante" max="32767" attributes="1"/>
+                  <Component id="panelDatosComprobanteIzquierdo" max="32767" attributes="0"/>
+                  <Component id="panelDatosComprobanteDerecho" max="32767" attributes="1"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="panelRenglones" max="32767" attributes="0"/>
@@ -68,7 +71,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="panelDatosComprobante">
+    <Container class="javax.swing.JPanel" name="panelDatosComprobanteDerecho">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -237,7 +240,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="sp_Renglones" pref="933" max="32767" attributes="0"/>
+              <Component id="sp_Renglones" max="32767" attributes="0"/>
               <Group type="102" attributes="0">
                   <Component id="txt_CodigoProducto" min="-2" pref="105" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
@@ -264,7 +267,7 @@
                       <Component id="btn_QuitarDeLista" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="sp_Renglones" pref="112" max="32767" attributes="0"/>
+                  <Component id="sp_Renglones" pref="177" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -647,7 +650,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_GuardarActionPerformed"/>
       </Events>
     </Component>
-    <Container class="javax.swing.JPanel" name="jPanel1">
+    <Container class="javax.swing.JPanel" name="panelDatosComprobanteIzquierdo">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -664,26 +667,30 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="lbl_TipoFactura" pref="157" max="32767" attributes="1"/>
-                              <Component id="lbl_NumComprobante" max="32767" attributes="1"/>
-                          </Group>
-                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="cmb_TipoFactura" pref="130" max="32767" attributes="1"/>
-                              <Component id="txt_SerieFactura" max="32767" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="txt_NumeroFactura" min="-2" pref="128" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="lbl_FechaVto" max="32767" attributes="1"/>
                               <Component id="lbl_Fecha" max="32767" attributes="1"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="dc_FechaVencimiento" min="-2" pref="285" max="-2" attributes="1"/>
+                              <Component id="dc_FechaFactura" min="-2" pref="285" max="-2" attributes="1"/>
+                          </Group>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="dc_FechaFactura" pref="130" max="32767" attributes="1"/>
-                              <Component id="dc_FechaVencimiento" max="32767" attributes="1"/>
+                              <Component id="lbl_TipoFactura" pref="136" max="32767" attributes="1"/>
+                              <Component id="lbl_NumComprobante" max="32767" attributes="1"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="txt_SerieFactura" min="-2" pref="130" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                                  <Component id="lbl_separador" min="-2" pref="20" max="-2" attributes="0"/>
+                                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
+                                  <Component id="txt_NumeroFactura" max="32767" attributes="0"/>
+                              </Group>
+                              <Component id="cmb_TipoFactura" min="-2" pref="285" max="-2" attributes="1"/>
                           </Group>
                       </Group>
                   </Group>
@@ -699,6 +706,7 @@
                       <Component id="lbl_NumComprobante" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="txt_SerieFactura" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="txt_NumeroFactura" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbl_separador" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
@@ -766,7 +774,7 @@
         <Component class="javax.swing.JLabel" name="lbl_FechaVto">
           <Properties>
             <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="text" type="java.lang.String" value="Fecha de Vencimiento:"/>
+            <Property name="text" type="java.lang.String" value="Fecha Vencimiento:"/>
           </Properties>
         </Component>
         <Component class="com.toedter.calendar.JDateChooser" name="dc_FechaVencimiento">
@@ -786,6 +794,12 @@
             <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
               <Format format="#0" subtype="-1" type="0"/>
             </Property>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lbl_separador">
+          <Properties>
+            <Property name="horizontalAlignment" type="int" value="0"/>
+            <Property name="text" type="java.lang.String" value="-"/>
           </Properties>
         </Component>
       </SubComponents>

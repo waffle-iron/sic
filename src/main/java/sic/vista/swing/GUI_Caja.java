@@ -348,7 +348,7 @@ public class GUI_Caja extends javax.swing.JDialog {
             }
         }
 
-        JasperPrint report = cajaService.getReporteCaja(this.caja, dataSource, usuarioService.getUsuarioActivo().getUsuario());
+        JasperPrint report = cajaService.getReporteCaja(this.caja, dataSource, this.caja.getUsuarioCierraCaja());
         JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
         viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
         ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));

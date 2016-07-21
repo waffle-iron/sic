@@ -23,6 +23,7 @@ public class BusquedaFacturaCompraCriteria {
     private int numSerie;
     private int numFactura;
     private boolean buscarSoloInpagas;
+    private boolean buscaSoloPagadas;
     private Empresa empresa;
     private int cantRegistros;
 

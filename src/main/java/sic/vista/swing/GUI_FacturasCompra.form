@@ -62,53 +62,56 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
+                          <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
                           <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="lbl_CantRegistrosEncontrados" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="chk_Inpagas" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="344" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="chk_Proveedor" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="chk_NumFactura" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="chk_Fecha" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                              <Component id="chk_Proveedor" alignment="0" max="32767" attributes="0"/>
+                              <Component id="chk_NumFactura" alignment="0" max="32767" attributes="0"/>
+                              <Component id="chk_estadoFactura" alignment="0" max="32767" attributes="0"/>
+                              <Component id="chk_Fecha" max="32767" attributes="0"/>
                           </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="txt_SerieFactura" linkSize="4" min="-2" pref="96" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="txt_NroFactura" linkSize="4" min="-2" pref="97" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="cmb_Proveedor" alignment="0" max="32767" attributes="0"/>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="lbl_Desde" min="-2" max="-2" attributes="1"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="dc_FechaDesde" linkSize="6" min="-2" pref="136" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="lbl_Hasta" min="-2" max="-2" attributes="1"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="dc_FechaHasta" linkSize="6" min="-2" pref="136" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="txt_SerieFactura" max="32767" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jLabel1" min="-2" pref="20" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="txt_NroFactura" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
-                              <Component id="cmb_Proveedor" max="32767" attributes="0"/>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Component id="lbl_Desde" min="-2" max="-2" attributes="1"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="dc_FechaDesde" min="-2" pref="136" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="lbl_Hasta" min="-2" max="-2" attributes="1"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="dc_FechaHasta" min="-2" pref="136" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="rb_soloImpagas" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="rb_soloPagadas" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <EmptySpace min="1" pref="1" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="chk_Fecha" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="lbl_Desde" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -116,25 +119,31 @@
                       <Component id="lbl_Hasta" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="dc_FechaHasta" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="chk_Proveedor" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_Proveedor" alignment="2" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="cmb_Proveedor" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="chk_Proveedor" alignment="2" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="chk_NumFactura" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="txt_SerieFactura" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="txt_NroFactura" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="chk_NumFactura" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="txt_SerieFactura" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel1" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="txt_NroFactura" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="chk_Inpagas" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
-                      <Component id="lbl_CantRegistrosEncontrados" min="-2" pref="25" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="chk_estadoFactura" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="rb_soloImpagas" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="rb_soloPagadas" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbl_CantRegistrosEncontrados" alignment="0" min="-2" pref="25" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -178,10 +187,13 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_BuscarActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="chk_Inpagas">
+        <Component class="javax.swing.JCheckBox" name="chk_estadoFactura">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Solo las Impagas"/>
+            <Property name="text" type="java.lang.String" value="Estado Factura:"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chk_estadoFacturaActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="chk_NumFactura">
           <Properties>
@@ -220,6 +232,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="DejaVu Sans" size="15" style="0"/>
             </Property>
+            <Property name="horizontalAlignment" type="int" value="0"/>
             <Property name="text" type="java.lang.String" value="-"/>
           </Properties>
         </Component>
@@ -246,6 +259,24 @@
             <Property name="horizontalAlignment" type="int" value="4"/>
           </Properties>
         </Component>
+        <Component class="javax.swing.JRadioButton" name="rb_soloImpagas">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Solo Impagas"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rb_soloImpagasActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JRadioButton" name="rb_soloPagadas">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Solo Pagadas"/>
+            <Property name="enabled" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rb_soloPagadasActionPerformed"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="panelResultados">
@@ -260,7 +291,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="sp_Resultados" pref="595" max="32767" attributes="0"/>
+              <Component id="sp_Resultados" pref="752" max="32767" attributes="0"/>
               <Group type="102" attributes="0">
                   <Component id="btn_Nuevo" linkSize="3" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="6" pref="0" max="-2" attributes="0"/>
@@ -276,7 +307,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="sp_Resultados" pref="199" max="32767" attributes="0"/>
+                  <Component id="sp_Resultados" pref="215" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Component id="btn_Nuevo" linkSize="1" min="-2" max="-2" attributes="0"/>

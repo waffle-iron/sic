@@ -78,6 +78,10 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.isBuscarSoloInpagas() == true) {
             query += " AND f.pagada = false";
         }
+        //Pagas
+        if (criteria.isBuscaSoloPagadas() == true) {
+            query += " AND f.pagada = true";
+        }
         query += " ORDER BY f.fecha ASC";
         TypedQuery<FacturaCompra> typedQuery = em.createQuery(query, FacturaCompra.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
