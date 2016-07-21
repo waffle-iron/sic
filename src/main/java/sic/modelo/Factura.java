@@ -2,7 +2,6 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,14 +18,21 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "factura")
 @NamedQueries({
     @NamedQuery(name = "Factura.buscarEntreFechasYFormaDePago",
-            query = "SELECT f FROM Factura f WHERE f.empresa.id_Empresa = :id_Empresa AND f.formaPago.id_FormaDePago = :id_FormaDePago AND f.eliminada = false AND f.fecha BETWEEN :desde AND :hasta")
+            query = "SELECT f FROM Factura f "
+                    + "WHERE f.empresa.id_Empresa = :id_Empresa "
+                    + "AND f.formaPago.id_FormaDePago = :id_FormaDePago "
+                    + "AND f.eliminada = false AND f.fecha BETWEEN :desde AND :hasta")
 })
 @Inheritance(strategy = InheritanceType.JOINED)
+@Data
+@EqualsAndHashCode(of = {"tipoFactura", "numSerie", "numFactura", "empresa"})
 public abstract class Factura implements Serializable {
 
     @Id
@@ -84,240 +90,4 @@ public abstract class Factura implements Serializable {
     @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
     private Pedido pedido;
 
-    public Factura() {
-    }
-
-    public Pedido getPedido() {
-        return pedido;
-    }
-
-    public void setPedido(Pedido pedido) {
-        this.pedido = pedido;
-    }
-
-    public List<RenglonFactura> getRenglones() {
-        return renglones;
-    }
-
-    public void setRenglones(List<RenglonFactura> renglones) {
-        this.renglones = renglones;
-    }
-
-    public boolean isPagada() {
-        return pagada;
-    }
-
-    public void setPagada(boolean pagada) {
-        this.pagada = pagada;
-    }
-
-    public boolean isEliminada() {
-        return eliminada;
-    }
-
-    public void setEliminada(boolean eliminada) {
-        this.eliminada = eliminada;
-    }
-
-    public double getDescuento_neto() {
-        return descuento_neto;
-    }
-
-    public void setDescuento_neto(double descuento_neto) {
-        this.descuento_neto = descuento_neto;
-    }
-
-    public double getDescuento_porcentaje() {
-        return descuento_porcentaje;
-    }
-
-    public void setDescuento_porcentaje(double descuento_porcentaje) {
-        this.descuento_porcentaje = descuento_porcentaje;
-    }
-
-    public Empresa getEmpresa() {
-        return empresa;
-    }
-
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    public FormaDePago getFormaPago() {
-        return formaPago;
-    }
-
-    public void setFormaPago(FormaDePago formaPago) {
-        this.formaPago = formaPago;
-    }
-
-    public Date getFechaVencimiento() {
-        return fechaVencimiento;
-    }
-
-    public void setFechaVencimiento(Date fechaVencimiento) {
-        this.fechaVencimiento = fechaVencimiento;
-    }
-
-    public long getId_Factura() {
-        return id_Factura;
-    }
-
-    public void setId_Factura(long id_Factura) {
-        this.id_Factura = id_Factura;
-    }
-
-    public long getNumFactura() {
-        return numFactura;
-    }
-
-    public void setNumFactura(long numFactura) {
-        this.numFactura = numFactura;
-    }
-
-    public long getNumSerie() {
-        return numSerie;
-    }
-
-    public void setNumSerie(long numSerie) {
-        this.numSerie = numSerie;
-    }
-
-    public String getObservaciones() {
-        return observaciones;
-    }
-
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
-    }
-
-    public double getRecargo_neto() {
-        return recargo_neto;
-    }
-
-    public void setRecargo_neto(double recargo_neto) {
-        this.recargo_neto = recargo_neto;
-    }
-
-    public double getRecargo_porcentaje() {
-        return recargo_porcentaje;
-    }
-
-    public void setRecargo_porcentaje(double recargo_porcentaje) {
-        this.recargo_porcentaje = recargo_porcentaje;
-    }
-
-    public double getSubTotal() {
-        return subTotal;
-    }
-
-    public void setSubTotal(double subTotal) {
-        this.subTotal = subTotal;
-    }
-
-    public char getTipoFactura() {
-        return tipoFactura;
-    }
-
-    public void setTipoFactura(char tipoFactura) {
-        this.tipoFactura = tipoFactura;
-    }
-
-    public double getTotal() {
-        return total;
-    }
-
-    public void setTotal(double total) {
-        this.total = total;
-    }
-
-    public Transportista getTransportista() {
-        return transportista;
-    }
-
-    public void setTransportista(Transportista transportista) {
-        this.transportista = transportista;
-    }
-
-    public double getImpuestoInterno_neto() {
-        return impuestoInterno_neto;
-    }
-
-    public void setImpuestoInterno_neto(double impuestoInterno_neto) {
-        this.impuestoInterno_neto = impuestoInterno_neto;
-    }
-
-    public double getSubTotal_neto() {
-        return subTotal_neto;
-    }
-
-    public void setSubTotal_neto(double subTotal_neto) {
-        this.subTotal_neto = subTotal_neto;
-    }
-
-    public double getIva_105_neto() {
-        return iva_105_neto;
-    }
-
-    public void setIva_105_neto(double iva_105_neto) {
-        this.iva_105_neto = iva_105_neto;
-    }
-
-    public double getIva_21_neto() {
-        return iva_21_neto;
-    }
-
-    public void setIva_21_neto(double iva_21_neto) {
-        this.iva_21_neto = iva_21_neto;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Factura other = (Factura) obj;
-        if (this.id_Factura != other.id_Factura) {
-            return false;
-        }
-        if (!Objects.equals(this.fecha, other.fecha)) {
-            return false;
-        }
-        if (this.tipoFactura != other.tipoFactura) {
-            return false;
-        }
-        if (this.numSerie != other.numSerie) {
-            return false;
-        }
-        if (this.numFactura != other.numFactura) {
-            return false;
-        }
-        if (!Objects.equals(this.renglones, other.renglones)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 29 * hash + (int) (this.id_Factura ^ (this.id_Factura >>> 32));
-        hash = 29 * hash + Objects.hashCode(this.fecha);
-        hash = 29 * hash + this.tipoFactura;
-        hash = 29 * hash + (int) (this.numSerie ^ (this.numSerie >>> 32));
-        hash = 29 * hash + (int) (this.numFactura ^ (this.numFactura >>> 32));
-        hash = 29 * hash + Objects.hashCode(this.renglones);
-        return hash;
-    }
 }

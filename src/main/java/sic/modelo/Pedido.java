@@ -19,25 +19,33 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import sic.service.EstadoPedido;
 
 @Entity
 @Table(name = "pedido")
 @NamedQueries({
     @NamedQuery(name = "Pedido.buscarMayorNroPedido",
-            query = "SELECT MAX(p.nroPedido) FROM Pedido p WHERE p.empresa.id_Empresa = :idEmpresa"),
+            query = "SELECT MAX(p.nroPedido) FROM Pedido p "
+                    + "WHERE p.empresa.id_Empresa = :idEmpresa"),
     @NamedQuery(name = "Pedido.buscarRenglonesDelPedido",
-            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones WHERE p.nroPedido = :nroPedido"),
+            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones "
+                    + "WHERE p.nroPedido = :nroPedido"),
     @NamedQuery(name = "Pedido.buscarPorId",
-            query = "SELECT p FROM Pedido p WHERE p.id_Pedido = :id"),
+            query = "SELECT p FROM Pedido p "
+                    + "WHERE p.id_Pedido = :id"),
     @NamedQuery(name = "Pedido.buscarPorNumero",
-            query = "SELECT p FROM Pedido p WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa"),
+            query = "SELECT p FROM Pedido p "
+                    + "WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa"),
     @NamedQuery(name = "Pedido.buscarPorNumeroConFacturas",
-            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.facturas WHERE p.nroPedido = :nroPedido"),
+            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.facturas "
+                    + "WHERE p.nroPedido = :nroPedido"),
     @NamedQuery(name = "Pedido.buscarPorNumeroConRenglones",
-            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa")
+            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones "
+                    + "WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa")
 })
 @Data
+@EqualsAndHashCode(of = {"nroPedido", "empresa"})
 public class Pedido implements Serializable {
 
     @Id

@@ -47,7 +47,7 @@ public class GUI_LogIn extends JFrame {
 
     private void ingresar() {
         if (usuario != null) {
-            if (usuario.getPermisosAdministrador()) {
+            if (usuario.isPermisosAdministrador()) {
                 new GUI_Principal().setVisible(true);
                 this.dispose();
             } else {

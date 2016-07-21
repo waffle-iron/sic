@@ -81,8 +81,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
             }
         }
         //Ultimo usuario administrador
-        if ((operacion == TipoDeOperacion.ACTUALIZACION && usuario.getPermisosAdministrador() == false)
-                || operacion == TipoDeOperacion.ELIMINACION && usuario.getPermisosAdministrador() == true) {
+        if ((operacion == TipoDeOperacion.ACTUALIZACION && usuario.isPermisosAdministrador() == false)
+                || operacion == TipoDeOperacion.ELIMINACION && usuario.isPermisosAdministrador() == true) {
             List<Usuario> adminitradores = this.getUsuariosAdministradores();
             if (adminitradores.size() == 1) {
                 if (adminitradores.get(0).getId_Usuario() == usuario.getId_Usuario()) {

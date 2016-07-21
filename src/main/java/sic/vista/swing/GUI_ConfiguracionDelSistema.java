@@ -31,7 +31,7 @@ public class GUI_ConfiguracionDelSistema extends JDialog {
     }
 
     private void cargarConfiguracionParaModificar() {
-        chk_PreImpresas.setSelected(cdsModificar.usarFacturaVentaPreImpresa());
+        chk_PreImpresas.setSelected(cdsModificar.isUsarFacturaVentaPreImpresa());
         txt_CantMaximaRenglones.setValue(cdsModificar.getCantidadMaximaDeRenglonesEnFactura());
     }
 

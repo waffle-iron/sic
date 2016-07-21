@@ -41,7 +41,7 @@ public class GUI_DetalleUsuario extends JDialog {
     
     private void cargarUsuarioParaModificar() {
         txt_Usuario.setText(usuarioModificar.getNombre());        
-        chk_Administrador.setSelected(usuarioModificar.getPermisosAdministrador());
+        chk_Administrador.setSelected(usuarioModificar.isPermisosAdministrador());
     }
     
     @SuppressWarnings("unchecked")

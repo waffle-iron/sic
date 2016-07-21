@@ -8,10 +8,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "renglonpedido")
 @Data
+@EqualsAndHashCode(of = {"pedido", "producto"})
 public class RenglonPedido implements Serializable {
 
     @Id
@@ -29,7 +31,7 @@ public class RenglonPedido implements Serializable {
     private double cantidad;
 
     private double descuento_porcentaje;
-    
+
     private double descuento_neto;
 
     private double subTotal;

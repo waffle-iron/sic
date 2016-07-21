@@ -13,13 +13,19 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "pagofacturacompra")
 @NamedQueries({
     @NamedQuery(name = "PagoFacturaCompra.buscarPorFactura",
-            query = "SELECT p FROM PagoFacturaCompra p WHERE p.facturaCompra = :factura AND p.eliminado = false ORDER BY p.fecha ASC")
+            query = "SELECT p FROM PagoFacturaCompra p "
+                    + "WHERE p.facturaCompra = :factura AND p.eliminado = false "
+                    + "ORDER BY p.fecha ASC")
 })
+@Data
+@EqualsAndHashCode(of = {"fecha", "facturaCompra"})
 public class PagoFacturaCompra implements Serializable {
 
     @Id
@@ -41,54 +47,4 @@ public class PagoFacturaCompra implements Serializable {
 
     private boolean eliminado;
 
-    public PagoFacturaCompra() {
-    }
-
-    public FacturaCompra getFacturaCompra() {
-        return facturaCompra;
-    }
-
-    public void setFacturaCompra(FacturaCompra facturaCompra) {
-        this.facturaCompra = facturaCompra;
-    }
-
-    public Date getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Date fecha) {
-        this.fecha = fecha;
-    }
-
-    public boolean isEliminado() {
-        return eliminado;
-    }
-
-    public void setEliminado(boolean eliminado) {
-        this.eliminado = eliminado;
-    }
-
-    public long getId_PagoFacturaCompra() {
-        return id_PagoFacturaCompra;
-    }
-
-    public void setId_PagoFacturaCompra(long id_PagoFacturaCompra) {
-        this.id_PagoFacturaCompra = id_PagoFacturaCompra;
-    }
-
-    public double getMonto() {
-        return monto;
-    }
-
-    public void setMonto(double monto) {
-        this.monto = monto;
-    }
-
-    public String getNota() {
-        return nota;
-    }
-
-    public void setNota(String nota) {
-        this.nota = nota;
-    }
 }

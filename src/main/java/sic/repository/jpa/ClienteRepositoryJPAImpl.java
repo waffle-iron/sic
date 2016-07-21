@@ -88,35 +88,35 @@ public class ClienteRepositoryJPAImpl implements IClienteRepository {
         String query = "SELECT c FROM Cliente c WHERE c.empresa = :empresa AND c.eliminado = false";
 
         //OR entre razonSocial y nombreFantasia
-        if (criteria.buscaPorRazonSocial() && criteria.buscaPorNombreFantasia()) {
+        if (criteria.isBuscaPorRazonSocial() && criteria.isBuscaPorNombreFantasia()) {
             String[] terminos = criteria.getRazonSocial().split(" ");
             for (String termino : terminos) {
                 query += " AND (c.razonSocial LIKE '%" + termino + "%'" + " OR c.nombreFantasia LIKE '%" + termino + "%')";
             }
         } else {
-            if (criteria.buscaPorRazonSocial() == true) {
+            if (criteria.isBuscaPorRazonSocial() == true) {
                 String[] terminos = criteria.getRazonSocial().split(" ");
                 for (String termino : terminos) {
                     query += " AND c.razonSocial LIKE '%" + termino + "%'";
                 }
             }
-            if (criteria.buscaPorNombreFantasia() == true) {
+            if (criteria.isBuscaPorNombreFantasia() == true) {
                 String[] terminos = criteria.getNombreFantasia().split(" ");
                 for (String termino : terminos) {
                     query += " AND c.nombreFantasia LIKE '%" + termino + "%'";
                 }
             }
         }
-        if (criteria.buscaPorId_Fiscal() == true) {
+        if (criteria.isBuscaPorId_Fiscal() == true) {
             query = query + " AND c.id_Fiscal = '" + criteria.getId_Fiscal() + "'";
         }
-        if (criteria.buscaPorLocalidad() == true) {
+        if (criteria.isBuscaPorLocalidad() == true) {
             query = query + " AND c.localidad = " + criteria.getLocalidad().getId_Localidad();
         }
-        if (criteria.buscaPorProvincia() == true) {
+        if (criteria.isBuscaPorProvincia() == true) {
             query = query + " AND c.localidad.provincia = " + criteria.getProvincia().getId_Provincia();
         }
-        if (criteria.buscaPorPais() == true) {
+        if (criteria.isBuscaPorPais() == true) {
             query = query + " AND c.localidad.provincia.pais = " + criteria.getPais().getId_Pais();
         }
         TypedQuery<Cliente> typedQuery = em.createQuery(query, Cliente.class);

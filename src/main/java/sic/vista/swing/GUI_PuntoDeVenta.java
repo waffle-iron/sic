@@ -78,7 +78,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.tbtn_marcarDesmarcar.setIcon(iconoNoMarcado);
 
         //aplica verificación de tipo de Usuario para deshabilitar componentes
-        if (!usuarioService.getUsuarioActivo().getUsuario().getPermisosAdministrador()) {
+        if (!usuarioService.getUsuarioActivo().getUsuario().isPermisosAdministrador()) {
             dc_fechaFactura.setEnabled(false);
             dc_fechaVencimiento.setEnabled(false);
             btn_nuevoProducto.setEnabled(false);
@@ -1295,7 +1295,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         try {
             this.setColumnas();
             this.prepararComponentes(); //revisar esto
-            if (!this.usuarioService.getUsuarioActivo().getUsuario().getPermisosAdministrador()) {
+            if (!this.usuarioService.getUsuarioActivo().getUsuario().isPermisosAdministrador()) {
                 this.llamarGUI_SeleccionEmpresa();
             } else {
                 empresa = empresaService.getEmpresaActiva().getEmpresa();

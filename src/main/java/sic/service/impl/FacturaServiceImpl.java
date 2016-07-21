@@ -590,7 +590,7 @@ public class FacturaServiceImpl implements IFacturaService {
         Map params = new HashMap();
         ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
                 empresaService.getEmpresaActiva().getEmpresa());
-        params.put("preImpresa", cds.usarFacturaVentaPreImpresa());
+        params.put("preImpresa", cds.isUsarFacturaVentaPreImpresa());
         params.put("facturaVenta", factura);
         params.put("nroComprobante", factura.getNumSerie() + "-" + factura.getNumFactura());
         params.put("logo", Utilidades.convertirByteArrayIntoImage(factura.getEmpresa().getLogo()));

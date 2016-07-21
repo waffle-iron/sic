@@ -1,13 +1,13 @@
 package sic.modelo;
 
 import java.util.Date;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-/*
- * Se utiliza como estructura de transporte, para no estar pasando los campos de
- * manera individual.
- */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class BusquedaFacturaCompraCriteria {
 
     private boolean buscaPorFecha;

@@ -17,21 +17,31 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import sic.service.EstadoCaja;
 
 @Entity
 @Table(name = "caja")
 @NamedQueries({
     @NamedQuery(name = "Caja.getUltimaCaja",
-            query = "SELECT c FROM Caja c WHERE c.empresa.id_Empresa = :id_Empresa AND c.eliminada = false ORDER BY c.fechaApertura DESC"),
+            query = "SELECT c FROM Caja c "
+                    + "WHERE c.empresa.id_Empresa = :id_Empresa AND c.eliminada = false "
+                    + "ORDER BY c.fechaApertura DESC"),
     @NamedQuery(name = "Caja.buscarCajaPorID",
-            query = "SELECT c FROM Caja c WHERE c.id_Caja = :id_caja AND c.empresa.id_Empresa = :id_Empresa ORDER BY c.fechaApertura ASC"),
+            query = "SELECT c FROM Caja c "
+                    + "WHERE c.id_Caja = :id_caja AND c.empresa.id_Empresa = :id_Empresa "
+                    + "ORDER BY c.fechaApertura ASC"),
     @NamedQuery(name = "Caja.getUltimoNumeroDeCaja",
-            query = "SELECT max(c.nroCaja) FROM Caja c WHERE c.empresa.id_Empresa = :id_Empresa"),
+            query = "SELECT max(c.nroCaja) FROM Caja c "
+                    + "WHERE c.empresa.id_Empresa = :id_Empresa"),
     @NamedQuery(name = "Caja.getCajas",
-            query = "SELECT c FROM Caja c WHERE c.empresa.id_Empresa = :id_Empresa AND c.eliminada = false AND c.fechaApertura BETWEEN :desde AND :hasta ORDER BY c.fechaApertura DESC")
+            query = "SELECT c FROM Caja c "
+                    + "WHERE c.empresa.id_Empresa = :id_Empresa AND c.eliminada = false "
+                    + "AND c.fechaApertura BETWEEN :desde AND :hasta "
+                    + "ORDER BY c.fechaApertura DESC")
 })
 @Data
+@EqualsAndHashCode(of = {"nroCaja", "empresa"})
 public class Caja implements Serializable {
 
     @Id
