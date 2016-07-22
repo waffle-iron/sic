@@ -216,15 +216,10 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }
 
     private void calcularResultados() {
-        try {
-            txt_ResultTotalFacturado.setValue(facturaService.calcularTotalFacturadoVenta(facturas));
-            txt_ResultGananciaTotal.setValue(facturaService.calcularGananciaTotal(facturas));
-            txt_ResultTotalIVAVenta.setValue(facturaService.calcularIVA_Venta(facturas));
+        txt_ResultTotalFacturado.setValue(facturaService.calcularTotalFacturadoVenta(facturas));
+        txt_ResultGananciaTotal.setValue(facturaService.calcularGananciaTotal(facturas));
+        txt_ResultTotalIVAVenta.setValue(facturaService.calcularIVA_Venta(facturas));
 
-        } catch (PersistenceException ex) {
-            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     private void buscar(final BusquedaFacturaVentaCriteria criteria) {
@@ -235,12 +230,12 @@ public class GUI_FacturasVenta extends JInternalFrame {
             @Override
             protected List<FacturaVenta> doInBackground() throws Exception {
                 try {
-                    facturas = facturaService.buscarFacturaVenta(criteria);                    
+                    facturas = facturaService.buscarFacturaVenta(criteria);
                     cargarResultadosAlTable();
-                    calcularResultados();                    
+                    calcularResultados();
 
                 } catch (ServiceException ex) {
-                    JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);                    
+                    JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
                 } catch (PersistenceException ex) {
                     LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
@@ -278,7 +273,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
     private void cambiarEstadoEnabled(boolean status) {
         chk_Fecha.setEnabled(status);
-        if (status == true && chk_Fecha.isSelected() == true) {            
+        if (status == true && chk_Fecha.isSelected() == true) {
             dc_FechaDesde.setEnabled(true);
             dc_FechaHasta.setEnabled(true);
         } else {
@@ -317,7 +312,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         } else {
             txt_NumeroPedido.setEnabled(false);
         }
-        
+
         chk_EstadoFactura.setEnabled(status);
         if (status == true && chk_EstadoFactura.isSelected() == true) {
             rb_soloImpagas.setEnabled(true);
@@ -325,14 +320,14 @@ public class GUI_FacturasVenta extends JInternalFrame {
         } else {
             rb_soloImpagas.setEnabled(false);
             rb_soloPagadas.setEnabled(false);
-        }        
-        btn_Buscar.setEnabled(status);        
+        }
+        btn_Buscar.setEnabled(status);
         tbl_Resultados.setEnabled(status);
         btn_Nueva.setEnabled(status);
         btn_Eliminar.setEnabled(status);
-        btn_VerDetalle.setEnabled(status);        
+        btn_VerDetalle.setEnabled(status);
     }
-    
+
     private void cargarResultadosAlTable() {
         this.limpiarJTable();
         for (FacturaVenta factura : facturas) {

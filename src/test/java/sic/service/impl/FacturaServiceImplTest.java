@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import sic.modelo.Cliente;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Empresa;
+import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Medida;
 import sic.modelo.Producto;
@@ -223,15 +224,15 @@ public class FacturaServiceImplTest {
     @Test
     public void shouldCalcularSubTotal() {
         RenglonFactura renglon1 = new RenglonFactura();
-        renglon1.setImporte(5.601);        
+        renglon1.setImporte(5.601);
         RenglonFactura renglon2 = new RenglonFactura();
-        renglon2.setImporte(18.052);        
+        renglon2.setImporte(18.052);
         RenglonFactura renglon3 = new RenglonFactura();
-        renglon3.setImporte(10.011);        
+        renglon3.setImporte(10.011);
         List<RenglonFactura> renglones = new ArrayList<>();
         renglones.add(renglon1);
         renglones.add(renglon2);
-        renglones.add(renglon3);               
+        renglones.add(renglon3);
         double resultadoEsperado = 33.664;
         double resultadoObtenido = facturaService.calcularSubTotal(renglones);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
@@ -265,7 +266,7 @@ public class FacturaServiceImplTest {
         renglon1.setIva_porcentaje(21);
         RenglonFactura renglon2 = new RenglonFactura();
         renglon2.setImporte(18.052);
-        renglon2.setIva_porcentaje(21);        
+        renglon2.setIva_porcentaje(21);
         RenglonFactura renglon3 = new RenglonFactura();
         renglon3.setImporte(10.011);
         renglon3.setIva_porcentaje(10.5);
@@ -286,7 +287,7 @@ public class FacturaServiceImplTest {
         renglon1.setIva_porcentaje(21);
         RenglonFactura renglon2 = new RenglonFactura();
         renglon2.setImporte(18.052);
-        renglon2.setIva_porcentaje(21);        
+        renglon2.setIva_porcentaje(21);
         RenglonFactura renglon3 = new RenglonFactura();
         renglon3.setImporte(10.011);
         renglon3.setIva_porcentaje(10.5);
@@ -327,7 +328,7 @@ public class FacturaServiceImplTest {
     }
 
     @Test
-    public void shouldCalcularTotalFacturado() {
+    public void shouldCalcularTotalFacturadoVenta() {
         List<FacturaVenta> facturasDeVenta = new ArrayList<>();
         FacturaVenta factura1 = new FacturaVenta();
         FacturaVenta factura2 = new FacturaVenta();
@@ -337,9 +338,26 @@ public class FacturaServiceImplTest {
         factura3.setTotal(21124.504);
         facturasDeVenta.add(factura1);
         facturasDeVenta.add(factura2);
-        facturasDeVenta.add(factura3);        
+        facturasDeVenta.add(factura3);
         double resultadoEsperado = 25573.352;
         double resultadoObtenido = facturaService.calcularTotalFacturadoVenta(facturasDeVenta);
+        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+    }
+
+    @Test
+    public void shouldCalcularTotalFacturadoCompra() {
+        List<FacturaCompra> facturasDeCompra = new ArrayList<>();
+        FacturaCompra factura1 = new FacturaCompra();
+        FacturaCompra factura2 = new FacturaCompra();
+        FacturaCompra factura3 = new FacturaCompra();
+        factura1.setTotal(1024.759);
+        factura2.setTotal(3424.089);
+        factura3.setTotal(21124.504);
+        facturasDeCompra.add(factura1);
+        facturasDeCompra.add(factura2);
+        facturasDeCompra.add(factura3);
+        double resultadoEsperado = 25573.352;
+        double resultadoObtenido = facturaService.calcularTotalFacturadoCompra(facturasDeCompra);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -360,6 +378,26 @@ public class FacturaServiceImplTest {
         facturasDeVenta.add(factura3);
         double resultadoEsperado = 90;
         double resultadoObtenido = facturaService.calcularIVA_Venta(facturasDeVenta);
+        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+    }
+
+    @Test
+    public void shouldCalcularIvaCompra() {
+        List<FacturaCompra> facturasDeCompra = new ArrayList<>();
+        FacturaCompra factura1 = new FacturaCompra();
+        FacturaCompra factura2 = new FacturaCompra();
+        FacturaCompra factura3 = new FacturaCompra();
+        factura1.setIva_105_neto(0);
+        factura1.setIva_21_neto(35);
+        factura2.setIva_105_neto(0);
+        factura2.setIva_21_neto(30);
+        factura3.setIva_105_neto(25);
+        factura3.setIva_21_neto(0);
+        facturasDeCompra.add(factura1);
+        facturasDeCompra.add(factura2);
+        facturasDeCompra.add(factura3);
+        double resultadoEsperado = 90;
+        double resultadoObtenido = facturaService.calcularIVA_Compra(facturasDeCompra);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 

@@ -129,7 +129,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
 
             facturas = facturaService.buscarFacturaCompra(criteria);
             this.cargarResultadosAlTable();
-            calcularResultados(); 
+            calcularResultados();
 
             if (facturas.isEmpty()) {
                 JOptionPane.showMessageDialog(this, ResourceBundle.getBundle(
@@ -172,16 +172,10 @@ public class GUI_FacturasCompra extends JInternalFrame {
         String mensaje = facturas.size() + " facturas encontradas";
         lbl_CantRegistrosEncontrados.setText(mensaje);
     }
-    
-    private void calcularResultados() {
-        try {
-            txt_ResultGastoTotal.setValue(facturaService.calcularTotalFacturadoCompra(facturas));
-            txt_ResultTotalIVACompra.setValue(facturaService.calcularIVA_Compra(facturas));
 
-        } catch (PersistenceException ex) {
-            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+    private void calcularResultados() {
+        txt_ResultGastoTotal.setValue(facturaService.calcularTotalFacturadoCompra(facturas));
+        txt_ResultTotalIVACompra.setValue(facturaService.calcularIVA_Compra(facturas));
     }
 
     private void limpiarJTable() {
