@@ -28,6 +28,8 @@ public interface IFacturaService {
     double calcularGananciaTotal(List<FacturaVenta> facturas);
 
     double calcularIVA_Venta(List<FacturaVenta> facturas);
+    
+    double calcularIVA_Compra(List<FacturaCompra> facturas);
 
     double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones);
 
@@ -53,7 +55,9 @@ public interface IFacturaService {
 
     double calcularTotal(double subTotal, double descuento_neto, double recargo_neto, double iva105_neto, double iva21_neto, double impInterno_neto);
 
-    double calcularTotalFacturado(List<FacturaVenta> facturas);
+    double calcularTotalFacturadoVenta(List<FacturaVenta> facturas);
+    
+    double calcularTotalFacturadoCompra(List<FacturaCompra> facturas);
 
     double calcularVuelto(double importeAPagar, double importeAbonado);
 

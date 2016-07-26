@@ -291,31 +291,53 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="sp_Resultados" pref="752" max="32767" attributes="0"/>
               <Group type="102" attributes="0">
-                  <Component id="btn_Nuevo" linkSize="3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="6" pref="0" max="-2" attributes="0"/>
-                  <Component id="btn_Eliminar" linkSize="3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                  <Component id="btn_VerDetalle" linkSize="3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                  <Component id="btn_VerPagos" linkSize="3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Group type="102" attributes="0">
+                          <Component id="btn_Nuevo" linkSize="3" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
+                          <Component id="btn_Eliminar" linkSize="3" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
+                          <Component id="btn_VerDetalle" linkSize="3" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
+                          <Component id="btn_VerPagos" linkSize="3" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace pref="110" max="32767" attributes="0"/>
+                          <Component id="lbl_TotalIVACompra" linkSize="7" min="-2" max="-2" attributes="1"/>
+                      </Group>
+                      <Component id="lbl_TotalFacturado" linkSize="7" min="-2" max="-2" attributes="1"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="txt_ResultGastoTotal" alignment="1" min="-2" pref="162" max="-2" attributes="0"/>
+                      <Component id="txt_ResultTotalIVACompra" alignment="1" min="-2" pref="162" max="-2" attributes="0"/>
+                  </Group>
               </Group>
+              <Component id="sp_Resultados" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
-                  <Component id="sp_Resultados" pref="215" max="32767" attributes="0"/>
+              <Group type="102" alignment="0" attributes="0">
+                  <Component id="sp_Resultados" pref="188" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="btn_Nuevo" linkSize="1" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="txt_ResultGastoTotal" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lbl_TotalFacturado" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="txt_ResultTotalIVACompra" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lbl_TotalIVACompra" alignment="3" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
                       <Group type="103" alignment="1" groupAlignment="3" attributes="0">
                           <Component id="btn_Eliminar" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btn_VerPagos" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btn_VerDetalle" linkSize="1" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
+                      <Component id="btn_Nuevo" linkSize="1" alignment="1" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
           </Group>
@@ -393,6 +415,36 @@
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_VerPagosActionPerformed"/>
           </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lbl_TotalIVACompra">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Total IVA Compra:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JFormattedTextField" name="txt_ResultTotalIVACompra">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+            <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
+              <Format format="$##,###,##0.00" subtype="-1" type="0"/>
+            </Property>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="text" type="java.lang.String" value="$0.0"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JFormattedTextField" name="txt_ResultGastoTotal">
+          <Properties>
+            <Property name="editable" type="boolean" value="false"/>
+            <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
+              <Format format="$##,###,##0.00" subtype="-1" type="0"/>
+            </Property>
+            <Property name="horizontalAlignment" type="int" value="4"/>
+            <Property name="text" type="java.lang.String" value="$0.0"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="lbl_TotalFacturado">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Total Facturado:"/>
+          </Properties>
         </Component>
       </SubComponents>
     </Container>

@@ -467,10 +467,19 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public double calcularTotalFacturado(List<FacturaVenta> facturas) {
+    public double calcularTotalFacturadoVenta(List<FacturaVenta> facturas) {
         double resultado = 0;
         for (FacturaVenta facturaVenta : facturas) {
             resultado += facturaVenta.getTotal();
+        }
+        return Utilidades.truncarDecimal(resultado, 3);
+    }
+    
+    @Override
+    public double calcularTotalFacturadoCompra(List<FacturaCompra> facturas) {
+        double resultado = 0;
+        for (FacturaCompra FacturaCompra : facturas) {
+            resultado += FacturaCompra.getTotal();
         }
         return Utilidades.truncarDecimal(resultado, 3);
     }
@@ -480,6 +489,15 @@ public class FacturaServiceImpl implements IFacturaService {
         double resultado = 0;
         for (FacturaVenta facturaVenta : facturas) {
             resultado += (facturaVenta.getIva_105_neto() + facturaVenta.getIva_21_neto());
+        }
+        return Utilidades.truncarDecimal(resultado, 3);
+    }
+    
+    @Override
+    public double calcularIVA_Compra(List<FacturaCompra> facturas) {
+        double resultado = 0;
+        for (FacturaCompra facturaCompra : facturas) {
+            resultado += (facturaCompra.getIva_105_neto() + facturaCompra.getIva_21_neto());
         }
         return Utilidades.truncarDecimal(resultado, 3);
     }

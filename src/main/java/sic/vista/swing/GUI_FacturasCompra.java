@@ -129,6 +129,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
 
             facturas = facturaService.buscarFacturaCompra(criteria);
             this.cargarResultadosAlTable();
+            calcularResultados();
 
             if (facturas.isEmpty()) {
                 JOptionPane.showMessageDialog(this, ResourceBundle.getBundle(
@@ -170,6 +171,11 @@ public class GUI_FacturasCompra extends JInternalFrame {
         tbl_Resultados.setModel(modeloTablaFacturas);
         String mensaje = facturas.size() + " facturas encontradas";
         lbl_CantRegistrosEncontrados.setText(mensaje);
+    }
+
+    private void calcularResultados() {
+        txt_ResultGastoTotal.setValue(facturaService.calcularTotalFacturadoCompra(facturas));
+        txt_ResultTotalIVACompra.setValue(facturaService.calcularIVA_Compra(facturas));
     }
 
     private void limpiarJTable() {
@@ -223,6 +229,10 @@ public class GUI_FacturasCompra extends JInternalFrame {
         btn_VerDetalle = new javax.swing.JButton();
         btn_Eliminar = new javax.swing.JButton();
         btn_VerPagos = new javax.swing.JButton();
+        lbl_TotalIVACompra = new javax.swing.JLabel();
+        txt_ResultTotalIVACompra = new javax.swing.JFormattedTextField();
+        txt_ResultGastoTotal = new javax.swing.JFormattedTextField();
+        lbl_TotalFacturado = new javax.swing.JLabel();
 
         setClosable(true);
         setMaximizable(true);
@@ -457,35 +467,67 @@ public class GUI_FacturasCompra extends JInternalFrame {
             }
         });
 
+        lbl_TotalIVACompra.setText("Total IVA Compra:");
+
+        txt_ResultTotalIVACompra.setEditable(false);
+        txt_ResultTotalIVACompra.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_ResultTotalIVACompra.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_ResultTotalIVACompra.setText("$0.0");
+
+        txt_ResultGastoTotal.setEditable(false);
+        txt_ResultGastoTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_ResultGastoTotal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_ResultGastoTotal.setText("$0.0");
+
+        lbl_TotalFacturado.setText("Total Facturado:");
+
         javax.swing.GroupLayout panelResultadosLayout = new javax.swing.GroupLayout(panelResultados);
         panelResultados.setLayout(panelResultadosLayout);
         panelResultadosLayout.setHorizontalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 752, Short.MAX_VALUE)
             .addGroup(panelResultadosLayout.createSequentialGroup()
-                .addComponent(btn_Nuevo)
-                .addGap(0, 0, 0)
-                .addComponent(btn_Eliminar)
-                .addGap(0, 0, 0)
-                .addComponent(btn_VerDetalle)
-                .addGap(0, 0, 0)
-                .addComponent(btn_VerPagos)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelResultadosLayout.createSequentialGroup()
+                        .addComponent(btn_Nuevo)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_Eliminar)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_VerDetalle)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_VerPagos)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                        .addComponent(lbl_TotalIVACompra))
+                    .addComponent(lbl_TotalFacturado))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txt_ResultGastoTotal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_ResultTotalIVACompra, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addComponent(sp_Resultados)
         );
 
         panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Eliminar, btn_Nuevo, btn_VerDetalle, btn_VerPagos});
 
+        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_TotalFacturado, lbl_TotalIVACompra});
+
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
+            .addGroup(panelResultadosLayout.createSequentialGroup()
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btn_Nuevo)
-                    .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
+                        .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txt_ResultGastoTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_TotalFacturado))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txt_ResultTotalIVACompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_TotalIVACompra)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btn_Eliminar)
                         .addComponent(btn_VerPagos)
-                        .addComponent(btn_VerDetalle))))
+                        .addComponent(btn_VerDetalle))
+                    .addComponent(btn_Nuevo, javax.swing.GroupLayout.Alignment.TRAILING)))
         );
 
         panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_Nuevo, btn_VerDetalle, btn_VerPagos});
@@ -666,6 +708,8 @@ public class GUI_FacturasCompra extends JInternalFrame {
     private javax.swing.JLabel lbl_CantRegistrosEncontrados;
     private javax.swing.JLabel lbl_Desde;
     private javax.swing.JLabel lbl_Hasta;
+    private javax.swing.JLabel lbl_TotalFacturado;
+    private javax.swing.JLabel lbl_TotalIVACompra;
     private javax.swing.JPanel panelFiltros;
     private javax.swing.JPanel panelResultados;
     private javax.swing.JRadioButton rb_soloImpagas;
@@ -673,6 +717,8 @@ public class GUI_FacturasCompra extends JInternalFrame {
     private javax.swing.JScrollPane sp_Resultados;
     private javax.swing.JTable tbl_Resultados;
     private javax.swing.JFormattedTextField txt_NroFactura;
+    private javax.swing.JFormattedTextField txt_ResultGastoTotal;
+    private javax.swing.JFormattedTextField txt_ResultTotalIVACompra;
     private javax.swing.JFormattedTextField txt_SerieFactura;
     // End of variables declaration//GEN-END:variables
 }
