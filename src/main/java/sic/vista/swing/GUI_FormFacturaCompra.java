@@ -198,7 +198,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         facturaCompra.setTipoFactura(tipoDeFactura.charAt(tipoDeFactura.length() - 1));
         facturaCompra.setNumSerie(Long.parseLong(txt_SerieFactura.getValue().toString()));
         facturaCompra.setNumFactura(Long.parseLong(txt_NumeroFactura.getValue().toString()));
-        facturaCompra.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
+        //facturaCompra.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
         facturaCompra.setFechaVencimiento(dc_FechaVencimiento.getDate());
         facturaCompra.setTransportista((Transportista) cmb_Transportista.getSelectedItem());
         List<RenglonFactura> lineasFactura = new ArrayList<>(renglones);
@@ -383,7 +383,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         cmb_TipoFactura.removeAllItems();
         cmb_TipoFactura.addItem(facturaService.getTipoFactura(facturaParaMostrar));
         cmb_Transportista.setSelectedItem(facturaParaMostrar.getTransportista());
-        cmb_FormaDePago.setSelectedItem(facturaParaMostrar.getFormaPago());
+        //cmb_FormaDePago.setSelectedItem(facturaParaMostrar.getFormaPago());
         dc_FechaFactura.setDate(facturaParaMostrar.getFecha());
         dc_FechaVencimiento.setDate(facturaParaMostrar.getFechaVencimiento());
         txta_Observaciones.setText(facturaParaMostrar.getObservaciones());

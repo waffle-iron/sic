@@ -155,7 +155,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
             fila[2] = factura.getNumSerie() + " - " + factura.getNumFactura();
             fila[3] = factura.getFechaVencimiento();
             fila[4] = factura.getProveedor().getRazonSocial();
-            fila[5] = factura.getFormaPago().getNombre();
+            fila[5] = "Corregir por Pago";//factura.getFormaPago().getNombre();
             fila[6] = factura.getTransportista().getNombre();
             fila[7] = factura.isPagada();
             fila[8] = factura.getSubTotal();

@@ -23,13 +23,13 @@ import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "factura")
-@NamedQueries({
-    @NamedQuery(name = "Factura.buscarEntreFechasYFormaDePago",
-            query = "SELECT f FROM Factura f "
-                    + "WHERE f.empresa.id_Empresa = :id_Empresa "
-                    + "AND f.formaPago.id_FormaDePago = :id_FormaDePago "
-                    + "AND f.eliminada = false AND f.fecha BETWEEN :desde AND :hasta")
-})
+//@NamedQueries({
+//    @NamedQuery(name = "Factura.buscarEntreFechasYFormaDePago",
+//            query = "SELECT f FROM Factura f "
+//                    + "WHERE f.empresa.id_Empresa = :id_Empresa "
+//                    + "AND f.formaPago.id_FormaDePago = :id_FormaDePago "
+//                    + "AND f.eliminada = false AND f.fecha BETWEEN :desde AND :hasta")
+//})
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @EqualsAndHashCode(of = {"tipoFactura", "numSerie", "numFactura", "empresa"})
@@ -50,9 +50,9 @@ public abstract class Factura implements Serializable {
 
     private long numFactura;
 
-    @ManyToOne
-    @JoinColumn(name = "id_FormaDePago", referencedColumnName = "id_FormaDePago")
-    private FormaDePago formaPago;
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura")
+    //@JoinColumn(name = "id_Pago", referencedColumnName = "id_Pago")
+    private List<Pago> pagos;
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaVencimiento;

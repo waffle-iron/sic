@@ -332,9 +332,9 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_transportista_vacio"));
         }
-        if (factura.getFormaPago() == null) {
+        if (factura.getPagos() == null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_factura_FormaDePago_vacia"));
+                    .getString("mensaje_factura_Pago_vacia"));
         }
         if (factura.getRenglones().isEmpty() | factura.getRenglones() == null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
@@ -672,7 +672,7 @@ public class FacturaServiceImpl implements IFacturaService {
         facturaSinIVA.setTipoFactura('X');
         facturaSinIVA.setNumSerie(factura.getNumSerie());
         facturaSinIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaSinIVA), facturaSinIVA.getNumSerie()));
-        facturaSinIVA.setFormaPago(factura.getFormaPago());
+        facturaSinIVA.setPagos(factura.getPagos());
         facturaSinIVA.setFechaVencimiento(factura.getFechaVencimiento());
         facturaSinIVA.setTransportista(factura.getTransportista());
         facturaSinIVA.setRenglones(listRenglonesSinIVA);
@@ -694,7 +694,7 @@ public class FacturaServiceImpl implements IFacturaService {
         facturaConIVA.setTipoFactura(factura.getTipoFactura());
         facturaConIVA.setNumSerie(factura.getNumSerie());
         facturaConIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaConIVA), facturaConIVA.getNumSerie()));
-        facturaConIVA.setFormaPago(factura.getFormaPago());
+        facturaConIVA.setPagos(factura.getPagos());
         facturaConIVA.setFechaVencimiento(factura.getFechaVencimiento());
         facturaConIVA.setTransportista(factura.getTransportista());
         facturaConIVA.setRenglones(listRenglonesConIVA);
