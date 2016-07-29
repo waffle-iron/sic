@@ -227,7 +227,7 @@
                       </Group>
                   </Group>
               </Group>
-              <Component id="sp_TablaCajas" pref="982" max="32767" attributes="0"/>
+              <Component id="sp_TablaCajas" pref="709" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
