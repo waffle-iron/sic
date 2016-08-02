@@ -84,8 +84,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-        {
-            if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
+         if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Proveedor SI
                 String[] tiposPermitidos = new String[2];
                 tiposPermitidos[0] = "Factura B";
@@ -98,7 +97,6 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = "Factura X";
                 return tiposPermitidos;
             }
-        }
     }
 
     @Override
@@ -124,8 +122,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-        {
-            if (cliente.getCondicionIVA().isDiscriminaIVA()) {
+         if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Cliente SI
                 String[] tiposPermitidos = new String[4];
                 tiposPermitidos[0] = "Factura C";
@@ -142,7 +139,6 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
-        }
     }
 
     @Override
@@ -275,11 +271,6 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
-        return facturaRepository.getFacturasPorFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
-    }
-
-    @Override
     @Transactional
     public void guardar(Factura factura) {
         this.validarFactura(factura);
@@ -409,7 +400,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public double calcularIva_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje,
             List<RenglonFactura> renglones, double iva_porcentaje) {
-        
+
         double resultado = 0;
         if (tipoDeFactura.charAt(tipoDeFactura.length() - 1) == 'A') {
             for (RenglonFactura renglon : renglones) {
@@ -436,7 +427,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje,
             double recargo_porcentaje, List<RenglonFactura> renglones) {
-        
+
         double resultado = 0;
         if (tipoDeFactura.charAt(tipoDeFactura.length() - 1) == 'A') {
             for (RenglonFactura renglon : renglones) {
@@ -460,7 +451,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public double calcularTotal(double subTotal, double descuento_neto, double recargo_neto,
             double iva105_neto, double iva21_neto, double impInterno_neto) {
-        
+
         double resultado;
         resultado = (subTotal + recargo_neto - descuento_neto) + iva105_neto + iva21_neto + impInterno_neto;
         return Utilidades.truncarDecimal(resultado, 3);
@@ -474,7 +465,7 @@ public class FacturaServiceImpl implements IFacturaService {
         }
         return Utilidades.truncarDecimal(resultado, 3);
     }
-    
+
     @Override
     public double calcularTotalFacturadoCompra(List<FacturaCompra> facturas) {
         double resultado = 0;
@@ -492,7 +483,7 @@ public class FacturaServiceImpl implements IFacturaService {
         }
         return Utilidades.truncarDecimal(resultado, 3);
     }
-    
+
     @Override
     public double calcularIVA_Compra(List<FacturaCompra> facturas) {
         double resultado = 0;
@@ -744,7 +735,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento,
             double cantidad, Producto producto, double descuento_porcentaje) {
-        
+
         RenglonFactura nuevoRenglon = new RenglonFactura();
         nuevoRenglon.setId_ProductoItem(producto.getId_Producto());
         nuevoRenglon.setCodigoItem(producto.getCodigo());

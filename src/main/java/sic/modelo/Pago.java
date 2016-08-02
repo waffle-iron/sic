@@ -13,19 +13,21 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
-@Table(name = "pago", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"id_FormaDePago", "id_Factura", "eliminado"})
-})
+@Table(name = "pago")
 @NamedQueries({
+    @NamedQuery(name = "Pago.buscarPagosEntreFechasYFormaDePago",
+            query = "SELECT p FROM Pago p "
+            + "WHERE p.empresa.id_Empresa = :id_Empresa "
+            + "AND p.formaDePago.id_FormaDePago = :id_FormaDePago "
+            + "AND p.eliminado = false AND p.fecha BETWEEN :desde AND :hasta"),
     @NamedQuery(name = "Pago.buscarPorFactura",
             query = "SELECT p FROM Pago p "
-                     + "WHERE p.factura = :factura AND p.eliminado = false "
-                     + "ORDER BY p.fecha ASC")
+            + "WHERE p.factura = :factura AND p.eliminado = false "
+            + "ORDER BY p.fecha ASC")
 })
 @Data
 @EqualsAndHashCode(of = {"formaDePago", "factura", "eliminado"})
@@ -52,6 +54,10 @@ public class Pago implements Serializable {
 
     @Column(nullable = false)
     private String nota;
+
+    @ManyToOne
+    @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
+    private Empresa empresa;
 
     private boolean eliminado;
 

@@ -27,7 +27,7 @@ import lombok.EqualsAndHashCode;
 //    @NamedQuery(name = "Factura.buscarEntreFechasYFormaDePago",
 //            query = "SELECT f FROM Factura f "
 //                    + "WHERE f.empresa.id_Empresa = :id_Empresa "
-//                    + "AND f.formaPago.id_FormaDePago = :id_FormaDePago "
+//                    + "AND f.pagos.formaDePago.id_FormaDePago = :id_FormaDePago "
 //                    + "AND f.eliminada = false AND f.fecha BETWEEN :desde AND :hasta")
 //})
 @Inheritance(strategy = InheritanceType.JOINED)

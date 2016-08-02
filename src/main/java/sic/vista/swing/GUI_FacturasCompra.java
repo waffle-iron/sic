@@ -16,6 +16,7 @@ import sic.modelo.FacturaCompra;
 import sic.modelo.Proveedor;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
+import sic.service.IPagoService;
 import sic.service.IProveedorService;
 import sic.service.ServiceException;
 import sic.util.RenderTabla;
@@ -29,6 +30,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
+    private final IPagoService pagoService = appContext.getBean(IPagoService.class);
     private static final Logger LOGGER = Logger.getLogger(GUI_FacturasCompra.class.getPackage().getName());
 
     public GUI_FacturasCompra() {
@@ -155,7 +157,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
             fila[2] = factura.getNumSerie() + " - " + factura.getNumFactura();
             fila[3] = factura.getFechaVencimiento();
             fila[4] = factura.getProveedor().getRazonSocial();
-            fila[5] = "Corregir por Pago";//factura.getFormaPago().getNombre();
+            fila[5] = pagoService.getPagosDeLaFactura(factura).get(0).getFormaDePago().getNombre();
             fila[6] = factura.getTransportista().getNombre();
             fila[7] = factura.isPagada();
             fila[8] = factura.getSubTotal();

@@ -28,6 +28,7 @@ import sic.service.EstadoPedido;
 import sic.service.IClienteService;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
+import sic.service.IPagoService;
 import sic.service.IPedidoService;
 import sic.service.IUsuarioService;
 import sic.service.ServiceException;
@@ -45,6 +46,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private final IClienteService clienteService = appContext.getBean(IClienteService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
+    private final IPagoService pagoService = appContext.getBean(IPagoService.class);
     private static final Logger LOGGER = Logger.getLogger(GUI_FacturasVenta.class.getPackage().getName());
 
     public GUI_FacturasVenta() {
@@ -338,7 +340,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             fila[3] = factura.getFechaVencimiento();
             fila[4] = factura.getCliente().getRazonSocial();
             fila[5] = factura.getUsuario().getNombre();
-            fila[6] = "Corregir por Pago";//factura.getFormaPago().getNombre();
+            fila[6] = pagoService.getPagosDeLaFactura(factura).get(0).getFormaDePago().getNombre();
             fila[7] = factura.getTransportista().getNombre();
             fila[8] = factura.isPagada();
             fila[9] = factura.getSubTotal();

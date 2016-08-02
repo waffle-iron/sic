@@ -1,7 +1,12 @@
 package sic.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +19,9 @@ import sic.service.ServiceException;
 
 @Service
 public class PagoServiceImpl implements IPagoService {
+
+    @PersistenceContext
+    private EntityManager em;
 
     private final IPagoRepository pagoRepository;
     private final IFacturaRepository facturaRepository;
@@ -61,6 +69,27 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     @Override
+    public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
+        TypedQuery<Pago> typedQuery = em.createNamedQuery("Pago.buscarPagosEntreFechasYFormaDePago", Pago.class);
+        typedQuery.setParameter("id_Empresa", id_Empresa);
+        typedQuery.setParameter("id_FormaDePago", id_FormaDePago);
+        typedQuery.setParameter("desde", desde);
+        typedQuery.setParameter("hasta", hasta);
+        List<Pago> Pagos = typedQuery.getResultList();
+        return Pagos;
+    }
+
+    @Override
+    public List<Factura> getFacturasEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
+        List<Pago> pagos = this.getPagosEntreFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
+        List<Factura> facturas = new ArrayList<>();
+        for (Pago pago : pagos) {
+            facturas.add(pago.getFactura());
+        }
+        return facturas;
+    }
+
+    @Override
     @Transactional
     public void guardar(Pago pago) {
         this.validarOperacion(pago);
@@ -87,6 +116,10 @@ public class PagoServiceImpl implements IPagoService {
         if (pago.getFactura() == null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_factura_vacia"));
+        }
+        if (pago.getEmpresa() == null) {
+            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pago_empresa_vacia"));
         }
     }
 

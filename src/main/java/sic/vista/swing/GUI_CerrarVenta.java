@@ -145,22 +145,16 @@ public class GUI_CerrarVenta extends JDialog {
         facturaVenta.setTipoFactura(gui_puntoDeVenta.getTipoDeComprobante().charAt(gui_puntoDeVenta.getTipoDeComprobante().length() - 1));
         facturaVenta.setNumSerie(1);
         facturaVenta.setNumFactura(facturaService.calcularNumeroFactura(gui_puntoDeVenta.getTipoDeComprobante(), 1));
-        //facturaVenta.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
+        //*************
         List<Pago> pagos = new ArrayList<>();
         Pago pago = new Pago();
         pago.setFormaDePago((FormaDePago) cmb_FormaDePago.getSelectedItem());
         pago.setMonto(gui_puntoDeVenta.getResultadosFactura().getTotal());
         pago.setFecha(new Date());
-        pago.setNota("nota 1, debe poder ser null");
         pago.setFactura(facturaVenta);
-        Pago pago2 = new Pago();
-        pago2.setFormaDePago(formaDePagoService.getFormaDePagoPredeterminada(gui_puntoDeVenta.getEmpresa()));
-        pago2.setMonto(300);
-        pago2.setFecha(new Date());
-        pago2.setNota("nota 2, debe poder ser null");
-        pago2.setFactura(facturaVenta);
+        pago.setEmpresa(gui_puntoDeVenta.getEmpresa());
+        pago.setNota("");
         pagos.add(pago);
-        pagos.add(pago2);
         facturaVenta.setPagos(pagos);
         //**************
         facturaVenta.setFechaVencimiento(gui_puntoDeVenta.getFechaVencimiento());

@@ -11,8 +11,10 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.FacturaCompra;
-import sic.modelo.PagoFacturaCompra;
-import sic.service.IPagoFacturaDeCompraService;
+import sic.modelo.FormaDePago;
+import sic.modelo.Pago;
+import sic.service.IFormaDePagoService;
+import sic.service.IPagoService;
 import sic.service.ServiceException;
 import sic.util.FormatterFechaHora;
 import sic.util.RenderTabla;
@@ -21,10 +23,11 @@ import sic.util.Utilidades;
 public class GUI_Pagos extends JDialog {
 
     private ModeloTabla modeloTablaResultados;
-    private List<PagoFacturaCompra> pagos;
+    private List<Pago> pagos;
     private final FacturaCompra facturaRelacionada;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IPagoFacturaDeCompraService pagoFacturaDeCompraService = appContext.getBean(IPagoFacturaDeCompraService.class);
+    private final IPagoService pagoService = appContext.getBean(IPagoService.class);
+    private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private static final Logger log = Logger.getLogger(GUI_Pagos.class.getPackage().getName());
 
     public GUI_Pagos(FacturaCompra factura) {
@@ -54,7 +57,7 @@ public class GUI_Pagos extends JDialog {
     }
 
     private void getPagosDeLaFactura() {
-        pagos = pagoFacturaDeCompraService.getPagosDeLaFactura(facturaRelacionada);
+        pagos = pagoService.getPagosDeLaFactura(facturaRelacionada);
     }
 
     private void setColumnas() {
@@ -91,7 +94,7 @@ public class GUI_Pagos extends JDialog {
 
     private void cargarResultadosAlTable() {
         this.limpiarJTable();
-        for (PagoFacturaCompra pago : pagos) {
+        for (Pago pago : pagos) {
             Object[] fila = new Object[3];
             fila[0] = pago.getFecha();
             fila[1] = pago.getMonto();
@@ -109,20 +112,23 @@ public class GUI_Pagos extends JDialog {
 
     private void agregarPago() {
         try {
-            PagoFacturaCompra pago = new PagoFacturaCompra();
+            Pago pago = new Pago();
             pago.setFecha(dc_Fecha.getDate());
             pago.setMonto(Double.parseDouble(txt_Monto.getValue().toString()));
             pago.setNota(txt_Nota.getText().trim());
-            pago.setFacturaCompra(facturaRelacionada);
-            pagoFacturaDeCompraService.guardar(pago);
+            pago.setFactura(facturaRelacionada);
+            pago.setEmpresa(facturaRelacionada.getEmpresa());
+            pago.setFormaDePago((FormaDePago) cmb_FormaDePago.getSelectedItem());
+            pago.setNota(txt_Nota.getText().trim());
+            pagoService.guardar(pago);
             dc_Fecha.setDate(null);
             txt_Monto.setValue(0.00);
             txt_Nota.setText("");
             this.getPagosDeLaFactura();
             this.cargarResultadosAlTable();
             this.verificarYSetearEstadoPagoFactura();
-            txt_TotalPagado.setValue(pagoFacturaDeCompraService.getTotalPagado(facturaRelacionada));
-            txt_SaldoAPagar.setValue(pagoFacturaDeCompraService.getSaldoAPagar(facturaRelacionada));
+            txt_TotalPagado.setValue(pagoService.getTotalPagado(facturaRelacionada));
+            txt_SaldoAPagar.setValue(pagoService.getSaldoAPagar(facturaRelacionada));
 
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -142,12 +148,12 @@ public class GUI_Pagos extends JDialog {
 
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
-                    pagoFacturaDeCompraService.eliminar(pagos.get(indexFilaSeleccionada));
+                    pagoService.eliminar(pagos.get(indexFilaSeleccionada));
                     pagos.remove(indexFilaSeleccionada);
                     this.cargarResultadosAlTable();
                     this.verificarYSetearEstadoPagoFactura();
-                    txt_TotalPagado.setValue(pagoFacturaDeCompraService.getTotalPagado(facturaRelacionada));
-                    txt_SaldoAPagar.setValue(pagoFacturaDeCompraService.getSaldoAPagar(facturaRelacionada));
+                    txt_TotalPagado.setValue(pagoService.getTotalPagado(facturaRelacionada));
+                    txt_SaldoAPagar.setValue(pagoService.getSaldoAPagar(facturaRelacionada));
 
                 } catch (PersistenceException ex) {
                     log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
@@ -158,7 +164,7 @@ public class GUI_Pagos extends JDialog {
     }
 
     private void verificarYSetearEstadoPagoFactura() {
-        pagoFacturaDeCompraService.setFacturaEstadoDePago(facturaRelacionada);
+        pagoService.setFacturaEstadoDePago(facturaRelacionada);
     }
 
     @SuppressWarnings("unchecked")
@@ -174,6 +180,8 @@ public class GUI_Pagos extends JDialog {
         txt_Monto = new javax.swing.JFormattedTextField();
         lbl_Nota = new javax.swing.JLabel();
         txt_Nota = new javax.swing.JTextField();
+        cmb_FormaDePago = new javax.swing.JComboBox<>();
+        lbl_FormaDePago = new javax.swing.JLabel();
         panel2 = new javax.swing.JPanel();
         lbl_TA = new javax.swing.JLabel();
         lbl_TP = new javax.swing.JLabel();
@@ -224,6 +232,10 @@ public class GUI_Pagos extends JDialog {
         lbl_Nota.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Nota.setText("Nota:");
 
+        lbl_FormaDePago.setForeground(java.awt.Color.red);
+        lbl_FormaDePago.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_FormaDePago.setText("* Forma de Pago:");
+
         javax.swing.GroupLayout panel1Layout = new javax.swing.GroupLayout(panel1);
         panel1.setLayout(panel1Layout);
         panel1Layout.setHorizontalGroup(
@@ -240,10 +252,17 @@ public class GUI_Pagos extends JDialog {
                     .addGroup(panel1Layout.createSequentialGroup()
                         .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(txt_Monto, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(dc_Fecha, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
+                            .addComponent(dc_Fecha, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbl_FormaDePago)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmb_FormaDePago, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
+
+        panel1Layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cmb_FormaDePago, txt_Monto});
+
         panel1Layout.setVerticalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
@@ -253,7 +272,9 @@ public class GUI_Pagos extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(txt_Monto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_Monto))
+                    .addComponent(lbl_Monto)
+                    .addComponent(cmb_FormaDePago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_FormaDePago))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(txt_Nota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -396,11 +417,12 @@ public class GUI_Pagos extends JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
+            this.cargarFormasDePago();
             this.getPagosDeLaFactura();
             this.cargarResultadosAlTable();
             txt_TotalAdeudado.setValue(facturaRelacionada.getTotal());
-            txt_TotalPagado.setValue(pagoFacturaDeCompraService.getTotalPagado(facturaRelacionada));
-            txt_SaldoAPagar.setValue(pagoFacturaDeCompraService.getSaldoAPagar(facturaRelacionada));
+            txt_TotalPagado.setValue(pagoService.getTotalPagado(facturaRelacionada));
+            txt_SaldoAPagar.setValue(pagoService.getSaldoAPagar(facturaRelacionada));
 
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
@@ -411,9 +433,11 @@ public class GUI_Pagos extends JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Agregar;
     private javax.swing.JButton btn_Eliminar;
+    private javax.swing.JComboBox<FormaDePago> cmb_FormaDePago;
     private com.toedter.calendar.JDateChooser dc_Fecha;
     private javax.swing.JLabel lbl_AvisoPagado;
     private javax.swing.JLabel lbl_Fecha;
+    private javax.swing.JLabel lbl_FormaDePago;
     private javax.swing.JLabel lbl_Monto;
     private javax.swing.JLabel lbl_Nota;
     private javax.swing.JLabel lbl_Saldo;
@@ -429,4 +453,10 @@ public class GUI_Pagos extends JDialog {
     private javax.swing.JFormattedTextField txt_TotalAdeudado;
     private javax.swing.JFormattedTextField txt_TotalPagado;
     // End of variables declaration//GEN-END:variables
+
+    private void cargarFormasDePago() {
+        for (FormaDePago formaDePago : formaDePagoService.getFormasDePago(facturaRelacionada.getEmpresa())) {
+            cmb_FormaDePago.addItem(formaDePago);
+        }
+    }
 }

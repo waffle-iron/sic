@@ -25,17 +25,20 @@ import sic.modelo.Gasto;
 import sic.modelo.Usuario;
 import sic.repository.ICajaRepository;
 import sic.service.EstadoCaja;
+import sic.service.IPagoService;
 import sic.service.ServiceException;
 import sic.util.Utilidades;
 
 @Service
 public class CajaServiceImpl implements ICajaService {
-    
+
     private final ICajaRepository cajaRepository;
+    private final IPagoService pagoService;
 
     @Autowired
-    public CajaServiceImpl(ICajaRepository cajaRepository) {
+    public CajaServiceImpl(ICajaRepository cajaRepository, IPagoService pagoService) {
         this.cajaRepository = cajaRepository;
+        this.pagoService = pagoService;
     }
 
     @Override
@@ -93,12 +96,13 @@ public class CajaServiceImpl implements ICajaService {
     public double calcularTotalPorMovimiento(List<Object> movimientos) {
         double total = 0.0;
         for (Object movimiento : movimientos) {
-            if (movimiento instanceof FacturaVenta) {
-                total += ((FacturaVenta) movimiento).getTotal();
-            }
-            if (movimiento instanceof FacturaCompra) {
-                total -= ((FacturaCompra) movimiento).getTotal();
-            }
+                if (movimiento instanceof FacturaVenta) {
+                    total += ((FacturaVenta)movimiento).getTotal();
+                }
+                if (movimiento instanceof FacturaCompra) {
+                    total -= ((FacturaCompra)movimiento).getTotal();
+                }
+
             if (movimiento instanceof Gasto) {
                 total -= ((Gasto) movimiento).getMonto();
             }

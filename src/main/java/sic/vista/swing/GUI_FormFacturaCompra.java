@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FormaDePago;
+import sic.modelo.Pago;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
@@ -31,7 +32,7 @@ import sic.service.ServiceException;
 import sic.util.RenderTabla;
 
 public class GUI_FormFacturaCompra extends JDialog {
-
+    
     private ModeloTabla modeloTablaRenglones = new ModeloTabla();
     private List<RenglonFactura> renglones;
     private final FacturaCompra facturaParaMostrar;
@@ -45,7 +46,7 @@ public class GUI_FormFacturaCompra extends JDialog {
     private String tipoDeFactura;
     private final boolean operacionAlta;
     private static final Logger log = Logger.getLogger(GUI_FormFacturaCompra.class.getPackage().getName());
-
+    
     public GUI_FormFacturaCompra() {
         this.initComponents();
         this.setIcon();
@@ -54,7 +55,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         operacionAlta = true;
         this.prepararComponentes();
     }
-
+    
     public GUI_FormFacturaCompra(FacturaCompra facturaCompra) {
         this.initComponents();
         this.setIcon();
@@ -96,12 +97,12 @@ public class GUI_FormFacturaCompra extends JDialog {
         lbl_Fecha.setText("Fecha Factura:");
         lbl_Transporte.setText("Transporte:");
     }
-
+    
     private void setIcon() {
         ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_24_square.png"));
         this.setIconImage(iconoVentana.getImage());
     }
-
+    
     private void prepararComponentes() {
         this.setSize(1000, 600);
         txt_SerieFactura.setValue(new Long("0"));
@@ -116,7 +117,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         txt_Total.setValue(new Double("0.0"));
         dc_FechaFactura.setDate(new Date());
     }
-
+    
     private void llamarVentanaRenglonFactura(Producto producto) {
         if (this.existeProductoCargado(producto)) {
             JOptionPane.showMessageDialog(this,
@@ -132,7 +133,7 @@ public class GUI_FormFacturaCompra extends JDialog {
             }
         }
     }
-
+    
     private void agregarRenglon(RenglonFactura renglon) {
         Object[] lineaDeFactura = new Object[7];
         lineaDeFactura[0] = renglon.getCodigoItem();
@@ -150,7 +151,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         Point p = new Point(0, tbl_Renglones.getHeight());
         sp_Renglones.getViewport().setViewPosition(p);
     }
-
+    
     private void quitarRenglonFactura() {
         if (tbl_Renglones.getSelectedRow() != -1) {
             int respuesta = JOptionPane.showConfirmDialog(this,
@@ -164,7 +165,7 @@ public class GUI_FormFacturaCompra extends JDialog {
             }
         }
     }
-
+    
     private void cargarComboBoxProveedores() {
         List<Proveedor> proveedores;
         cmb_Proveedor.removeAllItems();
@@ -173,7 +174,7 @@ public class GUI_FormFacturaCompra extends JDialog {
             cmb_Proveedor.addItem(proveedor);
         }
     }
-
+    
     private void cargarComboBoxTransportistas() {
         List<Transportista> transportistas;
         cmb_Transportista.removeAllItems();
@@ -182,7 +183,7 @@ public class GUI_FormFacturaCompra extends JDialog {
             cmb_Transportista.addItem(trans);
         }
     }
-
+    
     private void cargarComboBoxFormasDePago() {
         List<FormaDePago> formasDePago;
         cmb_FormaDePago.removeAllItems();
@@ -191,14 +192,23 @@ public class GUI_FormFacturaCompra extends JDialog {
             cmb_FormaDePago.addItem(f);
         }
     }
-
+    
     private void guardarFactura() throws ServiceException {
         FacturaCompra facturaCompra = new FacturaCompra();
         facturaCompra.setFecha(dc_FechaFactura.getDate());
         facturaCompra.setTipoFactura(tipoDeFactura.charAt(tipoDeFactura.length() - 1));
         facturaCompra.setNumSerie(Long.parseLong(txt_SerieFactura.getValue().toString()));
         facturaCompra.setNumFactura(Long.parseLong(txt_NumeroFactura.getValue().toString()));
-        //facturaCompra.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
+        //**************
+        List<Pago> pagos = new ArrayList<>();
+        Pago pagoDeCompra = new Pago();
+        pagoDeCompra.setFormaDePago((FormaDePago) cmb_FormaDePago.getSelectedItem());
+        pagoDeCompra.setFactura(facturaCompra);
+        pagoDeCompra.setFecha(dc_FechaFactura.getDate());
+        pagoDeCompra.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+        pagos.add(pagoDeCompra);
+        facturaCompra.setPagos(pagos);
+        //***************
         facturaCompra.setFechaVencimiento(dc_FechaVencimiento.getDate());
         facturaCompra.setTransportista((Transportista) cmb_Transportista.getSelectedItem());
         List<RenglonFactura> lineasFactura = new ArrayList<>(renglones);
@@ -223,7 +233,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         facturaCompra.setProveedor((Proveedor) cmb_Proveedor.getSelectedItem());
         facturaService.guardar(facturaCompra);
     }
-
+    
     private void limpiarYRecargarComponentes() {
         renglones = new ArrayList<>();
         modeloTablaRenglones = new ModeloTabla();
@@ -244,7 +254,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         txt_ImpInterno_Neto.setValue(0.0);
         txt_Total.setValue(0.0);
     }
-
+    
     private void buscarProductoPorCodigo(String codigoProducto) {
         try {
             Producto producto = productoService.getProductoPorCodigo(codigoProducto,
@@ -256,16 +266,16 @@ public class GUI_FormFacturaCompra extends JDialog {
                 JOptionPane.showMessageDialog(this, "No se pudo encontrar el Producto con el Codigo ingresado!",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
-
+            
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
+    
     private void validarComponentesDeResultados() {
         try {
             txt_SubTotal.commitEdit();
@@ -276,13 +286,13 @@ public class GUI_FormFacturaCompra extends JDialog {
             txt_IVA_21.commitEdit();
             txt_ImpInterno_Neto.commitEdit();
             txt_Total.commitEdit();
-
+            
         } catch (ParseException ex) {
             String msjError = "Se produjo un error analizando los campos.";
             log.error(msjError + " - " + ex.getMessage());
         }
     }
-
+    
     private void calcularResultados() {
         double subTotal;
         double descuento_porcentaje;
@@ -322,7 +332,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         total = facturaService.calcularTotal(subTotal, descuento_neto, 0, iva105_neto, iva21_neto, impInterno_neto);
         txt_Total.setValue(total);
     }
-
+    
     private void setColumnas() {
         //nombres de columnas
         String[] encabezados = new String[7];
@@ -361,7 +371,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         tbl_Renglones.getColumnModel().getColumn(5).setPreferredWidth(180);
         tbl_Renglones.getColumnModel().getColumn(6).setPreferredWidth(120);
     }
-
+    
     private boolean existeProductoCargado(Producto producto) {
         for (RenglonFactura renglon : renglones) {
             if (renglon.getDescripcionItem().equals(producto.getDescripcion())) {
@@ -370,7 +380,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         }
         return false;
     }
-
+    
     private void cargarFactura() {
         if (facturaParaMostrar.getNumSerie() == 0 && facturaParaMostrar.getNumFactura() == 0) {
             txt_SerieFactura.setText("");
@@ -401,7 +411,7 @@ public class GUI_FormFacturaCompra extends JDialog {
         }
         tbl_Renglones.setModel(modeloTablaRenglones);
     }
-
+    
     private void cargarTiposDeFacturaDisponibles() {
         String[] tiposFactura = facturaService.getTipoFacturaCompra(empresaService.getEmpresaActiva().getEmpresa(), (Proveedor) cmb_Proveedor.getSelectedItem());
         cmb_TipoFactura.removeAllItems();
@@ -409,7 +419,7 @@ public class GUI_FormFacturaCompra extends JDialog {
             cmb_TipoFactura.addItem(tiposFactura[i]);
         }
     }
-
+    
     private void recargarRenglonesSegunTipoDeFactura() {
         //resguardo de renglones
         List<RenglonFactura> resguardoRenglones = renglones;
@@ -422,7 +432,7 @@ public class GUI_FormFacturaCompra extends JDialog {
             this.agregarRenglon(nuevoRenglon);
         }
     }
-
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -981,10 +991,10 @@ public class GUI_FormFacturaCompra extends JDialog {
         gui_DetalleTransportista.setModal(true);
         gui_DetalleTransportista.setLocationRelativeTo(this);
         gui_DetalleTransportista.setVisible(true);
-
+        
         try {
             this.cargarComboBoxTransportistas();
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -997,10 +1007,10 @@ public class GUI_FormFacturaCompra extends JDialog {
         gui_DetalleProveedor.setModal(true);
         gui_DetalleProveedor.setLocationRelativeTo(this);
         gui_DetalleProveedor.setVisible(true);
-
+        
         try {
             this.cargarComboBoxProveedores();
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1042,10 +1052,10 @@ public class GUI_FormFacturaCompra extends JDialog {
             if (respuesta == JOptionPane.NO_OPTION) {
                 this.dispose();
             }
-
+            
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1069,10 +1079,10 @@ public class GUI_FormFacturaCompra extends JDialog {
         gui_FormasDePago.setModal(true);
         gui_FormasDePago.setLocationRelativeTo(this);
         gui_FormasDePago.setVisible(true);
-
+        
         try {
             this.cargarComboBoxFormasDePago();
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1085,7 +1095,7 @@ public class GUI_FormFacturaCompra extends JDialog {
             if (cmb_Proveedor.getSelectedItem() != null) {
                 this.cargarTiposDeFacturaDisponibles();
             }
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1099,7 +1109,7 @@ public class GUI_FormFacturaCompra extends JDialog {
                 tipoDeFactura = cmb_TipoFactura.getSelectedItem().toString();
                 this.recargarRenglonesSegunTipoDeFactura();
             }
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
@@ -1116,7 +1126,7 @@ public class GUI_FormFacturaCompra extends JDialog {
             if (operacionAlta == false) {
                 this.cargarFactura();
             }
-
+            
         } catch (PersistenceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
