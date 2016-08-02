@@ -318,7 +318,6 @@ public class GUI_Productos extends JInternalFrame {
         if (productos != null) {
             if (!productos.isEmpty()) {
                 JasperPrint report = productoService.getReporteListaDePrecios(productos);
-
                 JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
                 viewer.setSize(this.getWidth(), this.getHeight());
                 ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));

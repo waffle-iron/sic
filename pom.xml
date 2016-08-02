@@ -7,7 +7,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>sic</groupId>
     <artifactId>SIC</artifactId>
-    <version>1.8.3</version>
+    <version>1.8.4</version>
     <packaging>jar</packaging>
     
     <dependencies>        
@@ -20,6 +20,11 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>6.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>3.10.1</version>                        
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
