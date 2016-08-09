@@ -16,7 +16,7 @@ public interface IPagoService {
     void setFacturaEstadoDePago(Factura factura);
 
     List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
-    
+
     List<Factura> getFacturasEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
 
     void guardar(Pago pago);

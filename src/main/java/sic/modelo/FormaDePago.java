@@ -48,9 +48,6 @@ public class FormaDePago implements Serializable {
 
     private boolean predeterminado;
 
-//    @OneToMany(mappedBy = "formaPago")
-//    private Set<Factura> facturas;
-    
     @OneToMany(mappedBy = "formaDePago")
     private List<Pago> pagos;
 

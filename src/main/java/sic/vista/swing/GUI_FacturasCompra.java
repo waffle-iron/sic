@@ -43,23 +43,22 @@ public class GUI_FacturasCompra extends JInternalFrame {
         tbl_Resultados.setAutoCreateRowSorter(true);
 
         //nombres de columnas
-        String[] encabezados = new String[16];
+        String[] encabezados = new String[15];
         encabezados[0] = "Fecha Factura";
         encabezados[1] = "Tipo";
         encabezados[2] = "Nº Factura";
         encabezados[3] = "Fecha Vencimiento";
         encabezados[4] = "Proveedor";
-        encabezados[5] = "Forma de Pago";
-        encabezados[6] = "Transportista";
-        encabezados[7] = "Pagada";
-        encabezados[8] = "SubTotal";
-        encabezados[9] = "% Descuento";
-        encabezados[10] = "Descuento neto";
-        encabezados[11] = "SubTotal neto";
-        encabezados[12] = "IVA 10.5% neto";
-        encabezados[13] = "IVA 21% neto";
-        encabezados[14] = "Imp. Interno neto";
-        encabezados[15] = "Total";
+        encabezados[5] = "Transportista";
+        encabezados[6] = "Pagada";
+        encabezados[7] = "SubTotal";
+        encabezados[8] = "% Descuento";
+        encabezados[9] = "Descuento neto";
+        encabezados[10] = "SubTotal neto";
+        encabezados[11] = "IVA 10.5% neto";
+        encabezados[12] = "IVA 21% neto";
+        encabezados[13] = "Imp. Interno neto";
+        encabezados[14] = "Total";
         modeloTablaFacturas.setColumnIdentifiers(encabezados);
         tbl_Resultados.setModel(modeloTablaFacturas);
 
@@ -71,8 +70,8 @@ public class GUI_FacturasCompra extends JInternalFrame {
         tipos[3] = Date.class;
         tipos[4] = String.class;
         tipos[5] = String.class;
-        tipos[6] = String.class;
-        tipos[7] = Boolean.class;
+        tipos[6] = Boolean.class;
+        tipos[7] = Double.class;
         tipos[8] = Double.class;
         tipos[9] = Double.class;
         tipos[10] = Double.class;
@@ -80,7 +79,6 @@ public class GUI_FacturasCompra extends JInternalFrame {
         tipos[12] = Double.class;
         tipos[13] = Double.class;
         tipos[14] = Double.class;
-        tipos[15] = Double.class;
         modeloTablaFacturas.setClaseColumnas(tipos);
         tbl_Resultados.getTableHeader().setReorderingAllowed(false);
         tbl_Resultados.getTableHeader().setResizingAllowed(true);
@@ -95,8 +93,8 @@ public class GUI_FacturasCompra extends JInternalFrame {
         tbl_Resultados.getColumnModel().getColumn(3).setPreferredWidth(130);
         tbl_Resultados.getColumnModel().getColumn(4).setPreferredWidth(200);
         tbl_Resultados.getColumnModel().getColumn(5).setPreferredWidth(200);
-        tbl_Resultados.getColumnModel().getColumn(6).setPreferredWidth(200);
-        tbl_Resultados.getColumnModel().getColumn(7).setPreferredWidth(80);
+        tbl_Resultados.getColumnModel().getColumn(6).setPreferredWidth(80);
+        tbl_Resultados.getColumnModel().getColumn(7).setPreferredWidth(120);
         tbl_Resultados.getColumnModel().getColumn(8).setPreferredWidth(120);
         tbl_Resultados.getColumnModel().getColumn(9).setPreferredWidth(120);
         tbl_Resultados.getColumnModel().getColumn(10).setPreferredWidth(120);
@@ -104,7 +102,6 @@ public class GUI_FacturasCompra extends JInternalFrame {
         tbl_Resultados.getColumnModel().getColumn(12).setPreferredWidth(120);
         tbl_Resultados.getColumnModel().getColumn(13).setPreferredWidth(120);
         tbl_Resultados.getColumnModel().getColumn(14).setPreferredWidth(120);
-        tbl_Resultados.getColumnModel().getColumn(15).setPreferredWidth(120);
     }
 
     private void buscar() {
@@ -151,23 +148,22 @@ public class GUI_FacturasCompra extends JInternalFrame {
     private void cargarResultadosAlTable() {
         this.limpiarJTable();
         for (FacturaCompra factura : facturas) {
-            Object[] fila = new Object[16];
+            Object[] fila = new Object[15];
             fila[0] = factura.getFecha();
             fila[1] = String.valueOf(factura.getTipoFactura());
             fila[2] = factura.getNumSerie() + " - " + factura.getNumFactura();
             fila[3] = factura.getFechaVencimiento();
             fila[4] = factura.getProveedor().getRazonSocial();
-            fila[5] = pagoService.getPagosDeLaFactura(factura).get(0).getFormaDePago().getNombre();
-            fila[6] = factura.getTransportista().getNombre();
-            fila[7] = factura.isPagada();
-            fila[8] = factura.getSubTotal();
-            fila[9] = factura.getDescuento_porcentaje();
-            fila[10] = factura.getDescuento_neto();
-            fila[11] = factura.getSubTotal_neto();
-            fila[12] = factura.getIva_105_neto();
-            fila[13] = factura.getIva_21_neto();
-            fila[14] = factura.getImpuestoInterno_neto();
-            fila[15] = factura.getTotal();
+            fila[5] = factura.getTransportista().getNombre();
+            fila[6] = factura.isPagada();
+            fila[7] = factura.getSubTotal();
+            fila[8] = factura.getDescuento_porcentaje();
+            fila[9] = factura.getDescuento_neto();
+            fila[10] = factura.getSubTotal_neto();
+            fila[11] = factura.getIva_105_neto();
+            fila[12] = factura.getIva_21_neto();
+            fila[13] = factura.getImpuestoInterno_neto();
+            fila[14] = factura.getTotal();
             modeloTablaFacturas.addRow(fila);
         }
         tbl_Resultados.setModel(modeloTablaFacturas);

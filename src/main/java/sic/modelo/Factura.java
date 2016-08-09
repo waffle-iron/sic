@@ -12,8 +12,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -23,16 +21,9 @@ import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "factura")
-//@NamedQueries({
-//    @NamedQuery(name = "Factura.buscarEntreFechasYFormaDePago",
-//            query = "SELECT f FROM Factura f "
-//                    + "WHERE f.empresa.id_Empresa = :id_Empresa "
-//                    + "AND f.pagos.formaDePago.id_FormaDePago = :id_FormaDePago "
-//                    + "AND f.eliminada = false AND f.fecha BETWEEN :desde AND :hasta")
-//})
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
-@EqualsAndHashCode(of = {"tipoFactura", "numSerie", "numFactura", "empresa"})
+@EqualsAndHashCode(of = {"fecha", "tipoFactura", "numSerie", "numFactura", "empresa"})
 public abstract class Factura implements Serializable {
 
     @Id
@@ -51,7 +42,6 @@ public abstract class Factura implements Serializable {
     private long numFactura;
 
     @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura")
-    //@JoinColumn(name = "id_Pago", referencedColumnName = "id_Pago")
     private List<Pago> pagos;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -89,5 +79,15 @@ public abstract class Factura implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
     private Pedido pedido;
+
+    public String nombresFormasDePagoToString() {
+        String nombresFormasDePago = "";
+        if (this.getPagos() != null) {
+            for (Pago pago : this.getPagos()) {
+                nombresFormasDePago = nombresFormasDePago.concat(pago.getFormaDePago().getNombre() + " ");
+            }
+        }
+        return nombresFormasDePago;
+    }
 
 }

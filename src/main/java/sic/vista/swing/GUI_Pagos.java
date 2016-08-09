@@ -10,12 +10,13 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
-import sic.modelo.FacturaCompra;
+import sic.modelo.Factura;
 import sic.modelo.FormaDePago;
 import sic.modelo.Pago;
 import sic.service.IFormaDePagoService;
 import sic.service.IPagoService;
 import sic.service.ServiceException;
+import sic.util.FormatoFechasEnTablasRenderer;
 import sic.util.FormatterFechaHora;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
@@ -24,13 +25,13 @@ public class GUI_Pagos extends JDialog {
 
     private ModeloTabla modeloTablaResultados;
     private List<Pago> pagos;
-    private final FacturaCompra facturaRelacionada;
+    private final Factura facturaRelacionada;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IPagoService pagoService = appContext.getBean(IPagoService.class);
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private static final Logger log = Logger.getLogger(GUI_Pagos.class.getPackage().getName());
 
-    public GUI_Pagos(FacturaCompra factura) {
+    public GUI_Pagos(Factura factura) {
         this.initComponents();
         this.setIcon();
         modeloTablaResultados = new ModeloTabla();
@@ -65,10 +66,11 @@ public class GUI_Pagos extends JDialog {
         tbl_Resultados.setAutoCreateRowSorter(true);
 
         //nombres de columnas
-        String[] encabezados = new String[3];
+        String[] encabezados = new String[4];
         encabezados[0] = "Fecha";
         encabezados[1] = "Monto";
-        encabezados[2] = "Nota";
+        encabezados[2] = "Forma De Pago";
+        encabezados[3] = "Nota";
         modeloTablaResultados.setColumnIdentifiers(encabezados);
         tbl_Resultados.setModel(modeloTablaResultados);
 
@@ -77,6 +79,7 @@ public class GUI_Pagos extends JDialog {
         tipos[0] = Date.class;
         tipos[1] = Double.class;
         tipos[2] = String.class;
+        tipos[3] = String.class;
         modeloTablaResultados.setClaseColumnas(tipos);
         tbl_Resultados.getTableHeader().setReorderingAllowed(false);
         tbl_Resultados.getTableHeader().setResizingAllowed(true);
@@ -85,22 +88,26 @@ public class GUI_Pagos extends JDialog {
         tbl_Resultados.setDefaultRenderer(Double.class, new RenderTabla());
 
         //Tama�os de columnas        
-        tbl_Resultados.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tbl_Resultados.getColumnModel().getColumn(0).setMaxWidth(100);
-        tbl_Resultados.getColumnModel().getColumn(1).setPreferredWidth(100);
-        tbl_Resultados.getColumnModel().getColumn(1).setMaxWidth(100);
-        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(300);
+        tbl_Resultados.getColumnModel().getColumn(0).setPreferredWidth(150);
+        tbl_Resultados.getColumnModel().getColumn(0).setMaxWidth(150);
+        tbl_Resultados.getColumnModel().getColumn(1).setPreferredWidth(50);
+        tbl_Resultados.getColumnModel().getColumn(1).setMaxWidth(50);
+        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(120);
+        tbl_Resultados.getColumnModel().getColumn(2).setMaxWidth(120);
+        tbl_Resultados.getColumnModel().getColumn(3).setPreferredWidth(140);
     }
 
     private void cargarResultadosAlTable() {
         this.limpiarJTable();
         for (Pago pago : pagos) {
-            Object[] fila = new Object[3];
+            Object[] fila = new Object[4];
             fila[0] = pago.getFecha();
             fila[1] = pago.getMonto();
-            fila[2] = pago.getNota();
+            fila[2] = pago.getFormaDePago().getNombre();
+            fila[3] = pago.getNota();
             modeloTablaResultados.addRow(fila);
         }
+        tbl_Resultados.getColumnModel().getColumn(0).setCellRenderer(new FormatoFechasEnTablasRenderer());
         tbl_Resultados.setModel(modeloTablaResultados);
     }
 

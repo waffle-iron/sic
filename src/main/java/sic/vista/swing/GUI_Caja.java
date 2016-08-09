@@ -2,6 +2,7 @@ package sic.vista.swing;
 
 import sic.util.ColoresNumerosTablaRenderer;
 import java.awt.Color;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,9 +11,13 @@ import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import net.sf.jasperreports.engine.JRException;
@@ -23,7 +28,6 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Caja;
 import sic.modelo.Empresa;
-import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
@@ -96,14 +100,17 @@ public class GUI_Caja extends javax.swing.JDialog {
             if (this.caja.getEstado() == EstadoCaja.CERRADA) {
                 hasta = this.caja.getFechaCierre();
             }
-            List<Factura> facturas = new ArrayList<>();
-            for (Pago pago : pagoService.getPagosEntreFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), hasta)) {
-                if (!facturas.contains(pago.getFactura())) {
-                    facturas.add(pago.getFactura());
-                }
+            List<Pago> pagos = new ArrayList<>();
+            for (Pago pago : 
+                    pagoService.getPagosEntreFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), 
+                            ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(),
+                            this.caja.getFechaApertura(), hasta)) {
+                    pagos.add(pago);
             }
-            this.listaMovimientos.addAll(facturas);
-            List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+            this.listaMovimientos.addAll(pagos);
+            List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), 
+                    ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), 
+                    this.caja.getFechaApertura(), hasta);
             this.listaMovimientos.addAll(gastos);
             this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
 
@@ -113,7 +120,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     private void limpiarTablaBalance() {
         modeloTablaBalance = new ModeloTabla();
         tbl_Balance.setModel(modeloTablaBalance);
-        this.setColumnasDeTablaFormaDePago();
+        this.setColumnasDeTablaBalance();
     }
 
     private void limpiarTablaResumen() {
@@ -122,17 +129,15 @@ public class GUI_Caja extends javax.swing.JDialog {
         this.setColumnasDeTablaResumenGeneral();
     }
 
-    private void setColumnasDeTablaFormaDePago() {
+    private void setColumnasDeTablaBalance() {
         //sorting
         tbl_Balance.setAutoCreateRowSorter(true);
 
         //nombres de columnas
-        String[] encabezados = new String[5];
+        String[] encabezados = new String[3];
         encabezados[0] = "Fecha";
         encabezados[1] = "Concepto";
-        encabezados[2] = "Debe";
-        encabezados[3] = "Haber";
-        encabezados[4] = "Saldo";
+        encabezados[2] = "Monto";
         modeloTablaBalance.setColumnIdentifiers(encabezados);
         tbl_Balance.setModel(modeloTablaBalance);
 
@@ -141,18 +146,14 @@ public class GUI_Caja extends javax.swing.JDialog {
         tipos[0] = Date.class;
         tipos[1] = String.class;
         tipos[2] = Double.class;
-        tipos[3] = Double.class;
-        tipos[4] = Double.class;
         modeloTablaBalance.setClaseColumnas(tipos);
         tbl_Balance.getTableHeader().setReorderingAllowed(false);
         tbl_Balance.getTableHeader().setResizingAllowed(true);
 
         //Tamanios de columnas
         tbl_Balance.getColumnModel().getColumn(0).setPreferredWidth(15);
-        tbl_Balance.getColumnModel().getColumn(1).setPreferredWidth(150);
+        tbl_Balance.getColumnModel().getColumn(1).setPreferredWidth(200);
         tbl_Balance.getColumnModel().getColumn(2).setPreferredWidth(15);
-        tbl_Balance.getColumnModel().getColumn(3).setPreferredWidth(15);
-        tbl_Balance.getColumnModel().getColumn(4).setPreferredWidth(15);
 
     }
 
@@ -160,44 +161,39 @@ public class GUI_Caja extends javax.swing.JDialog {
         this.limpiarTablaBalance();
         for (Object movimiento : movimientos) {
             Object[] fila = new Object[5];
-            if (movimiento instanceof FacturaCompra) {
-                fila[0] = ((FacturaCompra) movimiento).getFecha();
-            }
-            if (movimiento instanceof FacturaVenta) {
-                fila[0] = ((FacturaVenta) movimiento).getFecha();
+            if (movimiento instanceof Pago) {
+                fila[0] = ((Pago) movimiento).getFecha();
+                if((((Pago) movimiento).getFactura() instanceof FacturaCompra)){
+                fila[2] = - ((Pago) movimiento).getMonto();
+                }
+                if((((Pago) movimiento).getFactura() instanceof FacturaVenta)){
+                fila[2] = ((Pago) movimiento).getMonto();
+                }
             }
             if (movimiento instanceof Gasto) {
                 fila[0] = ((Gasto) movimiento).getFecha();
             }
-            if (movimiento instanceof FacturaCompra) {
-                fila[2] = 0.0;
-                fila[3] = ((FacturaCompra) movimiento).getTotal();
-            }
-            if (movimiento instanceof FacturaVenta) {
-                fila[2] = ((FacturaVenta) movimiento).getTotal();
-                fila[3] = 0.0;
-            }
             if (movimiento instanceof Gasto) {
-                fila[2] = 0.0;
-                fila[3] = ((Gasto) movimiento).getMonto();
+                fila[2] = - ((Gasto) movimiento).getMonto();
             }
-            if (movimiento instanceof FacturaVenta || movimiento instanceof FacturaCompra) {
+            if (movimiento instanceof Pago) {
                 String tipoFactura;
-                if (movimiento instanceof FacturaVenta) {
+                if (((Pago) movimiento).getFactura() instanceof FacturaVenta) {
                     tipoFactura = "Venta";
                 } else {
                     tipoFactura = "Compra";
                 }
-                fila[1] = "Factura " + tipoFactura + " Nº " + ((Factura) movimiento).getNumSerie() + " - " + ((Factura) movimiento).getNumFactura();
+                fila[1] = "Pago por: Factura " + tipoFactura + 
+                        " Nº " + ((Pago) movimiento).getFactura().getNumSerie() + 
+                        " - " + ((Pago) movimiento).getFactura().getNumFactura();
             } else if (movimiento instanceof Gasto) {
-                fila[1] = ((Gasto) movimiento).getConcepto();
+                fila[1] = "Gasto: "+((Gasto) movimiento).getConcepto();
             }
-            fila[4] = (double) fila[2] - (double) fila[3];
             modeloTablaBalance.addRow(fila);
         }
         this.calcularTotalBalance();
         tbl_Balance.setModel(modeloTablaBalance);
-        tbl_Balance.getColumnModel().getColumn(4).setCellRenderer(new ColoresNumerosTablaRenderer());
+        tbl_Balance.getColumnModel().getColumn(2).setCellRenderer(new ColoresNumerosTablaRenderer());
         tbl_Balance.getColumnModel().getColumn(0).setCellRenderer(new FormatoFechasEnTablasRenderer());
         //Ordena la tabla segun la Fecha
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(tbl_Balance.getModel());
@@ -252,8 +248,10 @@ public class GUI_Caja extends javax.swing.JDialog {
                 if (this.caja.getEstado() == EstadoCaja.CERRADA) {
                     hasta = this.caja.getFechaCierre();
                 }
-                List<Pago> pagosPorFormaDePago = pagoService.getPagosEntreFechasYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
-                List<Object> gastosPorFormaDePago = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+                List<Pago> pagosPorFormaDePago = pagoService.getPagosEntreFechasYFormaDePago(empresaActiva.getId_Empresa(), 
+                        formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
+                List<Object> gastosPorFormaDePago = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(), 
+                        formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
                 if (pagosPorFormaDePago.size() > 0 || gastosPorFormaDePago.size() > 0) {
                     Object[] fila = new Object[3];
                     fila[0] = formaDePago.getNombre();
@@ -293,13 +291,11 @@ public class GUI_Caja extends javax.swing.JDialog {
     }
 
     private void calcularTotalBalance() {
-        double totalDebe = 0.0;
-        double totalHaber = 0.0;
+        double total = 0.0;
         for (int i = 0; i < modeloTablaBalance.getRowCount(); i++) {
-            totalDebe += (Double) modeloTablaBalance.getValueAt(i, 2);
-            totalHaber += (Double) modeloTablaBalance.getValueAt(i, 3);
+            total += (Double) modeloTablaBalance.getValueAt(i, 2);
         }
-        ftxt_Detalle.setValue(totalDebe - totalHaber);
+        ftxt_Detalle.setValue(total);
         if ((Double) ftxt_Detalle.getValue() < 0) {
             ftxt_Detalle.setBackground(Color.PINK);
         }
@@ -328,15 +324,18 @@ public class GUI_Caja extends javax.swing.JDialog {
 
     private void lanzarReporteCaja() throws JRException {
         List<String> dataSource = new ArrayList<>();
-        dataSource.add((String) tbl_Resumen.getValueAt(0, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(0, 2))));
+        dataSource.add((String) tbl_Resumen.getValueAt(0, 0) + 
+                "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(0, 2))));
 
         List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
         double totalPorCorte = this.caja.getSaldoInicial();
         for (FormaDePago formaDePago : formasDePago) {
             double totalPorCorteFormaDePago = 0.0;
             if (formaDePago.isAfectaCaja()) {
-                List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
-                List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
+                List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(),
+                        formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
+                List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(),
+                        formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
                 for (Pago pago : pagos) {
                     totalPorCorteFormaDePago += pagoService.getTotalPagado(pago.getFactura());
                 }
@@ -352,7 +351,8 @@ public class GUI_Caja extends javax.swing.JDialog {
 
         for (int f = 1; f < tbl_Resumen.getRowCount(); f++) {
             if ((boolean) tbl_Resumen.getValueAt(f, 1) == true) {
-                dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 2))));
+                dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + 
+                        "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 2))));
             }
         }
 
@@ -470,7 +470,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                 .addComponent(btn_AgregarGasto)
                 .addGap(0, 0, 0)
                 .addComponent(btn_EliminarGasto)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 152, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
                 .addComponent(lbl_total)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -502,7 +502,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                     .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
-        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_AgregarGasto, btn_EliminarGasto});
+        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_AgregarGasto, btn_EliminarGasto, btn_VerDetalle});
 
         pnl_Resumen.setBorder(javax.swing.BorderFactory.createTitledBorder("Resumen General"));
 
@@ -644,7 +644,9 @@ public class GUI_Caja extends javax.swing.JDialog {
         if (this.caja != null) {
             if (this.caja.getEstado() == EstadoCaja.ABIERTA) {
                 try {
-                    String monto = JOptionPane.showInputDialog(this, "Saldo del Sistema: " + this.caja.getSaldoFinal() + "\nSaldo Real:", "Cerrar Caja", JOptionPane.QUESTION_MESSAGE);
+                    String monto = JOptionPane.showInputDialog(this, 
+                            "Saldo del Sistema: " + this.caja.getSaldoFinal() + 
+                                    "\nSaldo Real:", "Cerrar Caja", JOptionPane.QUESTION_MESSAGE);
                     if (monto != null) {
                         this.caja.setSaldoReal(Double.parseDouble(monto));
                         this.caja.setFechaCierre(new Date());
@@ -679,35 +681,15 @@ public class GUI_Caja extends javax.swing.JDialog {
     private void btn_VerDetalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerDetalleActionPerformed
         if (tbl_Balance.getSelectedRow() != -1) {
             Object movimientoDeTabla = this.listaMovimientos.get(Utilidades.getSelectedRowModelIndice(tbl_Balance));
-            if (movimientoDeTabla instanceof FacturaVenta) {
-                try {
-                    JasperPrint report = facturaService.getReporteFacturaVenta((FacturaVenta) movimientoDeTabla);
-                    JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-                    viewer.setSize(this.getWidth(), this.getHeight());
-                    ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-                    viewer.setIconImage(iconoVentana.getImage());
-                    viewer.setLocationRelativeTo(null);
-                    JRViewer jrv = new JRViewer(report);
-                    viewer.getContentPane().add(jrv);
-                    viewer.setVisible(true);
-                } catch (JRException ex) {
-                    String msjError = "Se produjo un error procesando el reporte.";
-                    log.error(msjError + " - " + ex.getMessage());
-                    JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
-
-                } catch (PersistenceException ex) {
-                    log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+            if (((Pago) movimientoDeTabla).getFactura() instanceof FacturaVenta) {
+                this.reporteFacturaVenta(movimientoDeTabla);
             }
-            if (movimientoDeTabla instanceof FacturaCompra) {
-                GUI_FormFacturaCompra gui_DetalleFacturaCompra = new GUI_FormFacturaCompra((FacturaCompra) movimientoDeTabla);
-                gui_DetalleFacturaCompra.setModal(true);
-                gui_DetalleFacturaCompra.setLocationRelativeTo(this);
-                gui_DetalleFacturaCompra.setVisible(true);
+            if (((Pago) movimientoDeTabla).getFactura() instanceof FacturaCompra) {
+                this.reporteFacturaCompra(movimientoDeTabla);
             }
             if (movimientoDeTabla instanceof Gasto) {
-                String mensaje = "En Concepto de: " + ((Gasto) movimientoDeTabla).getConcepto() + "\nMonto: " + ((Gasto) movimientoDeTabla).getMonto() + "\nUsuario: " + ((Gasto) movimientoDeTabla).getUsuario().getNombre();
+                String mensaje = "En Concepto de: " + ((Gasto) movimientoDeTabla).getConcepto() + 
+                        "\nMonto: " + ((Gasto) movimientoDeTabla).getMonto() + "\nUsuario: " + ((Gasto) movimientoDeTabla).getUsuario().getNombre();
                 JOptionPane.showMessageDialog(this, mensaje, "Resumen de Gasto", JOptionPane.INFORMATION_MESSAGE);
             }
         }
@@ -775,4 +757,39 @@ public class GUI_Caja extends javax.swing.JDialog {
     javax.swing.JTable tbl_Balance;
     private javax.swing.JTable tbl_Resumen;
     // End of variables declaration//GEN-END:variables
+
+
+    private void reporteFacturaVenta(Object movimientoDeTabla) {
+        try {
+            FacturaVenta factura = (FacturaVenta) ((Pago) movimientoDeTabla).getFactura();
+            factura.setPagos(pagoService.getPagosDeLaFactura(factura));
+            JasperPrint report = facturaService.getReporteFacturaVenta(factura);
+            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+            viewer.setSize(this.getWidth(), this.getHeight());
+            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+            viewer.setIconImage(iconoVentana.getImage());
+            viewer.setLocationRelativeTo(null);
+            JRViewer jrv = new JRViewer(report);
+            viewer.getContentPane().add(jrv);
+            viewer.setVisible(true);
+        } catch (JRException ex) {
+            String msjError = "Se produjo un error procesando el reporte.";
+            log.error(msjError + " - " + ex.getMessage());
+            JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+
+        } catch (PersistenceException ex) {
+            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            JOptionPane.showInternalMessageDialog(this, 
+                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void reporteFacturaCompra(Object movimientoDeTabla) {
+        FacturaCompra factura = (FacturaCompra) ((Pago) movimientoDeTabla).getFactura();
+        factura.setPagos(pagoService.getPagosDeLaFactura(factura));
+        GUI_FormFacturaCompra gui_DetalleFacturaCompra = new GUI_FormFacturaCompra(factura);
+        gui_DetalleFacturaCompra.setModal(true);
+        gui_DetalleFacturaCompra.setLocationRelativeTo(this);
+        gui_DetalleFacturaCompra.setVisible(true);
+    }
 }

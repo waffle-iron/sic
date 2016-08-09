@@ -5,7 +5,6 @@ import sic.modelo.BusquedaFacturaVentaCriteria;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -323,10 +322,10 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_transportista_vacio"));
         }
-        if (factura.getPagos() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_factura_Pago_vacia"));
-        }
+//        if (factura.getPagos() == null) {
+//            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+//                    .getString("mensaje_factura_Pago_vacia"));
+//        }
         if (factura.getRenglones().isEmpty() | factura.getRenglones() == null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_renglones_vacio"));

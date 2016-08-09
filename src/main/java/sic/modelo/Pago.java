@@ -14,7 +14,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "pago")
@@ -30,7 +29,6 @@ import lombok.EqualsAndHashCode;
             + "ORDER BY p.fecha ASC")
 })
 @Data
-@EqualsAndHashCode(of = {"formaDePago", "factura", "eliminado"})
 public class Pago implements Serializable {
 
     @Id

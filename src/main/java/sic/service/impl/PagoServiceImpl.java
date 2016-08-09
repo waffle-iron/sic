@@ -43,7 +43,10 @@ public class PagoServiceImpl implements IPagoService {
     public double getSaldoAPagar(Factura factura) {
         double saldo = factura.getTotal();
         for (Pago pago : this.getPagosDeLaFactura(factura)) {
-            saldo = saldo - pago.getMonto();
+                saldo = saldo - pago.getMonto();
+        }
+        if (saldo < 0) {
+            saldo = 0.0;
         }
         return saldo;
     }
@@ -120,6 +123,10 @@ public class PagoServiceImpl implements IPagoService {
         if (pago.getEmpresa() == null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_empresa_vacia"));
+        }
+        if (pago.getFormaDePago() == null) {
+            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pago_formaDePago_vacia"));
         }
     }
 
