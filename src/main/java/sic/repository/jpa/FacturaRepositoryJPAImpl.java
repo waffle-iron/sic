@@ -81,7 +81,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.isBuscaSoloPagadas() == true) {
             query += " AND f.pagada = true";
         }
-        query += " ORDER BY f.fecha ASC";
+        query += " ORDER BY f.fecha DESC";
         TypedQuery<FacturaCompra> typedQuery = em.createQuery(query, FacturaCompra.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
         //si es 0, recupera TODOS los registros
@@ -124,7 +124,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.isBuscaSoloImpagas() == true) {
             query += " AND f.pagada = false";
         }
-        query += " ORDER BY f.fecha ASC";
+        query += " ORDER BY f.fecha DESC";
         TypedQuery<FacturaVenta> typedQuery = em.createQuery(query, FacturaVenta.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
         //si es 0, recupera TODOS los registros

@@ -2,7 +2,7 @@ package sic.vista.swing;
 
 import sic.util.ColoresNumerosTablaRenderer;
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,13 +11,9 @@ import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import net.sf.jasperreports.engine.JRException;
@@ -61,26 +57,26 @@ public class GUI_Caja extends javax.swing.JDialog {
     private ModeloTabla modeloTablaResumen;
     private List<Object> listaMovimientos = new ArrayList<>();
     private Caja caja;
-    private static final Logger log = Logger.getLogger(GUI_Caja.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(GUI_Caja.class.getPackage().getName());
 
-    public GUI_Caja(java.awt.Frame parent, boolean modal) {
+    public GUI_Caja(Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         this.caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-        this.iniciarTituloVentana();
+        this.setTituloVentana();
     }
 
-    public GUI_Caja(java.awt.Frame parent, boolean modal, Caja caja) {
+    public GUI_Caja(Frame parent, boolean modal, Caja caja) {
         super(parent, modal);
         initComponents();
         this.caja = caja;
-        this.iniciarTituloVentana();
+        this.setTituloVentana();
     }
 
     public GUI_Caja(Caja caja) {
         initComponents();
         this.caja = caja;
-        this.iniciarTituloVentana();
+        this.setTituloVentana();
     }
 
     private void cargarDatosBalance() {
@@ -367,7 +363,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         viewer.setVisible(true);
     }
 
-    private void iniciarTituloVentana() {
+    private void setTituloVentana() {
         if (this.caja != null) {
             this.setTitle("Arqueo de Caja - Apertura: " + formatoHora.format(this.caja.getFechaApertura()));
         } else {
@@ -375,6 +371,40 @@ public class GUI_Caja extends javax.swing.JDialog {
         }
     }
 
+    private void reporteFacturaVenta(Object movimientoDeTabla) {
+        try {
+            FacturaVenta factura = (FacturaVenta) ((Pago) movimientoDeTabla).getFactura();
+            factura.setPagos(pagoService.getPagosDeLaFactura(factura));
+            JasperPrint report = facturaService.getReporteFacturaVenta(factura);
+            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+            viewer.setSize(this.getWidth(), this.getHeight());
+            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+            viewer.setIconImage(iconoVentana.getImage());
+            viewer.setLocationRelativeTo(null);
+            JRViewer jrv = new JRViewer(report);
+            viewer.getContentPane().add(jrv);
+            viewer.setVisible(true);
+        } catch (JRException ex) {
+            String msjError = "Se produjo un error procesando el reporte.";
+            LOGGER.error(msjError + " - " + ex.getMessage());
+            JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+
+        } catch (PersistenceException ex) {
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            JOptionPane.showInternalMessageDialog(this, 
+                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void reporteFacturaCompra(Object movimientoDeTabla) {
+        FacturaCompra factura = (FacturaCompra) ((Pago) movimientoDeTabla).getFactura();
+        factura.setPagos(pagoService.getPagosDeLaFactura(factura));
+        GUI_FormFacturaCompra gui_DetalleFacturaCompra = new GUI_FormFacturaCompra(factura);
+        gui_DetalleFacturaCompra.setModal(true);
+        gui_DetalleFacturaCompra.setLocationRelativeTo(this);
+        gui_DetalleFacturaCompra.setVisible(true);
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -658,13 +688,13 @@ public class GUI_Caja extends javax.swing.JDialog {
                             this.dispose();
                         } catch (JRException ex) {
                             String msjError = "Se produjo un error procesando el reporte.";
-                            log.error(msjError + " - " + ex.getMessage());
+                            LOGGER.error(msjError + " - " + ex.getMessage());
                             JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 } catch (java.lang.NumberFormatException e) {
                     String msjError = "Monto inválido";
-                    log.error(msjError + " - " + e.getMessage());
+                    LOGGER.error(msjError + " - " + e.getMessage());
                     JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.INFORMATION_MESSAGE);
                 }
 
@@ -712,7 +742,7 @@ public class GUI_Caja extends javax.swing.JDialog {
             this.lanzarReporteCaja();
         } catch (JRException ex) {
             String msjError = "Se produjo un error procesando el reporte.";
-            log.error(msjError + " - " + ex.getMessage());
+            LOGGER.error(msjError + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_ImprimirActionPerformed
@@ -757,39 +787,4 @@ public class GUI_Caja extends javax.swing.JDialog {
     javax.swing.JTable tbl_Balance;
     private javax.swing.JTable tbl_Resumen;
     // End of variables declaration//GEN-END:variables
-
-
-    private void reporteFacturaVenta(Object movimientoDeTabla) {
-        try {
-            FacturaVenta factura = (FacturaVenta) ((Pago) movimientoDeTabla).getFactura();
-            factura.setPagos(pagoService.getPagosDeLaFactura(factura));
-            JasperPrint report = facturaService.getReporteFacturaVenta(factura);
-            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-            viewer.setSize(this.getWidth(), this.getHeight());
-            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-            viewer.setIconImage(iconoVentana.getImage());
-            viewer.setLocationRelativeTo(null);
-            JRViewer jrv = new JRViewer(report);
-            viewer.getContentPane().add(jrv);
-            viewer.setVisible(true);
-        } catch (JRException ex) {
-            String msjError = "Se produjo un error procesando el reporte.";
-            log.error(msjError + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
-
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, 
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void reporteFacturaCompra(Object movimientoDeTabla) {
-        FacturaCompra factura = (FacturaCompra) ((Pago) movimientoDeTabla).getFactura();
-        factura.setPagos(pagoService.getPagosDeLaFactura(factura));
-        GUI_FormFacturaCompra gui_DetalleFacturaCompra = new GUI_FormFacturaCompra(factura);
-        gui_DetalleFacturaCompra.setModal(true);
-        gui_DetalleFacturaCompra.setLocationRelativeTo(this);
-        gui_DetalleFacturaCompra.setVisible(true);
-    }
 }

@@ -325,6 +325,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         btn_Nueva.setEnabled(status);
         btn_Eliminar.setEnabled(status);
         btn_VerDetalle.setEnabled(status);
+        btn_VerPagos.setEnabled(status);
     }
 
     private void cargarResultadosAlTable() {
@@ -605,7 +606,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -616,7 +617,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                         .addComponent(btn_VerPagos))))
         );
 
-        panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_VerDetalle, btn_VerPagos});
+        panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_VerDetalle, btn_VerPagos});
 
         panelFiltros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
 
