@@ -552,7 +552,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
 
     private void btn_NuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_NuevoActionPerformed
         try {
-            GUI_FormFacturaCompra gui_DetalleFacturaCompra = new GUI_FormFacturaCompra();
+            GUI_DetalleFacturaCompra gui_DetalleFacturaCompra = new GUI_DetalleFacturaCompra();
             if (this.existeProveedorDisponible()) {
                 gui_DetalleFacturaCompra.setModal(true);
                 gui_DetalleFacturaCompra.setLocationRelativeTo(this);
@@ -572,7 +572,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
     private void btn_VerDetalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerDetalleActionPerformed
         if (tbl_Resultados.getSelectedRow() != -1) {
             int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
-            GUI_FormFacturaCompra gui_DetalleFacturaCompra = new GUI_FormFacturaCompra(facturas.get(indexFilaSeleccionada));
+            GUI_DetalleFacturaCompra gui_DetalleFacturaCompra = new GUI_DetalleFacturaCompra(facturas.get(indexFilaSeleccionada));
             gui_DetalleFacturaCompra.setModal(true);
             gui_DetalleFacturaCompra.setLocationRelativeTo(this);
             gui_DetalleFacturaCompra.setVisible(true);

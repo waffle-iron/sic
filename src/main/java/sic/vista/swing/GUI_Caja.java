@@ -399,7 +399,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     private void reporteFacturaCompra(Object movimientoDeTabla) {
         FacturaCompra factura = (FacturaCompra) ((Pago) movimientoDeTabla).getFactura();
         factura.setPagos(pagoService.getPagosDeLaFactura(factura));
-        GUI_FormFacturaCompra gui_DetalleFacturaCompra = new GUI_FormFacturaCompra(factura);
+        GUI_DetalleFacturaCompra gui_DetalleFacturaCompra = new GUI_DetalleFacturaCompra(factura);
         gui_DetalleFacturaCompra.setModal(true);
         gui_DetalleFacturaCompra.setLocationRelativeTo(this);
         gui_DetalleFacturaCompra.setVisible(true);
