@@ -1,3 +1,5 @@
+START TRANSACTION;
+
 USE `sic`;
 DROP TABLE IF EXISTS `pago`;
 
@@ -43,3 +45,5 @@ DROP INDEX `FKBEEB4778C25D6C23` ;
 
 ALTER TABLE `sic`.`factura`
 DROP COLUMN id_FormaDePago;
+
+COMMIT;
