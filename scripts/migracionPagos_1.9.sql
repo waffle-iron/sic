@@ -1,3 +1,5 @@
+START TRANSACTION;
+
 USE `sic`;
 DROP TABLE IF EXISTS `pago`;
 
@@ -17,20 +19,31 @@ CREATE TABLE `pago` (
   CONSTRAINT `FK3462996813BD87` FOREIGN KEY (`id_Empresa`) REFERENCES `empresa` (`id_Empresa`),
   CONSTRAINT `FK346299A77FCB65` FOREIGN KEY (`id_Factura`) REFERENCES `factura` (`id_Factura`),
   CONSTRAINT `FK346299C25D6C23` FOREIGN KEY (`id_FormaDePago`) REFERENCES `formadepago` (`id_FormaDePago`)
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO pago
 (eliminado, fecha, monto, id_Factura, id_Empresa, id_FormaDePago, nota)
 SELECT eliminada, fecha, total, factura.id_Factura, id_Empresa, id_FormaDePago, ""
 FROM facturaventa
-LEFT JOIN factura
+INNER JOIN factura
 ON factura.id_Factura=facturaventa.id_Factura;
 
 INSERT INTO pago
 (eliminado, fecha, monto, id_Factura, id_Empresa, id_FormaDePago, nota)
 SELECT eliminada, pagofacturacompra.fecha, monto, pagofacturacompra.id_Factura, id_Empresa, id_FormaDePago, nota
 FROM factura
-right JOIN pagofacturacompra
+INNER JOIN pagofacturacompra
 ON factura.id_Factura=pagofacturacompra.id_Factura;
 
 DROP TABLE pagofacturacompra;
+
+ALTER TABLE `sic`.`factura` 
+DROP FOREIGN KEY `FKBEEB4778C25D6C23`;
+
+ALTER TABLE `sic`.`factura` 
+DROP INDEX `FKBEEB4778C25D6C23` ;
+
+ALTER TABLE `sic`.`factura`
+DROP COLUMN id_FormaDePago;
+
+COMMIT;

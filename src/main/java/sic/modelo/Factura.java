@@ -80,14 +80,4 @@ public abstract class Factura implements Serializable {
     @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
     private Pedido pedido;
 
-    public String nombresFormasDePagoToString() {
-        String nombresFormasDePago = "";
-        if (this.getPagos() != null) {
-            for (Pago pago : this.getPagos()) {
-                nombresFormasDePago = nombresFormasDePago.concat(pago.getFormaDePago().getNombre() + " ");
-            }
-        }
-        return nombresFormasDePago;
-    }
-
 }

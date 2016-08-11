@@ -24,6 +24,7 @@ import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
+import sic.modelo.Pago;
 import sic.modelo.Pedido;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
@@ -33,6 +34,7 @@ import sic.repository.IFacturaRepository;
 import sic.service.IConfiguracionDelSistemaService;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
+import sic.service.IPagoService;
 import sic.service.IPedidoService;
 import sic.service.IProductoService;
 import sic.service.Movimiento;
@@ -49,19 +51,21 @@ public class FacturaServiceImpl implements IFacturaService {
     private final IConfiguracionDelSistemaService configuracionDelSistemaService;
     private final IEmpresaService empresaService;
     private final IPedidoService pedidoService;
+    private final IPagoService pagoService;
 
     @Autowired
     @Lazy
     public FacturaServiceImpl(IFacturaRepository facturaRepository,
             IProductoService productoService,
             IConfiguracionDelSistemaService configuracionDelSistemaService,
-            IEmpresaService empresaService, IPedidoService pedidoService) {
+            IEmpresaService empresaService, IPedidoService pedidoService, IPagoService pagoService) {
 
         this.facturaRepository = facturaRepository;
         this.productoService = productoService;
         this.configuracionDelSistemaService = configuracionDelSistemaService;
         this.empresaService = empresaService;
         this.pedidoService = pedidoService;
+        this.pagoService = pagoService;
     }
 
     @Override
@@ -599,6 +603,11 @@ public class FacturaServiceImpl implements IFacturaService {
         ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
                 empresaService.getEmpresaActiva().getEmpresa());
         params.put("preImpresa", cds.isUsarFacturaVentaPreImpresa());
+        String formasDePago = new String();
+        for (Pago pago : pagoService.getPagosDeLaFactura(factura)) {
+            formasDePago = formasDePago+" "+pago.getFormaDePago().getNombre()+" ";
+        }
+        params.put("formasDePago", formasDePago);
         params.put("facturaVenta", factura);
         params.put("nroComprobante", factura.getNumSerie() + "-" + factura.getNumFactura());
         params.put("logo", Utilidades.convertirByteArrayIntoImage(factura.getEmpresa().getLogo()));

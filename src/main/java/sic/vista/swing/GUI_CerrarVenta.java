@@ -58,6 +58,8 @@ public class GUI_CerrarVenta extends JDialog {
         lbl_Vendedor.setText("");
         lbl_TotalAPagar.setValue(gui_puntoDeVenta.getResultadosFactura().getTotal());
         lbl_Vuelto.setValue(0);
+        txt_AbonaCon1.setValue(gui_puntoDeVenta.getResultadosFactura().getTotal());
+                
 
         //listeners
         cmb_FormaDePago3.addKeyListener(keyHandler);
