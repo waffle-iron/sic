@@ -1,6 +1,7 @@
 package sic.vista.swing;
 
 import java.util.Calendar;
+import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -29,7 +30,8 @@ public class GUI_DetallePago extends JDialog {
         this.initComponents();
         this.setIcon();
         facturaRelacionada = factura;
-        txt_Monto.setValue(0.00);
+        dc_Fecha.setDate(new Date());
+        txt_Monto.setValue(0.00);        
         this.setModelSpinner();
     }
 
@@ -88,7 +90,6 @@ public class GUI_DetallePago extends JDialog {
         lbl_FormaDePago = new javax.swing.JLabel();
         spinner_Hora = new javax.swing.JSpinner();
         spinner_Minutos = new javax.swing.JSpinner();
-        lbl_Hora = new javax.swing.JLabel();
         btn_Guardar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -104,7 +105,7 @@ public class GUI_DetallePago extends JDialog {
 
         lbl_Fecha.setForeground(java.awt.Color.red);
         lbl_Fecha.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lbl_Fecha.setText("* Fecha:");
+        lbl_Fecha.setText("* Fecha y Hora:");
 
         dc_Fecha.setDateFormatString("dd/MM/yyyy");
 
@@ -122,10 +123,6 @@ public class GUI_DetallePago extends JDialog {
         lbl_FormaDePago.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_FormaDePago.setText("* Forma de Pago:");
 
-        lbl_Hora.setForeground(java.awt.Color.red);
-        lbl_Hora.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lbl_Hora.setText("* Hora:");
-
         javax.swing.GroupLayout panelGeneralLayout = new javax.swing.GroupLayout(panelGeneral);
         panelGeneral.setLayout(panelGeneralLayout);
         panelGeneralLayout.setHorizontalGroup(
@@ -142,15 +139,13 @@ public class GUI_DetallePago extends JDialog {
                     .addComponent(txt_Monto, javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(cmb_FormaDePago, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(panelGeneralLayout.createSequentialGroup()
-                        .addComponent(dc_Fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(lbl_Hora)
-                        .addGap(0, 0, 0)
+                        .addComponent(dc_Fecha, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(spinner_Hora, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(spinner_Minutos, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(txt_Nota))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         panelGeneralLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {spinner_Hora, spinner_Minutos});
@@ -164,8 +159,7 @@ public class GUI_DetallePago extends JDialog {
                     .addComponent(lbl_Fecha)
                     .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(spinner_Minutos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(spinner_Hora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lbl_Hora)))
+                        .addComponent(spinner_Hora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_FormaDePago)
@@ -196,11 +190,11 @@ public class GUI_DetallePago extends JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_Guardar)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panelGeneral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btn_Guardar)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -230,7 +224,6 @@ public class GUI_DetallePago extends JDialog {
     private com.toedter.calendar.JDateChooser dc_Fecha;
     private javax.swing.JLabel lbl_Fecha;
     private javax.swing.JLabel lbl_FormaDePago;
-    private javax.swing.JLabel lbl_Hora;
     private javax.swing.JLabel lbl_Monto;
     private javax.swing.JLabel lbl_Nota;
     private javax.swing.JPanel panelGeneral;
