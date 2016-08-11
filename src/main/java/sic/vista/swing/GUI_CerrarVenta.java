@@ -103,9 +103,17 @@ public class GUI_CerrarVenta extends JDialog {
 
     private void cargarFormasDePago() {
         cmb_FormaDePago1.removeAllItems();
+        cmb_FormaDePago2.removeAllItems();
+        cmb_FormaDePago3.removeAllItems();
         List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(gui_puntoDeVenta.getEmpresa());
         for (FormaDePago formaDePago : formasDePago) {
             cmb_FormaDePago1.addItem(formaDePago);
+        }
+        for (FormaDePago formaDePago : formasDePago) {
+            cmb_FormaDePago2.addItem(formaDePago);
+        }
+        for (FormaDePago formaDePago : formasDePago) {
+            cmb_FormaDePago3.addItem(formaDePago);
         }
     }
 
@@ -625,7 +633,7 @@ public class GUI_CerrarVenta extends JDialog {
         }
         double totalAPagar = Double.parseDouble((lbl_TotalAPagar.getText().substring(1)).replaceAll(",", ""));
         if (totalPagos < totalAPagar) {
-            int reply = JOptionPane.showConfirmDialog(this, "El monto pagado es inferior al total a pagar.\n ¿Desea continuar?", "Aviso", JOptionPane.YES_NO_OPTION);
+            int reply = JOptionPane.showConfirmDialog(this, "Los montos ingresados no cubren el total a pagar.\n¿Desea continuar?", "Aviso", JOptionPane.YES_NO_OPTION);
             if (reply == JOptionPane.YES_OPTION) {
                 this.finalizarVenta();
             }
@@ -698,27 +706,18 @@ public class GUI_CerrarVenta extends JDialog {
     }//GEN-LAST:event_txt_AbonaCon3KeyReleased
 
     private void chk_FormaDePago1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_FormaDePago1ItemStateChanged
-        cmb_FormaDePago1.setEnabled(chk_FormaDePago1.isSelected());        
+        cmb_FormaDePago1.setEnabled(chk_FormaDePago1.isSelected());   
+        txt_AbonaCon1.setEnabled(chk_FormaDePago1.isSelected());
     }//GEN-LAST:event_chk_FormaDePago1ItemStateChanged
 
     private void chk_FormaDePago2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_FormaDePago2ItemStateChanged
         cmb_FormaDePago2.setEnabled(chk_FormaDePago2.isSelected());
-        cmb_FormaDePago2.removeAllItems();
-        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(gui_puntoDeVenta.getEmpresa());
-        for (FormaDePago formaDePago : formasDePago) {
-            cmb_FormaDePago2.addItem(formaDePago);
-        }
-        txt_AbonaCon2.setEnabled(!txt_AbonaCon2.isEnabled());
+        txt_AbonaCon2.setEnabled(chk_FormaDePago2.isSelected());
     }//GEN-LAST:event_chk_FormaDePago2ItemStateChanged
 
     private void chk_FormaDePago3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_FormaDePago3ItemStateChanged
         cmb_FormaDePago3.setEnabled(chk_FormaDePago3.isSelected());
-        cmb_FormaDePago3.removeAllItems();
-        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(gui_puntoDeVenta.getEmpresa());
-        for (FormaDePago formaDePago : formasDePago) {
-            cmb_FormaDePago3.addItem(formaDePago);
-        }
-        txt_AbonaCon3.setEnabled(!txt_AbonaCon3.isEnabled());
+        txt_AbonaCon3.setEnabled(chk_FormaDePago3.isSelected());
     }//GEN-LAST:event_chk_FormaDePago3ItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
