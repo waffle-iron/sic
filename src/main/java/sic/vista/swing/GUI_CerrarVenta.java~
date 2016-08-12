@@ -38,7 +38,7 @@ import sic.service.ServiceException;
 public class GUI_CerrarVenta extends JDialog {
 
     private boolean exito;
-    private final GUI_PuntoDeVenta gui_puntoDeVenta;
+    private final GUI_PuntoDeVenta gui_puntoDeVenta;    
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
@@ -59,6 +59,7 @@ public class GUI_CerrarVenta extends JDialog {
         lbl_TotalAPagar.setValue(gui_puntoDeVenta.getResultadosFactura().getTotal());
         lbl_Vuelto.setValue(0);
         txt_AbonaCon1.setValue(gui_puntoDeVenta.getResultadosFactura().getTotal());
+                
 
         //listeners
         cmb_FormaDePago3.addKeyListener(keyHandler);
@@ -133,9 +134,20 @@ public class GUI_CerrarVenta extends JDialog {
 
     private void calcularVuelto() {
         try {
-            txt_AbonaCon.commitEdit();
-            double montoRecibido = Double.parseDouble((txt_AbonaCon.getText()));
-            double vuelto = facturaService.calcularVuelto(gui_puntoDeVenta.getResultadosFactura().getTotal(), montoRecibido);
+            txt_AbonaCon1.commitEdit();
+            txt_AbonaCon2.commitEdit();
+            txt_AbonaCon3.commitEdit();
+            double montoAbonado = 0.0;
+            if (chk_FormaDePago1.isSelected()) {
+                montoAbonado += Double.parseDouble((txt_AbonaCon1.getText()).replaceAll(",", ""));
+            }
+            if (chk_FormaDePago2.isSelected()) {
+                montoAbonado += Double.parseDouble((txt_AbonaCon2.getText()).replaceAll(",", ""));
+            }
+            if (chk_FormaDePago3.isSelected()) {
+                montoAbonado += Double.parseDouble((txt_AbonaCon3.getText()).replaceAll(",", ""));
+            }
+            double vuelto = facturaService.calcularVuelto(gui_puntoDeVenta.getResultadosFactura().getTotal(), montoAbonado);
             lbl_Vuelto.setValue(vuelto);
 
         } catch (ParseException ex) {
@@ -331,7 +343,7 @@ public class GUI_CerrarVenta extends JDialog {
         chk_condicionDividir = new javax.swing.JCheckBox();
         separador = new javax.swing.JSeparator();
         lbl_Total1 = new javax.swing.JLabel();
-        txt_AbonaCon = new javax.swing.JFormattedTextField();
+        txt_AbonaCon4 = new javax.swing.JFormattedTextField();
         btn_Finalizar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -366,6 +378,19 @@ public class GUI_CerrarVenta extends JDialog {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_AbonaCon1FocusGained(evt);
             }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txt_AbonaCon1FocusLost(evt);
+            }
+        });
+        txt_AbonaCon1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_AbonaCon1ActionPerformed(evt);
+            }
+        });
+        txt_AbonaCon1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_AbonaCon1KeyReleased(evt);
+            }
         });
 
         chk_FormaDePago2.setText("Forma de Pago #2:");
@@ -382,6 +407,19 @@ public class GUI_CerrarVenta extends JDialog {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_AbonaCon2FocusGained(evt);
             }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txt_AbonaCon2FocusLost(evt);
+            }
+        });
+        txt_AbonaCon2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_AbonaCon2ActionPerformed(evt);
+            }
+        });
+        txt_AbonaCon2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_AbonaCon2KeyReleased(evt);
+            }
         });
 
         chk_FormaDePago3.setText("Forma de Pago #3:");
@@ -397,6 +435,19 @@ public class GUI_CerrarVenta extends JDialog {
         txt_AbonaCon3.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_AbonaCon3FocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txt_AbonaCon3FocusLost(evt);
+            }
+        });
+        txt_AbonaCon3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_AbonaCon3ActionPerformed(evt);
+            }
+        });
+        txt_AbonaCon3.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_AbonaCon3KeyReleased(evt);
             }
         });
 
@@ -425,17 +476,25 @@ public class GUI_CerrarVenta extends JDialog {
 
         lbl_Total1.setText("Abona con:");
 
-        txt_AbonaCon.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        txt_AbonaCon.setText("0.00");
-        txt_AbonaCon.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
-        txt_AbonaCon.addFocusListener(new java.awt.event.FocusAdapter() {
+        txt_AbonaCon4.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        txt_AbonaCon4.setText("0.00");
+        txt_AbonaCon4.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
+        txt_AbonaCon4.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                txt_AbonaConFocusGained(evt);
+                txt_AbonaCon4FocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txt_AbonaCon4FocusLost(evt);
             }
         });
-        txt_AbonaCon.addKeyListener(new java.awt.event.KeyAdapter() {
+        txt_AbonaCon4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_AbonaCon4ActionPerformed(evt);
+            }
+        });
+        txt_AbonaCon4.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                txt_AbonaConKeyReleased(evt);
+                txt_AbonaCon4KeyReleased(evt);
             }
         });
 
@@ -468,7 +527,7 @@ public class GUI_CerrarVenta extends JDialog {
                                     .addComponent(lbl_Total1, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(0, 0, 0)
                         .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txt_AbonaCon, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
+                            .addComponent(txt_AbonaCon4, javax.swing.GroupLayout.DEFAULT_SIZE, 141, Short.MAX_VALUE)
                             .addComponent(lbl_TotalAPagar)
                             .addComponent(lbl_Vuelto)))
                     .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -496,7 +555,7 @@ public class GUI_CerrarVenta extends JDialog {
                 .addContainerGap())
         );
 
-        panelGeneralLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_Devolucion, lbl_Total, lbl_Total1, lbl_TotalAPagar, lbl_Vuelto, txt_AbonaCon});
+        panelGeneralLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_Devolucion, lbl_Total, lbl_Total1, lbl_TotalAPagar, lbl_Vuelto, txt_AbonaCon4});
 
         panelGeneralLayout.setVerticalGroup(
             panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -540,7 +599,7 @@ public class GUI_CerrarVenta extends JDialog {
                     .addGroup(panelGeneralLayout.createSequentialGroup()
                         .addComponent(lbl_TotalAPagar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txt_AbonaCon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txt_AbonaCon4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbl_Vuelto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -550,7 +609,7 @@ public class GUI_CerrarVenta extends JDialog {
 
         panelGeneralLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {txt_AbonaCon1, txt_AbonaCon3});
 
-        panelGeneralLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lbl_Devolucion, lbl_Total, lbl_Total1, lbl_TotalAPagar, lbl_Vuelto, txt_AbonaCon});
+        panelGeneralLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lbl_Devolucion, lbl_Total, lbl_Total1, lbl_TotalAPagar, lbl_Vuelto, txt_AbonaCon4});
 
         btn_Finalizar.setForeground(java.awt.Color.blue);
         btn_Finalizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Accept_16x16.png"))); // NOI18N
@@ -604,7 +663,7 @@ public class GUI_CerrarVenta extends JDialog {
     }//GEN-LAST:event_formWindowOpened
 
     private void btn_FinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FinalizarActionPerformed
-        double totalPagos = 0.0;
+        double totalPagos = Double.parseDouble(s);
         if (chk_FormaDePago1.isSelected()) {
             totalPagos += Double.parseDouble((txt_AbonaCon1.getText()).replaceAll(",", ""));
         }
@@ -625,6 +684,18 @@ public class GUI_CerrarVenta extends JDialog {
         }
     }//GEN-LAST:event_btn_FinalizarActionPerformed
 
+    private void txt_AbonaCon1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_AbonaCon1KeyReleased
+        this.calcularVuelto();
+    }//GEN-LAST:event_txt_AbonaCon1KeyReleased
+
+    private void txt_AbonaCon1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_AbonaCon1ActionPerformed
+        this.calcularVuelto();
+    }//GEN-LAST:event_txt_AbonaCon1ActionPerformed
+
+    private void txt_AbonaCon1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_AbonaCon1FocusLost
+        this.calcularVuelto();
+    }//GEN-LAST:event_txt_AbonaCon1FocusLost
+
     private void txt_AbonaCon1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_AbonaCon1FocusGained
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -633,6 +704,27 @@ public class GUI_CerrarVenta extends JDialog {
             }
         });
     }//GEN-LAST:event_txt_AbonaCon1FocusGained
+
+    private void txt_AbonaCon2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_AbonaCon2FocusGained
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                txt_AbonaCon2.selectAll();
+            }
+        });
+    }//GEN-LAST:event_txt_AbonaCon2FocusGained
+
+    private void txt_AbonaCon2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_AbonaCon2FocusLost
+        this.calcularVuelto();
+    }//GEN-LAST:event_txt_AbonaCon2FocusLost
+
+    private void txt_AbonaCon2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_AbonaCon2ActionPerformed
+        this.calcularVuelto();
+    }//GEN-LAST:event_txt_AbonaCon2ActionPerformed
+
+    private void txt_AbonaCon2KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_AbonaCon2KeyReleased
+        this.calcularVuelto();
+    }//GEN-LAST:event_txt_AbonaCon2KeyReleased
 
     private void txt_AbonaCon3FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_AbonaCon3FocusGained
         SwingUtilities.invokeLater(new Runnable() {
@@ -643,8 +735,20 @@ public class GUI_CerrarVenta extends JDialog {
         });
     }//GEN-LAST:event_txt_AbonaCon3FocusGained
 
+    private void txt_AbonaCon3FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_AbonaCon3FocusLost
+        this.calcularVuelto();
+    }//GEN-LAST:event_txt_AbonaCon3FocusLost
+
+    private void txt_AbonaCon3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_AbonaCon3ActionPerformed
+        this.calcularVuelto();
+    }//GEN-LAST:event_txt_AbonaCon3ActionPerformed
+
+    private void txt_AbonaCon3KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_AbonaCon3KeyReleased
+        this.calcularVuelto();
+    }//GEN-LAST:event_txt_AbonaCon3KeyReleased
+
     private void chk_FormaDePago1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_FormaDePago1ItemStateChanged
-        cmb_FormaDePago1.setEnabled(chk_FormaDePago1.isSelected());
+        cmb_FormaDePago1.setEnabled(chk_FormaDePago1.isSelected());   
         txt_AbonaCon1.setEnabled(chk_FormaDePago1.isSelected());
     }//GEN-LAST:event_chk_FormaDePago1ItemStateChanged
 
@@ -658,27 +762,21 @@ public class GUI_CerrarVenta extends JDialog {
         txt_AbonaCon3.setEnabled(chk_FormaDePago3.isSelected());
     }//GEN-LAST:event_chk_FormaDePago3ItemStateChanged
 
-    private void txt_AbonaConFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_AbonaConFocusGained
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                txt_AbonaCon.selectAll();
-            }
-        });
-    }//GEN-LAST:event_txt_AbonaConFocusGained
+    private void txt_AbonaCon4FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_AbonaCon4FocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_AbonaCon4FocusGained
 
-    private void txt_AbonaCon2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_AbonaCon2FocusGained
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                txt_AbonaCon2.selectAll();
-            }
-        });
-    }//GEN-LAST:event_txt_AbonaCon2FocusGained
+    private void txt_AbonaCon4FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_AbonaCon4FocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_AbonaCon4FocusLost
 
-    private void txt_AbonaConKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_AbonaConKeyReleased
-        this.calcularVuelto();
-    }//GEN-LAST:event_txt_AbonaConKeyReleased
+    private void txt_AbonaCon4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_AbonaCon4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_AbonaCon4ActionPerformed
+
+    private void txt_AbonaCon4KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_AbonaCon4KeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_AbonaCon4KeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Finalizar;
@@ -706,5 +804,6 @@ public class GUI_CerrarVenta extends JDialog {
     private javax.swing.JFormattedTextField txt_AbonaCon1;
     private javax.swing.JFormattedTextField txt_AbonaCon2;
     private javax.swing.JFormattedTextField txt_AbonaCon3;
+    private javax.swing.JFormattedTextField txt_AbonaCon4;
     // End of variables declaration//GEN-END:variables
 }
