@@ -35,7 +35,7 @@ public class GUI_DetalleCliente extends JDialog {
     private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
     private final IClienteService clienteService = appContext.getBean(IClienteService.class);
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
-    private static final Logger log = Logger.getLogger(GUI_DetalleCliente.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(GUI_DetalleCliente.class.getPackage().getName());
 
     public GUI_DetalleCliente() {
         this.initComponents();
@@ -88,7 +88,7 @@ public class GUI_DetalleCliente extends JDialog {
             this.cargarComboBoxPaises();
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -238,11 +238,12 @@ public class GUI_DetalleCliente extends JDialog {
         panel2Layout.setHorizontalGroup(
             panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel2Layout.createSequentialGroup()
-                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbl_Pais, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_Direccion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_Provincia, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_Localidad, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lbl_Provincia, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_Pais, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_Direccion, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_Localidad, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panel2Layout.createSequentialGroup()
@@ -313,19 +314,20 @@ public class GUI_DetalleCliente extends JDialog {
         panel3Layout.setHorizontalGroup(
             panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel3Layout.createSequentialGroup()
-                .addGroup(panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lbl_Email, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_Contacto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_TelSecundario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_FechaAlta, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_TelPrimario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addGroup(panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lbl_Email, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_TelPrimario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_TelSecundario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_Contacto, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_FechaAlta, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txt_TelPrimario, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_TelSecundario, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_Contacto, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_Email, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(dc_FechaAlta, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))
+                .addGroup(panel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txt_Email, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txt_Contacto, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txt_TelSecundario, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(dc_FechaAlta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txt_TelPrimario, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addContainerGap())
         );
         panel3Layout.setVerticalGroup(
@@ -386,20 +388,21 @@ public class GUI_DetalleCliente extends JDialog {
         panel1Layout.setHorizontalGroup(
             panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panel1Layout.createSequentialGroup()
-                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbl_NombreFantasia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_CondicionIVA, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
+                .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(lbl_RazonSocial, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_CondicionIVA, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_NombreFantasia, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbl_Id_Fiscal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(txt_NombreFantasia)
                     .addGroup(panel1Layout.createSequentialGroup()
-                        .addComponent(cmb_CondicionIVA, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(0, 0, 0)
+                        .addComponent(cmb_CondicionIVA, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(btn_NuevaCondicionIVA))
-                    .addComponent(txt_Id_Fiscal)
-                    .addComponent(txt_RazonSocial, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(txt_NombreFantasia)
+                    .addComponent(txt_RazonSocial)
+                    .addComponent(txt_Id_Fiscal, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap())
         );
         panel1Layout.setVerticalGroup(
@@ -479,7 +482,7 @@ public class GUI_DetalleCliente extends JDialog {
             this.cargarComboBoxCondicionesIVA();
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevaCondicionIVAActionPerformed
@@ -495,7 +498,7 @@ public class GUI_DetalleCliente extends JDialog {
             this.cargarComboBoxProvinciasDelPais((Pais) cmb_Pais.getSelectedItem());
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoPaisActionPerformed
@@ -510,7 +513,7 @@ public class GUI_DetalleCliente extends JDialog {
             this.cargarComboBoxProvinciasDelPais((Pais) cmb_Pais.getSelectedItem());
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevaProvinciaActionPerformed
@@ -521,7 +524,7 @@ public class GUI_DetalleCliente extends JDialog {
                 this.cargarComboBoxProvinciasDelPais((Pais) cmb_Pais.getSelectedItem());
 
             } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+                LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
                 JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -537,7 +540,7 @@ public class GUI_DetalleCliente extends JDialog {
             this.cargarComboBoxLocalidadesDeLaProvincia((Provincia) cmb_Provincia.getSelectedItem());
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevaLocalidadActionPerformed
@@ -548,7 +551,7 @@ public class GUI_DetalleCliente extends JDialog {
                 this.cargarComboBoxLocalidadesDeLaProvincia((Provincia) cmb_Provincia.getSelectedItem());
 
             } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+                LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
                 JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
             }
 
@@ -607,7 +610,7 @@ public class GUI_DetalleCliente extends JDialog {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_GuardarActionPerformed
@@ -623,7 +626,7 @@ public class GUI_DetalleCliente extends JDialog {
             }
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
