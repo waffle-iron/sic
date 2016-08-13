@@ -4,6 +4,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
@@ -21,29 +22,32 @@ import sic.AppContextProvider;
 import sic.modelo.Factura;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
+import sic.modelo.Pago;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
+import sic.service.EstadoPedido;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
+import sic.service.IPagoService;
+import sic.service.IPedidoService;
 import sic.service.ITransportistaService;
 import sic.service.IUsuarioService;
 import sic.service.ServiceException;
-import sic.service.*;
 
 public class GUI_CerrarVenta extends JDialog {
 
-    private final GUI_PuntoDeVenta gui_puntoDeVenta;
     private boolean exito;
+    private final GUI_PuntoDeVenta gui_puntoDeVenta;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
+    private final IPagoService pagoService = appContext.getBean(IPagoService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
-
-    private static final Logger log = Logger.getLogger(GUI_CerrarVenta.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(GUI_CerrarVenta.class.getPackage().getName());
 
     public GUI_CerrarVenta(JDialog parent, boolean modal) {
         super(parent, modal);
@@ -54,20 +58,13 @@ public class GUI_CerrarVenta extends JDialog {
         lbl_Vendedor.setText("");
         lbl_TotalAPagar.setValue(gui_puntoDeVenta.getResultadosFactura().getTotal());
         lbl_Vuelto.setValue(0);
-
-        //verificación de Usuario
-        if (!usuarioService.getUsuarioActivo().getUsuario().isPermisosAdministrador()) {
-            btn_nuevaFormaDePago.setEnabled(false);
-            btn_nuevoTransporte.setEnabled(false);
-        }
+        txt_MontoPago1.setValue(gui_puntoDeVenta.getResultadosFactura().getTotal());
 
         //listeners
-        cmb_FormaDePago.addKeyListener(keyHandler);
+        cmb_FormaDePago3.addKeyListener(keyHandler);
         cmb_Transporte.addKeyListener(keyHandler);
-        txt_AbonaCon.addKeyListener(keyHandler);
+        txt_MontoPago1.addKeyListener(keyHandler);
         btn_Finalizar.addKeyListener(keyHandler);
-        btn_nuevaFormaDePago.addKeyListener(keyHandler);
-        btn_nuevoTransporte.addKeyListener(keyHandler);
         if (gui_puntoDeVenta.getTipoDeComprobante().equals("Factura A") || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura B") || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura C")) {
             this.chk_condicionDividir.setEnabled(true);
         }
@@ -104,11 +101,15 @@ public class GUI_CerrarVenta extends JDialog {
     }
 
     private void cargarFormasDePago() {
-        cmb_FormaDePago.removeAllItems();
+        cmb_FormaDePago1.removeAllItems();
+        cmb_FormaDePago2.removeAllItems();
+        cmb_FormaDePago3.removeAllItems();
         List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(gui_puntoDeVenta.getEmpresa());
         for (FormaDePago formaDePago : formasDePago) {
-            cmb_FormaDePago.addItem(formaDePago);
-        }
+            cmb_FormaDePago1.addItem(formaDePago);
+            cmb_FormaDePago2.addItem(formaDePago);
+            cmb_FormaDePago3.addItem(formaDePago);
+        }        
     }
 
     private void cargarTransportistas() {
@@ -121,19 +122,21 @@ public class GUI_CerrarVenta extends JDialog {
 
     private Factura guardarFactura(Factura facturaVenta) throws ServiceException {
         facturaService.guardar(facturaVenta);
-        return facturaService.getFacturaVentaPorTipoSerieNum(facturaVenta.getTipoFactura(), facturaVenta.getNumSerie(), facturaVenta.getNumFactura());
+        Factura facturaGuardada = facturaService.getFacturaVentaPorTipoSerieNum(facturaVenta.getTipoFactura(), facturaVenta.getNumSerie(), facturaVenta.getNumFactura());
+        facturaGuardada.setPagos(pagoService.getPagosDeLaFactura(facturaGuardada));
+        return facturaGuardada;
     }
 
     private void calcularVuelto() {
         try {
             txt_AbonaCon.commitEdit();
-            double montoAbonado = Double.parseDouble(txt_AbonaCon.getValue().toString());
-            double vuelto = facturaService.calcularVuelto(gui_puntoDeVenta.getResultadosFactura().getTotal(), montoAbonado);
+            double montoRecibido = Double.parseDouble((txt_AbonaCon.getText()));
+            double vuelto = facturaService.calcularVuelto(gui_puntoDeVenta.getResultadosFactura().getTotal(), montoRecibido);
             lbl_Vuelto.setValue(vuelto);
 
         } catch (ParseException ex) {
             String msjError = "Se produjo un error analizando los campos.";
-            log.error(msjError + " - " + ex.getMessage());
+            LOGGER.error(msjError + " - " + ex.getMessage());
         }
     }
 
@@ -143,7 +146,13 @@ public class GUI_CerrarVenta extends JDialog {
         facturaVenta.setTipoFactura(gui_puntoDeVenta.getTipoDeComprobante().charAt(gui_puntoDeVenta.getTipoDeComprobante().length() - 1));
         facturaVenta.setNumSerie(1);
         facturaVenta.setNumFactura(facturaService.calcularNumeroFactura(gui_puntoDeVenta.getTipoDeComprobante(), 1));
-        facturaVenta.setFormaPago((FormaDePago) cmb_FormaDePago.getSelectedItem());
+        List<Pago> pagos = this.construirListaPagos();
+        double montoPagado = 0.0;
+        for (Pago pago : pagos) {
+            pago.setFactura(facturaVenta);
+            montoPagado += pago.getMonto();
+        }
+        facturaVenta.setPagos(pagos);
         facturaVenta.setFechaVencimiento(gui_puntoDeVenta.getFechaVencimiento());
         facturaVenta.setTransportista((Transportista) cmb_Transporte.getSelectedItem());
         List<RenglonFactura> lineasFactura = new ArrayList<>(gui_puntoDeVenta.getRenglones());
@@ -162,7 +171,7 @@ public class GUI_CerrarVenta extends JDialog {
         facturaVenta.setImpuestoInterno_neto(gui_puntoDeVenta.getResultadosFactura().getImpuestoInterno_neto());
         facturaVenta.setTotal(gui_puntoDeVenta.getResultadosFactura().getTotal());
         facturaVenta.setObservaciones(gui_puntoDeVenta.getTxta_Observaciones().getText().trim());
-        facturaVenta.setPagada(true);
+        facturaVenta.setPagada((facturaVenta.getTotal() - montoPagado) <= 0);
         facturaVenta.setEmpresa(gui_puntoDeVenta.getEmpresa());
         facturaVenta.setEliminada(false);
         facturaVenta.setCliente(gui_puntoDeVenta.getCliente());
@@ -171,259 +180,50 @@ public class GUI_CerrarVenta extends JDialog {
         return facturaVenta;
     }
 
-    /**
-     * Clase interna para manejar las hotkeys
-     */
-    class HotKeysHandler extends KeyAdapter {
+    private void setEstadosCmbFormaDePago() {
+        chk_FormaDePago1.setSelected(true);
+        cmb_FormaDePago1.setSelectedItem(formaDePagoService.getFormaDePagoPredeterminada(gui_puntoDeVenta.getEmpresa()));
+        cmb_FormaDePago2.setEnabled(false);
+        txt_MontoPago2.setEnabled(false);
+        cmb_FormaDePago2.setSelectedItem(formaDePagoService.getFormaDePagoPredeterminada(gui_puntoDeVenta.getEmpresa()));
+        cmb_FormaDePago3.setSelectedItem(formaDePagoService.getFormaDePagoPredeterminada(gui_puntoDeVenta.getEmpresa()));
+        cmb_FormaDePago3.setEnabled(false);
+        txt_MontoPago3.setEnabled(false);
+    }
 
-        @Override
-        public void keyPressed(KeyEvent evt) {
-            if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                dispose();
-            }
-
-            if (evt.getKeyCode() == KeyEvent.VK_ENTER && evt.getSource() == btn_Finalizar) {
-                btn_FinalizarActionPerformed(null);
-            }
+    private List<Pago> construirListaPagos() {
+        List<Pago> pagos = new ArrayList<>();
+        if (chk_FormaDePago1.isSelected()) {
+            Pago pago1 = new Pago();
+            pago1.setEmpresa(gui_puntoDeVenta.getEmpresa());
+            pago1.setFormaDePago((FormaDePago) cmb_FormaDePago1.getSelectedItem());
+            pago1.setFecha(new Date());
+            pago1.setMonto(Double.parseDouble(txt_MontoPago1.getValue().toString()));
+            pago1.setNota("");
+            pagos.add(pago1);
         }
-    };
-
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
-        panelGeneral = new javax.swing.JPanel();
-        lbl_FormaDePago = new javax.swing.JLabel();
-        cmb_FormaDePago = new javax.swing.JComboBox();
-        lbl_Transporte = new javax.swing.JLabel();
-        cmb_Transporte = new javax.swing.JComboBox();
-        lbl_Cambio = new javax.swing.JLabel();
-        lbl_Total = new javax.swing.JLabel();
-        lbl_Pago = new javax.swing.JLabel();
-        txt_AbonaCon = new javax.swing.JFormattedTextField();
-        lbl_Devolucion = new javax.swing.JLabel();
-        lbl_Vendor = new javax.swing.JLabel();
-        lbl_Vendedor = new javax.swing.JLabel();
-        separador = new javax.swing.JSeparator();
-        btn_Finalizar = new javax.swing.JButton();
-        lbl_TotalAPagar = new javax.swing.JFormattedTextField();
-        lbl_Vuelto = new javax.swing.JFormattedTextField();
-        chk_condicionDividir = new javax.swing.JCheckBox();
-        btn_nuevaFormaDePago = new javax.swing.JButton();
-        btn_nuevoTransporte = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Cerrar Venta");
-        setResizable(false);
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowOpened(java.awt.event.WindowEvent evt) {
-                formWindowOpened(evt);
-            }
-        });
-
-        lbl_FormaDePago.setText("Forma de Pago:");
-
-        lbl_Transporte.setText("Transporte:");
-
-        lbl_Cambio.setText("Cambio:");
-
-        lbl_Total.setText("Total a pagar:");
-
-        lbl_Pago.setText("Abona con:");
-
-        txt_AbonaCon.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
-        txt_AbonaCon.setText("0");
-        txt_AbonaCon.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
-        txt_AbonaCon.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txt_AbonaConFocusGained(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                txt_AbonaConFocusLost(evt);
-            }
-        });
-        txt_AbonaCon.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_AbonaConActionPerformed(evt);
-            }
-        });
-        txt_AbonaCon.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txt_AbonaConKeyReleased(evt);
-            }
-        });
-
-        lbl_Devolucion.setText("Vuelto:");
-
-        lbl_Vendor.setText("Vendedor:");
-
-        lbl_Vendedor.setForeground(new java.awt.Color(29, 156, 37));
-        lbl_Vendedor.setText("XXXXXXXXXXXXXXXXXXXXXX");
-
-        btn_Finalizar.setForeground(java.awt.Color.blue);
-        btn_Finalizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Accept_16x16.png"))); // NOI18N
-        btn_Finalizar.setText("Finalizar");
-        btn_Finalizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_FinalizarActionPerformed(evt);
-            }
-        });
-
-        lbl_TotalAPagar.setEditable(false);
-        lbl_TotalAPagar.setForeground(new java.awt.Color(29, 156, 37));
-        lbl_TotalAPagar.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
-        lbl_TotalAPagar.setText("0.00");
-        lbl_TotalAPagar.setFocusable(false);
-        lbl_TotalAPagar.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
-
-        lbl_Vuelto.setEditable(false);
-        lbl_Vuelto.setForeground(new java.awt.Color(29, 156, 37));
-        lbl_Vuelto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
-        lbl_Vuelto.setText("0.00");
-        lbl_Vuelto.setFocusable(false);
-        lbl_Vuelto.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
-
-        chk_condicionDividir.setText("Dividir Factura");
-        chk_condicionDividir.setEnabled(false);
-
-        btn_nuevaFormaDePago.setForeground(java.awt.Color.blue);
-        btn_nuevaFormaDePago.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddWallet_16x16.png"))); // NOI18N
-        btn_nuevaFormaDePago.setText("Nueva");
-        btn_nuevaFormaDePago.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_nuevaFormaDePagoActionPerformed(evt);
-            }
-        });
-
-        btn_nuevoTransporte.setForeground(java.awt.Color.blue);
-        btn_nuevoTransporte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddTruck_16x16.png"))); // NOI18N
-        btn_nuevoTransporte.setText("Nuevo");
-        btn_nuevoTransporte.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_nuevoTransporteActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout panelGeneralLayout = new javax.swing.GroupLayout(panelGeneral);
-        panelGeneral.setLayout(panelGeneralLayout);
-        panelGeneralLayout.setHorizontalGroup(
-            panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(separador, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 517, Short.MAX_VALUE)
-            .addGroup(panelGeneralLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelGeneralLayout.createSequentialGroup()
-                        .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(lbl_FormaDePago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbl_Transporte, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbl_Vendor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelGeneralLayout.createSequentialGroup()
-                                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(cmb_FormaDePago, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(cmb_Transporte, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(0, 0, 0)
-                                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btn_nuevaFormaDePago, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(btn_nuevoTransporte, javax.swing.GroupLayout.Alignment.TRAILING)))
-                            .addComponent(lbl_Vendedor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(panelGeneralLayout.createSequentialGroup()
-                        .addComponent(lbl_Cambio, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panelGeneralLayout.createSequentialGroup()
-                                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(lbl_Pago, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(lbl_Total, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(lbl_Devolucion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txt_AbonaCon, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lbl_Vuelto)
-                            .addComponent(lbl_TotalAPagar, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelGeneralLayout.createSequentialGroup()
-                        .addComponent(chk_condicionDividir)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn_Finalizar)))
-                .addContainerGap())
-        );
-        panelGeneralLayout.setVerticalGroup(
-            panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelGeneralLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbl_Vendor)
-                    .addComponent(lbl_Vendedor))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(lbl_FormaDePago)
-                    .addComponent(cmb_FormaDePago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_nuevaFormaDePago))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(lbl_Transporte)
-                    .addComponent(cmb_Transporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_nuevoTransporte))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(separador, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(lbl_Total)
-                    .addComponent(lbl_Cambio)
-                    .addComponent(lbl_TotalAPagar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(lbl_Pago)
-                    .addComponent(txt_AbonaCon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(lbl_Devolucion)
-                    .addComponent(lbl_Vuelto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_Finalizar)
-                    .addComponent(chk_condicionDividir))
-                .addContainerGap())
-        );
-
-        panelGeneralLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_nuevaFormaDePago, cmb_FormaDePago});
-
-        panelGeneralLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_nuevoTransporte, cmb_Transporte});
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelGeneral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        try {
-            this.cargarFormasDePago();
-            this.cargarTransportistas();
-            //set predeterminado
-            cmb_Transporte.setSelectedIndex(0);
-            cmb_FormaDePago.setSelectedItem(formaDePagoService.getFormaDePagoPredeterminada(gui_puntoDeVenta.getEmpresa()));
-            lbl_Vendedor.setText(usuarioService.getUsuarioActivo().getUsuario().getNombre());
-            txt_AbonaCon.requestFocus();
-
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-            this.dispose();
+        if (chk_FormaDePago2.isSelected()) {
+            Pago pago2 = new Pago();
+            pago2.setEmpresa(gui_puntoDeVenta.getEmpresa());
+            pago2.setFormaDePago((FormaDePago) cmb_FormaDePago2.getSelectedItem());
+            pago2.setFecha(new Date());
+            pago2.setMonto(Double.parseDouble(txt_MontoPago2.getValue().toString()));
+            pago2.setNota("");
+            pagos.add(pago2);
         }
-    }//GEN-LAST:event_formWindowOpened
+        if (chk_FormaDePago3.isSelected()) {
+            Pago pago3 = new Pago();
+            pago3.setEmpresa(gui_puntoDeVenta.getEmpresa());
+            pago3.setFormaDePago((FormaDePago) cmb_FormaDePago3.getSelectedItem());
+            pago3.setFecha(new Date());
+            pago3.setMonto(Double.parseDouble(txt_MontoPago3.getValue().toString()));
+            pago3.setNota("");
+            pagos.add(pago3);
+        }
+        return pagos;
+    }
 
-    private void btn_FinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FinalizarActionPerformed
+    private void finalizarVenta() {
         try {
             boolean dividir = false;
             int[] indicesParaDividir = null;
@@ -451,11 +251,8 @@ public class GUI_CerrarVenta extends JDialog {
                 FacturaVenta factura = this.construirFactura();
                 if (gui_puntoDeVenta.getPedido() != null) {
                     factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido(), gui_puntoDeVenta.getEmpresa().getId_Empresa()));
-                    this.guardarFactura(factura);
-                } else {
-                    this.guardarFactura(factura);
                 }
-                this.lanzarReporteFactura(facturaService.getFacturaVentaPorTipoSerieNum(factura.getTipoFactura(), factura.getNumSerie(), factura.getNumFactura()));
+                this.lanzarReporteFactura(this.guardarFactura(factura));
                 exito = true;
             } else {
                 List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), indicesParaDividir);
@@ -480,18 +277,367 @@ public class GUI_CerrarVenta extends JDialog {
 
         } catch (JRException ex) {
             String msjError = "Se produjo un error procesando el reporte.";
-            log.error(msjError + " - " + ex.getMessage());
+            LOGGER.error(msjError + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Clase interna para manejar las hotkeys
+     */
+    class HotKeysHandler extends KeyAdapter {
+
+        @Override
+        public void keyPressed(KeyEvent evt) {
+            if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                dispose();
+            }
+
+            if (evt.getKeyCode() == KeyEvent.VK_ENTER && evt.getSource() == btn_Finalizar) {
+                btn_FinalizarActionPerformed(null);
+            }
+        }
+    };
+
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        panelGeneral = new javax.swing.JPanel();
+        lbl_Vendor = new javax.swing.JLabel();
+        lbl_Vendedor = new javax.swing.JLabel();
+        lbl_Transporte = new javax.swing.JLabel();
+        cmb_Transporte = new javax.swing.JComboBox();
+        separador1 = new javax.swing.JSeparator();
+        chk_FormaDePago1 = new javax.swing.JCheckBox();
+        cmb_FormaDePago1 = new javax.swing.JComboBox();
+        txt_MontoPago1 = new javax.swing.JFormattedTextField();
+        chk_FormaDePago2 = new javax.swing.JCheckBox();
+        cmb_FormaDePago2 = new javax.swing.JComboBox();
+        txt_MontoPago2 = new javax.swing.JFormattedTextField();
+        chk_FormaDePago3 = new javax.swing.JCheckBox();
+        cmb_FormaDePago3 = new javax.swing.JComboBox();
+        txt_MontoPago3 = new javax.swing.JFormattedTextField();
+        lbl_Cambio = new javax.swing.JLabel();
+        lbl_Total = new javax.swing.JLabel();
+        lbl_TotalAPagar = new javax.swing.JFormattedTextField();
+        lbl_Devolucion = new javax.swing.JLabel();
+        lbl_Vuelto = new javax.swing.JFormattedTextField();
+        chk_condicionDividir = new javax.swing.JCheckBox();
+        separador = new javax.swing.JSeparator();
+        lbl_Total1 = new javax.swing.JLabel();
+        txt_AbonaCon = new javax.swing.JFormattedTextField();
+        btn_Finalizar = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Cerrar Venta");
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
+
+        panelGeneral.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        lbl_Vendor.setText("Vendedor:");
+
+        lbl_Vendedor.setForeground(new java.awt.Color(29, 156, 37));
+        lbl_Vendedor.setText("XXXXXXXXXXXXXXXXXXXXXX");
+
+        lbl_Transporte.setText("Transporte:");
+
+        chk_FormaDePago1.setText("Forma de Pago #1:");
+        chk_FormaDePago1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chk_FormaDePago1ItemStateChanged(evt);
+            }
+        });
+
+        txt_MontoPago1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        txt_MontoPago1.setText("0.00");
+        txt_MontoPago1.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
+        txt_MontoPago1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txt_MontoPago1FocusGained(evt);
+            }
+        });
+
+        chk_FormaDePago2.setText("Forma de Pago #2:");
+        chk_FormaDePago2.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chk_FormaDePago2ItemStateChanged(evt);
+            }
+        });
+
+        txt_MontoPago2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        txt_MontoPago2.setText("0.00");
+        txt_MontoPago2.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
+        txt_MontoPago2.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txt_MontoPago2FocusGained(evt);
+            }
+        });
+
+        chk_FormaDePago3.setText("Forma de Pago #3:");
+        chk_FormaDePago3.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chk_FormaDePago3ItemStateChanged(evt);
+            }
+        });
+
+        txt_MontoPago3.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        txt_MontoPago3.setText("0.00");
+        txt_MontoPago3.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
+        txt_MontoPago3.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txt_MontoPago3FocusGained(evt);
+            }
+        });
+
+        lbl_Cambio.setText("Cambio:");
+
+        lbl_Total.setText("Total a pagar:");
+
+        lbl_TotalAPagar.setEditable(false);
+        lbl_TotalAPagar.setForeground(new java.awt.Color(29, 156, 37));
+        lbl_TotalAPagar.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
+        lbl_TotalAPagar.setText("0.00");
+        lbl_TotalAPagar.setFocusable(false);
+        lbl_TotalAPagar.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
+
+        lbl_Devolucion.setText("Vuelto:");
+
+        lbl_Vuelto.setEditable(false);
+        lbl_Vuelto.setForeground(new java.awt.Color(29, 156, 37));
+        lbl_Vuelto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
+        lbl_Vuelto.setText("0.00");
+        lbl_Vuelto.setFocusable(false);
+        lbl_Vuelto.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
+
+        chk_condicionDividir.setText("Dividir Factura");
+        chk_condicionDividir.setEnabled(false);
+
+        lbl_Total1.setText("Abona con:");
+
+        txt_AbonaCon.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
+        txt_AbonaCon.setText("0.00");
+        txt_AbonaCon.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
+        txt_AbonaCon.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txt_AbonaConFocusGained(evt);
+            }
+        });
+        txt_AbonaCon.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_AbonaConKeyReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout panelGeneralLayout = new javax.swing.GroupLayout(panelGeneral);
+        panelGeneral.setLayout(panelGeneralLayout);
+        panelGeneralLayout.setHorizontalGroup(
+            panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelGeneralLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelGeneralLayout.createSequentialGroup()
+                        .addComponent(lbl_Cambio, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lbl_Total1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lbl_Total, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                            .addComponent(lbl_Devolucion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lbl_TotalAPagar, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbl_Vuelto, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txt_AbonaCon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(separador, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(chk_condicionDividir, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelGeneralLayout.createSequentialGroup()
+                            .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(lbl_Transporte, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                                .addComponent(lbl_Vendor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGap(18, 18, 18)
+                            .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(cmb_Transporte, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lbl_Vendedor, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelGeneralLayout.createSequentialGroup()
+                            .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(chk_FormaDePago1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(chk_FormaDePago2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(chk_FormaDePago3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(cmb_FormaDePago1, 0, 206, Short.MAX_VALUE)
+                                .addComponent(cmb_FormaDePago2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(cmb_FormaDePago3, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txt_MontoPago2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 140, Short.MAX_VALUE)
+                                .addComponent(txt_MontoPago3, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txt_MontoPago1)))
+                        .addComponent(separador1, javax.swing.GroupLayout.Alignment.LEADING)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelGeneralLayout.setVerticalGroup(
+            panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelGeneralLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_Vendor)
+                    .addComponent(lbl_Vendedor))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(lbl_Transporte)
+                    .addComponent(cmb_Transporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(separador1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(txt_MontoPago1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmb_FormaDePago1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chk_FormaDePago1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(chk_FormaDePago2)
+                    .addComponent(cmb_FormaDePago2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_MontoPago2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(txt_MontoPago3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmb_FormaDePago3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chk_FormaDePago3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(separador, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(6, 6, 6)
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(lbl_Cambio)
+                    .addComponent(lbl_Total)
+                    .addComponent(lbl_TotalAPagar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(lbl_Total1)
+                    .addComponent(txt_AbonaCon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_Devolucion)
+                    .addComponent(lbl_Vuelto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chk_condicionDividir)
+                .addContainerGap())
+        );
+
+        panelGeneralLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {txt_MontoPago1, txt_MontoPago3});
+
+        panelGeneralLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lbl_Devolucion, lbl_Total, lbl_Total1, lbl_TotalAPagar, lbl_Vuelto, txt_AbonaCon});
+
+        btn_Finalizar.setForeground(java.awt.Color.blue);
+        btn_Finalizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Accept_16x16.png"))); // NOI18N
+        btn_Finalizar.setText("Finalizar");
+        btn_Finalizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_FinalizarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btn_Finalizar)
+                    .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_Finalizar)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        try {
+            this.cargarFormasDePago();
+            this.cargarTransportistas();
+            this.setEstadosCmbFormaDePago();
+            //set predeterminado
+            cmb_Transporte.setSelectedIndex(0);
+            lbl_Vendedor.setText(usuarioService.getUsuarioActivo().getUsuario().getNombre());
+            txt_AbonaCon.requestFocus();
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+        }
+    }//GEN-LAST:event_formWindowOpened
+
+    private void btn_FinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FinalizarActionPerformed
+        double totalPagos = 0.0;
+        if (chk_FormaDePago1.isSelected()) {
+            totalPagos += Double.parseDouble((txt_MontoPago1.getText()).replaceAll(",", ""));
+        }
+        if (chk_FormaDePago2.isSelected()) {
+            totalPagos += Double.parseDouble((txt_MontoPago2.getText()).replaceAll(",", ""));
+        }
+        if (chk_FormaDePago3.isSelected()) {
+            totalPagos += Double.parseDouble((txt_MontoPago3.getText()).replaceAll(",", ""));
+        }
+        double totalAPagar = Double.parseDouble((lbl_TotalAPagar.getText().substring(1)).replaceAll(",", ""));
+        if (totalPagos < totalAPagar) {
+            int reply = JOptionPane.showConfirmDialog(this, "Los montos ingresados no cubren el total a pagar.\n¿Desea continuar?", "Aviso", JOptionPane.YES_NO_OPTION);
+            if (reply == JOptionPane.YES_OPTION) {
+                this.finalizarVenta();
+            }
+        } else {
+            this.finalizarVenta();
         }
     }//GEN-LAST:event_btn_FinalizarActionPerformed
 
-    private void txt_AbonaConKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_AbonaConKeyReleased
-        this.calcularVuelto();
-    }//GEN-LAST:event_txt_AbonaConKeyReleased
+    private void txt_MontoPago1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_MontoPago1FocusGained
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                txt_MontoPago1.selectAll();
+            }
+        });
+    }//GEN-LAST:event_txt_MontoPago1FocusGained
+
+    private void txt_MontoPago3FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_MontoPago3FocusGained
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                txt_MontoPago3.selectAll();
+            }
+        });
+    }//GEN-LAST:event_txt_MontoPago3FocusGained
+
+    private void chk_FormaDePago1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_FormaDePago1ItemStateChanged
+        cmb_FormaDePago1.setEnabled(chk_FormaDePago1.isSelected());
+        txt_MontoPago1.setEnabled(chk_FormaDePago1.isSelected());
+    }//GEN-LAST:event_chk_FormaDePago1ItemStateChanged
+
+    private void chk_FormaDePago2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_FormaDePago2ItemStateChanged
+        cmb_FormaDePago2.setEnabled(chk_FormaDePago2.isSelected());
+        txt_MontoPago2.setEnabled(chk_FormaDePago2.isSelected());
+    }//GEN-LAST:event_chk_FormaDePago2ItemStateChanged
+
+    private void chk_FormaDePago3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_FormaDePago3ItemStateChanged
+        cmb_FormaDePago3.setEnabled(chk_FormaDePago3.isSelected());
+        txt_MontoPago3.setEnabled(chk_FormaDePago3.isSelected());
+    }//GEN-LAST:event_chk_FormaDePago3ItemStateChanged
 
     private void txt_AbonaConFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_AbonaConFocusGained
         SwingUtilities.invokeLater(new Runnable() {
@@ -502,54 +648,33 @@ public class GUI_CerrarVenta extends JDialog {
         });
     }//GEN-LAST:event_txt_AbonaConFocusGained
 
-    private void txt_AbonaConActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_AbonaConActionPerformed
+    private void txt_MontoPago2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_MontoPago2FocusGained
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                txt_MontoPago2.selectAll();
+            }
+        });
+    }//GEN-LAST:event_txt_MontoPago2FocusGained
+
+    private void txt_AbonaConKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_AbonaConKeyReleased
         this.calcularVuelto();
-    }//GEN-LAST:event_txt_AbonaConActionPerformed
-
-    private void txt_AbonaConFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_AbonaConFocusLost
-        this.calcularVuelto();
-    }//GEN-LAST:event_txt_AbonaConFocusLost
-
-    private void btn_nuevaFormaDePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevaFormaDePagoActionPerformed
-        GUI_FormasDePago gui_FormasDePago = new GUI_FormasDePago();
-        gui_FormasDePago.setModal(true);
-        gui_FormasDePago.setLocationRelativeTo(this);
-        gui_FormasDePago.setVisible(true);
-
-        try {
-            this.cargarFormasDePago();
-
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btn_nuevaFormaDePagoActionPerformed
-
-    private void btn_nuevoTransporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nuevoTransporteActionPerformed
-        GUI_DetalleTransportista gui_DetalleTransportista = new GUI_DetalleTransportista();
-        gui_DetalleTransportista.setModal(true);
-        gui_DetalleTransportista.setLocationRelativeTo(this);
-        gui_DetalleTransportista.setVisible(true);
-        try {
-            this.cargarTransportistas();
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_btn_nuevoTransporteActionPerformed
+    }//GEN-LAST:event_txt_AbonaConKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Finalizar;
-    private javax.swing.JButton btn_nuevaFormaDePago;
-    private javax.swing.JButton btn_nuevoTransporte;
+    private javax.swing.JCheckBox chk_FormaDePago1;
+    private javax.swing.JCheckBox chk_FormaDePago2;
+    private javax.swing.JCheckBox chk_FormaDePago3;
     private javax.swing.JCheckBox chk_condicionDividir;
-    private javax.swing.JComboBox cmb_FormaDePago;
+    private javax.swing.JComboBox cmb_FormaDePago1;
+    private javax.swing.JComboBox cmb_FormaDePago2;
+    private javax.swing.JComboBox cmb_FormaDePago3;
     private javax.swing.JComboBox cmb_Transporte;
     private javax.swing.JLabel lbl_Cambio;
     private javax.swing.JLabel lbl_Devolucion;
-    private javax.swing.JLabel lbl_FormaDePago;
-    private javax.swing.JLabel lbl_Pago;
     private javax.swing.JLabel lbl_Total;
+    private javax.swing.JLabel lbl_Total1;
     private javax.swing.JFormattedTextField lbl_TotalAPagar;
     private javax.swing.JLabel lbl_Transporte;
     private javax.swing.JLabel lbl_Vendedor;
@@ -557,6 +682,10 @@ public class GUI_CerrarVenta extends JDialog {
     private javax.swing.JFormattedTextField lbl_Vuelto;
     private javax.swing.JPanel panelGeneral;
     private javax.swing.JSeparator separador;
+    private javax.swing.JSeparator separador1;
     private javax.swing.JFormattedTextField txt_AbonaCon;
+    private javax.swing.JFormattedTextField txt_MontoPago1;
+    private javax.swing.JFormattedTextField txt_MontoPago2;
+    private javax.swing.JFormattedTextField txt_MontoPago3;
     // End of variables declaration//GEN-END:variables
 }

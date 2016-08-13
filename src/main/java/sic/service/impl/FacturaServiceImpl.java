@@ -5,7 +5,6 @@ import sic.modelo.BusquedaFacturaVentaCriteria;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +24,7 @@ import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
+import sic.modelo.Pago;
 import sic.modelo.Pedido;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
@@ -34,6 +34,7 @@ import sic.repository.IFacturaRepository;
 import sic.service.IConfiguracionDelSistemaService;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
+import sic.service.IPagoService;
 import sic.service.IPedidoService;
 import sic.service.IProductoService;
 import sic.service.Movimiento;
@@ -50,19 +51,21 @@ public class FacturaServiceImpl implements IFacturaService {
     private final IConfiguracionDelSistemaService configuracionDelSistemaService;
     private final IEmpresaService empresaService;
     private final IPedidoService pedidoService;
+    private final IPagoService pagoService;
 
     @Autowired
     @Lazy
     public FacturaServiceImpl(IFacturaRepository facturaRepository,
             IProductoService productoService,
             IConfiguracionDelSistemaService configuracionDelSistemaService,
-            IEmpresaService empresaService, IPedidoService pedidoService) {
+            IEmpresaService empresaService, IPedidoService pedidoService, IPagoService pagoService) {
 
         this.facturaRepository = facturaRepository;
         this.productoService = productoService;
         this.configuracionDelSistemaService = configuracionDelSistemaService;
         this.empresaService = empresaService;
         this.pedidoService = pedidoService;
+        this.pagoService = pagoService;
     }
 
     @Override
@@ -84,8 +87,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-        {
-            if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
+         if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Proveedor SI
                 String[] tiposPermitidos = new String[2];
                 tiposPermitidos[0] = "Factura B";
@@ -98,7 +100,6 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = "Factura X";
                 return tiposPermitidos;
             }
-        }
     }
 
     @Override
@@ -124,8 +125,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-        {
-            if (cliente.getCondicionIVA().isDiscriminaIVA()) {
+         if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Cliente SI
                 String[] tiposPermitidos = new String[4];
                 tiposPermitidos[0] = "Factura C";
@@ -142,7 +142,6 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
-        }
     }
 
     @Override
@@ -275,11 +274,6 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public List<Factura> getFacturasPorFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
-        return facturaRepository.getFacturasPorFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
-    }
-
-    @Override
     @Transactional
     public void guardar(Factura factura) {
         this.validarFactura(factura);
@@ -331,10 +325,6 @@ public class FacturaServiceImpl implements IFacturaService {
         if (factura.getTransportista() == null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_transportista_vacio"));
-        }
-        if (factura.getFormaPago() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_factura_FormaDePago_vacia"));
         }
         if (factura.getRenglones().isEmpty() | factura.getRenglones() == null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
@@ -409,7 +399,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public double calcularIva_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje,
             List<RenglonFactura> renglones, double iva_porcentaje) {
-        
+
         double resultado = 0;
         if (tipoDeFactura.charAt(tipoDeFactura.length() - 1) == 'A') {
             for (RenglonFactura renglon : renglones) {
@@ -436,7 +426,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje,
             double recargo_porcentaje, List<RenglonFactura> renglones) {
-        
+
         double resultado = 0;
         if (tipoDeFactura.charAt(tipoDeFactura.length() - 1) == 'A') {
             for (RenglonFactura renglon : renglones) {
@@ -460,7 +450,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public double calcularTotal(double subTotal, double descuento_neto, double recargo_neto,
             double iva105_neto, double iva21_neto, double impInterno_neto) {
-        
+
         double resultado;
         resultado = (subTotal + recargo_neto - descuento_neto) + iva105_neto + iva21_neto + impInterno_neto;
         return Utilidades.truncarDecimal(resultado, 3);
@@ -474,7 +464,7 @@ public class FacturaServiceImpl implements IFacturaService {
         }
         return Utilidades.truncarDecimal(resultado, 3);
     }
-    
+
     @Override
     public double calcularTotalFacturadoCompra(List<FacturaCompra> facturas) {
         double resultado = 0;
@@ -492,7 +482,7 @@ public class FacturaServiceImpl implements IFacturaService {
         }
         return Utilidades.truncarDecimal(resultado, 3);
     }
-    
+
     @Override
     public double calcularIVA_Compra(List<FacturaCompra> facturas) {
         double resultado = 0;
@@ -609,6 +599,11 @@ public class FacturaServiceImpl implements IFacturaService {
         ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
                 empresaService.getEmpresaActiva().getEmpresa());
         params.put("preImpresa", cds.isUsarFacturaVentaPreImpresa());
+        String formasDePago = new String();
+        for (Pago pago : pagoService.getPagosDeLaFactura(factura)) {
+            formasDePago = formasDePago + " " + pago.getFormaDePago().getNombre() + " ";
+        }
+        params.put("formasDePago", formasDePago);
         params.put("facturaVenta", factura);
         params.put("nroComprobante", factura.getNumSerie() + "-" + factura.getNumFactura());
         params.put("logo", Utilidades.convertirByteArrayIntoImage(factura.getEmpresa().getLogo()));
@@ -672,7 +667,7 @@ public class FacturaServiceImpl implements IFacturaService {
         facturaSinIVA.setTipoFactura('X');
         facturaSinIVA.setNumSerie(factura.getNumSerie());
         facturaSinIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaSinIVA), facturaSinIVA.getNumSerie()));
-        facturaSinIVA.setFormaPago(factura.getFormaPago());
+        facturaSinIVA.setPagos(factura.getPagos());
         facturaSinIVA.setFechaVencimiento(factura.getFechaVencimiento());
         facturaSinIVA.setTransportista(factura.getTransportista());
         facturaSinIVA.setRenglones(listRenglonesSinIVA);
@@ -694,7 +689,7 @@ public class FacturaServiceImpl implements IFacturaService {
         facturaConIVA.setTipoFactura(factura.getTipoFactura());
         facturaConIVA.setNumSerie(factura.getNumSerie());
         facturaConIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaConIVA), facturaConIVA.getNumSerie()));
-        facturaConIVA.setFormaPago(factura.getFormaPago());
+        facturaConIVA.setPagos(factura.getPagos());
         facturaConIVA.setFechaVencimiento(factura.getFechaVencimiento());
         facturaConIVA.setTransportista(factura.getTransportista());
         facturaConIVA.setRenglones(listRenglonesConIVA);
@@ -744,7 +739,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento,
             double cantidad, Producto producto, double descuento_porcentaje) {
-        
+
         RenglonFactura nuevoRenglon = new RenglonFactura();
         nuevoRenglon.setId_ProductoItem(producto.getId_Producto());
         nuevoRenglon.setCodigoItem(producto.getCodigo());

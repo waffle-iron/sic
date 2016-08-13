@@ -7,7 +7,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,8 +25,5 @@ public class FacturaCompra extends Factura implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_Proveedor", referencedColumnName = "id_Proveedor")
     private Proveedor proveedor;
-
-    @OneToMany(mappedBy = "facturaCompra")
-    private List<PagoFacturaCompra> pagosFacturaCompra;
 
 }

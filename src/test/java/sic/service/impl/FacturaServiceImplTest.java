@@ -31,7 +31,7 @@ public class FacturaServiceImplTest {
         productoService = Mockito.mock(ProductoServiceImpl.class);
         IFacturaRepository facturaRepository = Mockito.mock(IFacturaRepository.class);
         when(facturaRepository.getMayorNumFacturaSegunTipo("", (long) 1)).thenReturn((long) 1);
-        facturaService = new FacturaServiceImpl(facturaRepository, productoService, null, null, null);
+        facturaService = new FacturaServiceImpl(facturaRepository, productoService, null, null, null, null);
     }
 
     @Test
