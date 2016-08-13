@@ -95,21 +95,18 @@ public class GUI_Caja extends javax.swing.JDialog {
             Date hasta = new Date();
             if (this.caja.getEstado() == EstadoCaja.CERRADA) {
                 hasta = this.caja.getFechaCierre();
-            }
-            List<Pago> pagos = new ArrayList<>();
-            for (Pago pago : 
-                    pagoService.getPagosEntreFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), 
-                            ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(),
-                            this.caja.getFechaApertura(), hasta)) {
-                    pagos.add(pago);
-            }
-            this.listaMovimientos.addAll(pagos);
-            List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), 
-                    ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(), 
+            }            
+            List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(
+                    empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), 
+                    ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(),
+                    this.caja.getFechaApertura(), hasta);
+            this.listaMovimientos.addAll(pagos);            
+            List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(
+                    empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(), 
+                    ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(),
                     this.caja.getFechaApertura(), hasta);
             this.listaMovimientos.addAll(gastos);
             this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
-
         }
     }
 
@@ -157,34 +154,28 @@ public class GUI_Caja extends javax.swing.JDialog {
         this.limpiarTablaBalance();
         for (Object movimiento : movimientos) {
             Object[] fila = new Object[5];
-            if (movimiento instanceof Pago) {
-                fila[0] = ((Pago) movimiento).getFecha();
-                if((((Pago) movimiento).getFactura() instanceof FacturaCompra)){
-                fila[2] = - ((Pago) movimiento).getMonto();
-                }
-                if((((Pago) movimiento).getFactura() instanceof FacturaVenta)){
-                fila[2] = ((Pago) movimiento).getMonto();
-                }
-            }
+            
             if (movimiento instanceof Gasto) {
                 fila[0] = ((Gasto) movimiento).getFecha();
+                fila[1] = "Gasto: "+((Gasto) movimiento).getConcepto();
+                fila[2] =- ((Gasto) movimiento).getMonto();                
             }
-            if (movimiento instanceof Gasto) {
-                fila[2] = - ((Gasto) movimiento).getMonto();
-            }
+            
             if (movimiento instanceof Pago) {
-                String tipoFactura;
-                if (((Pago) movimiento).getFactura() instanceof FacturaVenta) {
-                    tipoFactura = "Venta";
-                } else {
-                    tipoFactura = "Compra";
+                String tipoFactura = "";
+                fila[0] = ((Pago) movimiento).getFecha();
+                if ((((Pago) movimiento).getFactura() instanceof FacturaCompra)) {
+                    fila[2] =- ((Pago) movimiento).getMonto();
+                     tipoFactura = "Compra";
                 }
+                if ((((Pago) movimiento).getFactura() instanceof FacturaVenta)) {
+                    fila[2] = ((Pago) movimiento).getMonto();
+                    tipoFactura = "Venta";
+                }                
                 fila[1] = "Pago por: Factura " + tipoFactura + 
                         " Nº " + ((Pago) movimiento).getFactura().getNumSerie() + 
                         " - " + ((Pago) movimiento).getFactura().getNumFactura();
-            } else if (movimiento instanceof Gasto) {
-                fila[1] = "Gasto: "+((Gasto) movimiento).getConcepto();
-            }
+            }            
             modeloTablaBalance.addRow(fila);
         }
         this.calcularTotalBalance();
@@ -264,7 +255,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                     modeloTablaResumen.addRow(fila);
                 }
             }
-            this.ftxt_saldoCaja.setValue(totalCaja); //revisar que dato va al informe
+            this.ftxt_saldoCaja.setValue(totalCaja);
             caja.setSaldoFinal(totalCaja);
             this.ftxt_TotalGeneral.setValue(Math.floor(totalGeneral * 100) / 100);
             //Guarda el monto final del último calculo en la caja
@@ -345,7 +336,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         dataSource.add("Total hasta la hora de control:-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) totalPorCorte)));
         dataSource.add("..........................Corte a las: " + formatoHora.format(this.caja.getFechaCorteInforme()) + "...........................-");
 
-        for (int f = 1; f < tbl_Resumen.getRowCount(); f++) {
+        for (int f=1; f < tbl_Resumen.getRowCount(); f++) {
             if ((boolean) tbl_Resumen.getValueAt(f, 1) == true) {
                 dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + 
                         "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 2))));
@@ -371,7 +362,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         }
     }
 
-    private void reporteFacturaVenta(Object movimientoDeTabla) {
+    private void lanzarReporteFacturaVenta(Object movimientoDeTabla) {
         try {
             FacturaVenta factura = (FacturaVenta) ((Pago) movimientoDeTabla).getFactura();
             factura.setPagos(pagoService.getPagosDeLaFactura(factura));
@@ -388,15 +379,10 @@ public class GUI_Caja extends javax.swing.JDialog {
             String msjError = "Se produjo un error procesando el reporte.";
             LOGGER.error(msjError + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
-
-        } catch (PersistenceException ex) {
-            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, 
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void reporteFacturaCompra(Object movimientoDeTabla) {
+    private void verDetalleFacturaCompra(Object movimientoDeTabla) {
         FacturaCompra factura = (FacturaCompra) ((Pago) movimientoDeTabla).getFactura();
         factura.setPagos(pagoService.getPagosDeLaFactura(factura));
         GUI_DetalleFacturaCompra gui_DetalleFacturaCompra = new GUI_DetalleFacturaCompra(factura);
@@ -712,10 +698,10 @@ public class GUI_Caja extends javax.swing.JDialog {
         if (tbl_Balance.getSelectedRow() != -1) {
             Object movimientoDeTabla = this.listaMovimientos.get(Utilidades.getSelectedRowModelIndice(tbl_Balance));
             if (((Pago) movimientoDeTabla).getFactura() instanceof FacturaVenta) {
-                this.reporteFacturaVenta(movimientoDeTabla);
+                this.lanzarReporteFacturaVenta(movimientoDeTabla);
             }
             if (((Pago) movimientoDeTabla).getFactura() instanceof FacturaCompra) {
-                this.reporteFacturaCompra(movimientoDeTabla);
+                this.verDetalleFacturaCompra(movimientoDeTabla);
             }
             if (movimientoDeTabla instanceof Gasto) {
                 String mensaje = "En Concepto de: " + ((Gasto) movimientoDeTabla).getConcepto() + 

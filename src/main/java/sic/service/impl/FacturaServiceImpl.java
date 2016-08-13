@@ -326,10 +326,6 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_transportista_vacio"));
         }
-//        if (factura.getPagos() == null) {
-//            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-//                    .getString("mensaje_factura_Pago_vacia"));
-//        }
         if (factura.getRenglones().isEmpty() | factura.getRenglones() == null) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_renglones_vacio"));
@@ -605,7 +601,7 @@ public class FacturaServiceImpl implements IFacturaService {
         params.put("preImpresa", cds.isUsarFacturaVentaPreImpresa());
         String formasDePago = new String();
         for (Pago pago : pagoService.getPagosDeLaFactura(factura)) {
-            formasDePago = formasDePago+" "+pago.getFormaDePago().getNombre()+" ";
+            formasDePago = formasDePago + " " + pago.getFormaDePago().getNombre() + " ";
         }
         params.put("formasDePago", formasDePago);
         params.put("facturaVenta", factura);

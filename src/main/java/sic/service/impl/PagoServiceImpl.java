@@ -62,8 +62,9 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     @Transactional
-    public void setFacturaEstadoDePago(Factura factura) {
-        if (this.getTotalPagado(factura) >= factura.getTotal()) {
+    public void setFacturaEstadoDePago(Factura factura) {               
+        double totalFactura = Math.floor(factura.getTotal() * 100) / 100;
+        if (this.getTotalPagado(factura) >= totalFactura) {
             factura.setPagada(true);
         } else {
             factura.setPagada(false);

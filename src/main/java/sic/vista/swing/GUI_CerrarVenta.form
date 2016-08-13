@@ -109,9 +109,9 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="txt_AbonaCon2" alignment="0" pref="140" max="32767" attributes="1"/>
-                                  <Component id="txt_AbonaCon3" alignment="0" max="32767" attributes="1"/>
-                                  <Component id="txt_AbonaCon1" max="32767" attributes="1"/>
+                                  <Component id="txt_MontoPago2" alignment="0" pref="140" max="32767" attributes="1"/>
+                                  <Component id="txt_MontoPago3" alignment="0" max="32767" attributes="1"/>
+                                  <Component id="txt_MontoPago1" max="32767" attributes="1"/>
                               </Group>
                           </Group>
                           <Component id="separador1" alignment="0" max="32767" attributes="0"/>
@@ -138,7 +138,7 @@
                   <Component id="separador1" min="-2" pref="10" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="txt_AbonaCon1" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="txt_MontoPago1" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="cmb_FormaDePago1" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="chk_FormaDePago1" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -146,11 +146,11 @@
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="chk_FormaDePago2" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="cmb_FormaDePago2" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="txt_AbonaCon2" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="txt_MontoPago2" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="txt_AbonaCon3" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="txt_MontoPago3" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="cmb_FormaDePago3" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="chk_FormaDePago3" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -222,7 +222,7 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JFormattedTextField" name="txt_AbonaCon1">
+        <Component class="javax.swing.JFormattedTextField" name="txt_MontoPago1">
           <Properties>
             <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
               <Format format="#,##0.00" subtype="-1" type="0"/>
@@ -233,7 +233,7 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_AbonaCon1FocusGained"/>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_MontoPago1FocusGained"/>
           </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="chk_FormaDePago2">
@@ -251,7 +251,7 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JFormattedTextField" name="txt_AbonaCon2">
+        <Component class="javax.swing.JFormattedTextField" name="txt_MontoPago2">
           <Properties>
             <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
               <Format format="#,##0.00" subtype="-1" type="0"/>
@@ -262,7 +262,7 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_AbonaCon2FocusGained"/>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_MontoPago2FocusGained"/>
           </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="chk_FormaDePago3">
@@ -280,7 +280,7 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JFormattedTextField" name="txt_AbonaCon3">
+        <Component class="javax.swing.JFormattedTextField" name="txt_MontoPago3">
           <Properties>
             <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
               <Format format="#,##0.00" subtype="-1" type="0"/>
@@ -291,7 +291,7 @@
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_AbonaCon3FocusGained"/>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_MontoPago3FocusGained"/>
           </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lbl_Cambio">
