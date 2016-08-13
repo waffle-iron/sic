@@ -346,6 +346,9 @@
             <Property name="text" type="java.lang.String" value="Dividir Factura"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
+          <Events>
+            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="chk_condicionDividirItemStateChanged"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JSeparator" name="separador">
         </Component>
