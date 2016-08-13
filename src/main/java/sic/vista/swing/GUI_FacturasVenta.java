@@ -28,6 +28,7 @@ import sic.service.EstadoPedido;
 import sic.service.IClienteService;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
+import sic.service.IPagoService;
 import sic.service.IPedidoService;
 import sic.service.IUsuarioService;
 import sic.service.ServiceException;
@@ -45,6 +46,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private final IClienteService clienteService = appContext.getBean(IClienteService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
+    private final IPagoService pagoService = appContext.getBean(IPagoService.class);
     private static final Logger LOGGER = Logger.getLogger(GUI_FacturasVenta.class.getPackage().getName());
 
     public GUI_FacturasVenta() {
@@ -148,24 +150,23 @@ public class GUI_FacturasVenta extends JInternalFrame {
         tbl_Resultados.setAutoCreateRowSorter(true);
 
         //nombres de columnas
-        String[] encabezados = new String[17];
+        String[] encabezados = new String[16];
         encabezados[0] = "Fecha Factura";
         encabezados[1] = "Tipo";
         encabezados[2] = "Nº Factura";
         encabezados[3] = "Fecha Vencimiento";
         encabezados[4] = "Cliente";
         encabezados[5] = "Usuario (Vendedor)";
-        encabezados[6] = "Forma de Pago";
-        encabezados[7] = "Transportista";
-        encabezados[8] = "Pagada";
-        encabezados[9] = "SubTotal";
-        encabezados[10] = "% Recargo";
-        encabezados[11] = "Recargo neto";
-        encabezados[12] = "SubTotal neto";
-        encabezados[13] = "IVA 10.5% neto";
-        encabezados[14] = "IVA 21% neto";
-        encabezados[15] = "Imp. Interno neto";
-        encabezados[16] = "Total";
+        encabezados[6] = "Transportista";
+        encabezados[7] = "Pagada";
+        encabezados[8] = "SubTotal";
+        encabezados[9] = "% Recargo";
+        encabezados[10] = "Recargo neto";
+        encabezados[11] = "SubTotal neto";
+        encabezados[12] = "IVA 10.5% neto";
+        encabezados[13] = "IVA 21% neto";
+        encabezados[14] = "Imp. Interno neto";
+        encabezados[15] = "Total";
         modeloTablaFacturas.setColumnIdentifiers(encabezados);
         tbl_Resultados.setModel(modeloTablaFacturas);
 
@@ -178,8 +179,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
         tipos[4] = String.class;
         tipos[5] = String.class;
         tipos[6] = String.class;
-        tipos[7] = String.class;
-        tipos[8] = Boolean.class;
+        tipos[7] = Boolean.class;
+        tipos[8] = Double.class;
         tipos[9] = Double.class;
         tipos[10] = Double.class;
         tipos[11] = Double.class;
@@ -187,7 +188,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
         tipos[13] = Double.class;
         tipos[14] = Double.class;
         tipos[15] = Double.class;
-        tipos[16] = Double.class;
         modeloTablaFacturas.setClaseColumnas(tipos);
         tbl_Resultados.getTableHeader().setReorderingAllowed(false);
         tbl_Resultados.getTableHeader().setResizingAllowed(true);
@@ -203,8 +203,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
         tbl_Resultados.getColumnModel().getColumn(4).setPreferredWidth(200);
         tbl_Resultados.getColumnModel().getColumn(5).setPreferredWidth(200);
         tbl_Resultados.getColumnModel().getColumn(6).setPreferredWidth(200);
-        tbl_Resultados.getColumnModel().getColumn(7).setPreferredWidth(200);
-        tbl_Resultados.getColumnModel().getColumn(8).setPreferredWidth(80);
+        tbl_Resultados.getColumnModel().getColumn(7).setPreferredWidth(80);
+        tbl_Resultados.getColumnModel().getColumn(8).setPreferredWidth(120);
         tbl_Resultados.getColumnModel().getColumn(9).setPreferredWidth(120);
         tbl_Resultados.getColumnModel().getColumn(10).setPreferredWidth(120);
         tbl_Resultados.getColumnModel().getColumn(11).setPreferredWidth(120);
@@ -212,7 +212,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
         tbl_Resultados.getColumnModel().getColumn(13).setPreferredWidth(120);
         tbl_Resultados.getColumnModel().getColumn(14).setPreferredWidth(120);
         tbl_Resultados.getColumnModel().getColumn(15).setPreferredWidth(120);
-        tbl_Resultados.getColumnModel().getColumn(16).setPreferredWidth(120);
     }
 
     private void calcularResultados() {
@@ -326,29 +325,29 @@ public class GUI_FacturasVenta extends JInternalFrame {
         btn_Nueva.setEnabled(status);
         btn_Eliminar.setEnabled(status);
         btn_VerDetalle.setEnabled(status);
+        btn_VerPagos.setEnabled(status);
     }
 
     private void cargarResultadosAlTable() {
         this.limpiarJTable();
         for (FacturaVenta factura : facturas) {
-            Object[] fila = new Object[17];
+            Object[] fila = new Object[16];
             fila[0] = factura.getFecha();
             fila[1] = String.valueOf(factura.getTipoFactura());
             fila[2] = factura.getNumSerie() + " - " + factura.getNumFactura();
             fila[3] = factura.getFechaVencimiento();
             fila[4] = factura.getCliente().getRazonSocial();
             fila[5] = factura.getUsuario().getNombre();
-            fila[6] = factura.getFormaPago().getNombre();
-            fila[7] = factura.getTransportista().getNombre();
-            fila[8] = factura.isPagada();
-            fila[9] = factura.getSubTotal();
-            fila[10] = factura.getRecargo_porcentaje();
-            fila[11] = factura.getRecargo_neto();
-            fila[12] = factura.getSubTotal_neto();
-            fila[13] = factura.getIva_105_neto();
-            fila[14] = factura.getIva_21_neto();
-            fila[15] = factura.getImpuestoInterno_neto();
-            fila[16] = factura.getTotal();
+            fila[6] = factura.getTransportista().getNombre();
+            fila[7] = factura.isPagada();
+            fila[8] = factura.getSubTotal();
+            fila[9] = factura.getRecargo_porcentaje();
+            fila[10] = factura.getRecargo_neto();
+            fila[11] = factura.getSubTotal_neto();
+            fila[12] = factura.getIva_105_neto();
+            fila[13] = factura.getIva_21_neto();
+            fila[14] = factura.getImpuestoInterno_neto();
+            fila[15] = factura.getTotal();
             modeloTablaFacturas.addRow(fila);
         }
         tbl_Resultados.setModel(modeloTablaFacturas);
@@ -432,6 +431,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         txt_ResultGananciaTotal = new javax.swing.JFormattedTextField();
         txt_ResultTotalIVAVenta = new javax.swing.JFormattedTextField();
         btn_Nueva = new javax.swing.JButton();
+        btn_VerPagos = new javax.swing.JButton();
         panelFiltros = new javax.swing.JPanel();
         subPanelFiltros1 = new javax.swing.JPanel();
         chk_Fecha = new javax.swing.JCheckBox();
@@ -575,6 +575,15 @@ public class GUI_FacturasVenta extends JInternalFrame {
             }
         });
 
+        btn_VerPagos.setForeground(java.awt.Color.blue);
+        btn_VerPagos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/StampArrow_16x16.png"))); // NOI18N
+        btn_VerPagos.setText("Ver Pagos");
+        btn_VerPagos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_VerPagosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelResultadosLayout = new javax.swing.GroupLayout(panelResultados);
         panelResultados.setLayout(panelResultadosLayout);
         panelResultadosLayout.setHorizontalGroup(
@@ -585,27 +594,30 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 .addComponent(btn_Eliminar)
                 .addGap(0, 0, 0)
                 .addComponent(btn_VerDetalle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 176, Short.MAX_VALUE)
+                .addGap(0, 0, 0)
+                .addComponent(btn_VerPagos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
                 .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(sp_Resultados)
         );
 
-        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_VerDetalle});
+        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_VerDetalle, btn_VerPagos});
 
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 252, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btn_Eliminar)
                         .addComponent(btn_VerDetalle)
-                        .addComponent(btn_Nueva))))
+                        .addComponent(btn_Nueva)
+                        .addComponent(btn_VerPagos))))
         );
 
-        panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_VerDetalle});
+        panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_VerDetalle, btn_VerPagos});
 
         panelFiltros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
 
@@ -1033,12 +1045,23 @@ public class GUI_FacturasVenta extends JInternalFrame {
         }
     }//GEN-LAST:event_chk_EstadoFacturaItemStateChanged
 
+    private void btn_VerPagosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerPagosActionPerformed
+        if (tbl_Resultados.getSelectedRow() != -1) {
+            int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
+            GUI_Pagos gui_Pagos = new GUI_Pagos(facturas.get(indexFilaSeleccionada));
+            gui_Pagos.setModal(true);
+            gui_Pagos.setLocationRelativeTo(this);
+            gui_Pagos.setVisible(true);
+        }
+    }//GEN-LAST:event_btn_VerPagosActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bg_estadoFactura;
     private javax.swing.JButton btn_Buscar;
     private javax.swing.JButton btn_Eliminar;
     private javax.swing.JButton btn_Nueva;
     private javax.swing.JButton btn_VerDetalle;
+    private javax.swing.JButton btn_VerPagos;
     private javax.swing.JCheckBox chk_Cliente;
     private javax.swing.JCheckBox chk_EstadoFactura;
     private javax.swing.JCheckBox chk_Fecha;

@@ -95,7 +95,7 @@
                   <Component id="btn_AgregarGasto" linkSize="11" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Component id="btn_EliminarGasto" linkSize="11" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="152" max="32767" attributes="0"/>
+                  <EmptySpace pref="172" max="32767" attributes="0"/>
                   <Component id="lbl_total" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="ftxt_Detalle" min="-2" pref="150" max="-2" attributes="0"/>
@@ -119,9 +119,9 @@
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="sp_Tabla" pref="170" max="32767" attributes="0"/>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="btn_VerDetalle" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_VerDetalle" linkSize="12" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_AgregarGasto" linkSize="12" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_EliminarGasto" linkSize="12" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="lbl_total" alignment="3" min="-2" max="-2" attributes="0"/>

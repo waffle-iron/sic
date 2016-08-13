@@ -1,6 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,8 +48,8 @@ public class FormaDePago implements Serializable {
 
     private boolean predeterminado;
 
-    @OneToMany(mappedBy = "formaPago")
-    private Set<Factura> facturas;
+    @OneToMany(mappedBy = "formaDePago")
+    private List<Pago> pagos;
 
     @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
