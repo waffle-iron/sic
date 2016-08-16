@@ -620,13 +620,14 @@ public class FacturaServiceImpl implements IFacturaService {
         double FacturaX = 0;
         List<RenglonFactura> renglonesConIVA = new ArrayList<>();
         List<RenglonFactura> renglonesSinIVA = new ArrayList<>();
-        FacturaVenta facturaSinIVA = new FacturaVenta();
-        facturaSinIVA.setCliente(factura.getCliente());
-        facturaSinIVA.setUsuario(factura.getUsuario());
-        FacturaVenta facturaConIVA = new FacturaVenta();
-        facturaConIVA.setCliente(factura.getCliente());
-        facturaConIVA.setUsuario(factura.getUsuario());
-
+        FacturaVenta facturaSinIVA = FacturaVenta.builder()
+                     .cliente(factura.getCliente())
+                     .usuario(factura.getUsuario())
+                     .build();
+        FacturaVenta facturaConIVA = FacturaVenta.builder()
+                     .cliente(factura.getCliente())
+                     .usuario(factura.getUsuario())
+                     .build();
         int renglonMarcado = 0;
         int numeroDeRenglon = 0;
         for (RenglonFactura renglon : factura.getRenglones()) {

@@ -27,7 +27,7 @@ public class MedidaServiceImplTest {
 
     @Before
     public void setUp() {
-        empresa = new Empresa();
+        empresa = Empresa.builder().build();
         medida = new Medida();
         MockitoAnnotations.initMocks(this);
         medidaRepository = Mockito.mock(MedidaRepositoryJPAImpl.class);

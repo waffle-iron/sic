@@ -16,8 +16,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "empresa")
@@ -38,6 +41,9 @@ import lombok.EqualsAndHashCode;
                     + "WHERE e.cuip = :cuip AND e.eliminada = false")
 })
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = {"nombre"})
 public class Empresa implements Serializable {
 

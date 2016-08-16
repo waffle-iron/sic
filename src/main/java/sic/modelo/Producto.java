@@ -13,8 +13,11 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "producto")
@@ -38,6 +41,9 @@ import lombok.EqualsAndHashCode;
                     + "ORDER BY p.descripcion ASC")
 })
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = {"descripcion", "empresa"})
 public class Producto implements Serializable {
 

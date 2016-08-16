@@ -30,7 +30,7 @@ public class ClienteServiceImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        empresa = new Empresa();
+        empresa = Empresa.builder().build();
         cliente = new Cliente();
         clienteDuplicado = new Cliente();
     }
@@ -87,13 +87,13 @@ public class ClienteServiceImplTest {
         cliente.setRazonSocial("razon Social");
         cliente.setCondicionIVA(new CondicionIVA());
         cliente.setLocalidad(new Localidad());
-        cliente.setEmpresa(new Empresa());
+        cliente.setEmpresa(Empresa.builder().build());
         cliente.setId_Fiscal("23111111119");
         clienteDuplicado.setEmail("emailValido@email.com");
         clienteDuplicado.setRazonSocial("razon Social");
         clienteDuplicado.setCondicionIVA(new CondicionIVA());
         clienteDuplicado.setLocalidad(new Localidad());
-        clienteDuplicado.setEmpresa(new Empresa());
+        clienteDuplicado.setEmpresa(Empresa.builder().build());
         clienteDuplicado.setId_Fiscal("23111111119");
         when(clienteRepository.getClientePorId_Fiscal(cliente.getId_Fiscal(), cliente.getEmpresa())).thenReturn(cliente);
         clienteService = new ClienteServiceImpl(clienteRepository);
@@ -106,14 +106,14 @@ public class ClienteServiceImplTest {
         cliente.setRazonSocial("razon Social");
         cliente.setCondicionIVA(new CondicionIVA());
         cliente.setLocalidad(new Localidad());
-        cliente.setEmpresa(new Empresa());
+        cliente.setEmpresa(Empresa.builder().build());
         cliente.setId_Fiscal("23111111119");
         cliente.setId_Cliente(Long.MIN_VALUE);
         clienteDuplicado.setEmail("emailValido@email.com");
         clienteDuplicado.setRazonSocial("razon Social");
         clienteDuplicado.setCondicionIVA(new CondicionIVA());
         clienteDuplicado.setLocalidad(new Localidad());
-        clienteDuplicado.setEmpresa(new Empresa());
+        clienteDuplicado.setEmpresa(Empresa.builder().build());
         clienteDuplicado.setId_Fiscal("23111111119");
         clienteDuplicado.setId_Cliente(Long.MAX_VALUE);
         when(clienteRepository.getClientePorId_Fiscal(cliente.getId_Fiscal(), cliente.getEmpresa())).thenReturn(cliente);
@@ -127,14 +127,14 @@ public class ClienteServiceImplTest {
         cliente.setRazonSocial("razon Social");
         cliente.setCondicionIVA(new CondicionIVA());
         cliente.setLocalidad(new Localidad());
-        cliente.setEmpresa(new Empresa());
+        cliente.setEmpresa(Empresa.builder().build());
         cliente.setId_Fiscal("23111111119");
         cliente.setId_Cliente(Long.MIN_VALUE);
         clienteDuplicado.setEmail("emailValido@email.com");
         clienteDuplicado.setRazonSocial("razon Social");
         clienteDuplicado.setCondicionIVA(new CondicionIVA());
         clienteDuplicado.setLocalidad(new Localidad());
-        clienteDuplicado.setEmpresa(new Empresa());
+        clienteDuplicado.setEmpresa(Empresa.builder().build());
         clienteDuplicado.setId_Fiscal("23111111119");
         clienteDuplicado.setId_Cliente(Long.MAX_VALUE);
         when(clienteRepository.getClientePorRazonSocial(cliente.getRazonSocial(), cliente.getEmpresa())).thenReturn(cliente);
@@ -148,14 +148,14 @@ public class ClienteServiceImplTest {
         cliente.setRazonSocial("razon Social");
         cliente.setCondicionIVA(new CondicionIVA());
         cliente.setLocalidad(new Localidad());
-        cliente.setEmpresa(new Empresa());
+        cliente.setEmpresa(Empresa.builder().build());
         cliente.setId_Fiscal("23111111119");
         cliente.setId_Cliente(Long.MIN_VALUE);
         clienteDuplicado.setEmail("emailValido@email.com");
         clienteDuplicado.setRazonSocial("razon Social");
         clienteDuplicado.setCondicionIVA(new CondicionIVA());
         clienteDuplicado.setLocalidad(new Localidad());
-        clienteDuplicado.setEmpresa(new Empresa());
+        clienteDuplicado.setEmpresa(Empresa.builder().build());
         clienteDuplicado.setId_Fiscal("23111111119");
         clienteDuplicado.setId_Cliente(Long.MAX_VALUE);
         when(clienteRepository.getClientePorRazonSocial(cliente.getRazonSocial(), cliente.getEmpresa())).thenReturn(cliente);
