@@ -667,7 +667,6 @@ public class FacturaServiceImpl implements IFacturaService {
         facturaSinIVA.setTipoFactura('X');
         facturaSinIVA.setNumSerie(factura.getNumSerie());
         facturaSinIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaSinIVA), facturaSinIVA.getNumSerie()));
-        facturaSinIVA.setPagos(factura.getPagos());
         facturaSinIVA.setFechaVencimiento(factura.getFechaVencimiento());
         facturaSinIVA.setTransportista(factura.getTransportista());
         facturaSinIVA.setRenglones(listRenglonesSinIVA);
@@ -689,7 +688,6 @@ public class FacturaServiceImpl implements IFacturaService {
         facturaConIVA.setTipoFactura(factura.getTipoFactura());
         facturaConIVA.setNumSerie(factura.getNumSerie());
         facturaConIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaConIVA), facturaConIVA.getNumSerie()));
-        facturaConIVA.setPagos(factura.getPagos());
         facturaConIVA.setFechaVencimiento(factura.getFechaVencimiento());
         facturaConIVA.setTransportista(factura.getTransportista());
         facturaConIVA.setRenglones(listRenglonesConIVA);

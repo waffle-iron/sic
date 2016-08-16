@@ -109,7 +109,7 @@ public class GUI_CerrarVenta extends JDialog {
             cmb_FormaDePago1.addItem(formaDePago);
             cmb_FormaDePago2.addItem(formaDePago);
             cmb_FormaDePago3.addItem(formaDePago);
-        }        
+        }
     }
 
     private void cargarTransportistas() {
@@ -417,6 +417,11 @@ public class GUI_CerrarVenta extends JDialog {
 
         chk_condicionDividir.setText("Dividir Factura");
         chk_condicionDividir.setEnabled(false);
+        chk_condicionDividir.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chk_condicionDividirItemStateChanged(evt);
+            }
+        });
 
         lbl_Total1.setText("Abona con:");
 
@@ -586,13 +591,13 @@ public class GUI_CerrarVenta extends JDialog {
 
     private void btn_FinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FinalizarActionPerformed
         double totalPagos = 0.0;
-        if (chk_FormaDePago1.isSelected()) {
+        if (chk_FormaDePago1.isSelected() && chk_FormaDePago1.isEnabled()) {
             totalPagos += Double.parseDouble((txt_MontoPago1.getText()).replaceAll(",", ""));
         }
-        if (chk_FormaDePago2.isSelected()) {
+        if (chk_FormaDePago2.isSelected() && chk_FormaDePago2.isEnabled()) {
             totalPagos += Double.parseDouble((txt_MontoPago2.getText()).replaceAll(",", ""));
         }
-        if (chk_FormaDePago3.isSelected()) {
+        if (chk_FormaDePago3.isSelected() && chk_FormaDePago3.isEnabled()) {
             totalPagos += Double.parseDouble((txt_MontoPago3.getText()).replaceAll(",", ""));
         }
         double totalAPagar = Double.parseDouble((lbl_TotalAPagar.getText().substring(1)).replaceAll(",", ""));
@@ -660,6 +665,30 @@ public class GUI_CerrarVenta extends JDialog {
     private void txt_AbonaConKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_AbonaConKeyReleased
         this.calcularVuelto();
     }//GEN-LAST:event_txt_AbonaConKeyReleased
+
+    private void chk_condicionDividirItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_condicionDividirItemStateChanged
+        if (chk_FormaDePago1.isSelected()) {
+            chk_FormaDePago1.setEnabled(!chk_condicionDividir.isSelected());
+            cmb_FormaDePago1.setEnabled(!chk_condicionDividir.isSelected());
+            txt_MontoPago1.setEnabled(!chk_condicionDividir.isSelected());
+        } else {
+            chk_FormaDePago1.setEnabled(!chk_condicionDividir.isSelected());
+        }
+        if (chk_FormaDePago2.isSelected()) {
+            chk_FormaDePago2.setEnabled(!chk_condicionDividir.isSelected());
+            cmb_FormaDePago2.setEnabled(!chk_condicionDividir.isSelected());
+            txt_MontoPago2.setEnabled(!chk_condicionDividir.isSelected());
+        } else {
+            chk_FormaDePago2.setEnabled(!chk_condicionDividir.isSelected());
+        }
+        if (chk_FormaDePago3.isSelected()) {
+            chk_FormaDePago3.setEnabled(!chk_condicionDividir.isSelected());
+            cmb_FormaDePago3.setEnabled(!chk_condicionDividir.isSelected());
+            txt_MontoPago3.setEnabled(!chk_condicionDividir.isSelected());
+        } else {
+            chk_FormaDePago3.setEnabled(!chk_condicionDividir.isSelected());
+        }
+    }//GEN-LAST:event_chk_condicionDividirItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Finalizar;
