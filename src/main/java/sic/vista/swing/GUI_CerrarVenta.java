@@ -142,29 +142,29 @@ public class GUI_CerrarVenta extends JDialog {
 
     private FacturaVenta construirFactura() {
         FacturaVenta facturaVenta = FacturaVenta.builder()
-                     .fecha(gui_puntoDeVenta.getFechaFactura())
-                     .tipoFactura(gui_puntoDeVenta.getTipoDeComprobante().charAt(gui_puntoDeVenta.getTipoDeComprobante().length() - 1))
-                     .numSerie(1)
-                     .numFactura(facturaService.calcularNumeroFactura(gui_puntoDeVenta.getTipoDeComprobante(), 1))
-                     .fechaVencimiento(gui_puntoDeVenta.getFechaVencimiento())
-                     .transportista((Transportista) cmb_Transporte.getSelectedItem())
-                     .renglones(gui_puntoDeVenta.getRenglones())
-                     .subTotal(gui_puntoDeVenta.getResultadosFactura().getSubTotal())
-                     .recargo_porcentaje(gui_puntoDeVenta.getResultadosFactura().getRecargo_porcentaje())
-                     .recargo_neto(gui_puntoDeVenta.getResultadosFactura().getRecargo_neto())
-                     .descuento_porcentaje(0)
-                     .descuento_neto(0)
-                     .subTotal_neto(gui_puntoDeVenta.getResultadosFactura().getSubTotal_neto())
-                     .iva_105_neto(gui_puntoDeVenta.getResultadosFactura().getIva_105_neto())
-                     .iva_21_neto(gui_puntoDeVenta.getResultadosFactura().getIva_21_neto())
-                     .impuestoInterno_neto(gui_puntoDeVenta.getResultadosFactura().getImpuestoInterno_neto())
-                     .total(gui_puntoDeVenta.getResultadosFactura().getTotal())
-                     .observaciones(gui_puntoDeVenta.getTxta_Observaciones().getText().trim())
-                     .empresa(gui_puntoDeVenta.getEmpresa())
-                     .eliminada(false)
-                     .cliente(gui_puntoDeVenta.getCliente())
-                     .usuario(usuarioService.getUsuarioActivo().getUsuario())
-                     .build();
+            .fecha(gui_puntoDeVenta.getFechaFactura())
+            .tipoFactura(gui_puntoDeVenta.getTipoDeComprobante().charAt(gui_puntoDeVenta.getTipoDeComprobante().length() - 1))
+            .numSerie(1)
+            .numFactura(facturaService.calcularNumeroFactura(gui_puntoDeVenta.getTipoDeComprobante(), 1))
+            .fechaVencimiento(gui_puntoDeVenta.getFechaVencimiento())
+            .transportista((Transportista) cmb_Transporte.getSelectedItem())
+            .renglones(gui_puntoDeVenta.getRenglones())
+            .subTotal(gui_puntoDeVenta.getResultadosFactura().getSubTotal())
+            .recargo_porcentaje(gui_puntoDeVenta.getResultadosFactura().getRecargo_porcentaje())
+            .recargo_neto(gui_puntoDeVenta.getResultadosFactura().getRecargo_neto())
+            .descuento_porcentaje(0)
+            .descuento_neto(0)
+            .subTotal_neto(gui_puntoDeVenta.getResultadosFactura().getSubTotal_neto())
+            .iva_105_neto(gui_puntoDeVenta.getResultadosFactura().getIva_105_neto())
+            .iva_21_neto(gui_puntoDeVenta.getResultadosFactura().getIva_21_neto())
+            .impuestoInterno_neto(gui_puntoDeVenta.getResultadosFactura().getImpuestoInterno_neto())
+            .total(gui_puntoDeVenta.getResultadosFactura().getTotal())
+            .observaciones(gui_puntoDeVenta.getTxta_Observaciones().getText().trim())
+            .empresa(gui_puntoDeVenta.getEmpresa())
+            .eliminada(false)
+            .cliente(gui_puntoDeVenta.getCliente())
+            .usuario(usuarioService.getUsuarioActivo().getUsuario())
+            .build();
         double montoPagado = 0.0;
         List<Pago> pagos = this.construirListaPagos();
         for (Pago pago : pagos) {
@@ -172,11 +172,10 @@ public class GUI_CerrarVenta extends JDialog {
             montoPagado += pago.getMonto();
         }
         facturaVenta.setPagos(pagos);
-               facturaVenta.setPagada((facturaVenta.getTotal() - montoPagado) <= 0);
-                for (RenglonFactura renglon : gui_puntoDeVenta.getRenglones()) {
-            renglon.setFactura(facturaVenta);
-        }
-               
+        facturaVenta.setPagada((facturaVenta.getTotal() - montoPagado) <= 0);
+         for (RenglonFactura renglon : gui_puntoDeVenta.getRenglones()) {
+             renglon.setFactura(facturaVenta);
+         }               
         return facturaVenta;
     }
 

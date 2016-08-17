@@ -474,17 +474,18 @@ public class GUI_DetalleEmpresa extends JDialog {
             String mensaje = "";
             if (operacion == TipoDeOperacion.ALTA) {
                 Empresa empresa = Empresa.builder()
-                        .nombre(txt_Nombre.getText().trim())
-                        .lema(txt_Lema.getText().trim())
-                        .direccion(txt_Direccion.getText().trim())
-                        .condicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem())
-                        .cuip(Long.parseLong(cuip_ingresado))
-                        .ingresosBrutos(Long.parseLong(ingBrutos_ingresado))
-                        .fechaInicioActividad(dc_FechaInicioActividad.getDate())
-                        .email(txt_Email.getText().trim())
-                        .telefono(txt_Telefono.getText().trim())
-                        .localidad((Localidad) cmb_Localidad.getSelectedItem())
-                        .logo(logo).build();
+                    .nombre(txt_Nombre.getText().trim())
+                    .lema(txt_Lema.getText().trim())
+                    .direccion(txt_Direccion.getText().trim())
+                    .condicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem())
+                    .cuip(Long.parseLong(cuip_ingresado))
+                    .ingresosBrutos(Long.parseLong(ingBrutos_ingresado))
+                    .fechaInicioActividad(dc_FechaInicioActividad.getDate())
+                    .email(txt_Email.getText().trim())
+                    .telefono(txt_Telefono.getText().trim())
+                    .localidad((Localidad) cmb_Localidad.getSelectedItem())
+                    .logo(logo)
+                    .build();
                 empresaService.guardar(empresa);
                 mensaje = "La Empresa " + txt_Nombre.getText().trim() + " se guardó correctamente.";                
             }

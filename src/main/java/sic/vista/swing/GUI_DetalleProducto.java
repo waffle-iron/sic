@@ -37,7 +37,7 @@ public class GUI_DetalleProducto extends JDialog {
     private final IRubroService rubroService = appContext.getBean(IRubroService.class);
     private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
-    private static final Logger log = Logger.getLogger(GUI_DetalleProducto.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(GUI_DetalleProducto.class.getPackage().getName());
 
     public GUI_DetalleProducto() {
         this.initComponents();
@@ -706,7 +706,7 @@ public class GUI_DetalleProducto extends JDialog {
 
         } catch (ParseException ex) {
             String msjError = "Se produjo un error analizando los campos.";
-            log.error(msjError + " - " + ex.getMessage());
+            LOGGER.error(msjError + " - " + ex.getMessage());
         }
     }
 
@@ -766,31 +766,31 @@ public class GUI_DetalleProducto extends JDialog {
         try {
             if (operacion == TipoDeOperacion.ALTA) {
                 Producto producto = Producto.builder()
-                        .codigo(txt_Codigo.getText())
-                        .descripcion(txt_Descripcion.getText().trim())
-                        .cantidad(Double.parseDouble(txt_Cantidad.getValue().toString()))
-                        .cantMinima(Double.parseDouble(txt_CantMinima.getValue().toString()))
-                        .medida((Medida) cmb_Medida.getSelectedItem())
-                        .precioCosto(Double.parseDouble(txt_PrecioCosto.getValue().toString()))
-                        .ganancia_porcentaje(Double.parseDouble(txt_Ganancia.getValue().toString()))
-                        .ganancia_neto(Double.parseDouble(txt_Ganancia_Neto.getValue().toString()))
-                        .precioVentaPublico(Double.parseDouble(txt_PVP.getValue().toString()))
-                        .iva_porcentaje(Double.parseDouble(cmb_IVA.getSelectedItem().toString()))
-                        .iva_neto(Double.parseDouble(txt_IVA_Neto.getValue().toString()))
-                        .impuestoInterno_porcentaje(Double.parseDouble(txt_ImpuestoInterno.getValue().toString()))
-                        .impuestoInterno_neto(Double.parseDouble(txt_ImpuestoInterno_Neto.getValue().toString()))
-                        .precioLista(Double.parseDouble(txt_PrecioLista.getValue().toString()))
-                        .rubro((Rubro) cmb_Rubro.getSelectedItem())
-                        .ilimitado(chk_Ilimitado.isSelected())
-                        .fechaUltimaModificacion(new Date())
-                        .estanteria(txt_Estanteria.getText().trim())
-                        .estante(txt_Estante.getText().trim())
-                        .proveedor((Proveedor) cmb_Proveedor.getSelectedItem())
-                        .nota(txt_Nota.getText().trim())
-                        .fechaAlta(new Date())
-                        .fechaVencimiento(dc_Vencimiento.getDate())
-                        .empresa(empresaService.getEmpresaActiva().getEmpresa())
-                        .build();
+                    .codigo(txt_Codigo.getText())
+                    .descripcion(txt_Descripcion.getText().trim())
+                    .cantidad(Double.parseDouble(txt_Cantidad.getValue().toString()))
+                    .cantMinima(Double.parseDouble(txt_CantMinima.getValue().toString()))
+                    .medida((Medida) cmb_Medida.getSelectedItem())
+                    .precioCosto(Double.parseDouble(txt_PrecioCosto.getValue().toString()))
+                    .ganancia_porcentaje(Double.parseDouble(txt_Ganancia.getValue().toString()))
+                    .ganancia_neto(Double.parseDouble(txt_Ganancia_Neto.getValue().toString()))
+                    .precioVentaPublico(Double.parseDouble(txt_PVP.getValue().toString()))
+                    .iva_porcentaje(Double.parseDouble(cmb_IVA.getSelectedItem().toString()))
+                    .iva_neto(Double.parseDouble(txt_IVA_Neto.getValue().toString()))
+                    .impuestoInterno_porcentaje(Double.parseDouble(txt_ImpuestoInterno.getValue().toString()))
+                    .impuestoInterno_neto(Double.parseDouble(txt_ImpuestoInterno_Neto.getValue().toString()))
+                    .precioLista(Double.parseDouble(txt_PrecioLista.getValue().toString()))
+                    .rubro((Rubro) cmb_Rubro.getSelectedItem())
+                    .ilimitado(chk_Ilimitado.isSelected())
+                    .fechaUltimaModificacion(new Date())
+                    .estanteria(txt_Estanteria.getText().trim())
+                    .estante(txt_Estante.getText().trim())
+                    .proveedor((Proveedor) cmb_Proveedor.getSelectedItem())
+                    .nota(txt_Nota.getText().trim())
+                    .fechaAlta(new Date())
+                    .fechaVencimiento(dc_Vencimiento.getDate())
+                    .empresa(empresaService.getEmpresaActiva().getEmpresa())
+                    .build();
                 productoService.guardar(producto);
                 int respuesta = JOptionPane.showConfirmDialog(this,
                         "El producto se guardó correctamente.\n¿Desea dar de alta otro producto?",
@@ -838,7 +838,7 @@ public class GUI_DetalleProducto extends JDialog {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_GuardarActionPerformed
@@ -855,7 +855,7 @@ public class GUI_DetalleProducto extends JDialog {
             }
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
@@ -1008,7 +1008,7 @@ public class GUI_DetalleProducto extends JDialog {
             this.cargarComboBoxMedidas();
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_MedidasActionPerformed
@@ -1023,7 +1023,7 @@ public class GUI_DetalleProducto extends JDialog {
             this.cargarComboBoxProveedores();
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoProveedorActionPerformed
@@ -1038,7 +1038,7 @@ public class GUI_DetalleProducto extends JDialog {
             this.cargarComboBoxRubros();
 
         } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
+            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_RubrosActionPerformed

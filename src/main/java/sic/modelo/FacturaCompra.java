@@ -1,7 +1,6 @@
 package sic.modelo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
@@ -34,11 +33,12 @@ public class FacturaCompra extends Factura implements Serializable {
     private Proveedor proveedor;
     
     @Builder
-    private FacturaCompra(Date fecha, char tipoFactura, long numSerie, long numFactura, List<Pago> pagos, FormaDePago formaPago, Date fechaVencimiento, 
+    private FacturaCompra(Date fecha, char tipoFactura, long numSerie, long numFactura, List<Pago> pagos,Date fechaVencimiento, 
             Transportista transportista, List<RenglonFactura> renglones, double subTotal, double recargo_porcentaje, 
             double recargo_neto, double descuento_porcentaje, double descuento_neto, double subTotal_neto, double iva_105_neto, 
             double iva_21_neto, double impuestoInterno_neto, double total, String observaciones, boolean pagada, Empresa empresa,
             boolean eliminada, Pedido pedido, Proveedor proveedor) {
+        
         this.setFecha(fecha);
         this.setTipoFactura(tipoFactura);
         this.setNumSerie(numSerie);
