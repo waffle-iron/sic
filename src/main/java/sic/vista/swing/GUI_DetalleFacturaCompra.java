@@ -47,7 +47,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         this.initComponents();
         this.setIcon();
         renglones = new ArrayList<>();
-        facturaParaMostrar = new FacturaCompra();
+        facturaParaMostrar = FacturaCompra.builder().build();
         operacionAlta = true;
         this.prepararComponentes();
     }
@@ -176,33 +176,33 @@ public class GUI_DetalleFacturaCompra extends JDialog {
     }    
 
     private void guardarFactura() throws ServiceException {
-        FacturaCompra facturaCompra = new FacturaCompra();
-        facturaCompra.setFecha(dc_FechaFactura.getDate());
-        facturaCompra.setTipoFactura(tipoDeFactura.charAt(tipoDeFactura.length() - 1));
-        facturaCompra.setNumSerie(Long.parseLong(txt_SerieFactura.getValue().toString()));
-        facturaCompra.setNumFactura(Long.parseLong(txt_NumeroFactura.getValue().toString()));
-        facturaCompra.setFechaVencimiento(dc_FechaVencimiento.getDate());
-        facturaCompra.setTransportista((Transportista) cmb_Transportista.getSelectedItem());
-        List<RenglonFactura> lineasFactura = new ArrayList<>(renglones);
-        facturaCompra.setRenglones(lineasFactura);
-        for (RenglonFactura renglon : lineasFactura) {
+        FacturaCompra facturaCompra = FacturaCompra.builder()
+            .fecha(dc_FechaFactura.getDate())
+            .tipoFactura(tipoDeFactura.charAt(tipoDeFactura.length() - 1))
+            .numSerie(Long.parseLong(txt_SerieFactura.getValue().toString()))
+            .numFactura(Long.parseLong(txt_NumeroFactura.getValue().toString()))
+            .fechaVencimiento(dc_FechaVencimiento.getDate())
+            .transportista((Transportista) cmb_Transportista.getSelectedItem())
+            .renglones(new ArrayList<>(renglones))
+            .subTotal(Double.parseDouble(txt_SubTotal.getValue().toString()))
+            .recargo_porcentaje(0)
+            .recargo_neto(0)
+            .descuento_porcentaje(Double.parseDouble(txt_Descuento_Porcentaje.getValue().toString()))
+            .descuento_neto(Double.parseDouble(txt_Descuento_Neto.getValue().toString()))
+            .subTotal_neto(Double.parseDouble(txt_SubTotal_Neto.getValue().toString()))
+            .iva_105_neto(Double.parseDouble(txt_IVA_105.getValue().toString()))
+            .iva_21_neto(Double.parseDouble(txt_IVA_21.getValue().toString()))
+            .impuestoInterno_neto(Double.parseDouble(txt_ImpInterno_Neto.getValue().toString()))
+            .total(Double.parseDouble(txt_Total.getValue().toString()))
+            .observaciones(txta_Observaciones.getText().trim())
+            .pagada(false)
+            .empresa(empresaService.getEmpresaActiva().getEmpresa())
+            .eliminada(false)
+            .proveedor((Proveedor) cmb_Proveedor.getSelectedItem())
+            .build();
+        for (RenglonFactura renglon : renglones) {
             renglon.setFactura(facturaCompra);
         }
-        facturaCompra.setSubTotal(Double.parseDouble(txt_SubTotal.getValue().toString()));
-        facturaCompra.setRecargo_porcentaje(0);
-        facturaCompra.setRecargo_neto(0);
-        facturaCompra.setDescuento_porcentaje(Double.parseDouble(txt_Descuento_Porcentaje.getValue().toString()));
-        facturaCompra.setDescuento_neto(Double.parseDouble(txt_Descuento_Neto.getValue().toString()));
-        facturaCompra.setSubTotal_neto(Double.parseDouble(txt_SubTotal_Neto.getValue().toString()));
-        facturaCompra.setIva_105_neto(Double.parseDouble(txt_IVA_105.getValue().toString()));
-        facturaCompra.setIva_21_neto(Double.parseDouble(txt_IVA_21.getValue().toString()));
-        facturaCompra.setImpuestoInterno_neto(Double.parseDouble(txt_ImpInterno_Neto.getValue().toString()));
-        facturaCompra.setTotal(Double.parseDouble(txt_Total.getValue().toString()));
-        facturaCompra.setObservaciones(txta_Observaciones.getText().trim());
-        facturaCompra.setPagada(false);
-        facturaCompra.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-        facturaCompra.setEliminada(false);
-        facturaCompra.setProveedor((Proveedor) cmb_Proveedor.getSelectedItem());
         facturaService.guardar(facturaCompra);
     }
 

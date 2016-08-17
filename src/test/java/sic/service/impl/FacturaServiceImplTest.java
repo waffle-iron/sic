@@ -330,12 +330,15 @@ public class FacturaServiceImplTest {
     @Test
     public void shouldCalcularTotalFacturadoVenta() {
         List<FacturaVenta> facturasDeVenta = new ArrayList<>();
-        FacturaVenta factura1 = new FacturaVenta();
-        FacturaVenta factura2 = new FacturaVenta();
-        FacturaVenta factura3 = new FacturaVenta();
-        factura1.setTotal(1024.759);
-        factura2.setTotal(3424.089);
-        factura3.setTotal(21124.504);
+        FacturaVenta factura1 = FacturaVenta.builder()
+                      .total(1024.759)
+                      .build();
+        FacturaVenta factura2 = FacturaVenta.builder()
+                      .total(3424.089)
+                      .build();
+        FacturaVenta factura3 = FacturaVenta.builder()
+                      .total(21124.504)
+                      .build();
         facturasDeVenta.add(factura1);
         facturasDeVenta.add(factura2);
         facturasDeVenta.add(factura3);
@@ -347,12 +350,15 @@ public class FacturaServiceImplTest {
     @Test
     public void shouldCalcularTotalFacturadoCompra() {
         List<FacturaCompra> facturasDeCompra = new ArrayList<>();
-        FacturaCompra factura1 = new FacturaCompra();
-        FacturaCompra factura2 = new FacturaCompra();
-        FacturaCompra factura3 = new FacturaCompra();
-        factura1.setTotal(1024.759);
-        factura2.setTotal(3424.089);
-        factura3.setTotal(21124.504);
+        FacturaCompra factura1 = FacturaCompra.builder()
+                      .total(1024.759)
+                      .build();
+        FacturaCompra factura2 = FacturaCompra.builder()
+                      .total(3424.089)
+                      .build();
+        FacturaCompra factura3 = FacturaCompra.builder()
+                      .total(21124.504)
+                      .build();
         facturasDeCompra.add(factura1);
         facturasDeCompra.add(factura2);
         facturasDeCompra.add(factura3);
@@ -364,15 +370,18 @@ public class FacturaServiceImplTest {
     @Test
     public void shouldCalcularIvaVenta() {
         List<FacturaVenta> facturasDeVenta = new ArrayList<>();
-        FacturaVenta factura1 = new FacturaVenta();
-        FacturaVenta factura2 = new FacturaVenta();
-        FacturaVenta factura3 = new FacturaVenta();
-        factura1.setIva_105_neto(0);
-        factura1.setIva_21_neto(35);
-        factura2.setIva_105_neto(0);
-        factura2.setIva_21_neto(30);
-        factura3.setIva_105_neto(25);
-        factura3.setIva_21_neto(0);
+        FacturaVenta factura1 = FacturaVenta.builder()
+                     .iva_105_neto(0)
+                     .iva_21_neto(35)
+                     .build();;
+        FacturaVenta factura2 = FacturaVenta.builder()
+                     .iva_105_neto(0)
+                     .iva_21_neto(30)
+                     .build();
+        FacturaVenta factura3 = FacturaVenta.builder()
+                     .iva_105_neto(25)
+                     .iva_21_neto(0)
+                     .build();
         facturasDeVenta.add(factura1);
         facturasDeVenta.add(factura2);
         facturasDeVenta.add(factura3);
@@ -384,15 +393,18 @@ public class FacturaServiceImplTest {
     @Test
     public void shouldCalcularIvaCompra() {
         List<FacturaCompra> facturasDeCompra = new ArrayList<>();
-        FacturaCompra factura1 = new FacturaCompra();
-        FacturaCompra factura2 = new FacturaCompra();
-        FacturaCompra factura3 = new FacturaCompra();
-        factura1.setIva_105_neto(0);
-        factura1.setIva_21_neto(35);
-        factura2.setIva_105_neto(0);
-        factura2.setIva_21_neto(30);
-        factura3.setIva_105_neto(25);
-        factura3.setIva_21_neto(0);
+        FacturaCompra factura1 = FacturaCompra.builder()
+                      .iva_105_neto(0)
+                      .iva_21_neto(35)
+                      .build();;
+        FacturaCompra factura2 = FacturaCompra.builder()
+                      .iva_105_neto(0)
+                      .iva_21_neto(30)
+                      .build();
+        FacturaCompra factura3 = FacturaCompra.builder()
+                      .iva_105_neto(25)
+                      .iva_21_neto(0)
+                      .build();
         facturasDeCompra.add(factura1);
         facturasDeCompra.add(factura2);
         facturasDeCompra.add(factura3);
@@ -423,10 +435,12 @@ public class FacturaServiceImplTest {
         renglones.add(renglon1);
         renglones.add(renglon2);
         List<FacturaVenta> facturas = new ArrayList<>();
-        FacturaVenta factura1 = new FacturaVenta();
-        factura1.setRenglones(renglones);
-        FacturaVenta factura2 = new FacturaVenta();
-        factura2.setRenglones(renglones);
+        FacturaVenta factura1 = FacturaVenta.builder()
+                    .renglones(renglones)
+                    .build();
+        FacturaVenta factura2 = FacturaVenta.builder()
+                    .renglones(renglones)
+                    .build();
         facturas.add(factura1);
         facturas.add(factura2);
         when(facturaService.getRenglonesDeLaFactura(factura1)).thenReturn(renglones);
@@ -438,10 +452,11 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularIVANetoWhenCompra() {
-        Producto producto = new Producto();
-        producto.setPrecioCosto(100.00);
-        producto.setImpuestoInterno_neto(0.0);
-        producto.setIva_porcentaje(21);
+        Producto producto = Producto.builder()
+                .precioCosto(100.00)
+                .impuestoInterno_neto(0.0)
+                .iva_porcentaje(21)
+                .build();
         double resultadoEsperado = 21;
         double resultadoObtenido = facturaService.calcularIVA_neto(Movimiento.COMPRA, producto, 0.0);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
@@ -449,9 +464,11 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularIVANetoWhenVenta() {
-        Producto producto = new Producto();
-        producto.setPrecioVentaPublico(100.00);
-        producto.setImpuestoInterno_neto(0.0);
+        Producto producto = Producto.builder()
+                .precioVentaPublico(100.00)
+                .impuestoInterno_neto(0.0)
+                .iva_porcentaje(21)
+                .build();
         producto.setIva_porcentaje(21);
         double resultadoEsperado = 21;
         double resultadoObtenido = facturaService.calcularIVA_neto(Movimiento.VENTA, producto, 0.0);
@@ -460,11 +477,12 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularPrecioUnitarioWhenEsUnaVentaConFacturaA() {
-        Producto producto = new Producto();
-        producto.setPrecioCosto(100.00);
-        producto.setPrecioVentaPublico(121.00);
-        producto.setImpuestoInterno_neto(0.0);
-        producto.setIva_porcentaje(21);
+        Producto producto = Producto.builder()
+                .precioCosto(100.00)
+                .precioVentaPublico(121.00)
+                .impuestoInterno_neto(0.0)
+                .iva_porcentaje(21)
+                .build();
         double resultadoEsperado = 121;
         double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, "Factura A", producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
@@ -472,11 +490,12 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularPrecioUnitarioWhenEsUnaVentaConFacturaX() {
-        Producto producto = new Producto();
-        producto.setPrecioCosto(100.00);
-        producto.setPrecioVentaPublico(121.00);
-        producto.setImpuestoInterno_neto(0.0);
-        producto.setIva_porcentaje(21);
+        Producto producto = Producto.builder()
+                .precioCosto(100.00)
+                .precioVentaPublico(121.00)
+                .impuestoInterno_neto(0.0)
+                .iva_porcentaje(21)
+                .build();                
         double resultadoEsperado = 121;
         double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, "Factura X", producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
@@ -484,11 +503,12 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularPrecioUnitarioWhenEsUnaCompraConFacturaA() {
-        Producto producto = new Producto();
-        producto.setPrecioCosto(100.00);
-        producto.setPrecioVentaPublico(121.00);
-        producto.setImpuestoInterno_neto(0.0);
-        producto.setIva_porcentaje(21);
+        Producto producto = Producto.builder()
+                .precioCosto(100.00)
+                .precioVentaPublico(121.00)
+                .impuestoInterno_neto(0.0)
+                .iva_porcentaje(21)
+                .build();
         double resultadoEsperado = 100;
         double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, "Factura A", producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
@@ -496,11 +516,12 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularPrecioUnitarioWhenEsUnaCompraConFacturaX() {
-        Producto producto = new Producto();
-        producto.setPrecioCosto(100.00);
-        producto.setPrecioVentaPublico(121.00);
-        producto.setImpuestoInterno_neto(0.0);
-        producto.setIva_porcentaje(21);
+        Producto producto = Producto.builder()
+                .precioCosto(100.00)
+                .precioVentaPublico(121.00)
+                .impuestoInterno_neto(0.0)
+                .iva_porcentaje(21)
+                .build();
         double resultadoEsperado = 100;
         double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, "Factura X", producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
@@ -508,14 +529,15 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularPrecioUnitarioWhenEsUnaCompraConFacturaB() {
-        Producto producto = new Producto();
-        producto.setPrecioCosto(100.00);
-        producto.setGanancia_neto(100);
-        producto.setIva_neto(42);
-        producto.setPrecioVentaPublico(200);
-        producto.setPrecioLista(242);
-        producto.setImpuestoInterno_neto(0.0);
-        producto.setIva_porcentaje(21);
+        Producto producto = Producto.builder()
+                .precioCosto(100.00)
+                .ganancia_neto(100)
+                .iva_neto(42)
+                .precioVentaPublico(200)
+                .precioLista(242)
+                .impuestoInterno_neto(0.0)
+                .iva_porcentaje(21)
+                .build();
         double resultadoEsperado = 121;
         double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, "Factura B", producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
@@ -523,14 +545,15 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularPrecioUnitarioWhenEsUnaCompraConFacturaC() {
-        Producto producto = new Producto();
-        producto.setPrecioCosto(100.00);
-        producto.setGanancia_neto(100);
-        producto.setIva_neto(42);
-        producto.setPrecioVentaPublico(200);
-        producto.setPrecioLista(242);
-        producto.setImpuestoInterno_neto(0.0);
-        producto.setIva_porcentaje(21);
+        Producto producto = Producto.builder()
+                .precioCosto(100.00)
+                .ganancia_neto(100)
+                .iva_neto(42)
+                .precioVentaPublico(200)
+                .precioLista(242)
+                .impuestoInterno_neto(0.0)
+                .iva_porcentaje(21)
+                .build();
         double resultadoEsperado = 121;
         double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, "Factura C", producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
@@ -538,14 +561,15 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularPrecioUnitarioWhenEsUnaCompraConFacturaY() {
-        Producto producto = new Producto();
-        producto.setPrecioCosto(100.00);
-        producto.setGanancia_neto(100);
-        producto.setIva_neto(42);
-        producto.setPrecioVentaPublico(200);
-        producto.setPrecioLista(242);
-        producto.setImpuestoInterno_neto(0.0);
-        producto.setIva_porcentaje(21);
+        Producto producto = Producto.builder()
+                .precioCosto(100.00)
+                .ganancia_neto(100)
+                .iva_neto(42)
+                .precioVentaPublico(200)
+                .precioLista(242)
+                .impuestoInterno_neto(0.0)
+                .iva_porcentaje(21)
+                .build();
         double resultadoEsperado = 121;
         double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, "Factura Y", producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
@@ -553,14 +577,15 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularPrecioUnitarioWhenEsUnaVentaConFacturaB() {
-        Producto producto = new Producto();
-        producto.setPrecioCosto(100.00);
-        producto.setGanancia_neto(100);
-        producto.setIva_neto(42);
-        producto.setPrecioVentaPublico(200);
-        producto.setPrecioLista(242);
-        producto.setImpuestoInterno_neto(0.0);
-        producto.setIva_porcentaje(21);
+        Producto producto = Producto.builder()
+                .precioCosto(100.00)
+                .ganancia_neto(100)
+                .iva_neto(42)
+                .precioVentaPublico(200)
+                .precioLista(242)
+                .impuestoInterno_neto(0.0)
+                .iva_porcentaje(21)
+                .build();
         double resultadoEsperado = 242;
         double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, "Factura B", producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
@@ -568,14 +593,15 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularPrecioUnitarioWhenEsUnaVentaConFacturaC() {
-        Producto producto = new Producto();
-        producto.setPrecioCosto(100.00);
-        producto.setGanancia_neto(100);
-        producto.setIva_neto(42);
-        producto.setPrecioVentaPublico(200);
-        producto.setPrecioLista(242);
-        producto.setImpuestoInterno_neto(0.0);
-        producto.setIva_porcentaje(21);
+        Producto producto = Producto.builder()
+                .precioCosto(100.00)
+                .ganancia_neto(100)
+                .iva_neto(42)
+                .precioVentaPublico(200)
+                .precioLista(242)
+                .impuestoInterno_neto(0.0)
+                .iva_porcentaje(21)
+                .build();
         double resultadoEsperado = 242;
         double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, "Factura C", producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
@@ -583,14 +609,15 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularPrecioUnitarioWhenVentaYFacturaY() {
-        Producto producto = new Producto();
-        producto.setPrecioCosto(100.00);
-        producto.setGanancia_neto(100);
-        producto.setIva_neto(42);
-        producto.setPrecioVentaPublico(200);
-        producto.setPrecioLista(242);
-        producto.setImpuestoInterno_neto(0.0);
-        producto.setIva_porcentaje(21);
+        Producto producto = Producto.builder()
+                .precioCosto(100.00)
+                .ganancia_neto(100)
+                .iva_neto(42)
+                .precioVentaPublico(200)
+                .precioLista(242)
+                .impuestoInterno_neto(0.0)
+                .iva_porcentaje(21)
+                .build();
         double resultadoEsperado = 221;
         double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, "Factura Y", producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
