@@ -58,8 +58,8 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         encabezados[3] = "Fecha Cierre";
         encabezados[4] = "Usuario de Cierre";
         encabezados[5] = "Saldo Apertura";
-        encabezados[6] = "Saldo Final";
-        encabezados[7] = "Saldo Cierre";
+        encabezados[6] = "Saldo Sistema";
+        encabezados[7] = "Saldo Real";
         modeloTablaCajas.setColumnIdentifiers(encabezados);
         tbl_Cajas.setModel(modeloTablaCajas);
 
@@ -165,7 +165,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
             if (caja.getFechaCierre() != null) {
                 fila[3] = caja.getFechaCierre();
             }
-            fila[4] = (caja.getUsuarioCierraCaja() != null ? caja.getUsuarioCierraCaja() : "Caja sin Cierre");
+            fila[4] = (caja.getUsuarioCierraCaja() != null ? caja.getUsuarioCierraCaja() : "");
             fila[5] = caja.getSaldoInicial();
             fila[6] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoFinal() : 0.0);
             fila[7] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoReal() : 0.0);
@@ -371,7 +371,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         sp_TablaCajas.setViewportView(tbl_Cajas);
 
         btn_AbrirCaja.setForeground(java.awt.Color.blue);
-        btn_AbrirCaja.setText("Abrir");
+        btn_AbrirCaja.setText("Abrir Nueva");
         btn_AbrirCaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_AbrirCajaActionPerformed(evt);
