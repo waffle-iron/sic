@@ -192,7 +192,7 @@ public class GUI_CerrarVenta extends JDialog {
 
     private List<Pago> construirListaPagos() {
         List<Pago> pagos = new ArrayList<>();
-        if (chk_FormaDePago1.isSelected()) {
+        if (chk_FormaDePago1.isSelected() && chk_FormaDePago1.isEnabled()) {
             Pago pago1 = new Pago();
             pago1.setEmpresa(gui_puntoDeVenta.getEmpresa());
             pago1.setFormaDePago((FormaDePago) cmb_FormaDePago1.getSelectedItem());
@@ -201,7 +201,7 @@ public class GUI_CerrarVenta extends JDialog {
             pago1.setNota("");
             pagos.add(pago1);
         }
-        if (chk_FormaDePago2.isSelected()) {
+        if (chk_FormaDePago2.isSelected() && chk_FormaDePago2.isEnabled()) {
             Pago pago2 = new Pago();
             pago2.setEmpresa(gui_puntoDeVenta.getEmpresa());
             pago2.setFormaDePago((FormaDePago) cmb_FormaDePago2.getSelectedItem());
@@ -210,7 +210,7 @@ public class GUI_CerrarVenta extends JDialog {
             pago2.setNota("");
             pagos.add(pago2);
         }
-        if (chk_FormaDePago3.isSelected()) {
+        if (chk_FormaDePago3.isSelected() && chk_FormaDePago3.isEnabled()) {
             Pago pago3 = new Pago();
             pago3.setEmpresa(gui_puntoDeVenta.getEmpresa());
             pago3.setFormaDePago((FormaDePago) cmb_FormaDePago3.getSelectedItem());
