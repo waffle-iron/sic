@@ -72,8 +72,6 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         cmb_Transportista.setEnabled(false);
         cmb_TipoFactura.setEnabled(false);
         btn_NuevoTransportista.setEnabled(false);
-        txt_CodigoProducto.setVisible(false);
-        btn_IngresarCodigoProducto.setVisible(false);
         btn_BuscarProducto.setVisible(false);
         btn_NuevoProducto.setVisible(false);
         btn_QuitarDeLista.setVisible(false);
@@ -109,19 +107,18 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         dc_FechaFactura.setDate(new Date());
     }
 
-    private void llamarVentanaRenglonFactura(Producto producto) {
-        if (this.existeProductoCargado(producto)) {
+    private void cargarRenglonFactura(GUI_BuscarProductos gui_buscarProducto) {
+        Producto productoSeleccionado = gui_buscarProducto.getProductoSeleccionado();
+        if(productoSeleccionado != null){
+        if (this.existeProductoCargado(productoSeleccionado)) {
             JOptionPane.showMessageDialog(this,
-                    "Ya esta cargado el producto \"" + producto.getDescripcion()
+                    "Ya esta cargado el producto \"" + gui_buscarProducto.getProductoSeleccionado().getDescripcion()
                     + "\" en los renglones de la factura.", "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            GUI_RenglonFactura gui_Renglon = new GUI_RenglonFactura(producto, tipoDeFactura, Movimiento.COMPRA);
-            gui_Renglon.setModal(true);
-            gui_Renglon.setLocationRelativeTo(this);
-            gui_Renglon.setVisible(true);
-            if (gui_Renglon.debeCargarRenglon()) {
-                this.agregarRenglon(gui_Renglon.getRenglon());
+            if (gui_buscarProducto.debeCargarRenglon()) {
+                this.agregarRenglon(gui_buscarProducto.getRenglon());
             }
+        }
         }
     }
 
@@ -212,7 +209,6 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         this.setColumnas();
         dc_FechaFactura.setDate(new Date());
         dc_FechaVencimiento.setDate(null);        
-        txt_CodigoProducto.setText("");
         txta_Observaciones.setText("");
         txt_SerieFactura.setValue(0);
         txt_NumeroFactura.setValue(0);
@@ -224,23 +220,6 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         txt_IVA_21.setValue(0.0);
         txt_ImpInterno_Neto.setValue(0.0);
         txt_Total.setValue(0.0);
-    }
-
-    private void buscarProductoPorCodigo(String codigoProducto) {
-        try {
-            Producto producto = productoService.getProductoPorCodigo(codigoProducto,
-                    empresaService.getEmpresaActiva().getEmpresa());
-            if (producto != null) {
-                this.llamarVentanaRenglonFactura(producto);
-                txt_CodigoProducto.setText("");
-            } else {
-                JOptionPane.showMessageDialog(this, "No se pudo encontrar el Producto con el Codigo ingresado!",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-        } catch (ServiceException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     private void validarComponentesDeResultados() {
@@ -415,11 +394,9 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         panelRenglones = new javax.swing.JPanel();
         sp_Renglones = new javax.swing.JScrollPane();
         tbl_Renglones = new javax.swing.JTable();
-        btn_IngresarCodigoProducto = new javax.swing.JButton();
         btn_BuscarProducto = new javax.swing.JButton();
         btn_NuevoProducto = new javax.swing.JButton();
         btn_QuitarDeLista = new javax.swing.JButton();
-        txt_CodigoProducto = new javax.swing.JTextField();
         panelResultados = new javax.swing.JPanel();
         lbl_SubTotal = new javax.swing.JLabel();
         lbl_Total = new javax.swing.JLabel();
@@ -564,13 +541,6 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         tbl_Renglones.getTableHeader().setReorderingAllowed(false);
         sp_Renglones.setViewportView(tbl_Renglones);
 
-        btn_IngresarCodigoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/16x16.png"))); // NOI18N
-        btn_IngresarCodigoProducto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_IngresarCodigoProductoActionPerformed(evt);
-            }
-        });
-
         btn_BuscarProducto.setForeground(java.awt.Color.blue);
         btn_BuscarProducto.setText("Buscar Producto");
         btn_BuscarProducto.addActionListener(new java.awt.event.ActionListener() {
@@ -595,22 +565,12 @@ public class GUI_DetalleFacturaCompra extends JDialog {
             }
         });
 
-        txt_CodigoProducto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txt_CodigoProductoActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout panelRenglonesLayout = new javax.swing.GroupLayout(panelRenglones);
         panelRenglones.setLayout(panelRenglonesLayout);
         panelRenglonesLayout.setHorizontalGroup(
             panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp_Renglones)
+            .addComponent(sp_Renglones, javax.swing.GroupLayout.DEFAULT_SIZE, 902, Short.MAX_VALUE)
             .addGroup(panelRenglonesLayout.createSequentialGroup()
-                .addComponent(txt_CodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(btn_IngresarCodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_BuscarProducto)
                 .addGap(0, 0, 0)
                 .addComponent(btn_NuevoProducto)
@@ -626,16 +586,12 @@ public class GUI_DetalleFacturaCompra extends JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelRenglonesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelRenglonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(btn_IngresarCodigoProducto)
-                    .addComponent(txt_CodigoProducto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_BuscarProducto)
                     .addComponent(btn_NuevoProducto)
                     .addComponent(btn_QuitarDeLista))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sp_Renglones, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE))
         );
-
-        panelRenglonesLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_IngresarCodigoProducto, txt_CodigoProducto});
 
         panelRenglonesLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_BuscarProducto, btn_NuevoProducto, btn_QuitarDeLista});
 
@@ -728,7 +684,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                     .addComponent(txt_SubTotal))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbl_Descuento, javax.swing.GroupLayout.PREFERRED_SIZE, 102, Short.MAX_VALUE)
+                    .addComponent(lbl_Descuento, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
                     .addComponent(txt_Descuento_Neto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txt_Descuento_Porcentaje))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -857,7 +813,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                     .addComponent(dc_FechaFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelDatosComprobanteIzquierdoLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(28, Short.MAX_VALUE)
                 .addComponent(lbl_FechaVto)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(dc_FechaVencimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -948,18 +904,10 @@ public class GUI_DetalleFacturaCompra extends JDialog {
     }//GEN-LAST:event_btn_NuevoProductoActionPerformed
 
     private void btn_BuscarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarProductoActionPerformed
-        GUI_BusquedaProductos gui_BusquedaProductos = new GUI_BusquedaProductos();
-        gui_BusquedaProductos.setModal(true);
-        gui_BusquedaProductos.setLocationRelativeTo(this);
-        gui_BusquedaProductos.setVisible(true);
-        if (gui_BusquedaProductos.getProdSeleccionado() != null) {
-            this.llamarVentanaRenglonFactura(gui_BusquedaProductos.getProdSeleccionado());
-        }
+          GUI_BuscarProductos gui_buscarProducto = new GUI_BuscarProductos(this, true, renglones, Movimiento.COMPRA, cmb_TipoFactura.getSelectedItem().toString());
+          gui_buscarProducto.setVisible(true);
+          this.cargarRenglonFactura(gui_buscarProducto);
     }//GEN-LAST:event_btn_BuscarProductoActionPerformed
-
-    private void btn_IngresarCodigoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_IngresarCodigoProductoActionPerformed
-        this.buscarProductoPorCodigo(txt_CodigoProducto.getText().trim());
-    }//GEN-LAST:event_btn_IngresarCodigoProductoActionPerformed
 
     private void btn_QuitarDeListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_QuitarDeListaActionPerformed
         this.quitarRenglonFactura();
@@ -980,10 +928,6 @@ public class GUI_DetalleFacturaCompra extends JDialog {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_GuardarActionPerformed
-
-    private void txt_CodigoProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_CodigoProductoActionPerformed
-        this.buscarProductoPorCodigo(txt_CodigoProducto.getText().trim());
-    }//GEN-LAST:event_txt_CodigoProductoActionPerformed
 
     private void txt_Descuento_PorcentajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_Descuento_PorcentajeActionPerformed
         this.calcularResultados();
@@ -1017,10 +961,10 @@ public class GUI_DetalleFacturaCompra extends JDialog {
             this.cargarFactura();
         }
     }//GEN-LAST:event_formWindowOpened
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_BuscarProducto;
     private javax.swing.JButton btn_Guardar;
-    private javax.swing.JButton btn_IngresarCodigoProducto;
     private javax.swing.JButton btn_NuevoProducto;
     private javax.swing.JButton btn_NuevoProveedor;
     private javax.swing.JButton btn_NuevoTransportista;
@@ -1054,7 +998,6 @@ public class GUI_DetalleFacturaCompra extends JDialog {
     private javax.swing.JPanel panelResultados;
     private javax.swing.JScrollPane sp_Renglones;
     private javax.swing.JTable tbl_Renglones;
-    private javax.swing.JTextField txt_CodigoProducto;
     private javax.swing.JFormattedTextField txt_Descuento_Neto;
     private javax.swing.JFormattedTextField txt_Descuento_Porcentaje;
     private javax.swing.JFormattedTextField txt_IVA_105;

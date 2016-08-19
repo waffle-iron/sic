@@ -230,12 +230,8 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="sp_Renglones" max="32767" attributes="0"/>
+              <Component id="sp_Renglones" pref="902" max="32767" attributes="0"/>
               <Group type="102" attributes="0">
-                  <Component id="txt_CodigoProducto" min="-2" pref="105" max="-2" attributes="0"/>
-                  <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                  <Component id="btn_IngresarCodigoProducto" min="-2" pref="25" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="btn_BuscarProducto" linkSize="7" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                   <Component id="btn_NuevoProducto" linkSize="7" min="-2" max="-2" attributes="0"/>
@@ -250,8 +246,6 @@
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="btn_IngresarCodigoProducto" linkSize="5" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="txt_CodigoProducto" linkSize="5" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_BuscarProducto" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_NuevoProducto" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_QuitarDeLista" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -289,16 +283,6 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JButton" name="btn_IngresarCodigoProducto">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/sic/icons/16x16.png"/>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_IngresarCodigoProductoActionPerformed"/>
-          </Events>
-        </Component>
         <Component class="javax.swing.JButton" name="btn_BuscarProducto">
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -330,11 +314,6 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_QuitarDeListaActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JTextField" name="txt_CodigoProducto">
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_CodigoProductoActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>
