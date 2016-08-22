@@ -7,7 +7,6 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
-import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.EmpresaActiva;
@@ -24,7 +23,6 @@ public class GUI_DetallePago extends JDialog {
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private final IPagoService pagoService = appContext.getBean(IPagoService.class);
     private final Factura facturaRelacionada;
-    private static final Logger LOGGER = Logger.getLogger(GUI_DetallePago.class.getPackage().getName());
 
     public GUI_DetallePago(Factura factura) {
         this.initComponents();
@@ -60,9 +58,7 @@ public class GUI_DetallePago extends JDialog {
             pago.setFormaDePago((FormaDePago) cmb_FormaDePago.getSelectedItem());
             pago.setNota(txt_Nota.getText().trim());
             pagoService.guardar(pago);
-            LOGGER.warn("El Pago: " + pago.toString() + " se guardó correctamente.");
             this.dispose();
-
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

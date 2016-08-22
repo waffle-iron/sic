@@ -2,6 +2,7 @@ package sic.vista.swing;
 
 import java.beans.PropertyVetoException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -21,6 +22,7 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Cliente;
+import sic.modelo.Factura;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Pedido;
 import sic.modelo.Usuario;
@@ -28,9 +30,9 @@ import sic.service.EstadoPedido;
 import sic.service.IClienteService;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
-import sic.service.IPagoService;
 import sic.service.IPedidoService;
 import sic.service.IUsuarioService;
+import sic.service.Movimiento;
 import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
@@ -46,7 +48,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private final IClienteService clienteService = appContext.getBean(IClienteService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
-    private final IPagoService pagoService = appContext.getBean(IPagoService.class);
     private static final Logger LOGGER = Logger.getLogger(GUI_FacturasVenta.class.getPackage().getName());
 
     public GUI_FacturasVenta() {
@@ -198,10 +199,10 @@ public class GUI_FacturasVenta extends JInternalFrame {
         //Tamanios de columnas
         tbl_Resultados.getColumnModel().getColumn(0).setPreferredWidth(100);
         tbl_Resultados.getColumnModel().getColumn(1).setPreferredWidth(60);
-        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(150);
+        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(130);
         tbl_Resultados.getColumnModel().getColumn(3).setPreferredWidth(130);
-        tbl_Resultados.getColumnModel().getColumn(4).setPreferredWidth(200);
-        tbl_Resultados.getColumnModel().getColumn(5).setPreferredWidth(200);
+        tbl_Resultados.getColumnModel().getColumn(4).setPreferredWidth(190);
+        tbl_Resultados.getColumnModel().getColumn(5).setPreferredWidth(140);
         tbl_Resultados.getColumnModel().getColumn(6).setPreferredWidth(200);
         tbl_Resultados.getColumnModel().getColumn(7).setPreferredWidth(80);
         tbl_Resultados.getColumnModel().getColumn(8).setPreferredWidth(120);
@@ -222,6 +223,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }
 
     private void buscar(final BusquedaFacturaVentaCriteria criteria) {
+        this.limpiarJTable();
         cambiarEstadoEnabled(false);
         pb_Filtro.setIndeterminate(true);
         SwingWorker<List<FacturaVenta>, Void> worker = new SwingWorker<List<FacturaVenta>, Void>() {
@@ -329,7 +331,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }
 
     private void cargarResultadosAlTable() {
-        this.limpiarJTable();
         for (FacturaVenta factura : facturas) {
             Object[] fila = new Object[16];
             fila[0] = factura.getFecha();
@@ -387,7 +388,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }
 
     private void lanzarReporteFactura() throws JRException {
-        if (tbl_Resultados.getSelectedRow() != -1) {
+        if (tbl_Resultados.getSelectedRow() != -1 && tbl_Resultados.getSelectedRowCount() == 1) {
             int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
             JasperPrint report = facturaService.getReporteFacturaVenta(facturas.get(indexFilaSeleccionada));
 
@@ -432,6 +433,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         txt_ResultTotalIVAVenta = new javax.swing.JFormattedTextField();
         btn_Nueva = new javax.swing.JButton();
         btn_VerPagos = new javax.swing.JButton();
+        btn_PagoMultiple = new javax.swing.JButton();
         panelFiltros = new javax.swing.JPanel();
         subPanelFiltros1 = new javax.swing.JPanel();
         chk_Fecha = new javax.swing.JCheckBox();
@@ -496,7 +498,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             }
         ));
         tbl_Resultados.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        tbl_Resultados.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tbl_Resultados.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         sp_Resultados.setViewportView(tbl_Resultados);
 
         btn_VerDetalle.setForeground(java.awt.Color.blue);
@@ -584,12 +586,22 @@ public class GUI_FacturasVenta extends JInternalFrame {
             }
         });
 
+        btn_PagoMultiple.setForeground(java.awt.Color.blue);
+        btn_PagoMultiple.setText("Pago Multiple");
+        btn_PagoMultiple.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_PagoMultipleActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelResultadosLayout = new javax.swing.GroupLayout(panelResultados);
         panelResultados.setLayout(panelResultadosLayout);
         panelResultadosLayout.setHorizontalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelResultadosLayout.createSequentialGroup()
-                .addComponent(btn_Nueva)
+                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btn_Nueva, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btn_PagoMultiple, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 0, 0)
                 .addComponent(btn_Eliminar)
                 .addGap(0, 0, 0)
@@ -601,23 +613,26 @@ public class GUI_FacturasVenta extends JInternalFrame {
             .addComponent(sp_Resultados)
         );
 
-        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_VerDetalle, btn_VerPagos});
+        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_PagoMultiple, btn_VerDetalle, btn_VerPagos});
 
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_Eliminar)
-                        .addComponent(btn_VerDetalle)
-                        .addComponent(btn_Nueva)
-                        .addComponent(btn_VerPagos))))
+                    .addGroup(panelResultadosLayout.createSequentialGroup()
+                        .addComponent(btn_PagoMultiple)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btn_Eliminar)
+                            .addComponent(btn_VerDetalle)
+                            .addComponent(btn_Nueva)
+                            .addComponent(btn_VerPagos)))))
         );
 
-        panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_VerDetalle, btn_VerPagos});
+        panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_PagoMultiple, btn_VerDetalle, btn_VerPagos});
 
         panelFiltros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
 
@@ -928,7 +943,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
 }//GEN-LAST:event_btn_VerDetalleActionPerformed
 
     private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarActionPerformed
-        if (tbl_Resultados.getSelectedRow() != -1) {
+        if (tbl_Resultados.getSelectedRow() != -1 && tbl_Resultados.getSelectedRowCount() == 1) {
             int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
             int respuesta = JOptionPane.showConfirmDialog(this,
                     "¿Esta seguro que desea eliminar / anular la factura seleccionada?",
@@ -1046,7 +1061,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }//GEN-LAST:event_chk_EstadoFacturaItemStateChanged
 
     private void btn_VerPagosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerPagosActionPerformed
-        if (tbl_Resultados.getSelectedRow() != -1) {
+        if (tbl_Resultados.getSelectedRow() != -1 && tbl_Resultados.getSelectedRowCount() == 1) {
             int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
             GUI_Pagos gui_Pagos = new GUI_Pagos(facturas.get(indexFilaSeleccionada));
             gui_Pagos.setModal(true);
@@ -1055,11 +1070,29 @@ public class GUI_FacturasVenta extends JInternalFrame {
         }
     }//GEN-LAST:event_btn_VerPagosActionPerformed
 
+    private void btn_PagoMultipleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_PagoMultipleActionPerformed
+        if (tbl_Resultados.getSelectedRow() != -1) {
+            if (tbl_Resultados.getSelectedRowCount() > 1) {
+                       int[] indiceFacturas = Utilidades.getSelectedRowsModelIndices(tbl_Resultados);
+                       List<Factura> facturasVenta = new ArrayList<>();
+                       for(int i = 0; i < indiceFacturas.length; i++){
+                           facturasVenta.add(this.facturas.get(indiceFacturas[i]));
+                       }
+                       if(facturaService.validarFacturasParaPagoMultiple(facturasVenta, Movimiento.VENTA)){
+                       GUI_PagoMultiplesFacturas nuevoPagoMultiple = new GUI_PagoMultiplesFacturas(this, true, facturasVenta, Movimiento.VENTA);
+                       nuevoPagoMultiple.setLocationRelativeTo(this);
+                       nuevoPagoMultiple.setVisible(true);
+                       }
+            }
+        }
+    }//GEN-LAST:event_btn_PagoMultipleActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bg_estadoFactura;
     private javax.swing.JButton btn_Buscar;
     private javax.swing.JButton btn_Eliminar;
     private javax.swing.JButton btn_Nueva;
+    private javax.swing.JButton btn_PagoMultiple;
     private javax.swing.JButton btn_VerDetalle;
     private javax.swing.JButton btn_VerPagos;
     private javax.swing.JCheckBox chk_Cliente;

@@ -1,6 +1,5 @@
 package sic.service;
 
-import java.util.Date;
 import java.util.List;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -28,7 +27,7 @@ public interface IFacturaService {
     double calcularGananciaTotal(List<FacturaVenta> facturas);
 
     double calcularIVA_Venta(List<FacturaVenta> facturas);
-    
+
     double calcularIVA_Compra(List<FacturaCompra> facturas);
 
     double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones);
@@ -45,6 +44,8 @@ public interface IFacturaService {
 
     RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje);
 
+    boolean validarFacturasParaPagoMultiple(List<Factura> facturas, Movimiento movimiento);
+
     //**************************************************************************
     //Calculos
     double calcularSubTotal(List<RenglonFactura> renglones);
@@ -54,7 +55,7 @@ public interface IFacturaService {
     double calcularTotal(double subTotal, double descuento_neto, double recargo_neto, double iva105_neto, double iva21_neto, double impInterno_neto);
 
     double calcularTotalFacturadoVenta(List<FacturaVenta> facturas);
-    
+
     double calcularTotalFacturadoCompra(List<FacturaCompra> facturas);
 
     double calcularVuelto(double importeAPagar, double importeAbonado);

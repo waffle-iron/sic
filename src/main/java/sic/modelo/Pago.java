@@ -13,7 +13,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "pago")
@@ -29,6 +32,9 @@ import lombok.Data;
             + "ORDER BY p.fecha ASC")
 })
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Pago implements Serializable {
 
     @Id

@@ -380,6 +380,8 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     private void limpiarYRecargarComponentes() {
+        dc_fechaFactura.setDate(new Date());
+        dc_fechaVencimiento.setDate(new Date());
         renglones = new ArrayList<>();
         modeloTablaResultados = new ModeloTabla();
         this.setColumnas();

@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Factura;
 import sic.modelo.Pago;
 import sic.repository.IPagoRepository;
@@ -24,11 +25,13 @@ public class PagoRepositoryJPAImpl implements IPagoRepository {
     }
 
     @Override
+    @Transactional
     public void guardar(Pago pago) {
         em.persist(em.merge(pago));
     }
 
     @Override
+    @Transactional
     public void actualizar(Pago pago) {
         em.merge(pago);
     }

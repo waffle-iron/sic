@@ -362,6 +362,54 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
+    public boolean validarFacturasParaPagoMultiple(List<Factura> facturas, Movimiento movimiento) {
+        boolean resultado = true;
+        if (movimiento == Movimiento.VENTA) {
+            if (facturas != null) {
+                if (facturas.isEmpty()) {
+                    resultado = false;
+                } else {
+                    Cliente cliente = ((FacturaVenta) facturas.get(0)).getCliente();
+                    for (Factura factura : facturas) {
+                        if (!cliente.equals(((FacturaVenta) factura).getCliente())) {
+                            resultado = false;
+                            break;
+                        }
+                        if (factura.isPagada()) {
+                            resultado = false;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                resultado = false;
+            }
+        }
+        if (movimiento == Movimiento.COMPRA) {
+            if (facturas != null) {
+                if (facturas.isEmpty()) {
+                    resultado = false;
+                } else {
+                    Proveedor proveedor = ((FacturaCompra) facturas.get(0)).getProveedor();
+                    for (Factura factura : facturas) {
+                        if (!proveedor.equals(((FacturaCompra) factura).getProveedor())) {
+                            resultado = false;
+                            break;
+                        }
+                        if (factura.isPagada()) {
+                            resultado = false;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                resultado = false;
+            }
+        }
+        return resultado;
+    }
+
+    @Override
     public boolean validarCantidadMaximaDeRenglones(int cantidad) {
         ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
                 empresaService.getEmpresaActiva().getEmpresa());
@@ -628,13 +676,13 @@ public class FacturaServiceImpl implements IFacturaService {
         List<RenglonFactura> renglonesConIVA = new ArrayList<>();
         List<RenglonFactura> renglonesSinIVA = new ArrayList<>();
         FacturaVenta facturaSinIVA = FacturaVenta.builder()
-                     .cliente(factura.getCliente())
-                     .usuario(factura.getUsuario())
-                     .build();
+                .cliente(factura.getCliente())
+                .usuario(factura.getUsuario())
+                .build();
         FacturaVenta facturaConIVA = FacturaVenta.builder()
-                     .cliente(factura.getCliente())
-                     .usuario(factura.getUsuario())
-                     .build();
+                .cliente(factura.getCliente())
+                .usuario(factura.getUsuario())
+                .build();
         int renglonMarcado = 0;
         int numeroDeRenglon = 0;
         for (RenglonFactura renglon : factura.getRenglones()) {

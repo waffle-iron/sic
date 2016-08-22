@@ -121,15 +121,11 @@ public class GUI_Pagos extends JDialog {
                 LOGGER.warn("El Pago: " + pagos.get(indexFilaSeleccionada).toString() + " se eliminó correctamente.");
                 pagos.remove(indexFilaSeleccionada);
                 this.cargarResultadosAlTable();
-                this.verificarYSetearEstadoPagoFactura();
                 this.actualizarSaldos();
             }
         }
     }
 
-    private void verificarYSetearEstadoPagoFactura() {
-        pagoService.setFacturaEstadoDePago(facturaRelacionada);
-    }
     
     private void actualizarSaldos() {
         txt_TotalAdeudado.setValue(facturaRelacionada.getTotal());
@@ -310,7 +306,6 @@ public class GUI_Pagos extends JDialog {
         gui_DetallePago.setVisible(true);
         this.getPagosDeLaFactura();
         this.cargarResultadosAlTable();
-        this.verificarYSetearEstadoPagoFactura();
         this.actualizarSaldos();
     }//GEN-LAST:event_btn_NuevoActionPerformed
 
