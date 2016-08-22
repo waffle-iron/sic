@@ -293,21 +293,6 @@ public class GUI_PuntoDeVenta extends JDialog {
         tbl_Resultado.getColumnModel().getColumn(7).setPreferredWidth(120);
     }
 
-    private boolean existeStockDisponible(double cantRequerida, Producto producto) {
-        double disponibilidad;
-        if (producto.isIlimitado() == false) {
-            disponibilidad = producto.getCantidad();
-            for (RenglonFactura renglon : renglones) {
-                if (renglon.getDescripcionItem().equals(producto.getDescripcion())) {
-                    disponibilidad -= renglon.getCantidad();
-                }
-            }
-            return disponibilidad >= cantRequerida;
-        } else {
-            return true;
-        }
-    }
-
     private void agregarRenglon(RenglonFactura renglon) {
         boolean agregado = false;
         //busca entre los renglones al producto, aumenta la cantidad y recalcula el descuento        
