@@ -25,7 +25,6 @@ import sic.util.Utilidades;
 
 public class GUI_BuscarProductos extends JDialog {
 
-    private final JDialog parent;
     private final String tipoComprobante;
     private ModeloTabla modeloTablaResultados = new ModeloTabla();
     private List<Producto> productos;
@@ -42,10 +41,9 @@ public class GUI_BuscarProductos extends JDialog {
     private static final Logger LOGGER = Logger.getLogger(GUI_BuscarProductos.class.getPackage().getName());
 
     public GUI_BuscarProductos(JDialog parentRecibido, boolean modal, List<RenglonFactura> renglones, Movimiento movimiento, String tipoComprobante) {
-        super(parentRecibido, modal);
+        this.setModal(modal);
         this.initComponents();
         this.setIcon();
-        parent = parentRecibido;
         renglonesFactura = renglones;
         tipoMovimiento = movimiento;
         this.tipoComprobante = tipoComprobante;
@@ -112,7 +110,7 @@ public class GUI_BuscarProductos extends JDialog {
     }
 
     private void actualizarProductosCargadosEnFactura() {
-        if (!(tipoMovimiento == Movimiento.PEDIDO)) {
+        if (!(tipoMovimiento == Movimiento.PEDIDO || tipoMovimiento == Movimiento.COMPRA)) {
             for (RenglonFactura renglonFactura : renglonesFactura) {
                 for (Producto producto : productos) {
                     if (renglonFactura.getDescripcionItem().equals(producto.getDescripcion()) && producto.isIlimitado() == false) {
