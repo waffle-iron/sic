@@ -31,8 +31,7 @@ public class GUI_BuscarProductos extends JDialog {
     private final List<RenglonFactura> renglonesFactura;
     private Producto prodSeleccionado;
     private RenglonFactura renglon;
-    private boolean debeCargarRenglon;
-    private boolean movimientoPedidoOCompra = false;
+    private boolean debeCargarRenglon;    
     private final Movimiento tipoMovimiento;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
@@ -47,9 +46,6 @@ public class GUI_BuscarProductos extends JDialog {
         this.setIcon();
         renglonesFactura = renglones;
         tipoMovimiento = movimiento;
-        if (movimiento == Movimiento.COMPRA || movimiento == Movimiento.PEDIDO) {
-            this.movimientoPedidoOCompra = true;
-        }
         this.tipoComprobante = tipoComprobante;
         this.setSize(parent.getWidth() - 100, parent.getHeight() - 200);
         this.setLocationRelativeTo(parent);
@@ -101,7 +97,7 @@ public class GUI_BuscarProductos extends JDialog {
         this.actualizarEstadoSeleccion();
         if (prodSeleccionado != null) {
             boolean existeStock = productoService.existeStockDisponible(prodSeleccionado.getId_Producto(), renglon.getCantidad());
-            if (existeStock || movimientoPedidoOCompra) {
+            if (existeStock || tipoMovimiento == Movimiento.PEDIDO || tipoMovimiento == Movimiento.COMPRA) {
                 debeCargarRenglon = true;
                 this.dispose();
             } else if (!existeStock) {
@@ -114,7 +110,7 @@ public class GUI_BuscarProductos extends JDialog {
     }
 
     private void actualizarProductosCargadosEnFactura() {
-        if (!movimientoPedidoOCompra) {
+        if (!(tipoMovimiento == Movimiento.PEDIDO || tipoMovimiento == Movimiento.COMPRA)) {
             for (RenglonFactura renglonFactura : renglonesFactura) {
                 for (Producto producto : productos) {
                     if (renglonFactura.getDescripcionItem().equals(producto.getDescripcion()) && producto.isIlimitado() == false) {
