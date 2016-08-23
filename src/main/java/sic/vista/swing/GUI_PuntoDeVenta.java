@@ -13,11 +13,11 @@ import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import javax.swing.*;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
@@ -293,21 +293,6 @@ public class GUI_PuntoDeVenta extends JDialog {
         tbl_Resultado.getColumnModel().getColumn(7).setPreferredWidth(120);
     }
 
-    private boolean existeStockDisponible(double cantRequerida, Producto producto) {
-        double disponibilidad;
-        if (producto.isIlimitado() == false) {
-            disponibilidad = producto.getCantidad();
-            for (RenglonFactura renglon : renglones) {
-                if (renglon.getDescripcionItem().equals(producto.getDescripcion())) {
-                    disponibilidad -= renglon.getCantidad();
-                }
-            }
-            return disponibilidad >= cantRequerida;
-        } else {
-            return true;
-        }
-    }
-
     private void agregarRenglon(RenglonFactura renglon) {
         boolean agregado = false;
         //busca entre los renglones al producto, aumenta la cantidad y recalcula el descuento        
@@ -392,7 +377,8 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     private void buscarProductoConVentanaAuxiliar() {
         if (facturaService.validarCantidadMaximaDeRenglones(renglones.size())) {
-            GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones);
+            Movimiento movimiento = cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido") ? Movimiento.PEDIDO : Movimiento.VENTA;
+            GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones, movimiento, cmb_TipoComprobante.getSelectedItem().toString());
             GUI_buscarProducto.setVisible(true);
             if (GUI_buscarProducto.debeCargarRenglon()) {
                 boolean renglonCargado = false;
