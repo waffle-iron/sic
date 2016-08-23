@@ -386,6 +386,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         btn_NuevoProducto.addKeyListener(keyHandler);
         btn_NuevoProveedor.addKeyListener(keyHandler);
         btn_NuevoTransportista.addKeyListener(keyHandler);
+        btn_BuscarProducto.addKeyListener(keyHandler);
         btn_QuitarDeLista.addKeyListener(keyHandler);
         cmb_Proveedor.addKeyListener(keyHandler);
         cmb_TipoFactura.addKeyListener(keyHandler);
@@ -588,7 +589,6 @@ public class GUI_DetalleFacturaCompra extends JDialog {
 
             }
         ));
-        tbl_Renglones.setFocusable(false);
         tbl_Renglones.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tbl_Renglones.getTableHeader().setReorderingAllowed(false);
         sp_Renglones.setViewportView(tbl_Renglones);
