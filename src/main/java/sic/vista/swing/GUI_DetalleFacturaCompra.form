@@ -53,8 +53,8 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="panelDatosComprobanteDerecho" max="32767" attributes="1"/>
                   <Component id="panelDatosComprobanteIzquierdo" max="32767" attributes="0"/>
+                  <Component id="panelDatosComprobanteDerecho" max="32767" attributes="1"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="panelRenglones" max="32767" attributes="0"/>
@@ -110,15 +110,15 @@
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="lbl_Transporte" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_Transportista" linkSize="12" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="btn_NuevoTransportista" linkSize="12" alignment="2" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="lbl_Proveedor" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="cmb_Proveedor" linkSize="10" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="btn_NuevoProveedor" linkSize="10" alignment="2" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="lbl_Transporte" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="cmb_Transportista" linkSize="12" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="btn_NuevoTransportista" linkSize="12" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
@@ -251,7 +251,7 @@
                       <Component id="btn_QuitarDeLista" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="sp_Renglones" pref="174" max="32767" attributes="0"/>
+                  <Component id="sp_Renglones" pref="194" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -641,29 +641,24 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="lbl_Fecha" max="32767" attributes="1"/>
-                      <Component id="lbl_NumComprobante" pref="136" max="32767" attributes="1"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="lbl_FechaVto" max="32767" attributes="1"/>
+                      <Component id="lbl_Fecha" alignment="1" max="32767" attributes="1"/>
+                      <Component id="lbl_NumComprobante" alignment="1" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="txt_SerieFactura" min="-2" pref="75" max="-2" attributes="0"/>
+                          <Component id="txt_SerieFactura" min="-2" pref="81" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="lbl_separador" min="-2" pref="20" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="txt_NumeroFactura" min="-2" pref="81" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                          <Component id="txt_NumeroFactura" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="dc_FechaFactura" max="32767" attributes="1"/>
+                      <Component id="dc_FechaFactura" pref="216" max="32767" attributes="1"/>
+                      <Component id="dc_FechaVencimiento" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
-              </Group>
-              <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="28" max="32767" attributes="0"/>
-                  <Component id="lbl_FechaVto" min="-2" max="-2" attributes="1"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="dc_FechaVencimiento" min="-2" pref="200" max="-2" attributes="1"/>
-                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
