@@ -377,7 +377,9 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     private void buscarProductoConVentanaAuxiliar() {
         if (facturaService.validarCantidadMaximaDeRenglones(renglones.size())) {
-            Movimiento movimiento = cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")? Movimiento.PEDIDO:Movimiento.VENTA;
+            Movimiento movimiento = cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")?
+                      Movimiento.PEDIDO
+                    : Movimiento.VENTA;
             GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones, movimiento, cmb_TipoComprobante.getSelectedItem().toString());
             GUI_buscarProducto.setVisible(true);
             if (GUI_buscarProducto.debeCargarRenglon()) {

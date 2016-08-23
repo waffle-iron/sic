@@ -40,10 +40,9 @@ public class GUI_DetalleFacturaCompra extends JDialog {
     private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
-    private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private String tipoDeFactura;
     private final boolean operacionAlta;
-    private final GUI_DetalleFacturaCompra.HotKeysHandler keyHandler = new GUI_DetalleFacturaCompra.HotKeysHandler();
+    private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger LOGGER = Logger.getLogger(GUI_DetalleFacturaCompra.class.getPackage().getName());
 
     public GUI_DetalleFacturaCompra() {

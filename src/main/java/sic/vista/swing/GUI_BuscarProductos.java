@@ -32,6 +32,7 @@ public class GUI_BuscarProductos extends JDialog {
     private Producto prodSeleccionado;
     private RenglonFactura renglon;
     private boolean debeCargarRenglon;
+    private boolean movimientoPedidoOCompra = false;
     private final Movimiento tipoMovimiento;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
@@ -40,15 +41,18 @@ public class GUI_BuscarProductos extends JDialog {
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger LOGGER = Logger.getLogger(GUI_BuscarProductos.class.getPackage().getName());
 
-    public GUI_BuscarProductos(JDialog parentRecibido, boolean modal, List<RenglonFactura> renglones, Movimiento movimiento, String tipoComprobante) {
+    public GUI_BuscarProductos(JDialog parent, boolean modal, List<RenglonFactura> renglones, Movimiento movimiento, String tipoComprobante) {
         this.setModal(modal);
         this.initComponents();
         this.setIcon();
         renglonesFactura = renglones;
         tipoMovimiento = movimiento;
+        if (movimiento == Movimiento.COMPRA || movimiento == Movimiento.PEDIDO) {
+            this.movimientoPedidoOCompra = true;
+        }
         this.tipoComprobante = tipoComprobante;
-        this.setSize(parentRecibido.getWidth() - 100, parentRecibido.getHeight() - 200);
-        this.setLocationRelativeTo(parentRecibido);
+        this.setSize(parent.getWidth() - 100, parent.getHeight() - 200);
+        this.setLocationRelativeTo(parent);
         this.setColumnas();
 
         //listeners        
@@ -97,7 +101,7 @@ public class GUI_BuscarProductos extends JDialog {
         this.actualizarEstadoSeleccion();
         if (prodSeleccionado != null) {
             boolean existeStock = productoService.existeStockDisponible(prodSeleccionado.getId_Producto(), renglon.getCantidad());
-            if (existeStock || tipoMovimiento == Movimiento.PEDIDO || tipoMovimiento == Movimiento.COMPRA) {
+            if (existeStock || movimientoPedidoOCompra) {
                 debeCargarRenglon = true;
                 this.dispose();
             } else if (!existeStock) {
@@ -110,7 +114,7 @@ public class GUI_BuscarProductos extends JDialog {
     }
 
     private void actualizarProductosCargadosEnFactura() {
-        if (!(tipoMovimiento == Movimiento.PEDIDO || tipoMovimiento == Movimiento.COMPRA)) {
+        if (!movimientoPedidoOCompra) {
             for (RenglonFactura renglonFactura : renglonesFactura) {
                 for (Producto producto : productos) {
                     if (renglonFactura.getDescripcionItem().equals(producto.getDescripcion()) && producto.isIlimitado() == false) {
