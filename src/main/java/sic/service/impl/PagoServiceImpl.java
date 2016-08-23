@@ -16,8 +16,8 @@ import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Pago;
-import sic.repository.IFacturaRepository;
 import sic.repository.IPagoRepository;
+import sic.service.IFacturaService;
 import sic.service.IPagoService;
 import sic.service.ServiceException;
 
@@ -28,15 +28,15 @@ public class PagoServiceImpl implements IPagoService {
     private EntityManager em;
 
     private final IPagoRepository pagoRepository;
-    private final IFacturaRepository facturaRepository;
+    private final IFacturaService facturaService;
     private static final Logger LOGGER = Logger.getLogger(PagoServiceImpl.class.getPackage().getName());
 
     @Autowired
     public PagoServiceImpl(IPagoRepository pagoRepository,
-            IFacturaRepository facturaRepository) {
+            IFacturaService facturaService) {
 
         this.pagoRepository = pagoRepository;
-        this.facturaRepository = facturaRepository;
+        this.facturaService = facturaService;
     }
 
     @Override
@@ -141,11 +141,9 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     private void pagarFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
-        List<Factura> facturasOrdenadas = this.ordenarFacturasPorFechaDesc(facturas);
-        int longitudListaFacturas = facturasOrdenadas.size() - 1;
-        for (int i = longitudListaFacturas; i >= 0; i--) {
+        List<Factura> facturasOrdenadas = facturaService.ordenarFacturasPorFechaAsc(facturas);
+        for (Factura factura : facturasOrdenadas ) {
             if (monto > 0) {
-                Factura factura = facturasOrdenadas.get(i);
                 factura.setPagos(this.getPagosDeLaFactura(factura));
                 Pago nuevoPago = Pago.builder()
                         .formaDePago(formaDePago)
@@ -165,20 +163,6 @@ public class PagoServiceImpl implements IPagoService {
                 this.guardar(nuevoPago);
             }
         }
-    }
-
-    private List<Factura> ordenarFacturasPorFechaDesc(List<Factura> facturas) {
-        Factura facturaAux;
-        for (int i = 0; i < facturas.size() - 1; i++) {
-            for (int j = 0; j < facturas.size() - 1; j++) {
-                if (facturas.get(j).getFecha().before(facturas.get(j + 1).getFecha())) {
-                    facturaAux = facturas.get(j);
-                    facturas.set(j, facturas.get(j + 1));
-                    facturas.set(j + 1, facturaAux);
-                }
-            }
-        }
-        return facturas;
     }
 
     private void validarOperacion(Pago pago) {
@@ -213,7 +197,7 @@ public class PagoServiceImpl implements IPagoService {
         } else {
             factura.setPagada(false);
         }
-        facturaRepository.actualizar(factura);
+        facturaService.actualizar(factura);
     }
 
 }

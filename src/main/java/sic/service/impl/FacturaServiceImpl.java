@@ -283,6 +283,12 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     @Transactional
+    public void actualizar(Factura factura) {
+        facturaRepository.actualizar(factura);
+    }
+
+    @Override
+    @Transactional
     public void eliminar(Factura factura) {
         factura.setEliminada(true);
         this.eliminarPagosDeFactura(factura);
@@ -362,7 +368,28 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
+    public List<Factura> ordenarFacturasPorFechaAsc(List<Factura> facturas) {
+        Factura facturaAux;
+        for (int i = 0; i < facturas.size() - 1; i++) {
+            for (int j = 0; j < facturas.size() - 1; j++) {
+                if (facturas.get(j).getFecha().after(facturas.get(j + 1).getFecha())) {
+                    facturaAux = facturas.get(j);
+                    facturas.set(j, facturas.get(j + 1));
+                    facturas.set(j + 1, facturaAux);
+                }
+            }
+        }
+        return facturas;
+    }
+
+    @Override
     public boolean validarFacturasParaPagoMultiple(List<Factura> facturas, Movimiento movimiento) {
+        return (this.validarFacturasParaPagoMultiplePorClienteProveedor(facturas, movimiento) 
+                && this.validarFacturasParaPagoMultiplePorPagadas(facturas));
+    }
+
+    @Override
+    public boolean validarFacturasParaPagoMultiplePorClienteProveedor(List<Factura> facturas, Movimiento movimiento) {
         boolean resultado = true;
         if (movimiento == Movimiento.VENTA) {
             if (facturas != null) {
@@ -375,10 +402,10 @@ public class FacturaServiceImpl implements IFacturaService {
                             resultado = false;
                             break;
                         }
-                        if (factura.isPagada()) {
-                            resultado = false;
-                            break;
-                        }
+//                        if (factura.isPagada()) {
+//                            resultado = false;
+//                            break;
+//                        }
                     }
                 }
             } else {
@@ -396,6 +423,27 @@ public class FacturaServiceImpl implements IFacturaService {
                             resultado = false;
                             break;
                         }
+//                        if (factura.isPagada()) {
+//                            resultado = false;
+//                            break;
+//                        }
+                    }
+                }
+            } else {
+                resultado = false;
+            }
+        }
+        return resultado;
+    }
+
+    @Override
+    public boolean validarFacturasParaPagoMultiplePorPagadas(List<Factura> facturas) {
+        boolean resultado = true;
+            if (facturas != null) {
+                if (facturas.isEmpty()) {
+                    resultado = false;
+                } else {
+                    for (Factura factura : facturas) {
                         if (factura.isPagada()) {
                             resultado = false;
                             break;
@@ -405,7 +453,6 @@ public class FacturaServiceImpl implements IFacturaService {
             } else {
                 resultado = false;
             }
-        }
         return resultado;
     }
 

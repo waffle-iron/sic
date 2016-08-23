@@ -433,7 +433,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
         txt_ResultTotalIVAVenta = new javax.swing.JFormattedTextField();
         btn_Nueva = new javax.swing.JButton();
         btn_VerPagos = new javax.swing.JButton();
-        btn_PagoMultiple = new javax.swing.JButton();
         panelFiltros = new javax.swing.JPanel();
         subPanelFiltros1 = new javax.swing.JPanel();
         chk_Fecha = new javax.swing.JCheckBox();
@@ -579,18 +578,10 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
         btn_VerPagos.setForeground(java.awt.Color.blue);
         btn_VerPagos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/StampArrow_16x16.png"))); // NOI18N
-        btn_VerPagos.setText("Ver Pagos");
+        btn_VerPagos.setText("Pagos");
         btn_VerPagos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_VerPagosActionPerformed(evt);
-            }
-        });
-
-        btn_PagoMultiple.setForeground(java.awt.Color.blue);
-        btn_PagoMultiple.setText("Pago Multiple");
-        btn_PagoMultiple.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_PagoMultipleActionPerformed(evt);
             }
         });
 
@@ -599,9 +590,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         panelResultadosLayout.setHorizontalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelResultadosLayout.createSequentialGroup()
-                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btn_Nueva, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btn_PagoMultiple, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(btn_Nueva, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
                 .addComponent(btn_Eliminar)
                 .addGap(0, 0, 0)
@@ -613,26 +602,23 @@ public class GUI_FacturasVenta extends JInternalFrame {
             .addComponent(sp_Resultados)
         );
 
-        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_PagoMultiple, btn_VerDetalle, btn_VerPagos});
+        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_VerDetalle, btn_VerPagos});
 
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panelResultadosLayout.createSequentialGroup()
-                        .addComponent(btn_PagoMultiple)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btn_Eliminar)
-                            .addComponent(btn_VerDetalle)
-                            .addComponent(btn_Nueva)
-                            .addComponent(btn_VerPagos)))))
+                    .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_Eliminar)
+                        .addComponent(btn_VerDetalle)
+                        .addComponent(btn_Nueva)
+                        .addComponent(btn_VerPagos))))
         );
 
-        panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_PagoMultiple, btn_VerDetalle, btn_VerPagos});
+        panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_VerDetalle, btn_VerPagos});
 
         panelFiltros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
 
@@ -1023,6 +1009,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 gui_puntoDeVenta.setLocationRelativeTo(this);
                 gui_puntoDeVenta.setVisible(true);
                 this.cargarComboBoxClientes();
+                this.buscar(this.getCriteriaDeComponentes());
             } else {
                 String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
                 JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
@@ -1061,17 +1048,15 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }//GEN-LAST:event_chk_EstadoFacturaItemStateChanged
 
     private void btn_VerPagosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerPagosActionPerformed
-        if (tbl_Resultados.getSelectedRow() != -1 && tbl_Resultados.getSelectedRowCount() == 1) {
+        if (tbl_Resultados.getSelectedRow() != -1) {
+            if(tbl_Resultados.getSelectedRowCount() == 1){
             int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
             GUI_Pagos gui_Pagos = new GUI_Pagos(facturas.get(indexFilaSeleccionada));
             gui_Pagos.setModal(true);
             gui_Pagos.setLocationRelativeTo(this);
             gui_Pagos.setVisible(true);
-        }
-    }//GEN-LAST:event_btn_VerPagosActionPerformed
-
-    private void btn_PagoMultipleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_PagoMultipleActionPerformed
-        if (tbl_Resultados.getSelectedRow() != -1) {
+            this.buscar(this.getCriteriaDeComponentes());
+            }
             if (tbl_Resultados.getSelectedRowCount() > 1) {
                        int[] indiceFacturas = Utilidades.getSelectedRowsModelIndices(tbl_Resultados);
                        List<Factura> facturasVenta = new ArrayList<>();
@@ -1082,17 +1067,24 @@ public class GUI_FacturasVenta extends JInternalFrame {
                        GUI_PagoMultiplesFacturas nuevoPagoMultiple = new GUI_PagoMultiplesFacturas(this, true, facturasVenta, Movimiento.VENTA);
                        nuevoPagoMultiple.setLocationRelativeTo(this);
                        nuevoPagoMultiple.setVisible(true);
+                       this.buscar(this.getCriteriaDeComponentes());
                        }
+                       else if (!facturaService.validarFacturasParaPagoMultiplePorPagadas(facturasVenta)) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
+                            "Mensajes").getString("mensaje_facturas_seEncuentran_pagadas"), "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                } else if (!facturaService.validarFacturasParaPagoMultiplePorClienteProveedor(facturasVenta, Movimiento.VENTA)) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
+                            "Mensajes").getString("mensaje_facturas_distintos_clientes"), "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         }
-    }//GEN-LAST:event_btn_PagoMultipleActionPerformed
+    }//GEN-LAST:event_btn_VerPagosActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bg_estadoFactura;
     private javax.swing.JButton btn_Buscar;
     private javax.swing.JButton btn_Eliminar;
     private javax.swing.JButton btn_Nueva;
-    private javax.swing.JButton btn_PagoMultiple;
     private javax.swing.JButton btn_VerDetalle;
     private javax.swing.JButton btn_VerPagos;
     private javax.swing.JCheckBox chk_Cliente;

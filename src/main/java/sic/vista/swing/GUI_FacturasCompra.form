@@ -292,13 +292,10 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="btn_PagoMultiple" pref="0" max="32767" attributes="0"/>
-                      <Component id="btn_Nuevo" linkSize="3" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="btn_Nuevo" linkSize="3" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="btn_Eliminar" min="-2" max="-2" attributes="0"/>
+                          <Component id="btn_Eliminar" linkSize="3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                           <Component id="btn_VerDetalle" linkSize="3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
@@ -323,14 +320,13 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="sp_Resultados" pref="192" max="32767" attributes="0"/>
+                  <Component id="sp_Resultados" pref="197" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="txt_ResultGastoTotal" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="lbl_TotalFacturado" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="btn_PagoMultiple" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
@@ -416,7 +412,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/sic/icons/StampArrow_16x16.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Ver Pagos"/>
+            <Property name="text" type="java.lang.String" value="Pagos"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_VerPagosActionPerformed"/>
@@ -451,17 +447,6 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Total Facturado:"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="btn_PagoMultiple">
-          <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Pago Multiple"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_PagoMultipleActionPerformed"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>

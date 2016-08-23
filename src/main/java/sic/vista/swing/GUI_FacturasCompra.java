@@ -234,7 +234,6 @@ public class GUI_FacturasCompra extends JInternalFrame {
         txt_ResultTotalIVACompra = new javax.swing.JFormattedTextField();
         txt_ResultGastoTotal = new javax.swing.JFormattedTextField();
         lbl_TotalFacturado = new javax.swing.JLabel();
-        btn_PagoMultiple = new javax.swing.JButton();
 
         setClosable(true);
         setMaximizable(true);
@@ -462,7 +461,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
 
         btn_VerPagos.setForeground(java.awt.Color.blue);
         btn_VerPagos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/StampArrow_16x16.png"))); // NOI18N
-        btn_VerPagos.setText("Ver Pagos");
+        btn_VerPagos.setText("Pagos");
         btn_VerPagos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_VerPagosActionPerformed(evt);
@@ -483,22 +482,12 @@ public class GUI_FacturasCompra extends JInternalFrame {
 
         lbl_TotalFacturado.setText("Total Facturado:");
 
-        btn_PagoMultiple.setForeground(java.awt.Color.blue);
-        btn_PagoMultiple.setText("Pago Multiple");
-        btn_PagoMultiple.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_PagoMultipleActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout panelResultadosLayout = new javax.swing.GroupLayout(panelResultados);
         panelResultados.setLayout(panelResultadosLayout);
         panelResultadosLayout.setHorizontalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelResultadosLayout.createSequentialGroup()
-                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(btn_PagoMultiple, javax.swing.GroupLayout.PREFERRED_SIZE, 1, Short.MAX_VALUE)
-                    .addComponent(btn_Nuevo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(btn_Nuevo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelResultadosLayout.createSequentialGroup()
                         .addComponent(btn_Eliminar)
@@ -518,21 +507,20 @@ public class GUI_FacturasCompra extends JInternalFrame {
             .addComponent(sp_Resultados)
         );
 
-        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Nuevo, btn_VerDetalle, btn_VerPagos});
+        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Eliminar, btn_Nuevo, btn_VerDetalle, btn_VerPagos});
 
         panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_TotalFacturado, lbl_TotalIVACompra});
 
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelResultadosLayout.createSequentialGroup()
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
                         .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txt_ResultGastoTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbl_TotalFacturado)
-                            .addComponent(btn_PagoMultiple))
+                            .addComponent(lbl_TotalFacturado))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txt_ResultTotalIVACompra, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -574,6 +562,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
                 gui_DetalleFacturaCompra.setLocationRelativeTo(this);
                 gui_DetalleFacturaCompra.setVisible(true);
                 this.cargarComboBoxProveedores();
+                this.buscar();
             } else {
                 String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_proveedor");
                 JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
@@ -615,13 +604,34 @@ public class GUI_FacturasCompra extends JInternalFrame {
 }//GEN-LAST:event_btn_EliminarActionPerformed
 
     private void btn_VerPagosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerPagosActionPerformed
-        if (tbl_Resultados.getSelectedRow() != -1 && tbl_Resultados.getSelectedRowCount() == 1) {
-            int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
-            GUI_Pagos gui_Pagos = new GUI_Pagos(facturas.get(indexFilaSeleccionada));
-            gui_Pagos.setModal(true);
-            gui_Pagos.setLocationRelativeTo(this);
-            gui_Pagos.setVisible(true);
-            this.buscar();
+        if (tbl_Resultados.getSelectedRow() != -1) {
+            if (tbl_Resultados.getSelectedRowCount() == 1) {
+                int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
+                GUI_Pagos gui_Pagos = new GUI_Pagos(facturas.get(indexFilaSeleccionada));
+                gui_Pagos.setModal(true);
+                gui_Pagos.setLocationRelativeTo(this);
+                gui_Pagos.setVisible(true);
+                this.buscar();
+            }
+            if (tbl_Resultados.getSelectedRowCount() > 1) {
+                int[] indiceFacturas = Utilidades.getSelectedRowsModelIndices(tbl_Resultados);
+                List<Factura> facturasCompra = new ArrayList<>();
+                for (int i = 0; i < indiceFacturas.length; i++) {
+                    facturasCompra.add(this.facturas.get(indiceFacturas[i]));
+                }
+                if (facturaService.validarFacturasParaPagoMultiple(facturasCompra, Movimiento.COMPRA)) {
+                    GUI_PagoMultiplesFacturas nuevoPagoMultiple = new GUI_PagoMultiplesFacturas(this, true, facturasCompra, Movimiento.COMPRA);
+                    nuevoPagoMultiple.setLocationRelativeTo(this);
+                    nuevoPagoMultiple.setVisible(true);
+                    this.buscar();
+                } else if (!facturaService.validarFacturasParaPagoMultiplePorPagadas(facturasCompra)) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
+                            "Mensajes").getString("mensaje_facturas_seEncuentran_pagadas"), "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                } else if (!facturaService.validarFacturasParaPagoMultiplePorClienteProveedor(facturasCompra, Movimiento.COMPRA)) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
+                            "Mensajes").getString("mensaje_facturas_distintos_proveedores"), "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
         }
 }//GEN-LAST:event_btn_VerPagosActionPerformed
 
@@ -705,28 +715,10 @@ public class GUI_FacturasCompra extends JInternalFrame {
         rb_soloPagadas.setSelected(false);
     }//GEN-LAST:event_rb_soloImpagasActionPerformed
 
-    private void btn_PagoMultipleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_PagoMultipleActionPerformed
-        if (tbl_Resultados.getSelectedRow() != -1) {
-            if (tbl_Resultados.getSelectedRowCount() > 1) {
-                int[] indiceFacturas = Utilidades.getSelectedRowsModelIndices(tbl_Resultados);
-                List<Factura> facturasCompra = new ArrayList<>();
-                for (int i = 0; i < indiceFacturas.length; i++) {
-                    facturasCompra.add(this.facturas.get(indiceFacturas[i]));
-                }
-                if (facturaService.validarFacturasParaPagoMultiple(facturasCompra, Movimiento.COMPRA)) {
-                    GUI_PagoMultiplesFacturas nuevoPagoMultiple = new GUI_PagoMultiplesFacturas(this, true, facturasCompra, Movimiento.COMPRA);
-                    nuevoPagoMultiple.setLocationRelativeTo(this);
-                    nuevoPagoMultiple.setVisible(true);
-                }
-            }
-        }
-    }//GEN-LAST:event_btn_PagoMultipleActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Buscar;
     private javax.swing.JButton btn_Eliminar;
     private javax.swing.JButton btn_Nuevo;
-    private javax.swing.JButton btn_PagoMultiple;
     private javax.swing.JButton btn_VerDetalle;
     private javax.swing.JButton btn_VerPagos;
     private javax.swing.JCheckBox chk_Fecha;

@@ -45,6 +45,10 @@ public interface IFacturaService {
     RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje);
 
     boolean validarFacturasParaPagoMultiple(List<Factura> facturas, Movimiento movimiento);
+    
+    boolean validarFacturasParaPagoMultiplePorPagadas(List<Factura> facturas);
+    
+    boolean validarFacturasParaPagoMultiplePorClienteProveedor(List<Factura> facturas, Movimiento movimiento);
 
     //**************************************************************************
     //Calculos
@@ -93,6 +97,10 @@ public interface IFacturaService {
     String getTipoFactura(Factura factura);
 
     void guardar(Factura factura);
+    
+    void actualizar(Factura factura);
+    
+    List<Factura> ordenarFacturasPorFechaAsc(List<Factura> facturas);
 
     Movimiento getTipoMovimiento(Factura factura);
 
