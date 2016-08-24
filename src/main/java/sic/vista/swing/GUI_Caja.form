@@ -173,7 +173,7 @@
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/sic/icons/CoinsDel_16x16.png"/>
+              <Image iconType="3" name="/sic/icons/CoinsAdd_16x16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Agregar Gasto"/>
           </Properties>
@@ -217,7 +217,7 @@
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/sic/icons/CoinsAdd_16x16.png"/>
+              <Image iconType="3" name="/sic/icons/CoinsDel_16x16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Eliminar Gasto"/>
           </Properties>

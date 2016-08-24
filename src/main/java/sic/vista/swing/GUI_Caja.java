@@ -6,8 +6,6 @@ import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -447,7 +445,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         lbl_total.setText("Total:");
 
         btn_AgregarGasto.setForeground(java.awt.Color.blue);
-        btn_AgregarGasto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CoinsDel_16x16.png"))); // NOI18N
+        btn_AgregarGasto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CoinsAdd_16x16.png"))); // NOI18N
         btn_AgregarGasto.setText("Agregar Gasto");
         btn_AgregarGasto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -469,7 +467,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         });
 
         btn_EliminarGasto.setForeground(java.awt.Color.blue);
-        btn_EliminarGasto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CoinsAdd_16x16.png"))); // NOI18N
+        btn_EliminarGasto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CoinsDel_16x16.png"))); // NOI18N
         btn_EliminarGasto.setText("Eliminar Gasto");
         btn_EliminarGasto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Caja;
@@ -70,6 +71,11 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
 
         ftxt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
         ftxt_Monto.setText("0");
+        ftxt_Monto.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                ftxt_MontoFocusGained(evt);
+            }
+        });
         ftxt_Monto.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 ftxt_MontoKeyTyped(evt);
@@ -158,6 +164,15 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         abrirCaja.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btn_AbrirCajaActionPerformed
+
+    private void ftxt_MontoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ftxt_MontoFocusGained
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                ftxt_Monto.selectAll();
+            }
+        });
+    }//GEN-LAST:event_ftxt_MontoFocusGained
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AbrirCaja;

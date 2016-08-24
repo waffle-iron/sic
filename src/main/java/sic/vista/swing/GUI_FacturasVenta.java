@@ -510,7 +510,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
         btn_Eliminar.setForeground(java.awt.Color.blue);
         btn_Eliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Cancel_16x16.png"))); // NOI18N
-        btn_Eliminar.setText("Eliminar / Anular");
+        btn_Eliminar.setText("Eliminar ");
         btn_Eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_EliminarActionPerformed(evt);
@@ -1073,10 +1073,10 @@ public class GUI_FacturasVenta extends JInternalFrame {
                        }
                        else if (!facturaService.validarFacturasParaPagoMultiplePorClienteProveedor(facturasVenta, Movimiento.VENTA)) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
-                            "Mensajes").getString("mensaje_facturas_distintos_clientes"), "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                            "Mensajes").getString("mensaje_facturas_distintos_clientes"), "Aviso", JOptionPane.ERROR_MESSAGE);
                 } else if (!facturaService.validarFacturasParaPagoMultiplePorPagadas(facturasVenta)) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
-                            "Mensajes").getString("mensaje_facturas_seEncuentran_pagadas"), "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                            "Mensajes").getString("mensaje_facturas_seEncuentran_pagadas"), "Aviso", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }

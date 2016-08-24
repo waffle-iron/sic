@@ -7,6 +7,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingUtilities;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.EmpresaActiva;
@@ -111,6 +112,11 @@ public class GUI_DetallePago extends JDialog {
 
         txt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
         txt_Monto.setToolTipText("");
+        txt_Monto.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txt_MontoFocusGained(evt);
+            }
+        });
 
         lbl_Nota.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Nota.setText("Nota:");
@@ -213,6 +219,15 @@ public class GUI_DetallePago extends JDialog {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         this.cargarFormasDePago();
     }//GEN-LAST:event_formWindowOpened
+
+    private void txt_MontoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_MontoFocusGained
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                txt_Monto.selectAll();
+            }
+        });
+    }//GEN-LAST:event_txt_MontoFocusGained
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Guardar;
