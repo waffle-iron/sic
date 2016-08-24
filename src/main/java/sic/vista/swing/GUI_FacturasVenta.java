@@ -509,6 +509,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         });
 
         btn_Eliminar.setForeground(java.awt.Color.blue);
+        btn_Eliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Cancel_16x16.png"))); // NOI18N
         btn_Eliminar.setText("Eliminar / Anular");
         btn_Eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -569,6 +570,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         );
 
         btn_Nueva.setForeground(java.awt.Color.blue);
+        btn_Nueva.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Add_16x16.png"))); // NOI18N
         btn_Nueva.setText("Nueva");
         btn_Nueva.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -597,7 +599,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 .addComponent(btn_VerDetalle)
                 .addGap(0, 0, 0)
                 .addComponent(btn_VerPagos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(sp_Resultados)
         );
@@ -1069,12 +1071,12 @@ public class GUI_FacturasVenta extends JInternalFrame {
                        nuevoPagoMultiple.setVisible(true);
                        this.buscar(this.getCriteriaDeComponentes());
                        }
-                       else if (!facturaService.validarFacturasParaPagoMultiplePorPagadas(facturasVenta)) {
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
-                            "Mensajes").getString("mensaje_facturas_seEncuentran_pagadas"), "Aviso", JOptionPane.INFORMATION_MESSAGE);
-                } else if (!facturaService.validarFacturasParaPagoMultiplePorClienteProveedor(facturasVenta, Movimiento.VENTA)) {
+                       else if (!facturaService.validarFacturasParaPagoMultiplePorClienteProveedor(facturasVenta, Movimiento.VENTA)) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
                             "Mensajes").getString("mensaje_facturas_distintos_clientes"), "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                } else if (!facturaService.validarFacturasParaPagoMultiplePorPagadas(facturasVenta)) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
+                            "Mensajes").getString("mensaje_facturas_seEncuentran_pagadas"), "Aviso", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         }

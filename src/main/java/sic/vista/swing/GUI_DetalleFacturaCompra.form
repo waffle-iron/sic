@@ -304,6 +304,9 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
             </Property>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/sic/icons/Product_16x16.png"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Buscar Producto"/>
           </Properties>
           <Events>
@@ -315,6 +318,9 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
             </Property>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/sic/icons/AddProduct_16x16.png"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Nuevo Producto"/>
           </Properties>
           <Events>
@@ -325,6 +331,9 @@
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
+            </Property>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/sic/icons/DeleteProduct_16x16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Quitar de la lista"/>
           </Properties>

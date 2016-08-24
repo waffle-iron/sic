@@ -368,6 +368,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         sp_TablaCajas.setViewportView(tbl_Cajas);
 
         btn_AbrirCaja.setForeground(java.awt.Color.blue);
+        btn_AbrirCaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AbrirCaja_16x16.png"))); // NOI18N
         btn_AbrirCaja.setText("Abrir Nueva");
         btn_AbrirCaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -384,6 +385,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
         });
 
         btn_eliminarCaja.setForeground(java.awt.Color.blue);
+        btn_eliminarCaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Cancel_16x16.png"))); // NOI18N
         btn_eliminarCaja.setText("Eliminar");
         btn_eliminarCaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

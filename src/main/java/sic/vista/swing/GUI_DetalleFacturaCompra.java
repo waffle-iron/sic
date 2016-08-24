@@ -572,6 +572,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         });
 
         btn_BuscarProducto.setForeground(java.awt.Color.blue);
+        btn_BuscarProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Product_16x16.png"))); // NOI18N
         btn_BuscarProducto.setText("Buscar Producto");
         btn_BuscarProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -580,6 +581,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         });
 
         btn_NuevoProducto.setForeground(java.awt.Color.blue);
+        btn_NuevoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddProduct_16x16.png"))); // NOI18N
         btn_NuevoProducto.setText("Nuevo Producto");
         btn_NuevoProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -588,6 +590,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         });
 
         btn_QuitarDeLista.setForeground(java.awt.Color.blue);
+        btn_QuitarDeLista.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/DeleteProduct_16x16.png"))); // NOI18N
         btn_QuitarDeLista.setText("Quitar de la lista");
         btn_QuitarDeLista.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -728,7 +731,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                     .addComponent(txt_SubTotal))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbl_Descuento, javax.swing.GroupLayout.PREFERRED_SIZE, 102, Short.MAX_VALUE)
+                    .addComponent(lbl_Descuento, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
                     .addComponent(txt_Descuento_Neto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txt_Descuento_Porcentaje))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -857,7 +860,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                     .addComponent(dc_FechaFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelDatosComprobanteIzquierdoLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(28, Short.MAX_VALUE)
                 .addComponent(lbl_FechaVto)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(dc_FechaVencimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)

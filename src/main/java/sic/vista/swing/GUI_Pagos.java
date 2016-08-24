@@ -81,12 +81,10 @@ public class GUI_Pagos extends JDialog {
         tbl_Resultados.setDefaultRenderer(Double.class, new RenderTabla());
 
         //size de columnas        
-        tbl_Resultados.getColumnModel().getColumn(0).setPreferredWidth(140);
-        tbl_Resultados.getColumnModel().getColumn(0).setMaxWidth(140);             
+        tbl_Resultados.getColumnModel().getColumn(0).setPreferredWidth(140);             
         tbl_Resultados.getColumnModel().getColumn(1).setPreferredWidth(150);
-        tbl_Resultados.getColumnModel().getColumn(1).setMaxWidth(150);
-        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(90);
-        tbl_Resultados.getColumnModel().getColumn(2).setMaxWidth(90);        
+        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(90); 
+        tbl_Resultados.getColumnModel().getColumn(3).setPreferredWidth(385); 
     }
 
     private void cargarResultadosAlTable() {
@@ -160,13 +158,10 @@ public class GUI_Pagos extends JDialog {
 
         tbl_Resultados.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
         tbl_Resultados.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);

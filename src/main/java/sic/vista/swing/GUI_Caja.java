@@ -447,6 +447,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         lbl_total.setText("Total:");
 
         btn_AgregarGasto.setForeground(java.awt.Color.blue);
+        btn_AgregarGasto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CoinsDel_16x16.png"))); // NOI18N
         btn_AgregarGasto.setText("Agregar Gasto");
         btn_AgregarGasto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -468,6 +469,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         });
 
         btn_EliminarGasto.setForeground(java.awt.Color.blue);
+        btn_EliminarGasto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CoinsAdd_16x16.png"))); // NOI18N
         btn_EliminarGasto.setText("Eliminar Gasto");
         btn_EliminarGasto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -593,6 +595,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         lbl_aviso.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 
         btn_Imprimir.setForeground(java.awt.Color.blue);
+        btn_Imprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Printer_16x16.png"))); // NOI18N
         btn_Imprimir.setText("Imprimir");
         btn_Imprimir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -601,6 +604,7 @@ public class GUI_Caja extends javax.swing.JDialog {
         });
 
         btn_CerrarCaja.setForeground(java.awt.Color.blue);
+        btn_CerrarCaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CerrarCaja_16x16.png"))); // NOI18N
         btn_CerrarCaja.setText("Cerrar Caja");
         btn_CerrarCaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

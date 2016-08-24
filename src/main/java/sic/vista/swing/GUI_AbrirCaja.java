@@ -80,6 +80,7 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         lbl_monto.setText("Monto:");
 
         btn_AbrirCaja.setForeground(java.awt.Color.blue);
+        btn_AbrirCaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AbrirCaja_16x16.png"))); // NOI18N
         btn_AbrirCaja.setText("Abrir Caja");
         btn_AbrirCaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -73,7 +73,7 @@
                   <Component id="btn_VerDetalle" linkSize="2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
                   <Component id="btn_VerPagos" linkSize="2" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="67" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Component id="panelNumeros" min="-2" max="-2" attributes="0"/>
               </Group>
               <Component id="sp_Resultados" max="32767" attributes="0"/>
@@ -138,6 +138,9 @@
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
+            </Property>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/sic/icons/Cancel_16x16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Eliminar / Anular"/>
           </Properties>
@@ -238,6 +241,9 @@
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
+            </Property>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/sic/icons/Add_16x16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Nueva"/>
           </Properties>

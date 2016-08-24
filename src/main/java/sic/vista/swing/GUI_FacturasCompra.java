@@ -436,6 +436,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
         sp_Resultados.setViewportView(tbl_Resultados);
 
         btn_Nuevo.setForeground(java.awt.Color.blue);
+        btn_Nuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Add_16x16.png"))); // NOI18N
         btn_Nuevo.setText("Nueva");
         btn_Nuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -452,6 +453,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
         });
 
         btn_Eliminar.setForeground(java.awt.Color.blue);
+        btn_Eliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Cancel_16x16.png"))); // NOI18N
         btn_Eliminar.setText("Eliminar / Anular");
         btn_Eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -624,13 +626,13 @@ public class GUI_FacturasCompra extends JInternalFrame {
                     nuevoPagoMultiple.setLocationRelativeTo(this);
                     nuevoPagoMultiple.setVisible(true);
                     this.buscar();
-                } else if (!facturaService.validarFacturasParaPagoMultiplePorPagadas(facturasCompra)) {
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
-                            "Mensajes").getString("mensaje_facturas_seEncuentran_pagadas"), "Aviso", JOptionPane.INFORMATION_MESSAGE);
                 } else if (!facturaService.validarFacturasParaPagoMultiplePorClienteProveedor(facturasCompra, Movimiento.COMPRA)) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
                             "Mensajes").getString("mensaje_facturas_distintos_proveedores"), "Aviso", JOptionPane.INFORMATION_MESSAGE);
-                }
+                } else if (!facturaService.validarFacturasParaPagoMultiplePorPagadas(facturasCompra)) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
+                            "Mensajes").getString("mensaje_facturas_seEncuentran_pagadas"), "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                } 
             }
         }
 }//GEN-LAST:event_btn_VerPagosActionPerformed
