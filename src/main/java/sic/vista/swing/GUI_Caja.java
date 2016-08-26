@@ -261,7 +261,7 @@ public class GUI_Caja extends javax.swing.JDialog {
             if (this.caja.getSaldoFinal() < 0) {
                 ftxt_TotalGeneral.setBackground(Color.PINK);
             }
-            if (this.caja.getSaldoFinal() > 0) {
+            if (totalGeneral > 0) {
                 ftxt_TotalGeneral.setBackground(Color.GREEN);
             }
             if (totalCaja > 0) {
@@ -316,7 +316,6 @@ public class GUI_Caja extends javax.swing.JDialog {
         double totalPorCorte = this.caja.getSaldoInicial();
         for (FormaDePago formaDePago : formasDePago) {
             double totalPorCorteFormaDePago = 0.0;
-            if (formaDePago.isAfectaCaja()) {
                 List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(),
                         formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
                 List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(),
@@ -327,6 +326,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                 for (Object gasto : gastos) {
                     totalPorCorteFormaDePago += ((Gasto) gasto).getMonto();
                 }
+            if (totalPorCorteFormaDePago > 0) {
                 dataSource.add(formaDePago.getNombre() + "-" + totalPorCorteFormaDePago);
             }
             totalPorCorte += totalPorCorteFormaDePago;
@@ -334,10 +334,13 @@ public class GUI_Caja extends javax.swing.JDialog {
         dataSource.add("Total hasta la hora de control:-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) totalPorCorte)));
         dataSource.add("..........................Corte a las: " + formatoHora.format(this.caja.getFechaCorteInforme()) + "...........................-");
 
-        for (int f=1; f < tbl_Resumen.getRowCount(); f++) {
+        for (int f = 1; f < tbl_Resumen.getRowCount(); f++) {
             if ((boolean) tbl_Resumen.getValueAt(f, 1) == true) {
-                dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + 
-                        "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 2))));
+                dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + " (Afecta Caja)"
+                        + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 2))));
+            } else {
+                dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + " (No afecta Caja)"
+                        + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 2))));
             }
         }
 

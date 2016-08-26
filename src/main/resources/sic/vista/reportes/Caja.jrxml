@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.0.final using JasperReports Library version 6.3.0  -->
-<!-- 2016-07-19T19:35:11 -->
+<!-- 2016-08-26T20:37:31 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Caja" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="608c624e-e655-4a3f-bb85-9c440082766b">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -176,46 +176,32 @@
 	<columnFooter>
 		<band height="51" splitType="Stretch">
 			<textField pattern="¤ #,##0.00">
-				<reportElement x="115" y="0" width="135" height="17" uuid="3cfea114-8a7b-45f9-bff2-fb9e94e72a21"/>
+				<reportElement x="130" y="0" width="135" height="17" uuid="3cfea114-8a7b-45f9-bff2-fb9e94e72a21"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{caja}.getSaldoFinal()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="0" y="17" width="115" height="16" uuid="4c56ce5d-34b3-4ef9-9a92-846de64a4b38"/>
+				<reportElement x="0" y="17" width="130" height="16" uuid="4c56ce5d-34b3-4ef9-9a92-846de64a4b38"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total conteo Real:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="0" width="115" height="16" uuid="9bdb1341-cbbc-441b-9a2d-42a8f0a44811"/>
+				<reportElement x="0" y="0" width="130" height="16" uuid="9bdb1341-cbbc-441b-9a2d-42a8f0a44811"/>
 				<textElement verticalAlignment="Middle">
 					<font isBold="true"/>
 				</textElement>
-				<text><![CDATA[Total del Sistema:]]></text>
+				<text><![CDATA[Total que afecta Caja:]]></text>
 			</staticText>
 			<textField pattern="¤ #,##0.00">
-				<reportElement x="115" y="17" width="135" height="16" uuid="8c65f6f7-b385-4cd7-835d-afd933de18d3"/>
+				<reportElement x="130" y="17" width="135" height="16" uuid="8c65f6f7-b385-4cd7-835d-afd933de18d3"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{caja}.getSaldoReal()]]></textFieldExpression>
-			</textField>
-			<textField pattern="¤ #,##0.00">
-				<reportElement x="115" y="33" width="134" height="17" uuid="8c67ee90-e677-4492-a70e-2de21908f0d1"/>
-				<textElement verticalAlignment="Middle">
-					<font size="9" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[(($P{caja}.getSaldoReal()-$P{caja}.getSaldoFinal())<0)?(-1*($P{caja}.getSaldoReal()-$P{caja}.getSaldoFinal())):$P{caja}.getSaldoReal()-$P{caja}.getSaldoFinal()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="33" width="115" height="17" uuid="4acfb210-b869-4afe-b956-9fe9dabad5b3"/>
-				<textElement verticalAlignment="Middle">
-					<font size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[($P{caja}.getSaldoReal()< $P{caja}.getSaldoFinal())?"Faltantes:":"Sobran:"]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnFooter>
