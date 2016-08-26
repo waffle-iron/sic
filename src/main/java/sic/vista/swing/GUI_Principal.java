@@ -96,8 +96,6 @@ public class GUI_Principal extends JFrame {
         jmni_Cajas = new javax.swing.JMenuItem();
         mnu_Stock = new javax.swing.JMenu();
         mnuItm_Productos = new javax.swing.JMenuItem();
-        mnu_Estadisticas = new javax.swing.JMenu();
-        mnuItm_TopProductos = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -288,19 +286,6 @@ public class GUI_Principal extends JFrame {
         mnu_Stock.add(mnuItm_Productos);
 
         mb_BarraMenues.add(mnu_Stock);
-
-        mnu_Estadisticas.setText("Estadísticas");
-
-        mnuItm_TopProductos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Chart_16x16.png"))); // NOI18N
-        mnuItm_TopProductos.setText("Top 5 de productos mas vendidos");
-        mnuItm_TopProductos.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnuItm_TopProductosActionPerformed(evt);
-            }
-        });
-        mnu_Estadisticas.add(mnuItm_TopProductos);
-
-        mb_BarraMenues.add(mnu_Estadisticas);
 
         setJMenuBar(mb_BarraMenues);
 
@@ -524,27 +509,6 @@ public class GUI_Principal extends JFrame {
         }
     }//GEN-LAST:event_mnuItm_FacturasVentaActionPerformed
 
-    private void mnuItm_TopProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_TopProductosActionPerformed
-        JInternalFrame gui = Utilidades.estaEnDesktop(getDesktopPane(), GUI_TopProductos.class);
-        if (gui == null) {
-            gui = new GUI_TopProductos();
-            gui.setLocation(getDesktopPane().getWidth() / 2 - gui.getWidth() / 2,
-                    getDesktopPane().getHeight() / 2 - gui.getHeight() / 2);
-            getDesktopPane().add(gui);
-            gui.setVisible(true);
-        } else {
-            //selecciona y trae al frente el internalframe
-            try {
-                gui.setSelected(true);
-
-            } catch (PropertyVetoException ex) {
-                String msjError = "No se pudo seleccionar la ventana requerida.";
-                log.error(msjError + " - " + ex.getMessage());
-                JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }//GEN-LAST:event_mnuItm_TopProductosActionPerformed
-
     private void mnuItm_ConfiguracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_ConfiguracionActionPerformed
         GUI_ConfiguracionDelSistema gui_ConfiguracionDelSistema = new GUI_ConfiguracionDelSistema();
         gui_ConfiguracionDelSistema.setModal(true);
@@ -626,12 +590,10 @@ public class GUI_Principal extends JFrame {
     private javax.swing.JMenuItem mnuItm_Productos;
     private javax.swing.JMenuItem mnuItm_Proveedores;
     private javax.swing.JMenuItem mnuItm_Salir;
-    private javax.swing.JMenuItem mnuItm_TopProductos;
     private javax.swing.JMenuItem mnuItm_Transportistas;
     private javax.swing.JMenuItem mnuItm_Usuarios;
     private javax.swing.JMenu mnu_Administracion;
     private javax.swing.JMenu mnu_Compras;
-    private javax.swing.JMenu mnu_Estadisticas;
     private javax.swing.JMenu mnu_Sistema;
     private javax.swing.JMenu mnu_Stock;
     private javax.swing.JMenu mnu_Ventas;

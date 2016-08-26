@@ -290,7 +290,11 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/sic/icons/Product_16x16.png"/>
             </Property>
+<<<<<<< HEAD
+            <Property name="text" type="java.lang.String" value="Buscar Producto"/>
+=======
             <Property name="text" type="java.lang.String" value="Buscar Producto (F4)"/>
+>>>>>>> master
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_BuscarProductoActionPerformed"/>
@@ -318,7 +322,11 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/sic/icons/DeleteProduct_16x16.png"/>
             </Property>
+<<<<<<< HEAD
+            <Property name="text" type="java.lang.String" value="Quitar de la lista"/>
+=======
             <Property name="text" type="java.lang.String" value="Quitar de la lista (DEL)"/>
+>>>>>>> master
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_QuitarDeListaActionPerformed"/>

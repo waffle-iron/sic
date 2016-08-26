@@ -13,11 +13,11 @@ import java.util.ResourceBundle;
 import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import javax.swing.*;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
@@ -293,21 +293,6 @@ public class GUI_PuntoDeVenta extends JDialog {
         tbl_Resultado.getColumnModel().getColumn(7).setPreferredWidth(120);
     }
 
-    private boolean existeStockDisponible(double cantRequerida, Producto producto) {
-        double disponibilidad;
-        if (producto.isIlimitado() == false) {
-            disponibilidad = producto.getCantidad();
-            for (RenglonFactura renglon : renglones) {
-                if (renglon.getDescripcionItem().equals(producto.getDescripcion())) {
-                    disponibilidad -= renglon.getCantidad();
-                }
-            }
-            return disponibilidad >= cantRequerida;
-        } else {
-            return true;
-        }
-    }
-
     private void agregarRenglon(RenglonFactura renglon) {
         boolean agregado = false;
         //busca entre los renglones al producto, aumenta la cantidad y recalcula el descuento        
@@ -394,7 +379,8 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     private void buscarProductoConVentanaAuxiliar() {
         if (facturaService.validarCantidadMaximaDeRenglones(renglones.size())) {
-            GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones);
+            Movimiento movimiento = cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido") ? Movimiento.PEDIDO : Movimiento.VENTA;
+            GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones, movimiento, cmb_TipoComprobante.getSelectedItem().toString());
             GUI_buscarProducto.setVisible(true);
             if (GUI_buscarProducto.debeCargarRenglon()) {
                 boolean renglonCargado = false;
@@ -1279,11 +1265,13 @@ public class GUI_PuntoDeVenta extends JDialog {
     }//GEN-LAST:event_btn_BuscarClienteActionPerformed
 
     private void btn_NuevoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_NuevoClienteActionPerformed
-        GUI_NuevoCliente GUI_AltaCliente = new GUI_NuevoCliente(this, true);
-        GUI_AltaCliente.setVisible(true);
+        GUI_DetalleCliente gui_DetalleCliente = new GUI_DetalleCliente();
+        gui_DetalleCliente.setModal(true);
+        gui_DetalleCliente.setLocationRelativeTo(this);
+        gui_DetalleCliente.setVisible(true);
         try {
-            if (GUI_AltaCliente.getClienteDadoDeAlta() != null) {
-                this.cargarCliente(GUI_AltaCliente.getClienteDadoDeAlta());
+            if (gui_DetalleCliente.getClienteDadoDeAlta() != null) {
+                this.cargarCliente(gui_DetalleCliente.getClienteDadoDeAlta());
                 this.cargarTiposDeComprobantesDisponibles();
             }
 

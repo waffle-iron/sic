@@ -25,13 +25,14 @@ import sic.util.Utilidades;
 
 public class GUI_BuscarProductos extends JDialog {
 
-    private final GUI_PuntoDeVenta gui_PrincipalTPV;
+    private final String tipoComprobante;
     private ModeloTabla modeloTablaResultados = new ModeloTabla();
     private List<Producto> productos;
     private final List<RenglonFactura> renglonesFactura;
     private Producto prodSeleccionado;
     private RenglonFactura renglon;
-    private boolean debeCargarRenglon;
+    private boolean debeCargarRenglon;    
+    private final Movimiento tipoMovimiento;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
@@ -39,13 +40,14 @@ public class GUI_BuscarProductos extends JDialog {
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger LOGGER = Logger.getLogger(GUI_BuscarProductos.class.getPackage().getName());
 
-    public GUI_BuscarProductos(JDialog parent, boolean modal, List<RenglonFactura> renglones) {
-        super(parent, modal);
+    public GUI_BuscarProductos(JDialog parent, boolean modal, List<RenglonFactura> renglones, Movimiento movimiento, String tipoComprobante) {
+        this.setModal(modal);
         this.initComponents();
         this.setIcon();
-        gui_PrincipalTPV = (GUI_PuntoDeVenta) parent;
         renglonesFactura = renglones;
-        this.setSize(gui_PrincipalTPV.getWidth() - 100, gui_PrincipalTPV.getHeight() - 200);
+        tipoMovimiento = movimiento;
+        this.tipoComprobante = tipoComprobante;
+        this.setSize(parent.getWidth() - 100, parent.getHeight() - 200);
         this.setLocationRelativeTo(parent);
         this.setColumnas();
 
@@ -72,6 +74,10 @@ public class GUI_BuscarProductos extends JDialog {
     public RenglonFactura getRenglon() {
         return renglon;
     }
+    
+    public Producto getProductoSeleccionado(){
+        return  this.prodSeleccionado;
+    }
 
     private void prepararComponentes() {
         txt_Cantidad.setValue(1.00);
@@ -91,7 +97,7 @@ public class GUI_BuscarProductos extends JDialog {
         this.actualizarEstadoSeleccion();
         if (prodSeleccionado != null) {
             boolean existeStock = productoService.existeStockDisponible(prodSeleccionado.getId_Producto(), renglon.getCantidad());
-            if (existeStock || gui_PrincipalTPV.getTipoDeComprobante().equals("Pedido")) {
+            if (existeStock || tipoMovimiento == Movimiento.PEDIDO || tipoMovimiento == Movimiento.COMPRA) {
                 debeCargarRenglon = true;
                 this.dispose();
             } else if (!existeStock) {
@@ -104,7 +110,7 @@ public class GUI_BuscarProductos extends JDialog {
     }
 
     private void actualizarProductosCargadosEnFactura() {
-        if (!gui_PrincipalTPV.getTipoDeComprobante().equals("Pedido") && gui_PrincipalTPV.getPedido() == null) {
+        if (!(tipoMovimiento == Movimiento.PEDIDO || tipoMovimiento == Movimiento.COMPRA)) {
             for (RenglonFactura renglonFactura : renglonesFactura) {
                 for (Producto producto : productos) {
                     if (renglonFactura.getDescripcionItem().equals(producto.getDescripcion()) && producto.isIlimitado() == false) {
@@ -126,7 +132,7 @@ public class GUI_BuscarProductos extends JDialog {
             }
         }
         if (prodSeleccionado != null) {
-            renglon = facturaService.calcularRenglon(gui_PrincipalTPV.getTipoDeComprobante(), Movimiento.VENTA,
+            renglon = facturaService.calcularRenglon(this.tipoComprobante, tipoMovimiento,
                     Double.parseDouble(txt_Cantidad.getValue().toString()), prodSeleccionado,
                     Double.parseDouble(txt_PorcentajeDescuento.getValue().toString()));
         }
@@ -151,7 +157,10 @@ public class GUI_BuscarProductos extends JDialog {
             fila[2] = producto.getCantidad();
             fila[3] = producto.isIlimitado();
             fila[4] = producto.getMedida();
-            fila[5] = producto.getPrecioLista();
+            double precio = (tipoMovimiento == Movimiento.VENTA) ? producto.getPrecioLista()
+                   : (tipoMovimiento == Movimiento.PEDIDO) ? producto.getPrecioLista()
+                   : (tipoMovimiento == Movimiento.COMPRA) ? producto.getPrecioCosto() : 0.0;
+            fila[5] = precio;
             modeloTablaResultados.addRow(fila);
         }
         tbl_Resultado.setModel(modeloTablaResultados);
@@ -171,7 +180,10 @@ public class GUI_BuscarProductos extends JDialog {
         encabezados[2] = "Cantidad";
         encabezados[3] = "Sin Límite";
         encabezados[4] = "Unidad";
-        encabezados[5] = "P. Lista";
+        String encabezadoPrecio = (tipoMovimiento == Movimiento.VENTA) ? "P. Lista"
+                : (tipoMovimiento == Movimiento.PEDIDO) ? "P. Lista"
+                : (tipoMovimiento == Movimiento.COMPRA) ? "P.Costo" : "";
+        encabezados[5] = encabezadoPrecio;
         modeloTablaResultados.setColumnIdentifiers(encabezados);
         tbl_Resultado.setModel(modeloTablaResultados);
 
