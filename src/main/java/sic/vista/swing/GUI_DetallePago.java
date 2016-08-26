@@ -30,7 +30,7 @@ public class GUI_DetallePago extends JDialog {
         this.setIcon();
         facturaRelacionada = factura;
         dc_Fecha.setDate(new Date());
-        txt_Monto.setValue(0.00);        
+        txt_Monto.setValue(pagoService.getSaldoAPagar(factura));        
         this.setModelSpinner();
     }
 
