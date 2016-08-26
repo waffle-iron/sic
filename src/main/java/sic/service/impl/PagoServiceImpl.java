@@ -67,13 +67,7 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
-        TypedQuery<Pago> typedQuery = em.createNamedQuery("Pago.buscarPagosEntreFechasYFormaDePago", Pago.class);
-        typedQuery.setParameter("id_Empresa", id_Empresa);
-        typedQuery.setParameter("id_FormaDePago", id_FormaDePago);
-        typedQuery.setParameter("desde", desde);
-        typedQuery.setParameter("hasta", hasta);
-        List<Pago> Pagos = typedQuery.getResultList();
-        return Pagos;
+        return pagoRepository.getPagosEntreFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
     }
 
     @Override
@@ -105,17 +99,17 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     @Override
-    public void pagoMultiplesFacturasVenta(List<FacturaVenta> facturasVenta, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
+    public void pagarMultiplesFacturasVenta(List<FacturaVenta> facturasVenta, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
         List<Factura> facturas = new ArrayList<>();
         facturas.addAll(facturasVenta);
-        this.pagarFacturas(facturas, monto, formaDePago, nota, fechaYHora);
+        this.pagarMultiplesFacturas(facturas, monto, formaDePago, nota, fechaYHora);
     }
     
     @Override
-    public void pagoMultiplesFacturasCompra(List<FacturaCompra> facturasCompra, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
+    public void pagarMultiplesFacturasCompra(List<FacturaCompra> facturasCompra, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
         List<Factura> facturas = new ArrayList<>();
         facturas.addAll(facturasCompra);
-        this.pagarFacturas(facturas, monto, formaDePago, nota, fechaYHora);
+        this.pagarMultiplesFacturas(facturas, monto, formaDePago, nota, fechaYHora);
     }
 
     @Override
@@ -140,7 +134,7 @@ public class PagoServiceImpl implements IPagoService {
         return total;
     }
 
-    private void pagarFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
+    private void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
         List<Factura> facturasOrdenadas = facturaService.ordenarFacturasPorFechaAsc(facturas);
         for (Factura factura : facturasOrdenadas ) {
             if (monto > 0) {
@@ -190,7 +184,7 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     @Transactional
-    private void setFacturaEstadoDePago(Factura factura) {
+    public void setFacturaEstadoDePago(Factura factura) {
         double totalFactura = Math.floor(factura.getTotal() * 100) / 100;
         if (this.getTotalPagado(factura) >= totalFactura) {
             factura.setPagada(true);

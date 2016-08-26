@@ -622,17 +622,17 @@ public class GUI_FacturasCompra extends JInternalFrame {
                     facturasCompra.add(this.facturas.get(indiceFacturas[i]));
                 }
                 if (facturaService.validarFacturasParaPagoMultiple(facturasCompra, Movimiento.COMPRA)) {
-                    GUI_PagoMultiplesFacturas nuevoPagoMultiple = new GUI_PagoMultiplesFacturas(this, true, facturasCompra, Movimiento.COMPRA);
-                    nuevoPagoMultiple.setLocationRelativeTo(this);
-                    nuevoPagoMultiple.setVisible(true);
+                    GUI_PagoMultiplesFacturas gui_pagoMultiplesFacturas = new GUI_PagoMultiplesFacturas(this, true, facturasCompra, Movimiento.COMPRA);
+                    gui_pagoMultiplesFacturas.setLocationRelativeTo(this);
+                    gui_pagoMultiplesFacturas.setVisible(true);
                     this.buscar();
-                } else if (!facturaService.validarFacturasParaPagoMultiplePorClienteProveedor(facturasCompra, Movimiento.COMPRA)) {
+                } else if (!facturaService.validarClienteProveedorParaPagosMultiples(facturasCompra, Movimiento.COMPRA)) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
                             "Mensajes").getString("mensaje_facturas_distintos_proveedores"), "Aviso", JOptionPane.ERROR_MESSAGE);
-                } else if (!facturaService.validarFacturasParaPagoMultiplePorPagadas(facturasCompra)) {
+                } else if (!facturaService.validarFacturasImpagasParaPagoMultiple(facturasCompra)) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
                             "Mensajes").getString("mensaje_facturas_seEncuentran_pagadas"), "Aviso", JOptionPane.ERROR_MESSAGE);
-                } 
+                }
             }
         }
 }//GEN-LAST:event_btn_VerPagosActionPerformed

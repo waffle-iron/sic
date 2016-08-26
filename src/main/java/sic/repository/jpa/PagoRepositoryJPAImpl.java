@@ -1,5 +1,6 @@
 package sic.repository.jpa;
 
+import java.util.Date;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,6 +25,16 @@ public class PagoRepositoryJPAImpl implements IPagoRepository {
         return pagosFacturaCompra;
     }
 
+    @Override
+    public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
+        TypedQuery<Pago> typedQuery = em.createNamedQuery("Pago.buscarPagosEntreFechasYFormaDePago", Pago.class);
+        typedQuery.setParameter("id_Empresa", id_Empresa);
+        typedQuery.setParameter("id_FormaDePago", id_FormaDePago);
+        typedQuery.setParameter("desde", desde);
+        typedQuery.setParameter("hasta", hasta);
+        List<Pago> Pagos = typedQuery.getResultList();
+        return Pagos;
+    }
     @Override
     @Transactional
     public void guardar(Pago pago) {

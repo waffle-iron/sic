@@ -5,6 +5,8 @@ import sic.modelo.BusquedaFacturaVentaCriteria;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +89,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-         if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
+        {
+            if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Proveedor SI
                 String[] tiposPermitidos = new String[2];
                 tiposPermitidos[0] = "Factura B";
@@ -100,6 +103,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = "Factura X";
                 return tiposPermitidos;
             }
+        }
     }
 
     @Override
@@ -125,7 +129,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-         if (cliente.getCondicionIVA().isDiscriminaIVA()) {
+        {
+            if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Cliente SI
                 String[] tiposPermitidos = new String[4];
                 tiposPermitidos[0] = "Factura C";
@@ -142,6 +147,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
+        }
     }
 
     @Override
@@ -369,27 +375,24 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     public List<Factura> ordenarFacturasPorFechaAsc(List<Factura> facturas) {
-        Factura facturaAux;
-        for (int i = 0; i < facturas.size() - 1; i++) {
-            for (int j = 0; j < facturas.size() - 1; j++) {
-                if (facturas.get(j).getFecha().after(facturas.get(j + 1).getFecha())) {
-                    facturaAux = facturas.get(j);
-                    facturas.set(j, facturas.get(j + 1));
-                    facturas.set(j + 1, facturaAux);
-                }
+        Comparator comparador = new Comparator<Factura>() {
+            public int compare(Factura f1, Factura f2) {
+                return f1.getFecha().compareTo(f2.getFecha()); 
             }
-        }
+        };
+        
+        facturas.sort(comparador);
         return facturas;
     }
 
     @Override
     public boolean validarFacturasParaPagoMultiple(List<Factura> facturas, Movimiento movimiento) {
-        return (this.validarFacturasParaPagoMultiplePorClienteProveedor(facturas, movimiento) 
-                && this.validarFacturasParaPagoMultiplePorPagadas(facturas));
+        return (this.validarClienteProveedorParaPagosMultiples(facturas, movimiento)
+                && this.validarFacturasImpagasParaPagoMultiple(facturas));
     }
 
     @Override
-    public boolean validarFacturasParaPagoMultiplePorClienteProveedor(List<Factura> facturas, Movimiento movimiento) {
+    public boolean validarClienteProveedorParaPagosMultiples(List<Factura> facturas, Movimiento movimiento) {
         boolean resultado = true;
         if (movimiento == Movimiento.VENTA) {
             if (facturas != null) {
@@ -402,10 +405,6 @@ public class FacturaServiceImpl implements IFacturaService {
                             resultado = false;
                             break;
                         }
-//                        if (factura.isPagada()) {
-//                            resultado = false;
-//                            break;
-//                        }
                     }
                 }
             } else {
@@ -423,10 +422,6 @@ public class FacturaServiceImpl implements IFacturaService {
                             resultado = false;
                             break;
                         }
-//                        if (factura.isPagada()) {
-//                            resultado = false;
-//                            break;
-//                        }
                     }
                 }
             } else {
@@ -437,22 +432,22 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public boolean validarFacturasParaPagoMultiplePorPagadas(List<Factura> facturas) {
+    public boolean validarFacturasImpagasParaPagoMultiple(List<Factura> facturas) {
         boolean resultado = true;
-            if (facturas != null) {
-                if (facturas.isEmpty()) {
-                    resultado = false;
-                } else {
-                    for (Factura factura : facturas) {
-                        if (factura.isPagada()) {
-                            resultado = false;
-                            break;
-                        }
+        if (facturas != null) {
+            if (facturas.isEmpty()) {
+                resultado = false;
+            } else {
+                for (Factura factura : facturas) {
+                    if (factura.isPagada()) {
+                        resultado = false;
+                        break;
                     }
                 }
-            } else {
-                resultado = false;
             }
+        } else {
+            resultado = false;
+        }
         return resultado;
     }
 

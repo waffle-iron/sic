@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.swing.JDialog;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
@@ -22,7 +24,7 @@ import sic.service.IPagoService;
 import sic.service.Movimiento;
 import sic.util.RenderTabla;
 
-public class GUI_PagoMultiplesFacturas extends javax.swing.JDialog {
+public class GUI_PagoMultiplesFacturas extends JDialog {
 
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
@@ -33,9 +35,9 @@ public class GUI_PagoMultiplesFacturas extends javax.swing.JDialog {
     private final List<FacturaCompra> facturasCompra = new ArrayList<>();
     private final Movimiento movimiento;
     private final ModeloTabla modeloTablaFacturas;
-    private Double montoTotal = 0.0;
+    private double montoTotal = 0.0;
 
-    public GUI_PagoMultiplesFacturas(javax.swing.JInternalFrame parent, boolean modal, List<Factura> facturas, Movimiento movimiento) {
+    public GUI_PagoMultiplesFacturas(JInternalFrame parent, boolean modal, List<Factura> facturas, Movimiento movimiento) {
         this.modeloTablaFacturas = new ModeloTabla();
         this.setModal(modal);
         this.movimiento = movimiento;
@@ -295,7 +297,7 @@ public class GUI_PagoMultiplesFacturas extends javax.swing.JDialog {
 
     private void lbl_AceptarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lbl_AceptarActionPerformed
         int respuesta = JOptionPane.showConfirmDialog(this,
-                "Esta seguro que desea realizar esta operacion?",
+                "¿Esta seguro que desea realizar esta operacion?",
                 "Pago", JOptionPane.YES_NO_OPTION);
         if (respuesta == JOptionPane.YES_OPTION) {
             if (ftxt_Monto.getValue() == null) {
@@ -307,7 +309,7 @@ public class GUI_PagoMultiplesFacturas extends javax.swing.JDialog {
             double monto = Double.parseDouble(ftxt_Monto.getValue().toString());
             if (movimiento == Movimiento.VENTA) {
                 if (monto <= pagoService.calcularTotalAdeudadoFacturasVenta(facturasVenta)) {
-                    pagoService.pagoMultiplesFacturasVenta(facturasVenta, monto,
+                    pagoService.pagarMultiplesFacturasVenta(facturasVenta, monto,
                             (FormaDePago) cmb_FormaDePago.getSelectedItem(), ftxt_Nota.getText(), fechaYHora.getTime());
                     this.dispose();
                 } else {
@@ -318,7 +320,7 @@ public class GUI_PagoMultiplesFacturas extends javax.swing.JDialog {
             }
             if (movimiento == Movimiento.COMPRA) {
                 if (monto <= pagoService.calcularTotalAdeudadoFacturasCompra(facturasCompra)) {
-                    pagoService.pagoMultiplesFacturasCompra(facturasCompra, monto,
+                    pagoService.pagarMultiplesFacturasCompra(facturasCompra, monto,
                             (FormaDePago) cmb_FormaDePago.getSelectedItem(), ftxt_Nota.getText(), fechaYHora.getTime());
                     this.dispose();
                 } else {

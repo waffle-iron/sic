@@ -1051,30 +1051,29 @@ public class GUI_FacturasVenta extends JInternalFrame {
 
     private void btn_VerPagosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerPagosActionPerformed
         if (tbl_Resultados.getSelectedRow() != -1) {
-            if(tbl_Resultados.getSelectedRowCount() == 1){
-            int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
-            GUI_Pagos gui_Pagos = new GUI_Pagos(facturas.get(indexFilaSeleccionada));
-            gui_Pagos.setModal(true);
-            gui_Pagos.setLocationRelativeTo(this);
-            gui_Pagos.setVisible(true);
-            this.buscar(this.getCriteriaDeComponentes());
+            if (tbl_Resultados.getSelectedRowCount() == 1) {
+                int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
+                GUI_Pagos gui_Pagos = new GUI_Pagos(facturas.get(indexFilaSeleccionada));
+                gui_Pagos.setModal(true);
+                gui_Pagos.setLocationRelativeTo(this);
+                gui_Pagos.setVisible(true);
+                this.buscar(this.getCriteriaDeComponentes());
             }
             if (tbl_Resultados.getSelectedRowCount() > 1) {
-                       int[] indiceFacturas = Utilidades.getSelectedRowsModelIndices(tbl_Resultados);
-                       List<Factura> facturasVenta = new ArrayList<>();
-                       for(int i = 0; i < indiceFacturas.length; i++){
-                           facturasVenta.add(this.facturas.get(indiceFacturas[i]));
-                       }
-                       if(facturaService.validarFacturasParaPagoMultiple(facturasVenta, Movimiento.VENTA)){
-                       GUI_PagoMultiplesFacturas nuevoPagoMultiple = new GUI_PagoMultiplesFacturas(this, true, facturasVenta, Movimiento.VENTA);
-                       nuevoPagoMultiple.setLocationRelativeTo(this);
-                       nuevoPagoMultiple.setVisible(true);
-                       this.buscar(this.getCriteriaDeComponentes());
-                       }
-                       else if (!facturaService.validarFacturasParaPagoMultiplePorClienteProveedor(facturasVenta, Movimiento.VENTA)) {
+                int[] indiceFacturas = Utilidades.getSelectedRowsModelIndices(tbl_Resultados);
+                List<Factura> facturasVenta = new ArrayList<>();
+                for (int i = 0; i < indiceFacturas.length; i++) {
+                    facturasVenta.add(this.facturas.get(indiceFacturas[i]));
+                }
+                if (facturaService.validarFacturasParaPagoMultiple(facturasVenta, Movimiento.VENTA)) {
+                    GUI_PagoMultiplesFacturas nuevoPagoMultiple = new GUI_PagoMultiplesFacturas(this, true, facturasVenta, Movimiento.VENTA);
+                    nuevoPagoMultiple.setLocationRelativeTo(this);
+                    nuevoPagoMultiple.setVisible(true);
+                    this.buscar(this.getCriteriaDeComponentes());
+                } else if (!facturaService.validarClienteProveedorParaPagosMultiples(facturasVenta, Movimiento.VENTA)) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
                             "Mensajes").getString("mensaje_facturas_distintos_clientes"), "Aviso", JOptionPane.ERROR_MESSAGE);
-                } else if (!facturaService.validarFacturasParaPagoMultiplePorPagadas(facturasVenta)) {
+                } else if (!facturaService.validarFacturasImpagasParaPagoMultiple(facturasVenta)) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
                             "Mensajes").getString("mensaje_facturas_seEncuentran_pagadas"), "Aviso", JOptionPane.ERROR_MESSAGE);
                 }
