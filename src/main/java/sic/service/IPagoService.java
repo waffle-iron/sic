@@ -27,9 +27,16 @@ public interface IPagoService {
     double calcularTotalAdeudadoFacturasVenta(List<FacturaVenta> facturasVenta);
     
     double calcularTotalAdeudadoFacturasCompra(List<FacturaCompra> facturasCompra);
+    
+    double calcularTotalAdeudadoFacturas(List<Factura> facturas);
+            
+    void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora);
+    
+    void validarOperacion(Pago pago);
 
     void guardar(Pago pago);
 
     void eliminar(Pago pago);
-
+    
+    void setFacturaEstadoDePago(Factura factura);
 }

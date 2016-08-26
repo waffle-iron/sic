@@ -59,7 +59,8 @@ public class FacturaServiceImpl implements IFacturaService {
     public FacturaServiceImpl(IFacturaRepository facturaRepository,
             IProductoService productoService,
             IConfiguracionDelSistemaService configuracionDelSistemaService,
-            IEmpresaService empresaService, IPedidoService pedidoService, IPagoService pagoService) {
+            IEmpresaService empresaService, IPedidoService pedidoService,
+            IPagoService pagoService) {
 
         this.facturaRepository = facturaRepository;
         this.productoService = productoService;
@@ -87,8 +88,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = "Factura X";
                 return tiposPermitidos;
             }
-        } else //cuando la Empresa NO discrimina IVA
-        {
+        } else {
+            //cuando la Empresa NO discrimina IVA        
             if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Proveedor SI
                 String[] tiposPermitidos = new String[2];
@@ -458,9 +459,7 @@ public class FacturaServiceImpl implements IFacturaService {
         int max = cds.getCantidadMaximaDeRenglonesEnFactura();
         return cantidad < max;
     }
-
-    //**************************************************************************
-    //Calculos
+  
     @Override
     public double calcularSubTotal(List<RenglonFactura> renglones) {
         double resultado = 0;
@@ -678,16 +677,12 @@ public class FacturaServiceImpl implements IFacturaService {
         double resultado = (precioUnitario - descuento_neto) * cantidad;
         return Utilidades.truncarDecimal(resultado, 3);
     }
-
-    //**************************************************************************
-    //Estadisticas
+   
     @Override
     public List<Object[]> listarProductosMasVendidosPorAnio(int anio) {
         return facturaRepository.listarProductosMasVendidosPorAnio(anio);
     }
-
-    //**************************************************************************
-    //Reportes
+  
     @Override
     public JasperPrint getReporteFacturaVenta(Factura factura) throws JRException {
         ClassLoader classLoader = FacturaServiceImpl.class.getClassLoader();
@@ -708,9 +703,7 @@ public class FacturaServiceImpl implements IFacturaService {
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(renglones);
         return JasperFillManager.fillReport(isFileReport, params, ds);
     }
-
-    //**************************************************************************    
-    //Division de Factura
+    
     @Override
     public List<FacturaVenta> dividirFactura(FacturaVenta factura, int[] indices) {
         double FacturaABC = 0;
@@ -830,8 +823,7 @@ public class FacturaServiceImpl implements IFacturaService {
         }
         return renglonesRestantes;
     }
-
-    //**************************************************************************
+    
     @Override
     public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento,
             double cantidad, Producto producto, double descuento_porcentaje) {

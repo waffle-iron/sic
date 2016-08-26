@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,10 +20,7 @@ import sic.service.ServiceException;
 
 @Service
 public class PagoServiceImpl implements IPagoService {
-
-    @PersistenceContext
-    private EntityManager em;
-
+    
     private final IPagoRepository pagoRepository;
     private final IFacturaService facturaService;
     private static final Logger LOGGER = Logger.getLogger(PagoServiceImpl.class.getPackage().getName());
@@ -126,7 +120,8 @@ public class PagoServiceImpl implements IPagoService {
         return this.calcularTotalAdeudadoFacturas(facturas);
     }
 
-    private double calcularTotalAdeudadoFacturas(List<Factura> facturas) {
+    @Override
+    public double calcularTotalAdeudadoFacturas(List<Factura> facturas) {
         double total = 0.0;
         for (Factura factura : facturas) {
             total += this.getSaldoAPagar(factura);
@@ -134,7 +129,8 @@ public class PagoServiceImpl implements IPagoService {
         return total;
     }
 
-    private void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
+    @Override
+    public void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
         List<Factura> facturasOrdenadas = facturaService.ordenarFacturasPorFechaAsc(facturas);
         for (Factura factura : facturasOrdenadas ) {
             if (monto > 0) {
@@ -159,7 +155,8 @@ public class PagoServiceImpl implements IPagoService {
         }
     }
 
-    private void validarOperacion(Pago pago) {
+    @Override
+    public void validarOperacion(Pago pago) {
         //Requeridos
         if (pago.getMonto() <= 0) {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
@@ -183,6 +180,7 @@ public class PagoServiceImpl implements IPagoService {
         }
     }
 
+    @Override
     @Transactional
     public void setFacturaEstadoDePago(Factura factura) {
         double totalFactura = Math.floor(factura.getTotal() * 100) / 100;
