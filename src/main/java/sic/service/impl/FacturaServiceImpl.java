@@ -5,7 +5,6 @@ import sic.modelo.BusquedaFacturaVentaCriteria;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -376,6 +375,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public List<Factura> ordenarFacturasPorFechaAsc(List<Factura> facturas) {
         Comparator comparador = new Comparator<Factura>() {
+            @Override
             public int compare(Factura f1, Factura f2) {
                 return f1.getFecha().compareTo(f2.getFecha()); 
             }
