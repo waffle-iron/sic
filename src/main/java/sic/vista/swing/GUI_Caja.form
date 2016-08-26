@@ -172,6 +172,9 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
             </Property>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/sic/icons/CoinsAdd_16x16.png"/>
+            </Property>
             <Property name="text" type="java.lang.String" value="Agregar Gasto"/>
           </Properties>
           <Events>
@@ -212,6 +215,9 @@
           <Properties>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
+            </Property>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/sic/icons/CoinsDel_16x16.png"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Eliminar Gasto"/>
           </Properties>
@@ -351,6 +357,9 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
         </Property>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/sic/icons/Printer_16x16.png"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Imprimir"/>
       </Properties>
       <Events>
@@ -361,6 +370,9 @@
       <Properties>
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
+        </Property>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/sic/icons/CerrarCaja_16x16.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Cerrar Caja"/>
       </Properties>

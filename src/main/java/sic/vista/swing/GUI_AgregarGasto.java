@@ -117,6 +117,7 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
         );
 
         lbl_Aceptar.setForeground(java.awt.Color.blue);
+        lbl_Aceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Accept_16x16.png"))); // NOI18N
         lbl_Aceptar.setText("Aceptar");
         lbl_Aceptar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

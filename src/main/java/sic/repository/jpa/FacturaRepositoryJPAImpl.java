@@ -124,6 +124,10 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.isBuscaSoloImpagas() == true) {
             query += " AND f.pagada = false";
         }
+        //Pagas
+        if (criteria.isBuscaSoloPagadas() == true) {
+            query += " AND f.pagada = true";
+        }
         query += " ORDER BY f.fecha DESC";
         TypedQuery<FacturaVenta> typedQuery = em.createQuery(query, FacturaVenta.class);
         typedQuery.setParameter("empresa", criteria.getEmpresa());
@@ -155,6 +159,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     }
 
     @Override
+    @Transactional
     public void actualizar(Factura factura) {
         em.merge(factura);
     }

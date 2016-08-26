@@ -7,7 +7,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
-import org.apache.log4j.Logger;
+import javax.swing.SwingUtilities;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.EmpresaActiva;
@@ -24,14 +24,13 @@ public class GUI_DetallePago extends JDialog {
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private final IPagoService pagoService = appContext.getBean(IPagoService.class);
     private final Factura facturaRelacionada;
-    private static final Logger LOGGER = Logger.getLogger(GUI_DetallePago.class.getPackage().getName());
 
     public GUI_DetallePago(Factura factura) {
         this.initComponents();
         this.setIcon();
         facturaRelacionada = factura;
         dc_Fecha.setDate(new Date());
-        txt_Monto.setValue(0.00);        
+        txt_Monto.setValue(pagoService.getSaldoAPagar(factura));        
         this.setModelSpinner();
     }
 
@@ -60,9 +59,7 @@ public class GUI_DetallePago extends JDialog {
             pago.setFormaDePago((FormaDePago) cmb_FormaDePago.getSelectedItem());
             pago.setNota(txt_Nota.getText().trim());
             pagoService.guardar(pago);
-            LOGGER.warn("El Pago: " + pago.toString() + " se guardó correctamente.");
             this.dispose();
-
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -115,6 +112,11 @@ public class GUI_DetallePago extends JDialog {
 
         txt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
         txt_Monto.setToolTipText("");
+        txt_Monto.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txt_MontoFocusGained(evt);
+            }
+        });
 
         lbl_Nota.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Nota.setText("Nota:");
@@ -217,6 +219,15 @@ public class GUI_DetallePago extends JDialog {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         this.cargarFormasDePago();
     }//GEN-LAST:event_formWindowOpened
+
+    private void txt_MontoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_MontoFocusGained
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                txt_Monto.selectAll();
+            }
+        });
+    }//GEN-LAST:event_txt_MontoFocusGained
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Guardar;

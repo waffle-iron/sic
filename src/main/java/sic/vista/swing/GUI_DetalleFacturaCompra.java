@@ -21,7 +21,6 @@ import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
-import sic.service.IFormaDePagoService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.ITransportistaService;
@@ -738,7 +737,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                     .addComponent(txt_SubTotal))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbl_Descuento, javax.swing.GroupLayout.PREFERRED_SIZE, 102, Short.MAX_VALUE)
+                    .addComponent(lbl_Descuento, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
                     .addComponent(txt_Descuento_Neto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txt_Descuento_Porcentaje))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -868,6 +867,12 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                     .addComponent(dc_FechaFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
                     .addComponent(dc_FechaVencimiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelDatosComprobanteIzquierdoLayout.createSequentialGroup()
+                .addContainerGap(28, Short.MAX_VALUE)
+                .addComponent(lbl_FechaVto)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(dc_FechaVencimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         panelDatosComprobanteIzquierdoLayout.setVerticalGroup(
             panelDatosComprobanteIzquierdoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

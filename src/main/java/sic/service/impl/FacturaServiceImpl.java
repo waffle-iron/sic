@@ -5,6 +5,7 @@ import sic.modelo.BusquedaFacturaVentaCriteria;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +59,8 @@ public class FacturaServiceImpl implements IFacturaService {
     public FacturaServiceImpl(IFacturaRepository facturaRepository,
             IProductoService productoService,
             IConfiguracionDelSistemaService configuracionDelSistemaService,
-            IEmpresaService empresaService, IPedidoService pedidoService, IPagoService pagoService) {
+            IEmpresaService empresaService, IPedidoService pedidoService,
+            IPagoService pagoService) {
 
         this.facturaRepository = facturaRepository;
         this.productoService = productoService;
@@ -86,8 +88,9 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = "Factura X";
                 return tiposPermitidos;
             }
-        } else //cuando la Empresa NO discrimina IVA
-         if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
+        } else {
+            //cuando la Empresa NO discrimina IVA        
+            if (proveedor.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Proveedor SI
                 String[] tiposPermitidos = new String[2];
                 tiposPermitidos[0] = "Factura B";
@@ -100,6 +103,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[1] = "Factura X";
                 return tiposPermitidos;
             }
+        }
     }
 
     @Override
@@ -125,7 +129,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 return tiposPermitidos;
             }
         } else //cuando la Empresa NO discrimina IVA
-         if (cliente.getCondicionIVA().isDiscriminaIVA()) {
+        {
+            if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando Empresa NO discrimina IVA y el Cliente SI
                 String[] tiposPermitidos = new String[4];
                 tiposPermitidos[0] = "Factura C";
@@ -142,6 +147,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             }
+        }
     }
 
     @Override
@@ -283,6 +289,12 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     @Transactional
+    public void actualizar(Factura factura) {
+        facturaRepository.actualizar(factura);
+    }
+
+    @Override
+    @Transactional
     public void eliminar(Factura factura) {
         factura.setEliminada(true);
         this.eliminarPagosDeFactura(factura);
@@ -362,15 +374,92 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
+    public List<Factura> ordenarFacturasPorFechaAsc(List<Factura> facturas) {
+        Comparator comparador = new Comparator<Factura>() {
+            @Override
+            public int compare(Factura f1, Factura f2) {
+                return f1.getFecha().compareTo(f2.getFecha()); 
+            }
+        };
+        
+        facturas.sort(comparador);
+        return facturas;
+    }
+
+    @Override
+    public boolean validarFacturasParaPagoMultiple(List<Factura> facturas, Movimiento movimiento) {
+        return (this.validarClienteProveedorParaPagosMultiples(facturas, movimiento)
+                && this.validarFacturasImpagasParaPagoMultiple(facturas));
+    }
+
+    @Override
+    public boolean validarClienteProveedorParaPagosMultiples(List<Factura> facturas, Movimiento movimiento) {
+        boolean resultado = true;
+        if (movimiento == Movimiento.VENTA) {
+            if (facturas != null) {
+                if (facturas.isEmpty()) {
+                    resultado = false;
+                } else {
+                    Cliente cliente = ((FacturaVenta) facturas.get(0)).getCliente();
+                    for (Factura factura : facturas) {
+                        if (!cliente.equals(((FacturaVenta) factura).getCliente())) {
+                            resultado = false;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                resultado = false;
+            }
+        }
+        if (movimiento == Movimiento.COMPRA) {
+            if (facturas != null) {
+                if (facturas.isEmpty()) {
+                    resultado = false;
+                } else {
+                    Proveedor proveedor = ((FacturaCompra) facturas.get(0)).getProveedor();
+                    for (Factura factura : facturas) {
+                        if (!proveedor.equals(((FacturaCompra) factura).getProveedor())) {
+                            resultado = false;
+                            break;
+                        }
+                    }
+                }
+            } else {
+                resultado = false;
+            }
+        }
+        return resultado;
+    }
+
+    @Override
+    public boolean validarFacturasImpagasParaPagoMultiple(List<Factura> facturas) {
+        boolean resultado = true;
+        if (facturas != null) {
+            if (facturas.isEmpty()) {
+                resultado = false;
+            } else {
+                for (Factura factura : facturas) {
+                    if (factura.isPagada()) {
+                        resultado = false;
+                        break;
+                    }
+                }
+            }
+        } else {
+            resultado = false;
+        }
+        return resultado;
+    }
+
+    @Override
     public boolean validarCantidadMaximaDeRenglones(int cantidad) {
         ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
                 empresaService.getEmpresaActiva().getEmpresa());
         int max = cds.getCantidadMaximaDeRenglonesEnFactura();
         return cantidad < max;
     }
-
-    //**************************************************************************
-    //Calculos
+  
     @Override
     public double calcularSubTotal(List<RenglonFactura> renglones) {
         double resultado = 0;
@@ -588,16 +677,12 @@ public class FacturaServiceImpl implements IFacturaService {
         double resultado = (precioUnitario - descuento_neto) * cantidad;
         return Utilidades.truncarDecimal(resultado, 3);
     }
-
-    //**************************************************************************
-    //Estadisticas
+   
     @Override
     public List<Object[]> listarProductosMasVendidosPorAnio(int anio) {
         return facturaRepository.listarProductosMasVendidosPorAnio(anio);
     }
-
-    //**************************************************************************
-    //Reportes
+  
     @Override
     public JasperPrint getReporteFacturaVenta(Factura factura) throws JRException {
         ClassLoader classLoader = FacturaServiceImpl.class.getClassLoader();
@@ -618,9 +703,7 @@ public class FacturaServiceImpl implements IFacturaService {
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(renglones);
         return JasperFillManager.fillReport(isFileReport, params, ds);
     }
-
-    //**************************************************************************    
-    //Division de Factura
+    
     @Override
     public List<FacturaVenta> dividirFactura(FacturaVenta factura, int[] indices) {
         double FacturaABC = 0;
@@ -628,13 +711,13 @@ public class FacturaServiceImpl implements IFacturaService {
         List<RenglonFactura> renglonesConIVA = new ArrayList<>();
         List<RenglonFactura> renglonesSinIVA = new ArrayList<>();
         FacturaVenta facturaSinIVA = FacturaVenta.builder()
-                     .cliente(factura.getCliente())
-                     .usuario(factura.getUsuario())
-                     .build();
+                .cliente(factura.getCliente())
+                .usuario(factura.getUsuario())
+                .build();
         FacturaVenta facturaConIVA = FacturaVenta.builder()
-                     .cliente(factura.getCliente())
-                     .usuario(factura.getUsuario())
-                     .build();
+                .cliente(factura.getCliente())
+                .usuario(factura.getUsuario())
+                .build();
         int renglonMarcado = 0;
         int numeroDeRenglon = 0;
         for (RenglonFactura renglon : factura.getRenglones()) {
@@ -740,8 +823,7 @@ public class FacturaServiceImpl implements IFacturaService {
         }
         return renglonesRestantes;
     }
-
-    //**************************************************************************
+    
     @Override
     public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento,
             double cantidad, Producto producto, double descuento_porcentaje) {

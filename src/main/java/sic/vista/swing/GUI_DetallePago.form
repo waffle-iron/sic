@@ -154,6 +154,9 @@
             </Property>
             <Property name="toolTipText" type="java.lang.String" value=""/>
           </Properties>
+          <Events>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_MontoFocusGained"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="lbl_Nota">
           <Properties>

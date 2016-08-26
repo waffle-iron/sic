@@ -2,6 +2,7 @@ package sic.vista.swing;
 
 import java.beans.PropertyVetoException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -12,12 +13,14 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.BusquedaFacturaCompraCriteria;
+import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.Proveedor;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IPagoService;
 import sic.service.IProveedorService;
+import sic.service.Movimiento;
 import sic.service.ServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
@@ -429,10 +432,11 @@ public class GUI_FacturasCompra extends JInternalFrame {
             }
         ));
         tbl_Resultados.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        tbl_Resultados.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        tbl_Resultados.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         sp_Resultados.setViewportView(tbl_Resultados);
 
         btn_Nuevo.setForeground(java.awt.Color.blue);
+        btn_Nuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Add_16x16.png"))); // NOI18N
         btn_Nuevo.setText("Nueva");
         btn_Nuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -449,7 +453,8 @@ public class GUI_FacturasCompra extends JInternalFrame {
         });
 
         btn_Eliminar.setForeground(java.awt.Color.blue);
-        btn_Eliminar.setText("Eliminar / Anular");
+        btn_Eliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Cancel_16x16.png"))); // NOI18N
+        btn_Eliminar.setText("Eliminar");
         btn_Eliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_EliminarActionPerformed(evt);
@@ -458,7 +463,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
 
         btn_VerPagos.setForeground(java.awt.Color.blue);
         btn_VerPagos.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/StampArrow_16x16.png"))); // NOI18N
-        btn_VerPagos.setText("Ver Pagos");
+        btn_VerPagos.setText("Pagos");
         btn_VerPagos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_VerPagosActionPerformed(evt);
@@ -484,18 +489,19 @@ public class GUI_FacturasCompra extends JInternalFrame {
         panelResultadosLayout.setHorizontalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelResultadosLayout.createSequentialGroup()
-                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addComponent(btn_Nuevo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelResultadosLayout.createSequentialGroup()
-                        .addComponent(btn_Nuevo)
-                        .addGap(0, 0, 0)
                         .addComponent(btn_Eliminar)
                         .addGap(0, 0, 0)
                         .addComponent(btn_VerDetalle)
                         .addGap(0, 0, 0)
                         .addComponent(btn_VerPagos)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 158, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(lbl_TotalIVACompra))
-                    .addComponent(lbl_TotalFacturado))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
+                        .addGap(455, 455, 455)
+                        .addComponent(lbl_TotalFacturado)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txt_ResultGastoTotal, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -503,14 +509,14 @@ public class GUI_FacturasCompra extends JInternalFrame {
             .addComponent(sp_Resultados)
         );
 
-        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Nuevo, btn_VerDetalle, btn_VerPagos});
+        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Eliminar, btn_Nuevo, btn_VerDetalle, btn_VerPagos});
 
         panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_TotalFacturado, lbl_TotalIVACompra});
 
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelResultadosLayout.createSequentialGroup()
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
@@ -558,6 +564,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
                 gui_DetalleFacturaCompra.setLocationRelativeTo(this);
                 gui_DetalleFacturaCompra.setVisible(true);
                 this.cargarComboBoxProveedores();
+                this.buscar();
             } else {
                 String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_proveedor");
                 JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
@@ -570,7 +577,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
 }//GEN-LAST:event_btn_NuevoActionPerformed
 
     private void btn_VerDetalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerDetalleActionPerformed
-        if (tbl_Resultados.getSelectedRow() != -1) {
+        if (tbl_Resultados.getSelectedRow() != -1 && tbl_Resultados.getSelectedRowCount() == 1) {
             int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
             GUI_DetalleFacturaCompra gui_DetalleFacturaCompra = new GUI_DetalleFacturaCompra(facturas.get(indexFilaSeleccionada));
             gui_DetalleFacturaCompra.setModal(true);
@@ -580,7 +587,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
 }//GEN-LAST:event_btn_VerDetalleActionPerformed
 
     private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarActionPerformed
-        if (tbl_Resultados.getSelectedRow() != -1) {
+        if (tbl_Resultados.getSelectedRow() != -1 && tbl_Resultados.getSelectedRowCount() == 1) {
             int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
             int respuesta = JOptionPane.showConfirmDialog(this,
                     "¿Esta seguro que desea eliminar la factura seleccionada?",
@@ -600,12 +607,33 @@ public class GUI_FacturasCompra extends JInternalFrame {
 
     private void btn_VerPagosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerPagosActionPerformed
         if (tbl_Resultados.getSelectedRow() != -1) {
-            int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
-            GUI_Pagos gui_Pagos = new GUI_Pagos(facturas.get(indexFilaSeleccionada));
-            gui_Pagos.setModal(true);
-            gui_Pagos.setLocationRelativeTo(this);
-            gui_Pagos.setVisible(true);
-            this.buscar();
+            if (tbl_Resultados.getSelectedRowCount() == 1) {
+                int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
+                GUI_Pagos gui_Pagos = new GUI_Pagos(facturas.get(indexFilaSeleccionada));
+                gui_Pagos.setModal(true);
+                gui_Pagos.setLocationRelativeTo(this);
+                gui_Pagos.setVisible(true);
+                this.buscar();
+            }
+            if (tbl_Resultados.getSelectedRowCount() > 1) {
+                int[] indiceFacturas = Utilidades.getSelectedRowsModelIndices(tbl_Resultados);
+                List<Factura> facturasCompra = new ArrayList<>();
+                for (int i = 0; i < indiceFacturas.length; i++) {
+                    facturasCompra.add(this.facturas.get(indiceFacturas[i]));
+                }
+                if (facturaService.validarFacturasParaPagoMultiple(facturasCompra, Movimiento.COMPRA)) {
+                    GUI_PagoMultiplesFacturas gui_pagoMultiplesFacturas = new GUI_PagoMultiplesFacturas(this, true, facturasCompra, Movimiento.COMPRA);
+                    gui_pagoMultiplesFacturas.setLocationRelativeTo(this);
+                    gui_pagoMultiplesFacturas.setVisible(true);
+                    this.buscar();
+                } else if (!facturaService.validarClienteProveedorParaPagosMultiples(facturasCompra, Movimiento.COMPRA)) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
+                            "Mensajes").getString("mensaje_facturas_distintos_proveedores"), "Aviso", JOptionPane.ERROR_MESSAGE);
+                } else if (!facturaService.validarFacturasImpagasParaPagoMultiple(facturasCompra)) {
+                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle(
+                            "Mensajes").getString("mensaje_facturas_seEncuentran_pagadas"), "Aviso", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         }
 }//GEN-LAST:event_btn_VerPagosActionPerformed
 
