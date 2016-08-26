@@ -21,7 +21,6 @@ import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
-import sic.service.IFormaDePagoService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.ITransportistaService;
