@@ -49,7 +49,7 @@ public class GUI_DetalleCliente extends JDialog {
         this.setIcon();
         this.setTitle("Modificar Cliente");
         operacion = TipoDeOperacion.ACTUALIZACION;
-        cliente = cliente;
+        this.cliente = cliente;
     }
 
     private void setIcon() {
@@ -519,7 +519,7 @@ public class GUI_DetalleCliente extends JDialog {
     private void btn_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_GuardarActionPerformed
         try {
             if (operacion == TipoDeOperacion.ALTA) {
-                Cliente cliente = new Cliente();
+                this.cliente = new Cliente();
                 cliente.setId_Fiscal(txt_Id_Fiscal.getText().trim());
                 cliente.setRazonSocial(txt_RazonSocial.getText().trim());
                 cliente.setNombreFantasia(txt_NombreFantasia.getText().trim());
