@@ -163,14 +163,4 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     public void actualizar(Factura factura) {
         em.merge(factura);
     }
-
-    @Override
-    public List<Object[]> listarProductosMasVendidosPorAnio(int anio) {
-        TypedQuery<Object[]> typedQuery = (TypedQuery<Object[]>) em.createNamedQuery("Factura.buscarTopProductosMasVendidosPorAnio");
-        typedQuery.setParameter("anio", anio);
-        typedQuery.setMaxResults(5);
-        List<Object[]> resultado = typedQuery.getResultList();
-        return resultado;
-    }
-
 }

@@ -677,12 +677,7 @@ public class FacturaServiceImpl implements IFacturaService {
         double resultado = (precioUnitario - descuento_neto) * cantidad;
         return Utilidades.truncarDecimal(resultado, 3);
     }
-   
-    @Override
-    public List<Object[]> listarProductosMasVendidosPorAnio(int anio) {
-        return facturaRepository.listarProductosMasVendidosPorAnio(anio);
-    }
-  
+     
     @Override
     public JasperPrint getReporteFacturaVenta(Factura factura) throws JRException {
         ClassLoader classLoader = FacturaServiceImpl.class.getClassLoader();

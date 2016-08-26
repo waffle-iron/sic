@@ -88,9 +88,7 @@ public interface IFacturaService {
 
     double calcularVuelto(double importeAPagar, double importeAbonado);
 
-    double calcularImporte(double cantidad, double precioUnitario, double descuento_neto);
-
-    List<Object[]> listarProductosMasVendidosPorAnio(int anio);
+    double calcularImporte(double cantidad, double precioUnitario, double descuento_neto);    
 
     JasperPrint getReporteFacturaVenta(Factura factura) throws JRException;
 

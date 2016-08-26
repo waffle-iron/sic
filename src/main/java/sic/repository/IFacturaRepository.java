@@ -24,8 +24,6 @@ public interface IFacturaRepository {
 
     List<RenglonFactura> getRenglonesDeLaFactura(Factura factura);
 
-    void guardar(Factura factura);
-
-    List<Object[]> listarProductosMasVendidosPorAnio(int anio);
+    void guardar(Factura factura);    
     
 }
