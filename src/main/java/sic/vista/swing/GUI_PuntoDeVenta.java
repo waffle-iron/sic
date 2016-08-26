@@ -1263,11 +1263,13 @@ public class GUI_PuntoDeVenta extends JDialog {
     }//GEN-LAST:event_btn_BuscarClienteActionPerformed
 
     private void btn_NuevoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_NuevoClienteActionPerformed
-        GUI_NuevoCliente GUI_AltaCliente = new GUI_NuevoCliente(this, true);
-        GUI_AltaCliente.setVisible(true);
+        GUI_DetalleCliente gui_DetalleCliente = new GUI_DetalleCliente();
+        gui_DetalleCliente.setModal(true);
+        gui_DetalleCliente.setLocationRelativeTo(this);
+        gui_DetalleCliente.setVisible(true);
         try {
-            if (GUI_AltaCliente.getClienteDadoDeAlta() != null) {
-                this.cargarCliente(GUI_AltaCliente.getClienteDadoDeAlta());
+            if (gui_DetalleCliente.getClienteDadoDeAlta() != null) {
+                this.cargarCliente(gui_DetalleCliente.getClienteDadoDeAlta());
                 this.cargarTiposDeComprobantesDisponibles();
             }
 

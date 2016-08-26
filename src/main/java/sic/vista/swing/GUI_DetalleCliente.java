@@ -26,7 +26,7 @@ import sic.service.TipoDeOperacion;
 
 public class GUI_DetalleCliente extends JDialog {
 
-    private Cliente clienteModificar;
+    private Cliente cliente;
     private final TipoDeOperacion operacion;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final ICondicionIVAService condicionIVAService = appContext.getBean(ICondicionIVAService.class);
@@ -49,7 +49,7 @@ public class GUI_DetalleCliente extends JDialog {
         this.setIcon();
         this.setTitle("Modificar Cliente");
         operacion = TipoDeOperacion.ACTUALIZACION;
-        clienteModificar = cliente;
+        this.cliente = cliente;
     }
 
     private void setIcon() {
@@ -58,19 +58,19 @@ public class GUI_DetalleCliente extends JDialog {
     }
 
     private void cargarClienteParaModificar() {
-        txt_Id_Fiscal.setText(clienteModificar.getId_Fiscal());
-        txt_RazonSocial.setText(clienteModificar.getRazonSocial());
-        txt_NombreFantasia.setText(clienteModificar.getNombreFantasia());
-        cmb_CondicionIVA.setSelectedItem(clienteModificar.getCondicionIVA());
-        txt_Direccion.setText(clienteModificar.getDireccion());
-        cmb_Pais.setSelectedItem(clienteModificar.getLocalidad().getProvincia().getPais());
-        cmb_Provincia.setSelectedItem(clienteModificar.getLocalidad().getProvincia());
-        cmb_Localidad.setSelectedItem(clienteModificar.getLocalidad());
-        txt_TelPrimario.setText(clienteModificar.getTelPrimario());
-        txt_TelSecundario.setText(clienteModificar.getTelSecundario());
-        txt_Contacto.setText(clienteModificar.getContacto());
-        txt_Email.setText(clienteModificar.getEmail());
-        dc_FechaAlta.setDate(clienteModificar.getFechaAlta());
+        txt_Id_Fiscal.setText(cliente.getId_Fiscal());
+        txt_RazonSocial.setText(cliente.getRazonSocial());
+        txt_NombreFantasia.setText(cliente.getNombreFantasia());
+        cmb_CondicionIVA.setSelectedItem(cliente.getCondicionIVA());
+        txt_Direccion.setText(cliente.getDireccion());
+        cmb_Pais.setSelectedItem(cliente.getLocalidad().getProvincia().getPais());
+        cmb_Provincia.setSelectedItem(cliente.getLocalidad().getProvincia());
+        cmb_Localidad.setSelectedItem(cliente.getLocalidad());
+        txt_TelPrimario.setText(cliente.getTelPrimario());
+        txt_TelSecundario.setText(cliente.getTelSecundario());
+        txt_Contacto.setText(cliente.getContacto());
+        txt_Email.setText(cliente.getEmail());
+        dc_FechaAlta.setDate(cliente.getFechaAlta());
     }
 
     private void limpiarYRecargarComponentes() {
@@ -119,6 +119,10 @@ public class GUI_DetalleCliente extends JDialog {
         for (Localidad loc : Localidades) {
             cmb_Localidad.addItem(loc);
         }
+    }
+    
+    public Cliente getClienteDadoDeAlta() {
+        return cliente;
     }
 
     @SuppressWarnings("unchecked")
@@ -515,7 +519,7 @@ public class GUI_DetalleCliente extends JDialog {
     private void btn_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_GuardarActionPerformed
         try {
             if (operacion == TipoDeOperacion.ALTA) {
-                Cliente cliente = new Cliente();
+                this.cliente = new Cliente();
                 cliente.setId_Fiscal(txt_Id_Fiscal.getText().trim());
                 cliente.setRazonSocial(txt_RazonSocial.getText().trim());
                 cliente.setNombreFantasia(txt_NombreFantasia.getText().trim());
@@ -530,6 +534,7 @@ public class GUI_DetalleCliente extends JDialog {
                 cliente.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
 
                 clienteService.guardar(cliente);
+                this.cliente = clienteService.getClientePorRazonSocial(cliente.getRazonSocial(), cliente.getEmpresa());;
                 int respuesta = JOptionPane.showConfirmDialog(this,
                         "El Cliente se guardó correctamente!\n¿Desea dar de alta otro Cliente?",
                         "Aviso", JOptionPane.YES_NO_OPTION);
@@ -540,19 +545,19 @@ public class GUI_DetalleCliente extends JDialog {
             }
 
             if (operacion == TipoDeOperacion.ACTUALIZACION) {
-                clienteModificar.setId_Fiscal(txt_Id_Fiscal.getText().trim());
-                clienteModificar.setRazonSocial(txt_RazonSocial.getText().trim());
-                clienteModificar.setNombreFantasia(txt_NombreFantasia.getText().trim());
-                clienteModificar.setCondicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem());
-                clienteModificar.setDireccion(txt_Direccion.getText().trim());
-                clienteModificar.setLocalidad((Localidad) cmb_Localidad.getSelectedItem());
-                clienteModificar.setTelPrimario(txt_TelPrimario.getText().trim());
-                clienteModificar.setTelSecundario(txt_TelSecundario.getText().trim());
-                clienteModificar.setContacto(txt_Contacto.getText().trim());
-                clienteModificar.setEmail(txt_Email.getText().trim());
-                clienteModificar.setFechaAlta(dc_FechaAlta.getDate());
-                clienteModificar.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
-                clienteService.actualizar(clienteModificar);
+                cliente.setId_Fiscal(txt_Id_Fiscal.getText().trim());
+                cliente.setRazonSocial(txt_RazonSocial.getText().trim());
+                cliente.setNombreFantasia(txt_NombreFantasia.getText().trim());
+                cliente.setCondicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem());
+                cliente.setDireccion(txt_Direccion.getText().trim());
+                cliente.setLocalidad((Localidad) cmb_Localidad.getSelectedItem());
+                cliente.setTelPrimario(txt_TelPrimario.getText().trim());
+                cliente.setTelSecundario(txt_TelSecundario.getText().trim());
+                cliente.setContacto(txt_Contacto.getText().trim());
+                cliente.setEmail(txt_Email.getText().trim());
+                cliente.setFechaAlta(dc_FechaAlta.getDate());
+                cliente.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                clienteService.actualizar(cliente);
                 JOptionPane.showMessageDialog(this, "El Cliente se modificó correctamente!",
                         "Aviso", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
