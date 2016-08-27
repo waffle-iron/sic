@@ -31,8 +31,8 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="panel" alignment="1" min="-2" max="-2" attributes="0"/>
                   <Component id="btn_Finalizar" min="-2" max="-2" attributes="0"/>
-                  <Component id="panelGeneral" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -40,9 +40,9 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
+          <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="panelGeneral" min="-2" max="-2" attributes="0"/>
+              <Component id="panel" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="btn_Finalizar" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
@@ -51,7 +51,21 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="panelGeneral">
+    <Component class="javax.swing.JButton" name="btn_Finalizar">
+      <Properties>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
+        </Property>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/sic/icons/Accept_16x16.png"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Finalizar"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_FinalizarActionPerformed"/>
+      </Events>
+    </Component>
+    <Container class="javax.swing.JPanel" name="panel">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -63,59 +77,58 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="separator2" min="-2" pref="567" max="-2" attributes="0"/>
+                      <Component id="separador" min="-2" pref="567" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="lbl_Cambio" min="-2" pref="161" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="lbl_Total1" max="32767" attributes="1"/>
-                              <Component id="lbl_Total" pref="200" max="32767" attributes="1"/>
-                              <Component id="lbl_Devolucion" alignment="0" max="32767" attributes="1"/>
+                              <Component id="lbl_Vendor" max="32767" attributes="0"/>
+                              <Component id="lbl_Transporte" min="-2" pref="145" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="lbl_TotalAPagar" min="-2" pref="139" max="-2" attributes="0"/>
-                              <Component id="lbl_Vuelto" alignment="0" min="-2" pref="139" max="-2" attributes="0"/>
-                              <Component id="txt_AbonaCon" alignment="1" min="-2" pref="139" max="-2" attributes="1"/>
+                              <Component id="lbl_Vendedor" min="-2" pref="410" max="-2" attributes="0"/>
+                              <Component id="cmb_Transporte" min="-2" pref="410" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="separador" alignment="0" max="32767" attributes="0"/>
-                          <Component id="chk_condicionDividir" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="lbl_Transporte" pref="145" max="32767" attributes="0"/>
-                                  <Component id="lbl_Vendor" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="cmb_Transporte" max="32767" attributes="0"/>
-                                  <Component id="lbl_Vendedor" pref="355" max="32767" attributes="0"/>
-                              </Group>
+                      <Component id="separador1" alignment="0" min="-2" pref="567" max="-2" attributes="0"/>
+                      <Group type="102" alignment="1" attributes="0">
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="chk_FormaDePago3" max="32767" attributes="0"/>
+                              <Component id="chk_FormaDePago2" alignment="1" max="32767" attributes="0"/>
+                              <Component id="chk_FormaDePago1" alignment="1" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="chk_FormaDePago1" max="32767" attributes="0"/>
-                                  <Component id="chk_FormaDePago2" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="chk_FormaDePago3" alignment="0" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="cmb_FormaDePago1" pref="206" max="32767" attributes="0"/>
-                                  <Component id="cmb_FormaDePago2" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="cmb_FormaDePago3" alignment="1" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                  <Component id="txt_MontoPago2" alignment="0" pref="140" max="32767" attributes="1"/>
-                                  <Component id="txt_MontoPago3" alignment="0" max="32767" attributes="1"/>
-                                  <Component id="txt_MontoPago1" max="32767" attributes="1"/>
-                              </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="cmb_FormaDePago2" min="-2" pref="261" max="-2" attributes="0"/>
+                              <Component id="cmb_FormaDePago1" min="-2" pref="261" max="-2" attributes="0"/>
+                              <Component id="cmb_FormaDePago3" min="-2" pref="261" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="separador1" alignment="0" max="32767" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="txt_MontoPago3" max="32767" attributes="1"/>
+                              <Component id="txt_MontoPago1" max="32767" attributes="1"/>
+                              <Component id="txt_MontoPago2" min="-2" pref="140" max="-2" attributes="1"/>
+                          </Group>
                       </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="lbl_Cambio" min="-2" pref="150" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="lbl_Devolucion" min="-2" pref="259" max="-2" attributes="1"/>
+                              <Component id="lbl_Total1" min="-2" pref="259" max="-2" attributes="1"/>
+                              <Component id="lbl_Total" min="-2" pref="259" max="-2" attributes="1"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="lbl_Vuelto" max="32767" attributes="0"/>
+                              <Component id="txt_AbonaCon" max="32767" attributes="1"/>
+                              <Component id="lbl_TotalAPagar" min="-2" pref="140" max="-2" attributes="0"/>
+                          </Group>
+                      </Group>
+                      <Component id="chk_condicionDividir" alignment="0" min="-2" pref="567" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -123,16 +136,16 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="lbl_Vendor" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="lbl_Vendedor" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="lbl_Transporte" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="cmb_Transporte" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="cmb_Transporte" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbl_Transporte" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="separador1" min="-2" pref="10" max="-2" attributes="0"/>
@@ -156,16 +169,16 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="separador" min="-2" pref="10" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="lbl_Cambio" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbl_Cambio" linkSize="8" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="lbl_Total" linkSize="8" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="lbl_TotalAPagar" linkSize="8" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="lbl_Total1" linkSize="8" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="txt_AbonaCon" linkSize="8" alignment="2" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="lbl_Total1" linkSize="8" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="txt_AbonaCon" linkSize="8" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
@@ -173,8 +186,10 @@
                       <Component id="lbl_Vuelto" linkSize="8" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="chk_condicionDividir" min="-2" max="-2" attributes="0"/>
+                  <Component id="separator2" min="-2" pref="10" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
+                  <Component id="chk_condicionDividir" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -294,6 +309,8 @@
             <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_MontoPago3FocusGained"/>
           </Events>
         </Component>
+        <Component class="javax.swing.JSeparator" name="separador">
+        </Component>
         <Component class="javax.swing.JLabel" name="lbl_Cambio">
           <Properties>
             <Property name="text" type="java.lang.String" value="Cambio:"/>
@@ -320,6 +337,26 @@
             </Property>
           </Properties>
         </Component>
+        <Component class="javax.swing.JLabel" name="lbl_Total1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Abona con:"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JFormattedTextField" name="txt_AbonaCon">
+          <Properties>
+            <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
+              <Format format="#,##0.00" subtype="-1" type="0"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="0.00"/>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Arial" size="15" style="0"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_AbonaConFocusGained"/>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_AbonaConKeyReleased"/>
+          </Events>
+        </Component>
         <Component class="javax.swing.JLabel" name="lbl_Devolucion">
           <Properties>
             <Property name="text" type="java.lang.String" value="Vuelto:"/>
@@ -341,6 +378,8 @@
             </Property>
           </Properties>
         </Component>
+        <Component class="javax.swing.JSeparator" name="separator2">
+        </Component>
         <Component class="javax.swing.JCheckBox" name="chk_condicionDividir">
           <Properties>
             <Property name="text" type="java.lang.String" value="Dividir Factura"/>
@@ -350,43 +389,7 @@
             <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="chk_condicionDividirItemStateChanged"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JSeparator" name="separador">
-        </Component>
-        <Component class="javax.swing.JLabel" name="lbl_Total1">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Abona con:"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JFormattedTextField" name="txt_AbonaCon">
-          <Properties>
-            <Property name="formatterFactory" type="javax.swing.JFormattedTextField$AbstractFormatterFactory" editor="org.netbeans.modules.form.editors.AbstractFormatterFactoryEditor">
-              <Format format="#,##0.00" subtype="-1" type="0"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="0.00"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Arial" size="15" style="0"/>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_AbonaConFocusGained"/>
-            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_AbonaConKeyReleased"/>
-          </Events>
-        </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="btn_Finalizar">
-      <Properties>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>
-        </Property>
-        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/sic/icons/Accept_16x16.png"/>
-        </Property>
-        <Property name="text" type="java.lang.String" value="Finalizar"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_FinalizarActionPerformed"/>
-      </Events>
-    </Component>
   </SubComponents>
 </Form>
