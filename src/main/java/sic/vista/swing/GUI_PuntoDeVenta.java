@@ -1385,6 +1385,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     }//GEN-LAST:event_txt_Recargo_porcentajeActionPerformed
 
     private void btn_ContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ContinuarActionPerformed
+        this.calcularResultados();
         if (!cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")) {
             List<RenglonFactura> productosFaltantes = new ArrayList();
             for (RenglonFactura renglon : renglones) {
