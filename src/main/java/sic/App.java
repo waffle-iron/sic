@@ -31,6 +31,7 @@ public class App {
         properties.setProperty("hibernate.connection.CharSet", "utf8");
         properties.setProperty("hibernate.connection.characterEncoding", "utf8");
         properties.setProperty("hibernate.connection.useUnicode", "true");
+        properties.setProperty("hibernate.id.new_generator_mappings", "false");
         return properties;
     }
 
