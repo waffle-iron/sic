@@ -1,15 +1,12 @@
 package sic.vista.swing;
 
 import java.util.List;
-import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Pais;
@@ -27,7 +24,6 @@ public class GUI_DetalleProvincia extends JDialog {
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
     private final IPaisService paisService = appContext.getBean(IPaisService.class);
-    private static final Logger log = Logger.getLogger(GUI_DetalleProvincia.class.getPackage().getName());
 
     public GUI_DetalleProvincia() {
         this.initComponents();
@@ -227,10 +223,7 @@ public class GUI_DetalleProvincia extends JDialog {
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        } 
     }//GEN-LAST:event_btn_AgregarActionPerformed
 
 private void lst_ProvinciasValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lst_ProvinciasValueChanged
@@ -262,10 +255,7 @@ private void btn_ActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GE
     } catch (ServiceException ex) {
         JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
-    } catch (PersistenceException ex) {
-        log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-        JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-    }
+    } 
 }//GEN-LAST:event_btn_ActualizarActionPerformed
 
 private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarActionPerformed
@@ -280,9 +270,8 @@ private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
             cargarListProvincias(cmb_PaisesBusqueda.getSelectedItem());
         }
 
-    } catch (PersistenceException ex) {
-        log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-        JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+    } catch (ServiceException ex) {
+        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 }//GEN-LAST:event_btn_EliminarActionPerformed
 
@@ -291,9 +280,8 @@ private void cmb_PaisesBusquedaItemStateChanged(java.awt.event.ItemEvent evt) {/
         try {
             cargarListProvincias(cmb_PaisesBusqueda.getSelectedItem());
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }//GEN-LAST:event_cmb_PaisesBusquedaItemStateChanged
@@ -304,9 +292,8 @@ private void cmb_PaisesBusquedaItemStateChanged(java.awt.event.ItemEvent evt) {/
             cargarComboBoxPaises(cmb_PaisesBusqueda, modeloComboPaisesBusqueda);
             cmb_PaisesBusquedaItemStateChanged(null);
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
     }//GEN-LAST:event_formWindowOpened

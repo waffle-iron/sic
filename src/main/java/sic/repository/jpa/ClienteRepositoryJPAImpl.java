@@ -3,6 +3,7 @@ package sic.repository.jpa;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import sic.modelo.BusquedaClienteCriteria;
@@ -20,7 +21,7 @@ public class ClienteRepositoryJPAImpl implements IClienteRepository {
     public List<Cliente> getClientes(Empresa empresa) {
         TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarTodos", Cliente.class);
         typedQuery.setParameter("empresa", empresa);
-        List<Cliente> clientes = typedQuery.getResultList();
+        List<Cliente> clientes = typedQuery.getResultList();        
         return clientes;
     }
 

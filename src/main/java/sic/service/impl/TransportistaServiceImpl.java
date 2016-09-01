@@ -3,6 +3,8 @@ package sic.service.impl;
 import sic.modelo.BusquedaTransportistaCriteria;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.PersistenceException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,12 +14,14 @@ import sic.repository.ITransportistaRepository;
 import sic.service.ITransportistaService;
 import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
+import sic.util.Utilidades;
 import sic.util.Validator;
 
 @Service
 public class TransportistaServiceImpl implements ITransportistaService {
 
     private final ITransportistaRepository transportistaRepository;
+    private static final Logger LOGGER = Logger.getLogger(TransportistaServiceImpl.class.getPackage().getName());
 
     @Autowired
     public TransportistaServiceImpl(ITransportistaRepository transportistaRepository) {
@@ -26,7 +30,12 @@ public class TransportistaServiceImpl implements ITransportistaService {
 
     @Override
     public List<Transportista> getTransportistas(Empresa empresa) {
-        return transportistaRepository.getTransportistas(empresa);
+        try {
+            return transportistaRepository.getTransportistas(empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -44,12 +53,22 @@ public class TransportistaServiceImpl implements ITransportistaService {
         if (criteria.getLocalidad().getNombre().equals("Todas")) {
             criteria.setBuscarPorLocalidad(false);
         }
-        return transportistaRepository.busquedaPersonalizada(criteria);
+        try {
+            return transportistaRepository.busquedaPersonalizada(criteria);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Transportista getTransportistaPorNombre(String nombre, Empresa empresa) {
-        return transportistaRepository.getTransportistaPorNombre(nombre, empresa);
+        try {
+            return transportistaRepository.getTransportistaPorNombre(nombre, empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Transportista transportista) {
@@ -86,20 +105,35 @@ public class TransportistaServiceImpl implements ITransportistaService {
     @Transactional
     public void guardar(Transportista transportista) {
         this.validarOperacion(TipoDeOperacion.ALTA, transportista);
-        transportistaRepository.guardar(transportista);
+        try {
+            transportistaRepository.guardar(transportista);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void actualizar(Transportista transportista) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, transportista);
-        transportistaRepository.actualizar(transportista);
+        try {
+            transportistaRepository.actualizar(transportista);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void eliminar(Transportista transportista) {
         transportista.setEliminado(true);
-        transportistaRepository.actualizar(transportista);
+        try {
+            transportistaRepository.actualizar(transportista);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 }

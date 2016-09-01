@@ -2,6 +2,8 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.PersistenceException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,12 +13,14 @@ import sic.repository.IMedidaRepository;
 import sic.service.IMedidaService;
 import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
+import sic.util.Utilidades;
 import sic.util.Validator;
 
 @Service
 public class MedidaServiceImpl implements IMedidaService {
 
     private final IMedidaRepository medidaRepository;
+    private static final Logger LOGGER = Logger.getLogger(MedidaServiceImpl.class.getPackage().getName());
 
     @Autowired
     public MedidaServiceImpl(IMedidaRepository medidaRepository) {
@@ -25,12 +29,22 @@ public class MedidaServiceImpl implements IMedidaService {
 
     @Override
     public List<Medida> getUnidadMedidas(Empresa empresa) {
-        return medidaRepository.getUnidadMedidas(empresa);
+        try {
+            return medidaRepository.getUnidadMedidas(empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Medida getMedidaPorNombre(String nombre, Empresa empresa) {
-        return medidaRepository.getMedidaPorNombre(nombre, empresa);
+        try {
+            return medidaRepository.getMedidaPorNombre(nombre, empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -59,20 +73,35 @@ public class MedidaServiceImpl implements IMedidaService {
     @Transactional
     public void actualizar(Medida medida) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, medida);
-        medidaRepository.actualizar(medida);
+        try {
+            medidaRepository.actualizar(medida);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void guardar(Medida medida) {
         this.validarOperacion(TipoDeOperacion.ALTA, medida);
-        medidaRepository.guardar(medida);
+        try {
+            medidaRepository.guardar(medida);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void eliminar(Medida medida) {
         medida.setEliminada(true);
-        medidaRepository.actualizar(medida);
+        try {
+            medidaRepository.actualizar(medida);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 }

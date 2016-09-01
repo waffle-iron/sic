@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.text.ParseException;
 import java.util.List;
-import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -35,7 +33,7 @@ public class GUI_ModificacionProductosBulk extends JDialog {
     private final IRubroService rubroService = appContext.getBean(IRubroService.class);
     private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
-    private static final Logger log = Logger.getLogger(GUI_ModificacionProductosBulk.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(GUI_ModificacionProductosBulk.class.getPackage().getName());
 
     public GUI_ModificacionProductosBulk(List<Producto> productosParaModificar) {
         this.initComponents();
@@ -62,7 +60,7 @@ public class GUI_ModificacionProductosBulk extends JDialog {
 
         } catch (ParseException ex) {
             String msjError = "Se produjo un error analizando los campos.";
-            log.error(msjError + " - " + ex.getMessage());
+            LOGGER.error(msjError + " - " + ex.getMessage());
         }
     }
 
@@ -591,9 +589,8 @@ public class GUI_ModificacionProductosBulk extends JDialog {
         try {
             this.cargarComboBoxRubros();
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_RubrosActionPerformed
 
@@ -606,9 +603,8 @@ public class GUI_ModificacionProductosBulk extends JDialog {
         try {
             this.cargarComboBoxProveedores();
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoProveedorActionPerformed
 
@@ -621,9 +617,8 @@ public class GUI_ModificacionProductosBulk extends JDialog {
         try {
             this.cargarComboBoxMedidas();
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_MedidasActionPerformed
 
@@ -677,9 +672,6 @@ public class GUI_ModificacionProductosBulk extends JDialog {
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_GuardarActionPerformed
 
@@ -724,9 +716,8 @@ public class GUI_ModificacionProductosBulk extends JDialog {
             this.cargarComboBoxMedidas();
             this.cargarComboBoxIVA();
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
     }//GEN-LAST:event_formWindowOpened

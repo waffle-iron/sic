@@ -2,6 +2,8 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.PersistenceException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,12 +12,15 @@ import sic.repository.IPaisRepository;
 import sic.service.IPaisService;
 import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
+import sic.util.Utilidades;
 import sic.util.Validator;
 
 @Service
 public class PaisServiceImpl implements IPaisService {
 
     private final IPaisRepository paisRepository;
+    private static final Logger LOGGER = Logger.getLogger(PaisServiceImpl.class.getPackage().getName());
+
 
     @Autowired
     public PaisServiceImpl(IPaisRepository paisRepository) {
@@ -24,12 +29,22 @@ public class PaisServiceImpl implements IPaisService {
 
     @Override
     public List<Pais> getPaises() {
-        return paisRepository.getPaises();
+        try {
+            return paisRepository.getPaises();
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Pais getPaisPorNombre(String nombre) {
-        return paisRepository.getPaisPorNombre(nombre);
+        try {
+            return paisRepository.getPaisPorNombre(nombre);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Pais pais) {
@@ -57,20 +72,35 @@ public class PaisServiceImpl implements IPaisService {
     @Transactional
     public void eliminar(Pais pais) {
         pais.setEliminado(true);
-        paisRepository.actualizar(pais);
+        try {
+            paisRepository.actualizar(pais);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void actualizar(Pais pais) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, pais);
-        paisRepository.actualizar(pais);
+        try {
+            paisRepository.actualizar(pais);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void guardar(Pais pais) {
         this.validarOperacion(TipoDeOperacion.ALTA, pais);
-        paisRepository.guardar(pais);
+        try {
+            paisRepository.guardar(pais);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 }

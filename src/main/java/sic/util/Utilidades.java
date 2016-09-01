@@ -10,10 +10,12 @@ import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JTable;
+import org.apache.log4j.Logger;
 
 public class Utilidades {
 
@@ -234,5 +236,11 @@ public class Utilidades {
         } else {
             return (new BigDecimal(String.valueOf(valor)).setScale(cantidadDecimales, BigDecimal.ROUND_CEILING)).doubleValue();
         }
+    }
+    
+    public static String escribirLogErrorAccesoDatos(Logger LOGGER) {   
+        String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos");
+        LOGGER.error(mensaje);
+        return mensaje;
     }
 }

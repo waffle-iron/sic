@@ -3,6 +3,8 @@ package sic.service.impl;
 import sic.modelo.EmpresaActiva;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.PersistenceException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +15,7 @@ import sic.repository.IEmpresaRepository;
 import sic.service.IEmpresaService;
 import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
+import sic.util.Utilidades;
 import sic.util.Validator;
 
 @Service
@@ -20,6 +23,7 @@ public class EmpresaServiceImpl implements IEmpresaService {
 
     private final IEmpresaRepository empresaRepository;
     private final IConfiguracionDelSistemaRepository configuracionDelSistemaRepository;
+    private static final Logger LOGGER = Logger.getLogger(EmpresaServiceImpl.class.getPackage().getName());
 
     @Autowired
     public EmpresaServiceImpl(IEmpresaRepository empresaRepository,
@@ -31,17 +35,32 @@ public class EmpresaServiceImpl implements IEmpresaService {
 
     @Override
     public List<Empresa> getEmpresas() {
-        return empresaRepository.getEmpresas();
+        try {
+            return empresaRepository.getEmpresas();
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Empresa getEmpresaPorNombre(String nombre) {
-        return empresaRepository.getEmpresaPorNombre(nombre);
+        try {
+            return empresaRepository.getEmpresaPorNombre(nombre);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Empresa getEmpresaPorCUIP(long cuip) {
-        return empresaRepository.getEmpresaPorCUIP(cuip);
+        try {
+            return empresaRepository.getEmpresaPorCUIP(cuip);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -110,14 +129,24 @@ public class EmpresaServiceImpl implements IEmpresaService {
         cds.setCantidadMaximaDeRenglonesEnFactura(28);
         cds.setUsarFacturaVentaPreImpresa(false);
         cds.setEmpresa(getEmpresaPorNombre(empresa.getNombre()));
-        configuracionDelSistemaRepository.guardar(cds);
+        try {
+            configuracionDelSistemaRepository.guardar(cds);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void guardar(Empresa empresa) {
         validarOperacion(TipoDeOperacion.ALTA, empresa);
-        empresaRepository.guardar(empresa);
+        try {
+            empresaRepository.guardar(empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
         crearConfiguracionDelSistema(empresa);
     }
 
@@ -125,13 +154,23 @@ public class EmpresaServiceImpl implements IEmpresaService {
     @Transactional
     public void actualizar(Empresa empresa) {
         validarOperacion(TipoDeOperacion.ACTUALIZACION, empresa);
-        empresaRepository.actualizar(empresa);
+        try {
+            empresaRepository.actualizar(empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void eliminar(Empresa empresa) {
         empresa.setEliminada(true);
-        empresaRepository.actualizar(empresa);
+        try {
+            empresaRepository.actualizar(empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 }

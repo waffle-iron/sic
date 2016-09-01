@@ -8,10 +8,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.persistence.PersistenceException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,8 @@ public class PedidoServiceImpl implements IPedidoService {
     private final IEmpresaService empresaService;
     private final IFacturaService facturaService;
     private final IProductoService productoService;
+    private static final Logger LOGGER = Logger.getLogger(PedidoServiceImpl.class.getPackage().getName());
+
 
     @Autowired
     public PedidoServiceImpl(IEmpresaService empresaService, IFacturaService facturaService,
@@ -68,9 +72,14 @@ public class PedidoServiceImpl implements IPedidoService {
                     .getString("mensaje_pedido_usuario_vacio"));
         }
         //Duplicados
-        if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) != null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_pedido_duplicado"));
+        try {
+            if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) != null) {
+                throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_pedido_duplicado"));
+            }
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
         }
     }
 
@@ -105,16 +114,26 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     public long calcularNumeroPedido() {
-        return 1 + pedidoRepository.buscarMayorNroPedido(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        try {
+            return 1 + pedidoRepository.buscarMayorNroPedido(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public List<Factura> getFacturasDelPedido(long nroPedido) {
         List<Factura> facturasSinEliminar = new ArrayList<>();
-        for (Factura factura : pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido).getFacturas()) {
-            if (!factura.isEliminada()) {
-                facturasSinEliminar.add(factura);
+        try {
+            for (Factura factura : pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido).getFacturas()) {
+                if (!factura.isEliminada()) {
+                    facturasSinEliminar.add(factura);
+                }
             }
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
         }
         return facturasSinEliminar;
     }
@@ -123,7 +142,12 @@ public class PedidoServiceImpl implements IPedidoService {
     @Transactional
     public void guardar(Pedido pedido) {
         this.validarPedido(pedido);
-        pedidoRepository.guardar(pedido);
+        try{
+            pedidoRepository.guardar(pedido);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -163,22 +187,42 @@ public class PedidoServiceImpl implements IPedidoService {
     @Override
     @Transactional
     public void actualizar(Pedido pedido) {
-        pedidoRepository.actualizar(pedido);
+        try {
+            pedidoRepository.actualizar(pedido);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Pedido getPedidoPorNumero(long nroPedido, long idEmpresa) {
-        return pedidoRepository.getPedidoPorNro(nroPedido, idEmpresa);
+        try {
+            return pedidoRepository.getPedidoPorNro(nroPedido, idEmpresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Pedido getPedidoPorNumeroConFacturas(long nroPedido) {
-        return pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido);
+        try {
+            return pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Pedido getPedidoPorNumeroConRenglones(long nroPedido, long idEmpresa) {
-        return pedidoRepository.getPedidoPorNumeroConRenglones(nroPedido, idEmpresa);
+        try {
+            return pedidoRepository.getPedidoPorNumeroConRenglones(nroPedido, idEmpresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -186,14 +230,24 @@ public class PedidoServiceImpl implements IPedidoService {
     public boolean eliminar(Pedido pedido) {
         if (pedido.getEstado() == EstadoPedido.ABIERTO) {
             pedido.setEliminado(true);
-            pedidoRepository.actualizar(pedido);
+            try {
+                pedidoRepository.actualizar(pedido);
+
+            } catch (PersistenceException ex) {
+                throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+            }
         }
         return pedido.isEliminado();
     }
 
     @Override
     public List<RenglonPedido> getRenglonesDelPedido(long nroPedido) {
-        return pedidoRepository.getRenglonesDelPedido(nroPedido);
+        try {
+            return pedidoRepository.getRenglonesDelPedido(nroPedido);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override

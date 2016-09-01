@@ -3,6 +3,8 @@ package sic.service.impl;
 import sic.modelo.BusquedaProveedorCriteria;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.PersistenceException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,21 +14,34 @@ import sic.repository.IProveedorRepository;
 import sic.service.IProveedorService;
 import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
+import sic.util.Utilidades;
 import sic.util.Validator;
 
 @Service
 public class ProveedorServiceImpl implements IProveedorService {
 
     private final IProveedorRepository proveedorRepository;
+    private static final Logger LOGGER = Logger.getLogger(ProveedorServiceImpl.class.getPackage().getName());
+
 
     @Autowired
     public ProveedorServiceImpl(IProveedorRepository proveedorRepository) {
-        this.proveedorRepository = proveedorRepository;
+        try {
+            this.proveedorRepository = proveedorRepository;
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public List<Proveedor> getProveedores(Empresa empresa) {
-        return proveedorRepository.getProveedores(empresa);
+        try {
+            return proveedorRepository.getProveedores(empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -44,22 +59,42 @@ public class ProveedorServiceImpl implements IProveedorService {
         if (criteria.getLocalidad().getNombre().equals("Todas")) {
             criteria.setBuscaPorLocalidad(false);
         }
-        return proveedorRepository.buscarProveedores(criteria);
+        try {
+            return proveedorRepository.buscarProveedores(criteria);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Proveedor getProveedorPorCodigo(String codigo, Empresa empresa) {
-        return proveedorRepository.getProveedorPorCodigo(codigo, empresa);
+        try {
+            return proveedorRepository.getProveedorPorCodigo(codigo, empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Proveedor getProveedorPorId_Fiscal(String id_Fiscal, Empresa empresa) {
-        return proveedorRepository.getProveedorPorId_Fiscal(id_Fiscal, empresa);
+        try {
+            return proveedorRepository.getProveedorPorId_Fiscal(id_Fiscal, empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Proveedor getProveedorPorRazonSocial(String razonSocial, Empresa empresa) {
-        return proveedorRepository.getProveedorPorRazonSocial(razonSocial, empresa);
+        try {
+            return proveedorRepository.getProveedorPorRazonSocial(razonSocial, empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Proveedor proveedor) {
@@ -136,20 +171,35 @@ public class ProveedorServiceImpl implements IProveedorService {
     @Transactional
     public void guardar(Proveedor proveedor) {
         this.validarOperacion(TipoDeOperacion.ALTA, proveedor);
-        proveedorRepository.guardar(proveedor);
+        try {
+            proveedorRepository.guardar(proveedor);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void actualizar(Proveedor proveedor) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, proveedor);
-        proveedorRepository.actualizar(proveedor);
+        try {
+            proveedorRepository.actualizar(proveedor);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void eliminar(Proveedor proveedor) {
         proveedor.setEliminado(true);
-        proveedorRepository.actualizar(proveedor);
+        try {
+            proveedorRepository.actualizar(proveedor);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 }

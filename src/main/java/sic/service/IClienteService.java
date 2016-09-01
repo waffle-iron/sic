@@ -8,7 +8,7 @@ import sic.modelo.Empresa;
 public interface IClienteService {
 
     void actualizar(Cliente cliente);
-
+        
     List<Cliente> buscarClientes(BusquedaClienteCriteria criteria);
 
     void eliminar(Cliente cliente);

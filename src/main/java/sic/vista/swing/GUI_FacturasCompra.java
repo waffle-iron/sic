@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
@@ -18,7 +17,6 @@ import sic.modelo.FacturaCompra;
 import sic.modelo.Proveedor;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
-import sic.service.IPagoService;
 import sic.service.IProveedorService;
 import sic.service.Movimiento;
 import sic.service.ServiceException;
@@ -33,7 +31,6 @@ public class GUI_FacturasCompra extends JInternalFrame {
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
-    private final IPagoService pagoService = appContext.getBean(IPagoService.class);
     private static final Logger LOGGER = Logger.getLogger(GUI_FacturasCompra.class.getPackage().getName());
 
     public GUI_FacturasCompra() {
@@ -142,10 +139,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
         } catch (ParseException | ServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
-        } catch (PersistenceException ex) {
-            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        } 
     }
 
     private void cargarResultadosAlTable() {
@@ -570,9 +564,8 @@ public class GUI_FacturasCompra extends JInternalFrame {
                 JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
             }
 
-        } catch (PersistenceException ex) {
-            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 }//GEN-LAST:event_btn_NuevoActionPerformed
 
@@ -597,9 +590,8 @@ public class GUI_FacturasCompra extends JInternalFrame {
                     facturaService.eliminar(facturas.get(indexFilaSeleccionada));
                     this.buscar();
 
-                } catch (PersistenceException ex) {
-                    LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (ServiceException ex) {
+                    JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -644,9 +636,8 @@ public class GUI_FacturasCompra extends JInternalFrame {
             this.setMaximum(true);
             rb_soloImpagas.setSelected(true);
 
-        } catch (PersistenceException ex) {
-            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
 
         } catch (PropertyVetoException ex) {

@@ -9,10 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.persistence.PersistenceException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,6 @@ import sic.modelo.Pago;
 import sic.modelo.Usuario;
 import sic.repository.ICajaRepository;
 import sic.service.EstadoCaja;
-import sic.service.IPagoService;
 import sic.service.ServiceException;
 import sic.util.Utilidades;
 
@@ -34,6 +35,7 @@ import sic.util.Utilidades;
 public class CajaServiceImpl implements ICajaService {
 
     private final ICajaRepository cajaRepository;
+    private static final Logger LOGGER = Logger.getLogger(CajaServiceImpl.class.getPackage().getName());
 
     @Autowired
     public CajaServiceImpl(ICajaRepository cajaRepository) {
@@ -57,9 +59,14 @@ public class CajaServiceImpl implements ICajaService {
                     .getString("mensaje_caja_usuario_vacio"));
         }
         //Duplicados
-        if (cajaRepository.getCajaPorID(caja.getId_Caja(), caja.getEmpresa().getId_Empresa()) != null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_caja_duplicada"));
+        try {
+            if (cajaRepository.getCajaPorID(caja.getId_Caja(), caja.getEmpresa().getId_Empresa()) != null) {
+                throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_caja_duplicada"));
+            }
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
         }
     }
 
@@ -67,28 +74,53 @@ public class CajaServiceImpl implements ICajaService {
     @Transactional
     public void guardar(Caja caja) {
         this.validarCaja(caja);
-        cajaRepository.guardar(caja);
+        try {
+            cajaRepository.guardar(caja);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void actualizar(Caja caja) {
-        cajaRepository.actualizar(caja);
+        try {
+            cajaRepository.actualizar(caja);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Caja getUltimaCaja(long id_Empresa) {
-        return cajaRepository.getUltimaCaja(id_Empresa);
+        try {
+            return cajaRepository.getUltimaCaja(id_Empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Caja getCajaPorId(long id_Caja, long id_Empresa) {
-        return cajaRepository.getCajaPorID(id_Caja, id_Empresa);
+        try {
+            return cajaRepository.getCajaPorID(id_Caja, id_Empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public int getUltimoNumeroDeCaja(long id_Empresa) {
-        return cajaRepository.getUltimoNumeroDeCaja(id_Empresa);
+        try {
+            return cajaRepository.getUltimoNumeroDeCaja(id_Empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -113,7 +145,12 @@ public class CajaServiceImpl implements ICajaService {
 
     @Override
     public List<Caja> getCajas(long id_Empresa, Date desde, Date hasta) {
-        return cajaRepository.getCajas(id_Empresa, desde, hasta);
+        try {
+            return cajaRepository.getCajas(id_Empresa, desde, hasta);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -135,7 +172,12 @@ public class CajaServiceImpl implements ICajaService {
             cal.set(Calendar.SECOND, 59);
             criteria.setFechaHasta(cal.getTime());
         }
-        return cajaRepository.getCajasCriteria(criteria);
+        try {
+            return cajaRepository.getCajasCriteria(criteria);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override

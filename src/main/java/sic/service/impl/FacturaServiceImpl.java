@@ -11,10 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.persistence.PersistenceException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -53,6 +55,7 @@ public class FacturaServiceImpl implements IFacturaService {
     private final IEmpresaService empresaService;
     private final IPedidoService pedidoService;
     private final IPagoService pagoService;
+    private static final Logger LOGGER = Logger.getLogger(FacturaServiceImpl.class.getPackage().getName());
 
     @Autowired
     @Lazy
@@ -166,17 +169,32 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     public List<RenglonFactura> getRenglonesDeLaFactura(Factura factura) {
-        return facturaRepository.getRenglonesDeLaFactura(factura);
+        try {
+            return facturaRepository.getRenglonesDeLaFactura(factura);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {
-        return facturaRepository.getFacturaVentaPorTipoSerieNum(tipo, serie, num);
+        try {
+            return facturaRepository.getFacturaVentaPorTipoSerieNum(tipo, serie, num);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public FacturaCompra getFacturaCompraPorTipoSerieNum(char tipo, long serie, long num) {
-        return facturaRepository.getFacturaCompraPorTipoSerieNum(tipo, serie, num);
+        try {
+            return facturaRepository.getFacturaCompraPorTipoSerieNum(tipo, serie, num);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -239,7 +257,12 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_proveedor_vacio"));
         }
-        return facturaRepository.buscarFacturasCompra(criteria);
+        try {
+            return facturaRepository.buscarFacturasCompra(criteria);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -272,21 +295,36 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
         }
-        return facturaRepository.buscarFacturasVenta(criteria);
+        try {
+            return facturaRepository.buscarFacturasVenta(criteria);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void guardar(Factura factura) {
         this.validarFactura(factura);
-        facturaRepository.guardar(factura);
+        try {
+            facturaRepository.guardar(factura);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
         productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
     }
 
     @Override
     @Transactional
     public void actualizar(Factura factura) {
-        facturaRepository.actualizar(factura);
+        try {
+            facturaRepository.actualizar(factura);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -294,14 +332,24 @@ public class FacturaServiceImpl implements IFacturaService {
     public void eliminar(Factura factura) {
         factura.setEliminada(true);
         this.eliminarPagosDeFactura(factura);
-        facturaRepository.actualizar(factura);
+        try {
+            facturaRepository.actualizar(factura);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
         factura.setRenglones(this.getRenglonesDeLaFactura(factura));
         productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);
     }
 
     private void eliminarPagosDeFactura(Factura factura) {
-        for (Pago pago : pagoService.getPagosDeLaFactura(factura)) {
-            pagoService.eliminar(pago);
+        try {
+            for (Pago pago : pagoService.getPagosDeLaFactura(factura)) {
+                pagoService.eliminar(pago);
+            }
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
         }
     }
 
@@ -672,7 +720,12 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     public long calcularNumeroFactura(String tipoDeFactura, long serie) {
-        return 1 + facturaRepository.getMayorNumFacturaSegunTipo(tipoDeFactura, serie);
+        try {
+            return 1 + facturaRepository.getMayorNumFacturaSegunTipo(tipoDeFactura, serie);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override

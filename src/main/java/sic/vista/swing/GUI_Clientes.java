@@ -4,7 +4,6 @@ import java.beans.PropertyVetoException;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
@@ -167,21 +166,15 @@ public class GUI_Clientes extends JInternalFrame {
 
     private void buscar() {
         BusquedaClienteCriteria criteria = new BusquedaClienteCriteria(
-                chk_RazonSocialNombreFantasia.isSelected(), txt_RazonSocialNombreFantasia.getText().trim(),
-                chk_RazonSocialNombreFantasia.isSelected(), txt_RazonSocialNombreFantasia.getText().trim(),
-                chk_Id_Fiscal.isSelected(), txt_Id_Fiscal.getText().trim(),
-                chk_Ubicacion.isSelected(), (Pais) cmb_Pais.getSelectedItem(),
-                chk_Ubicacion.isSelected(), (Provincia) cmb_Provincia.getSelectedItem(),
-                chk_Ubicacion.isSelected(), (Localidad) cmb_Localidad.getSelectedItem(),
-                empresaService.getEmpresaActiva().getEmpresa());
-
-        try {
+            chk_RazonSocialNombreFantasia.isSelected(), txt_RazonSocialNombreFantasia.getText().trim(),
+            chk_RazonSocialNombreFantasia.isSelected(), txt_RazonSocialNombreFantasia.getText().trim(),
+            chk_Id_Fiscal.isSelected(), txt_Id_Fiscal.getText().trim(),
+            chk_Ubicacion.isSelected(), (Pais) cmb_Pais.getSelectedItem(),
+            chk_Ubicacion.isSelected(), (Provincia) cmb_Provincia.getSelectedItem(),
+            chk_Ubicacion.isSelected(), (Localidad) cmb_Localidad.getSelectedItem(),
+            empresaService.getEmpresaActiva().getEmpresa());       
             clientes = clienteService.buscarClientes(criteria);
-            this.cargarResultadosAlTable();
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+            this.cargarResultadosAlTable();       
     }
 
     @SuppressWarnings("unchecked")
@@ -465,7 +458,6 @@ public class GUI_Clientes extends JInternalFrame {
 
     private void cmb_PaisItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_PaisItemStateChanged
         if (cmb_Pais.getItemCount() > 0) {
-            try {
                 if (!cmb_Pais.getSelectedItem().toString().equals("Todos")) {
                     this.cargarComboBoxProvinciasDelPais((Pais) cmb_Pais.getSelectedItem());
                 } else {
@@ -478,16 +470,11 @@ public class GUI_Clientes extends JInternalFrame {
                     localidadTodas.setNombre("Todas");
                     cmb_Localidad.addItem(localidadTodas);
                 }
-            } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-            }
         }
     }//GEN-LAST:event_cmb_PaisItemStateChanged
 
     private void cmb_ProvinciaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_ProvinciaItemStateChanged
         if (cmb_Provincia.getItemCount() > 0) {
-            try {
                 if (!cmb_Provincia.getSelectedItem().toString().equals("Todas")) {
                     cargarComboBoxLocalidadesDeLaProvincia((Provincia) cmb_Provincia.getSelectedItem());
                 } else {
@@ -496,12 +483,6 @@ public class GUI_Clientes extends JInternalFrame {
                     localidadTodas.setNombre("Todas");
                     cmb_Localidad.addItem(localidadTodas);
                 }
-
-            } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
         } else {
             cmb_Localidad.removeAllItems();
         }
@@ -520,12 +501,7 @@ public class GUI_Clientes extends JInternalFrame {
         gui_DetalleCliente.setModal(true);
         gui_DetalleCliente.setLocationRelativeTo(this);
         gui_DetalleCliente.setVisible(true);
-        try {
-            this.cargarComboBoxPaises();
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        this.cargarComboBoxPaises();
     }//GEN-LAST:event_btn_NuevoActionPerformed
 
     private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarActionPerformed
@@ -536,12 +512,7 @@ public class GUI_Clientes extends JInternalFrame {
                     + clientes.get(indexFilaSeleccionada) + "?",
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
-                try {
-                    clienteService.eliminar(clientes.get(indexFilaSeleccionada));
-                } catch (PersistenceException ex) {
-                    log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                clienteService.eliminar(clientes.get(indexFilaSeleccionada));
                 //actualiza JTable
                 this.buscar();
             }
@@ -556,12 +527,7 @@ public class GUI_Clientes extends JInternalFrame {
             gui_DetalleCliente.setLocationRelativeTo(this);
             gui_DetalleCliente.setVisible(true);
             this.buscar();
-            try {
-                this.cargarComboBoxPaises();
-            } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            this.cargarComboBoxPaises();
         }
     }//GEN-LAST:event_btn_ModificarActionPerformed
 
@@ -589,11 +555,6 @@ public class GUI_Clientes extends JInternalFrame {
                 JOptionPane.showInternalMessageDialog(this, mensaje, "Aviso", JOptionPane.WARNING_MESSAGE);
             }
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-
-
         } catch (PropertyVetoException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";
             log.error(msjError + " - " + ex.getMessage());
@@ -606,22 +567,15 @@ public class GUI_Clientes extends JInternalFrame {
         if (tbl_Resultados.getSelectedRow() != -1) {
             int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
 
-            try {
-                if (clienteService.getClientePorId(clientes.get(indexFilaSeleccionada).getId_Cliente()) != null) {
-                    clienteService.setClientePredeterminado(clientes.get(indexFilaSeleccionada));
-                    btn_BuscarActionPerformed(evt);
-                } else {
-                    JOptionPane.showInternalMessageDialog(this, "No se encontro el Cliente"
-                            + " seleccionado, puede que haya sido eliminado desde otro puesto"
-                            + " de trabajo SIC.\nActualize la lista y vuelva a intentarlo.",
-                            "Error", JOptionPane.ERROR_MESSAGE);
-                }
-
-            } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+            if (clienteService.getClientePorId(clientes.get(indexFilaSeleccionada).getId_Cliente()) != null) {
+                clienteService.setClientePredeterminado(clientes.get(indexFilaSeleccionada));
+                btn_BuscarActionPerformed(evt);
+            } else {
+                JOptionPane.showInternalMessageDialog(this, "No se encontro el Cliente"
+                        + " seleccionado, puede que haya sido eliminado desde otro puesto"
+                        + " de trabajo SIC.\nActualize la lista y vuelva a intentarlo.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
-
         } else {
             JOptionPane.showInternalMessageDialog(this, "Debe seleccionar un Cliente antes de realizar la operacion.",
                     "Error", JOptionPane.ERROR_MESSAGE);

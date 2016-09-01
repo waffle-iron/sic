@@ -1,16 +1,14 @@
 package sic.vista.swing;
 
-import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.service.IConfiguracionDelSistemaService;
 import sic.service.IEmpresaService;
+import sic.service.ServiceException;
 
 public class GUI_ConfiguracionDelSistema extends JDialog {
 
@@ -18,7 +16,6 @@ public class GUI_ConfiguracionDelSistema extends JDialog {
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IConfiguracionDelSistemaService configuracionDelSistemaService = appContext.getBean(IConfiguracionDelSistemaService.class);
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
-    private static final Logger log = Logger.getLogger(GUI_ConfiguracionDelSistema.class.getPackage().getName());
 
     public GUI_ConfiguracionDelSistema() {
         this.initComponents();
@@ -175,9 +172,8 @@ public class GUI_ConfiguracionDelSistema extends JDialog {
             configuracionDelSistemaService.actualizar(this.getConfiguracionDelSistema());
             JOptionPane.showMessageDialog(this, "La Configuración se guardó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_GuardarActionPerformed
 

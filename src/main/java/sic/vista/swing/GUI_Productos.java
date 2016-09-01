@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
-import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -42,7 +41,7 @@ public class GUI_Productos extends JInternalFrame {
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
-    private static final Logger log = Logger.getLogger(GUI_Productos.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(GUI_Productos.class.getPackage().getName());
 
     public GUI_Productos() {
         this.initComponents();
@@ -268,9 +267,6 @@ public class GUI_Productos extends JInternalFrame {
                 } catch (ServiceException ex) {
                     JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
-                } catch (PersistenceException ex) {
-                    log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                    JOptionPane.showInternalMessageDialog(getParent(), ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
                 }
 
                 productos = new ArrayList<>();
@@ -292,12 +288,12 @@ public class GUI_Productos extends JInternalFrame {
 
                 } catch (InterruptedException ex) {
                     String msjError = "La tarea que se estaba realizando fue interrumpida. Intente nuevamente.";
-                    log.error(msjError + " - " + ex.getMessage());
+                    LOGGER.error(msjError + " - " + ex.getMessage());
                     JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
 
                 } catch (ExecutionException ex) {
                     String msjError = "Se produjo un error en la ejecución de la tarea solicitada. Intente nuevamente.";
-                    log.error(msjError + " - " + ex.getMessage());
+                    LOGGER.error(msjError + " - " + ex.getMessage());
                     JOptionPane.showInternalMessageDialog(getParent(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -652,9 +648,8 @@ public class GUI_Productos extends JInternalFrame {
             this.cargarComboBoxRubros();
             this.buscar();
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoActionPerformed
 
@@ -673,9 +668,8 @@ public class GUI_Productos extends JInternalFrame {
                                     Utilidades.getSelectedRowsModelIndices(tbl_Resultados)));
                     buscar();
 
-                } catch (PersistenceException ex) {
-                    log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (ServiceException ex) {
+                    JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -705,9 +699,8 @@ public class GUI_Productos extends JInternalFrame {
                 this.cargarComboBoxRubros();
                 this.buscar();
 
-            } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ServiceException ex) {
+                JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btn_ModificarActionPerformed
@@ -739,14 +732,13 @@ public class GUI_Productos extends JInternalFrame {
             this.setColumnas();
             this.setMaximum(true);
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
 
         } catch (PropertyVetoException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";
-            log.error(msjError + " - " + ex.getMessage());
+            LOGGER.error(msjError + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
@@ -766,15 +758,12 @@ public class GUI_Productos extends JInternalFrame {
         try {
             this.lanzarReporteListaDePrecios();
 
-        } catch (JRException ex) {
+        } catch (JRException | ServiceException ex) {
             String msjError = "Se produjo un error procesando el reporte.";
-            log.error(msjError + " - " + ex.getMessage());
+            LOGGER.error(msjError + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        } 
     }//GEN-LAST:event_btn_ReporteListaPreciosActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

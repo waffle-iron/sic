@@ -2,12 +2,10 @@ package sic.vista.swing;
 
 import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Usuario;
@@ -19,7 +17,6 @@ public class GUI_LogIn extends JFrame {
     private Usuario usuario;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
-    private static final Logger log = Logger.getLogger(GUI_LogIn.class.getPackage().getName());
 
     public GUI_LogIn() {        
         this.initComponents();        
@@ -36,10 +33,7 @@ public class GUI_LogIn extends JFrame {
                 usuarioService.setUsuarioActivo(usuario);
             } catch (ServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            } 
         } else {
             JOptionPane.showMessageDialog(this, "Ingrese un usuario y contraseña para poder continuar.", "Error", JOptionPane.ERROR_MESSAGE);
         }
