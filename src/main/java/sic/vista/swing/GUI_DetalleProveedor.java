@@ -1,12 +1,9 @@
 package sic.vista.swing;
 
 import java.util.List;
-import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.CondicionIVA;
@@ -34,7 +31,6 @@ public class GUI_DetalleProveedor extends JDialog {
     private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
     private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
-    private static final Logger log = Logger.getLogger(GUI_DetalleProveedor.class.getPackage().getName());
 
     public GUI_DetalleProveedor() {
         this.initComponents();
@@ -466,9 +462,8 @@ public class GUI_DetalleProveedor extends JDialog {
         try {
             this.cargarComboBoxCondicionesIVA();
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevaCondicionIVAActionPerformed
 
@@ -481,9 +476,8 @@ public class GUI_DetalleProveedor extends JDialog {
         try {
             this.cargarComboBoxPaises();
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoPaisActionPerformed
 
@@ -496,9 +490,8 @@ public class GUI_DetalleProveedor extends JDialog {
         try {
             this.cargarComboBoxProvinciasDelPais((Pais) cmb_Pais.getSelectedItem());
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevaProvinciaActionPerformed
 
@@ -507,9 +500,8 @@ public class GUI_DetalleProveedor extends JDialog {
             try {
                 this.cargarComboBoxProvinciasDelPais((Pais) cmb_Pais.getSelectedItem());
 
-            } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ServiceException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             cmb_Provincia.removeAllItems();
@@ -525,9 +517,8 @@ public class GUI_DetalleProveedor extends JDialog {
         try {
             this.cargarComboBoxLocalidadesDeLaProvincia((Provincia) cmb_Provincia.getSelectedItem());
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevaLocalidadActionPerformed
 
@@ -536,9 +527,8 @@ public class GUI_DetalleProveedor extends JDialog {
             try {
                 this.cargarComboBoxLocalidadesDeLaProvincia((Provincia) cmb_Provincia.getSelectedItem());
 
-            } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ServiceException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             cmb_Localidad.removeAllItems();
@@ -593,10 +583,7 @@ public class GUI_DetalleProveedor extends JDialog {
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        } 
     }//GEN-LAST:event_btn_GuardarActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -607,9 +594,8 @@ public class GUI_DetalleProveedor extends JDialog {
                 this.cargarProveedorParaModificar();
             }
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
     }//GEN-LAST:event_formWindowOpened

@@ -1,15 +1,12 @@
 package sic.vista.swing;
 
 import java.util.List;
-import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
-import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Localidad;
@@ -31,7 +28,6 @@ public class GUI_DetalleLocalidad extends JDialog {
     private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
     private final IPaisService paisService = appContext.getBean(IPaisService.class);
     private Localidad localidadSeleccionada;
-    private static final Logger log = Logger.getLogger(GUI_DetalleLocalidad.class.getPackage().getName());
 
     public GUI_DetalleLocalidad() {
         this.initComponents();
@@ -294,10 +290,7 @@ public class GUI_DetalleLocalidad extends JDialog {
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        } 
     }//GEN-LAST:event_btn_AgregarActionPerformed
 
     private void lst_LocalidadesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lst_LocalidadesValueChanged
@@ -332,10 +325,7 @@ public class GUI_DetalleLocalidad extends JDialog {
         } catch (ServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        } 
     }//GEN-LAST:event_btn_ActualizarActionPerformed
 
     private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarActionPerformed
@@ -351,9 +341,8 @@ public class GUI_DetalleLocalidad extends JDialog {
                 cargarListProvincias(cmb_ProvinciasBusqueda.getSelectedItem());
             }
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_EliminarActionPerformed
 
@@ -362,9 +351,8 @@ public class GUI_DetalleLocalidad extends JDialog {
             try {
                 this.cargarListProvincias(cmb_ProvinciasBusqueda.getSelectedItem());
 
-            } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ServiceException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_cmb_ProvinciasBusquedaItemStateChanged
@@ -380,9 +368,8 @@ public class GUI_DetalleLocalidad extends JDialog {
                         modeloComboProvincias,
                         cmb_Paises.getSelectedItem());
 
-            } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ServiceException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_cmb_PaisesItemStateChanged
@@ -393,9 +380,8 @@ public class GUI_DetalleLocalidad extends JDialog {
             cmb_PaisesItemStateChanged(null);
             cmb_ProvinciasBusquedaItemStateChanged(null);
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
     }//GEN-LAST:event_formWindowOpened

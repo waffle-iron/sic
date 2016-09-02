@@ -2,6 +2,8 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.PersistenceException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,12 +14,14 @@ import sic.repository.IClienteRepository;
 import sic.service.IClienteService;
 import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
+import sic.util.Utilidades;
 import sic.util.Validator;
 
 @Service
 public class ClienteServiceImpl implements IClienteService {
 
     private final IClienteRepository clienteRepository;
+    private static final Logger LOGGER = Logger.getLogger(ClienteServiceImpl.class.getPackage().getName());
 
     @Autowired
     public ClienteServiceImpl(IClienteRepository clienteRepository) {
@@ -26,32 +30,62 @@ public class ClienteServiceImpl implements IClienteService {
 
     @Override
     public Cliente getClientePorId(long id_Cliente) {
-        return clienteRepository.getClientePorId(id_Cliente);
+        try {
+            return clienteRepository.getClientePorId(id_Cliente);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public List<Cliente> getClientes(Empresa empresa) {
-        return clienteRepository.getClientes(empresa);
+        try {
+            return clienteRepository.getClientes(empresa);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public List<Cliente> getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(String criteria, Empresa empresa) {
-        return clienteRepository.getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(criteria, empresa);
+        try {
+            return clienteRepository.getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(criteria, empresa);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Cliente getClientePorRazonSocial(String razonSocial, Empresa empresa) {
-        return clienteRepository.getClientePorRazonSocial(razonSocial, empresa);
+        try {
+            return clienteRepository.getClientePorRazonSocial(razonSocial, empresa);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Cliente getClientePorIdFiscal(String idFiscal, Empresa empresa) {
+        try{
         return clienteRepository.getClientePorId_Fiscal(idFiscal, empresa);
+        
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Cliente getClientePredeterminado(Empresa empresa) {
-        return clienteRepository.getClientePredeterminado(empresa);
+        try {
+            return clienteRepository.getClientePredeterminado(empresa);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     /**
@@ -64,13 +98,17 @@ public class ClienteServiceImpl implements IClienteService {
     @Override
     @Transactional
     public void setClientePredeterminado(Cliente cliente) {
-        Cliente clientePredeterminadoAnterior = clienteRepository.getClientePredeterminado(cliente.getEmpresa());
-        if (clientePredeterminadoAnterior != null) {
-            clientePredeterminadoAnterior.setPredeterminado(false);
-            clienteRepository.actualizar(clientePredeterminadoAnterior);
+        try {
+            Cliente clientePredeterminadoAnterior = clienteRepository.getClientePredeterminado(cliente.getEmpresa());
+            if (clientePredeterminadoAnterior != null) {
+                clientePredeterminadoAnterior.setPredeterminado(false);
+                clienteRepository.actualizar(clientePredeterminadoAnterior);
+            }
+            cliente.setPredeterminado(true);
+            clienteRepository.actualizar(cliente);
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
         }
-        cliente.setPredeterminado(true);
-        clienteRepository.actualizar(cliente);
     }
 
     @Override
@@ -88,7 +126,12 @@ public class ClienteServiceImpl implements IClienteService {
         if (criteria.getLocalidad().getNombre().equals("Todas")) {
             criteria.setBuscaPorLocalidad(false);
         }
-        return clienteRepository.buscarClientes(criteria);
+        try {
+            return clienteRepository.buscarClientes(criteria);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -149,21 +192,36 @@ public class ClienteServiceImpl implements IClienteService {
     @Override
     @Transactional
     public void guardar(Cliente cliente) {
-        this.validarOperacion(TipoDeOperacion.ALTA, cliente);
-        clienteRepository.guardar(cliente);
+        try {
+            this.validarOperacion(TipoDeOperacion.ALTA, cliente);
+            clienteRepository.guardar(cliente);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void actualizar(Cliente cliente) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, cliente);
-        clienteRepository.actualizar(cliente);
+        try {
+            clienteRepository.actualizar(cliente);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void eliminar(Cliente cliente) {
         cliente.setEliminado(true);
-        clienteRepository.actualizar(cliente);
+        try {
+            clienteRepository.actualizar(cliente);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 }

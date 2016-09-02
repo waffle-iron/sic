@@ -3,7 +3,6 @@ package sic.vista.swing;
 import java.beans.PropertyVetoException;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
@@ -33,7 +32,7 @@ public class GUI_Proveedores extends JInternalFrame {
     private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
     private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
-    private static final Logger log = Logger.getLogger(GUI_Proveedores.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(GUI_Proveedores.class.getPackage().getName());
 
     public GUI_Proveedores() {
         this.initComponents();
@@ -193,10 +192,7 @@ public class GUI_Proveedores extends JInternalFrame {
         } catch (ServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        } 
     }
 
     private void limpiarJTable() {
@@ -517,9 +513,8 @@ public class GUI_Proveedores extends JInternalFrame {
                     cmb_Localidad.addItem(localidadTodas);
                 }
 
-            } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ServiceException ex) {
+                JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_cmb_PaisItemStateChanged
@@ -536,9 +531,8 @@ public class GUI_Proveedores extends JInternalFrame {
                     cmb_Localidad.addItem(localidadTodas);
                 }
 
-            } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ServiceException ex) {
+                JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             cmb_Localidad.removeAllItems();
@@ -563,9 +557,8 @@ public class GUI_Proveedores extends JInternalFrame {
         try {
             this.cargarComboBoxPaises();
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoActionPerformed
 
@@ -581,9 +574,8 @@ public class GUI_Proveedores extends JInternalFrame {
                     proveedorService.eliminar(proveedores.get(indexFilaSeleccionada));
                     this.buscar();
 
-                } catch (PersistenceException ex) {
-                    log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (ServiceException ex) {
+                    JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
@@ -601,9 +593,8 @@ public class GUI_Proveedores extends JInternalFrame {
             try {
                 this.cargarComboBoxPaises();
 
-            } catch (PersistenceException ex) {
-                log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-                JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ServiceException ex) {
+                JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btn_ModificarActionPerformed
@@ -646,15 +637,9 @@ public class GUI_Proveedores extends JInternalFrame {
             this.setColumnas();
             this.setMaximum(true);
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
-            this.dispose();
-
-
         } catch (PropertyVetoException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";
-            log.error(msjError + " - " + ex.getMessage());
+            LOGGER.error(msjError + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

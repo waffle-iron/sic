@@ -3,7 +3,6 @@ package sic.vista.swing;
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -19,6 +18,7 @@ import sic.service.EstadoCaja;
 import sic.service.ICajaService;
 import sic.service.IEmpresaService;
 import sic.service.IUsuarioService;
+import sic.service.ServiceException;
 import sic.util.Utilidades;
 
 public class GUI_Principal extends JFrame {
@@ -28,7 +28,7 @@ public class GUI_Principal extends JFrame {
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final ICajaService cajaService = appContext.getBean(ICajaService.class);
-    private static final Logger log = Logger.getLogger(GUI_Principal.class.getPackage().getName());
+    private static final Logger LOGGER = Logger.getLogger(GUI_Principal.class.getPackage().getName());
 
     public GUI_Principal() {
         this.initComponents();
@@ -350,9 +350,8 @@ public class GUI_Principal extends JFrame {
                 this.llamarGUI_SeleccionEmpresa();
             }
 
-        } catch (PersistenceException ex) {
-            log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ServiceException ex) {
+            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
     }//GEN-LAST:event_formWindowOpened
@@ -379,7 +378,7 @@ public class GUI_Principal extends JFrame {
 
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
-                log.error(msjError + " - " + ex.getMessage());
+                LOGGER.error(msjError + " - " + ex.getMessage());
                 JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -400,7 +399,7 @@ public class GUI_Principal extends JFrame {
 
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
-                log.error(msjError + " - " + ex.getMessage());
+                LOGGER.error(msjError + " - " + ex.getMessage());
                 JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -421,7 +420,7 @@ public class GUI_Principal extends JFrame {
 
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
-                log.error(msjError + " - " + ex.getMessage());
+                LOGGER.error(msjError + " - " + ex.getMessage());
                 JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -442,7 +441,7 @@ public class GUI_Principal extends JFrame {
 
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
-                log.error(msjError + " - " + ex.getMessage());
+                LOGGER.error(msjError + " - " + ex.getMessage());
                 JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -463,7 +462,7 @@ public class GUI_Principal extends JFrame {
 
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
-                log.error(msjError + " - " + ex.getMessage());
+                LOGGER.error(msjError + " - " + ex.getMessage());
                 JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -503,7 +502,7 @@ public class GUI_Principal extends JFrame {
 
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
-                log.error(msjError + " - " + ex.getMessage());
+                LOGGER.error(msjError + " - " + ex.getMessage());
                 JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -532,7 +531,7 @@ public class GUI_Principal extends JFrame {
 
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
-                log.error(msjError + " - " + ex.getMessage());
+                LOGGER.error(msjError + " - " + ex.getMessage());
                 JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -561,7 +560,7 @@ public class GUI_Principal extends JFrame {
 
             } catch (PropertyVetoException ex) {
                 String msjError = "No se pudo seleccionar la ventana requerida.";
-                log.error(msjError + " - " + ex.getMessage());
+                LOGGER.error(msjError + " - " + ex.getMessage());
                 JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
             }
         }

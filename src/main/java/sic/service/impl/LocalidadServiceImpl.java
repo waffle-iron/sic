@@ -2,6 +2,8 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.PersistenceException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,12 +13,14 @@ import sic.repository.ILocalidadRepository;
 import sic.service.ILocalidadService;
 import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
+import sic.util.Utilidades;
 import sic.util.Validator;
 
 @Service
 public class LocalidadServiceImpl implements ILocalidadService {
 
     private final ILocalidadRepository localidadRepository;
+    private static final Logger LOGGER = Logger.getLogger(LocalidadServiceImpl.class.getPackage().getName());
 
     @Autowired
     public LocalidadServiceImpl(ILocalidadRepository localidadRepository) {
@@ -25,19 +29,32 @@ public class LocalidadServiceImpl implements ILocalidadService {
 
     @Override
     public List<Localidad> getLocalidadesDeLaProvincia(Provincia provincia) {
-        return localidadRepository.getLocalidadesDeLaProvincia(provincia);
+        try {
+            return localidadRepository.getLocalidadesDeLaProvincia(provincia);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void eliminar(Localidad localidad) {
         localidad.setEliminada(true);
-        localidadRepository.actualizar(localidad);
+        try {
+            localidadRepository.actualizar(localidad);
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Localidad getLocalidadPorNombre(String nombre, Provincia provincia) {
-        return localidadRepository.getLocalidadPorNombre(nombre, provincia);
+        try {
+            return localidadRepository.getLocalidadPorNombre(nombre, provincia);
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -70,13 +87,23 @@ public class LocalidadServiceImpl implements ILocalidadService {
     @Transactional
     public void actualizar(Localidad localidad) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, localidad);
-        localidadRepository.actualizar(localidad);
+        try {
+            localidadRepository.actualizar(localidad);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void guardar(Localidad localidad) {
         this.validarOperacion(TipoDeOperacion.ALTA, localidad);
-        localidadRepository.guardar(localidad);
+        try {
+            localidadRepository.guardar(localidad);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 }

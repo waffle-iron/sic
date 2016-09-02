@@ -4,6 +4,7 @@ import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.PreciosProducto;
 import java.io.InputStream;
 import java.util.*;
+import javax.persistence.PersistenceException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -141,56 +142,76 @@ public class ProductoServiceImpl implements IProductoService {
             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_producto_vacio_proveedor"));
         }
-        return productoRepository.buscarProductos(criteria);
+        try {
+            return productoRepository.buscarProductos(criteria);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void guardar(Producto producto) {
         this.validarOperacion(TipoDeOperacion.ALTA, producto);
-        productoRepository.guardar(producto);
+        try {
+            productoRepository.guardar(producto);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void actualizar(Producto producto) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, producto);
-        productoRepository.actualizar(producto);
+        try {
+            productoRepository.actualizar(producto);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public void actualizarStock(Factura factura, TipoDeOperacion operacion) {
-        for (RenglonFactura renglon : factura.getRenglones()) {
-            Producto producto = productoRepository.getProductoPorId(renglon.getId_ProductoItem());
-            if (producto == null) {
-                LOGGER.warn("Se intenta actualizar el stock de un producto eliminado.");
-            }
-            if (producto != null && producto.isIlimitado() == false) {
-
-                if (renglon.getFactura() instanceof FacturaVenta) {
-                    if (operacion == TipoDeOperacion.ALTA) {
-                        producto.setCantidad(producto.getCantidad() - renglon.getCantidad());
-                    }
-
-                    if (operacion == TipoDeOperacion.ELIMINACION) {
-                        producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
-                    }
-                } else if (renglon.getFactura() instanceof FacturaCompra) {
-                    if (operacion == TipoDeOperacion.ALTA) {
-                        producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
-                    }
-
-                    if (operacion == TipoDeOperacion.ELIMINACION) {
-                        double result = producto.getCantidad() - renglon.getCantidad();
-                        if (result < 0) {
-                            result = 0;
-                        }
-                        producto.setCantidad(result);
-
-                    }
+        try {
+            for (RenglonFactura renglon : factura.getRenglones()) {
+                Producto producto = productoRepository.getProductoPorId(renglon.getId_ProductoItem());
+                if (producto == null) {
+                    LOGGER.warn("Se intenta actualizar el stock de un producto eliminado.");
                 }
-                productoRepository.actualizar(producto);
+                if (producto != null && producto.isIlimitado() == false) {
+
+                    if (renglon.getFactura() instanceof FacturaVenta) {
+                        if (operacion == TipoDeOperacion.ALTA) {
+                            producto.setCantidad(producto.getCantidad() - renglon.getCantidad());
+                        }
+
+                        if (operacion == TipoDeOperacion.ELIMINACION) {
+                            producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
+                        }
+                    } else if (renglon.getFactura() instanceof FacturaCompra) {
+                        if (operacion == TipoDeOperacion.ALTA) {
+                            producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
+                        }
+
+                        if (operacion == TipoDeOperacion.ELIMINACION) {
+                            double result = producto.getCantidad() - renglon.getCantidad();
+                            if (result < 0) {
+                                result = 0;
+                            }
+                            producto.setCantidad(result);
+
+                        }
+                    }
+                    productoRepository.actualizar(producto);
+                }
             }
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
         }
     }
 
@@ -200,7 +221,12 @@ public class ProductoServiceImpl implements IProductoService {
         for (Producto producto : productos) {
             producto.setEliminado(true);
         }
-        productoRepository.actualizarMultiplesProductos(productos);
+        try {
+            productoRepository.actualizarMultiplesProductos(productos);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -260,12 +286,22 @@ public class ProductoServiceImpl implements IProductoService {
                 producto.setFechaUltimaModificacion(fechaHoraActual);
             }
         }
-        productoRepository.actualizarMultiplesProductos(productos);
+        try {
+            productoRepository.actualizarMultiplesProductos(productos);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Producto getProductoPorId(long id_Producto) {
-        return productoRepository.getProductoPorId(id_Producto);
+        try {
+            return productoRepository.getProductoPorId(id_Producto);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -273,18 +309,33 @@ public class ProductoServiceImpl implements IProductoService {
         if (codigo.isEmpty() == true || empresa == null) {
             return null;
         } else {
-            return productoRepository.getProductoPorCodigo(codigo, empresa);
+            try {
+                return productoRepository.getProductoPorCodigo(codigo, empresa);
+
+            } catch (PersistenceException ex) {
+                throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+            }
         }
     }
 
     @Override
     public Producto getProductoPorDescripcion(String descripcion, Empresa empresa) {
-        return productoRepository.getProductoPorDescripcion(descripcion, empresa);
+        try {
+            return productoRepository.getProductoPorDescripcion(descripcion, empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public List<Producto> getProductosPorDescripcionQueContenga(String criteria, int cantRegistros, Empresa empresa) {
-        return productoRepository.getProductosQueContengaCodigoDescripcion(criteria, cantRegistros, empresa);
+        try {
+            return productoRepository.getProductosQueContengaCodigoDescripcion(criteria, cantRegistros, empresa);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override

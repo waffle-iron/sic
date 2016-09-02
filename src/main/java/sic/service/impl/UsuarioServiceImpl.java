@@ -3,6 +3,8 @@ package sic.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.PersistenceException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ import sic.util.Validator;
 public class UsuarioServiceImpl implements IUsuarioService {
 
     private final IUsuarioRepository usuarioRepository;
+    private static final Logger LOGGER = Logger.getLogger(UsuarioServiceImpl.class.getPackage().getName());
 
     @Autowired
     public UsuarioServiceImpl(IUsuarioRepository usuarioRepository) {
@@ -27,22 +30,42 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Override
     public List<Usuario> getUsuarios() {
-        return usuarioRepository.getUsuarios();
+        try {
+            return usuarioRepository.getUsuarios();
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Usuario getUsuarioPorNombre(String nombre) {
-        return usuarioRepository.getUsuarioPorNombre(nombre);
+        try {
+            return usuarioRepository.getUsuarioPorNombre(nombre);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public List<Usuario> getUsuariosAdministradores() {
-        return usuarioRepository.getUsuariosAdministradores();
+        try {
+            return usuarioRepository.getUsuariosAdministradores();
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) {
-        return usuarioRepository.getUsuarioPorNombreContrasenia(nombre, contrasenia);
+        try {
+            return usuarioRepository.getUsuarioPorNombreContrasenia(nombre, contrasenia);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -98,7 +121,12 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public void actualizar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, usuario);
         usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
-        usuarioRepository.actualizar(usuario);
+        try {
+            usuarioRepository.actualizar(usuario);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -106,7 +134,12 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public void guardar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ALTA, usuario);
         usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
-        usuarioRepository.guardar(usuario);
+        try {
+            usuarioRepository.guardar(usuario);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -114,7 +147,12 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public void eliminar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ELIMINACION, usuario);
         usuario.setEliminado(true);
-        usuarioRepository.actualizar(usuario);
+        try {
+            usuarioRepository.actualizar(usuario);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override

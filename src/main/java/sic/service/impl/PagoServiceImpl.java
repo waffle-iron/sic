@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.PersistenceException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import sic.repository.IPagoRepository;
 import sic.service.IFacturaService;
 import sic.service.IPagoService;
 import sic.service.ServiceException;
+import sic.util.Utilidades;
 
 @Service
 public class PagoServiceImpl implements IPagoService {
@@ -35,7 +37,12 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     public List<Pago> getPagosDeLaFactura(Factura factura) {
-        return this.pagoRepository.getPagosDeLaFactura(factura);
+        try {
+            return this.pagoRepository.getPagosDeLaFactura(factura);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -61,7 +68,12 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
-        return pagoRepository.getPagosEntreFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
+        try {
+            return pagoRepository.getPagosEntreFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
@@ -78,7 +90,12 @@ public class PagoServiceImpl implements IPagoService {
     @Transactional
     public void guardar(Pago pago) {
         this.validarOperacion(pago);
-        pagoRepository.guardar(pago);
+        try {
+            pagoRepository.guardar(pago);
+            
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
         this.setFacturaEstadoDePago(pago.getFactura());
         LOGGER.warn("El Pago: " + pago.toString() + " se guardó correctamente.");
     }
@@ -87,7 +104,12 @@ public class PagoServiceImpl implements IPagoService {
     @Transactional
     public void eliminar(Pago pago) {
         pago.setEliminado(true);
-        pagoRepository.actualizar(pago);
+        try {
+            pagoRepository.actualizar(pago);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
         this.setFacturaEstadoDePago(pago.getFactura());
         LOGGER.warn("El Pago: " + pago.toString() + " se eliminó correctamente.");
     }

@@ -2,6 +2,8 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.PersistenceException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,47 +12,79 @@ import sic.repository.ICondicionIVARepository;
 import sic.service.ICondicionIVAService;
 import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
+import sic.util.Utilidades;
 import sic.util.Validator;
 
 @Service
 public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
 
     private final ICondicionIVARepository condicionIVARepository;
+    private static final Logger LOGGER = Logger.getLogger(CondicionDeIVAServiceImpl.class.getPackage().getName());
 
     @Autowired
     public CondicionDeIVAServiceImpl(ICondicionIVARepository condicionIVARepository) {
-        this.condicionIVARepository = condicionIVARepository;
+        try {
+            this.condicionIVARepository = condicionIVARepository;
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public List<CondicionIVA> getCondicionesIVA() {
-        return condicionIVARepository.getCondicionesIVA();
+        try {
+            return condicionIVARepository.getCondicionesIVA();
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void actualizar(CondicionIVA condicionIVA) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, condicionIVA);
-        condicionIVARepository.actualizar(condicionIVA);
+        try {
+            condicionIVARepository.actualizar(condicionIVA);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void guardar(CondicionIVA condicionIVA) {
         this.validarOperacion(TipoDeOperacion.ALTA, condicionIVA);
-        condicionIVARepository.guardar(condicionIVA);
+        try {
+            condicionIVARepository.guardar(condicionIVA);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     @Transactional
     public void eliminar(CondicionIVA condicionIVA) {
         condicionIVA.setEliminada(true);
-        condicionIVARepository.actualizar(condicionIVA);
+        try {
+            condicionIVARepository.actualizar(condicionIVA);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
     public CondicionIVA getCondicionIVAPorNombre(String nombre) {
-        return condicionIVARepository.getCondicionIVAPorNombre(nombre);
+        try {
+            return condicionIVARepository.getCondicionIVAPorNombre(nombre);
+
+        } catch (PersistenceException ex) {
+            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        }
     }
 
     @Override
