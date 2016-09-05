@@ -18,7 +18,7 @@ import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IProductoService;
 import sic.service.Movimiento;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -83,7 +83,7 @@ public class GUI_BuscarProductos extends JDialog {
         txt_PorcentajeDescuento.setValue(0.0);
     }
 
-    private void buscar() throws ServiceException {
+    private void buscar() throws BusinessServiceException {
         int cantidadResultados = 250;
         productos = productoService.getProductosPorDescripcionQueContenga(
                 txt_CampoBusqueda.getText().trim(), cantidadResultados,
@@ -464,7 +464,7 @@ public class GUI_BuscarProductos extends JDialog {
             this.actualizarProductosCargadosEnFactura();
             this.cargarResultadosAlTable();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_BuscarActionPerformed
@@ -487,7 +487,7 @@ public class GUI_BuscarProductos extends JDialog {
             this.actualizarProductosCargadosEnFactura();
             this.cargarResultadosAlTable();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 
@@ -528,7 +528,7 @@ public class GUI_BuscarProductos extends JDialog {
             this.actualizarProductosCargadosEnFactura();
             this.cargarResultadosAlTable();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 
@@ -541,7 +541,7 @@ public class GUI_BuscarProductos extends JDialog {
             this.actualizarProductosCargadosEnFactura();
             this.cargarResultadosAlTable();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 

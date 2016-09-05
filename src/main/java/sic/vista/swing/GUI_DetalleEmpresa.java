@@ -22,7 +22,7 @@ import sic.service.IEmpresaService;
 import sic.service.ILocalidadService;
 import sic.service.IPaisService;
 import sic.service.IProvinciaService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.service.TipoDeOperacion;
 import sic.util.FiltroImagenes;
 import sic.util.Utilidades;
@@ -459,7 +459,7 @@ public class GUI_DetalleEmpresa extends JDialog {
                 cuip_ingresado = "0";
             }
             if (!Validator.esNumericoPositivo(cuip_ingresado)) {
-                throw new ServiceException("El CUIT/CUIL/CUIP ingresado es inválido.");
+                throw new BusinessServiceException("El CUIT/CUIL/CUIP ingresado es inválido.");
             }
 
             String ingBrutos_ingresado = txt_IngBrutos.getText().trim();
@@ -467,7 +467,7 @@ public class GUI_DetalleEmpresa extends JDialog {
                 ingBrutos_ingresado = "0";
             }
             if (!Validator.esNumericoPositivo(ingBrutos_ingresado)) {
-                throw new ServiceException("Ingresos Brutos ingresado es inválido.");
+                throw new BusinessServiceException("Ingresos Brutos ingresado es inválido.");
             }
 
             String mensaje = "";
@@ -509,7 +509,7 @@ public class GUI_DetalleEmpresa extends JDialog {
             JOptionPane.showMessageDialog(this, mensaje, "Información", JOptionPane.INFORMATION_MESSAGE);            
             this.dispose();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             LOGGER.error(ex);
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -554,8 +554,9 @@ public class GUI_DetalleEmpresa extends JDialog {
             }
 
         } catch (IOException ex) {
-            LOGGER.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_ErrorIOException") + " - " + ex.getMessage());
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_ErrorIOException"), "Error", JOptionPane.ERROR_MESSAGE);
+            String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_errorIOException");
+            LOGGER.error(mensaje + " - " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_ExaminarArchivosActionPerformed
 
@@ -568,7 +569,7 @@ public class GUI_DetalleEmpresa extends JDialog {
         try {
             this.cargarComboBoxCondicionesIVA();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevaCondicionIVAActionPerformed
@@ -582,7 +583,7 @@ public class GUI_DetalleEmpresa extends JDialog {
         try {
             this.cargarComboBoxLocalidadesDeLaProvincia((Provincia) cmb_Provincia.getSelectedItem());
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevaLocalidadActionPerformed
@@ -596,7 +597,7 @@ public class GUI_DetalleEmpresa extends JDialog {
         try {
             this.cargarComboBoxProvinciasDelPais((Pais) cmb_Pais.getSelectedItem());
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevaProvinciaActionPerformed
@@ -610,7 +611,7 @@ public class GUI_DetalleEmpresa extends JDialog {
         try {
             this.cargarComboBoxPaises();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoPaisActionPerformed
@@ -620,7 +621,7 @@ public class GUI_DetalleEmpresa extends JDialog {
             try {
                 this.cargarComboBoxLocalidadesDeLaProvincia((Provincia) cmb_Provincia.getSelectedItem());
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
@@ -633,7 +634,7 @@ public class GUI_DetalleEmpresa extends JDialog {
             try {
                 this.cargarComboBoxProvinciasDelPais((Pais) cmb_Pais.getSelectedItem());
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }

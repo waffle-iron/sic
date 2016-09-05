@@ -19,7 +19,7 @@ import sic.service.IEmpresaService;
 import sic.service.ILocalidadService;
 import sic.service.IPaisService;
 import sic.service.IProvinciaService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.service.TipoDeOperacion;
 
 public class GUI_DetalleCliente extends JDialog {
@@ -561,7 +561,7 @@ public class GUI_DetalleCliente extends JDialog {
                 this.dispose();
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_GuardarActionPerformed
@@ -576,7 +576,7 @@ public class GUI_DetalleCliente extends JDialog {
                 dc_FechaAlta.setDate(new Date());
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

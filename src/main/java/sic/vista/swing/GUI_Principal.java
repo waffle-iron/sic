@@ -18,7 +18,7 @@ import sic.service.EstadoCaja;
 import sic.service.ICajaService;
 import sic.service.IEmpresaService;
 import sic.service.IUsuarioService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.util.Utilidades;
 
 public class GUI_Principal extends JFrame {
@@ -350,7 +350,7 @@ public class GUI_Principal extends JFrame {
                 this.llamarGUI_SeleccionEmpresa();
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

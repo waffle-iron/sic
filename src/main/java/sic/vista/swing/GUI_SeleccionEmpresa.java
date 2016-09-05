@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Empresa;
 import sic.service.IEmpresaService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 
 public class GUI_SeleccionEmpresa extends JDialog {
 
@@ -150,7 +150,7 @@ public class GUI_SeleccionEmpresa extends JDialog {
         try {
             this.cargarComboBoxEmpresas();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }

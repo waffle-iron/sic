@@ -21,7 +21,7 @@ import sic.service.IMedidaService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.IRubroService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.service.TipoDeOperacion;
 import sic.util.FormatterFechaHora;
 
@@ -832,7 +832,7 @@ public class GUI_DetalleProducto extends JDialog {
                 this.dispose();
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 
@@ -849,7 +849,7 @@ public class GUI_DetalleProducto extends JDialog {
                 this.cargarProductoParaModificar();
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
@@ -1001,7 +1001,7 @@ public class GUI_DetalleProducto extends JDialog {
         try {
             this.cargarComboBoxMedidas();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_MedidasActionPerformed
@@ -1015,7 +1015,7 @@ public class GUI_DetalleProducto extends JDialog {
         try {
             this.cargarComboBoxProveedores();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoProveedorActionPerformed
@@ -1029,7 +1029,7 @@ public class GUI_DetalleProducto extends JDialog {
         try {
             this.cargarComboBoxRubros();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_RubrosActionPerformed

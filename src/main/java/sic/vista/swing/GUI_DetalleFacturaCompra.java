@@ -25,7 +25,7 @@ import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.ITransportistaService;
 import sic.service.Movimiento;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.util.RenderTabla;
 
 public class GUI_DetalleFacturaCompra extends JDialog {
@@ -172,7 +172,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         }
     }
 
-    private void guardarFactura() throws ServiceException {
+    private void guardarFactura() throws BusinessServiceException {
         FacturaCompra facturaCompra = FacturaCompra.builder()
                 .fecha(dc_FechaFactura.getDate())
                 .tipoFactura(tipoDeFactura.charAt(tipoDeFactura.length() - 1))
@@ -979,7 +979,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                 this.dispose();
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_GuardarActionPerformed

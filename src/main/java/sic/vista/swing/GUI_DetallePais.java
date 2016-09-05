@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Pais;
 import sic.service.IPaisService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 
 public class GUI_DetallePais extends JDialog {
 
@@ -180,7 +180,7 @@ public class GUI_DetallePais extends JDialog {
             txt_Nuevo.setText("");
             this.cargarListPaises();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 
@@ -211,7 +211,7 @@ public class GUI_DetallePais extends JDialog {
                 this.cargarListPaises();
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 
@@ -229,7 +229,7 @@ public class GUI_DetallePais extends JDialog {
                 this.cargarListPaises();
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_EliminarActionPerformed
@@ -238,7 +238,7 @@ public class GUI_DetallePais extends JDialog {
         try {
             this.cargarListPaises();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

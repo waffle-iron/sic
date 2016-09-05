@@ -25,7 +25,7 @@ import sic.modelo.Cliente;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonPedido;
 import sic.modelo.Usuario;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.service.EstadoPedido;
 import sic.service.IClienteService;
 import sic.service.IEmpresaService;
@@ -84,7 +84,7 @@ public class GUI_Pedidos extends JInternalFrame {
                     criteria.setCantRegistros(cantidadResultadosParaMostrar);
                     pedidos = pedidoService.buscarConCriteria(criteria);                    
 
-                } catch (ServiceException ex) {
+                } catch (BusinessServiceException ex) {
                     JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
                 } 
@@ -757,7 +757,7 @@ public class GUI_Pedidos extends JInternalFrame {
                 JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoPedidoActionPerformed
@@ -783,7 +783,7 @@ public class GUI_Pedidos extends JInternalFrame {
                 }
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_FacturarActionPerformed
@@ -847,7 +847,7 @@ public class GUI_Pedidos extends JInternalFrame {
                 }
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_bnt_modificaPedidoActionPerformed
@@ -878,7 +878,7 @@ public class GUI_Pedidos extends JInternalFrame {
 
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_eliminarPedidoActionPerformed

@@ -4,15 +4,13 @@ import sic.service.IGastoService;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Gasto;
 import sic.repository.IGastoRepository;
-import sic.service.ServiceException;
-import sic.util.Utilidades;
+import sic.service.BusinessServiceException;
 
 @Service
 public class GastoServiceImpl implements IGastoService {
@@ -30,25 +28,21 @@ public class GastoServiceImpl implements IGastoService {
         //Entrada de Datos
         //Requeridos
         if (gasto.getFecha() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_gasto_fecha_vacia"));
         }
         if (gasto.getEmpresa() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_gasto_empresa_vacia"));
         }
         if (gasto.getUsuario() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_gasto_usuario_vacio"));
         }
         //Duplicados
-        try {
-            if (gastoRepository.getCajaPorID(gasto.getId_Gasto(), gasto.getEmpresa().getId_Empresa()) != null) {
-                throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                        .getString("mensaje_gasto_duplicada"));
-            }
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        if (gastoRepository.getCajaPorID(gasto.getId_Gasto(), gasto.getEmpresa().getId_Empresa()) != null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_gasto_duplicada"));
         }
     }
 
@@ -56,57 +50,34 @@ public class GastoServiceImpl implements IGastoService {
     @Transactional
     public void guardar(Gasto gasto) {
         this.validarGasto(gasto);
-        try {
-            gastoRepository.guardar(gasto);
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        gastoRepository.guardar(gasto);
+        LOGGER.warn("El Gasto " + gasto + " se guardó correctamente." );
     }
 
     @Override
     public List<Object> getGastosPorFecha(Long id_Empresa, Date desde, Date hasta) {
-        try {
-            return gastoRepository.getGastosPorFecha(id_Empresa, desde, hasta);
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return gastoRepository.getGastosPorFecha(id_Empresa, desde, hasta);
     }
 
     @Override
     public List<Object> getGastosPorFechaYFormaDePago(Long id_Empresa, Long id_FormaDePago, Date desde, Date hasta) {
-        try {
-            return gastoRepository.getGastosPorFechaYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return gastoRepository.getGastosPorFechaYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
     }
 
     @Override
     @Transactional
     public void actualizar(Gasto gasto) {
-        try {
-            gastoRepository.actualizar(gasto);
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        gastoRepository.actualizar(gasto);
     }
 
     @Override
     public long getUltimoNumeroDeCaja(long id_Empresa) {
-        try {
-            return gastoRepository.getUltimoNumeroDeGasto(id_Empresa);
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return gastoRepository.getUltimoNumeroDeGasto(id_Empresa);
     }
 
     @Override
     public int getUltimoNumeroDeGasto(long id_empresa) {
-        try {
-            return gastoRepository.getUltimoNumeroDeGasto(id_empresa);
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return gastoRepository.getUltimoNumeroDeGasto(id_empresa);
     }
 
 }

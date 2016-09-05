@@ -10,21 +10,16 @@ import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JTable;
-import org.apache.log4j.Logger;
 
 public class Utilidades {
 
     /**
-     * Verifica si ya existe una instancia de la clase
-     *
-     * @tipo dentro de
-     * @desktop
-     *
+     * Verifica si ya existe una instancia de la clase @tipo dentro de @desktop
+     * 
      * @param desktop Contenedor de internal frames donde debe buscar
      * @param tipo Clase buscada
      * @return Internal frame encontrado, en caso contrario devuelve NULL
@@ -40,10 +35,8 @@ public class Utilidades {
     }
 
     /**
-     * Verifica si existen frames dentro de
-     *
-     * @desktop
-     *
+     * Verifica si existen frames dentro de @desktop
+     * 
      * @param desktop Contenenedor de frames donde debe buscar
      * @return True si existen frames dentro del
      * @desktop, false en caso contrario
@@ -57,15 +50,6 @@ public class Utilidades {
         return true;
     }
 
-    /**
-     * Verifica si existen frames dentro de
-     *
-     * @desktop y los cierra
-     *
-     * @param desktop Contenenedor de frames donde debe buscar
-     * @return True si existen frames dentro del
-     * @desktop, false en caso contrario
-     */
     public static void cerrarTodasVentanas(JDesktopPane desktop) {
         JInternalFrame[] frames = desktop.getAllFrames();
         for (int i = 0; i < frames.length; i++) {
@@ -207,8 +191,7 @@ public class Utilidades {
      *
      * @param archivo Archivo a ser validado.
      * @param tamanioValido Tamanio maximo en bytes permitido para el archivo.
-     * @return Retorna true en caso de que el tamanio sea válido, false en otro
-     * caso.
+     * @return Retorna true en caso de que el tamanio sea válido, false en otro caso.
      * @throws FileNotFoundException En caso de que no se encuentre el archivo.
      */
     public static boolean esTamanioValido(File archivo, long tamanioValido) throws FileNotFoundException {
@@ -236,11 +219,5 @@ public class Utilidades {
         } else {
             return (new BigDecimal(String.valueOf(valor)).setScale(cantidadDecimales, BigDecimal.ROUND_CEILING)).doubleValue();
         }
-    }
-    
-    public static String escribirLogErrorAccesoDatos(Logger LOGGER) {   
-        String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos");
-        LOGGER.error(mensaje);
-        return mensaje;
     }
 }

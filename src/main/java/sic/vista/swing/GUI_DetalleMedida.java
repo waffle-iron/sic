@@ -11,7 +11,7 @@ import sic.AppContextProvider;
 import sic.modelo.Medida;
 import sic.service.IEmpresaService;
 import sic.service.IMedidaService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.util.Utilidades;
 
 public class GUI_DetalleMedida extends JDialog {
@@ -189,7 +189,7 @@ public class GUI_DetalleMedida extends JDialog {
             txt_Nuevo.setText("");
             this.cargarListMedidas();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 
@@ -220,7 +220,7 @@ public class GUI_DetalleMedida extends JDialog {
                     this.cargarListMedidas();
                 }
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
             } 
@@ -239,7 +239,7 @@ public class GUI_DetalleMedida extends JDialog {
                     this.cargarListMedidas();
                 }
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
 	}//GEN-LAST:event_btn_EliminarActionPerformed
@@ -256,7 +256,7 @@ public class GUI_DetalleMedida extends JDialog {
         try {
             this.cargarListMedidas();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

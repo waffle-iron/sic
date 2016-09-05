@@ -3,7 +3,6 @@ package sic.service.impl;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,7 @@ import sic.modelo.UsuarioActivo;
 import sic.modelo.Usuario;
 import sic.repository.IUsuarioRepository;
 import sic.service.IUsuarioService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.service.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
@@ -30,42 +29,22 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Override
     public List<Usuario> getUsuarios() {
-        try {
-            return usuarioRepository.getUsuarios();
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return usuarioRepository.getUsuarios();
     }
 
     @Override
     public Usuario getUsuarioPorNombre(String nombre) {
-        try {
-            return usuarioRepository.getUsuarioPorNombre(nombre);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return usuarioRepository.getUsuarioPorNombre(nombre);
     }
 
     @Override
     public List<Usuario> getUsuariosAdministradores() {
-        try {
-            return usuarioRepository.getUsuariosAdministradores();
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return usuarioRepository.getUsuariosAdministradores();
     }
 
     @Override
     public Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) {
-        try {
-            return usuarioRepository.getUsuarioPorNombreContrasenia(nombre, contrasenia);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return usuarioRepository.getUsuarioPorNombreContrasenia(nombre, contrasenia);
     }
 
     @Override
@@ -83,23 +62,23 @@ public class UsuarioServiceImpl implements IUsuarioService {
     private void validarOperacion(TipoDeOperacion operacion, Usuario usuario) {
         //Requeridos
         if (Validator.esVacio(usuario.getNombre())) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_vacio_nombre"));
         }
         if (Validator.esVacio(usuario.getPassword())) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_vacio_password"));
         }
         //Duplicados
         //Nombre
         Usuario usuarioDuplicado = this.getUsuarioPorNombre(usuario.getNombre());
         if (operacion.equals(TipoDeOperacion.ALTA) && usuarioDuplicado != null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_duplicado_nombre"));
         }
         if (operacion.equals(TipoDeOperacion.ACTUALIZACION)) {
             if (usuarioDuplicado != null && usuarioDuplicado.getId_Usuario() != usuario.getId_Usuario()) {
-                throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_usuario_duplicado_nombre"));
             }
         }
@@ -109,7 +88,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
             List<Usuario> adminitradores = this.getUsuariosAdministradores();
             if (adminitradores.size() == 1) {
                 if (adminitradores.get(0).getId_Usuario() == usuario.getId_Usuario()) {
-                    throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                    throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                             .getString("mensaje_usuario_ultimoAdmin"));
                 }
             }
@@ -121,12 +100,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public void actualizar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, usuario);
         usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
-        try {
-            usuarioRepository.actualizar(usuario);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        usuarioRepository.actualizar(usuario);
     }
 
     @Override
@@ -134,12 +108,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public void guardar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ALTA, usuario);
         usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
-        try {
-            usuarioRepository.guardar(usuario);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        usuarioRepository.guardar(usuario);
+        LOGGER.warn("El Usuario " + usuario + " se guardó correctamente.");
     }
 
     @Override
@@ -147,19 +117,14 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public void eliminar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ELIMINACION, usuario);
         usuario.setEliminado(true);
-        try {
-            usuarioRepository.actualizar(usuario);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        usuarioRepository.actualizar(usuario);
     }
 
     @Override
     public Usuario validarUsuario(String nombre, String password) {
         Usuario usuario = this.getUsuarioPorNombreContrasenia(nombre, Utilidades.encriptarConMD5(password));
         if (usuario == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_logInInvalido"));
         } else {
             return usuario;

@@ -8,7 +8,7 @@ import sic.AppContextProvider;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.service.IConfiguracionDelSistemaService;
 import sic.service.IEmpresaService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 
 public class GUI_ConfiguracionDelSistema extends JDialog {
 
@@ -172,7 +172,7 @@ public class GUI_ConfiguracionDelSistema extends JDialog {
             configuracionDelSistemaService.actualizar(this.getConfiguracionDelSistema());
             JOptionPane.showMessageDialog(this, "La Configuración se guardó correctamente.", "Información", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_GuardarActionPerformed

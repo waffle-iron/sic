@@ -31,7 +31,7 @@ import sic.service.IPagoService;
 import sic.service.IPedidoService;
 import sic.service.ITransportistaService;
 import sic.service.IUsuarioService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 
 public class GUI_CerrarVenta extends JDialog {
 
@@ -118,7 +118,7 @@ public class GUI_CerrarVenta extends JDialog {
         }
     }
 
-    private Factura guardarFactura(Factura facturaVenta) throws ServiceException {
+    private Factura guardarFactura(Factura facturaVenta) throws BusinessServiceException {
         facturaService.guardar(facturaVenta);
         Factura facturaGuardada = facturaService.getFacturaVentaPorTipoSerieNum(facturaVenta.getTipoFactura(), facturaVenta.getNumSerie(), facturaVenta.getNumFactura());
         facturaGuardada.setPagos(pagoService.getPagosDeLaFactura(facturaGuardada));
@@ -269,7 +269,7 @@ public class GUI_CerrarVenta extends JDialog {
             }
             this.dispose();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } catch (JRException ex) {
@@ -582,7 +582,7 @@ public class GUI_CerrarVenta extends JDialog {
             lbl_Vendedor.setText(usuarioService.getUsuarioActivo().getUsuario().getNombre());
             txt_AbonaCon.requestFocus();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

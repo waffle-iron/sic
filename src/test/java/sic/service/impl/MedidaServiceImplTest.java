@@ -10,7 +10,7 @@ import sic.modelo.Empresa;
 import sic.modelo.Medida;
 import sic.repository.IMedidaRepository;
 import sic.repository.jpa.MedidaRepositoryJPAImpl;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.service.TipoDeOperacion;
 
 public class MedidaServiceImplTest {
@@ -33,7 +33,7 @@ public class MedidaServiceImplTest {
         medidaRepository = Mockito.mock(MedidaRepositoryJPAImpl.class);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenNombreVacio() {
         when(medidaRepository.getMedidaPorNombre("", empresa)).thenReturn(medidaParaTest);
         medidaService = new MedidaServiceImpl(medidaRepository);
@@ -41,7 +41,7 @@ public class MedidaServiceImplTest {
         medidaService.validarOperacion(TipoDeOperacion.ALTA, medida);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenNombreDuplicadoAlta() {
         when(medidaRepository.getMedidaPorNombre("unidad", empresa)).thenReturn(medidaParaTest);
         medidaService = new MedidaServiceImpl(medidaRepository);
@@ -50,7 +50,7 @@ public class MedidaServiceImplTest {
         medidaService.validarOperacion(TipoDeOperacion.ALTA, medida);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenNombreDuplicadoActualizacion() {
         when(medidaRepository.getMedidaPorNombre("metro", empresa)).thenReturn(medidaParaTest);
         medidaService = new MedidaServiceImpl(medidaRepository);

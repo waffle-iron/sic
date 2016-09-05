@@ -14,7 +14,7 @@ import sic.AppContextProvider;
 import sic.modelo.Cliente;
 import sic.service.IClienteService;
 import sic.service.IEmpresaService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.util.Utilidades;
 
 public class GUI_BuscarClientes extends JDialog {
@@ -302,7 +302,7 @@ public class GUI_BuscarClientes extends JDialog {
         try {
             this.buscar();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -312,7 +312,7 @@ public class GUI_BuscarClientes extends JDialog {
         try {
             this.buscar();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -335,7 +335,7 @@ public class GUI_BuscarClientes extends JDialog {
         try {
             this.buscar();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -345,7 +345,7 @@ public class GUI_BuscarClientes extends JDialog {
         try {
             this.buscar();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             log.error(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos") + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_error_acceso_a_datos"), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();

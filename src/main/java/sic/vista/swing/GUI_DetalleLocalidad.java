@@ -15,7 +15,7 @@ import sic.modelo.Provincia;
 import sic.service.ILocalidadService;
 import sic.service.IPaisService;
 import sic.service.IProvinciaService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 
 public class GUI_DetalleLocalidad extends JDialog {
 
@@ -287,7 +287,7 @@ public class GUI_DetalleLocalidad extends JDialog {
             txt_CodigoPostal.setText("");
             this.cargarListProvincias(cmb_ProvinciasBusqueda.getSelectedItem());
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 
@@ -322,7 +322,7 @@ public class GUI_DetalleLocalidad extends JDialog {
                 this.cargarListProvincias(cmb_ProvinciasBusqueda.getSelectedItem());
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 
@@ -341,7 +341,7 @@ public class GUI_DetalleLocalidad extends JDialog {
                 cargarListProvincias(cmb_ProvinciasBusqueda.getSelectedItem());
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_EliminarActionPerformed
@@ -351,7 +351,7 @@ public class GUI_DetalleLocalidad extends JDialog {
             try {
                 this.cargarListProvincias(cmb_ProvinciasBusqueda.getSelectedItem());
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -368,7 +368,7 @@ public class GUI_DetalleLocalidad extends JDialog {
                         modeloComboProvincias,
                         cmb_Paises.getSelectedItem());
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -380,7 +380,7 @@ public class GUI_DetalleLocalidad extends JDialog {
             cmb_PaisesItemStateChanged(null);
             cmb_ProvinciasBusquedaItemStateChanged(null);
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

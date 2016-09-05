@@ -3,7 +3,6 @@ package sic.service.impl;
 import sic.modelo.BusquedaProveedorCriteria;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,9 +11,8 @@ import sic.modelo.Empresa;
 import sic.modelo.Proveedor;
 import sic.repository.IProveedorRepository;
 import sic.service.IProveedorService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.service.TipoDeOperacion;
-import sic.util.Utilidades;
 import sic.util.Validator;
 
 @Service
@@ -23,25 +21,14 @@ public class ProveedorServiceImpl implements IProveedorService {
     private final IProveedorRepository proveedorRepository;
     private static final Logger LOGGER = Logger.getLogger(ProveedorServiceImpl.class.getPackage().getName());
 
-
     @Autowired
     public ProveedorServiceImpl(IProveedorRepository proveedorRepository) {
-        try {
-            this.proveedorRepository = proveedorRepository;
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        this.proveedorRepository = proveedorRepository;
     }
 
     @Override
     public List<Proveedor> getProveedores(Empresa empresa) {
-        try {
-            return proveedorRepository.getProveedores(empresa);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return proveedorRepository.getProveedores(empresa);
     }
 
     @Override
@@ -59,65 +46,45 @@ public class ProveedorServiceImpl implements IProveedorService {
         if (criteria.getLocalidad().getNombre().equals("Todas")) {
             criteria.setBuscaPorLocalidad(false);
         }
-        try {
-            return proveedorRepository.buscarProveedores(criteria);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return proveedorRepository.buscarProveedores(criteria);
     }
 
     @Override
     public Proveedor getProveedorPorCodigo(String codigo, Empresa empresa) {
-        try {
-            return proveedorRepository.getProveedorPorCodigo(codigo, empresa);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return proveedorRepository.getProveedorPorCodigo(codigo, empresa);
     }
 
     @Override
     public Proveedor getProveedorPorId_Fiscal(String id_Fiscal, Empresa empresa) {
-        try {
-            return proveedorRepository.getProveedorPorId_Fiscal(id_Fiscal, empresa);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return proveedorRepository.getProveedorPorId_Fiscal(id_Fiscal, empresa);
     }
 
     @Override
     public Proveedor getProveedorPorRazonSocial(String razonSocial, Empresa empresa) {
-        try {
-            return proveedorRepository.getProveedorPorRazonSocial(razonSocial, empresa);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return proveedorRepository.getProveedorPorRazonSocial(razonSocial, empresa);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Proveedor proveedor) {
         //Entrada de Datos
         if (!Validator.esEmailValido(proveedor.getEmail())) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_proveedor_email_invalido"));
         }
         //Requeridos
         if (Validator.esVacio(proveedor.getRazonSocial())) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_proveedor_razonSocial_vacia"));
         }
         if (proveedor.getCondicionIVA() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_proveedor_condicionIVA_vacia"));
         }
         if (proveedor.getLocalidad() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_proveedor_localidad_vacia"));
         }
         if (proveedor.getEmpresa() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_proveedor_empresa_vacia"));
         }
         //Duplicados
@@ -127,13 +94,13 @@ public class ProveedorServiceImpl implements IProveedorService {
             if (operacion.equals(TipoDeOperacion.ACTUALIZACION)
                     && proveedorDuplicado != null
                     && proveedorDuplicado.getId_Proveedor() != proveedor.getId_Proveedor()) {
-                throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_proveedor_duplicado_codigo"));
             }
             if (operacion.equals(TipoDeOperacion.ALTA)
                     && proveedorDuplicado != null
                     && !proveedor.getCodigo().equals("")) {
-                throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_proveedor_duplicado_codigo"));
             }
         }
@@ -143,25 +110,25 @@ public class ProveedorServiceImpl implements IProveedorService {
             if (operacion.equals(TipoDeOperacion.ACTUALIZACION)
                     && proveedorDuplicado != null
                     && proveedorDuplicado.getId_Proveedor() != proveedor.getId_Proveedor()) {
-                throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_proveedor_duplicado_idFiscal"));
             }
             if (operacion.equals(TipoDeOperacion.ALTA)
                     && proveedorDuplicado != null
                     && !proveedor.getId_Fiscal().equals("")) {
-                throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_proveedor_duplicado_idFiscal"));
             }
         }
         //Razon social
         Proveedor proveedorDuplicado = this.getProveedorPorRazonSocial(proveedor.getRazonSocial(), proveedor.getEmpresa());
         if (operacion.equals(TipoDeOperacion.ALTA) && proveedorDuplicado != null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_proveedor_duplicado_razonSocial"));
         }
         if (operacion.equals(TipoDeOperacion.ACTUALIZACION)) {
             if (proveedorDuplicado != null && proveedorDuplicado.getId_Proveedor() != proveedor.getId_Proveedor()) {
-                throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_proveedor_duplicado_razonSocial"));
             }
         }
@@ -171,35 +138,21 @@ public class ProveedorServiceImpl implements IProveedorService {
     @Transactional
     public void guardar(Proveedor proveedor) {
         this.validarOperacion(TipoDeOperacion.ALTA, proveedor);
-        try {
-            proveedorRepository.guardar(proveedor);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        proveedorRepository.guardar(proveedor);
+        LOGGER.warn("El Proveedor " + proveedor + " se guardó correctamente.");
     }
 
     @Override
     @Transactional
     public void actualizar(Proveedor proveedor) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, proveedor);
-        try {
-            proveedorRepository.actualizar(proveedor);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        proveedorRepository.actualizar(proveedor);
     }
 
     @Override
     @Transactional
     public void eliminar(Proveedor proveedor) {
         proveedor.setEliminado(true);
-        try {
-            proveedorRepository.actualizar(proveedor);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        proveedorRepository.actualizar(proveedor);
     }
 }

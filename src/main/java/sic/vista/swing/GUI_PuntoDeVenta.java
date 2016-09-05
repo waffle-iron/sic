@@ -37,7 +37,7 @@ import sic.service.IProductoService;
 import sic.service.ITransportistaService;
 import sic.service.IUsuarioService;
 import sic.service.Movimiento;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.modelo.RenglonPedido;
 import sic.service.EstadoPedido;
 import sic.service.IPedidoService;
@@ -414,7 +414,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         }
     }
 
-    private void buscarProductoPorCodigo() throws ServiceException {
+    private void buscarProductoPorCodigo() throws BusinessServiceException {
         Producto producto = productoService.getProductoPorCodigo(txt_CodigoProducto.getText().trim(), empresaService.getEmpresaActiva().getEmpresa());
         if (producto == null) {
             JOptionPane.showMessageDialog(this, "No se encontró ningun producto con el codigo ingresado!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -1257,7 +1257,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                 this.cargarTiposDeComprobantesDisponibles();
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_BuscarClienteActionPerformed
@@ -1273,7 +1273,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                 this.cargarTiposDeComprobantesDisponibles();
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoClienteActionPerformed
@@ -1302,7 +1302,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                     txta_Observaciones.setText(this.pedido.getObservaciones());
                 }
             }
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
@@ -1325,7 +1325,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                 }
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_cmb_TipoComprobanteItemStateChanged
@@ -1334,7 +1334,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         try {
             this.buscarProductoPorCodigo();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } 
     }//GEN-LAST:event_btn_BuscarPorCodigoProductoActionPerformed
@@ -1343,7 +1343,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         try {
             this.buscarProductoPorCodigo();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 
@@ -1403,7 +1403,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                 try {
                     this.lanzarReportePedido(this.guardarPedido(this.pedido));
                     this.limpiarYRecargarComponentes();
-                } catch (ServiceException ex) {
+                } catch (BusinessServiceException ex) {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else if ((this.pedido.getEstado() == EstadoPedido.ABIERTO || this.pedido.getEstado() == null) && this.modificarPedido == true) {
@@ -1443,7 +1443,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         try {
             this.buscarProductoConVentanaAuxiliar();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_BuscarProductosActionPerformed

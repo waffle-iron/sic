@@ -9,7 +9,7 @@ import sic.AppContextProvider;
 import sic.modelo.FormaDePago;
 import sic.service.IEmpresaService;
 import sic.service.IFormaDePagoService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 
 public class GUI_FormasDePago extends JDialog {
 
@@ -87,7 +87,7 @@ public class GUI_FormasDePago extends JDialog {
             this.getFormasDePagos();
             this.cargarResultadosAlTable();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 
@@ -107,7 +107,7 @@ public class GUI_FormasDePago extends JDialog {
                     this.getFormasDePagos();
                     this.cargarResultadosAlTable();
 
-                } catch (ServiceException ex) {
+                } catch (BusinessServiceException ex) {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -130,7 +130,7 @@ public class GUI_FormasDePago extends JDialog {
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -305,7 +305,7 @@ public class GUI_FormasDePago extends JDialog {
             this.cargarResultadosAlTable();
             this.verificarExistenciaPredeterminado();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

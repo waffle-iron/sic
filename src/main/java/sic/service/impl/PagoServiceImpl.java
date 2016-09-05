@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,12 +16,11 @@ import sic.modelo.Pago;
 import sic.repository.IPagoRepository;
 import sic.service.IFacturaService;
 import sic.service.IPagoService;
-import sic.service.ServiceException;
-import sic.util.Utilidades;
+import sic.service.BusinessServiceException;
 
 @Service
 public class PagoServiceImpl implements IPagoService {
-    
+
     private final IPagoRepository pagoRepository;
     private final IFacturaService facturaService;
     private static final Logger LOGGER = Logger.getLogger(PagoServiceImpl.class.getPackage().getName());
@@ -37,12 +35,7 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     public List<Pago> getPagosDeLaFactura(Factura factura) {
-        try {
-            return this.pagoRepository.getPagosDeLaFactura(factura);
-            
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return this.pagoRepository.getPagosDeLaFactura(factura);
     }
 
     @Override
@@ -68,12 +61,7 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
-        try {
-            return pagoRepository.getPagosEntreFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
-            
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return pagoRepository.getPagosEntreFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
     }
 
     @Override
@@ -90,28 +78,18 @@ public class PagoServiceImpl implements IPagoService {
     @Transactional
     public void guardar(Pago pago) {
         this.validarOperacion(pago);
-        try {
-            pagoRepository.guardar(pago);
-            
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        pagoRepository.guardar(pago);
         this.setFacturaEstadoDePago(pago.getFactura());
-        LOGGER.warn("El Pago: " + pago.toString() + " se guardó correctamente.");
+        LOGGER.warn("El Pago " + pago + " se guardó correctamente.");
     }
 
     @Override
     @Transactional
     public void eliminar(Pago pago) {
         pago.setEliminado(true);
-        try {
-            pagoRepository.actualizar(pago);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        pagoRepository.actualizar(pago);
         this.setFacturaEstadoDePago(pago.getFactura());
-        LOGGER.warn("El Pago: " + pago.toString() + " se eliminó correctamente.");
+        LOGGER.warn("El Pago " + pago + " se eliminó correctamente.");
     }
 
     @Override
@@ -120,7 +98,7 @@ public class PagoServiceImpl implements IPagoService {
         facturas.addAll(facturasVenta);
         this.pagarMultiplesFacturas(facturas, monto, formaDePago, nota, fechaYHora);
     }
-    
+
     @Override
     public void pagarMultiplesFacturasCompra(List<FacturaCompra> facturasCompra, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
         List<Factura> facturas = new ArrayList<>();
@@ -134,7 +112,7 @@ public class PagoServiceImpl implements IPagoService {
         facturas.addAll(facturasVenta);
         return this.calcularTotalAdeudadoFacturas(facturas);
     }
-    
+
     @Override
     public double calcularTotalAdeudadoFacturasCompra(List<FacturaCompra> facturasCompra) {
         List<Factura> facturas = new ArrayList<>();
@@ -154,7 +132,7 @@ public class PagoServiceImpl implements IPagoService {
     @Override
     public void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
         List<Factura> facturasOrdenadas = facturaService.ordenarFacturasPorFechaAsc(facturas);
-        for (Factura factura : facturasOrdenadas ) {
+        for (Factura factura : facturasOrdenadas) {
             if (monto > 0) {
                 factura.setPagos(this.getPagosDeLaFactura(factura));
                 Pago nuevoPago = Pago.builder()
@@ -181,23 +159,23 @@ public class PagoServiceImpl implements IPagoService {
     public void validarOperacion(Pago pago) {
         //Requeridos
         if (pago.getMonto() <= 0) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_mayorQueCero_monto"));
         }
         if (pago.getFecha() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_fecha_vacia"));
         }
         if (pago.getFactura() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_factura_vacia"));
         }
         if (pago.getEmpresa() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_empresa_vacia"));
         }
         if (pago.getFormaDePago() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_formaDePago_vacia"));
         }
     }

@@ -19,7 +19,7 @@ import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IProveedorService;
 import sic.service.Movimiento;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -136,7 +136,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
                         "Aviso", JOptionPane.INFORMATION_MESSAGE);
             }
 
-        } catch (ParseException | ServiceException ex) {
+        } catch (ParseException | BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 
@@ -564,7 +564,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
                 JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
 }//GEN-LAST:event_btn_NuevoActionPerformed
@@ -590,7 +590,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
                     facturaService.eliminar(facturas.get(indexFilaSeleccionada));
                     this.buscar();
 
-                } catch (ServiceException ex) {
+                } catch (BusinessServiceException ex) {
                     JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -636,7 +636,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
             this.setMaximum(true);
             rb_soloImpagas.setSelected(true);
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
 

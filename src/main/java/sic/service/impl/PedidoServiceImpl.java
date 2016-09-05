@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -29,7 +28,7 @@ import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IPedidoService;
 import sic.service.IProductoService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.util.Utilidades;
 
 @Service
@@ -41,11 +40,10 @@ public class PedidoServiceImpl implements IPedidoService {
     private final IProductoService productoService;
     private static final Logger LOGGER = Logger.getLogger(PedidoServiceImpl.class.getPackage().getName());
 
-
     @Autowired
     public PedidoServiceImpl(IEmpresaService empresaService, IFacturaService facturaService,
             IPedidoRepository pedidoRepository, IProductoService productoService) {
-        
+
         this.empresaService = empresaService;
         this.facturaService = facturaService;
         this.pedidoRepository = pedidoRepository;
@@ -56,30 +54,25 @@ public class PedidoServiceImpl implements IPedidoService {
         //Entrada de Datos
         //Requeridos
         if (pedido.getFecha() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_fecha_vacia"));
         }
         if (pedido.getRenglones().isEmpty()) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_renglones_vacio"));
         }
         if (pedido.getEmpresa() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_empresa_vacia"));
         }
         if (pedido.getUsuario() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_usuario_vacio"));
         }
-        //Duplicados
-        try {
-            if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) != null) {
-                throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                        .getString("mensaje_pedido_duplicado"));
-            }
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
+        //Duplicados       
+        if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) != null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pedido_duplicado"));
         }
     }
 
@@ -114,26 +107,16 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     public long calcularNumeroPedido() {
-        try {
-            return 1 + pedidoRepository.buscarMayorNroPedido(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return 1 + pedidoRepository.buscarMayorNroPedido(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
     }
 
     @Override
     public List<Factura> getFacturasDelPedido(long nroPedido) {
         List<Factura> facturasSinEliminar = new ArrayList<>();
-        try {
-            for (Factura factura : pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido).getFacturas()) {
-                if (!factura.isEliminada()) {
-                    facturasSinEliminar.add(factura);
-                }
+        for (Factura factura : pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido).getFacturas()) {
+            if (!factura.isEliminada()) {
+                facturasSinEliminar.add(factura);
             }
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
         }
         return facturasSinEliminar;
     }
@@ -142,19 +125,15 @@ public class PedidoServiceImpl implements IPedidoService {
     @Transactional
     public void guardar(Pedido pedido) {
         this.validarPedido(pedido);
-        try{
-            pedidoRepository.guardar(pedido);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        pedidoRepository.guardar(pedido);
+        LOGGER.warn("El Pedido " + pedido + " se guardó correctamente.");
     }
 
     @Override
     public List<Pedido> buscarConCriteria(BusquedaPedidoCriteria criteria) {
         //Fecha
         if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_fechas_busqueda_invalidas"));
         }
         if (criteria.isBuscaPorFecha() == true) {
@@ -172,12 +151,12 @@ public class PedidoServiceImpl implements IPedidoService {
         }
         //Cliente
         if (criteria.isBuscaCliente() == true && criteria.getCliente() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_cliente_vacio_razonSocial"));
         }
         //Usuario
         if (criteria.isBuscaUsuario() == true && criteria.getUsuario() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_vacio_nombre"));
         }
         List<Pedido> pedidos = pedidoRepository.buscarPedidosPorCriteria(criteria);
@@ -187,42 +166,22 @@ public class PedidoServiceImpl implements IPedidoService {
     @Override
     @Transactional
     public void actualizar(Pedido pedido) {
-        try {
-            pedidoRepository.actualizar(pedido);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        pedidoRepository.actualizar(pedido);
     }
 
     @Override
     public Pedido getPedidoPorNumero(long nroPedido, long idEmpresa) {
-        try {
-            return pedidoRepository.getPedidoPorNro(nroPedido, idEmpresa);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return pedidoRepository.getPedidoPorNro(nroPedido, idEmpresa);
     }
 
     @Override
     public Pedido getPedidoPorNumeroConFacturas(long nroPedido) {
-        try {
-            return pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido);
     }
 
     @Override
     public Pedido getPedidoPorNumeroConRenglones(long nroPedido, long idEmpresa) {
-        try {
-            return pedidoRepository.getPedidoPorNumeroConRenglones(nroPedido, idEmpresa);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return pedidoRepository.getPedidoPorNumeroConRenglones(nroPedido, idEmpresa);
     }
 
     @Override
@@ -230,24 +189,14 @@ public class PedidoServiceImpl implements IPedidoService {
     public boolean eliminar(Pedido pedido) {
         if (pedido.getEstado() == EstadoPedido.ABIERTO) {
             pedido.setEliminado(true);
-            try {
-                pedidoRepository.actualizar(pedido);
-
-            } catch (PersistenceException ex) {
-                throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-            }
+            pedidoRepository.actualizar(pedido);
         }
         return pedido.isEliminado();
     }
 
     @Override
     public List<RenglonPedido> getRenglonesDelPedido(long nroPedido) {
-        try {
-            return pedidoRepository.getRenglonesDelPedido(nroPedido);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return pedidoRepository.getRenglonesDelPedido(nroPedido);
     }
 
     @Override

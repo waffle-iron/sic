@@ -15,7 +15,7 @@ import sic.service.ILocalidadService;
 import sic.service.IPaisService;
 import sic.service.IProvinciaService;
 import sic.service.ITransportistaService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.service.TipoDeOperacion;
 
 public class GUI_DetalleTransportista extends JDialog {
@@ -311,7 +311,7 @@ public class GUI_DetalleTransportista extends JDialog {
                 cargarComboBoxPaises();
                 cargarComboBoxProvinciasDelPais((Pais) cmb_Pais.getSelectedItem());
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
 	}//GEN-LAST:event_btn_NuevoPaisActionPerformed
@@ -325,7 +325,7 @@ public class GUI_DetalleTransportista extends JDialog {
             try {
                 cargarComboBoxProvinciasDelPais((Pais) cmb_Pais.getSelectedItem());
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
 	}//GEN-LAST:event_btn_NuevaProvinciaActionPerformed
@@ -335,7 +335,7 @@ public class GUI_DetalleTransportista extends JDialog {
                 try {
                     cargarComboBoxProvinciasDelPais((Pais) cmb_Pais.getSelectedItem());
 
-                } catch (ServiceException ex) {
+                } catch (BusinessServiceException ex) {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -350,7 +350,7 @@ public class GUI_DetalleTransportista extends JDialog {
             try {
                 cargarComboBoxLocalidadesDeLaProvincia((Provincia) cmb_Provincia.getSelectedItem());
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
 	}//GEN-LAST:event_btn_NuevaLocalidadActionPerformed
@@ -360,7 +360,7 @@ public class GUI_DetalleTransportista extends JDialog {
                 try {
                     cargarComboBoxLocalidadesDeLaProvincia((Provincia) cmb_Provincia.getSelectedItem());
 
-                } catch (ServiceException ex) {
+                } catch (BusinessServiceException ex) {
                     JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
@@ -401,7 +401,7 @@ public class GUI_DetalleTransportista extends JDialog {
                     this.dispose();
                 }
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
             }
@@ -414,7 +414,7 @@ public class GUI_DetalleTransportista extends JDialog {
                 this.cargarTransportistaParaModificar();
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

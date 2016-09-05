@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.persistence.PersistenceException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -28,13 +27,13 @@ import sic.modelo.Pago;
 import sic.modelo.Usuario;
 import sic.repository.ICajaRepository;
 import sic.service.EstadoCaja;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.util.Utilidades;
 
 @Service
 public class CajaServiceImpl implements ICajaService {
 
-    private final ICajaRepository cajaRepository;
+    private final ICajaRepository cajaRepository;    
     private static final Logger LOGGER = Logger.getLogger(CajaServiceImpl.class.getPackage().getName());
 
     @Autowired
@@ -47,80 +46,51 @@ public class CajaServiceImpl implements ICajaService {
         //Entrada de Datos
         //Requeridos
         if (caja.getFechaApertura() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_fecha_vacia"));
         }
         if (caja.getEmpresa() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_empresa_vacia"));
         }
         if (caja.getUsuarioAbreCaja() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_usuario_vacio"));
         }
-        //Duplicados
-        try {
-            if (cajaRepository.getCajaPorID(caja.getId_Caja(), caja.getEmpresa().getId_Empresa()) != null) {
-                throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                        .getString("mensaje_caja_duplicada"));
-            }
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        //Duplicados        
+        if (cajaRepository.getCajaPorID(caja.getId_Caja(), caja.getEmpresa().getId_Empresa()) != null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_caja_duplicada"));
+        }        
     }
 
     @Override
     @Transactional
     public void guardar(Caja caja) {
         this.validarCaja(caja);
-        try {
-            cajaRepository.guardar(caja);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        cajaRepository.guardar(caja);
+        LOGGER.warn("La Caja " + caja + " se guardó correctamente." );
     }
 
     @Override
     @Transactional
-    public void actualizar(Caja caja) {
-        try {
-            cajaRepository.actualizar(caja);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+    public void actualizar(Caja caja) {        
+        cajaRepository.actualizar(caja);
     }
 
     @Override
-    public Caja getUltimaCaja(long id_Empresa) {
-        try {
-            return cajaRepository.getUltimaCaja(id_Empresa);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+    public Caja getUltimaCaja(long id_Empresa) {        
+        return cajaRepository.getUltimaCaja(id_Empresa);        
     }
 
     @Override
-    public Caja getCajaPorId(long id_Caja, long id_Empresa) {
-        try {
-            return cajaRepository.getCajaPorID(id_Caja, id_Empresa);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+    public Caja getCajaPorId(long id_Caja, long id_Empresa) {        
+        return cajaRepository.getCajaPorID(id_Caja, id_Empresa);        
     }
 
     @Override
     public int getUltimoNumeroDeCaja(long id_Empresa) {
-        try {
-            return cajaRepository.getUltimoNumeroDeCaja(id_Empresa);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        return cajaRepository.getUltimoNumeroDeCaja(id_Empresa);        
     }
 
     @Override
@@ -144,20 +114,14 @@ public class CajaServiceImpl implements ICajaService {
     }
 
     @Override
-    public List<Caja> getCajas(long id_Empresa, Date desde, Date hasta) {
-        try {
-            return cajaRepository.getCajas(id_Empresa, desde, hasta);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+    public List<Caja> getCajas(long id_Empresa, Date desde, Date hasta) {        
+        return cajaRepository.getCajas(id_Empresa, desde, hasta);        
     }
 
     @Override
     public List<Caja> getCajasCriteria(BusquedaCajaCriteria criteria) {
         if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_caja_fechas_invalidas"));
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_fechas_invalidas"));
         }
         if (criteria.isBuscaPorFecha() == true) {
             Calendar cal = new GregorianCalendar();
@@ -171,13 +135,9 @@ public class CajaServiceImpl implements ICajaService {
             cal.set(Calendar.MINUTE, 59);
             cal.set(Calendar.SECOND, 59);
             criteria.setFechaHasta(cal.getTime());
-        }
-        try {
-            return cajaRepository.getCajasCriteria(criteria);
-
-        } catch (PersistenceException ex) {
-            throw new ServiceException(Utilidades.escribirLogErrorAccesoDatos(LOGGER), ex);
-        }
+        }        
+        
+        return cajaRepository.getCajasCriteria(criteria);        
     }
 
     @Override

@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.CondicionIVA;
 import sic.service.ICondicionIVAService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 
 public class GUI_DetalleCondicionIVA extends JDialog {
 
@@ -210,7 +210,7 @@ public class GUI_DetalleCondicionIVA extends JDialog {
             LOGGER.warn("La condicion de IVA " + txt_Nombre.getText().trim() + " se guardó correctamente.");
             this.limpiarYRecargarComponentes();            
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_AgregarActionPerformed
@@ -230,7 +230,7 @@ public class GUI_DetalleCondicionIVA extends JDialog {
                 this.limpiarYRecargarComponentes();                
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_ActualizarActionPerformed
@@ -255,7 +255,7 @@ public class GUI_DetalleCondicionIVA extends JDialog {
                 }
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_EliminarActionPerformed
@@ -264,7 +264,7 @@ public class GUI_DetalleCondicionIVA extends JDialog {
         try {
             this.cargarListCondiciones();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

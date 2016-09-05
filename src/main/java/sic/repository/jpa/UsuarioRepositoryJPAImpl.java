@@ -3,13 +3,12 @@ package sic.repository.jpa;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import sic.modelo.Usuario;
 import sic.repository.IUsuarioRepository;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 
 @Repository
 public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {
@@ -44,13 +43,14 @@ public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {
     }
 
     @Override
-    public Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) throws ServiceException {
+    public Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) {
         TypedQuery<Usuario> typedQuery = em.createNamedQuery("Usuario.buscarPorNombreContrasenia", Usuario.class);
         typedQuery.setParameter("nombre", nombre);
         typedQuery.setParameter("password", contrasenia);
         List<Usuario> usuarios = typedQuery.getResultList();
         if (usuarios.isEmpty()) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_logInInvalido"));
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_usuario_logInInvalido"));
         } else {
             return usuarios.get(0);
         }

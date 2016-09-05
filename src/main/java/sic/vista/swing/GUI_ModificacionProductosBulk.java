@@ -21,7 +21,7 @@ import sic.service.IMedidaService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.IRubroService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 
 public class GUI_ModificacionProductosBulk extends JDialog {
 
@@ -589,7 +589,7 @@ public class GUI_ModificacionProductosBulk extends JDialog {
         try {
             this.cargarComboBoxRubros();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_RubrosActionPerformed
@@ -603,7 +603,7 @@ public class GUI_ModificacionProductosBulk extends JDialog {
         try {
             this.cargarComboBoxProveedores();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoProveedorActionPerformed
@@ -617,7 +617,7 @@ public class GUI_ModificacionProductosBulk extends JDialog {
         try {
             this.cargarComboBoxMedidas();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_MedidasActionPerformed
@@ -669,7 +669,7 @@ public class GUI_ModificacionProductosBulk extends JDialog {
                     "Aviso", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         }
@@ -716,7 +716,7 @@ public class GUI_ModificacionProductosBulk extends JDialog {
             this.cargarComboBoxMedidas();
             this.cargarComboBoxIVA();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

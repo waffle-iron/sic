@@ -13,7 +13,7 @@ import sic.modelo.Empresa;
 import sic.modelo.Localidad;
 import sic.repository.IClienteRepository;
 import sic.service.IClienteService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.service.TipoDeOperacion;
 
 @Service
@@ -44,14 +44,14 @@ public class ClienteServiceImplTest {
         assertEquals(resultadoEsperado, resultadoObtenido);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenEmailInvalido() {
         cliente.setEmail("");
         clienteService = new ClienteServiceImpl(clienteRepository);
         clienteService.validarOperacion(TipoDeOperacion.ELIMINACION, cliente);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenCondicionIVAesNull() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");
@@ -60,7 +60,7 @@ public class ClienteServiceImplTest {
         clienteService.validarOperacion(TipoDeOperacion.ELIMINACION, cliente);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenLocalidadEsNull() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");
@@ -70,7 +70,7 @@ public class ClienteServiceImplTest {
         clienteService.validarOperacion(TipoDeOperacion.ELIMINACION, cliente);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenEmpresaEsNull() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");
@@ -81,7 +81,7 @@ public class ClienteServiceImplTest {
         clienteService.validarOperacion(TipoDeOperacion.ELIMINACION, cliente);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenIdFiscalDuplicadoEnAlta() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");
@@ -100,7 +100,7 @@ public class ClienteServiceImplTest {
         clienteService.validarOperacion(TipoDeOperacion.ALTA, clienteDuplicado);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenIdFiscalDuplicadoEnActualizacion() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");
@@ -121,7 +121,7 @@ public class ClienteServiceImplTest {
         clienteService.validarOperacion(TipoDeOperacion.ACTUALIZACION, clienteDuplicado);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenRazonSocialDuplicadaEnAlta() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");
@@ -142,7 +142,7 @@ public class ClienteServiceImplTest {
         clienteService.validarOperacion(TipoDeOperacion.ALTA, clienteDuplicado);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenRazonSocialDuplicadaEnActualizacion() {
         cliente.setEmail("emailValido@email.com");
         cliente.setRazonSocial("razon Social");

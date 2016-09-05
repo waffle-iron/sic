@@ -8,7 +8,7 @@ import org.mockito.MockitoAnnotations;
 import sic.modelo.CondicionIVA;
 import sic.repository.ICondicionIVARepository;
 import sic.service.ICondicionIVAService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.service.TipoDeOperacion;
 
 public class CondicionIVAServiceImplTest {
@@ -27,7 +27,7 @@ public class CondicionIVAServiceImplTest {
         condicionIVADuplicada = new CondicionIVA();
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenDuplicadoAlta() {
         condicionIVA.setNombre("discrimina IVA");
         when(condicionIVARepository.getCondicionIVAPorNombre(condicionIVA.getNombre())).thenReturn(condicionIVA);
@@ -35,7 +35,7 @@ public class CondicionIVAServiceImplTest {
         condicionIVAService.validarOperacion(TipoDeOperacion.ALTA, condicionIVA);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenDuplicadoActualizacion() {
         condicionIVA.setNombre("discrimina IVA");
         condicionIVA.setId_CondicionIVA(Long.MIN_VALUE);

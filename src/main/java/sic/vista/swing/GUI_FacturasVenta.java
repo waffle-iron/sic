@@ -32,7 +32,7 @@ import sic.service.IFacturaService;
 import sic.service.IPedidoService;
 import sic.service.IUsuarioService;
 import sic.service.Movimiento;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -139,7 +139,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 criteria.setNroPedido(Long.parseLong(txt_NumeroPedido.getText()));
             }
 
-        } catch (ParseException | ServiceException ex) {
+        } catch (ParseException | BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
         return criteria;
@@ -234,7 +234,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     cargarResultadosAlTable();
                     calcularResultados();
 
-                } catch (ServiceException ex) {
+                } catch (BusinessServiceException ex) {
                     JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
                 } 
@@ -915,7 +915,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
         try {
             this.lanzarReporteFactura();
 
-        } catch (JRException | ServiceException ex ) {
+        } catch (JRException | BusinessServiceException ex ) {
             String msjError = "Se produjo un error procesando el reporte.";
             LOGGER.error(msjError + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
@@ -938,7 +938,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     }
                     this.buscar(this.getCriteriaDeComponentes());
 
-                } catch (ServiceException ex) {
+                } catch (BusinessServiceException ex) {
                     JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -964,7 +964,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             this.setColumnas();
             this.setMaximum(true);
 
-        } catch (PropertyVetoException | ServiceException ex) {
+        } catch (PropertyVetoException | BusinessServiceException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";
             LOGGER.error(msjError + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
@@ -1004,7 +1004,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
             }
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevaActionPerformed

@@ -2,7 +2,6 @@ package sic.repository;
 
 import java.util.List;
 import sic.modelo.Usuario;
-import sic.service.ServiceException;
 
 public interface IUsuarioRepository {
 
@@ -10,7 +9,7 @@ public interface IUsuarioRepository {
 
     Usuario getUsuarioPorNombre(String nombre);
 
-    Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) throws ServiceException;
+    Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia);
 
     List<Usuario> getUsuarios();
 

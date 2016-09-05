@@ -18,7 +18,7 @@ import sic.service.ILocalidadService;
 import sic.service.IPaisService;
 import sic.service.IProvinciaService;
 import sic.service.ITransportistaService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.util.Utilidades;
 
 public class GUI_Transportistas extends JInternalFrame {
@@ -161,7 +161,7 @@ public class GUI_Transportistas extends JInternalFrame {
             transportistas = transportistaService.buscarTransportistas(criteria);
             this.cargarResultadosAlTable();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -428,7 +428,7 @@ public class GUI_Transportistas extends JInternalFrame {
                     cmb_Localidad.addItem(localidadTodas);
                 }
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -446,7 +446,7 @@ public class GUI_Transportistas extends JInternalFrame {
                     cmb_Localidad.addItem(localidadTodas);
                 }
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
 
@@ -474,7 +474,7 @@ public class GUI_Transportistas extends JInternalFrame {
         try {
             this.cargarComboBoxPaises();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoActionPerformed
@@ -492,7 +492,7 @@ public class GUI_Transportistas extends JInternalFrame {
                     transportistaService.eliminar(transportistas.get(indexFilaSeleccionada));
                     this.buscar();
 
-                } catch (ServiceException ex) {
+                } catch (BusinessServiceException ex) {
                     JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -511,7 +511,7 @@ public class GUI_Transportistas extends JInternalFrame {
             try {
                 this.cargarComboBoxPaises();
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }

@@ -18,7 +18,7 @@ import sic.service.EstadoCaja;
 import sic.service.ICajaService;
 import sic.service.IEmpresaService;
 import sic.service.IUsuarioService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.util.ColoresEstadosRenderer;
 import sic.util.FormatoFechasEnTablasRenderer;
 import sic.util.FormatterFechaHora;
@@ -113,7 +113,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                     cajas = cajasResultantes;
                     return cajas;
 
-                } catch (ServiceException ex) {
+                } catch (BusinessServiceException ex) {
                     JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
                 } 

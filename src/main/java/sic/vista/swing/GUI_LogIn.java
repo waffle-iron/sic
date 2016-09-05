@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Usuario;
 import sic.service.IUsuarioService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 
 public class GUI_LogIn extends JFrame {
     
@@ -31,7 +31,7 @@ public class GUI_LogIn extends JFrame {
             try {
                 usuario = usuarioService.validarUsuario(txt_Usuario.getText().trim(), new String(txt_Contrasenia.getPassword()));
                 usuarioService.setUsuarioActivo(usuario);
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } 
         } else {

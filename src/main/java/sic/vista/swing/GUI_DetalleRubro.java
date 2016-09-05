@@ -10,7 +10,7 @@ import sic.AppContextProvider;
 import sic.modelo.Rubro;
 import sic.service.IEmpresaService;
 import sic.service.IRubroService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.util.Utilidades;
 
 public class GUI_DetalleRubro extends JDialog {
@@ -183,7 +183,7 @@ public class GUI_DetalleRubro extends JDialog {
             txt_Nuevo.setText("");
             this.cargarListRubros();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 
@@ -214,7 +214,7 @@ private void btn_ActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GE
             this.cargarListRubros();
         }
 
-    } catch (ServiceException ex) {
+    } catch (BusinessServiceException ex) {
         JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
     } 
@@ -232,7 +232,7 @@ private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
             cargarListRubros();
         }
 
-    } catch (ServiceException ex) {
+    } catch (BusinessServiceException ex) {
         JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 }//GEN-LAST:event_btn_EliminarActionPerformed
@@ -249,7 +249,7 @@ private void txt_ModicaEliminaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST
         try {
             this.cargarListRubros();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

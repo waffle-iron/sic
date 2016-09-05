@@ -26,7 +26,7 @@ import sic.service.IEmpresaService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.IRubroService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -35,7 +35,7 @@ public class GUI_Productos extends JInternalFrame {
     private ModeloTabla modeloTablaResultados;
     private List<Producto> productos;
     private boolean listarSoloFaltantes;
-    private int cantidadResultadosParaMostrar = 0; //deshabilitada momentaneamente
+    private final int cantidadResultadosParaMostrar = 0; //deshabilitada momentaneamente
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IRubroService rubroService = appContext.getBean(IRubroService.class);
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
@@ -264,7 +264,7 @@ public class GUI_Productos extends JInternalFrame {
                     productos = productoService.buscarProductos(criteria);
                     return productos;
 
-                } catch (ServiceException ex) {
+                } catch (BusinessServiceException ex) {
                     JOptionPane.showInternalMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
                 }
@@ -648,7 +648,7 @@ public class GUI_Productos extends JInternalFrame {
             this.cargarComboBoxRubros();
             this.buscar();
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_NuevoActionPerformed
@@ -668,7 +668,7 @@ public class GUI_Productos extends JInternalFrame {
                                     Utilidades.getSelectedRowsModelIndices(tbl_Resultados)));
                     buscar();
 
-                } catch (ServiceException ex) {
+                } catch (BusinessServiceException ex) {
                     JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
@@ -699,7 +699,7 @@ public class GUI_Productos extends JInternalFrame {
                 this.cargarComboBoxRubros();
                 this.buscar();
 
-            } catch (ServiceException ex) {
+            } catch (BusinessServiceException ex) {
                 JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
@@ -732,7 +732,7 @@ public class GUI_Productos extends JInternalFrame {
             this.setColumnas();
             this.setMaximum(true);
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
 
@@ -758,7 +758,7 @@ public class GUI_Productos extends JInternalFrame {
         try {
             this.lanzarReporteListaDePrecios();
 
-        } catch (JRException | ServiceException ex) {
+        } catch (JRException | BusinessServiceException ex) {
             String msjError = "Se produjo un error procesando el reporte.";
             LOGGER.error(msjError + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);

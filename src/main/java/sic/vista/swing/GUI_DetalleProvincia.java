@@ -13,7 +13,7 @@ import sic.modelo.Pais;
 import sic.modelo.Provincia;
 import sic.service.IPaisService;
 import sic.service.IProvinciaService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 
 public class GUI_DetalleProvincia extends JDialog {
 
@@ -220,7 +220,7 @@ public class GUI_DetalleProvincia extends JDialog {
             txt_Nombre.setText("");
             this.cargarListProvincias(cmb_PaisesBusqueda.getSelectedItem());
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
         } 
@@ -252,7 +252,7 @@ private void btn_ActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GE
             cargarListProvincias(cmb_PaisesBusqueda.getSelectedItem());
         }
 
-    } catch (ServiceException ex) {
+    } catch (BusinessServiceException ex) {
         JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 
     } 
@@ -270,7 +270,7 @@ private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
             cargarListProvincias(cmb_PaisesBusqueda.getSelectedItem());
         }
 
-    } catch (ServiceException ex) {
+    } catch (BusinessServiceException ex) {
         JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
     }
 }//GEN-LAST:event_btn_EliminarActionPerformed
@@ -280,7 +280,7 @@ private void cmb_PaisesBusquedaItemStateChanged(java.awt.event.ItemEvent evt) {/
         try {
             cargarListProvincias(cmb_PaisesBusqueda.getSelectedItem());
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
@@ -292,7 +292,7 @@ private void cmb_PaisesBusquedaItemStateChanged(java.awt.event.ItemEvent evt) {/
             cargarComboBoxPaises(cmb_PaisesBusqueda, modeloComboPaisesBusqueda);
             cmb_PaisesBusquedaItemStateChanged(null);
 
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }

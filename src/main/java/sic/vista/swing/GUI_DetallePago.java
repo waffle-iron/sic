@@ -16,7 +16,7 @@ import sic.modelo.FormaDePago;
 import sic.modelo.Pago;
 import sic.service.IFormaDePagoService;
 import sic.service.IPagoService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 
 public class GUI_DetallePago extends JDialog {
 
@@ -60,7 +60,7 @@ public class GUI_DetallePago extends JDialog {
             pago.setNota(txt_Nota.getText().trim());
             pagoService.guardar(pago);
             this.dispose();
-        } catch (ServiceException ex) {
+        } catch (BusinessServiceException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
