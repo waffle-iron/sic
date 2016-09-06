@@ -51,9 +51,6 @@ public class Transportista implements Serializable {
     @Column(nullable = false)
     private String telefono;
 
-    @OneToMany(mappedBy = "transportista")
-    private Set<Factura> facturas;
-
     @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;

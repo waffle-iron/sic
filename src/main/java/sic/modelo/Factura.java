@@ -51,7 +51,7 @@ public abstract class Factura implements Serializable {
     @JoinColumn(name = "id_Transportista", referencedColumnName = "id_Transportista")
     private Transportista transportista;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura")
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura", orphanRemoval = true)
     private List<RenglonFactura> renglones;
 
     private double subTotal;

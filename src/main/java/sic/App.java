@@ -32,6 +32,7 @@ public class App {
         properties.setProperty("hibernate.connection.characterEncoding", "utf8");
         properties.setProperty("hibernate.connection.useUnicode", "true");
         properties.setProperty("hibernate.id.new_generator_mappings", "false");
+        properties.setProperty("hibernate.enable_lazy_load_no_trans", "true");
         return properties;
     }
 

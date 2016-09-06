@@ -29,11 +29,8 @@ public class RenglonPedido implements Serializable {
     private Producto producto;
 
     private double cantidad;
-
     private double descuento_porcentaje;
-
     private double descuento_neto;
-
     private double subTotal;
 
 }

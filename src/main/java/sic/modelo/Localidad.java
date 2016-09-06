@@ -1,7 +1,6 @@
 package sic.modelo;
 
 import java.io.Serializable;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -48,18 +46,6 @@ public class Localidad implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_Provincia", referencedColumnName = "id_Provincia")
     private Provincia provincia;
-
-    @OneToMany(mappedBy = "localidad")
-    private Set<Proveedor> proveedores;
-
-    @OneToMany(mappedBy = "localidad")
-    private Set<Transportista> transportistas;
-
-    @OneToMany(mappedBy = "localidad")
-    private Set<Empresa> empresas;
-
-    @OneToMany(mappedBy = "localidad")
-    private Set<Cliente> clientes;
 
     private boolean eliminada = false;
 

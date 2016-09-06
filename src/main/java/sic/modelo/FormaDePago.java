@@ -1,8 +1,6 @@
 package sic.modelo;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,10 +44,7 @@ public class FormaDePago implements Serializable {
     private boolean afectaCaja;
 
     private boolean predeterminado;
-
-    @OneToMany(mappedBy = "formaDePago")
-    private List<Pago> pagos;
-
+    
     @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;

@@ -75,12 +75,6 @@ public class Proveedor implements Serializable {
     @JoinColumn(name = "id_Localidad", referencedColumnName = "id_Localidad")
     private Localidad localidad;
 
-    @OneToMany(mappedBy = "proveedor")
-    private Set<Producto> productos;
-
-    @OneToMany(mappedBy = "proveedor")
-    private Set<FacturaCompra> facturasCompra;
-
     @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;

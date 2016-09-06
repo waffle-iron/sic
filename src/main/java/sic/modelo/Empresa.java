@@ -2,7 +2,6 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +11,6 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -83,33 +81,6 @@ public class Empresa implements Serializable {
 
     @Lob
     private byte[] logo;
-
-    @OneToMany(mappedBy = "empresa")
-    private Set<Producto> productos;
-
-    @OneToMany(mappedBy = "empresa")
-    private Set<Proveedor> proveedores;
-
-    @OneToMany(mappedBy = "empresa")
-    private Set<Factura> facturas;
-
-    @OneToMany(mappedBy = "empresa")
-    private Set<Transportista> transportistas;
-
-    @OneToMany(mappedBy = "empresa")
-    private Set<Cliente> clientes;
-
-    @OneToMany(mappedBy = "empresa")
-    private Set<FormaDePago> formasDePago;
-
-    @OneToMany(mappedBy = "empresa")
-    private Set<Medida> medidas;
-
-    @OneToMany(mappedBy = "empresa")
-    private Set<Rubro> rubros;
-
-    @OneToMany(mappedBy = "empresa")
-    private Set<ConfiguracionDelSistema> configuraciones;
 
     private boolean eliminada;
 

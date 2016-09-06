@@ -38,9 +38,6 @@ public class Medida implements Serializable {
     @Column(nullable = false)
     private String nombre;
 
-    @OneToMany(mappedBy = "medida")
-    private Set<Producto> productos;
-
     @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
