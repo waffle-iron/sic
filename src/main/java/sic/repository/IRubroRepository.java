@@ -6,6 +6,8 @@ import sic.modelo.Rubro;
 
 public interface IRubroRepository {
 
+    Rubro getRubroPorId(long id_Rubro);
+    
     void actualizar(Rubro rubro);
 
     Rubro getRubroPorNombre(String nombre, Empresa empresa);

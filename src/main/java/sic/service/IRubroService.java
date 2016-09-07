@@ -6,6 +6,8 @@ import sic.modelo.Rubro;
 
 public interface IRubroService {
 
+    Rubro getRubroPorId(long id_Rubro);
+    
     void actualizar(Rubro rubro);
 
     void eliminar(Rubro rubro);

@@ -30,6 +30,11 @@ public class EmpresaServiceImpl implements IEmpresaService {
         this.empresaRepository = empresaRepository;
         this.configuracionDelSistemaRepository = configuracionDelSistemaRepository;
     }
+    
+    @Override
+    public Empresa getEmpresaPorId(long id_Empresa){
+        return empresaRepository.getEmpresaPorId(id_Empresa);
+    }
 
     @Override
     public List<Empresa> getEmpresas() {
