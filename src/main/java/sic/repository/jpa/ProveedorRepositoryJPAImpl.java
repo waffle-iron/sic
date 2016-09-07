@@ -25,6 +25,18 @@ public class ProveedorRepositoryJPAImpl implements IProveedorRepository {
     }
 
     @Override
+    public Proveedor getProveedorPorId(long id_Proveedor) {
+        TypedQuery<Proveedor> typedQuery = em.createNamedQuery("Proveedor.buscarPorId", Proveedor.class);
+        typedQuery.setParameter("id", id_Proveedor);
+        List<Proveedor> proveedores = typedQuery.getResultList();
+        if (proveedores.isEmpty()) {
+            return null;
+        } else {
+            return proveedores.get(0);
+        }
+    }
+    
+    @Override
     public Proveedor getProveedorPorCodigo(String codigo, Empresa empresa) {
         TypedQuery<Proveedor> typedQuery = em.createNamedQuery("Proveedor.buscarPorCodigo", Proveedor.class);
         typedQuery.setParameter("codigo", codigo);

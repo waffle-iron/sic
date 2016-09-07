@@ -79,24 +79,23 @@ public class ProductoController {
         return productoService.getProductoPorCodigo(codigoProducto, empresaService.getEmpresaPorId(idEmpresa));
     }
     
-    @GetMapping("/productos/criteria/{idRubro}/empresa/{idEmpresa}")
+    @GetMapping("/productos/criteria/{idRubro}/proveedor/{idProveedor}/empresa/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
     public List<Producto> buscarProductos(@RequestParam(value = "codigo", required = false) String codigo,
                                           @RequestParam(value = "descripcion", required = false) String descripcion,
                                           @PathVariable(value = "idRubro") long idRubro,
-                                          @RequestParam(value = "razonSocialProveedor", required = false) String razonSocialProveedor,
+                                          @PathVariable(value = "idProveedor") long idProveedor,
                                           @PathVariable(value = "idEmpresa") long idEmpresa,
-                                          @RequestParam(value = "cantidadRegistros", required = false) int cantidadRegistros,
                                           @RequestParam(value = "soloFaltantes", required = false) boolean soloFantantes) {
         
         Empresa empresa = empresaService.getEmpresaPorId(idEmpresa);
         Rubro rubro = rubroService.getRubroPorId(idRubro);
-        Proveedor proveedor = proveedorService.getProveedorPorRazonSocial(razonSocialProveedor, empresa); 
+        Proveedor proveedor = proveedorService.getProveedorPorId(idProveedor); 
         BusquedaProductoCriteria criteria = new BusquedaProductoCriteria(
                                                                         (codigo!=null), codigo,
                                                                         (descripcion!=null), descripcion,
                                                                         (idRubro!=0), rubro,
-                                                                        (razonSocialProveedor!=null), proveedor,
+                                                                        (idProveedor!=0), proveedor,
                                                                         empresa, 0, soloFantantes);
         return productoService.buscarProductos(criteria);
     }
