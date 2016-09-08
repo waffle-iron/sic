@@ -7,6 +7,8 @@ import sic.modelo.Transportista;
 
 public interface ITransportistaService {
 
+    Transportista getTransportistaPorId(long id_Transportista);
+            
     void actualizar(Transportista transportista);
 
     List<Transportista> buscarTransportistas(BusquedaTransportistaCriteria criteria);

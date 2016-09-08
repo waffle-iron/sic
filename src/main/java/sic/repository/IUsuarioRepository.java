@@ -5,6 +5,8 @@ import sic.modelo.Usuario;
 
 public interface IUsuarioRepository {
 
+    Usuario getUsuarioPorId(long id_Usuario);
+    
     void actualizar(Usuario usuario);
 
     Usuario getUsuarioPorNombre(String nombre);

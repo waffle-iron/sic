@@ -23,6 +23,11 @@ public class PaisServiceImpl implements IPaisService {
     public PaisServiceImpl(IPaisRepository paisRepository) {
         this.paisRepository = paisRepository;
     }
+    
+    @Override
+    public Pais getPaisPorId(long id_Pais) {
+        return paisRepository.getPaisPorId(id_Pais);
+    }
 
     @Override
     public List<Pais> getPaises() {

@@ -25,6 +25,18 @@ public class LocalidadRepositoryJPAImpl implements ILocalidadRepository {
     }
 
     @Override
+    public Localidad getLocalidadPorId(long id_Localidad) {
+        TypedQuery<Localidad> typedQuery = em.createNamedQuery("Localidad.buscarPorId", Localidad.class);
+        typedQuery.setParameter("id", id_Localidad);
+        List<Localidad> localidades = typedQuery.getResultList();
+        if (localidades.isEmpty()) {
+            return null;
+        } else {
+            return localidades.get(0);
+        }
+    }
+    
+    @Override
     public Localidad getLocalidadPorNombre(String nombre, Provincia provincia) {
         TypedQuery<Localidad> typedQuery = em.createNamedQuery("Localidad.buscarPorNombre", Localidad.class);
         typedQuery.setParameter("nombre", nombre);

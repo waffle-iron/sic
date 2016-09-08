@@ -16,6 +16,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "provincia")
 @NamedQueries({
+    @NamedQuery(name = "Provincia.buscarPorId",
+            query = "SELECT p FROM Provincia p "
+                    + "WHERE p.eliminada = false AND p.id_Provincia = :id"),
     @NamedQuery(name = "Provincia.buscarProvinciasDelPais",
             query = "SELECT p FROM Provincia p "
                     + "WHERE p.pais = :pais AND p.eliminada = false "

@@ -28,6 +28,11 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     @Override
+    public Usuario getUsuarioPorId(long id_Usuario) {
+        return usuarioRepository.getUsuarioPorId(id_Usuario);
+    }
+    
+    @Override
     public List<Usuario> getUsuarios() {
         return usuarioRepository.getUsuarios();
     }
