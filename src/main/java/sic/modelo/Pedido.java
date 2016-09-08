@@ -20,6 +20,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import sic.service.EstadoPedido;
 
 @Entity
@@ -45,6 +46,7 @@ import sic.service.EstadoPedido;
                     + "WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa")
 })
 @Data
+@ToString(exclude= "renglones")
 @EqualsAndHashCode(of = {"nroPedido", "empresa"})
 public class Pedido implements Serializable {
 

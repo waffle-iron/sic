@@ -29,6 +29,7 @@ import sic.service.IFacturaService;
 import sic.service.IPedidoService;
 import sic.service.IProductoService;
 import sic.service.BusinessServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.Utilidades;
 
 @Service
@@ -90,6 +91,28 @@ public class PedidoServiceImpl implements IPedidoService {
             renglonPedido.setSubTotal(renglonPedido.getCantidad() * renglonPedido.getProducto().getPrecioLista() * porcentajeDescuento);
         }
         return pedido;
+    }
+    
+    @Override
+    @Transactional
+    public void actualizarEstadoPedido(TipoDeOperacion tipoDeOperacion, Pedido pedido) {
+        if (pedido != null) {
+            if (tipoDeOperacion == TipoDeOperacion.ELIMINACION) {
+                if (this.getFacturasDelPedido(pedido.getNroPedido()).isEmpty()) {
+                    pedido.setEstado(EstadoPedido.ABIERTO);
+                } else {
+                    pedido.setEstado(EstadoPedido.ACTIVO);
+                }
+            }
+            if (tipoDeOperacion == TipoDeOperacion.ALTA) {
+                if (facturaService.convertirRenglonesPedidoARenglonesFactura(pedido, "Factura A").isEmpty()) {
+                    pedido.setEstado(EstadoPedido.CERRADO);
+                } else {
+                    pedido.setEstado(EstadoPedido.ACTIVO);
+                }
+            }
+            this.actualizar(pedido);
+        }
     }
 
     @Override
