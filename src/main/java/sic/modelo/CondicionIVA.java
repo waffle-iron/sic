@@ -14,6 +14,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "condicioniva")
 @NamedQueries({
+    @NamedQuery(name = "CondicionIVA.buscarPorId",
+            query = "SELECT c FROM CondicionIVA c "
+                    + "WHERE c.eliminada = false AND c.id_CondicionIVA = :id"),
     @NamedQuery(name = "CondicionIVA.buscarTodas",
             query = "SELECT c FROM CondicionIVA c "
                     + "WHERE c.eliminada = false "

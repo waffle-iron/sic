@@ -21,6 +21,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "pago")
 @NamedQueries({
+    @NamedQuery(name = "Pago.buscarPorId",
+            query = "SELECT p FROM Pago p "
+                    + "WHERE p.eliminado = false AND p.id_Pago= :id"),
     @NamedQuery(name = "Pago.buscarPagosEntreFechasYFormaDePago",
             query = "SELECT p FROM Pago p "
             + "WHERE p.empresa.id_Empresa = :id_Empresa "

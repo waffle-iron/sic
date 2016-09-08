@@ -26,6 +26,11 @@ public class MedidaServiceImpl implements IMedidaService {
     }
 
     @Override
+    public Medida getMedidaPorId(long id_Medida) {
+        return medidaRepository.getMedidaPorId(id_Medida);
+    }
+    
+    @Override
     public List<Medida> getUnidadMedidas(Empresa empresa) {
         return medidaRepository.getUnidadMedidas(empresa);
     }

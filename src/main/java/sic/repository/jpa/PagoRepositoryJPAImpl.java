@@ -26,6 +26,18 @@ public class PagoRepositoryJPAImpl implements IPagoRepository {
     }
 
     @Override
+    public Pago getPagosPorId(long id_Pago) {
+        TypedQuery<Pago> typedQuery = em.createNamedQuery("Pago.buscarPorId", Pago.class);
+        typedQuery.setParameter("id", id_Pago);
+        List<Pago> pagos = typedQuery.getResultList();
+         if (pagos.isEmpty()) {
+            return null;
+        } else {
+            return pagos.get(0);
+        }
+    }
+    
+    @Override
     public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
         TypedQuery<Pago> typedQuery = em.createNamedQuery("Pago.buscarPagosEntreFechasYFormaDePago", Pago.class);
         typedQuery.setParameter("id_Empresa", id_Empresa);

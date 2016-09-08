@@ -14,6 +14,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "usuario")
 @NamedQueries({
+    @NamedQuery(name = "Usuario.buscarPorId",
+            query = "SELECT u FROM Usuario u "
+                    + "WHERE u.eliminado = false AND u.id_Usuario= :id"),
     @NamedQuery(name = "Usuario.buscarTodos",
             query = "SELECT u FROM Usuario u "
                     + "WHERE u.eliminado = false "

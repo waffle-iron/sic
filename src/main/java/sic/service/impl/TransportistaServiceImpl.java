@@ -25,6 +25,11 @@ public class TransportistaServiceImpl implements ITransportistaService {
     public TransportistaServiceImpl(ITransportistaRepository transportistaRepository) {
         this.transportistaRepository = transportistaRepository;
     }
+    
+    @Override
+    public Transportista getTransportistaPorId(long id_Transportista) {
+        return transportistaRepository.getTransportistaPorId(id_Transportista);
+    }
 
     @Override
     public List<Transportista> getTransportistas(Empresa empresa) {

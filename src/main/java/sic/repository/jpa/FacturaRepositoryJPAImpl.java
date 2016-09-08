@@ -27,6 +27,18 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         typedQuery.setParameter("factura", factura);
         List<RenglonFactura> renglones = typedQuery.getResultList();
         return renglones;
+        }
+    
+    @Override
+    public Factura getRenglonesDeLaFactura(long id_Factura) {
+        TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.buscarPorId", Factura.class);
+        typedQuery.setParameter("id", id_Factura);
+        List<Factura> facturas = typedQuery.getResultList();
+        if (facturas.isEmpty()) {
+            return null;
+        } else {
+            return facturas.get(0);
+        }
     }
 
     @Override

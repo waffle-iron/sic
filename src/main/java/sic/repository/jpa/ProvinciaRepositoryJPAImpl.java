@@ -24,6 +24,18 @@ public class ProvinciaRepositoryJPAImpl implements IProvinciaRepository {
     }
 
     @Override
+    public Provincia getProvinciaPorId(long id_Provincia) {
+        TypedQuery<Provincia> typedQuery = em.createNamedQuery("Provincia.buscarPorId", Provincia.class);
+        typedQuery.setParameter("long", id_Provincia);
+        List<Provincia> provincias = typedQuery.getResultList();
+        if (provincias.isEmpty()) {
+            return null;
+        } else {
+            return provincias.get(0);
+        }
+    }
+    
+    @Override
     public Provincia getProvinciaPorNombre(String nombreProvincia, Pais paisRelacionado) {
         TypedQuery<Provincia> typedQuery = em.createNamedQuery("Provincia.buscarPorNombre", Provincia.class);
         typedQuery.setParameter("nombre", nombreProvincia);

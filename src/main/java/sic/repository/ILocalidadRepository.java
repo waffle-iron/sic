@@ -5,6 +5,8 @@ import sic.modelo.Localidad;
 import sic.modelo.Provincia;
 
 public interface ILocalidadRepository {
+    
+    Localidad getLocalidadPorId(long id_Localidad);
 
     void actualizar(Localidad localidad);
 
