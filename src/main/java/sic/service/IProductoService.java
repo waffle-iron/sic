@@ -3,6 +3,7 @@ package sic.service;
 import java.util.List;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
+import org.springframework.http.ResponseEntity;
 import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.Empresa;
 import sic.modelo.Factura;
@@ -44,11 +45,9 @@ public interface IProductoService {
 
     Producto getProductoPorId(long id_Producto);
 
-    List<Producto> getProductosPorDescripcionQueContenga(String criteria, int cantRegistros, Empresa empresa);
-
-    //**************************************************************************
-    //Reportes
-    JasperPrint getReporteListaDePrecios(List<Producto> productos) throws JRException;
+//    JasperPrint getReporteListaDePrecios(List<Producto> productos) throws JRException;
+    
+    ResponseEntity<byte[]> getReporteListaDePreciosPorEmpresa(List<Producto> productos, long idEmpresa) throws JRException;
 
     void guardar(Producto producto);
 

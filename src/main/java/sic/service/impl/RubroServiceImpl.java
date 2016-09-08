@@ -26,7 +26,7 @@ public class RubroServiceImpl implements IRubroService {
     }
     
     @Override
-    public Rubro getRubroPorId(long id_Rubro){
+    public Rubro getRubroPorId(Long id_Rubro){
         return rubroRepository.getRubroPorId(id_Rubro);
     }
 

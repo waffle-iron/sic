@@ -16,7 +16,7 @@ public class RubroRepositoryJPAImpl implements IRubroRepository {
     private EntityManager em;
 
     @Override
-    public Rubro getRubroPorId(long id_Rubro) {
+    public Rubro getRubroPorId(Long id_Rubro) {
         TypedQuery<Rubro> typedQuery = em.createNamedQuery("Rubro.buscarPorId", Rubro.class);
         typedQuery.setParameter("id", id_Rubro);
         List<Rubro> rubros = typedQuery.getResultList();

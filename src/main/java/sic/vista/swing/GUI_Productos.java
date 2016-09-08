@@ -1,6 +1,8 @@
 package sic.vista.swing;
 
 import java.beans.PropertyVetoException;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +19,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.ResponseEntity;
 import sic.AppContextProvider;
 import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.Producto;
@@ -312,14 +315,15 @@ public class GUI_Productos extends JInternalFrame {
 
     private void lanzarReporteListaDePrecios() throws JRException {
         if (productos != null) {
-            if (!productos.isEmpty()) {
-                JasperPrint report = productoService.getReporteListaDePrecios(productos);
+            if (!productos.isEmpty()) { //no funciona
+                ResponseEntity<byte[]> report = productoService.getReporteListaDePreciosPorEmpresa(productos, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
                 JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
                 viewer.setSize(this.getWidth(), this.getHeight());
                 ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
                 viewer.setIconImage(iconoVentana.getImage());
                 viewer.setLocationRelativeTo(null);
-                JRViewer jrv = new JRViewer(report);
+                InputStream inPutStream = new ByteArrayInputStream(report.getBody());
+                JRViewer jrv = new JRViewer(inPutStream, false);
                 viewer.getContentPane().add(jrv);
                 viewer.setVisible(true);
             }

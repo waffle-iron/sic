@@ -79,29 +79,6 @@ public class ProductoRepositoryJPAImpl implements IProductoRepository {
     }
 
     @Override
-    public List<Producto> getProductosQueContengaCodigoDescripcion(String criteria, int cantRegistros, Empresa empresa) {
-        String query = "SELECT p FROM Producto p WHERE p.empresa = :empresa AND p.eliminado = false";
-        query += " AND (p.codigo LIKE '%" + criteria + "%' OR (";
-        String[] terminos = criteria.split(" ");
-        for (int i = 0; i < terminos.length; i++) {
-            query += "p.descripcion LIKE '%" + terminos[i] + "%'";
-            //si no es el ultimo, agregar un AND
-            if (i != (terminos.length - 1)) {
-                query += " AND ";
-            }
-        }
-        query += ")) ORDER BY p.descripcion ASC";
-        TypedQuery<Producto> typedQuery = em.createQuery(query, Producto.class);
-        typedQuery.setParameter("empresa", empresa);
-        //si es 0, recupera TODOS los registros
-        if (cantRegistros != 0) {
-            typedQuery.setMaxResults(cantRegistros);
-        }
-        List<Producto> productos = typedQuery.getResultList();
-        return productos;
-    }
-
-    @Override
     public Producto getProductoPorCodigo(String codigo, Empresa empresa) {
         TypedQuery<Producto> typedQuery = em.createNamedQuery("Producto.buscarPorCodigo", Producto.class);
         typedQuery.setParameter("codigo", codigo);
