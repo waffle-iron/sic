@@ -33,6 +33,7 @@ import sic.service.IPedidoService;
 import sic.service.IUsuarioService;
 import sic.service.Movimiento;
 import sic.service.BusinessServiceException;
+import sic.service.TipoDeOperacion;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -934,7 +935,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     facturaService.eliminar(facturas.get(indexFilaSeleccionada));
                     if (facturas.get(indexFilaSeleccionada).getPedido() != null) {
                         Pedido pedidoDeFactura = pedidoService.getPedidoPorNumero(facturas.get(indexFilaSeleccionada).getPedido().getNroPedido(), empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-                        this.actualizarEstadoPedido(pedidoDeFactura);
+                        pedidoService.actualizarEstadoPedido(TipoDeOperacion.ELIMINACION, pedidoDeFactura);
                     }
                     this.buscar(this.getCriteriaDeComponentes());
 

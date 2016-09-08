@@ -32,6 +32,7 @@ import sic.service.IPedidoService;
 import sic.service.ITransportistaService;
 import sic.service.IUsuarioService;
 import sic.service.BusinessServiceException;
+import sic.service.TipoDeOperacion;
 
 public class GUI_CerrarVenta extends JDialog {
 
@@ -264,7 +265,7 @@ public class GUI_CerrarVenta extends JDialog {
                 }
             }
             if (gui_puntoDeVenta.getPedido() != null) {
-                this.actualizarEstadoPedido(gui_puntoDeVenta.getPedido());
+                pedidoService.actualizarEstadoPedido(TipoDeOperacion.ALTA, gui_puntoDeVenta.getPedido());
                 gui_puntoDeVenta.dispose();
             }
             this.dispose();
