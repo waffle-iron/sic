@@ -40,7 +40,7 @@ public class PagoServiceImpl implements IPagoService {
     
     @Override
     public List<Pago> getPagosDeLaFactura(Factura factura) {
-        return this.pagoRepository.getPagoDeLaFactura(factura);
+        return this.pagoRepository.getPagosDeLaFactura(factura);
     }
 
     @Override

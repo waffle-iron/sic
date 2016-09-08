@@ -18,7 +18,7 @@ public class PagoRepositoryJPAImpl implements IPagoRepository {
     private EntityManager em;
 
     @Override
-    public List<Pago> getPagoDeLaFactura(Factura factura) {
+    public List<Pago> getPagosDeLaFactura(Factura factura) {
         TypedQuery<Pago> typedQuery = em.createNamedQuery("Pago.buscarPorFactura", Pago.class);
         typedQuery.setParameter("factura", factura);
         List<Pago> pagosFacturaCompra = typedQuery.getResultList();

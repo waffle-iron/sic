@@ -9,7 +9,7 @@ public interface IPagoRepository {
     
     Pago getPagoPorId(long id_Pago);
 
-    List<Pago> getPagoDeLaFactura(Factura factura);
+    List<Pago> getPagosDeLaFactura(Factura factura);
     
     List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
 
