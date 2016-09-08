@@ -73,15 +73,6 @@ public class GUI_CerrarVenta extends JDialog {
         return exito;
     }
 
-    public void actualizarEstadoPedido(Pedido pedido) {
-        if (facturaService.convertirRenglonesPedidoARenglonesFactura(gui_puntoDeVenta.getPedido(), "Factura A").isEmpty()) {
-            pedido.setEstado(EstadoPedido.CERRADO);
-        } else {
-            pedido.setEstado(EstadoPedido.ACTIVO);
-        }
-        pedidoService.actualizar(pedido);
-    }
-
     private void setIcon() {
         ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_24_square.png"));
         this.setIconImage(iconoVentana.getImage());

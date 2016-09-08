@@ -62,15 +62,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
         this.buscar(criteria);
     }
 
-    public void actualizarEstadoPedido(Pedido pedido) {
-        if (pedidoService.getFacturasDelPedido(pedido.getNroPedido()).isEmpty()) {
-            pedido.setEstado(EstadoPedido.ABIERTO);
-        } else {
-            pedido.setEstado(EstadoPedido.ACTIVO);
-        }
-        pedidoService.actualizar(pedido);
-    }
-
     private void setEstadoDeComponentes(BusquedaFacturaVentaCriteria criteria) {
         if (criteria.isBuscaCliente() && criteria.getCliente() != null) {
             chk_Cliente.setSelected(true);
