@@ -5,7 +5,7 @@ import sic.modelo.CondicionIVA;
 
 public interface ICondicionIVAService {
     
-    CondicionIVA getCondicionesIVAPorId(long id_CondicionIVA);
+    CondicionIVA getCondicionIVAPorId(long id_CondicionIVA);
 
     void actualizar(CondicionIVA condicionIVA);
 

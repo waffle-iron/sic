@@ -74,7 +74,7 @@ public class FacturaServiceImpl implements IFacturaService {
     
     @Override
     public Factura getFacturaPorId(long id_Factura) {
-        return facturaRepository.getRenglonesDeLaFactura(id_Factura);
+        return facturaRepository.getFacturaPorId(id_Factura);
     }
 
     @Override

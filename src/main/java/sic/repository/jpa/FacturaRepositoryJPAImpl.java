@@ -30,7 +30,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         }
     
     @Override
-    public Factura getRenglonesDeLaFactura(long id_Factura) {
+    public Factura getFacturaPorId(long id_Factura) {
         TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.buscarPorId", Factura.class);
         typedQuery.setParameter("id", id_Factura);
         List<Factura> facturas = typedQuery.getResultList();

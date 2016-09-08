@@ -35,12 +35,12 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     public Pago getPagoPorId(long id_pago) {
-        return this.pagoRepository.getPagosPorId(id_pago);
+        return this.pagoRepository.getPagoPorId(id_pago);
     }
     
     @Override
     public List<Pago> getPagosDeLaFactura(Factura factura) {
-        return this.pagoRepository.getPagosDeLaFactura(factura);
+        return this.pagoRepository.getPagoDeLaFactura(factura);
     }
 
     @Override

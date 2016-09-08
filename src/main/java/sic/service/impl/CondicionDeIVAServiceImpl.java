@@ -25,7 +25,7 @@ public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
     }
     
     @Override
-    public CondicionIVA getCondicionesIVAPorId(long id_CondicionIVA) {        
+    public CondicionIVA getCondicionIVAPorId(long id_CondicionIVA) {        
         return condicionIVARepository.getCondicionIVAPorId(id_CondicionIVA);
     }
 

@@ -7,9 +7,9 @@ import sic.modelo.Pago;
 
 public interface IPagoRepository {
     
-    Pago getPagosPorId(long id_Pago);
+    Pago getPagoPorId(long id_Pago);
 
-    List<Pago> getPagosDeLaFactura(Factura factura);
+    List<Pago> getPagoDeLaFactura(Factura factura);
     
     List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
 
