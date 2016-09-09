@@ -24,19 +24,18 @@ public class LocalidadController {
     private final IProvinciaService provinciaService;
     
     @Autowired
-    public LocalidadController(ILocalidadService localidadService, IProvinciaService provinciaService) {
-    
+    public LocalidadController(ILocalidadService localidadService, IProvinciaService provinciaService) {    
         this.localidadService = localidadService;
         this.provinciaService = provinciaService;
     }
     
-    @GetMapping("/localidad/{id}")
+    @GetMapping("/localidades/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Localidad getLocalidadPorId(@PathVariable("id") long id) {
         return localidadService.getLocalidadPorId(id);
     }
     
-    @PutMapping("/localidad/{id}")
+    @PutMapping("/localidades/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Localidad actualizar(@PathVariable("id") long id, @RequestBody Localidad localidad) { 
         if(localidadService.getLocalidadPorId(id) != null) {
@@ -45,7 +44,7 @@ public class LocalidadController {
         return localidadService.getLocalidadPorId(id);
     }
     
-    @DeleteMapping("/localidad/{id}")
+    @DeleteMapping("/localidades/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable("id") long id) {
         Localidad localidad = localidadService.getLocalidadPorId(id);
@@ -54,14 +53,14 @@ public class LocalidadController {
         }
     }
     
-    @PostMapping("/localidad")
+    @PostMapping("/localidades")
     @ResponseStatus(HttpStatus.OK)
     public Localidad guardar(@RequestBody Localidad localidad) {
         localidadService.guardar(localidad);
         return localidadService.getLocalidadPorId(localidad.getId_Localidad());
     }
     
-    @GetMapping("/localidad/provincia/{id}")
+    @GetMapping("/localidades/provincias/{id}")
     @ResponseStatus(HttpStatus.OK)
     List<Localidad> getLocalidadesDeLaProvincia(@PathVariable("id") long id) {
         return localidadService.getLocalidadesDeLaProvincia(provinciaService.getProvinciaPorId(id));
