@@ -24,7 +24,7 @@ public class PaisRepositoryJPAImpl implements IPaisRepository {
     @Override
     public Pais getPaisPorId(long id_Pais) {
         TypedQuery<Pais> typedQuery = em.createNamedQuery("Pais.buscarPorId", Pais.class);
-        typedQuery.setParameter("pais", id_Pais);
+        typedQuery.setParameter("id", id_Pais);
         List<Pais> paises = typedQuery.getResultList();
         if (paises.isEmpty()) {
             return null;
