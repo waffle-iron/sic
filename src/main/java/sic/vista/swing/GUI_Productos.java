@@ -316,16 +316,17 @@ public class GUI_Productos extends JInternalFrame {
     private void lanzarReporteListaDePrecios() throws JRException {
         if (productos != null) {
             if (!productos.isEmpty()) { //no funciona
-                ResponseEntity<byte[]> report = productoService.getReporteListaDePreciosPorEmpresa(productos, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
-                JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-                viewer.setSize(this.getWidth(), this.getHeight());
-                ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-                viewer.setIconImage(iconoVentana.getImage());
-                viewer.setLocationRelativeTo(null);
-                InputStream inPutStream = new ByteArrayInputStream(report.getBody());
-                JRViewer jrv = new JRViewer(inPutStream, false);
-                viewer.getContentPane().add(jrv);
-                viewer.setVisible(true);
+                JOptionPane.showMessageDialog(this,"Temporalmente este reporte no funiona desde SWIG, se debe implementar una vista de PDF");
+//                byte[] report = productoService.getReporteListaDePreciosPorEmpresa(productos, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+//                JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+//                viewer.setSize(this.getWidth(), this.getHeight());
+//                ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+//                viewer.setIconImage(iconoVentana.getImage());
+//                viewer.setLocationRelativeTo(null);
+//                InputStream inPutStream = new ByteArrayInputStream(report);
+//                JRViewer jrv = new JRViewer(inPutStream, false);
+//                viewer.getContentPane().add(jrv);
+//                viewer.setVisible(true);
             }
         }
     }
