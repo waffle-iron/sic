@@ -35,13 +35,13 @@ public class LocalidadController {
         return localidadService.getLocalidadPorId(id);
     }
     
-    @PutMapping("/localidades/{id}")
+    @PutMapping("/localidades")
     @ResponseStatus(HttpStatus.OK)
-    public Localidad actualizar(@PathVariable("id") long id, @RequestBody Localidad localidad) { 
-        if(localidadService.getLocalidadPorId(id) != null) {
+    public Localidad actualizar(@RequestBody Localidad localidad) { 
+        if(localidadService.getLocalidadPorId(localidad.getId_Localidad()) != null) {
             localidadService.actualizar(localidad);
         }
-        return localidadService.getLocalidadPorId(id);
+        return localidadService.getLocalidadPorId(localidad.getId_Localidad());
     }
     
     @DeleteMapping("/localidades/{id}")

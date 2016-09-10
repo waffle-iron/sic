@@ -33,13 +33,13 @@ public class PaisController {
         return paisService.getPaisPorId(id);
     }
     
-    @PutMapping("/paises/{id}")
+    @PutMapping("/paises")
     @ResponseStatus(HttpStatus.OK)
-    public Pais actualizar(@PathVariable("id") long id, @RequestBody Pais pais) {
-        if(paisService.getPaisPorId(id) != null) {
+    public Pais actualizar(@RequestBody Pais pais) {
+        if(paisService.getPaisPorId(pais.getId_Pais()) != null) {
             paisService.actualizar(pais);
         }
-        return paisService.getPaisPorId(id);
+        return paisService.getPaisPorId(pais.getId_Pais());
     }
     
     @DeleteMapping("/paises/{id}")
