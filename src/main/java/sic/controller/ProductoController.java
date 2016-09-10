@@ -18,10 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import sic.modelo.BusquedaProductoCriteria;
+import sic.modelo.PreciosProducto;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
 import sic.service.IEmpresaService;
+import sic.service.IMedidaService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.IRubroService;
@@ -33,15 +35,18 @@ public class ProductoController {
     private final IProductoService productoService;
     private final IEmpresaService empresaService;
     private final IRubroService rubroService;
-    private final IProveedorService proveedorService;    
+    private final IProveedorService proveedorService;  
+    private final IMedidaService medidaService;
     
     @Autowired
     public ProductoController(IProductoService productoService, IEmpresaService empresaService,
-                              IRubroService rubroService, IProveedorService proveedorService) {        
+                              IRubroService rubroService, IProveedorService proveedorService,
+                              IMedidaService medidaService) {        
        this.productoService = productoService;
        this.empresaService = empresaService;
        this.rubroService = rubroService;
-       this.proveedorService = proveedorService;       
+       this.proveedorService = proveedorService;
+       this.medidaService = medidaService;
     }
     
     @GetMapping("/productos/{id}")
@@ -196,5 +201,25 @@ public class ProductoController {
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         byte[] reportePDF = productoService.getReporteListaDePreciosPorEmpresa(productoService.buscarProductos(criteria), idEmpresa);
         return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);
+    }
+    
+    @PutMapping("/productos/multiples")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Producto> modificarMultiplesProductos(@RequestParam(value = "id") long[] id, 
+                                                      @RequestBody(required = false) PreciosProducto preciosProducto,
+                                                      @RequestParam(value = "idMedida", required = false) Long idMedida,
+                                                      @RequestParam(value = "idRubro", required = false) Long idRubro,
+                                                      @RequestParam(value = "idProveedor", required = false) Long idProveedor) {
+        List<Producto> productos = new ArrayList<>();
+        for(long idProducto : id) {
+            productos.add(productoService.getProductoPorId(idProducto));
+        }       
+        productoService.modificarMultiplesProductos(productos,
+                                                   (preciosProducto!=null), preciosProducto,
+                                                   (idMedida!=null), medidaService.getMedidaPorId(idMedida),
+                                                   (idRubro!=null), rubroService.getRubroPorId(idRubro),
+                                                   (idProveedor!=null), proveedorService.getProveedorPorId(idProveedor));
+        return productos;
+    
     }
 }

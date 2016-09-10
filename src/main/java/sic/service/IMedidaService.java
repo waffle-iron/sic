@@ -6,7 +6,7 @@ import sic.modelo.Medida;
 
 public interface IMedidaService {
     
-    Medida getMedidaPorId(long id_Medida);
+    Medida getMedidaPorId(Long id_Medida);
 
     void actualizar(Medida medida);
 
