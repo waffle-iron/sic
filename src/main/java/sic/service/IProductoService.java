@@ -1,7 +1,6 @@
 package sic.service;
 
 import java.util.List;
-import net.sf.jasperreports.engine.JRException;
 import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.Empresa;
 import sic.modelo.Factura;
@@ -23,8 +22,6 @@ public interface IProductoService {
 
     boolean existeStockDisponible(long idProducto, double cantidad);
 
-    //**************************************************************************
-    //Calculos
     double calcularGanancia_Porcentaje(double precioCosto, double PVP);
 
     double calcularIVA_Neto(double precioCosto, double iva_porcentaje);
@@ -43,7 +40,7 @@ public interface IProductoService {
 
     Producto getProductoPorId(long id_Producto);
   
-    byte[] getReporteListaDePreciosPorEmpresa(List<Producto> productos, long idEmpresa) throws JRException;
+    byte[] getReporteListaDePreciosPorEmpresa(List<Producto> productos, long idEmpresa);
 
     void guardar(Producto producto);
 

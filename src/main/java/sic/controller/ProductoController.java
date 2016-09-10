@@ -2,8 +2,6 @@ package sic.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
-import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,12 +22,9 @@ import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
 import sic.service.IEmpresaService;
-import sic.service.IFacturaService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.IRubroService;
-import sic.service.ServiceException;
-import sic.service.TipoDeOperacion;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -38,34 +33,28 @@ public class ProductoController {
     private final IProductoService productoService;
     private final IEmpresaService empresaService;
     private final IRubroService rubroService;
-    private final IProveedorService proveedorService;
-    private final IFacturaService facturaService;
+    private final IProveedorService proveedorService;    
     
     @Autowired
     public ProductoController(IProductoService productoService, IEmpresaService empresaService,
-                              IRubroService rubroService, IProveedorService proveedorService, 
-                              IFacturaService facturaService) {
-        
+                              IRubroService rubroService, IProveedorService proveedorService) {        
        this.productoService = productoService;
        this.empresaService = empresaService;
        this.rubroService = rubroService;
-       this.proveedorService = proveedorService;
-       this.facturaService = facturaService;
+       this.proveedorService = proveedorService;       
     }
     
     @GetMapping("/productos/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Producto getProductoPorId(@PathVariable("id") long id){
+    public Producto getProductoPorId(@PathVariable("id") long id) {
         return productoService.getProductoPorId(id);
     }
     
     @GetMapping("/productos/busqueda")
     @ResponseStatus(HttpStatus.OK)
-    public Producto getProductoPorCodigo(@RequestParam(value = "idEmpresa")  long idEmpresa,
-                                         @RequestParam(value = "codigoProducto") String codigoProducto) {
-        
-        
-        return productoService.getProductoPorCodigo(codigoProducto, empresaService.getEmpresaPorId(idEmpresa));
+    public Producto getProductoPorCodigo(@RequestParam(value = "idEmpresa") long idEmpresa,
+                                         @RequestParam(value = "codigo") String codigo) {        
+        return productoService.getProductoPorCodigo(codigo, empresaService.getEmpresaPorId(idEmpresa));
     }
     
     @GetMapping("/productos/busqueda/criteria") 
@@ -75,8 +64,7 @@ public class ProductoController {
                                           @RequestParam(value = "idRubro", required = false) Long idRubro,
                                           @RequestParam(value = "idProveedor", required = false) Long idProveedor,
                                           @RequestParam(value = "idEmpresa") long idEmpresa,
-                                          @RequestParam(value = "soloFaltantes", required = false) boolean soloFantantes) {
-        
+                                          @RequestParam(value = "soloFaltantes", required = false) boolean soloFantantes) {        
         Rubro rubro = rubroService.getRubroPorId(idRubro);
         Proveedor proveedor = proveedorService.getProveedorPorId(idProveedor);
         BusquedaProductoCriteria criteria = BusquedaProductoCriteria.builder()
@@ -97,8 +85,7 @@ public class ProductoController {
     
     @DeleteMapping("/productos/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-        
+    public void eliminar(@PathVariable("id") long id) {        
         Producto producto = productoService.getProductoPorId(id);
         producto.setEliminado(true);
         productoService.actualizar(producto);
@@ -106,20 +93,18 @@ public class ProductoController {
     
     @DeleteMapping("/productos")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminarMultiplesProductos(
-            @RequestParam(value = "id", required = true) long[] id) {
-        
-             List<Producto> productos = new ArrayList<>();
-             for(Long Id : id){
-                  productos.add(productoService.getProductoPorId(Id));
-             }
-            productoService.eliminarMultiplesProductos(productos);
+    public void eliminarMultiplesProductos(@RequestParam(value = "id") long[] id) {
+        List<Producto> productos = new ArrayList<>();
+        for(Long Id : id){
+             productos.add(productoService.getProductoPorId(Id));
+        }
+        productoService.eliminarMultiplesProductos(productos);
     }
     
     @PutMapping("/productos/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Producto actualizar(@PathVariable("id") long id, @RequestBody Producto producto){
-        if(productoService.getProductoPorId(id) != null){
+    public Producto actualizar(@RequestBody Producto producto) {
+        if(productoService.getProductoPorId(producto.getId_Producto()) != null) {
             productoService.actualizar(producto);
         }
         return productoService.getProductoPorId(producto.getId_Producto());
@@ -127,99 +112,89 @@ public class ProductoController {
     
     @PostMapping("/productos")
     @ResponseStatus(HttpStatus.CREATED)
-    public Producto guardar(@RequestBody Producto producto){
+    public Producto guardar(@RequestBody Producto producto) {
         productoService.guardar(producto);
         return productoService.getProductoPorId(producto.getId_Producto());
     }
     
-    @PutMapping("/productos/stock/factura/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT) 
-    public void actualizarStock(@PathVariable("id") long id_Factura, @RequestParam TipoDeOperacion tipoDeOperacion){
-        productoService.actualizarStock(facturaService.getFacturaPorId(id_Factura), tipoDeOperacion);
+    @GetMapping("/productos/{id}/stock/disponibilidad")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean existeStockDisponible(@PathVariable("Id") long id,
+                                         @RequestParam(value = "cantidad") double cantidad) {
+        return productoService.existeStockDisponible(id, cantidad);
     }
     
     @GetMapping("/productos/gananciaNeto")
     @ResponseStatus(HttpStatus.OK)
     public double calcularGanancia_Neto(@RequestParam(value = "precioCosto") double precioCosto, 
-                                        @RequestParam(value = "gananciaPorcentaje") double gananciaPorcentaje){
-    return productoService.calcularGanancia_Neto(precioCosto, gananciaPorcentaje);
-    }
-    
-    @GetMapping("/productos/{id}/stock/disponibilidad")
-    @ResponseStatus(HttpStatus.OK)
-    public boolean existeStockDisponible(@RequestParam(value = "cantidad") double cantidad, 
-                                         @PathVariable("Id") long id){
-     return productoService.existeStockDisponible(id, cantidad);
-    }
+                                        @RequestParam(value = "gananciaPorcentaje") double gananciaPorcentaje) {
+        return productoService.calcularGanancia_Neto(precioCosto, gananciaPorcentaje);
+    }    
     
     @GetMapping("/productos/gananciaPorcentaje")
     @ResponseStatus(HttpStatus.OK)
     public double calcularGanancia_Porcentaje(@RequestParam(value = "precioCosto") double precioCosto, 
                                               @RequestParam(value = "pvp") double pvp){
-     return productoService.calcularGanancia_Porcentaje(precioCosto, pvp);
+        return productoService.calcularGanancia_Porcentaje(precioCosto, pvp);
     }
     
     @GetMapping("/productos/IVANeto")
     @ResponseStatus(HttpStatus.OK)
     public double calcularIVA_Neto(@RequestParam(value = "precioCosto") double precioCosto, 
-                                   @RequestParam(value = "iva_porcentaje") double iva_porcentaje){
-     return productoService.calcularIVA_Neto(precioCosto, iva_porcentaje);
+                                   @RequestParam(value = "ivaPorcentaje") double ivaPorcentaje) {
+        return productoService.calcularIVA_Neto(precioCosto, ivaPorcentaje);
     }
     
     @GetMapping("/productos/impInternoNeto")
     @ResponseStatus(HttpStatus.OK)
     public double calcularImpInterno_Neto(@RequestParam(value = "precioCosto") double precioCosto, 
-                                          @RequestParam(value = "impInterno_porcentaje", required = true) double impInterno_porcentaje){
-     return productoService.calcularImpInterno_Neto(precioCosto, impInterno_porcentaje);
+                                          @RequestParam(value = "impInternoPorcentaje") double impInternoPorcentaje){
+        return productoService.calcularImpInterno_Neto(precioCosto, impInternoPorcentaje);
     }
     
     @GetMapping("/productos/PVP")
     @ResponseStatus(HttpStatus.OK)
     public double calcularPVP(@RequestParam(value = "precioCosto") double precioCosto, 
-                              @RequestParam(value = "ganancia_porcentaje") double ganancia_porcentaje){
-     return productoService.calcularPVP(precioCosto, ganancia_porcentaje);
+                              @RequestParam(value = "gananciaPorcentaje") double gananciaPorcentaje) {
+        return productoService.calcularPVP(precioCosto, gananciaPorcentaje);
     }
     
     @GetMapping("/productos/precioLista")
     @ResponseStatus(HttpStatus.OK)
     public double calcularPrecioLista(@RequestParam(value = "pvp") double PVP, 
-                                      @RequestParam(value = "iva_porcentaje", required = true) double iva_porcentaje, 
-                                      @RequestParam(value = "impInterno_porcentaje", required = true) double impInterno_porcentaje){
-     return productoService.calcularPrecioLista(PVP, iva_porcentaje, impInterno_porcentaje);
+                                      @RequestParam(value = "ivaPorcentaje") double ivaPorcentaje, 
+                                      @RequestParam(value = "impInternoPorcentaje") double impInternoPorcentaje) {
+        return productoService.calcularPrecioLista(PVP, ivaPorcentaje, impInternoPorcentaje);
     }
 
     @GetMapping("/productos/reporte/criteria")
-    public ResponseEntity<byte[]> getReporteListaDePrecios(@RequestParam(value = "codigo", required = false) String codigo,
+    public ResponseEntity<byte[]> getReporteListaDePrecios(@RequestParam(value = "idEmpresa") long idEmpresa,
+                                                           @RequestParam(value = "codigo", required = false) String codigo,
                                                            @RequestParam(value = "descripcion", required = false) String descripcion,
                                                            @RequestParam(value = "idRubro", required = false) Long idRubro,
-                                                           @RequestParam(value = "idProveedor", required = false) Long idProveedor,
-                                                           @RequestParam(value = "idEmpresa") long idEmpresa,
+                                                           @RequestParam(value = "idProveedor", required = false) Long idProveedor,                                                           
                                                            @RequestParam(value = "soloFaltantes", required = false) boolean soloFantantes) {
-        try {
-            Rubro rubro = rubroService.getRubroPorId(idRubro);
-            Proveedor proveedor = proveedorService.getProveedorPorId(idProveedor);
-            BusquedaProductoCriteria criteria = BusquedaProductoCriteria.builder()
-                    .buscarPorCodigo((codigo != null))
-                    .codigo(codigo)
-                    .buscarPorDescripcion(descripcion != null)
-                    .descripcion(descripcion)
-                    .buscarPorRubro(rubro != null)
-                    .rubro(rubro)
-                    .buscarPorProveedor(proveedor != null)
-                    .proveedor(proveedor)
-                    .empresa(empresaService.getEmpresaPorId(idEmpresa))
-                    .cantRegistros(0)
-                    .listarSoloFaltantes(soloFantantes)
-                    .build();
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.parseMediaType("application/pdf"));
-            headers.setContentDispositionFormData("Reporte.pdf", "Reporte.pdf");
-            headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-            return new ResponseEntity<>(productoService.getReporteListaDePreciosPorEmpresa(productoService.buscarProductos(criteria), idEmpresa),
-                    headers, HttpStatus.OK);
-        } catch (JRException ex) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_error_reporte")+ex.getMessage());
-        }
+        
+        Rubro rubro = rubroService.getRubroPorId(idRubro);
+        Proveedor proveedor = proveedorService.getProveedorPorId(idProveedor);
+        BusquedaProductoCriteria criteria = BusquedaProductoCriteria.builder()
+                .buscarPorCodigo((codigo != null))
+                .codigo(codigo)
+                .buscarPorDescripcion(descripcion != null)
+                .descripcion(descripcion)
+                .buscarPorRubro(rubro != null)
+                .rubro(rubro)
+                .buscarPorProveedor(proveedor != null)
+                .proveedor(proveedor)
+                .empresa(empresaService.getEmpresaPorId(idEmpresa))
+                .cantRegistros(0)
+                .listarSoloFaltantes(soloFantantes)
+                .build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        headers.setContentDispositionFormData("ListaDePrecios.pdf", "ListaDePrecios.pdf");
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        byte[] reportePDF = productoService.getReporteListaDePreciosPorEmpresa(productoService.buscarProductos(criteria), idEmpresa);
+        return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);
     }
 }
