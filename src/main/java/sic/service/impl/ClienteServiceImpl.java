@@ -76,20 +76,7 @@ public class ClienteServiceImpl implements IClienteService {
     }
 
     @Override
-    public List<Cliente> buscarClientes(BusquedaClienteCriteria criteria) {
-        //@TODO No debe verificar contra la palabra "Todos/as". Usar el boolean asociado a ese campo
-        //Pais
-        if (criteria.getPais().getNombre().equals("Todos")) {
-            criteria.setBuscaPorPais(false);
-        }
-        //Provincia
-        if (criteria.getProvincia().getNombre().equals("Todas")) {
-            criteria.setBuscaPorProvincia(false);
-        }
-        //Localidad
-        if (criteria.getLocalidad().getNombre().equals("Todas")) {
-            criteria.setBuscaPorLocalidad(false);
-        }        
+    public List<Cliente> buscarClientes(BusquedaClienteCriteria criteria) {    
         return clienteRepository.buscarClientes(criteria);
     }
 

@@ -172,7 +172,19 @@ public class GUI_Clientes extends JInternalFrame {
             chk_Ubicacion.isSelected(), (Pais) cmb_Pais.getSelectedItem(),
             chk_Ubicacion.isSelected(), (Provincia) cmb_Provincia.getSelectedItem(),
             chk_Ubicacion.isSelected(), (Localidad) cmb_Localidad.getSelectedItem(),
-            empresaService.getEmpresaActiva().getEmpresa());       
+            empresaService.getEmpresaActiva().getEmpresa());   
+        //Pais
+        if (criteria.getPais().getNombre().equals("Todos")) {
+            criteria.setBuscaPorPais(false);
+        }
+        //Provincia
+        if (criteria.getProvincia().getNombre().equals("Todas")) {
+            criteria.setBuscaPorProvincia(false);
+        }
+        //Localidad
+        if (criteria.getLocalidad().getNombre().equals("Todas")) {
+            criteria.setBuscaPorLocalidad(false);
+        }
             clientes = clienteService.buscarClientes(criteria);
             this.cargarResultadosAlTable();       
     }
