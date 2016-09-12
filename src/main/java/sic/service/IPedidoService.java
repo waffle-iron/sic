@@ -17,6 +17,8 @@ public interface IPedidoService {
     List<Pedido> buscarConCriteria(BusquedaPedidoCriteria criteria);
 
     long calcularNumeroPedido();
+    
+    void actualizarEstadoPedido(TipoDeOperacion tipoDeOperacion, Pedido pedido);
 
     Pedido calcularTotalActualDePedido(Pedido pedido);
 

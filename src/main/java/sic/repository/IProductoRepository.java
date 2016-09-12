@@ -19,8 +19,6 @@ public interface IProductoRepository {
 
     Producto getProductoPorId(long id_Producto);
 
-    List<Producto> getProductosQueContengaCodigoDescripcion(String criteria, int cantRegistros, Empresa empresa);
-
     void guardar(Producto producto);
     
 }

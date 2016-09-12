@@ -1,14 +1,12 @@
 package sic.modelo;
 
 import java.io.Serializable;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,6 +14,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "condicioniva")
 @NamedQueries({
+    @NamedQuery(name = "CondicionIVA.buscarPorId",
+            query = "SELECT c FROM CondicionIVA c "
+                    + "WHERE c.eliminada = false AND c.id_CondicionIVA = :id"),
     @NamedQuery(name = "CondicionIVA.buscarTodas",
             query = "SELECT c FROM CondicionIVA c "
                     + "WHERE c.eliminada = false "
@@ -36,15 +37,6 @@ public class CondicionIVA implements Serializable {
     private String nombre;
 
     private boolean discriminaIVA;
-
-    @OneToMany(mappedBy = "condicionIVA")
-    private Set<Proveedor> proveedores;
-
-    @OneToMany(mappedBy = "condicionIVA")
-    private Set<Empresa> empresas;
-
-    @OneToMany(mappedBy = "condicionIVA")
-    private Set<Cliente> clientes;
 
     private boolean eliminada;
 

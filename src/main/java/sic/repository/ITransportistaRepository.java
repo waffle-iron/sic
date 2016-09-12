@@ -6,6 +6,8 @@ import sic.modelo.Empresa;
 import sic.modelo.Transportista;
 
 public interface ITransportistaRepository {
+    
+    Transportista getTransportistaPorId(long id_Transportista);
 
     void actualizar(Transportista transportista);
 

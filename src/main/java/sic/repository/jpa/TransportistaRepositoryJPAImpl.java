@@ -24,6 +24,18 @@ public class TransportistaRepositoryJPAImpl implements ITransportistaRepository 
         List<Transportista> transportistas = typedQuery.getResultList();
         return transportistas;
     }
+    
+    @Override
+    public Transportista getTransportistaPorId(long id_Transportista) {
+        TypedQuery<Transportista> typedQuery = em.createNamedQuery("Transportista.buscarPorId", Transportista.class);
+        typedQuery.setParameter("id", id_Transportista);
+        List<Transportista> transportistas = typedQuery.getResultList();
+        if (transportistas.isEmpty()) {
+            return null;
+        } else {
+            return transportistas.get(0);
+        }
+    }
 
     @Override
     public Transportista getTransportistaPorNombre(String nombre, Empresa empresa) {

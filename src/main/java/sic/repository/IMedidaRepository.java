@@ -5,6 +5,8 @@ import sic.modelo.Empresa;
 import sic.modelo.Medida;
 
 public interface IMedidaRepository {
+    
+    Medida getMedidaPorId(Long id_Medida);
 
     void actualizar(Medida medida);
 

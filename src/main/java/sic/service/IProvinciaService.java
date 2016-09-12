@@ -5,6 +5,8 @@ import sic.modelo.Pais;
 import sic.modelo.Provincia;
 
 public interface IProvinciaService {
+    
+    Provincia getProvinciaPorId(long id_Provincia);
 
     void actualizar(Provincia provincia);
 

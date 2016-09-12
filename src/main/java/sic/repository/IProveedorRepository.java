@@ -7,6 +7,8 @@ import sic.modelo.Proveedor;
 
 public interface IProveedorRepository {
 
+    Proveedor getProveedorPorId(Long id_Proveedor);
+    
     void actualizar(Proveedor proveedor);
 
     List<Proveedor> buscarProveedores(BusquedaProveedorCriteria criteria);

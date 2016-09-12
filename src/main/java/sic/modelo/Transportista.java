@@ -1,7 +1,6 @@
 package sic.modelo;
 
 import java.io.Serializable;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +16,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "transportista")
 @NamedQueries({
+    @NamedQuery(name = "Transportista.buscarPorId",
+            query = "SELECT t FROM Transportista t "
+                    + "WHERE t.eliminado = false AND t.id_Transportista= :id"),
     @NamedQuery(name = "Transportista.buscarTodos",
             query = "SELECT t FROM Transportista t "
                     + "WHERE t.empresa = :empresa AND t.eliminado = false "
@@ -50,9 +51,6 @@ public class Transportista implements Serializable {
 
     @Column(nullable = false)
     private String telefono;
-
-    @OneToMany(mappedBy = "transportista")
-    private Set<Factura> facturas;
 
     @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")

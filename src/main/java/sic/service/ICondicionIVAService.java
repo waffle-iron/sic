@@ -4,6 +4,8 @@ import java.util.List;
 import sic.modelo.CondicionIVA;
 
 public interface ICondicionIVAService {
+    
+    CondicionIVA getCondicionIVAPorId(long id_CondicionIVA);
 
     void actualizar(CondicionIVA condicionIVA);
 

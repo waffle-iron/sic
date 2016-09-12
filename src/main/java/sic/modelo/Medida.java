@@ -1,7 +1,6 @@
 package sic.modelo;
 
 import java.io.Serializable;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +9,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +16,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "medida")
 @NamedQueries({
+    @NamedQuery(name = "Medida.buscarPorId",
+            query = "SELECT m FROM Medida m "
+                    + "WHERE m.eliminada = false AND m.id_Medida= :id"),
     @NamedQuery(name = "Medida.buscarTodas",
             query = "SELECT m FROM Medida m "
                     + "WHERE m.eliminada = false AND m.empresa = :empresa "
@@ -37,9 +38,6 @@ public class Medida implements Serializable {
 
     @Column(nullable = false)
     private String nombre;
-
-    @OneToMany(mappedBy = "medida")
-    private Set<Producto> productos;
 
     @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")

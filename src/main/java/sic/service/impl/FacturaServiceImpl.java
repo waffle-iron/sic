@@ -71,6 +71,11 @@ public class FacturaServiceImpl implements IFacturaService {
         this.pedidoService = pedidoService;
         this.pagoService = pagoService;
     }
+    
+    @Override
+    public Factura getFacturaPorId(long id_Factura) {
+        return facturaRepository.getFacturaPorId(id_Factura);
+    }
 
     @Override
     public String[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor) {

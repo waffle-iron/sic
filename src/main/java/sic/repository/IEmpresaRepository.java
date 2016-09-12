@@ -4,6 +4,8 @@ import java.util.List;
 import sic.modelo.Empresa;
 
 public interface IEmpresaRepository {
+    
+    Empresa getEmpresaPorId(long id_Empresa);
 
     void actualizar(Empresa empresa);
 

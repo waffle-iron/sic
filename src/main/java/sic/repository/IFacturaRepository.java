@@ -10,6 +10,8 @@ import sic.modelo.RenglonFactura;
 
 public interface IFacturaRepository {
 
+    Factura getFacturaPorId(long id_Factura);
+    
     void actualizar(Factura factura);
 
     List<FacturaCompra> buscarFacturasCompra(BusquedaFacturaCompraCriteria criteria);

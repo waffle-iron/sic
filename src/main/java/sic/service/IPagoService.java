@@ -9,6 +9,8 @@ import sic.modelo.FormaDePago;
 import sic.modelo.Pago;
 
 public interface IPagoService {
+    
+    Pago getPagoPorId(long id_pago);
 
     List<Pago> getPagosDeLaFactura(Factura factura);
 

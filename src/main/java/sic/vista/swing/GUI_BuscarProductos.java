@@ -12,6 +12,7 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
+import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
 import sic.service.IEmpresaService;
@@ -84,10 +85,13 @@ public class GUI_BuscarProductos extends JDialog {
     }
 
     private void buscar() throws BusinessServiceException {
-        int cantidadResultados = 250;
-        productos = productoService.getProductosPorDescripcionQueContenga(
-                txt_CampoBusqueda.getText().trim(), cantidadResultados,
-                empresaService.getEmpresaActiva().getEmpresa());
+        BusquedaProductoCriteria criteria = BusquedaProductoCriteria.builder()
+                                           .buscarPorDescripcion(true)
+                                           .descripcion(txt_CampoBusqueda.getText().trim())
+                                           .cantRegistros(250)
+                                           .empresa(empresaService.getEmpresaActiva().getEmpresa())
+                                           .build();
+        productos = productoService.buscarProductos(criteria);
         prodSeleccionado = null;
         txt_UnidadMedida.setText("");
     }

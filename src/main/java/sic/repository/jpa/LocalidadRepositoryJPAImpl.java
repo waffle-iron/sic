@@ -2,7 +2,6 @@ package sic.repository.jpa;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
@@ -24,6 +23,18 @@ public class LocalidadRepositoryJPAImpl implements ILocalidadRepository {
         return localidades;
     }
 
+    @Override
+    public Localidad getLocalidadPorId(long id_Localidad) {
+        TypedQuery<Localidad> typedQuery = em.createNamedQuery("Localidad.buscarPorId", Localidad.class);
+        typedQuery.setParameter("id", id_Localidad);
+        List<Localidad> localidades = typedQuery.getResultList();
+        if (localidades.isEmpty()) {
+            return null;
+        } else {
+            return localidades.get(0);
+        }
+    }
+    
     @Override
     public Localidad getLocalidadPorNombre(String nombre, Provincia provincia) {
         TypedQuery<Localidad> typedQuery = em.createNamedQuery("Localidad.buscarPorNombre", Localidad.class);

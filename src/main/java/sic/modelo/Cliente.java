@@ -2,8 +2,6 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -96,12 +93,6 @@ public class Cliente implements Serializable {
     private boolean eliminado;
 
     private boolean predeterminado;
-
-    @OneToMany(mappedBy = "cliente")
-    private Set<FacturaVenta> facturasVenta;
-
-    @OneToMany(mappedBy = "cliente")
-    private List<Pedido> pedidos;
 
     @Override
     public String toString() {

@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +31,7 @@ import sic.repository.IProductoRepository;
 import sic.service.IEmpresaService;
 import sic.service.IProductoService;
 import sic.service.BusinessServiceException;
+import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
@@ -289,17 +290,10 @@ public class ProductoServiceImpl implements IProductoService {
     }
 
     @Override
-    public List<Producto> getProductosPorDescripcionQueContenga(String criteria, int cantRegistros, Empresa empresa) {
-        return productoRepository.getProductosQueContengaCodigoDescripcion(criteria, cantRegistros, empresa);
-    }
-
-    @Override
     public boolean existeStockDisponible(long idProducto, double cantidad) {
         return (this.getProductoPorId(idProducto).getCantidad() >= cantidad) || this.getProductoPorId(idProducto).isIlimitado();
     }
-
-    //**************************************************************************
-    //Calculos
+  
     @Override
     public double calcularGanancia_Porcentaje(double precioCosto, double PVP) {
         //evita la division por cero
@@ -342,16 +336,19 @@ public class ProductoServiceImpl implements IProductoService {
         return Utilidades.truncarDecimal(PVPConImpuestos, 3);
     }
 
-    //**************************************************************************
-    //Reportes
     @Override
-    public JasperPrint getReporteListaDePrecios(List<Producto> productos) throws JRException {
+    public byte[] getReporteListaDePreciosPorEmpresa(List<Producto> productos, long idEmpresa) {
         ClassLoader classLoader = FacturaServiceImpl.class.getClassLoader();
         InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/ListaPreciosProductos.jasper");
         Map params = new HashMap();
-        params.put("empresa", empresaService.getEmpresaActiva().getEmpresa());
-        params.put("logo", Utilidades.convertirByteArrayIntoImage(empresaService.getEmpresaActiva().getEmpresa().getLogo()));
-        JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(productos);
-        return JasperFillManager.fillReport(isFileReport, params, ds);
+        params.put("empresa", empresaService.getEmpresaPorId(idEmpresa));
+        params.put("logo", Utilidades.convertirByteArrayIntoImage(empresaService.getEmpresaPorId(idEmpresa).getLogo()));
+        JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(productos);               
+        try {
+            return JasperExportManager.exportReportToPdf(JasperFillManager.fillReport(isFileReport, params, ds));
+        } catch (JRException ex) {
+             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_error_reporte"), ex);
+        }
     }
 }

@@ -13,6 +13,18 @@ public class CondicionIVARepositoryJPAImpl implements ICondicionIVARepository {
 
     @PersistenceContext
     private EntityManager em;
+    
+    @Override
+    public CondicionIVA getCondicionIVAPorId(long id_CondicionIVA) {
+        TypedQuery<CondicionIVA> typedQuery = em.createNamedQuery("CondicionIVA.buscarPorId", CondicionIVA.class);
+        typedQuery.setParameter("id", id_CondicionIVA);
+        List<CondicionIVA> condicionesIVA = typedQuery.getResultList();
+        if (condicionesIVA.isEmpty()) {
+            return null;
+        } else {
+            return condicionesIVA.get(0);
+        }
+    }
 
     @Override
     public List<CondicionIVA> getCondicionesIVA() {

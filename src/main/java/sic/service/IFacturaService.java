@@ -17,6 +17,8 @@ import sic.modelo.RenglonFactura;
 import sic.modelo.RenglonPedido;
 
 public interface IFacturaService {
+    
+    Factura getFacturaPorId(long id_Factura);
 
     String[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor);
 

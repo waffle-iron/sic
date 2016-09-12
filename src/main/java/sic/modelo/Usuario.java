@@ -1,15 +1,12 @@
 package sic.modelo;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,6 +14,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "usuario")
 @NamedQueries({
+    @NamedQuery(name = "Usuario.buscarPorId",
+            query = "SELECT u FROM Usuario u "
+                    + "WHERE u.eliminado = false AND u.id_Usuario= :id"),
     @NamedQuery(name = "Usuario.buscarTodos",
             query = "SELECT u FROM Usuario u "
                     + "WHERE u.eliminado = false "
@@ -47,12 +47,6 @@ public class Usuario implements Serializable {
     private String password;
 
     private boolean permisosAdministrador;
-
-    @OneToMany(mappedBy = "usuario")
-    private Set<FacturaVenta> facturasVenta;
-
-    @OneToMany(mappedBy = "usuario")
-    private List<Pedido> pedidos;
 
     private boolean eliminado;
 

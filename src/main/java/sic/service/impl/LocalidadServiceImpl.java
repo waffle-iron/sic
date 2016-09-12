@@ -26,6 +26,11 @@ public class LocalidadServiceImpl implements ILocalidadService {
     }
 
     @Override
+    public Localidad getLocalidadPorId(long id_Localidad) {
+        return localidadRepository.getLocalidadPorId(id_Localidad);
+    }
+    
+    @Override
     public List<Localidad> getLocalidadesDeLaProvincia(Provincia provincia) {
         return localidadRepository.getLocalidadesDeLaProvincia(provincia);
     }

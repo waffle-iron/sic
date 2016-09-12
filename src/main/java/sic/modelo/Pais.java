@@ -1,14 +1,12 @@
 package sic.modelo;
 
 import java.io.Serializable;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -16,6 +14,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "pais")
 @NamedQueries({
+    @NamedQuery(name = "Pais.buscarPorId",
+            query = "SELECT p FROM Pais p "
+                    + "WHERE p.eliminado = false AND p.id_Pais= :id"),
     @NamedQuery(name = "Pais.buscarTodos",
             query = "SELECT p FROM Pais p "
                     + "WHERE p.eliminado = false ORDER BY p.nombre ASC"),
@@ -34,10 +35,7 @@ public class Pais implements Serializable {
 
     @Column(nullable = false)
     private String nombre;
-
-    @OneToMany(mappedBy = "pais")
-    private Set<Provincia> provincias;
-
+    
     private boolean eliminado = false;
 
     @Override

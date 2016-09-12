@@ -9,10 +9,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Table(name = "renglonpedido")
 @Data
+@ToString(exclude= "pedido")
 @EqualsAndHashCode(of = {"pedido", "producto"})
 public class RenglonPedido implements Serializable {
 
@@ -29,11 +31,8 @@ public class RenglonPedido implements Serializable {
     private Producto producto;
 
     private double cantidad;
-
     private double descuento_porcentaje;
-
     private double descuento_neto;
-
     private double subTotal;
 
 }

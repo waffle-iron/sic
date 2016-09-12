@@ -6,6 +6,8 @@ import sic.modelo.Factura;
 import sic.modelo.Pago;
 
 public interface IPagoRepository {
+    
+    Pago getPagoPorId(long id_Pago);
 
     List<Pago> getPagosDeLaFactura(Factura factura);
     

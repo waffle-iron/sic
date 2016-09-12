@@ -24,6 +24,11 @@ public class RubroServiceImpl implements IRubroService {
     public RubroServiceImpl(IRubroRepository rubroRepository) {
         this.rubroRepository = rubroRepository;
     }
+    
+    @Override
+    public Rubro getRubroPorId(Long id_Rubro){
+        return rubroRepository.getRubroPorId(id_Rubro);
+    }
 
     @Override
     public List<Rubro> getRubros(Empresa empresa) {

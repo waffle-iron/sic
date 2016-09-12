@@ -32,6 +32,7 @@ import sic.service.IPedidoService;
 import sic.service.ITransportistaService;
 import sic.service.IUsuarioService;
 import sic.service.BusinessServiceException;
+import sic.service.TipoDeOperacion;
 
 public class GUI_CerrarVenta extends JDialog {
 
@@ -70,15 +71,6 @@ public class GUI_CerrarVenta extends JDialog {
 
     public boolean isExito() {
         return exito;
-    }
-
-    public void actualizarEstadoPedido(Pedido pedido) {
-        if (facturaService.convertirRenglonesPedidoARenglonesFactura(gui_puntoDeVenta.getPedido(), "Factura A").isEmpty()) {
-            pedido.setEstado(EstadoPedido.CERRADO);
-        } else {
-            pedido.setEstado(EstadoPedido.ACTIVO);
-        }
-        pedidoService.actualizar(pedido);
     }
 
     private void setIcon() {
@@ -264,7 +256,7 @@ public class GUI_CerrarVenta extends JDialog {
                 }
             }
             if (gui_puntoDeVenta.getPedido() != null) {
-                this.actualizarEstadoPedido(gui_puntoDeVenta.getPedido());
+                pedidoService.actualizarEstadoPedido(TipoDeOperacion.ALTA, gui_puntoDeVenta.getPedido());
                 gui_puntoDeVenta.dispose();
             }
             this.dispose();
