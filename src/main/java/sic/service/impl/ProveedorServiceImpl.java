@@ -27,6 +27,11 @@ public class ProveedorServiceImpl implements IProveedorService {
     }
 
     @Override
+    public Proveedor getProveedorPorId(Long id_Proveedor){
+        return proveedorRepository.getProveedorPorId(id_Proveedor);
+    }
+    
+    @Override
     public List<Proveedor> getProveedores(Empresa empresa) {
         return proveedorRepository.getProveedores(empresa);
     }

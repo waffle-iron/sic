@@ -26,7 +26,7 @@ public class MedidaServiceImpl implements IMedidaService {
     }
 
     @Override
-    public Medida getMedidaPorId(long id_Medida) {
+    public Medida getMedidaPorId(Long id_Medida) {
         return medidaRepository.getMedidaPorId(id_Medida);
     }
     

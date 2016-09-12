@@ -24,7 +24,7 @@ public class MedidaRepositoryJPAImpl implements IMedidaRepository {
     }
 
     @Override
-    public Medida getMedidaPorId(long id_Medida) {
+    public Medida getMedidaPorId(Long id_Medida) {
         TypedQuery<Medida> typedQuery = em.createNamedQuery("Medida.buscarPorId", Medida.class);
         typedQuery.setParameter("id", id_Medida);
         List<Medida> medidas = typedQuery.getResultList();
