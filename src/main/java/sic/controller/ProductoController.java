@@ -205,11 +205,11 @@ public class ProductoController {
     
     @PutMapping("/productos/multiples")
     @ResponseStatus(HttpStatus.OK)
-    public List<Producto> modificarMultiplesProductos(@RequestParam(value = "id") long[] id, 
-                                                      @RequestBody(required = false) PreciosProducto preciosProducto,
+    public List<Producto> modificarMultiplesProductos(@RequestParam(value = "id") long[] id,                                                       
                                                       @RequestParam(value = "idMedida", required = false) Long idMedida,
                                                       @RequestParam(value = "idRubro", required = false) Long idRubro,
-                                                      @RequestParam(value = "idProveedor", required = false) Long idProveedor) {
+                                                      @RequestParam(value = "idProveedor", required = false) Long idProveedor,
+                                                      @RequestBody(required = false) PreciosProducto preciosProducto) {
         List<Producto> productos = new ArrayList<>();
         for(long idProducto : id) {
             productos.add(productoService.getProductoPorId(idProducto));
