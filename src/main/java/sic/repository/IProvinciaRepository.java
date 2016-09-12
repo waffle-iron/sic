@@ -6,7 +6,7 @@ import sic.modelo.Provincia;
 
 public interface IProvinciaRepository {
     
-    Provincia getProvinciaPorId(long id_Provincia);
+    Provincia getProvinciaPorId(Long id_Provincia);
 
     void actualizar(Provincia provincia);
 

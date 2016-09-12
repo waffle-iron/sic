@@ -27,7 +27,7 @@ public class ClienteServiceImpl implements IClienteService {
     }
 
     @Override
-    public Cliente getClientePorId(long id_Cliente) {        
+    public Cliente getClientePorId(Long id_Cliente) {        
         return clienteRepository.getClientePorId(id_Cliente);                  
     }
 

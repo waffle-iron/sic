@@ -5,7 +5,7 @@ import sic.modelo.Pais;
 
 public interface IPaisService {
     
-    Pais getPaisPorId(long id_Pais);
+    Pais getPaisPorId(Long id_Pais);
 
     void actualizar(Pais pais);
 

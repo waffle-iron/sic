@@ -32,7 +32,7 @@ public class EmpresaServiceImpl implements IEmpresaService {
     }
     
     @Override
-    public Empresa getEmpresaPorId(long id_Empresa){
+    public Empresa getEmpresaPorId(Long id_Empresa){
         return empresaRepository.getEmpresaPorId(id_Empresa);
     }
 

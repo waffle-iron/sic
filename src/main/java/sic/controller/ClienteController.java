@@ -38,7 +38,8 @@ public class ClienteController {
     
     @Autowired
     public ClienteController(IClienteService clienteService, IEmpresaService empresaService,IPaisService paisService, 
-            IProvinciaService provinciaService, ILocalidadService localidadService){
+            IProvinciaService provinciaService, ILocalidadService localidadService) {
+        
         this.clienteService = clienteService;
         this.empresaService = empresaService;
         this.paisService = paisService;
@@ -46,77 +47,58 @@ public class ClienteController {
         this.localidadService = localidadService;
     }
   
-    @GetMapping(value = "/clientes/{Id}")
+    @GetMapping("/clientes/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Cliente getCliente(@PathVariable("Id") long Id) {
-        Cliente cliente = clienteService.getClientePorId(Id);
-        return cliente;
+    public Cliente getCliente(@PathVariable("id") long id) {
+        return clienteService.getClientePorId(id);
     }
     
-    @GetMapping(value = "/clientes/criteria") 
+    @GetMapping("/clientes/criteria") 
     @ResponseStatus(HttpStatus.OK)
     public List<Cliente>  buscarConCriteria(@RequestParam(value = "razonSocial", required = false) String razonSocial,
                                   @RequestParam(value = "nombreFantasia", required = false) String nombreFantasia,
                                   @RequestParam(value = "idFiscal", required = false) String idFiscal,
-                                  @RequestParam(value = "Pais", required = false) String NombrePais,
-                                  @RequestParam(value = "nombreProvincia", required = false) String nombreProvincia, 
-                                  @RequestParam(value = "nombreLocalidad", required = false) String nombreLocalidad, 
-                                  @RequestParam(value = "nombreEmpresa", required = false) String nombreEmpresa) {
-        Empresa empresa = empresaService.getEmpresaPorNombre(nombreEmpresa);
-        Pais pais = new Pais();
-        if(NombrePais == null) { pais.setNombre("Todos");} else { pais = paisService.getPaisPorNombre(NombrePais);}
-        Provincia provincia = new Provincia();
-        if (nombreProvincia == null) {
-            provincia.setNombre("Todas");
-        } else {
-            provincia = provinciaService.getProvinciaPorNombre(nombreProvincia, pais);
-        }
-        Localidad localidad = new Localidad();
-        if (nombreLocalidad == null) {
-            localidad.setNombre("Todas");
-        } else {
-            localidad = localidadService.getLocalidadPorNombre(nombreLocalidad, provincia);
-        }
+                                  @RequestParam(value = "idPais", required = false) Long idPais,
+                                  @RequestParam(value = "idProvincia", required = false) Long idProvincia, 
+                                  @RequestParam(value = "idLocalidad", required = false) Long idLocalidad, 
+                                  @RequestParam(value = "idEmpresa") Long idEmpresa) {
         List<Cliente> clientes = clienteService.buscarClientes(
                                   new BusquedaClienteCriteria(
-                                  (razonSocial!=null), razonSocial, 
-                                  (nombreFantasia!=null), nombreFantasia, 
-                                  (idFiscal!=null), idFiscal, 
-                                  (pais!=null), pais, 
-                                  (provincia!=null), provincia, 
-                                  (localidad!=null), localidad,
-                                  empresa)
+                                  (razonSocial != null), razonSocial, 
+                                  (nombreFantasia != null), nombreFantasia, 
+                                  (idFiscal != null), idFiscal, 
+                                  (idPais != null), paisService.getPaisPorId(idPais), 
+                                  (idProvincia != null), provinciaService.getProvinciaPorId(idProvincia), 
+                                  (idLocalidad != null), localidadService.getLocalidadPorId(idLocalidad),
+                                  empresaService.getEmpresaPorId(idEmpresa))
                                   ); 
         return clientes;
     } 
        
-    @GetMapping(value = "/clientes")
+    @GetMapping("/clientes/empresa/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Cliente>getClientes(@RequestParam(value = "nombreEmpresa", required = false) String nombreEmpresa){
-        List<Cliente> clientes = clienteService.getClientes(empresaService.getEmpresaPorNombre(nombreEmpresa));
-        return clientes;
+    public List<Cliente> getClientes(@PathVariable("id") long Id){
+        return clienteService.getClientes(empresaService.getEmpresaPorId(Id));
     }
     
-    @GetMapping(value = "/clientes/predeterminado")
+    @GetMapping("/clientes/predeterminado/empresa/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Cliente getClientePredeterminado(@RequestParam(value = "nombreEmpresa", required = false) String nombreEmpresa){
-     return clienteService.getClientePredeterminado(empresaService.getEmpresaPorNombre(nombreEmpresa));
+    public Cliente getClientePredeterminado(@PathVariable("id") long id){
+     return clienteService.getClientePredeterminado(empresaService.getEmpresaPorId(id));
     }
     
     
-    @DeleteMapping(value = "/clientes/{Id}")
+    @DeleteMapping("/clientes/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void eliminar(@PathVariable("Id") long Id){
-        Cliente cliente = clienteService.getClientePorId(Id);
-        clienteService.eliminar(cliente);
+    public void eliminar(@PathVariable("Id") long id){
+        clienteService.eliminar(clienteService.getClientePorId(id));
     }
     
-    @PostMapping(value = "/clientes")
+    @PostMapping("/clientes")
     @ResponseStatus(HttpStatus.CREATED)
     public Cliente guardar(@RequestBody Cliente cliente) {
         clienteService.guardar(cliente);
-        cliente = clienteService.getClientePorRazonSocial(cliente.getRazonSocial(), cliente.getEmpresa());
-        return cliente;
+        return clienteService.getClientePorRazonSocial(cliente.getRazonSocial(), cliente.getEmpresa());
     }
     
     @PutMapping("/clientes")

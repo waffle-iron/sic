@@ -25,7 +25,7 @@ public class ClienteRepositoryJPAImpl implements IClienteRepository {
     }
 
     @Override
-    public Cliente getClientePorId(long id_Cliente) {        
+    public Cliente getClientePorId(Long id_Cliente) {        
         TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarPorId", Cliente.class);
         typedQuery.setParameter("id", id_Cliente);
         List<Cliente> clientes = typedQuery.getResultList();

@@ -22,7 +22,7 @@ public class EmpresaRepositoryJPAImpl implements IEmpresaRepository {
     }
 
     @Override
-    public Empresa getEmpresaPorId(long id_Empresa) {
+    public Empresa getEmpresaPorId(Long id_Empresa) {
         TypedQuery<Empresa> typedQuery = em.createNamedQuery("Empresa.buscarPorId", Empresa.class);
         typedQuery.setParameter("id", id_Empresa);
         List<Empresa> empresas = typedQuery.getResultList();

@@ -22,7 +22,7 @@ public class PaisRepositoryJPAImpl implements IPaisRepository {
     }
     
     @Override
-    public Pais getPaisPorId(long id_Pais) {
+    public Pais getPaisPorId(Long id_Pais) {
         TypedQuery<Pais> typedQuery = em.createNamedQuery("Pais.buscarPorId", Pais.class);
         typedQuery.setParameter("id", id_Pais);
         List<Pais> paises = typedQuery.getResultList();

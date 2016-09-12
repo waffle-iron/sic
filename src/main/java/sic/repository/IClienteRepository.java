@@ -11,7 +11,7 @@ public interface IClienteRepository {
 
     List<Cliente> buscarClientes(BusquedaClienteCriteria criteria);
 
-    Cliente getClientePorId(long id_Cliente);
+    Cliente getClientePorId(Long id_Cliente);
 
     Cliente getClientePorId_Fiscal(String id_Fiscal, Empresa empresa);
 

@@ -6,7 +6,7 @@ import sic.modelo.EmpresaActiva;
 
 public interface IEmpresaService {
     
-    Empresa getEmpresaPorId(long id_Empresa);
+    Empresa getEmpresaPorId(Long id_Empresa);
 
     void actualizar(Empresa empresa);
 

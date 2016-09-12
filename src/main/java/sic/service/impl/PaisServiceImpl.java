@@ -25,7 +25,7 @@ public class PaisServiceImpl implements IPaisService {
     }
     
     @Override
-    public Pais getPaisPorId(long id_Pais) {
+    public Pais getPaisPorId(Long id_Pais) {
         return paisRepository.getPaisPorId(id_Pais);
     }
 
