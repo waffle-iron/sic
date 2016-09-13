@@ -20,7 +20,7 @@ public class PaisRepositoryJPAImpl implements IPaisRepository {
         List<Pais> paises = typedQuery.getResultList();
         return paises;
     }
-    
+
     @Override
     public Pais getPaisPorId(Long id_Pais) {
         TypedQuery<Pais> typedQuery = em.createNamedQuery("Pais.buscarPorId", Pais.class);

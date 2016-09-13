@@ -158,6 +158,15 @@ public class GUI_Transportistas extends JInternalFrame {
             criteria.setBuscarPorPais(chk_Ubicacion.isSelected());
             criteria.setPais((Pais) cmb_Pais.getSelectedItem());
             criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+            if (criteria.getPais().getNombre().equals("Todos")) {
+                criteria.setBuscarPorPais(false);
+            }
+            if (criteria.getProvincia().getNombre().equals("Todas")) {
+                criteria.setBuscarPorProvincia(false);
+            }
+            if (criteria.getLocalidad().getNombre().equals("Todas")) {
+                criteria.setBuscarPorLocalidad(false);
+            }
             transportistas = transportistaService.buscarTransportistas(criteria);
             this.cargarResultadosAlTable();
 
