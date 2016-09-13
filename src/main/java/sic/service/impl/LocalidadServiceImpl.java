@@ -26,7 +26,7 @@ public class LocalidadServiceImpl implements ILocalidadService {
     }
 
     @Override
-    public Localidad getLocalidadPorId(long id_Localidad) {
+    public Localidad getLocalidadPorId(Long id_Localidad) {
         return localidadRepository.getLocalidadPorId(id_Localidad);
     }
     

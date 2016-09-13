@@ -24,7 +24,7 @@ public class ProvinciaRepositoryJPAImpl implements IProvinciaRepository {
     }
 
     @Override
-    public Provincia getProvinciaPorId(long id_Provincia) {
+    public Provincia getProvinciaPorId(Long id_Provincia) {
         TypedQuery<Provincia> typedQuery = em.createNamedQuery("Provincia.buscarPorId", Provincia.class);
         typedQuery.setParameter("id", id_Provincia);
         List<Provincia> provincias = typedQuery.getResultList();

@@ -24,7 +24,7 @@ public class LocalidadRepositoryJPAImpl implements ILocalidadRepository {
     }
 
     @Override
-    public Localidad getLocalidadPorId(long id_Localidad) {
+    public Localidad getLocalidadPorId(Long id_Localidad) {
         TypedQuery<Localidad> typedQuery = em.createNamedQuery("Localidad.buscarPorId", Localidad.class);
         typedQuery.setParameter("id", id_Localidad);
         List<Localidad> localidades = typedQuery.getResultList();

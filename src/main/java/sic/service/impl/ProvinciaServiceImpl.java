@@ -26,7 +26,7 @@ public class ProvinciaServiceImpl implements IProvinciaService {
     }
     
     @Override
-    public Provincia getProvinciaPorId(long id_Provincia) {
+    public Provincia getProvinciaPorId(Long id_Provincia) {
         return provinciaRepository.getProvinciaPorId(id_Provincia);
     }
 

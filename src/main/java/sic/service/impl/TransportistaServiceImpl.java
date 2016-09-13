@@ -38,19 +38,6 @@ public class TransportistaServiceImpl implements ITransportistaService {
 
     @Override
     public List<Transportista> buscarTransportistas(BusquedaTransportistaCriteria criteria) {
-        //@Todo No debe verificar contra la palabra "Todos/as". Usar el boolean asociado a ese campo
-        //Pais
-        if (criteria.getPais().getNombre().equals("Todos")) {
-            criteria.setBuscarPorPais(false);
-        }
-        //Provincia
-        if (criteria.getProvincia().getNombre().equals("Todas")) {
-            criteria.setBuscarPorProvincia(false);
-        }
-        //Localidad
-        if (criteria.getLocalidad().getNombre().equals("Todas")) {
-            criteria.setBuscarPorLocalidad(false);
-        }
         return transportistaRepository.busquedaPersonalizada(criteria);
     }
 
