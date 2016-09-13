@@ -106,7 +106,7 @@ public class ProductoController {
         productoService.eliminarMultiplesProductos(productos);
     }
     
-    @PutMapping("/productos/{id}")
+    @PutMapping("/productos")
     @ResponseStatus(HttpStatus.OK)
     public Producto actualizar(@RequestBody Producto producto) {
         if(productoService.getProductoPorId(producto.getId_Producto()) != null) {
