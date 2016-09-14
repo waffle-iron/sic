@@ -12,11 +12,11 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Medida;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
-import sic.service.IEmpresaService;
 import sic.service.IMedidaService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
@@ -28,8 +28,7 @@ public class GUI_ModificacionProductosBulk extends JDialog {
     private final List<Producto> productosParaModificar;
     private ModeloTabla modeloTablaProductos;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IMedidaService medidaService = appContext.getBean(IMedidaService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IMedidaService medidaService = appContext.getBean(IMedidaService.class);    
     private final IRubroService rubroService = appContext.getBean(IRubroService.class);
     private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
@@ -66,7 +65,7 @@ public class GUI_ModificacionProductosBulk extends JDialog {
 
     private void cargarComboBoxMedidas() {
         cmb_Medida.removeAllItems();
-        List<Medida> medidas = medidaService.getUnidadMedidas(empresaService.getEmpresaActiva().getEmpresa());
+        List<Medida> medidas = medidaService.getUnidadMedidas(EmpresaActiva.getInstance().getEmpresa());
         for (Medida medida : medidas) {
             cmb_Medida.addItem(medida);
         }
@@ -74,7 +73,7 @@ public class GUI_ModificacionProductosBulk extends JDialog {
 
     private void cargarComboBoxRubros() {
         cmb_Rubro.removeAllItems();
-        List<Rubro> rubros = rubroService.getRubros(empresaService.getEmpresaActiva().getEmpresa());
+        List<Rubro> rubros = rubroService.getRubros(EmpresaActiva.getInstance().getEmpresa());
         for (Rubro rubro : rubros) {
             cmb_Rubro.addItem(rubro);
         }
@@ -83,7 +82,7 @@ public class GUI_ModificacionProductosBulk extends JDialog {
     private void cargarComboBoxProveedores() {
         cmb_Proveedor.removeAllItems();
         List<Proveedor> proveedores;
-        proveedores = proveedorService.getProveedores(empresaService.getEmpresaActiva().getEmpresa());
+        proveedores = proveedorService.getProveedores(EmpresaActiva.getInstance().getEmpresa());
         for (Proveedor proveedor : proveedores) {
             cmb_Proveedor.addItem(proveedor);
         }

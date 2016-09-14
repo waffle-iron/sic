@@ -8,8 +8,8 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Medida;
-import sic.service.IEmpresaService;
 import sic.service.IMedidaService;
 import sic.service.BusinessServiceException;
 import sic.util.Utilidades;
@@ -19,8 +19,7 @@ public class GUI_DetalleMedida extends JDialog {
     private final DefaultListModel modeloList = new DefaultListModel();
     private Medida medidaSeleccionada;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IMedidaService medidaService = appContext.getBean(IMedidaService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IMedidaService medidaService = appContext.getBean(IMedidaService.class);    
     private static final Logger log = Logger.getLogger(GUI_DetalleMedida.class.getPackage().getName());
 
     public GUI_DetalleMedida() {
@@ -35,7 +34,7 @@ public class GUI_DetalleMedida extends JDialog {
 
     private void cargarListMedidas() {
         modeloList.clear();
-        List<Medida> medidas = medidaService.getUnidadMedidas(empresaService.getEmpresaActiva().getEmpresa());
+        List<Medida> medidas = medidaService.getUnidadMedidas(EmpresaActiva.getInstance().getEmpresa());
         for (Medida medida : medidas) {
             modeloList.addElement(medida);
         }
@@ -184,7 +183,7 @@ public class GUI_DetalleMedida extends JDialog {
         try {
             Medida medida = new Medida();
             medida.setNombre(txt_Nuevo.getText().trim());
-            medida.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+            medida.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
             medidaService.guardar(medida);
             txt_Nuevo.setText("");
             this.cargarListMedidas();
@@ -213,7 +212,7 @@ public class GUI_DetalleMedida extends JDialog {
                     Medida medidaModificada = new Medida();
                     medidaModificada.setId_Medida(medidaSeleccionada.getId_Medida());
                     medidaModificada.setNombre(txt_ModicaElimina.getText().trim());
-                    medidaModificada.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                    medidaModificada.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
                     medidaService.actualizar(medidaModificada);
                     txt_ModicaElimina.setText("");
                     medidaSeleccionada = null;

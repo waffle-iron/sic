@@ -9,11 +9,11 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.BusquedaProveedorCriteria;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Proveedor;
 import sic.modelo.Provincia;
-import sic.service.IEmpresaService;
 import sic.service.ILocalidadService;
 import sic.service.IPaisService;
 import sic.service.IProveedorService;
@@ -30,8 +30,7 @@ public class GUI_Proveedores extends JInternalFrame {
     private final IPaisService paisService = appContext.getBean(IPaisService.class);
     private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
     private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
-    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);    
     private static final Logger LOGGER = Logger.getLogger(GUI_Proveedores.class.getPackage().getName());
 
     public GUI_Proveedores() {
@@ -183,7 +182,7 @@ public class GUI_Proveedores extends JInternalFrame {
         criteria.setBuscaPorPais(chk_Ubicacion.isSelected());
         criteria.setPais((Pais) cmb_Pais.getSelectedItem());
         criteria.setCantRegistros(0);
-        criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+        criteria.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
 
         try {
             proveedores = proveedorService.buscarProveedores(criteria);

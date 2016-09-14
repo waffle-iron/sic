@@ -11,11 +11,11 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.BusquedaClienteCriteria;
 import sic.modelo.Cliente;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
 import sic.service.IClienteService;
-import sic.service.IEmpresaService;
 import sic.service.ILocalidadService;
 import sic.service.IPaisService;
 import sic.service.IProvinciaService;
@@ -29,8 +29,7 @@ public class GUI_Clientes extends JInternalFrame {
     private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
     private final IPaisService paisService = appContext.getBean(IPaisService.class);
     private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
-    private final IClienteService clienteService = appContext.getBean(IClienteService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IClienteService clienteService = appContext.getBean(IClienteService.class);    
     private static final Logger log = Logger.getLogger(GUI_Clientes.class.getPackage().getName());
 
     public GUI_Clientes() {
@@ -172,7 +171,7 @@ public class GUI_Clientes extends JInternalFrame {
             chk_Ubicacion.isSelected(), (Pais) cmb_Pais.getSelectedItem(),
             chk_Ubicacion.isSelected(), (Provincia) cmb_Provincia.getSelectedItem(),
             chk_Ubicacion.isSelected(), (Localidad) cmb_Localidad.getSelectedItem(),
-            empresaService.getEmpresaActiva().getEmpresa());   
+            EmpresaActiva.getInstance().getEmpresa());   
         //Pais
         if (criteria.getPais().getNombre().equals("Todos")) {
             criteria.setBuscaPorPais(false);
@@ -559,8 +558,8 @@ public class GUI_Clientes extends JInternalFrame {
             this.setMaximum(true);
             String mensaje = "No existe ningun Cliente establecido como Predeterminado,\ndebe "
                     + "establecer uno para poder utilizar el T.P.V. (Terminal Punto de Venta).";
-            if (!clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa()).isEmpty()) {
-                if (clienteService.getClientePredeterminado(empresaService.getEmpresaActiva().getEmpresa()) == null) {
+            if (!clienteService.getClientes(EmpresaActiva.getInstance().getEmpresa()).isEmpty()) {
+                if (clienteService.getClientePredeterminado(EmpresaActiva.getInstance().getEmpresa()) == null) {
                     JOptionPane.showInternalMessageDialog(this, mensaje, "Aviso", JOptionPane.WARNING_MESSAGE);
                 }
             } else {

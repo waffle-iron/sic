@@ -5,6 +5,7 @@ import java.util.List;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperPrint;
 import sic.modelo.BusquedaPedidoCriteria;
+import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
@@ -16,7 +17,7 @@ public interface IPedidoService {
 
     List<Pedido> buscarConCriteria(BusquedaPedidoCriteria criteria);
 
-    long calcularNumeroPedido();
+    long calcularNumeroPedido(Empresa empresa);
     
     void actualizarEstadoPedido(TipoDeOperacion tipoDeOperacion, Pedido pedido);
 

@@ -12,8 +12,8 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Cliente;
+import sic.modelo.EmpresaActiva;
 import sic.service.IClienteService;
-import sic.service.IEmpresaService;
 import sic.service.BusinessServiceException;
 import sic.util.Utilidades;
 
@@ -24,8 +24,7 @@ public class GUI_BuscarClientes extends JDialog {
     private List<Cliente> clientes;
     private Cliente clienteSeleccionado;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IClienteService clienteService = appContext.getBean(IClienteService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IClienteService clienteService = appContext.getBean(IClienteService.class);    
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger log = Logger.getLogger(GUI_BuscarClientes.class.getPackage().getName());
 
@@ -59,7 +58,7 @@ public class GUI_BuscarClientes extends JDialog {
     private void buscar() {
         clientes = clienteService.getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(
                 txt_TextoBusqueda.getText().trim(),
-                empresaService.getEmpresaActiva().getEmpresa());
+                EmpresaActiva.getInstance().getEmpresa());
         this.cargarResultadosAlTable();
     }
 

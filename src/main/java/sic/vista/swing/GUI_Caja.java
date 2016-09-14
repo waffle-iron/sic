@@ -22,6 +22,7 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Caja;
 import sic.modelo.Empresa;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
@@ -29,7 +30,6 @@ import sic.modelo.Gasto;
 import sic.modelo.Pago;
 import sic.service.EstadoCaja;
 import sic.service.ICajaService;
-import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IGastoService;
@@ -43,8 +43,7 @@ import sic.util.Utilidades;
 public class GUI_Caja extends javax.swing.JDialog {
 
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final ICajaService cajaService = appContext.getBean(ICajaService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final ICajaService cajaService = appContext.getBean(ICajaService.class);    
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IGastoService gastoService = appContext.getBean(IGastoService.class);
@@ -60,7 +59,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     public GUI_Caja(Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        this.caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        this.caja = cajaService.getUltimaCaja(EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
         this.setTituloVentana();
     }
 
@@ -95,12 +94,12 @@ public class GUI_Caja extends javax.swing.JDialog {
                 hasta = this.caja.getFechaCierre();
             }
             List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(
-                    empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(),
+                    EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                     ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(),
                     this.caja.getFechaApertura(), hasta);
             this.listaMovimientos.addAll(pagos);
             List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(
-                    empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(),
+                    EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                     ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(),
                     this.caja.getFechaApertura(), hasta);
             this.listaMovimientos.addAll(gastos);
@@ -219,7 +218,7 @@ public class GUI_Caja extends javax.swing.JDialog {
 
     private void cargarTablaResumenGeneral() {
         if (this.caja != null) {
-            Empresa empresaActiva = empresaService.getEmpresaActiva().getEmpresa();
+            Empresa empresaActiva = EmpresaActiva.getInstance().getEmpresa();
             double totalGeneral = this.caja.getSaldoInicial();
             Object[] saldoInicial = new Object[3];
             saldoInicial[0] = "Saldo Apertura";
@@ -291,7 +290,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     }
 
     private void cargarElementosFormaDePago() {
-        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
+        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(EmpresaActiva.getInstance().getEmpresa());
         if (cmb_FormasDePago.getItemCount() != formasDePago.size()) {
             cmb_FormasDePago.removeAllItems();
             for (FormaDePago formaDePago : formasDePago) {
@@ -313,13 +312,13 @@ public class GUI_Caja extends javax.swing.JDialog {
         dataSource.add((String) tbl_Resumen.getValueAt(0, 0)
                 + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(0, 2))));
 
-        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
+        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(EmpresaActiva.getInstance().getEmpresa());
         double totalPorCorte = this.caja.getSaldoInicial();
         for (FormaDePago formaDePago : formasDePago) {
             double totalPorCorteFormaDePago = 0.0;
-            List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(),
+            List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                     formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
-            List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa(),
+            List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                     formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
             for (Pago pago : pagos) {
                 totalPorCorteFormaDePago += pagoService.getTotalPagado(pago.getFactura());

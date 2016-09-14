@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Empresa;
+import sic.modelo.EmpresaActiva;
 import sic.service.IEmpresaService;
 
 public class GUI_Empresas extends JDialog {
@@ -184,8 +185,8 @@ public class GUI_Empresas extends JDialog {
                 empresaService.eliminar(empresaSeleccionada);
                 LOGGER.warn("Empresa " + empresaSeleccionada.getNombre() + " eliminada.");
                 //actualiza la empresa en caso de que sea la seleccionada
-                if (empresaSeleccionada.equals(empresaService.getEmpresaActiva().getEmpresa())) {
-                    empresaService.setEmpresaActiva(null);
+                if (empresaSeleccionada.equals(EmpresaActiva.getInstance().getEmpresa())) {                    
+                    EmpresaActiva.getInstance().setEmpresa(null);
                 }
                 this.cargarListEmpresas();
                 empresaSeleccionada = null;

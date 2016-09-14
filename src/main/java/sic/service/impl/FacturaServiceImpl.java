@@ -461,9 +461,9 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public boolean validarCantidadMaximaDeRenglones(int cantidad) {
-        ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
-                empresaService.getEmpresaActiva().getEmpresa());
+    public boolean validarCantidadMaximaDeRenglones(int cantidad, Empresa empresa) {
+        ConfiguracionDelSistema cds = configuracionDelSistemaService
+                .getConfiguracionDelSistemaPorEmpresa(empresa);
         int max = cds.getCantidadMaximaDeRenglonesEnFactura();
         return cantidad < max;
     }
@@ -707,8 +707,8 @@ public class FacturaServiceImpl implements IFacturaService {
         ClassLoader classLoader = FacturaServiceImpl.class.getClassLoader();
         InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/FacturaVenta.jasper");
         Map params = new HashMap();
-        ConfiguracionDelSistema cds = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
-                empresaService.getEmpresaActiva().getEmpresa());
+        ConfiguracionDelSistema cds = configuracionDelSistemaService
+                .getConfiguracionDelSistemaPorEmpresa(factura.getEmpresa());
         params.put("preImpresa", cds.isUsarFacturaVentaPreImpresa());
         String formasDePago = new String();
         for (Pago pago : pagoService.getPagosDeLaFactura(factura)) {

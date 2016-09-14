@@ -7,12 +7,12 @@ import javax.swing.JOptionPane;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.CondicionIVA;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Proveedor;
 import sic.modelo.Provincia;
 import sic.service.ICondicionIVAService;
-import sic.service.IEmpresaService;
 import sic.service.ILocalidadService;
 import sic.service.IPaisService;
 import sic.service.IProveedorService;
@@ -29,8 +29,7 @@ public class GUI_DetalleProveedor extends JDialog {
     private final IPaisService paisService = appContext.getBean(IPaisService.class);
     private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
     private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
-    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);    
 
     public GUI_DetalleProveedor() {
         this.initComponents();
@@ -550,7 +549,7 @@ public class GUI_DetalleProveedor extends JDialog {
                 proveedor.setContacto(txt_Contacto.getText().trim());
                 proveedor.setEmail(txt_Email.getText().trim());
                 proveedor.setWeb(txt_Web.getText().trim());
-                proveedor.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                proveedor.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
                 proveedorService.guardar(proveedor);
                 int respuesta = JOptionPane.showConfirmDialog(this,
                         "El proveedor se guardó correctamente.\n¿Desea dar de alta otro proveedor?",
@@ -573,7 +572,7 @@ public class GUI_DetalleProveedor extends JDialog {
                 proveedorModificar.setContacto(txt_Contacto.getText().trim());
                 proveedorModificar.setEmail(txt_Email.getText().trim());
                 proveedorModificar.setWeb(txt_Web.getText().trim());
-                proveedorModificar.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                proveedorModificar.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
                 proveedorService.actualizar(proveedorModificar);
                 JOptionPane.showMessageDialog(this, "El proveedor se modificó correctamente.",
                         "Aviso", JOptionPane.INFORMATION_MESSAGE);

@@ -22,21 +22,20 @@ import sic.AppContextProvider;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Cliente;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonPedido;
 import sic.modelo.Usuario;
 import sic.service.BusinessServiceException;
 import sic.service.EstadoPedido;
 import sic.service.IClienteService;
-import sic.service.IEmpresaService;
 import sic.service.IPedidoService;
 import sic.service.IUsuarioService;
 import sic.util.RenderTabla;
 
 public class GUI_Pedidos extends JInternalFrame {
 
-    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();    
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
     private final IClienteService clienteService = appContext.getBean(IClienteService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
@@ -67,7 +66,7 @@ public class GUI_Pedidos extends JInternalFrame {
             protected List<Pedido> doInBackground() throws Exception {
                 try {
                     BusquedaPedidoCriteria criteria = new BusquedaPedidoCriteria();
-                    criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                    criteria.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
                     criteria.setFechaDesde(dc_FechaDesde.getDate());
                     criteria.setFechaHasta(dc_FechaHasta.getDate());
                     criteria.setNroPedido(Long.valueOf(txt_NumeroPedido.getText()));
@@ -131,7 +130,7 @@ public class GUI_Pedidos extends JInternalFrame {
             BusquedaFacturaVentaCriteria criteria = new BusquedaFacturaVentaCriteria();
             criteria.setBuscarPorPedido(true);
             criteria.setNroPedido(numeroDePedido);
-            criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+            criteria.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
             gui_facturaVenta.buscarConCriteria(criteria);
 
             try {
@@ -297,7 +296,7 @@ public class GUI_Pedidos extends JInternalFrame {
     private void cargarComboBoxClientes() {
         cmb_Cliente.removeAllItems();
         List<Cliente> clientes;
-        clientes = clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa());
+        clientes = clienteService.getClientes(EmpresaActiva.getInstance().getEmpresa());
         for (Cliente cliente : clientes) {
             cmb_Cliente.addItem(cliente);
         }
@@ -313,7 +312,7 @@ public class GUI_Pedidos extends JInternalFrame {
     }
 
     private boolean existeClienteDisponible() {
-        return !clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa()).isEmpty();
+        return !clienteService.getClientes(EmpresaActiva.getInstance().getEmpresa()).isEmpty();
     }
 
     private void cargarRenglonesDelPedidoSeleccionadoEnTabla(java.awt.event.KeyEvent evt) {
@@ -329,7 +328,7 @@ public class GUI_Pedidos extends JInternalFrame {
         this.limpiarTablaRenglones();
         this.setColumnasRenglonesPedido();
         long nroPedido = (long) tbl_Pedidos.getValueAt(row, 2);
-        Pedido paraListarRenglones = pedidoService.getPedidoPorNumeroConRenglonesActualizandoSubtotales(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        Pedido paraListarRenglones = pedidoService.getPedidoPorNumeroConRenglonesActualizandoSubtotales(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
         for (RenglonPedido renglon : paraListarRenglones.getRenglones()) {
             Object[] fila = new Object[6];
             fila[0] = renglon.getProducto().getCodigo();
@@ -766,7 +765,7 @@ public class GUI_Pedidos extends JInternalFrame {
         try {
             if (tbl_Pedidos.getSelectedRow() != -1) {
                 long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
-                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
                 if (pedido.getEstado() == EstadoPedido.CERRADO) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -817,7 +816,7 @@ public class GUI_Pedidos extends JInternalFrame {
     private void btn_imprimirPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_imprimirPedidoActionPerformed
         if (tbl_Pedidos.getSelectedRow() != -1) {
             long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
-            Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+            Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
             this.lanzarReportePedido(pedidoService.calcularTotalActualDePedido(pedido));
         }
     }//GEN-LAST:event_btn_imprimirPedidoActionPerformed
@@ -826,7 +825,7 @@ public class GUI_Pedidos extends JInternalFrame {
         try {
             if (tbl_Pedidos.getSelectedRow() != -1) {
                 long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
-                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
                 if (pedido.getEstado() == EstadoPedido.CERRADO) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
                             JOptionPane.ERROR_MESSAGE);
@@ -856,7 +855,7 @@ public class GUI_Pedidos extends JInternalFrame {
         try {
             if (tbl_Pedidos.getSelectedRow() != -1) {
                 long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
-                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
                 if (pedido.getEstado() == EstadoPedido.CERRADO) {
                     JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
                             JOptionPane.ERROR_MESSAGE);

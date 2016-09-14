@@ -12,11 +12,11 @@ import javax.swing.SwingUtilities;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Medida;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
-import sic.service.IEmpresaService;
 import sic.service.IMedidaService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
@@ -30,8 +30,7 @@ public class GUI_DetalleProducto extends JDialog {
     private Producto productoModificar;
     private final TipoDeOperacion operacion;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IMedidaService medidaService = appContext.getBean(IMedidaService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IMedidaService medidaService = appContext.getBean(IMedidaService.class);    
     private final IRubroService rubroService = appContext.getBean(IRubroService.class);
     private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
@@ -710,7 +709,7 @@ public class GUI_DetalleProducto extends JDialog {
 
     private void cargarComboBoxMedidas() {
         cmb_Medida.removeAllItems();
-        List<Medida> medidas = medidaService.getUnidadMedidas(empresaService.getEmpresaActiva().getEmpresa());
+        List<Medida> medidas = medidaService.getUnidadMedidas(EmpresaActiva.getInstance().getEmpresa());
         for (Medida medida : medidas) {
             cmb_Medida.addItem(medida);
         }
@@ -718,7 +717,7 @@ public class GUI_DetalleProducto extends JDialog {
 
     private void cargarComboBoxRubros() {
         cmb_Rubro.removeAllItems();
-        List<Rubro> rubros = rubroService.getRubros(empresaService.getEmpresaActiva().getEmpresa());
+        List<Rubro> rubros = rubroService.getRubros(EmpresaActiva.getInstance().getEmpresa());
         for (Rubro rubro : rubros) {
             cmb_Rubro.addItem(rubro);
         }
@@ -727,7 +726,7 @@ public class GUI_DetalleProducto extends JDialog {
     private void cargarComboBoxProveedores() {
         cmb_Proveedor.removeAllItems();
         List<Proveedor> proveedores;
-        proveedores = proveedorService.getProveedores(empresaService.getEmpresaActiva().getEmpresa());
+        proveedores = proveedorService.getProveedores(EmpresaActiva.getInstance().getEmpresa());
         for (Proveedor proveedor : proveedores) {
             cmb_Proveedor.addItem(proveedor);
         }
@@ -787,7 +786,7 @@ public class GUI_DetalleProducto extends JDialog {
                     .nota(txt_Nota.getText().trim())
                     .fechaAlta(new Date())
                     .fechaVencimiento(dc_Vencimiento.getDate())
-                    .empresa(empresaService.getEmpresaActiva().getEmpresa())
+                    .empresa(EmpresaActiva.getInstance().getEmpresa())
                     .build();
                 productoService.guardar(producto);
                 int respuesta = JOptionPane.showConfirmDialog(this,
@@ -825,7 +824,7 @@ public class GUI_DetalleProducto extends JDialog {
                 productoModificar.setProveedor((Proveedor) cmb_Proveedor.getSelectedItem());
                 productoModificar.setNota(txt_Nota.getText().trim());
                 productoModificar.setFechaVencimiento(dc_Vencimiento.getDate());
-                productoModificar.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                productoModificar.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
                 productoService.actualizar(productoModificar);
                 JOptionPane.showMessageDialog(this, "El producto se modificó correctamente.",
                         "Aviso", JOptionPane.INFORMATION_MESSAGE);

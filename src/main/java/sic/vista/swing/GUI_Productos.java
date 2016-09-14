@@ -22,10 +22,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import sic.AppContextProvider;
 import sic.modelo.BusquedaProductoCriteria;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
-import sic.service.IEmpresaService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.IRubroService;
@@ -40,8 +40,7 @@ public class GUI_Productos extends JInternalFrame {
     private boolean listarSoloFaltantes;
     private final int cantidadResultadosParaMostrar = 0; //deshabilitada momentaneamente
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IRubroService rubroService = appContext.getBean(IRubroService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IRubroService rubroService = appContext.getBean(IRubroService.class);    
     private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
     private static final Logger LOGGER = Logger.getLogger(GUI_Productos.class.getPackage().getName());
@@ -58,7 +57,7 @@ public class GUI_Productos extends JInternalFrame {
         Rubro rubroSeleccionado = (Rubro) cmb_Rubro.getSelectedItem();
         List<Rubro> rubros;
         cmb_Rubro.removeAllItems();
-        rubros = rubroService.getRubros(empresaService.getEmpresaActiva().getEmpresa());
+        rubros = rubroService.getRubros(EmpresaActiva.getInstance().getEmpresa());
         for (Rubro r : rubros) {
             cmb_Rubro.addItem(r);
         }
@@ -71,7 +70,7 @@ public class GUI_Productos extends JInternalFrame {
         Proveedor proveedorSeleccionado = (Proveedor) cmb_Proveedor.getSelectedItem();
         List<Proveedor> proveedores;
         cmb_Proveedor.removeAllItems();
-        proveedores = proveedorService.getProveedores(empresaService.getEmpresaActiva().getEmpresa());
+        proveedores = proveedorService.getProveedores(EmpresaActiva.getInstance().getEmpresa());
         for (Proveedor prov : proveedores) {
             cmb_Proveedor.addItem(prov);
         }
@@ -261,7 +260,7 @@ public class GUI_Productos extends JInternalFrame {
                     criteria.setRubro((Rubro) cmb_Rubro.getSelectedItem());
                     criteria.setBuscarPorProveedor(chk_Proveedor.isSelected());
                     criteria.setProveedor((Proveedor) cmb_Proveedor.getSelectedItem());
-                    criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                    criteria.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
                     criteria.setCantRegistros(cantidadResultadosParaMostrar);
                     criteria.setListarSoloFaltantes(listarSoloFaltantes);
                     productos = productoService.buscarProductos(criteria);

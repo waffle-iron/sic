@@ -12,10 +12,10 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.BusquedaFacturaCompraCriteria;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.Proveedor;
-import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IProveedorService;
 import sic.service.Movimiento;
@@ -28,8 +28,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
     private ModeloTabla modeloTablaFacturas = new ModeloTabla();
     private List<FacturaCompra> facturas;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);    
     private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
     private static final Logger LOGGER = Logger.getLogger(GUI_FacturasCompra.class.getPackage().getName());
 
@@ -123,7 +122,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
             if (rb_soloPagadas.isEnabled() && rb_soloPagadas.isSelected()) {
                 criteria.setBuscaSoloPagadas(true);
             }
-            criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+            criteria.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
             criteria.setCantRegistros(0);
 
             facturas = facturaService.buscarFacturaCompra(criteria);
@@ -182,14 +181,14 @@ public class GUI_FacturasCompra extends JInternalFrame {
     private void cargarComboBoxProveedores() {
         cmb_Proveedor.removeAllItems();
         List<Proveedor> proveedores;
-        proveedores = proveedorService.getProveedores(empresaService.getEmpresaActiva().getEmpresa());
+        proveedores = proveedorService.getProveedores(EmpresaActiva.getInstance().getEmpresa());
         for (Proveedor proveedor : proveedores) {
             cmb_Proveedor.addItem(proveedor);
         }
     }
 
     private boolean existeProveedorDisponible() {
-        if (proveedorService.getProveedores(empresaService.getEmpresaActiva().getEmpresa()).isEmpty()) {
+        if (proveedorService.getProveedores(EmpresaActiva.getInstance().getEmpresa()).isEmpty()) {
             return false;
         } else {
             return true;

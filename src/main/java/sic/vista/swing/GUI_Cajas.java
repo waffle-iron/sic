@@ -13,10 +13,10 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Usuario;
 import sic.service.EstadoCaja;
 import sic.service.ICajaService;
-import sic.service.IEmpresaService;
 import sic.service.IUsuarioService;
 import sic.service.BusinessServiceException;
 import sic.util.ColoresEstadosRenderer;
@@ -29,8 +29,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
 
     private ModeloTabla modeloTablaCajas = new ModeloTabla();
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final ICajaService cajaService = appContext.getBean(ICajaService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final ICajaService cajaService = appContext.getBean(ICajaService.class);    
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private static final Logger log = Logger.getLogger(GUI_Cajas.class.getPackage().getName());
     private List<Caja> cajas;
@@ -104,7 +103,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
                     criteria.setBuscaPorFecha(chk_Fecha.isSelected());
                     criteria.setFechaDesde(dc_FechaDesde.getDate());
                     criteria.setFechaHasta(dc_FechaHasta.getDate());
-                    criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                    criteria.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
                     //criteria.setCantidadDeRegistros(Integer.parseInt(cmb_paginado.getSelectedItem().toString()));
                     criteria.setCantidadDeRegistros(0);
                     criteria.setBuscaPorUsuario(chk_Usuario.isSelected());
@@ -183,7 +182,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
 
     private void habilitarAperturaDeCaja() {
         boolean cajaAbierta = true;
-        Caja caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());               
+        Caja caja = cajaService.getUltimaCaja(EmpresaActiva.getInstance().getEmpresa().getId_Empresa());               
         if (caja != null) {
             if (caja.getEstado() == EstadoCaja.CERRADA) {
                 String fechaCaja = (new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(caja.getFechaApertura());
@@ -541,7 +540,7 @@ public class GUI_Cajas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_chk_UsuarioItemStateChanged
 
     private void btn_AbrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AbrirCajaActionPerformed
-        Caja abierta = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+        Caja abierta = cajaService.getUltimaCaja(EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
         if (abierta == null) {
             this.abrirCaja();
         } else if (abierta.getEstado() == EstadoCaja.CERRADA) {

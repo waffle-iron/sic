@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Caja;
 import sic.modelo.Empresa;
+import sic.modelo.EmpresaActiva;
 import sic.service.EstadoCaja;
 import sic.service.ICajaService;
 import sic.service.IEmpresaService;
@@ -51,7 +52,7 @@ public class GUI_Principal extends JFrame {
         GUI_SeleccionEmpresa gui_seleccionEmpresa = new GUI_SeleccionEmpresa(this, true);
         gui_seleccionEmpresa.setLocationRelativeTo(this);
         gui_seleccionEmpresa.setVisible(true);
-        Empresa empresa = empresaService.getEmpresaActiva().getEmpresa();
+        Empresa empresa = EmpresaActiva.getInstance().getEmpresa();
         if (empresa == null) {
             lbl_EmpresaActiva.setText("Empresa: (sin empresa)");
         } else {
@@ -545,7 +546,7 @@ public class GUI_Principal extends JFrame {
                     getDesktopPane().getHeight() / 2 - gui.getHeight() / 2);
             getDesktopPane().add(gui);
             gui.setVisible(true);
-            Caja caja = cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+            Caja caja = cajaService.getUltimaCaja(EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
             if (caja != null) {
                 if (caja.getEstado() == EstadoCaja.ABIERTA) {
                     GUI_Caja cajaAbierta = new GUI_Caja(this, true, caja);

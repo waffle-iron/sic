@@ -14,12 +14,12 @@ import javax.swing.JOptionPane;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.FacturaCompra;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
-import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
@@ -34,8 +34,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
     private List<RenglonFactura> renglones;
     private final FacturaCompra facturaParaMostrar;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IProveedorService proveedorService = appContext.getBean(IProveedorService.class);    
     private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
@@ -157,7 +156,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
     private void cargarComboBoxProveedores() {
         List<Proveedor> proveedores;
         cmb_Proveedor.removeAllItems();
-        proveedores = proveedorService.getProveedores(empresaService.getEmpresaActiva().getEmpresa());
+        proveedores = proveedorService.getProveedores(EmpresaActiva.getInstance().getEmpresa());
         for (Proveedor proveedor : proveedores) {
             cmb_Proveedor.addItem(proveedor);
         }
@@ -166,7 +165,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
     private void cargarComboBoxTransportistas() {
         List<Transportista> transportistas;
         cmb_Transportista.removeAllItems();
-        transportistas = transportistaService.getTransportistas(empresaService.getEmpresaActiva().getEmpresa());
+        transportistas = transportistaService.getTransportistas(EmpresaActiva.getInstance().getEmpresa());
         for (Transportista trans : transportistas) {
             cmb_Transportista.addItem(trans);
         }
@@ -193,7 +192,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                 .total(Double.parseDouble(txt_Total.getValue().toString()))
                 .observaciones(txta_Observaciones.getText().trim())
                 .pagada(false)
-                .empresa(empresaService.getEmpresaActiva().getEmpresa())
+                .empresa(EmpresaActiva.getInstance().getEmpresa())
                 .eliminada(false)
                 .proveedor((Proveedor) cmb_Proveedor.getSelectedItem())
                 .build();
@@ -358,7 +357,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
     }
 
     private void cargarTiposDeFacturaDisponibles() {
-        String[] tiposFactura = facturaService.getTipoFacturaCompra(empresaService.getEmpresaActiva().getEmpresa(), (Proveedor) cmb_Proveedor.getSelectedItem());
+        String[] tiposFactura = facturaService.getTipoFacturaCompra(EmpresaActiva.getInstance().getEmpresa(), (Proveedor) cmb_Proveedor.getSelectedItem());
         cmb_TipoFactura.removeAllItems();
         for (int i = 0; tiposFactura.length > i; i++) {
             cmb_TipoFactura.addItem(tiposFactura[i]);

@@ -6,16 +6,15 @@ import javax.swing.JOptionPane;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.ConfiguracionDelSistema;
+import sic.modelo.EmpresaActiva;
 import sic.service.IConfiguracionDelSistemaService;
-import sic.service.IEmpresaService;
 import sic.service.BusinessServiceException;
 
 public class GUI_ConfiguracionDelSistema extends JDialog {
 
     private ConfiguracionDelSistema cdsModificar;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IConfiguracionDelSistemaService configuracionDelSistemaService = appContext.getBean(IConfiguracionDelSistemaService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IConfiguracionDelSistemaService configuracionDelSistemaService = appContext.getBean(IConfiguracionDelSistemaService.class);    
 
     public GUI_ConfiguracionDelSistema() {
         this.initComponents();
@@ -163,7 +162,7 @@ public class GUI_ConfiguracionDelSistema extends JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         cdsModificar = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(
-                empresaService.getEmpresaActiva().getEmpresa());
+                EmpresaActiva.getInstance().getEmpresa());
         this.cargarConfiguracionParaModificar();
     }//GEN-LAST:event_formWindowOpened
 

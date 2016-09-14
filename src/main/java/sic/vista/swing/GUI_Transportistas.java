@@ -9,11 +9,11 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.BusquedaTransportistaCriteria;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
 import sic.modelo.Transportista;
-import sic.service.IEmpresaService;
 import sic.service.ILocalidadService;
 import sic.service.IPaisService;
 import sic.service.IProvinciaService;
@@ -30,8 +30,7 @@ public class GUI_Transportistas extends JInternalFrame {
     private final IPaisService paisService = appContext.getBean(IPaisService.class);
     private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
     private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
-    private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);    
     private static final Logger LOGGER = Logger.getLogger(GUI_Transportistas.class.getPackage().getName());
 
     public GUI_Transportistas() {
@@ -157,7 +156,7 @@ public class GUI_Transportistas extends JInternalFrame {
             criteria.setProvincia((Provincia) cmb_Provincia.getSelectedItem());
             criteria.setBuscarPorPais(chk_Ubicacion.isSelected());
             criteria.setPais((Pais) cmb_Pais.getSelectedItem());
-            criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+            criteria.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
             if (criteria.getPais().getNombre().equals("Todos")) {
                 criteria.setBuscarPorPais(false);
             }

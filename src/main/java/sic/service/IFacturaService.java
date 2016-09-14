@@ -54,7 +54,7 @@ public interface IFacturaService {
 
     boolean validarFacturasImpagasParaPagoMultiple(List<Factura> facturas);
 
-    boolean validarCantidadMaximaDeRenglones(int cantidad);
+    boolean validarCantidadMaximaDeRenglones(int cantidad, Empresa empresa);
 
     double calcularSubTotal(List<RenglonFactura> renglones);
 

@@ -8,15 +8,14 @@ import javax.swing.SwingUtilities;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Caja;
+import sic.modelo.EmpresaActiva;
 import sic.service.EstadoCaja;
 import sic.service.ICajaService;
-import sic.service.IEmpresaService;
 import sic.service.IUsuarioService;
 
 public class GUI_AbrirCaja extends javax.swing.JDialog {
 
-    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();    
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final ICajaService cajaService = appContext.getBean(ICajaService.class);
 
@@ -37,13 +36,13 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         Caja caja = new Caja();
         caja.setEstado(EstadoCaja.ABIERTA);
         caja.setObservacion("Apertura De Caja");
-        caja.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+        caja.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
         caja.setFechaApertura(new Date());
         Calendar corte = Calendar.getInstance();
         corte.set(Calendar.HOUR_OF_DAY, (int) spinner_Hora.getValue());
         corte.set(Calendar.MINUTE, (int) spinner_Minutos.getValue());
         caja.setFechaCorteInforme(corte.getTime());
-        caja.setNroCaja(cajaService.getUltimoNumeroDeCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()) + 1);
+        caja.setNroCaja(cajaService.getUltimoNumeroDeCaja(EmpresaActiva.getInstance().getEmpresa().getId_Empresa()) + 1);
         caja.setSaldoInicial(monto);
         caja.setSaldoFinal(0);
         caja.setSaldoReal(0);
@@ -158,7 +157,7 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
             ftxt_Monto.setValue(0);
         }
         cajaService.guardar(this.construirCaja(((Number) ftxt_Monto.getValue()).doubleValue()));
-        GUI_Caja abrirCaja = new GUI_Caja(cajaService.getUltimaCaja(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa()));
+        GUI_Caja abrirCaja = new GUI_Caja(cajaService.getUltimaCaja(EmpresaActiva.getInstance().getEmpresa().getId_Empresa()));
         abrirCaja.setModal(true);
         abrirCaja.setLocationRelativeTo(this);
         abrirCaja.setVisible(true);

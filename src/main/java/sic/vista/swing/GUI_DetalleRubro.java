@@ -7,8 +7,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Rubro;
-import sic.service.IEmpresaService;
 import sic.service.IRubroService;
 import sic.service.BusinessServiceException;
 import sic.util.Utilidades;
@@ -18,8 +18,7 @@ public class GUI_DetalleRubro extends JDialog {
     private final DefaultListModel modeloList = new DefaultListModel();
     private Rubro rubroSeleccionado;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IRubroService rubroService = appContext.getBean(IRubroService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IRubroService rubroService = appContext.getBean(IRubroService.class);    
 
     public GUI_DetalleRubro() {
         this.initComponents();
@@ -178,7 +177,7 @@ public class GUI_DetalleRubro extends JDialog {
         try {
             Rubro rubro = new Rubro();
             rubro.setNombre(txt_Nuevo.getText().trim());
-            rubro.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+            rubro.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
             rubroService.guardar(rubro);
             txt_Nuevo.setText("");
             this.cargarListRubros();
@@ -207,7 +206,7 @@ private void btn_ActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GE
             Rubro rubroModificado = new Rubro();
             rubroModificado.setId_Rubro(rubroSeleccionado.getId_Rubro());
             rubroModificado.setNombre(txt_ModicaElimina.getText().trim());
-            rubroModificado.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+            rubroModificado.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
             rubroService.actualizar(rubroModificado);
             txt_ModicaElimina.setText("");
             rubroSeleccionado = null;
@@ -258,7 +257,7 @@ private void txt_ModicaEliminaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST
     private void cargarListRubros() {
         List<Rubro> rubros;
         modeloList.clear();
-        rubros = rubroService.getRubros(empresaService.getEmpresaActiva().getEmpresa());
+        rubros = rubroService.getRubros(EmpresaActiva.getInstance().getEmpresa());
         for (Rubro r : rubros) {
             modeloList.addElement(r);
         }

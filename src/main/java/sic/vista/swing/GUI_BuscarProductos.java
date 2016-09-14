@@ -13,9 +13,9 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.BusquedaProductoCriteria;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
-import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IProductoService;
 import sic.service.Movimiento;
@@ -34,8 +34,7 @@ public class GUI_BuscarProductos extends JDialog {
     private boolean debeCargarRenglon;    
     private final Movimiento tipoMovimiento;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IProductoService productoService = appContext.getBean(IProductoService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IProductoService productoService = appContext.getBean(IProductoService.class);    
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger LOGGER = Logger.getLogger(GUI_BuscarProductos.class.getPackage().getName());
@@ -89,7 +88,7 @@ public class GUI_BuscarProductos extends JDialog {
                                            .buscarPorDescripcion(true)
                                            .descripcion(txt_CampoBusqueda.getText().trim())
                                            .cantRegistros(250)
-                                           .empresa(empresaService.getEmpresaActiva().getEmpresa())
+                                           .empresa(EmpresaActiva.getInstance().getEmpresa())
                                            .build();
         productos = productoService.buscarProductos(criteria);
         prodSeleccionado = null;

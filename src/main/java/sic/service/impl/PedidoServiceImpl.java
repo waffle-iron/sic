@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaPedidoCriteria;
+import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.Pedido;
 import sic.modelo.Producto;
@@ -24,7 +25,6 @@ import sic.modelo.RenglonFactura;
 import sic.modelo.RenglonPedido;
 import sic.repository.IPedidoRepository;
 import sic.service.EstadoPedido;
-import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IPedidoService;
 import sic.service.IProductoService;
@@ -35,17 +35,14 @@ import sic.util.Utilidades;
 @Service
 public class PedidoServiceImpl implements IPedidoService {
 
-    private final IPedidoRepository pedidoRepository;
-    private final IEmpresaService empresaService;
+    private final IPedidoRepository pedidoRepository;    
     private final IFacturaService facturaService;
     private final IProductoService productoService;
     private static final Logger LOGGER = Logger.getLogger(PedidoServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public PedidoServiceImpl(IEmpresaService empresaService, IFacturaService facturaService,
+    public PedidoServiceImpl(IFacturaService facturaService,
             IPedidoRepository pedidoRepository, IProductoService productoService) {
-
-        this.empresaService = empresaService;
         this.facturaService = facturaService;
         this.pedidoRepository = pedidoRepository;
         this.productoService = productoService;
@@ -129,8 +126,8 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public long calcularNumeroPedido() {
-        return 1 + pedidoRepository.buscarMayorNroPedido(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+    public long calcularNumeroPedido(Empresa empresa) {
+        return 1 + pedidoRepository.buscarMayorNroPedido(empresa.getId_Empresa());
     }
 
     @Override

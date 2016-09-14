@@ -1,22 +1,22 @@
 package sic.vista.swing;
 
 import java.util.Date;
+import javax.swing.JDialog;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Empresa;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.FormaDePago;
 import sic.modelo.Gasto;
 import sic.modelo.Usuario;
-import sic.service.IEmpresaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IGastoService;
 import sic.service.IUsuarioService;
 
-public class GUI_AgregarGasto extends javax.swing.JDialog {
+public class GUI_AgregarGasto extends JDialog {
 
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);    
     private final IGastoService gastoService = appContext.getBean(IGastoService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
 
@@ -26,7 +26,7 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
     }
 
     public Gasto construirGasto(String concepto, double monto, FormaDePago formaDePago) {
-        Empresa empresa = empresaService.getEmpresaActiva().getEmpresa();
+        Empresa empresa = EmpresaActiva.getInstance().getEmpresa();
         Usuario usuario = usuarioService.getUsuarioActivo().getUsuario();
         int nroDeGasto = gastoService.getUltimoNumeroDeGasto(empresa.getId_Empresa()) + 1;
         Gasto gasto = new Gasto();
@@ -161,7 +161,7 @@ public class GUI_AgregarGasto extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        for (FormaDePago formaDePago : formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa())) {
+        for (FormaDePago formaDePago : formaDePagoService.getFormasDePago(EmpresaActiva.getInstance().getEmpresa())) {
             cmb_FormaDePago.addItem(formaDePago);
         }
     }//GEN-LAST:event_formWindowOpened

@@ -21,13 +21,12 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Cliente;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Factura;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Pedido;
 import sic.modelo.Usuario;
-import sic.service.EstadoPedido;
 import sic.service.IClienteService;
-import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IPedidoService;
 import sic.service.IUsuarioService;
@@ -43,8 +42,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private List<FacturaVenta> facturas;
     private final int cantidadResultadosParaMostrar = 0; //deshabilitada momentaneamente
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);    
     private final IClienteService clienteService = appContext.getBean(IClienteService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
@@ -124,7 +122,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
             criteria.setNumFactura(Integer.valueOf(txt_NroFactura.getValue().toString()));
             criteria.setBuscaSoloImpagas(chk_EstadoFactura.isSelected() && rb_soloImpagas.isSelected());
             criteria.setBuscaSoloPagadas(chk_EstadoFactura.isSelected() && rb_soloPagadas.isSelected());
-            criteria.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+            criteria.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
             criteria.setCantRegistros(cantidadResultadosParaMostrar);
             criteria.setBuscarPorPedido(chk_NumeroPedido.isSelected());
             if (chk_NumeroPedido.isSelected()) {
@@ -352,7 +350,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     private void cargarComboBoxClientes() {
         cmb_Cliente.removeAllItems();
         List<Cliente> clientes;
-        clientes = clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa());
+        clientes = clienteService.getClientes(EmpresaActiva.getInstance().getEmpresa());
         for (Cliente cliente : clientes) {
             cmb_Cliente.addItem(cliente);
         }
@@ -368,7 +366,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }
 
     private void cargarComboBoxTipoFactura() {
-        char[] tiposFactura = facturaService.getTiposFacturaSegunEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+        char[] tiposFactura = facturaService.getTiposFacturaSegunEmpresa(EmpresaActiva.getInstance().getEmpresa());
         cmb_TipoFactura.removeAllItems();
         for (int i = 0; tiposFactura.length > i; i++) {
             cmb_TipoFactura.addItem(tiposFactura[i]);
@@ -392,7 +390,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }
 
     private boolean existeClienteDisponible() {
-        return !clienteService.getClientes(empresaService.getEmpresaActiva().getEmpresa()).isEmpty();
+        return !clienteService.getClientes(EmpresaActiva.getInstance().getEmpresa()).isEmpty();
     }
 
     private void controlarEntradaSoloNumerico(java.awt.event.KeyEvent evt) {
@@ -925,7 +923,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 try {
                     facturaService.eliminar(facturas.get(indexFilaSeleccionada));
                     if (facturas.get(indexFilaSeleccionada).getPedido() != null) {
-                        Pedido pedidoDeFactura = pedidoService.getPedidoPorNumero(facturas.get(indexFilaSeleccionada).getPedido().getNroPedido(), empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+                        Pedido pedidoDeFactura = pedidoService.getPedidoPorNumero(facturas.get(indexFilaSeleccionada).getPedido().getNroPedido(), EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
                         pedidoService.actualizarEstadoPedido(TipoDeOperacion.ELIMINACION, pedidoDeFactura);
                     }
                     this.buscar(this.getCriteriaDeComponentes());

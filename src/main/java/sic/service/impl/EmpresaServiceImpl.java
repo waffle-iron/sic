@@ -1,6 +1,5 @@
 package sic.service.impl;
 
-import sic.modelo.EmpresaActiva;
 import java.util.List;
 import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
@@ -49,17 +48,6 @@ public class EmpresaServiceImpl implements IEmpresaService {
     @Override
     public Empresa getEmpresaPorCUIP(long cuip) {
         return empresaRepository.getEmpresaPorCUIP(cuip);
-    }
-
-    @Override
-    public EmpresaActiva getEmpresaActiva() {
-        return EmpresaActiva.getInstance();
-    }
-
-    @Override
-    public void setEmpresaActiva(Empresa empresa) {
-        EmpresaActiva empresaActiva = EmpresaActiva.getInstance();
-        empresaActiva.setEmpresa(empresa);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Empresa empresa) {
