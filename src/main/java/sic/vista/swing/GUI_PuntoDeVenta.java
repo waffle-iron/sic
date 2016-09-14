@@ -25,12 +25,12 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.FormaDePago;
 import sic.modelo.Pedido;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
 import sic.service.IClienteService;
-import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IProductoService;
@@ -51,8 +51,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     private Cliente cliente;
     private List<RenglonFactura> renglones;
     private ModeloTabla modeloTablaResultados;
-    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();    
     private final IClienteService clienteService = appContext.getBean(IClienteService.class);
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
@@ -192,10 +191,10 @@ public class GUI_PuntoDeVenta extends JDialog {
     private void llamarGUI_SeleccionEmpresa() {
         GUI_SeleccionEmpresa GUI_Empresas = new GUI_SeleccionEmpresa(this, true);
         GUI_Empresas.setVisible(true);
-        if (empresaService.getEmpresaActiva().getEmpresa() == null) {
+        if (EmpresaActiva.getInstance().getEmpresa() == null) {
             System.exit(0);
         } else {
-            empresa = empresaService.getEmpresaActiva().getEmpresa();
+            empresa = EmpresaActiva.getInstance().getEmpresa();
             this.setTitle("S.I.C. Punto de Venta "
                     + ResourceBundle.getBundle("Mensajes").getString("version")
                     + " - " + empresa.getNombre());
@@ -377,7 +376,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     private void buscarProductoConVentanaAuxiliar() {
-        if (facturaService.validarCantidadMaximaDeRenglones(renglones.size())) {
+        if (facturaService.validarCantidadMaximaDeRenglones(renglones.size(), empresa)) {
             Movimiento movimiento = cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido") ? Movimiento.PEDIDO : Movimiento.VENTA;
             GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones, movimiento, cmb_TipoComprobante.getSelectedItem().toString());
             GUI_buscarProducto.setVisible(true);
@@ -415,7 +414,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     private void buscarProductoPorCodigo() throws BusinessServiceException {
-        Producto producto = productoService.getProductoPorCodigo(txt_CodigoProducto.getText().trim(), empresaService.getEmpresaActiva().getEmpresa());
+        Producto producto = productoService.getProductoPorCodigo(txt_CodigoProducto.getText().trim(), EmpresaActiva.getInstance().getEmpresa());
         if (producto == null) {
             JOptionPane.showMessageDialog(this, "No se encontró ningun producto con el codigo ingresado!", "Error", JOptionPane.ERROR_MESSAGE);
         } else if (productoService.existeStockDisponible(producto.getId_Producto(), 1)) {
@@ -490,7 +489,7 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     private void cargarTiposDeComprobantesDisponibles() {
         cmb_TipoComprobante.removeAllItems();
-        String[] tiposFactura = facturaService.getTipoFacturaVenta(empresaService.getEmpresaActiva().getEmpresa(), cliente);
+        String[] tiposFactura = facturaService.getTipoFacturaVenta(EmpresaActiva.getInstance().getEmpresa(), cliente);
         for (int i = 0; tiposFactura.length > i; i++) {
             cmb_TipoComprobante.addItem(tiposFactura[i]);
         }
@@ -543,7 +542,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.pedido.setFechaVencimiento(dc_fechaVencimiento.getDate());
         this.pedido.setObservaciones(txta_Observaciones.getText());
         this.pedido.setUsuario(usuarioService.getUsuarioActivo().getUsuario());
-        this.pedido.setNroPedido(pedidoService.calcularNumeroPedido());
+        this.pedido.setNroPedido(pedidoService.calcularNumeroPedido(empresa));
         this.pedido.setTotalEstimado(facturaService.calcularSubTotal(renglones));
         this.pedido.setEstado(EstadoPedido.ABIERTO);
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
@@ -1285,7 +1284,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             if (!this.usuarioService.getUsuarioActivo().getUsuario().isPermisosAdministrador()) {
                 this.llamarGUI_SeleccionEmpresa();
             } else {
-                empresa = empresaService.getEmpresaActiva().getEmpresa();
+                empresa = EmpresaActiva.getInstance().getEmpresa();
             }
             //verifica que exista un Cliente predeterminado, una Forma de Pago y un Transportista
             if (this.existeClientePredeterminado() && this.existeFormaDePagoPredeterminada() && this.existeTransportistaCargado()) {

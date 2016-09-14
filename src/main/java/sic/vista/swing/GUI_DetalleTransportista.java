@@ -6,11 +6,11 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
 import sic.modelo.Transportista;
-import sic.service.IEmpresaService;
 import sic.service.ILocalidadService;
 import sic.service.IPaisService;
 import sic.service.IProvinciaService;
@@ -26,8 +26,7 @@ public class GUI_DetalleTransportista extends JDialog {
     private final IPaisService paisService = appContext.getBean(IPaisService.class);
     private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
     private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
-    private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);    
 
     public GUI_DetalleTransportista() {
         this.initComponents();
@@ -377,7 +376,7 @@ public class GUI_DetalleTransportista extends JDialog {
                     transportista.setLocalidad((Localidad) cmb_Localidad.getSelectedItem());                    
                     transportista.setTelefono(txt_Telefono.getText().trim());
                     transportista.setWeb(txt_Web.getText().trim());
-                    transportista.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                    transportista.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
                     transportistaService.guardar(transportista);
                     int respuesta = JOptionPane.showConfirmDialog(this,
                             "El transportista se guardó correctamente.\n¿Desea dar de alta otro transportista?",
@@ -394,7 +393,7 @@ public class GUI_DetalleTransportista extends JDialog {
                     transportistaModificar.setLocalidad((Localidad) cmb_Localidad.getSelectedItem());
                     transportistaModificar.setTelefono(txt_Telefono.getText().trim());
                     transportistaModificar.setWeb(txt_Web.getText().trim());
-                    transportistaModificar.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                    transportistaModificar.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
                     transportistaService.actualizar(transportistaModificar);
                     JOptionPane.showMessageDialog(this, "El transportista se modificó correctamente!",
                             "Aviso", JOptionPane.INFORMATION_MESSAGE);

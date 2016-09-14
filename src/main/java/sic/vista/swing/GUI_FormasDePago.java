@@ -6,8 +6,8 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.FormaDePago;
-import sic.service.IEmpresaService;
 import sic.service.IFormaDePagoService;
 import sic.service.BusinessServiceException;
 
@@ -16,8 +16,7 @@ public class GUI_FormasDePago extends JDialog {
     private ModeloTabla modeloTablaResultados = new ModeloTabla();
     private List<FormaDePago> formasDePago;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);    
 
     public GUI_FormasDePago() {
         this.initComponents();
@@ -72,7 +71,7 @@ public class GUI_FormasDePago extends JDialog {
     }
 
     private void getFormasDePagos() {
-        formasDePago = formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa());
+        formasDePago = formaDePagoService.getFormasDePago(EmpresaActiva.getInstance().getEmpresa());
     }
 
     private void agregarFormaDePago() {
@@ -80,7 +79,7 @@ public class GUI_FormasDePago extends JDialog {
             FormaDePago formaDePago = new FormaDePago();
             formaDePago.setNombre(txt_Nombre.getText().trim());
             formaDePago.setAfectaCaja(chk_AfectaCaja.isSelected());
-            formaDePago.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+            formaDePago.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
             formaDePagoService.guardar(formaDePago);
             txt_Nombre.setText("");
             chk_AfectaCaja.setSelected(false);
@@ -139,8 +138,8 @@ public class GUI_FormasDePago extends JDialog {
     private void verificarExistenciaPredeterminado() {
         String mensaje = "No existe ninguna Forma de Pago establecida como Predeterminada,\ndebe "
                 + "establecer una para poder utilizar el T.P.V. (Terminal Punto de Venta).";
-        if (!formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa()).isEmpty()) {
-            if (formaDePagoService.getFormaDePagoPredeterminada(empresaService.getEmpresaActiva().getEmpresa()) == null) {
+        if (!formaDePagoService.getFormasDePago(EmpresaActiva.getInstance().getEmpresa()).isEmpty()) {
+            if (formaDePagoService.getFormaDePagoPredeterminada(EmpresaActiva.getInstance().getEmpresa()) == null) {
                 JOptionPane.showMessageDialog(this, mensaje, "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         } else {

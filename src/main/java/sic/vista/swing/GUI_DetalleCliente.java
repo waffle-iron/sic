@@ -10,12 +10,12 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Cliente;
 import sic.modelo.CondicionIVA;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
 import sic.service.IClienteService;
 import sic.service.ICondicionIVAService;
-import sic.service.IEmpresaService;
 import sic.service.ILocalidadService;
 import sic.service.IPaisService;
 import sic.service.IProvinciaService;
@@ -31,8 +31,7 @@ public class GUI_DetalleCliente extends JDialog {
     private final IPaisService paisService = appContext.getBean(IPaisService.class);
     private final IProvinciaService provinciaService = appContext.getBean(IProvinciaService.class);
     private final ILocalidadService localidadService = appContext.getBean(ILocalidadService.class);
-    private final IClienteService clienteService = appContext.getBean(IClienteService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IClienteService clienteService = appContext.getBean(IClienteService.class);    
     private static final Logger LOGGER = Logger.getLogger(GUI_DetalleCliente.class.getPackage().getName());
 
     public GUI_DetalleCliente() {
@@ -529,7 +528,7 @@ public class GUI_DetalleCliente extends JDialog {
                 cliente.setContacto(txt_Contacto.getText().trim());
                 cliente.setEmail(txt_Email.getText().trim());
                 cliente.setFechaAlta(dc_FechaAlta.getDate());
-                cliente.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                cliente.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
 
                 clienteService.guardar(cliente);
                 this.cliente = clienteService.getClientePorRazonSocial(cliente.getRazonSocial(), cliente.getEmpresa());;
@@ -554,7 +553,7 @@ public class GUI_DetalleCliente extends JDialog {
                 cliente.setContacto(txt_Contacto.getText().trim());
                 cliente.setEmail(txt_Email.getText().trim());
                 cliente.setFechaAlta(dc_FechaAlta.getDate());
-                cliente.setEmpresa(empresaService.getEmpresaActiva().getEmpresa());
+                cliente.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
                 clienteService.actualizar(cliente);
                 JOptionPane.showMessageDialog(this, "El Cliente se modificó correctamente!",
                         "Aviso", JOptionPane.INFORMATION_MESSAGE);

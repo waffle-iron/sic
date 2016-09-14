@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Empresa;
+import sic.modelo.EmpresaActiva;
 import sic.service.IEmpresaService;
 import sic.service.BusinessServiceException;
 
@@ -134,7 +135,7 @@ public class GUI_SeleccionEmpresa extends JDialog {
                     + "Administrador del sistema",
                     "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            empresaService.setEmpresaActiva(empresaSeleccionada);
+            EmpresaActiva.getInstance().setEmpresa(empresaSeleccionada);
             this.dispose();
         }
     }//GEN-LAST:event_btn_AceptarActionPerformed

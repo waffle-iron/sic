@@ -13,11 +13,11 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
-import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IPagoService;
@@ -27,8 +27,7 @@ import sic.util.RenderTabla;
 public class GUI_PagoMultiplesFacturas extends JDialog {
 
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
-    private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
-    private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
+    private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);    
     private final IPagoService pagoService = appContext.getBean(IPagoService.class);
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final List<FacturaVenta> facturasVenta = new ArrayList<>();
@@ -333,7 +332,7 @@ public class GUI_PagoMultiplesFacturas extends JDialog {
     }//GEN-LAST:event_lbl_AceptarActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        for (FormaDePago formaDePago : formaDePagoService.getFormasDePago(empresaService.getEmpresaActiva().getEmpresa())) {
+        for (FormaDePago formaDePago : formaDePagoService.getFormasDePago(EmpresaActiva.getInstance().getEmpresa())) {
             cmb_FormaDePago.addItem(formaDePago);
         }
     }//GEN-LAST:event_formWindowOpened
