@@ -22,6 +22,11 @@ public class GastoServiceImpl implements IGastoService {
     public GastoServiceImpl(IGastoRepository gastoRepository) {
         this.gastoRepository = gastoRepository;
     }
+    
+    @Override
+    public Gasto getGastoPorId(Long id) {
+       return gastoRepository.getGastoPorId(id);
+    }
 
     @Override
     public void validarGasto(Gasto gasto) {
@@ -40,7 +45,7 @@ public class GastoServiceImpl implements IGastoService {
                     .getString("mensaje_gasto_usuario_vacio"));
         }
         //Duplicados
-        if (gastoRepository.getCajaPorID(gasto.getId_Gasto(), gasto.getEmpresa().getId_Empresa()) != null) {
+        if (gastoRepository.getGastoPorIdYEmpresa(gasto.getId_Gasto(), gasto.getEmpresa().getId_Empresa()) != null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_gasto_duplicada"));
         }
@@ -60,7 +65,7 @@ public class GastoServiceImpl implements IGastoService {
     }
 
     @Override
-    public List<Object> getGastosPorFechaYFormaDePago(Long id_Empresa, Long id_FormaDePago, Date desde, Date hasta) {
+    public List<Gasto> getGastosPorFechaYFormaDePago(Long id_Empresa, Long id_FormaDePago, Date desde, Date hasta) {
         return gastoRepository.getGastosPorFechaYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
     }
 

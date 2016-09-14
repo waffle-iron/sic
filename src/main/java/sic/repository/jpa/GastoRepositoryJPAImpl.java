@@ -20,6 +20,18 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
     public void guardar(Gasto gasto) {
         em.persist(em.merge(gasto));
     }
+    
+    @Override
+    public Gasto getGastoPorId(Long id_Gasto) {
+        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastoPorId", Gasto.class);
+        typedQuery.setParameter("id_Gasto", id_Gasto);
+        List<Gasto> gastos = typedQuery.getResultList();
+        if (gastos.isEmpty()) {
+            return null;
+        } else {
+            return gastos.get(0);
+        }
+    }
 
     @Override
     public List<Object> getGastosPorFecha(long id_Empresa, Date desde, Date hasta) {
@@ -36,13 +48,13 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
     }
 
     @Override
-    public List<Object> getGastosPorFechaYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
-        TypedQuery<Object> typedQuery = (TypedQuery<Object>) em.createNamedQuery("Gasto.getGastosSinArqueoPorFormaDePagoYFecha");
+    public List<Gasto> getGastosPorFechaYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
+        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastosSinArqueoPorFormaDePagoYFecha", Gasto.class);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         typedQuery.setParameter("id_FormaDePago", id_FormaDePago);
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
-        List<Object> gastos = typedQuery.getResultList();
+        List<Gasto> gastos = typedQuery.getResultList();
         return gastos;
     }
 
@@ -52,8 +64,8 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
     }
 
     @Override
-    public Gasto getCajaPorID(long id_Gasto, long id_Empresa) {
-        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastoPorId", Gasto.class);
+    public Gasto getGastoPorIdYEmpresa(long id_Gasto, long id_Empresa) {
+        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastoPorIdYEmpresa", Gasto.class);
         typedQuery.setParameter("id_Gasto", id_Gasto);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         List<Gasto> gastos = typedQuery.getResultList();
