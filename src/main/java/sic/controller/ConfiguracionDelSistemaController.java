@@ -28,13 +28,13 @@ public class ConfiguracionDelSistemaController {
         this.empresaService = empresaService;
     }
     
-    @GetMapping("/configuracionesDelSistema/{id}")
+    @GetMapping("/configuraciones-del-sistema/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ConfiguracionDelSistema getConfiguracionDelSistemaPorId(@PathVariable long id) {
         return configuracionDelSistemaService.getConfiguracionDelSistemaPorId(id);
     }
     
-    @PutMapping("/configuracionDelSistema")
+    @PutMapping("/configuracion-del-sistema")
     @ResponseStatus(HttpStatus.OK)
     public ConfiguracionDelSistema actualizar(@RequestBody ConfiguracionDelSistema configuracionDelSistema) {
         if(configuracionDelSistemaService.getConfiguracionDelSistemaPorId(configuracionDelSistema.getId_ConfiguracionDelSistema()) != null) {
@@ -43,7 +43,7 @@ public class ConfiguracionDelSistemaController {
         return configuracionDelSistemaService.getConfiguracionDelSistemaPorId(configuracionDelSistema.getId_ConfiguracionDelSistema());
     }
     
-    @GetMapping("/configuracionesDelSistema/empresa/{id}")
+    @GetMapping("/configuraciones-del-sistema/empresa/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ConfiguracionDelSistema getconfiguracionDelSistemaPorEmpresa(@PathVariable long id) {
         return configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(empresaService.getEmpresaPorId(id));

@@ -26,13 +26,13 @@ public class CondicionIVAControllers {
         this.condicionIVAService = condicionIVAService;
     }
     
-    @GetMapping("/condicionesIVA/{id}")
+    @GetMapping("/condiciones-iva/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CondicionIVA getCondicionIVAPorId(@PathVariable long id) {
         return condicionIVAService.getCondicionIVAPorId(id);
     }
     
-    @PutMapping("/condicionesIVA")
+    @PutMapping("/condiciones-iva")
     @ResponseStatus(HttpStatus.OK)
     public CondicionIVA actualizar(@RequestBody CondicionIVA condicionIVA) {
         if(condicionIVAService.getCondicionIVAPorId(condicionIVA.getId_CondicionIVA()) != null) {
@@ -41,7 +41,7 @@ public class CondicionIVAControllers {
         return condicionIVAService.getCondicionIVAPorId(condicionIVA.getId_CondicionIVA());
     }
     
-    @DeleteMapping("/condicionesIVA")
+    @DeleteMapping("/condiciones-iva")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable("id") long id) {
         CondicionIVA condicionIVA = condicionIVAService.getCondicionIVAPorId(id);
@@ -49,13 +49,13 @@ public class CondicionIVAControllers {
         condicionIVAService.actualizar(condicionIVA);
     }
     
-    @GetMapping("/condicionesIVA")
+    @GetMapping("/condiciones-iva")
     @ResponseStatus(HttpStatus.OK)
     public List<CondicionIVA> getCondicionesIVA() {
         return condicionIVAService.getCondicionesIVA();
     }
     
-    @PostMapping("/condicionesIVA")
+    @PostMapping("/condiciones-iva")
     @ResponseStatus(HttpStatus.CREATED)
     public CondicionIVA guardar(@RequestBody CondicionIVA condicionIVA) {
         condicionIVAService.guardar(condicionIVA);
