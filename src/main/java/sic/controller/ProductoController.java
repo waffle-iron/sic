@@ -129,42 +129,42 @@ public class ProductoController {
         return productoService.existeStockDisponible(id, cantidad);
     }
     
-    @GetMapping("/productos/gananciaNeto")
+    @GetMapping("/productos/ganancia-neto")
     @ResponseStatus(HttpStatus.OK)
     public double calcularGanancia_Neto(@RequestParam(value = "precioCosto") double precioCosto, 
                                         @RequestParam(value = "gananciaPorcentaje") double gananciaPorcentaje) {
         return productoService.calcularGanancia_Neto(precioCosto, gananciaPorcentaje);
     }    
     
-    @GetMapping("/productos/gananciaPorcentaje")
+    @GetMapping("/productos/ganancia-porcentaje")
     @ResponseStatus(HttpStatus.OK)
     public double calcularGanancia_Porcentaje(@RequestParam(value = "precioCosto") double precioCosto, 
                                               @RequestParam(value = "pvp") double pvp){
         return productoService.calcularGanancia_Porcentaje(precioCosto, pvp);
     }
     
-    @GetMapping("/productos/IVANeto")
+    @GetMapping("/productos/iva-neto")
     @ResponseStatus(HttpStatus.OK)
     public double calcularIVA_Neto(@RequestParam(value = "precioCosto") double precioCosto, 
                                    @RequestParam(value = "ivaPorcentaje") double ivaPorcentaje) {
         return productoService.calcularIVA_Neto(precioCosto, ivaPorcentaje);
     }
     
-    @GetMapping("/productos/impInternoNeto")
+    @GetMapping("/productos/imp-interno-neto")
     @ResponseStatus(HttpStatus.OK)
     public double calcularImpInterno_Neto(@RequestParam(value = "precioCosto") double precioCosto, 
                                           @RequestParam(value = "impInternoPorcentaje") double impInternoPorcentaje){
         return productoService.calcularImpInterno_Neto(precioCosto, impInternoPorcentaje);
     }
     
-    @GetMapping("/productos/PVP")
+    @GetMapping("/productos/pvp")
     @ResponseStatus(HttpStatus.OK)
     public double calcularPVP(@RequestParam(value = "precioCosto") double precioCosto, 
                               @RequestParam(value = "gananciaPorcentaje") double gananciaPorcentaje) {
         return productoService.calcularPVP(precioCosto, gananciaPorcentaje);
     }
     
-    @GetMapping("/productos/precioLista")
+    @GetMapping("/productos/precio-lista")
     @ResponseStatus(HttpStatus.OK)
     public double calcularPrecioLista(@RequestParam(value = "pvp") double PVP, 
                                       @RequestParam(value = "ivaPorcentaje") double ivaPorcentaje, 
