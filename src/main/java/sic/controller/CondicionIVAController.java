@@ -17,12 +17,12 @@ import sic.service.ICondicionIVAService;
 
 @RestController
 @RequestMapping("/api/v1")
-public class CondicionIVAControllers {
+public class CondicionIVAController {
     
     private final ICondicionIVAService condicionIVAService;
     
     @Autowired
-    public CondicionIVAControllers(ICondicionIVAService condicionIVAService) {
+    public CondicionIVAController(ICondicionIVAService condicionIVAService) {
         this.condicionIVAService = condicionIVAService;
     }
     
