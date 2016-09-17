@@ -61,10 +61,5 @@ public class GastoController {
         gastoService.guardar(gasto);
         return gastoService.getGastoPorId(gasto.getId_Gasto());
     }
-    
-    @GetMapping("/gastos/ultimo-numero")
-    @ResponseStatus(HttpStatus.OK)
-    public int getUltimoNumeroDeGasto(@RequestParam("idEmpresa") long id_empresa) {
-        return gastoService.getUltimoNumeroDeGasto(id_empresa);
-    }
+
 }

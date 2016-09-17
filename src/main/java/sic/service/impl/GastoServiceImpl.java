@@ -55,6 +55,7 @@ public class GastoServiceImpl implements IGastoService {
     @Transactional
     public void guardar(Gasto gasto) {
         this.validarGasto(gasto);
+        gasto.setNroGasto(this.getUltimoNumeroDeGasto(gasto.getEmpresa().getId_Empresa()) + 1);
         gastoRepository.guardar(gasto);
         LOGGER.warn("El Gasto " + gasto + " se guardó correctamente." );
     }
