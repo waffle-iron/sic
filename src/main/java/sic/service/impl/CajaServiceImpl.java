@@ -195,7 +195,7 @@ public class CajaServiceImpl implements ICajaService {
                 totalPorCorteFormaDePago += pagoService.getTotalPagado(pago.getFactura());
             }
             for (Gasto gasto : gastos) {
-                totalPorCorteFormaDePago += ((Gasto) gasto).getMonto();
+                totalPorCorteFormaDePago -= ((Gasto) gasto).getMonto();
             }
             if (totalPorCorteFormaDePago > 0) {
                 dataSource.add(formaDePago.getNombre() + "-" + totalPorCorteFormaDePago);
