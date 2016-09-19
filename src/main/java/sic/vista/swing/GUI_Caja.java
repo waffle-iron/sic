@@ -325,10 +325,10 @@ public class GUI_Caja extends javax.swing.JDialog {
                 totalPorCorteFormaDePago += pagoService.getTotalPagado(pago.getFactura());
             }
             for (Object gasto : gastos) {
-                totalPorCorteFormaDePago += ((Gasto) gasto).getMonto();
+                totalPorCorteFormaDePago -= ((Gasto) gasto).getMonto();
             }
             if (totalPorCorteFormaDePago > 0) {
-                dataSource.add(formaDePago.getNombre() + "-" + totalPorCorteFormaDePago);
+                dataSource.add(formaDePago.getNombre() + "-" + Utilidades.truncarDecimal(totalPorCorteFormaDePago , 2));
             }
             totalPorCorte += totalPorCorteFormaDePago;
         }
