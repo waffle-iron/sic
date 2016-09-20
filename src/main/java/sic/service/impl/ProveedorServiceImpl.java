@@ -38,19 +38,6 @@ public class ProveedorServiceImpl implements IProveedorService {
 
     @Override
     public List<Proveedor> buscarProveedores(BusquedaProveedorCriteria criteria) {
-        //@Todo No debe verificar contra la palabra "Todos/as". Usar el boolean asociado a ese campo
-        //Pais
-        if (criteria.getPais().getNombre().equals("Todos")) {
-            criteria.setBuscaPorPais(false);
-        }
-        //Provincia
-        if (criteria.getProvincia().getNombre().equals("Todas")) {
-            criteria.setBuscaPorProvincia(false);
-        }
-        //Localidad
-        if (criteria.getLocalidad().getNombre().equals("Todas")) {
-            criteria.setBuscaPorLocalidad(false);
-        }
         return proveedorRepository.buscarProveedores(criteria);
     }
 

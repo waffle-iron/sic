@@ -183,14 +183,21 @@ public class GUI_Proveedores extends JInternalFrame {
         criteria.setPais((Pais) cmb_Pais.getSelectedItem());
         criteria.setCantRegistros(0);
         criteria.setEmpresa(EmpresaActiva.getInstance().getEmpresa());
-
+        if (criteria.getPais().getNombre().equals("Todos")) {
+            criteria.setBuscaPorPais(false);
+        }
+        if (criteria.getProvincia().getNombre().equals("Todas")) {
+            criteria.setBuscaPorProvincia(false);
+        }
+        if (criteria.getLocalidad().getNombre().equals("Todas")) {
+            criteria.setBuscaPorLocalidad(false);
+        }
         try {
             proveedores = proveedorService.buscarProveedores(criteria);
             this.cargarResultadosAlTable();
-
         } catch (BusinessServiceException ex) {
             JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-
+            LOGGER.warn(ex.getMessage());
         } 
     }
 
