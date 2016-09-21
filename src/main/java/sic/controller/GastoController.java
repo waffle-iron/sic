@@ -47,7 +47,7 @@ public class GastoController {
     public List<Gasto> getGastosPorFechaYFormaDePago(@RequestParam("idEmpresa") long idEmpresa,
                                                      @RequestParam("idFormaDePago") long idFormaDePago,
                                                      @RequestParam("desde") long desde,
-                                                     @RequestParam(value = "hasta") long hasta) {
+                                                     @RequestParam("hasta") long hasta) {
         Calendar fechaDesde = Calendar.getInstance();
         fechaDesde.setTimeInMillis(desde);
         Calendar fechaHasta = Calendar.getInstance();
