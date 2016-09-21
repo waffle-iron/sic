@@ -923,7 +923,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 try {
                     facturaService.eliminar(facturas.get(indexFilaSeleccionada));
                     if (facturas.get(indexFilaSeleccionada).getPedido() != null) {
-                        Pedido pedidoDeFactura = pedidoService.getPedidoPorNumero(facturas.get(indexFilaSeleccionada).getPedido().getNroPedido(), EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
+                        Pedido pedidoDeFactura = pedidoService.getPedidoPorId(facturas.get(indexFilaSeleccionada).getPedido().getId_Pedido());
                         pedidoService.actualizarEstadoPedido(TipoDeOperacion.ELIMINACION, pedidoDeFactura);
                     }
                     this.buscar(this.getCriteriaDeComponentes());

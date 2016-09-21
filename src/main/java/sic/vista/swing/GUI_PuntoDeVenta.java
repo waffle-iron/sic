@@ -547,40 +547,40 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.pedido.setEstado(EstadoPedido.ABIERTO);
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
         for (RenglonFactura renglonFactura : renglones) {
-            renglonesPedido.add(pedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura, this.pedido));
+            renglonesPedido.add(pedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura));
         }
         this.pedido.setRenglones(renglonesPedido);
     }
 
     private Pedido guardarPedido(Pedido pedido) {
         pedidoService.guardar(pedido);
-        return pedidoService.getPedidoPorNumero(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa());
+        return pedidoService.getPedidoPorNumeroYEmpresa(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa());
     }
 
     private void lanzarReportePedido(Pedido pedido) {
-        try {
-            JasperPrint report = pedidoService.getReportePedido(pedido);
-            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-            viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
-            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-            viewer.setIconImage(iconoVentana.getImage());
-            viewer.setLocationRelativeTo(null);
-            JRViewer jrv = new JRViewer(report);
-            viewer.getContentPane().add(jrv);
-            viewer.setVisible(true);
-        } catch (JRException jre) {
-            String msjError = "Se produjo un error procesando el reporte.";
-            LOGGER.error(msjError + " - " + jre.getMessage());
-            JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
-        }
+//        try {
+//            JasperPrint report = pedidoService.getReportePedido(pedido);
+//            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+//            viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
+//            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+//            viewer.setIconImage(iconoVentana.getImage());
+//            viewer.setLocationRelativeTo(null);
+//            JRViewer jrv = new JRViewer(report);
+//            viewer.getContentPane().add(jrv);
+//            viewer.setVisible(true);
+//        } catch (JRException jre) {
+//            String msjError = "Se produjo un error procesando el reporte.";
+//            LOGGER.error(msjError + " - " + jre.getMessage());
+//            JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+//        }
     }
 
     private void actualizarPedido(Pedido pedido) {
-        pedido = pedidoService.getPedidoPorNumeroConRenglones(pedido.getNroPedido(), this.empresa.getId_Empresa());
-        pedido.getRenglones().clear();
-        pedido.getRenglones().addAll(pedidoService.convertirRenglonesFacturaARenglonesPedido(this.renglones, pedido));
-        pedido.setTotalEstimado(facturaService.calcularSubTotal(this.renglones));
-        pedidoService.actualizar(pedido);
+//        pedido = pedidoService.getPedidoPorNumeroConRenglones(pedido.getNroPedido(), this.empresa.getId_Empresa());
+//        pedido.getRenglones().clear();
+//        pedido.getRenglones().addAll(pedidoService.convertirRenglonesFacturaARenglonesPedido(this.renglones, pedido));
+//        pedido.setTotalEstimado(facturaService.calcularSubTotal(this.renglones));
+//        pedidoService.actualizar(pedido);
     }
 
     /**
@@ -1398,7 +1398,8 @@ public class GUI_PuntoDeVenta extends JDialog {
             if (this.pedido == null || this.pedido.getId_Pedido() == 0) {
                 this.construirPedido();
             }
-            if (pedidoService.getPedidoPorNumero(this.pedido.getNroPedido(), this.empresa.getId_Empresa()) == null) {
+            pedidoService.guardar(this.pedido);
+            if (pedidoService.getPedidoPorNumeroYEmpresa(this.pedido.getNroPedido(), this.empresa.getId_Empresa()) == null) {
                 try {
                     this.lanzarReportePedido(this.guardarPedido(this.pedido));
                     this.limpiarYRecargarComponentes();

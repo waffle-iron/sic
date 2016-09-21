@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Empresa;
+import sic.modelo.EmpresaActiva;
 import sic.modelo.Factura;
 import sic.modelo.Pedido;
 import sic.modelo.Producto;
@@ -29,6 +30,9 @@ import sic.service.IFacturaService;
 import sic.service.IPedidoService;
 import sic.service.IProductoService;
 import sic.service.BusinessServiceException;
+import sic.service.PedidoCrud;
+import sic.service.RenglonPedidoCrud;
+import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
 import sic.util.Utilidades;
 
@@ -38,14 +42,24 @@ public class PedidoServiceImpl implements IPedidoService {
     private final IPedidoRepository pedidoRepository;    
     private final IFacturaService facturaService;
     private final IProductoService productoService;
+    private final PedidoCrud pedidoCrud;
+    private final RenglonPedidoCrud renglonPedidoCrud;
     private static final Logger LOGGER = Logger.getLogger(PedidoServiceImpl.class.getPackage().getName());
 
     @Autowired
     public PedidoServiceImpl(IFacturaService facturaService,
-            IPedidoRepository pedidoRepository, IProductoService productoService) {
+            IPedidoRepository pedidoRepository, IProductoService productoService,
+            PedidoCrud pedidoCrud, RenglonPedidoCrud renglonPedidoCrud) {
         this.facturaService = facturaService;
         this.pedidoRepository = pedidoRepository;
         this.productoService = productoService;
+        this.pedidoCrud = pedidoCrud;
+        this.renglonPedidoCrud = renglonPedidoCrud;
+    }
+    
+    @Override
+    public Pedido getPedidoPorId(Long id) {
+        return this.pedidoRepository.getPedidoPorId(id);
     }
 
     private void validarPedido(Pedido pedido) {
@@ -145,7 +159,10 @@ public class PedidoServiceImpl implements IPedidoService {
     @Transactional
     public void guardar(Pedido pedido) {
         this.validarPedido(pedido);
-        pedidoRepository.guardar(pedido);
+        pedido.setNroPedido(this.calcularNumeroPedido(pedido.getEmpresa()));
+        renglonPedidoCrud.save(pedido.getRenglones());
+        pedidoCrud.save(pedido);
+//        pedidoRepository.guardar(pedido);
         LOGGER.warn("El Pedido " + pedido + " se guardó correctamente.");
     }
 
@@ -190,7 +207,7 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public Pedido getPedidoPorNumero(long nroPedido, long idEmpresa) {
+    public Pedido getPedidoPorNumeroYEmpresa(long nroPedido, long idEmpresa) {
         return pedidoRepository.getPedidoPorNro(nroPedido, idEmpresa);
     }
 
@@ -200,8 +217,8 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public Pedido getPedidoPorNumeroConRenglones(long nroPedido, long idEmpresa) {
-        return pedidoRepository.getPedidoPorNumeroConRenglones(nroPedido, idEmpresa);
+    public Pedido getPedidoPorIdConRenglones(long idPedido) {
+        return pedidoRepository.getPedidoPorIdConRenglones(idPedido);
     }
 
     @Override
@@ -215,13 +232,15 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public List<RenglonPedido> getRenglonesDelPedido(long nroPedido) {
-        return pedidoRepository.getRenglonesDelPedido(nroPedido);
+    public List<RenglonPedido> getRenglonesDelPedido(Long idPedido) {
+        return pedidoRepository.getRenglonesDelPedido(idPedido);
     }
 
     @Override
-    public Pedido getPedidoPorNumeroConRenglonesActualizandoSubtotales(long nroPedido, long idEmpresa) {
-        return this.actualizarSubTotalRenglonesPedido(this.getPedidoPorNumeroConRenglones(nroPedido, idEmpresa));
+    public Pedido getPedidoPorNumeroConRenglonesActualizandoSubtotales(long nroPedido) {
+        Pedido pedidoConRenglones = pedidoRepository.getPedidoPorNro(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
+        pedidoConRenglones.setRenglones(pedidoRepository.getRenglonesDelPedido(pedidoConRenglones.getId_Pedido()));
+        return this.actualizarSubTotalRenglonesPedido(pedidoConRenglones);
     }
 
     @Override
@@ -247,22 +266,26 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public JasperPrint getReportePedido(Pedido pedido) throws JRException {
+    public byte[] getReportePedido(Pedido pedido) {
         ClassLoader classLoader = PedidoServiceImpl.class.getClassLoader();
         InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/Pedido.jasper");
         Map params = new HashMap();
         params.put("pedido", pedido);
         params.put("logo", Utilidades.convertirByteArrayIntoImage(pedido.getEmpresa().getLogo()));
-        List<RenglonPedido> renglones = this.getRenglonesDelPedido(pedido.getNroPedido());
+        List<RenglonPedido> renglones = this.getRenglonesDelPedido(pedido.getId_Pedido());
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(renglones);
-        return JasperFillManager.fillReport(isFileReport, params, ds);
+         try {
+           return JasperExportManager.exportReportToPdf(JasperFillManager.fillReport(isFileReport, params, ds));
+       } catch (JRException ex) {
+          throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_error_reporte"), ex);
+       }
     }
 
     @Override
-    public RenglonPedido convertirRenglonFacturaARenglonPedido(RenglonFactura renglonFactura, Pedido pedido) {
+    public RenglonPedido convertirRenglonFacturaARenglonPedido(RenglonFactura renglonFactura) {
         RenglonPedido nuevoRenglon = new RenglonPedido();
         nuevoRenglon.setCantidad(renglonFactura.getCantidad());
-        nuevoRenglon.setPedido(pedido);
         nuevoRenglon.setDescuento_porcentaje(renglonFactura.getDescuento_porcentaje());
         nuevoRenglon.setDescuento_neto(renglonFactura.getDescuento_neto());
         Producto producto = productoService.getProductoPorId(renglonFactura.getId_ProductoItem());
@@ -272,10 +295,10 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(List<RenglonFactura> renglonesDeFactura, Pedido pedido) {
+    public List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(List<RenglonFactura> renglonesDeFactura) {
         List<RenglonPedido> renglonesPedido = new ArrayList();
         for (RenglonFactura renglonFactura : renglonesDeFactura) {
-            renglonesPedido.add(this.convertirRenglonFacturaARenglonPedido(renglonFactura, pedido));
+            renglonesPedido.add(this.convertirRenglonFacturaARenglonPedido(renglonFactura));
         }
         return renglonesPedido;
     }

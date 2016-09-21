@@ -14,17 +14,18 @@ import lombok.ToString;
 @Entity
 @Table(name = "renglonpedido")
 @Data
-@ToString(exclude= "pedido")
-@EqualsAndHashCode(of = {"pedido", "producto"})
+//@ToString(exclude= "pedido")
+@EqualsAndHashCode(of = "producto")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_RenglonPedido")
 public class RenglonPedido implements Serializable {
 
     @Id
     @GeneratedValue
     private long id_RenglonPedido;
 
-    @ManyToOne
-    @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
-    private Pedido pedido;
+//    @ManyToOne
+//    @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
+//    private Pedido pedido;
 
     @ManyToOne
     @JoinColumn(name = "id_Producto", referencedColumnName = "id_Producto")

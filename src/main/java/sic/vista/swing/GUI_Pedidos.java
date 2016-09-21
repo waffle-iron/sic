@@ -328,36 +328,36 @@ public class GUI_Pedidos extends JInternalFrame {
         this.limpiarTablaRenglones();
         this.setColumnasRenglonesPedido();
         long nroPedido = (long) tbl_Pedidos.getValueAt(row, 2);
-        Pedido paraListarRenglones = pedidoService.getPedidoPorNumeroConRenglonesActualizandoSubtotales(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
-        for (RenglonPedido renglon : paraListarRenglones.getRenglones()) {
-            Object[] fila = new Object[6];
-            fila[0] = renglon.getProducto().getCodigo();
-            fila[1] = renglon.getProducto().getDescripcion();
-            fila[2] = renglon.getCantidad();
-            fila[3] = renglon.getProducto().getPrecioLista();
-            fila[4] = renglon.getDescuento_porcentaje();
-            fila[5] = renglon.getSubTotal();
-            modeloTablaRenglones.addRow(fila);
-        }
+//        Pedido paraListarRenglones = pedidoService.getPedidoPorNumeroConRenglonesActualizandoSubtotales(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
+//        for (RenglonPedido renglon : paraListarRenglones.getRenglones()) {
+//            Object[] fila = new Object[6];
+//            fila[0] = renglon.getProducto().getCodigo();
+//            fila[1] = renglon.getProducto().getDescripcion();
+//            fila[2] = renglon.getCantidad();
+//            fila[3] = renglon.getProducto().getPrecioLista();
+//            fila[4] = renglon.getDescuento_porcentaje();
+//            fila[5] = renglon.getSubTotal();
+//            modeloTablaRenglones.addRow(fila);
+//        }
         tbl_RenglonesPedido.setModel(modeloTablaRenglones);
     }
 
     private void lanzarReportePedido(Pedido pedido) {
-        try {
-            JasperPrint report = pedidoService.getReportePedido(pedido);
-            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-            viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
-            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-            viewer.setIconImage(iconoVentana.getImage());
-            viewer.setLocationRelativeTo(null);
-            JRViewer jrv = new JRViewer(report);
-            viewer.getContentPane().add(jrv);
-            viewer.setVisible(true);
-        } catch (JRException jre) {
-            String msjError = "Se produjo un error procesando el reporte.";
-            LOGGER.error(msjError + " - " + jre.getMessage());
-            JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
-        }
+//        try {
+//            JasperPrint report = pedidoService.getReportePedido(pedido);
+//            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+//            viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
+//            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+//            viewer.setIconImage(iconoVentana.getImage());
+//            viewer.setLocationRelativeTo(null);
+//            JRViewer jrv = new JRViewer(report);
+//            viewer.getContentPane().add(jrv);
+//            viewer.setVisible(true);
+//        } catch (JRException jre) {
+//            String msjError = "Se produjo un error procesando el reporte.";
+//            LOGGER.error(msjError + " - " + jre.getMessage());
+//            JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+//        }
     }
 
     @SuppressWarnings("unchecked")
@@ -762,29 +762,29 @@ public class GUI_Pedidos extends JInternalFrame {
     }//GEN-LAST:event_btn_NuevoPedidoActionPerformed
 
     private void btn_FacturarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FacturarActionPerformed
-        try {
-            if (tbl_Pedidos.getSelectedRow() != -1) {
-                long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
-                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
-                if (pedido.getEstado() == EstadoPedido.CERRADO) {
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                } else if (this.existeClienteDisponible()) {
-                    GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
-                    gui_puntoDeVenta.setPedido(pedido);
-                    gui_puntoDeVenta.setModal(true);
-                    gui_puntoDeVenta.setLocationRelativeTo(this);
-                    gui_puntoDeVenta.setVisible(true);
-                    this.buscar();
-                } else {
-                    String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
-                    JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-
-        } catch (BusinessServiceException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+//        try {
+//            if (tbl_Pedidos.getSelectedRow() != -1) {
+//                long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
+////                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
+//                if (pedido.getEstado() == EstadoPedido.CERRADO) {
+//                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
+//                            JOptionPane.ERROR_MESSAGE);
+//                } else if (this.existeClienteDisponible()) {
+//                    GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
+//                    gui_puntoDeVenta.setPedido(pedido);
+//                    gui_puntoDeVenta.setModal(true);
+//                    gui_puntoDeVenta.setLocationRelativeTo(this);
+//                    gui_puntoDeVenta.setVisible(true);
+//                    this.buscar();
+//                } else {
+//                    String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
+//                    JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+//                }
+//            }
+//
+//        } catch (BusinessServiceException ex) {
+//            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//        }
     }//GEN-LAST:event_btn_FacturarActionPerformed
 
     private void btn_VerFacturasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerFacturasActionPerformed
@@ -816,70 +816,70 @@ public class GUI_Pedidos extends JInternalFrame {
     private void btn_imprimirPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_imprimirPedidoActionPerformed
         if (tbl_Pedidos.getSelectedRow() != -1) {
             long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
-            Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
-            this.lanzarReportePedido(pedidoService.calcularTotalActualDePedido(pedido));
+//            Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
+//            this.lanzarReportePedido(pedidoService.calcularTotalActualDePedido(pedido));
         }
     }//GEN-LAST:event_btn_imprimirPedidoActionPerformed
 
     private void bnt_modificaPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bnt_modificaPedidoActionPerformed
-        try {
-            if (tbl_Pedidos.getSelectedRow() != -1) {
-                long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
-                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
-                if (pedido.getEstado() == EstadoPedido.CERRADO) {
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                } else if (pedido.getEstado() == EstadoPedido.ACTIVO) {
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_procesado"), "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                } else if (this.existeClienteDisponible()) {
-                    GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
-                    gui_puntoDeVenta.setPedido(pedido);
-                    gui_puntoDeVenta.setModificarPedido(true);
-                    gui_puntoDeVenta.setModal(true);
-                    gui_puntoDeVenta.setLocationRelativeTo(this);
-                    gui_puntoDeVenta.setVisible(true);
-                    this.buscar();
-                } else {
-                    String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
-                    JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
-                }
-            }
-
-        } catch (BusinessServiceException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+//        try {
+//            if (tbl_Pedidos.getSelectedRow() != -1) {
+//                long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
+////                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
+//                if (pedido.getEstado() == EstadoPedido.CERRADO) {
+//                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
+//                            JOptionPane.ERROR_MESSAGE);
+//                } else if (pedido.getEstado() == EstadoPedido.ACTIVO) {
+//                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_procesado"), "Error",
+//                            JOptionPane.ERROR_MESSAGE);
+//                } else if (this.existeClienteDisponible()) {
+//                    GUI_PuntoDeVenta gui_puntoDeVenta = new GUI_PuntoDeVenta();
+//                    gui_puntoDeVenta.setPedido(pedido);
+//                    gui_puntoDeVenta.setModificarPedido(true);
+//                    gui_puntoDeVenta.setModal(true);
+//                    gui_puntoDeVenta.setLocationRelativeTo(this);
+//                    gui_puntoDeVenta.setVisible(true);
+//                    this.buscar();
+//                } else {
+//                    String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
+//                    JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+//                }
+//            }
+//
+//        } catch (BusinessServiceException ex) {
+//            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//        }
     }//GEN-LAST:event_bnt_modificaPedidoActionPerformed
 
     private void btn_eliminarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_eliminarPedidoActionPerformed
-        try {
-            if (tbl_Pedidos.getSelectedRow() != -1) {
-                long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
-                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
-                if (pedido.getEstado() == EstadoPedido.CERRADO) {
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                } else if (pedido.getEstado() == EstadoPedido.ACTIVO) {
-                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_procesado"), "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                } else if (this.existeClienteDisponible()) {
-                    int respuesta = JOptionPane.showConfirmDialog(this,
-                            "¿Esta seguro que desea eliminar el pedido seleccionado?",
-                            "Eliminar", JOptionPane.YES_NO_OPTION);
-                    if (respuesta == JOptionPane.YES_OPTION) {
-                        pedidoService.eliminar(pedido);
-                        this.buscar();
-                    }
-                } else {
-                    String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
-                    JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
-                }
-
-            }
-
-        } catch (BusinessServiceException ex) {
-            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
+//        try {
+//            if (tbl_Pedidos.getSelectedRow() != -1) {
+//                long nroPedido = (long) tbl_Pedidos.getValueAt(tbl_Pedidos.getSelectedRow(), 2);
+//                Pedido pedido = pedidoService.getPedidoPorNumero(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
+//                if (pedido.getEstado() == EstadoPedido.CERRADO) {
+//                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_facturado"), "Error",
+//                            JOptionPane.ERROR_MESSAGE);
+//                } else if (pedido.getEstado() == EstadoPedido.ACTIVO) {
+//                    JOptionPane.showInternalMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_procesado"), "Error",
+//                            JOptionPane.ERROR_MESSAGE);
+//                } else if (this.existeClienteDisponible()) {
+//                    int respuesta = JOptionPane.showConfirmDialog(this,
+//                            "¿Esta seguro que desea eliminar el pedido seleccionado?",
+//                            "Eliminar", JOptionPane.YES_NO_OPTION);
+//                    if (respuesta == JOptionPane.YES_OPTION) {
+//                        pedidoService.eliminar(pedido);
+//                        this.buscar();
+//                    }
+//                } else {
+//                    String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_cliente");
+//                    JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+//                }
+//
+//            }
+//
+//        } catch (BusinessServiceException ex) {
+//            JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//        }
     }//GEN-LAST:event_btn_eliminarPedidoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

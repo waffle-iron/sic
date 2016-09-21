@@ -13,6 +13,8 @@ import sic.modelo.RenglonPedido;
 
 public interface IPedidoService {
 
+    Pedido getPedidoPorId(Long id);
+            
     void actualizar(Pedido pedido);
 
     List<Pedido> buscarConCriteria(BusquedaPedidoCriteria criteria);
@@ -27,24 +29,24 @@ public interface IPedidoService {
 
     List<Factura> getFacturasDelPedido(long nroPedido);
 
-    Pedido getPedidoPorNumero(long nroPedido, long idEmpresa);
+    Pedido getPedidoPorNumeroYEmpresa(long nroPedido, long idEmpresa);
 
     Pedido getPedidoPorNumeroConFacturas(long nroPedido);
 
-    Pedido getPedidoPorNumeroConRenglones(long nroPedido, long idEmpresa);
+    Pedido getPedidoPorIdConRenglones(long idPedido);
 
-    Pedido getPedidoPorNumeroConRenglonesActualizandoSubtotales(long nroPedido, long idEmpresa);
+    Pedido getPedidoPorNumeroConRenglonesActualizandoSubtotales(long nroPedido);
 
     HashMap<Long, RenglonFactura> getRenglonesDeFacturasUnificadosPorNroPedido(long nroPedido);
 
-    List<RenglonPedido> getRenglonesDelPedido(long nroPedido);
+    List<RenglonPedido> getRenglonesDelPedido(Long idPedido);
 
-    JasperPrint getReportePedido(Pedido pedido) throws JRException;
+    byte[] getReportePedido(Pedido pedido);
 
     void guardar(Pedido pedido);
 
-    RenglonPedido convertirRenglonFacturaARenglonPedido(RenglonFactura renglonFactura, Pedido pedido);
+    RenglonPedido convertirRenglonFacturaARenglonPedido(RenglonFactura renglonFactura);
 
-    List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(List<RenglonFactura> renglonesDeFactura, Pedido pedido);
+    List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(List<RenglonFactura> renglonesDeFactura);
 
 }

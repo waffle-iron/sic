@@ -239,7 +239,7 @@ public class GUI_CerrarVenta extends JDialog {
             if (!dividir) {
                 FacturaVenta factura = this.construirFactura();
                 if (gui_puntoDeVenta.getPedido() != null) {
-                    factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido(), gui_puntoDeVenta.getEmpresa().getId_Empresa()));
+                    factura.setPedido(pedidoService.getPedidoPorId(gui_puntoDeVenta.getPedido().getId_Pedido()));
                 }
                 this.lanzarReporteFactura(this.guardarFactura(factura));
                 exito = true;
@@ -248,7 +248,7 @@ public class GUI_CerrarVenta extends JDialog {
                 for (Factura factura : facturasDivididas) {
                     if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
                         if (gui_puntoDeVenta.getPedido() != null) {
-                            factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido(), gui_puntoDeVenta.getEmpresa().getId_Empresa()));
+                           factura.setPedido(pedidoService.getPedidoPorId(gui_puntoDeVenta.getPedido().getId_Pedido()));
                         }
                         this.lanzarReporteFactura(this.guardarFactura(factura));
                         exito = true;

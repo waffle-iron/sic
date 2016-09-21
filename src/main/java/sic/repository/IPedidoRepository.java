@@ -6,6 +6,8 @@ import sic.modelo.Pedido;
 import sic.modelo.RenglonPedido;
 
 public interface IPedidoRepository {
+    
+    Pedido getPedidoPorId(Long id);
 
     void actualizar(Pedido pedido);
 
@@ -17,9 +19,9 @@ public interface IPedidoRepository {
 
     Pedido getPedidoPorNumeroConFacturas(long nroPedido);
 
-    Pedido getPedidoPorNumeroConRenglones(long nroPedido, long idEmpresa);
+    Pedido getPedidoPorIdConRenglones(long idPedido);
 
-    List<RenglonPedido> getRenglonesDelPedido(long nroPedido);
+    List<RenglonPedido> getRenglonesDelPedido(Long idPedido);
 
     void guardar(Pedido pedido);
 

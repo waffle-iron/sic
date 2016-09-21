@@ -1,0 +1,138 @@
+package sic.controller;
+
+import java.util.Calendar;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+import sic.modelo.BusquedaPedidoCriteria;
+import sic.modelo.Cliente;
+import sic.modelo.Empresa;
+import sic.modelo.Pedido;
+import sic.modelo.RenglonFactura;
+import sic.modelo.RenglonPedido;
+import sic.modelo.Usuario;
+import sic.service.IClienteService;
+import sic.service.IEmpresaService;
+import sic.service.IPedidoService;
+import sic.service.IUsuarioService;
+import sic.service.TipoDeOperacion;
+
+@RestController
+@RequestMapping("/api/v1")
+public class PedidoController {
+    
+    private final IPedidoService pedidoService;
+    private final IEmpresaService empresaService;
+    private final IUsuarioService usuarioService;
+    private final IClienteService clienteService;
+    
+    @Autowired
+    public PedidoController(IPedidoService pedidoService, IEmpresaService empresaService,
+                            IUsuarioService usuarioService, IClienteService clienteService) {
+        this.pedidoService = pedidoService;
+        this.empresaService = empresaService;
+        this.usuarioService = usuarioService;
+        this.clienteService = clienteService;
+    }
+    
+    @GetMapping("/pedidos/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Pedido getPedido(@PathVariable("id") long id) {
+        return pedidoService.getPedidoPorId(id);
+    }
+    
+    @PutMapping("/pedidos")
+    @ResponseStatus(HttpStatus.OK)
+    public Pedido actualizar(@RequestBody Pedido pedido) {
+        pedidoService.getPedidoPorId(pedido.getId_Pedido());
+        return pedidoService.getPedidoPorId(pedido.getId_Pedido());
+    }
+    
+    @PostMapping("/pedidos")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Pedido guardar(@RequestBody Pedido pedido) {
+        pedidoService.guardar(pedido);
+        return pedidoService.getPedidoPorId(pedido.getId_Pedido());
+    }
+    
+    @GetMapping("/pedidos/criteria") 
+    @ResponseStatus(HttpStatus.OK)
+    public List<Pedido> buscarConCriteria(@RequestParam(value = "idEmpresa") Long idEmpresa,
+                                          @RequestParam(value = "desde", required = false) Long desde,
+                                          @RequestParam(value = "hasta", required = false) Long hasta,
+                                          @RequestParam(value = "idCliente", required = false) Long idCliente,
+                                          @RequestParam(value = "idUsuario", required = false) Long idUsuario,
+                                          @RequestParam(value = "nroPedido", required = false) Long nroPedido) {
+        Empresa empresa = empresaService.getEmpresaPorId(idEmpresa);
+        Calendar fechaDesde = Calendar.getInstance();
+        Calendar fechaHasta = Calendar.getInstance();
+        if ((desde != null) && (hasta != null)) {
+            fechaDesde.setTimeInMillis(desde);            
+            fechaHasta.setTimeInMillis(hasta);
+        }
+        Usuario usuario = usuarioService.getUsuarioPorId(idUsuario);
+        Cliente cliente = clienteService.getClientePorId(idCliente);
+        BusquedaPedidoCriteria criteria = BusquedaPedidoCriteria.builder()
+                                          .buscaPorFecha((desde != null) && (hasta != null))
+                                          .fechaDesde(fechaDesde.getTime())
+                                          .fechaHasta(fechaHasta.getTime())
+                                          .buscaCliente(cliente != null)
+                                          .cliente(cliente)
+                                          .buscaUsuario(usuario != null)
+                                          .usuario(usuario)
+                                          .buscaPorNroPedido(nroPedido != null)
+                                          .nroPedido(nroPedido)
+                                          .empresa(empresa)
+                                          .build();
+        return pedidoService.buscarConCriteria(criteria);
+    }
+    
+    @RequestMapping("/pedidos/{id}/estado")
+    @ResponseStatus(HttpStatus.OK)
+    public void actualizarEstadoPedido(@RequestParam TipoDeOperacion tipoDeOperacion,
+                                       @PathVariable("id") long id) {
+        pedidoService.actualizarEstadoPedido(tipoDeOperacion, pedidoService.getPedidoPorId(id));
+    }
+
+    @DeleteMapping("/pedidos/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@RequestBody Pedido pedido) {
+        pedidoService.eliminar(pedido);
+    }
+    
+    @GetMapping("/pedidos/{nro}/empresa/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Pedido getPedidoPorNumeroYEmpresa(@PathVariable("nro") Long nroPedido, 
+                                             @PathVariable("id") Long id) {
+        return pedidoService.getPedidoPorNumeroYEmpresa(nroPedido, id);
+    }
+    
+    @GetMapping("/pedidos/{id}/con-renglones")
+    @ResponseStatus(HttpStatus.OK)
+    public Pedido getPedidoPorIdConRenglones(@PathVariable("id") long id) {
+        return pedidoService.getPedidoPorIdConRenglones(id);
+    }
+    
+    @GetMapping("/pedidos/{id}/con-renglones/subtotal-al-dia")
+    @ResponseStatus(HttpStatus.OK)
+    public Pedido getPedidoPorNumeroConRenglonesActualizandoSubtotales(long nroPedido) {
+        return pedidoService.getPedidoPorNumeroConRenglonesActualizandoSubtotales(nroPedido);
+    }
+       
+    @GetMapping("/pedidos/renglones-factura-a-renglones-pedido")
+    @ResponseStatus(HttpStatus.OK)
+    public List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(@RequestBody List<RenglonFactura> renglonesDeFactura) {
+        return pedidoService.convertirRenglonesFacturaARenglonesPedido(renglonesDeFactura);
+    }
+    
+}
