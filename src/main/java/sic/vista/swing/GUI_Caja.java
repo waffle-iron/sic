@@ -98,7 +98,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                     ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(),
                     this.caja.getFechaApertura(), hasta);
             this.listaMovimientos.addAll(pagos);
-            List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(
+            List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(
                     EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                     ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago(),
                     this.caja.getFechaApertura(), hasta);
@@ -234,7 +234,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                 }
                 List<Pago> pagosPorFormaDePago = pagoService.getPagosEntreFechasYFormaDePago(empresaActiva.getId_Empresa(),
                         formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
-                List<Object> gastosPorFormaDePago = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(),
+                List<Gasto> gastosPorFormaDePago = gastoService.getGastosPorFechaYFormaDePago(empresaActiva.getId_Empresa(),
                         formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), hasta);
                 if (pagosPorFormaDePago.size() > 0 || gastosPorFormaDePago.size() > 0) {
                     Object[] fila = new Object[3];
@@ -318,13 +318,13 @@ public class GUI_Caja extends javax.swing.JDialog {
             double totalPorCorteFormaDePago = 0.0;
             List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                     formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
-            List<Object> gastos = gastoService.getGastosPorFechaYFormaDePago(EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
+            List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                     formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
             for (Pago pago : pagos) {
                 totalPorCorteFormaDePago += pagoService.getTotalPagado(pago.getFactura());
             }
-            for (Object gasto : gastos) {
-                totalPorCorteFormaDePago += ((Gasto) gasto).getMonto();
+            for (Gasto gasto : gastos) {
+                totalPorCorteFormaDePago += gasto.getMonto();
             }
             if (totalPorCorteFormaDePago > 0) {
                 dataSource.add(formaDePago.getNombre() + "-" + totalPorCorteFormaDePago);
