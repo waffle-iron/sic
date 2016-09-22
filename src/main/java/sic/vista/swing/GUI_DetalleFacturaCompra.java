@@ -196,9 +196,9 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                 .eliminada(false)
                 .proveedor((Proveedor) cmb_Proveedor.getSelectedItem())
                 .build();
-        for (RenglonFactura renglon : renglones) {
-            renglon.setFactura(facturaCompra);
-        }
+//        for (RenglonFactura renglon : renglones) {
+//            renglon.setFactura(facturaCompra);
+//        }
         facturaService.guardar(facturaCompra);
     }
 

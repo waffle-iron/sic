@@ -139,7 +139,7 @@ public class PagoServiceImpl implements IPagoService {
         List<Factura> facturasOrdenadas = facturaService.ordenarFacturasPorFechaAsc(facturas);
         for (Factura factura : facturasOrdenadas) {
             if (monto > 0) {
-                factura.setPagos(this.getPagosDeLaFactura(factura));
+                //factura.setPagos(this.getPagosDeLaFactura(factura));
                 Pago nuevoPago = Pago.builder()
                         .formaDePago(formaDePago)
                         .factura(factura)

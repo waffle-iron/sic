@@ -4,7 +4,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Pedido;
@@ -15,7 +14,7 @@ import sic.util.FormatterFechaHora;
 @Repository
 public class PedidoRepositoryJPAImpl implements IPedidoRepository {
 
-    @Autowired
+    @PersistenceContext
     private EntityManager em;
 
     @Override
@@ -83,8 +82,7 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
 
     @Override
     public void guardar(Pedido pedido) {
-        em.persist(pedido);
-        em.flush();;
+        em.persist(em.merge(pedido));
     }
 
     @Override

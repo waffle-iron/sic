@@ -1,5 +1,7 @@
 package sic.modelo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -38,17 +40,16 @@ import sic.service.EstadoPedido;
     @NamedQuery(name = "Pedido.buscarPorNumero",
             query = "SELECT p FROM Pedido p "
                     + "WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa AND p.eliminado = false"),
-    @NamedQuery(name = "Pedido.buscarPorNumeroConFacturas",
-            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.facturas "
-                    + "WHERE p.nroPedido = :nroPedido AND p.eliminado = false"),
+//    @NamedQuery(name = "Pedido.buscarPorNumeroConFacturas",
+//            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.facturas "
+//                    + "WHERE p.nroPedido = :nroPedido AND p.eliminado = false"),
     @NamedQuery(name = "Pedido.buscarPorIdConRenglones",
             query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones "
                     + "WHERE p.id_Pedido = :id AND p.eliminado = false")
 })
 @Data
-//@ToString(exclude= "renglones")
+@ToString(exclude= "renglones")
 @EqualsAndHashCode(of = {"nroPedido", "empresa"})
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pedido")
 public class Pedido implements Serializable {
 
     @Id
@@ -82,11 +83,13 @@ public class Pedido implements Serializable {
     private Usuario usuario;
 
     @OneToMany
-    @JoinColumn(name = "id_Factura", referencedColumnName = "id_Pedido")
+    @JoinColumn(name = "id_Pedido")
+    @JsonProperty(access = Access.WRITE_ONLY)
     private List<Factura> facturas;
 
-    @OneToMany
-    @JoinColumn(name = "id_RenglonPedido", referencedColumnName = "id_Pedido")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_Pedido")
+    @JsonProperty(access = Access.WRITE_ONLY)
     private List<RenglonPedido> renglones;
 
     private double totalEstimado;

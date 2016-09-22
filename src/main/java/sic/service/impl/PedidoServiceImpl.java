@@ -30,8 +30,6 @@ import sic.service.IFacturaService;
 import sic.service.IPedidoService;
 import sic.service.IProductoService;
 import sic.service.BusinessServiceException;
-import sic.service.PedidoCrud;
-import sic.service.RenglonPedidoCrud;
 import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
 import sic.util.Utilidades;
@@ -42,19 +40,14 @@ public class PedidoServiceImpl implements IPedidoService {
     private final IPedidoRepository pedidoRepository;    
     private final IFacturaService facturaService;
     private final IProductoService productoService;
-    private final PedidoCrud pedidoCrud;
-    private final RenglonPedidoCrud renglonPedidoCrud;
     private static final Logger LOGGER = Logger.getLogger(PedidoServiceImpl.class.getPackage().getName());
 
     @Autowired
     public PedidoServiceImpl(IFacturaService facturaService,
-            IPedidoRepository pedidoRepository, IProductoService productoService,
-            PedidoCrud pedidoCrud, RenglonPedidoCrud renglonPedidoCrud) {
+            IPedidoRepository pedidoRepository, IProductoService productoService) {
         this.facturaService = facturaService;
         this.pedidoRepository = pedidoRepository;
         this.productoService = productoService;
-        this.pedidoCrud = pedidoCrud;
-        this.renglonPedidoCrud = renglonPedidoCrud;
     }
     
     @Override
@@ -147,11 +140,11 @@ public class PedidoServiceImpl implements IPedidoService {
     @Override
     public List<Factura> getFacturasDelPedido(long nroPedido) {
         List<Factura> facturasSinEliminar = new ArrayList<>();
-        for (Factura factura : pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido).getFacturas()) {
-            if (!factura.isEliminada()) {
-                facturasSinEliminar.add(factura);
-            }
-        }
+//        for (Factura factura : pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido).getFacturas()) {
+//            if (!factura.isEliminada()) {
+//                facturasSinEliminar.add(factura);
+//            }
+//        }
         return facturasSinEliminar;
     }
 
@@ -159,10 +152,8 @@ public class PedidoServiceImpl implements IPedidoService {
     @Transactional
     public void guardar(Pedido pedido) {
         this.validarPedido(pedido);
-        pedido.setNroPedido(this.calcularNumeroPedido(pedido.getEmpresa()));
-        renglonPedidoCrud.save(pedido.getRenglones());
-        pedidoCrud.save(pedido);
-//        pedidoRepository.guardar(pedido);
+        pedido.setNroPedido(this.calcularNumeroPedido(pedido.getEmpresa()));        
+        pedidoRepository.guardar(pedido);
         LOGGER.warn("El Pedido " + pedido + " se guardó correctamente.");
     }
 

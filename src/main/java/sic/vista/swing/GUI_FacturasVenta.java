@@ -922,10 +922,10 @@ public class GUI_FacturasVenta extends JInternalFrame {
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
                     facturaService.eliminar(facturas.get(indexFilaSeleccionada));
-                    if (facturas.get(indexFilaSeleccionada).getPedido() != null) {
-                        Pedido pedidoDeFactura = pedidoService.getPedidoPorId(facturas.get(indexFilaSeleccionada).getPedido().getId_Pedido());
-                        pedidoService.actualizarEstadoPedido(TipoDeOperacion.ELIMINACION, pedidoDeFactura);
-                    }
+//                    if (facturas.get(indexFilaSeleccionada).getPedido() != null) {
+//                        Pedido pedidoDeFactura = pedidoService.getPedidoPorId(facturas.get(indexFilaSeleccionada).getPedido().getId_Pedido());
+//                        pedidoService.actualizarEstadoPedido(TipoDeOperacion.ELIMINACION, pedidoDeFactura);
+//                    }
                     this.buscar(this.getCriteriaDeComponentes());
 
                 } catch (BusinessServiceException ex) {

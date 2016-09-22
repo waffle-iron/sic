@@ -5,8 +5,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -15,11 +13,11 @@ import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "renglonfactura")
-@NamedQueries({
-    @NamedQuery(name = "RenglonFactura.getRenglonesDeLaFactura",
-            query = "SELECT r FROM RenglonFactura r "
-                    + "WHERE r.factura = :factura")
-})
+//@NamedQueries({
+//    @NamedQuery(name = "RenglonFactura.getRenglonesDeLaFactura",
+//            query = "SELECT r FROM RenglonFactura r "
+//                    + "WHERE r.factura = :factura")
+//})
 @Data
 @EqualsAndHashCode(of = {"id_ProductoItem", "codigoItem"})
 public class RenglonFactura implements Serializable {
@@ -27,10 +25,6 @@ public class RenglonFactura implements Serializable {
     @Id
     @GeneratedValue
     private long id_RenglonFactura;
-
-    @ManyToOne
-    @JoinColumn(name = "id_Factura", referencedColumnName = "id_Factura")
-    private Factura factura;
 
     private long id_ProductoItem;
 

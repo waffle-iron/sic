@@ -1,5 +1,6 @@
 package sic.modelo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -48,9 +49,6 @@ public abstract class Factura implements Serializable {
 
     private long numFactura;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura")
-    private List<Pago> pagos;
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaVencimiento;
 
@@ -58,7 +56,9 @@ public abstract class Factura implements Serializable {
     @JoinColumn(name = "id_Transportista", referencedColumnName = "id_Transportista")
     private Transportista transportista;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_Factura")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<RenglonFactura> renglones;
 
     private double subTotal;
@@ -82,9 +82,5 @@ public abstract class Factura implements Serializable {
     private Empresa empresa;
 
     private boolean eliminada;
-
-    @ManyToOne
-    @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
-    private Pedido pedido;
 
 }
