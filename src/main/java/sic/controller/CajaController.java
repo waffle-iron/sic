@@ -79,7 +79,7 @@ public class CajaController {
     @ResponseStatus(HttpStatus.OK)
     public double calcularTotalPagos(@RequestParam(value = "id") long[] id) {
         List<Pago> pagos = new ArrayList<>();
-        for(Long Id : id) {
+        for(long Id : id) {
             pagos.add(pagoService.getPagoPorId(Id));
         }
         return cajaService.calcularTotalPagos(pagos);
@@ -97,14 +97,14 @@ public class CajaController {
     
     @GetMapping("/cajas/busqueda/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public List<Caja> getCajasCriteria(@RequestParam(value = "desde", required = false) Long desde,
+    public List<Caja> getCajasCriteria(@RequestParam(value = "idEmpresa") long idEmpresa,
+                                       @RequestParam(value = "desde", required = false) Long desde,
                                        @RequestParam(value = "hasta", required = false) Long hasta,
-                                       @RequestParam(value = "idEmpresa") long idEmpresa,
                                        @RequestParam(value = "idUsuario", required = false) Long idUsuario) {
         Calendar fechaDesde = Calendar.getInstance();
         fechaDesde.setTimeInMillis(desde);
         Calendar fechaHasta = Calendar.getInstance();
-        fechaDesde.setTimeInMillis(hasta);
+        fechaHasta.setTimeInMillis(hasta);
         BusquedaCajaCriteria criteria = BusquedaCajaCriteria.builder()
                                         .buscaPorFecha((desde != null) && (hasta != null))
                                         .fechaDesde(fechaDesde.getTime())
@@ -114,8 +114,7 @@ public class CajaController {
                                         .buscaPorUsuario(idUsuario != null)
                                         .usuario(usuarioService.getUsuarioPorId(idUsuario))
                                         .build();
-        return cajaService.getCajasCriteria(criteria);
-        
+        return cajaService.getCajasCriteria(criteria);        
     }
     
     @GetMapping("/cajas/empresa/{id}/ultima")
