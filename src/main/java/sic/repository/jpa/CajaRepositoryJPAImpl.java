@@ -21,6 +21,18 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
     public void guardar(Caja caja) {
         em.persist(em.merge(caja));
     }
+    
+    @Override
+    public Caja getCajaPorId(Long id) {
+        TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.buscarCajaPorId", Caja.class);
+        typedQuery.setParameter("id", id);
+        List<Caja> cajas = typedQuery.getResultList();
+        if (cajas.isEmpty()) {
+            return null;
+        } else {
+            return cajas.get(0);
+        }
+    }
 
     @Override
     public Caja getUltimaCaja(long id_Empresa) {
@@ -54,8 +66,8 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
     }
 
     @Override
-    public Caja getCajaPorID(long id_Caja, long id_Empresa) {
-        TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.buscarCajaPorID", Caja.class);
+    public Caja getCajaPorIdYEmpresa(long id_Caja, long id_Empresa) {
+        TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.buscarCajaPorIdYEmpresa", Caja.class);
         typedQuery.setParameter("id_caja", id_Caja);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         List<Caja> cajas = typedQuery.getResultList();
