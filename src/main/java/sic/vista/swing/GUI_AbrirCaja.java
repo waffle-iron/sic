@@ -42,7 +42,6 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         corte.set(Calendar.HOUR_OF_DAY, (int) spinner_Hora.getValue());
         corte.set(Calendar.MINUTE, (int) spinner_Minutos.getValue());
         caja.setFechaCorteInforme(corte.getTime());
-        caja.setNroCaja(cajaService.getUltimoNumeroDeCaja(EmpresaActiva.getInstance().getEmpresa().getId_Empresa()) + 1);
         caja.setSaldoInicial(monto);
         caja.setSaldoFinal(0);
         caja.setSaldoReal(0);

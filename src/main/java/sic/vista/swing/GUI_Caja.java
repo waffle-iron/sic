@@ -37,7 +37,6 @@ import sic.service.IPagoService;
 import sic.service.IUsuarioService;
 import sic.util.FormatoFechasEnTablasRenderer;
 import sic.util.FormatterFechaHora;
-import sic.util.FormatterNumero;
 import sic.util.Utilidades;
 
 public class GUI_Caja extends javax.swing.JDialog {
@@ -242,7 +241,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                     this.listaMovimientos.clear();
                     this.listaMovimientos.addAll(pagosPorFormaDePago);
                     this.listaMovimientos.addAll(gastosPorFormaDePago);
-                    double totalParcial = cajaService.calcularTotalPorMovimiento(this.listaMovimientos);
+                    double totalParcial = cajaService.calcularTotalPagos(pagosPorFormaDePago) - cajaService.calcularTotalGastos(gastosPorFormaDePago);
                     fila[1] = formaDePago.isAfectaCaja();
                     fila[2] = totalParcial;
                     totalGeneral += totalParcial;
@@ -308,51 +307,51 @@ public class GUI_Caja extends javax.swing.JDialog {
     }
 
     private void lanzarReporteCaja() throws JRException {
-        List<String> dataSource = new ArrayList<>();
-        dataSource.add((String) tbl_Resumen.getValueAt(0, 0)
-                + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(0, 2))));
-
-        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(EmpresaActiva.getInstance().getEmpresa());
-        double totalPorCorte = this.caja.getSaldoInicial();
-        for (FormaDePago formaDePago : formasDePago) {
-            double totalPorCorteFormaDePago = 0.0;
-            List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
-                    formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
-            List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
-                    formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
-            for (Pago pago : pagos) {
-                totalPorCorteFormaDePago += pagoService.getTotalPagado(pago.getFactura());
-            }
-            for (Gasto gasto : gastos) {
-                totalPorCorteFormaDePago += gasto.getMonto();
-            }
-            if (totalPorCorteFormaDePago > 0) {
-                dataSource.add(formaDePago.getNombre() + "-" + totalPorCorteFormaDePago);
-            }
-            totalPorCorte += totalPorCorteFormaDePago;
-        }
-        dataSource.add("Total hasta la hora de control:-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) totalPorCorte)));
-        dataSource.add("..........................Corte a las: " + formatoHora.format(this.caja.getFechaCorteInforme()) + "...........................-");
-
-        for (int f = 1; f < tbl_Resumen.getRowCount(); f++) {
-            if ((boolean) tbl_Resumen.getValueAt(f, 1) == true) {
-                dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + " (Afecta Caja)"
-                        + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 2))));
-            } else {
-                dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + " (No afecta Caja)"
-                        + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 2))));
-            }
-        }
-
-        JasperPrint report = cajaService.getReporteCaja(this.caja, dataSource, this.caja.getUsuarioCierraCaja());
-        JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-        viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
-        ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-        viewer.setIconImage(iconoVentana.getImage());
-        viewer.setLocationRelativeTo(null);
-        JRViewer jrv = new JRViewer(report);
-        viewer.getContentPane().add(jrv);
-        viewer.setVisible(true);
+//        List<String> dataSource = new ArrayList<>();
+//        dataSource.add((String) tbl_Resumen.getValueAt(0, 0)
+//                + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(0, 2))));
+//
+//        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(EmpresaActiva.getInstance().getEmpresa());
+//        double totalPorCorte = this.caja.getSaldoInicial();
+//        for (FormaDePago formaDePago : formasDePago) {
+//            double totalPorCorteFormaDePago = 0.0;
+//            List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
+//                    formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
+//            List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
+//                    formaDePago.getId_FormaDePago(), this.caja.getFechaApertura(), this.caja.getFechaCorteInforme());
+//            for (Pago pago : pagos) {
+//                totalPorCorteFormaDePago += pagoService.getTotalPagado(pago.getFactura());
+//            }
+//            for (Gasto gasto : gastos) {
+//                totalPorCorteFormaDePago += ((Gasto) gasto).getMonto();
+//            }
+//            if (totalPorCorteFormaDePago > 0) {
+//                dataSource.add(formaDePago.getNombre() + "-" + totalPorCorteFormaDePago);
+//            }
+//            totalPorCorte += totalPorCorteFormaDePago;
+//        }
+//        dataSource.add("Total hasta la hora de control:-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) totalPorCorte)));
+//        dataSource.add("..........................Corte a las: " + formatoHora.format(this.caja.getFechaCorteInforme()) + "...........................-");
+//
+//        for (int f = 1; f < tbl_Resumen.getRowCount(); f++) {
+//            if ((boolean) tbl_Resumen.getValueAt(f, 1) == true) {
+//                dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + " (Afecta Caja)"
+//                        + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 2))));
+//            } else {
+//                dataSource.add((String) tbl_Resumen.getValueAt(f, 0) + " (No afecta Caja)"
+//                        + "-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) tbl_Resumen.getValueAt(f, 2))));
+//            }
+//        }
+//
+//        byte [] report = cajaService.getReporteCaja(this.caja, this.caja.getUsuarioCierraCaja());
+//        JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+//        viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
+//        ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+//        viewer.setIconImage(iconoVentana.getImage());
+//        viewer.setLocationRelativeTo(null);
+//        JRViewer jrv = new JRViewer(report);
+//        viewer.getContentPane().add(jrv);
+//        viewer.setVisible(true);
     }
 
     private void setTituloVentana() {

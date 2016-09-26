@@ -15,11 +15,6 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
 
     @PersistenceContext
     private EntityManager em;
-
-    @Override
-    public void guardar(Gasto gasto) {
-        em.persist(em.merge(gasto));
-    }
     
     @Override
     public Gasto getGastoPorId(Long id_Gasto) {
@@ -34,12 +29,17 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
     }
 
     @Override
-    public List<Object> getGastosPorFecha(long id_Empresa, Date desde, Date hasta) {
-        TypedQuery<Object> typedQuery = (TypedQuery<Object>) em.createNamedQuery("Gasto.getGastosSinArqueoPorFecha");
+    public void guardar(Gasto gasto) {
+        em.persist(em.merge(gasto));
+    }
+
+    @Override
+    public List<Gasto> getGastosPorFecha(long id_Empresa, Date desde, Date hasta) {
+        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastosSinArqueoPorFecha", Gasto.class);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
-        List<Object> gastos = typedQuery.getResultList();
+        List<Gasto> gastos = typedQuery.getResultList();
         if (gastos.isEmpty()) {
             return null;
         } else {

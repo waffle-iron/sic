@@ -2,20 +2,25 @@ package sic.service;
 
 import java.util.Date;
 import java.util.List;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
 import sic.modelo.Empresa;
-import sic.modelo.Usuario;
+import sic.modelo.Gasto;
+import sic.modelo.Pago;
 
 public interface ICajaService {
 
     void actualizar(Caja caja);
+    
+    void eliminar(Caja caja);
+    
+    Caja getCajaPorId(Long id);
+  
+    double calcularTotalPagos(List<Pago> movimientos);
+    
+    double calcularTotalGastos(List<Gasto> movimientos);
 
-    double calcularTotalPorMovimiento(List<Object> movimientos);
-
-    Caja getCajaPorId(long id_Caja, long id_Empresa);
+    Caja getCajaPorIdYEmpresa(long id_Caja, long id_Empresa);
 
     List<Caja> getCajas(long id_Empresa, Date desde, Date hasta);
 
@@ -29,7 +34,7 @@ public interface ICajaService {
 
     void validarCaja(Caja caja);
 
-    JasperPrint getReporteCaja(Caja caja, List<String> dataSource, Usuario usuario) throws JRException;
+    byte[] getReporteCaja(Caja caja, Long idEmpresa);
 
     Caja cerrarCajaDiaAnterior(Empresa empresa);
 
