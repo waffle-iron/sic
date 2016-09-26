@@ -28,7 +28,6 @@ public class GUI_AgregarGasto extends JDialog {
     public Gasto construirGasto(String concepto, double monto, FormaDePago formaDePago) {
         Empresa empresa = EmpresaActiva.getInstance().getEmpresa();
         Usuario usuario = usuarioService.getUsuarioActivo().getUsuario();
-        int nroDeGasto = gastoService.getUltimoNumeroDeGasto(empresa.getId_Empresa()) + 1;
         Gasto gasto = new Gasto();
         gasto.setConcepto(concepto);
         gasto.setEliminado(false);
@@ -36,7 +35,6 @@ public class GUI_AgregarGasto extends JDialog {
         gasto.setFecha(new Date());
         gasto.setFormaDePago(formaDePago);
         gasto.setMonto(monto);
-        gasto.setNroGasto(nroDeGasto);
         gasto.setUsuario(usuario);
         return gasto;
     }
@@ -173,7 +171,9 @@ public class GUI_AgregarGasto extends JDialog {
         if (ftxt_Concepto.getText() == null) {
             ftxt_Concepto.setText("");
         }
-        gastoService.guardar(this.construirGasto(ftxt_Concepto.getText(), Double.parseDouble(ftxt_Monto.getValue().toString()), (FormaDePago) cmb_FormaDePago.getSelectedItem()));
+        gastoService.guardar(this.construirGasto(ftxt_Concepto.getText(),
+                             Double.parseDouble(ftxt_Monto.getValue().toString()),
+                             (FormaDePago) cmb_FormaDePago.getSelectedItem()));
         this.dispose();
     }//GEN-LAST:event_lbl_AceptarActionPerformed
 

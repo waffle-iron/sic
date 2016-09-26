@@ -5,7 +5,7 @@ import java.util.List;
 import sic.modelo.Gasto;
 
 public interface IGastoService {
-
+    
     Gasto getGastoPorId(Long id);
     
     void actualizar(Gasto gasto);
