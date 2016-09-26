@@ -20,6 +20,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "gasto")
 @NamedQueries({
+    @NamedQuery(name = "Gasto.getGastoPorId",
+            query = "SELECT g FROM Gasto g "
+                    + "WHERE g.id_Gasto = :id_Gasto"),
     @NamedQuery(name = "Gasto.getGastoSinArqueoPorFormaDePago",
             query = "SELECT g FROM Gasto g "
                     + "WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa "
