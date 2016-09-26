@@ -3,7 +3,10 @@ package sic.controller;
 import java.util.Calendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -122,24 +125,22 @@ public class PedidoController {
     public Pedido getPedidoPorNumeroYEmpresa(@PathVariable("nro") Long nroPedido, 
                                              @PathVariable("id") Long id) {
         return pedidoService.getPedidoPorNumeroYEmpresa(nroPedido, id);
-    }
-    
-    @GetMapping("/pedidos/{id}/con-renglones")
-    @ResponseStatus(HttpStatus.OK)
-    public Pedido getPedidoPorIdConRenglones(@PathVariable("id") long id) {
-        return pedidoService.getPedidoPorIdConRenglones(id);
-    }
-    
-    @GetMapping("/pedidos/{id}/con-renglones/subtotal-al-dia")
-    @ResponseStatus(HttpStatus.OK)
-    public Pedido getPedidoPorNumeroConRenglonesActualizandoSubtotales(long nroPedido) {
-        return pedidoService.getPedidoPorNumeroConRenglonesActualizandoSubtotales(nroPedido);
-    }
-       
+    }    
+           
     @GetMapping("/pedidos/renglones-factura-a-renglones-pedido")
     @ResponseStatus(HttpStatus.OK)
     public List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(@RequestBody List<RenglonFactura> renglonesDeFactura) {
         return pedidoService.convertirRenglonesFacturaARenglonesPedido(renglonesDeFactura);
+    }
+    
+    @GetMapping("/pedidos/{id}/reporte")
+    public ResponseEntity<byte[]> getReportePedido(@PathVariable long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        headers.setContentDispositionFormData("reportePedido.pdf", "ReportePedido.pdf");
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        byte[] reportePDF = pedidoService.getReportePedido(pedidoService.getPedidoPorId(id));
+        return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);
     }
     
 }

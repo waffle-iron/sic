@@ -32,6 +32,7 @@ import sic.service.IClienteService;
 import sic.service.IPedidoService;
 import sic.service.IUsuarioService;
 import sic.util.RenderTabla;
+import sic.util.Utilidades;
 
 public class GUI_Pedidos extends JInternalFrame {
 
@@ -327,18 +328,16 @@ public class GUI_Pedidos extends JInternalFrame {
         }
         this.limpiarTablaRenglones();
         this.setColumnasRenglonesPedido();
-        long nroPedido = (long) tbl_Pedidos.getValueAt(row, 2);
-//        Pedido paraListarRenglones = pedidoService.getPedidoPorNumeroConRenglonesActualizandoSubtotales(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
-//        for (RenglonPedido renglon : paraListarRenglones.getRenglones()) {
-//            Object[] fila = new Object[6];
-//            fila[0] = renglon.getProducto().getCodigo();
-//            fila[1] = renglon.getProducto().getDescripcion();
-//            fila[2] = renglon.getCantidad();
-//            fila[3] = renglon.getProducto().getPrecioLista();
-//            fila[4] = renglon.getDescuento_porcentaje();
-//            fila[5] = renglon.getSubTotal();
-//            modeloTablaRenglones.addRow(fila);
-//        }
+        for (RenglonPedido renglon : pedidoService.getRenglonesDelPedido((this.pedidos.get(Utilidades.getSelectedRowModelIndice(tbl_Pedidos))).getId_Pedido())) {
+            Object[] fila = new Object[6];
+            fila[0] = renglon.getProducto().getCodigo();
+            fila[1] = renglon.getProducto().getDescripcion();
+            fila[2] = renglon.getCantidad();
+            fila[3] = renglon.getProducto().getPrecioLista();
+            fila[4] = renglon.getDescuento_porcentaje();
+            fila[5] = renglon.getSubTotal();
+            modeloTablaRenglones.addRow(fila);
+        }
         tbl_RenglonesPedido.setModel(modeloTablaRenglones);
     }
 
