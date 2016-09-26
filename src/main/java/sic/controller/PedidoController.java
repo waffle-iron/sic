@@ -54,7 +54,14 @@ public class PedidoController {
     @PutMapping("/pedidos")
     @ResponseStatus(HttpStatus.OK)
     public Pedido actualizar(@RequestBody Pedido pedido) {
-        pedidoService.getPedidoPorId(pedido.getId_Pedido());
+        //Las facturas se recuperan para evitar cambios no deseados.
+        pedido.setFacturas(pedidoService.getFacturasDelPedido(pedido.getId_Pedido()));
+        //Si los renglones vienen null, recupera los renglones del pedido para actualizar
+        //caso contrario, ultiliza los renglones del pedido.
+        if (pedido.getRenglones() == null) {
+            pedido.setRenglones(pedidoService.getRenglonesDelPedido(pedido.getId_Pedido()));
+        }
+        pedidoService.actualizar(pedido);
         return pedidoService.getPedidoPorId(pedido.getId_Pedido());
     }
     
@@ -91,7 +98,7 @@ public class PedidoController {
                                           .buscaUsuario(usuario != null)
                                           .usuario(usuario)
                                           .buscaPorNroPedido(nroPedido != null)
-                                          .nroPedido(nroPedido)
+                                          .nroPedido((nroPedido != null)? nroPedido : 0)
                                           .empresa(empresa)
                                           .build();
         return pedidoService.buscarConCriteria(criteria);
@@ -106,8 +113,8 @@ public class PedidoController {
 
     @DeleteMapping("/pedidos/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@RequestBody Pedido pedido) {
-        pedidoService.eliminar(pedido);
+    public void eliminar(@PathVariable("id") long id) {
+        pedidoService.eliminar(pedidoService.getPedidoPorId(id));
     }
     
     @GetMapping("/pedidos/{nro}/empresa/{id}")

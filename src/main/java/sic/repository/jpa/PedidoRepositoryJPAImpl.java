@@ -31,7 +31,7 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
     
     @Override
     public List<RenglonPedido> getRenglonesDelPedido(Long id) {
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarRenglonesDelPedido", Pedido.class);
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorIdConRenglones", Pedido.class);
         typedQuery.setParameter("id", id);
         List<Pedido> paraObtenerRenglones = typedQuery.getResultList();
         return paraObtenerRenglones.get(0).getRenglones();
@@ -104,9 +104,9 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
     }
 
     @Override
-    public Pedido getPedidoPorNumeroConFacturas(long nroPedido) {
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroConFacturas", Pedido.class);
-        typedQuery.setParameter("nroPedido", nroPedido);
+    public Pedido getPedidoPorNumeroConFacturas(long id_Pedido) {
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorIdConFacturas", Pedido.class);
+        typedQuery.setParameter("id", id_Pedido);
         List<Pedido> pedidos = typedQuery.getResultList();
         if (pedidos.isEmpty()) {
             return null;
@@ -118,7 +118,7 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
     @Override
     public Pedido getPedidoPorIdConRenglones(long idPedido) {
         TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorIdConRenglones", Pedido.class);
-        typedQuery.setParameter("idPedido", idPedido);
+        typedQuery.setParameter("id", idPedido);
         List<Pedido> pedidos = typedQuery.getResultList();
         if (pedidos.isEmpty()) {
             return null;

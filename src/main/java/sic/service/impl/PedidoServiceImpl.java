@@ -37,7 +37,7 @@ import sic.util.Utilidades;
 @Service
 public class PedidoServiceImpl implements IPedidoService {
 
-    private final IPedidoRepository pedidoRepository;    
+    private final IPedidoRepository pedidoRepository;
     private final IFacturaService facturaService;
     private final IProductoService productoService;
     private static final Logger LOGGER = Logger.getLogger(PedidoServiceImpl.class.getPackage().getName());
@@ -49,7 +49,7 @@ public class PedidoServiceImpl implements IPedidoService {
         this.pedidoRepository = pedidoRepository;
         this.productoService = productoService;
     }
-    
+
     @Override
     public Pedido getPedidoPorId(Long id) {
         return this.pedidoRepository.getPedidoPorId(id);
@@ -96,7 +96,7 @@ public class PedidoServiceImpl implements IPedidoService {
         }
         return pedido;
     }
-    
+
     @Override
     @Transactional
     public void actualizarEstadoPedido(TipoDeOperacion tipoDeOperacion, Pedido pedido) {
@@ -123,7 +123,7 @@ public class PedidoServiceImpl implements IPedidoService {
     public Pedido calcularTotalActualDePedido(Pedido pedido) {
         double porcentajeDescuento;
         double totalActual = 0;
-        for (RenglonPedido renglonPedido : pedidoRepository.getRenglonesDelPedido(pedido.getNroPedido())) {
+        for (RenglonPedido renglonPedido : pedidoRepository.getRenglonesDelPedido(pedido.getId_Pedido())) {
             porcentajeDescuento = (1 - (renglonPedido.getDescuento_porcentaje() / 100));
             renglonPedido.setSubTotal((renglonPedido.getProducto().getPrecioLista() * renglonPedido.getCantidad() * porcentajeDescuento));
             totalActual += renglonPedido.getSubTotal();
@@ -138,13 +138,13 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public List<Factura> getFacturasDelPedido(long nroPedido) {
+    public List<Factura> getFacturasDelPedido(long id_pedido) {
         List<Factura> facturasSinEliminar = new ArrayList<>();
-//        for (Factura factura : pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido).getFacturas()) {
-//            if (!factura.isEliminada()) {
-//                facturasSinEliminar.add(factura);
-//            }
-//        }
+        for (Factura factura : pedidoRepository.getPedidoPorNumeroConFacturas(id_pedido).getFacturas()) {
+            if (!factura.isEliminada()) {
+                facturasSinEliminar.add(factura);
+            }
+        }
         return facturasSinEliminar;
     }
 
@@ -152,7 +152,7 @@ public class PedidoServiceImpl implements IPedidoService {
     @Transactional
     public void guardar(Pedido pedido) {
         this.validarPedido(pedido);
-        pedido.setNroPedido(this.calcularNumeroPedido(pedido.getEmpresa()));        
+        pedido.setNroPedido(this.calcularNumeroPedido(pedido.getEmpresa()));
         pedidoRepository.guardar(pedido);
         LOGGER.warn("El Pedido " + pedido + " se guardó correctamente.");
     }
@@ -194,6 +194,7 @@ public class PedidoServiceImpl implements IPedidoService {
     @Override
     @Transactional
     public void actualizar(Pedido pedido) {
+        this.validarPedido(pedido);
         pedidoRepository.actualizar(pedido);
     }
 
@@ -265,12 +266,12 @@ public class PedidoServiceImpl implements IPedidoService {
         params.put("logo", Utilidades.convertirByteArrayIntoImage(pedido.getEmpresa().getLogo()));
         List<RenglonPedido> renglones = this.getRenglonesDelPedido(pedido.getId_Pedido());
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(renglones);
-         try {
-           return JasperExportManager.exportReportToPdf(JasperFillManager.fillReport(isFileReport, params, ds));
-       } catch (JRException ex) {
-          throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+        try {
+            return JasperExportManager.exportReportToPdf(JasperFillManager.fillReport(isFileReport, params, ds));
+        } catch (JRException ex) {
+            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_error_reporte"), ex);
-       }
+        }
     }
 
     @Override

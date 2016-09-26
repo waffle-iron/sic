@@ -17,7 +17,7 @@ public interface IPedidoRepository {
 
     Pedido getPedidoPorNro(long nroPedido, long idEmpresa);
 
-    Pedido getPedidoPorNumeroConFacturas(long nroPedido);
+    Pedido getPedidoPorNumeroConFacturas(long id_Pedido);
 
     Pedido getPedidoPorIdConRenglones(long idPedido);
 
