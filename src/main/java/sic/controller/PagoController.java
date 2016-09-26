@@ -84,22 +84,24 @@ public class PagoController {
         fechaDesde.setTimeInMillis(desde);
         Calendar fechaHasta = Calendar.getInstance();
         fechaHasta.setTimeInMillis(hasta);
-        return pagoService.getPagosEntreFechasYFormaDePago(idEmpresa, idFormaDePago, fechaDesde.getTime(), fechaHasta.getTime());
+        return pagoService.getPagosEntreFechasYFormaDePago(idEmpresa, idFormaDePago,
+                fechaDesde.getTime(), fechaHasta.getTime());
     }
     
     @PutMapping("/pagos/pagar-multiples-facturas")
     @ResponseStatus(HttpStatus.OK)
     public void pagarMultiplesFacturas(@RequestParam("id") long[] id,
-                                            @RequestParam("monto") double monto,
-                                            @RequestParam("idFormaDePago") long idFormaDePago,
-                                            @RequestParam("nota") String nota,
-                                            @RequestParam("fechaYHora") long date) {
+                                       @RequestParam("monto") double monto,
+                                       @RequestParam("idFormaDePago") long idFormaDePago,
+                                       @RequestParam("nota") String nota,
+                                       @RequestParam("fechaYHora") long date) {
         Calendar fechaYHora = Calendar.getInstance();
         fechaYHora.setTimeInMillis(date);
         List<Factura> facturas = new ArrayList<>();
-        for (long ID : id) {
-            facturas.add(facturaService.getFacturaPorId(ID));
+        for (long i : id) {
+            facturas.add(facturaService.getFacturaPorId(i));
         }
-        pagoService.pagarMultiplesFacturas(facturas, monto, formaDePagoService.getFormasDePagoPorId(idFormaDePago), nota, fechaYHora.getTime());
+        pagoService.pagarMultiplesFacturas(facturas, monto,
+                formaDePagoService.getFormasDePagoPorId(idFormaDePago), nota, fechaYHora.getTime());
     }
 }
