@@ -70,16 +70,6 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     @Override
-    public List<Factura> getFacturasEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
-        List<Pago> pagos = this.getPagosEntreFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
-        List<Factura> facturas = new ArrayList<>();
-        for (Pago pago : pagos) {
-            facturas.add(pago.getFactura());
-        }
-        return facturas;
-    }
-
-    @Override
     @Transactional
     public void guardar(Pago pago) {
         this.validarOperacion(pago);
@@ -139,7 +129,7 @@ public class PagoServiceImpl implements IPagoService {
         List<Factura> facturasOrdenadas = facturaService.ordenarFacturasPorFechaAsc(facturas);
         for (Factura factura : facturasOrdenadas) {
             if (monto > 0) {
-                //factura.setPagos(this.getPagosDeLaFactura(factura));
+                factura.setPagos(this.getPagosDeLaFactura(factura));
                 Pago nuevoPago = Pago.builder()
                         .formaDePago(formaDePago)
                         .factura(factura)

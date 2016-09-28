@@ -161,7 +161,7 @@ public class GUI_CerrarVenta extends JDialog {
             pago.setFactura(facturaVenta);
             montoPagado += pago.getMonto();
         }
-        //facturaVenta.setPagos(pagos);
+        facturaVenta.setPagos(pagos);
         facturaVenta.setPagada((facturaVenta.getTotal() - montoPagado) <= 0);
 //         for (RenglonFactura renglon : gui_puntoDeVenta.getRenglones()) {
 //             renglon.setFactura(facturaVenta);

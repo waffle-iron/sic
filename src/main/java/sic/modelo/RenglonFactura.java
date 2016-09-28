@@ -5,19 +5,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "renglonfactura")
-//@NamedQueries({
-//    @NamedQuery(name = "RenglonFactura.getRenglonesDeLaFactura",
-//            query = "SELECT r FROM RenglonFactura r "
-//                    + "WHERE r.factura = :factura")
-//})
 @Data
 @EqualsAndHashCode(of = {"id_ProductoItem", "codigoItem"})
 public class RenglonFactura implements Serializable {

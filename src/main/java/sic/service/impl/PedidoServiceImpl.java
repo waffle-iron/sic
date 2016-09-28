@@ -273,7 +273,8 @@ public class PedidoServiceImpl implements IPedidoService {
                     .getString("mensaje_error_reporte"), ex);
         }
     }
-
+    
+    //Mover a la vista ***************************************************************************
     @Override
     public RenglonPedido convertirRenglonFacturaARenglonPedido(RenglonFactura renglonFactura) {
         RenglonPedido nuevoRenglon = new RenglonPedido();
@@ -286,6 +287,7 @@ public class PedidoServiceImpl implements IPedidoService {
         return nuevoRenglon;
     }
 
+    //Mover a la vista ***************************************************************************
     @Override
     public List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(List<RenglonFactura> renglonesDeFactura) {
         List<RenglonPedido> renglonesPedido = new ArrayList();

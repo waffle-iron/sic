@@ -48,7 +48,7 @@ public class ClienteController {
         return clienteService.getClientePorId(id);
     }
     
-    @GetMapping("/clientes/criteria") 
+    @GetMapping("/clientes/busqueda/criteria")
     @ResponseStatus(HttpStatus.OK)
     public List<Cliente> buscarConCriteria(@RequestParam(value = "razonSocial", required = false) String razonSocial,
                                            @RequestParam(value = "nombreFantasia", required = false) String nombreFantasia,

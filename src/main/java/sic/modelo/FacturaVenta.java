@@ -46,7 +46,7 @@ public class FacturaVenta extends Factura implements Serializable {
     
     @Builder
     private FacturaVenta(Date fecha, char tipoFactura, long numSerie, long numFactura, Date fechaVencimiento, 
-            Transportista transportista, List<RenglonFactura> renglones, double subTotal, double recargo_porcentaje, 
+            Transportista transportista, List<RenglonFactura> renglones, List<Pago> pagos, double subTotal, double recargo_porcentaje, 
             double recargo_neto, double descuento_porcentaje, double descuento_neto, double subTotal_neto, double iva_105_neto, 
             double iva_21_neto, double impuestoInterno_neto, double total, String observaciones, boolean pagada, Empresa empresa,
             boolean eliminada, Cliente cliente, Usuario usuario) {
@@ -58,6 +58,7 @@ public class FacturaVenta extends Factura implements Serializable {
         this.setFechaVencimiento(fechaVencimiento);
         this.setTransportista(transportista);
         this.setRenglones(renglones);
+        this.setPagos(pagos);
         this.setSubTotal(subTotal);
         this.setRecargo_porcentaje(recargo_porcentaje);
         this.setRecargo_neto(recargo_neto);

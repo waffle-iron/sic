@@ -167,38 +167,37 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     public void actualizarStock(Factura factura, TipoDeOperacion operacion) {
-//        for (RenglonFactura renglon : factura.getRenglones()) {
-//            Producto producto = productoRepository.getProductoPorId(renglon.getId_ProductoItem());
-//            if (producto == null) {
-//                LOGGER.warn("Se intenta actualizar el stock de un producto eliminado.");
-//            }
-//            if (producto != null && producto.isIlimitado() == false) {
-//
-//                if (renglon.getFactura() instanceof FacturaVenta) {
-//                    if (operacion == TipoDeOperacion.ALTA) {
-//                        producto.setCantidad(producto.getCantidad() - renglon.getCantidad());
-//                    }
-//
-//                    if (operacion == TipoDeOperacion.ELIMINACION) {
-//                        producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
-//                    }
-//                } else if (renglon.getFactura() instanceof FacturaCompra) {
-//                    if (operacion == TipoDeOperacion.ALTA) {
-//                        producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
-//                    }
-//
-//                    if (operacion == TipoDeOperacion.ELIMINACION) {
-//                        double result = producto.getCantidad() - renglon.getCantidad();
-//                        if (result < 0) {
-//                            result = 0;
-//                        }
-//                        producto.setCantidad(result);
-//
-//                    }
-//                }
-//                productoRepository.actualizar(producto);
-//            }
-//        }
+        for (RenglonFactura renglon : factura.getRenglones()) {
+            Producto producto = productoRepository.getProductoPorId(renglon.getId_ProductoItem());
+            if (producto == null) {
+                LOGGER.warn("Se intenta actualizar el stock de un producto eliminado.");
+            }
+            if (producto != null && producto.isIlimitado() == false) {
+                
+                if (factura instanceof FacturaVenta) {
+                    if (operacion == TipoDeOperacion.ALTA) {
+                        producto.setCantidad(producto.getCantidad() - renglon.getCantidad());
+                    }
+
+                    if (operacion == TipoDeOperacion.ELIMINACION) {
+                        producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
+                    }
+                } else if (factura instanceof FacturaCompra) {
+                    if (operacion == TipoDeOperacion.ALTA) {
+                        producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
+                    }
+
+                    if (operacion == TipoDeOperacion.ELIMINACION) {
+                        double result = producto.getCantidad() - renglon.getCantidad();
+                        if (result < 0) {
+                            result = 0;
+                        }
+                        producto.setCantidad(result);
+                    }
+                }
+                productoRepository.actualizar(producto);
+            }
+        }
     }
 
     @Override

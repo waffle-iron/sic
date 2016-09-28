@@ -21,14 +21,11 @@ import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
 import sic.modelo.Pedido;
-import sic.modelo.RenglonFactura;
-import sic.modelo.RenglonPedido;
 import sic.modelo.Usuario;
 import sic.service.IClienteService;
 import sic.service.IEmpresaService;
 import sic.service.IPedidoService;
 import sic.service.IUsuarioService;
-import sic.service.TipoDeOperacion;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -75,7 +72,7 @@ public class PedidoController {
         return pedidoService.getPedidoPorId(pedido.getId_Pedido());
     }
     
-    @GetMapping("/pedidos/criteria") 
+    @GetMapping("/pedidos/busqueda/criteria")
     @ResponseStatus(HttpStatus.OK)
     public List<Pedido> buscarConCriteria(@RequestParam(value = "idEmpresa") Long idEmpresa,
                                           @RequestParam(value = "desde", required = false) Long desde,
@@ -107,32 +104,12 @@ public class PedidoController {
         return pedidoService.buscarConCriteria(criteria);
     }
     
-    @RequestMapping("/pedidos/{id}/estado")
-    @ResponseStatus(HttpStatus.OK)
-    public void actualizarEstadoPedido(@RequestParam TipoDeOperacion tipoDeOperacion,
-                                       @PathVariable("id") long id) {
-        pedidoService.actualizarEstadoPedido(tipoDeOperacion, pedidoService.getPedidoPorId(id));
-    }
-
     @DeleteMapping("/pedidos/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable("id") long id) {
         pedidoService.eliminar(pedidoService.getPedidoPorId(id));
-    }
-    
-    @GetMapping("/pedidos/{nro}/empresa/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Pedido getPedidoPorNumeroYEmpresa(@PathVariable("nro") Long nroPedido, 
-                                             @PathVariable("id") Long id) {
-        return pedidoService.getPedidoPorNumeroYEmpresa(nroPedido, id);
-    }    
-           
-    @GetMapping("/pedidos/renglones-factura-a-renglones-pedido")
-    @ResponseStatus(HttpStatus.OK)
-    public List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(@RequestBody List<RenglonFactura> renglonesDeFactura) {
-        return pedidoService.convertirRenglonesFacturaARenglonesPedido(renglonesDeFactura);
-    }
-    
+    }       
+        
     @GetMapping("/pedidos/{id}/reporte")
     public ResponseEntity<byte[]> getReportePedido(@PathVariable long id) {
         HttpHeaders headers = new HttpHeaders();
