@@ -28,7 +28,7 @@ public class EmpresaController {
     
     @GetMapping("/empresas")
     @ResponseStatus(HttpStatus.OK)
-    public List<Empresa> getEmpresa() {
+    public List<Empresa> getEmpresas() {
         return empresaService.getEmpresas();
     }
     
