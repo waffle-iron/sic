@@ -2,8 +2,6 @@ package sic.service;
 
 import java.util.HashMap;
 import java.util.List;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Empresa;
 import sic.modelo.Factura;
@@ -27,15 +25,9 @@ public interface IPedidoService {
 
     boolean eliminar(Pedido pedido);
 
-    List<Factura> getFacturasDelPedido(long nroPedido);
+    List<Factura> getFacturasDelPedido(long id);
 
     Pedido getPedidoPorNumeroYEmpresa(long nroPedido, long idEmpresa);
-
-    Pedido getPedidoPorNumeroConFacturas(long nroPedido);
-
-    Pedido getPedidoPorIdConRenglones(long idPedido);
-
-    Pedido getPedidoPorNumeroConRenglonesActualizandoSubtotales(long nroPedido);
 
     HashMap<Long, RenglonFactura> getRenglonesDeFacturasUnificadosPorNroPedido(long nroPedido);
 
@@ -44,9 +36,5 @@ public interface IPedidoService {
     byte[] getReportePedido(Pedido pedido);
 
     void guardar(Pedido pedido);
-
-    RenglonPedido convertirRenglonFacturaARenglonPedido(RenglonFactura renglonFactura);
-
-    List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(List<RenglonFactura> renglonesDeFactura);
 
 }

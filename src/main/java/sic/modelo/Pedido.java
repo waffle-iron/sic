@@ -1,7 +1,9 @@
 package sic.modelo;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -36,17 +38,12 @@ import sic.service.EstadoPedido;
                     + "WHERE p.id_Pedido = :id AND p.eliminado = false"),
     @NamedQuery(name = "Pedido.buscarPorNumero",
             query = "SELECT p FROM Pedido p "
-                    + "WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa AND p.eliminado = false"),
-    @NamedQuery(name = "Pedido.buscarPorIdConFacturas",
-            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.facturas "
-                    + "WHERE p.id_Pedido= :id AND p.eliminado = false"),
-    @NamedQuery(name = "Pedido.buscarPorIdConRenglones",
-            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones "
-                    + "WHERE p.id_Pedido = :id AND p.eliminado = false")
+                    + "WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa AND p.eliminado = false")
 })
 @Data
-@ToString(exclude= "renglones")
+@ToString(exclude = {"facturas", "renglones"})
 @EqualsAndHashCode(of = {"nroPedido", "empresa"})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pedido")
 public class Pedido implements Serializable {
 
     @Id

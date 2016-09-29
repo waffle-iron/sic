@@ -21,7 +21,6 @@ import sic.modelo.Empresa;
 import sic.modelo.EmpresaActiva;
 import sic.modelo.Factura;
 import sic.modelo.Pedido;
-import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
 import sic.modelo.RenglonPedido;
 import sic.repository.IPedidoRepository;
@@ -54,8 +53,8 @@ public class PedidoServiceImpl implements IPedidoService {
     public Pedido getPedidoPorId(Long id) {
         return this.pedidoRepository.getPedidoPorId(id);
     }
-
-    private void validarPedido(Pedido pedido) {
+    
+    private void validarPedido(TipoDeOperacion operacion, Pedido pedido) {
         //Entrada de Datos
         //Requeridos
         if (pedido.getFecha() == null) {
@@ -74,11 +73,21 @@ public class PedidoServiceImpl implements IPedidoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_usuario_vacio"));
         }
-        //Duplicados       
-        if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) != null) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_pedido_duplicado"));
+        if (operacion == TipoDeOperacion.ALTA) {
+            //Duplicados       
+            if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) != null) {
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_pedido_duplicado"));
+            }
         }
+        if (operacion == TipoDeOperacion.ACTUALIZACION) {
+            //Duplicados       
+            if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) == null) {
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_pedido_no_existente"));
+            }
+        }
+        
     }
 
     private List<Pedido> calcularTotalActualDePedidos(List<Pedido> pedidos) {
@@ -86,15 +95,6 @@ public class PedidoServiceImpl implements IPedidoService {
             this.calcularTotalActualDePedido(pedido);
         }
         return pedidos;
-    }
-
-    private Pedido actualizarSubTotalRenglonesPedido(Pedido pedido) {
-        double porcentajeDescuento;
-        for (RenglonPedido renglonPedido : pedido.getRenglones()) {
-            porcentajeDescuento = (1 - (renglonPedido.getDescuento_porcentaje() / 100));
-            renglonPedido.setSubTotal(renglonPedido.getCantidad() * renglonPedido.getProducto().getPrecioLista() * porcentajeDescuento);
-        }
-        return pedido;
     }
 
     @Override
@@ -123,7 +123,7 @@ public class PedidoServiceImpl implements IPedidoService {
     public Pedido calcularTotalActualDePedido(Pedido pedido) {
         double porcentajeDescuento;
         double totalActual = 0;
-        for (RenglonPedido renglonPedido : pedidoRepository.getRenglonesDelPedido(pedido.getId_Pedido())) {
+        for (RenglonPedido renglonPedido : this.getRenglonesDelPedido(pedido.getId_Pedido())) {
             porcentajeDescuento = (1 - (renglonPedido.getDescuento_porcentaje() / 100));
             renglonPedido.setSubTotal((renglonPedido.getProducto().getPrecioLista() * renglonPedido.getCantidad() * porcentajeDescuento));
             totalActual += renglonPedido.getSubTotal();
@@ -140,7 +140,7 @@ public class PedidoServiceImpl implements IPedidoService {
     @Override
     public List<Factura> getFacturasDelPedido(long id_pedido) {
         List<Factura> facturasSinEliminar = new ArrayList<>();
-        for (Factura factura : pedidoRepository.getPedidoPorNumeroConFacturas(id_pedido).getFacturas()) {
+        for (Factura factura : pedidoRepository.getPedidoPorId(id_pedido).getFacturas()) {
             if (!factura.isEliminada()) {
                 facturasSinEliminar.add(factura);
             }
@@ -151,7 +151,7 @@ public class PedidoServiceImpl implements IPedidoService {
     @Override
     @Transactional
     public void guardar(Pedido pedido) {
-        this.validarPedido(pedido);
+        this.validarPedido(TipoDeOperacion.ALTA , pedido);
         pedido.setNroPedido(this.calcularNumeroPedido(pedido.getEmpresa()));
         pedidoRepository.guardar(pedido);
         LOGGER.warn("El Pedido " + pedido + " se guardó correctamente.");
@@ -194,23 +194,13 @@ public class PedidoServiceImpl implements IPedidoService {
     @Override
     @Transactional
     public void actualizar(Pedido pedido) {
-        this.validarPedido(pedido);
+        this.validarPedido(TipoDeOperacion.ACTUALIZACION , pedido);
         pedidoRepository.actualizar(pedido);
     }
 
     @Override
     public Pedido getPedidoPorNumeroYEmpresa(long nroPedido, long idEmpresa) {
         return pedidoRepository.getPedidoPorNro(nroPedido, idEmpresa);
-    }
-
-    @Override
-    public Pedido getPedidoPorNumeroConFacturas(long nroPedido) {
-        return pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido);
-    }
-
-    @Override
-    public Pedido getPedidoPorIdConRenglones(long idPedido) {
-        return pedidoRepository.getPedidoPorIdConRenglones(idPedido);
     }
 
     @Override
@@ -224,15 +214,8 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public List<RenglonPedido> getRenglonesDelPedido(Long idPedido) {
-        return pedidoRepository.getRenglonesDelPedido(idPedido);
-    }
-
-    @Override
-    public Pedido getPedidoPorNumeroConRenglonesActualizandoSubtotales(long nroPedido) {
-        Pedido pedidoConRenglones = pedidoRepository.getPedidoPorNro(nroPedido, EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
-        pedidoConRenglones.setRenglones(pedidoRepository.getRenglonesDelPedido(pedidoConRenglones.getId_Pedido()));
-        return this.actualizarSubTotalRenglonesPedido(pedidoConRenglones);
+    public List<RenglonPedido> getRenglonesDelPedido(Long idPedido) {       
+        return this.getPedidoPorId(idPedido).getRenglones();
     }
 
     @Override
@@ -273,27 +256,5 @@ public class PedidoServiceImpl implements IPedidoService {
                     .getString("mensaje_error_reporte"), ex);
         }
     }
-    
-    //Mover a la vista ***************************************************************************
-    @Override
-    public RenglonPedido convertirRenglonFacturaARenglonPedido(RenglonFactura renglonFactura) {
-        RenglonPedido nuevoRenglon = new RenglonPedido();
-        nuevoRenglon.setCantidad(renglonFactura.getCantidad());
-        nuevoRenglon.setDescuento_porcentaje(renglonFactura.getDescuento_porcentaje());
-        nuevoRenglon.setDescuento_neto(renglonFactura.getDescuento_neto());
-        Producto producto = productoService.getProductoPorId(renglonFactura.getId_ProductoItem());
-        nuevoRenglon.setProducto(producto);
-        nuevoRenglon.setSubTotal(renglonFactura.getImporte());
-        return nuevoRenglon;
-    }
-
-    //Mover a la vista ***************************************************************************
-    @Override
-    public List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(List<RenglonFactura> renglonesDeFactura) {
-        List<RenglonPedido> renglonesPedido = new ArrayList();
-        for (RenglonFactura renglonFactura : renglonesDeFactura) {
-            renglonesPedido.add(this.convertirRenglonFacturaARenglonPedido(renglonFactura));
-        }
-        return renglonesPedido;
-    }
+  
 }

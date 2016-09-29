@@ -54,6 +54,10 @@ public abstract class Factura implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaVencimiento;
+    
+    @ManyToOne
+    @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
+    private Pedido pedido;
 
     @ManyToOne
     @JoinColumn(name = "id_Transportista", referencedColumnName = "id_Transportista")
@@ -89,5 +93,5 @@ public abstract class Factura implements Serializable {
     private Empresa empresa;
 
     private boolean eliminada;
-
+   
 }

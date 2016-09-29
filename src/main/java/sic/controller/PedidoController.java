@@ -21,6 +21,7 @@ import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
 import sic.modelo.Pedido;
+import sic.modelo.RenglonPedido;
 import sic.modelo.Usuario;
 import sic.service.IClienteService;
 import sic.service.IEmpresaService;
@@ -51,6 +52,12 @@ public class PedidoController {
         return pedidoService.getPedidoPorId(id);
     }
     
+    @GetMapping("/pedidos/{id}/renglones")
+    @ResponseStatus(HttpStatus.OK)
+    public List<RenglonPedido> getRenglonesDelPedido(@PathVariable("id") long id) {
+        return pedidoService.getRenglonesDelPedido(id);
+    }
+    
     @PutMapping("/pedidos")
     @ResponseStatus(HttpStatus.OK)
     public Pedido actualizar(@RequestBody Pedido pedido) {
@@ -69,7 +76,7 @@ public class PedidoController {
     @ResponseStatus(HttpStatus.CREATED)
     public Pedido guardar(@RequestBody Pedido pedido) {
         pedidoService.guardar(pedido);
-        return pedidoService.getPedidoPorId(pedido.getId_Pedido());
+        return pedido;
     }
     
     @GetMapping("/pedidos/busqueda/criteria")

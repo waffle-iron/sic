@@ -7,7 +7,6 @@ import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Pedido;
-import sic.modelo.RenglonPedido;
 import sic.repository.IPedidoRepository;
 import sic.util.FormatterFechaHora;
 
@@ -29,14 +28,6 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
         }
     }
     
-    @Override
-    public List<RenglonPedido> getRenglonesDelPedido(Long id) {
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorIdConRenglones", Pedido.class);
-        typedQuery.setParameter("id", id);
-        List<Pedido> paraObtenerRenglones = typedQuery.getResultList();
-        return paraObtenerRenglones.get(0).getRenglones();
-    }
-
     @Override
     public List<Pedido> buscarPedidosPorCriteria(BusquedaPedidoCriteria criteria) {
         String query = "SELECT p FROM Pedido p WHERE p.empresa = :empresa AND p.eliminado = false";
@@ -103,27 +94,4 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
         em.merge(pedido);
     }
 
-    @Override
-    public Pedido getPedidoPorNumeroConFacturas(long id_Pedido) {
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorIdConFacturas", Pedido.class);
-        typedQuery.setParameter("id", id_Pedido);
-        List<Pedido> pedidos = typedQuery.getResultList();
-        if (pedidos.isEmpty()) {
-            return null;
-        } else {
-            return pedidos.get(0);
-        }
-    }
-
-    @Override
-    public Pedido getPedidoPorIdConRenglones(long idPedido) {
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorIdConRenglones", Pedido.class);
-        typedQuery.setParameter("id", idPedido);
-        List<Pedido> pedidos = typedQuery.getResultList();
-        if (pedidos.isEmpty()) {
-            return null;
-        } else {
-            return pedidos.get(0);
-        }
-    }
 }

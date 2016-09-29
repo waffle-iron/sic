@@ -547,9 +547,20 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.pedido.setEstado(EstadoPedido.ABIERTO);
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
         for (RenglonFactura renglonFactura : renglones) {
-            renglonesPedido.add(pedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura));
+            renglonesPedido.add(this.convertirRenglonFacturaARenglonPedido(renglonFactura));
         }
         this.pedido.setRenglones(renglonesPedido);
+    }
+    
+    public RenglonPedido convertirRenglonFacturaARenglonPedido(RenglonFactura renglonFactura) {
+        RenglonPedido nuevoRenglon = new RenglonPedido();
+        nuevoRenglon.setCantidad(renglonFactura.getCantidad());
+        nuevoRenglon.setDescuento_porcentaje(renglonFactura.getDescuento_porcentaje());
+        nuevoRenglon.setDescuento_neto(renglonFactura.getDescuento_neto());
+        Producto producto = productoService.getProductoPorId(renglonFactura.getId_ProductoItem());
+        nuevoRenglon.setProducto(producto);
+        nuevoRenglon.setSubTotal(renglonFactura.getImporte());
+        return nuevoRenglon;
     }
 
     private Pedido guardarPedido(Pedido pedido) {
@@ -576,11 +587,18 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     private void actualizarPedido(Pedido pedido) {
-//        pedido = pedidoService.getPedidoPorNumeroConRenglones(pedido.getNroPedido(), this.empresa.getId_Empresa());
-//        pedido.getRenglones().clear();
-//        pedido.getRenglones().addAll(pedidoService.convertirRenglonesFacturaARenglonesPedido(this.renglones, pedido));
-//        pedido.setTotalEstimado(facturaService.calcularSubTotal(this.renglones));
-//        pedidoService.actualizar(pedido);
+        pedido = pedidoService.getPedidoPorId(pedido.getId_Pedido());
+        pedido.setRenglones(this.convertirRenglonesFacturaARenglonesPedido(this.renglones));
+        pedido.setTotalEstimado(facturaService.calcularSubTotal(this.renglones));
+        pedidoService.actualizar(pedido);
+    }
+    
+    public List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(List<RenglonFactura> renglonesDeFactura) {
+        List<RenglonPedido> renglonesPedido = new ArrayList();
+        for (RenglonFactura renglonFactura : renglonesDeFactura) {
+            renglonesPedido.add(this.convertirRenglonFacturaARenglonPedido(renglonFactura));
+        }
+        return renglonesPedido;
     }
 
     /**
