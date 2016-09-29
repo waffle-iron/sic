@@ -40,8 +40,10 @@ public interface IFacturaService {
 
     void guardar(Factura factura);
     
+    void guardar(List<Factura> facturas);
+    
     void guardar(Factura factura, Pedido pedido);    
-
+    
     void actualizar(Factura factura);
 
     void eliminar(Factura factura);
@@ -94,7 +96,7 @@ public interface IFacturaService {
 
     byte[] getReporteFacturaVenta(Factura factura);
 
-    List<FacturaVenta> dividirFactura(FacturaVenta factura, int[] indices);
+    List<Factura> dividirFactura(FacturaVenta factura, int[] indices);
 
     RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante);
 

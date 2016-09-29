@@ -243,16 +243,16 @@ public class GUI_CerrarVenta extends JDialog {
                 this.lanzarReporteFactura(this.guardarFactura(factura));
                 exito = true;
             } else {
-                List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), indicesParaDividir);
-                for (Factura factura : facturasDivididas) {
-                    if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
-                        if (gui_puntoDeVenta.getPedido() != null) {
-                            factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido(), gui_puntoDeVenta.getEmpresa().getId_Empresa()));
-                        }
-                        this.lanzarReporteFactura(this.guardarFactura(factura));
-                        exito = true;
-                    }
-                }
+//                List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), indicesParaDividir);
+//                for (Factura factura : facturasDivididas) {
+//                    if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
+//                        if (gui_puntoDeVenta.getPedido() != null) {
+//                            factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido(), gui_puntoDeVenta.getEmpresa().getId_Empresa()));
+//                        }
+//                        this.lanzarReporteFactura(this.guardarFactura(factura));
+//                        exito = true;
+//                    }
+//                }
             }
             if (gui_puntoDeVenta.getPedido() != null) {
                 pedidoService.actualizarEstadoPedido(gui_puntoDeVenta.getPedido());

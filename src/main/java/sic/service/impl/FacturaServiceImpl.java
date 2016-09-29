@@ -300,6 +300,14 @@ public class FacturaServiceImpl implements IFacturaService {
     
     @Override
     @Transactional
+    public void guardar(List<Factura> facturas) {
+        for (Factura f : facturas) {
+            this.guardar(f);
+        }
+    }
+    
+    @Override
+    @Transactional
     public void guardar(Factura factura, Pedido pedido) {
         List<Factura> facturas = pedido.getFacturas();
         facturas.add(factura);
@@ -746,7 +754,7 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public List<FacturaVenta> dividirFactura(FacturaVenta factura, int[] indices) {
+    public List<Factura> dividirFactura(FacturaVenta factura, int[] indices) {
         double FacturaABC = 0;
         double FacturaX = 0;
         List<RenglonFactura> renglonesConIVA = new ArrayList<>();
@@ -836,7 +844,7 @@ public class FacturaServiceImpl implements IFacturaService {
         facturaConIVA.setEmpresa(factura.getEmpresa());
         facturaConIVA.setEliminada(factura.isEliminada());
 
-        List<FacturaVenta> facturas = new ArrayList<>();
+        List<Factura> facturas = new ArrayList<>();
         facturas.add(facturaConIVA);
         facturas.add(facturaSinIVA);
         return facturas;

@@ -23,8 +23,6 @@ import sic.modelo.Cliente;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
-import sic.modelo.Pedido;
-import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Usuario;
@@ -71,9 +69,16 @@ public class FacturaController {
     
     @PostMapping("/facturas")
     @ResponseStatus(HttpStatus.CREATED)
-    public Factura guardar(@RequestBody Factura factura) {
-        facturaService.guardar(factura);
-        return this.facturaService.getFacturaPorId(factura.getId_Factura());
+    public List<Factura> guardar(@RequestBody Factura factura,
+                                 @RequestParam(value = "indices", required = false) int[] indices) {
+        List<Factura> facturas =  new ArrayList<>();
+        if (indices.length > 0 && factura instanceof FacturaVenta) {
+            facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indices));
+        } else {
+            facturas.add((FacturaVenta) factura);
+            facturaService.guardar(factura);
+        }
+        return facturas;
     }
     
     @PostMapping("/facturas/pedidos/{id}")
@@ -429,14 +434,7 @@ public class FacturaController {
                                           @RequestParam("movimiento") Movimiento movimiento) {
         return facturaService.calcularRenglon(tipoDeFactura, movimiento, 0, productoService.getProductoPorId(idProducto), 0);
     }
-    
-    @PostMapping("/facturas/divide-guarda")
-    @ResponseStatus(HttpStatus.CREATED)
-    public List<FacturaVenta> dividirYGuardarFactura(@RequestParam("indices") int[] indices,
-                                                     @RequestBody FacturaVenta factura) {
-        return facturaService.dividirFactura(factura, indices);
-    }
-    
+  
     @PostMapping("/facturas/producto/{id}/renglon")
     @ResponseStatus(HttpStatus.CREATED)
     public RenglonFactura calcularRenglon(@PathVariable("id") long id,

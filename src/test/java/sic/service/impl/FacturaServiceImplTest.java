@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import sic.modelo.Cliente;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Empresa;
+import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Medida;
@@ -219,7 +220,7 @@ public class FacturaServiceImplTest {
 //        when(factura.getTipoFactura()).thenReturn('A');
         int[] indices = {0, 1};
         int cantidadDeFacturasEsperadas = 2;
-        List<FacturaVenta> result = facturaService.dividirFactura(factura, indices);
+        List<Factura> result = facturaService.dividirFactura(factura, indices);
         double cantidadRenglon1PrimeraFactura = result.get(0).getRenglones().get(0).getCantidad();
         double cantidadRenglon2PrimeraFactura = result.get(0).getRenglones().get(1).getCantidad();
         double cantidadRenglon1SegundaFactura = result.get(1).getRenglones().get(0).getCantidad();
