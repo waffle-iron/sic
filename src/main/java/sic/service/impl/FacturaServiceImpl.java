@@ -34,7 +34,6 @@ import sic.modelo.RenglonFactura;
 import sic.modelo.RenglonPedido;
 import sic.repository.IFacturaRepository;
 import sic.service.IConfiguracionDelSistemaService;
-import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IPagoService;
 import sic.service.IPedidoService;
@@ -51,7 +50,6 @@ public class FacturaServiceImpl implements IFacturaService {
     private final IFacturaRepository facturaRepository;
     private final IProductoService productoService;
     private final IConfiguracionDelSistemaService configuracionDelSistemaService;
-    private final IEmpresaService empresaService;
     private final IPedidoService pedidoService;
     private final IPagoService pagoService;
     private static final Logger LOGGER = Logger.getLogger(FacturaServiceImpl.class.getPackage().getName());
@@ -61,13 +59,12 @@ public class FacturaServiceImpl implements IFacturaService {
     public FacturaServiceImpl(IFacturaRepository facturaRepository,
             IProductoService productoService,
             IConfiguracionDelSistemaService configuracionDelSistemaService,
-            IEmpresaService empresaService, IPedidoService pedidoService,
+            IPedidoService pedidoService,
             IPagoService pagoService) {
 
         this.facturaRepository = facturaRepository;
         this.productoService = productoService;
         this.configuracionDelSistemaService = configuracionDelSistemaService;
-        this.empresaService = empresaService;
         this.pedidoService = pedidoService;
         this.pagoService = pagoService;
     }
@@ -756,10 +753,10 @@ public class FacturaServiceImpl implements IFacturaService {
                     FacturaX = (double) Math.round(FacturaX * 100) / 100;
                 }
                 RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(this.getTipoFactura(factura), Movimiento.VENTA, FacturaABC, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
-                nuevoRenglonConIVA.setFactura(facturaConIVA);
+                //nuevoRenglonConIVA.setFactura(facturaConIVA);
                 renglonesConIVA.add(nuevoRenglonConIVA);
                 RenglonFactura nuevoRenglonSinIVA = this.calcularRenglon("Factura X", Movimiento.VENTA, FacturaX, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
-                nuevoRenglonSinIVA.setFactura(facturaSinIVA);
+                //nuevoRenglonSinIVA.setFactura(facturaSinIVA);
                 if (nuevoRenglonSinIVA.getCantidad() != 0) {
                     renglonesSinIVA.add(nuevoRenglonSinIVA);
                 }
@@ -768,7 +765,7 @@ public class FacturaServiceImpl implements IFacturaService {
             } else {
                 numeroDeRenglon++;
                 RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(this.getTipoFactura(factura), Movimiento.VENTA, renglon.getCantidad(), productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
-                nuevoRenglonConIVA.setFactura(facturaConIVA);
+                //nuevoRenglonConIVA.setFactura(facturaConIVA);
                 renglonesConIVA.add(nuevoRenglonConIVA);
             }
         }

@@ -113,7 +113,7 @@ public class GUI_CerrarVenta extends JDialog {
     private Factura guardarFactura(Factura facturaVenta) throws BusinessServiceException {
         facturaService.guardar(facturaVenta);
         Factura facturaGuardada = facturaService.getFacturaVentaPorTipoSerieNum(facturaVenta.getTipoFactura(), facturaVenta.getNumSerie(), facturaVenta.getNumFactura());
-        facturaGuardada.setPagos(pagoService.getPagosDeLaFactura(facturaGuardada));
+        //facturaGuardada.setPagos(pagoService.getPagosDeLaFactura(facturaGuardada));
         return facturaGuardada;
     }
 
@@ -163,9 +163,9 @@ public class GUI_CerrarVenta extends JDialog {
         }
         facturaVenta.setPagos(pagos);
         facturaVenta.setPagada((facturaVenta.getTotal() - montoPagado) <= 0);
-         for (RenglonFactura renglon : gui_puntoDeVenta.getRenglones()) {
-             renglon.setFactura(facturaVenta);
-         }               
+//         for (RenglonFactura renglon : gui_puntoDeVenta.getRenglones()) {
+//             renglon.setFactura(facturaVenta);
+//         }               
         return facturaVenta;
     }
 
@@ -238,18 +238,18 @@ public class GUI_CerrarVenta extends JDialog {
             }
             if (!dividir) {
                 FacturaVenta factura = this.construirFactura();
-                if (gui_puntoDeVenta.getPedido() != null) {
-                    factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido(), gui_puntoDeVenta.getEmpresa().getId_Empresa()));
-                }
+//                if (gui_puntoDeVenta.getPedido() != null) {
+//                    factura.setPedido(pedidoService.getPedidoPorId(gui_puntoDeVenta.getPedido().getId_Pedido()));
+//                }
                 this.lanzarReporteFactura(this.guardarFactura(factura));
                 exito = true;
             } else {
                 List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), indicesParaDividir);
                 for (Factura factura : facturasDivididas) {
                     if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
-                        if (gui_puntoDeVenta.getPedido() != null) {
-                            factura.setPedido(pedidoService.getPedidoPorNumero(gui_puntoDeVenta.getPedido().getNroPedido(), gui_puntoDeVenta.getEmpresa().getId_Empresa()));
-                        }
+//                        if (gui_puntoDeVenta.getPedido() != null) {
+//                           factura.setPedido(pedidoService.getPedidoPorId(gui_puntoDeVenta.getPedido().getId_Pedido()));
+//                        }
                         this.lanzarReporteFactura(this.guardarFactura(factura));
                         exito = true;
                     }

@@ -365,7 +365,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     private void lanzarReporteFacturaVenta(Object movimientoDeTabla) {
         try {
             FacturaVenta factura = (FacturaVenta) ((Pago) movimientoDeTabla).getFactura();
-            factura.setPagos(pagoService.getPagosDeLaFactura(factura));
+            //factura.setPagos(pagoService.getPagosDeLaFactura(factura));
             JasperPrint report = facturaService.getReporteFacturaVenta(factura);
             JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
             viewer.setSize(this.getWidth(), this.getHeight());
@@ -384,7 +384,7 @@ public class GUI_Caja extends javax.swing.JDialog {
 
     private void verDetalleFacturaCompra(Object movimientoDeTabla) {
         FacturaCompra factura = (FacturaCompra) ((Pago) movimientoDeTabla).getFactura();
-        factura.setPagos(pagoService.getPagosDeLaFactura(factura));
+        //factura.setPagos(pagoService.getPagosDeLaFactura(factura));
         GUI_DetalleFacturaCompra gui_DetalleFacturaCompra = new GUI_DetalleFacturaCompra(factura);
         gui_DetalleFacturaCompra.setModal(true);
         gui_DetalleFacturaCompra.setLocationRelativeTo(this);
