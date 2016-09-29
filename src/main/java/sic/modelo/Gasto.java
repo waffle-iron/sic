@@ -20,6 +20,9 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name = "gasto")
 @NamedQueries({
+    @NamedQuery(name = "Gasto.getGastoPorId",
+            query = "SELECT g FROM Gasto g "
+                    + "WHERE g.id_Gasto = :id_Gasto"),
     @NamedQuery(name = "Gasto.getGastoSinArqueoPorFormaDePago",
             query = "SELECT g FROM Gasto g "
                     + "WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa "
@@ -37,9 +40,6 @@ import lombok.EqualsAndHashCode;
             query = "SELECT g FROM Gasto g "
                     + "WHERE g.id_Gasto = :id_Gasto AND g.empresa.id_Empresa = :id_Empresa "
                     + "ORDER BY g.fecha ASC"),
-    @NamedQuery(name = "Gasto.getGastoPorId",
-            query = "SELECT g FROM Gasto g "
-                    + "WHERE g.id_Gasto = :id_Gasto"),
     @NamedQuery(name = "Gasto.getUltimoNumeroDeGasto",
             query = "SELECT max(g.nroGasto) FROM Gasto g "
                     + "WHERE g.empresa.id_Empresa = :id_Empresa")

@@ -85,7 +85,7 @@ public class FacturaController {
     @ResponseStatus(HttpStatus.CREATED)
     public Factura guardar(@PathVariable("id") long id,
                            @RequestBody Factura factura) {
-        facturaService.guardar(factura, pedidoService.getPedidoPorNumeroConFacturas(id)); // cambiar por el getPorId
+        facturaService.guardar(factura, pedidoService.getPedidoPorId(id)); 
         return this.facturaService.getFacturaPorId(factura.getId_Factura());
     }
     
@@ -422,7 +422,7 @@ public class FacturaController {
     @ResponseStatus(HttpStatus.CREATED)
     public List<RenglonFactura> convertirRenglonesPedidoARenglonesFactura(@PathVariable("id") long id,
                                                                           @RequestParam("tipoComprobante") String tipoComprobante) {
-        return facturaService.convertirRenglonesPedidoARenglonesFactura(pedidoService.getPedidoPorNumeroConFacturas(id), tipoComprobante);// cambiar por el get por id
+        return facturaService.convertirRenglonesPedidoARenglonesFactura(pedidoService.getPedidoPorId(id), tipoComprobante);
     }
     
     @PostMapping("/facturas/pedido/{id}/calculo-renglon")

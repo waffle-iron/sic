@@ -131,7 +131,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         //Pedido
         if (criteria.isBuscarPorPedido() == true) {
             query += " AND f.pedido.nroPedido = " + criteria.getNroPedido();
-        }
+        }    
         //Inpagas
         if (criteria.isBuscaSoloImpagas() == true) {
             query += " AND f.pagada = false";

@@ -7,15 +7,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
-import javax.swing.ImageIcon;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
@@ -32,7 +27,6 @@ import sic.service.IPedidoService;
 import sic.service.IUsuarioService;
 import sic.service.Movimiento;
 import sic.service.BusinessServiceException;
-import sic.service.TipoDeOperacion;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -923,7 +917,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                 try {
                     facturaService.eliminar(facturas.get(indexFilaSeleccionada));
                     if (facturas.get(indexFilaSeleccionada).getPedido() != null) {
-                        Pedido pedidoDeFactura = pedidoService.getPedidoPorNumero(facturas.get(indexFilaSeleccionada).getPedido().getNroPedido(), EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
+                        Pedido pedidoDeFactura = pedidoService.getPedidoPorId(facturas.get(indexFilaSeleccionada).getPedido().getId_Pedido());
                         pedidoService.actualizarEstadoPedido(pedidoDeFactura);
                     }
                     this.buscar(this.getCriteriaDeComponentes());

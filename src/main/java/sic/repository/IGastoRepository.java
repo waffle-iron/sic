@@ -5,10 +5,10 @@ import java.util.List;
 import sic.modelo.Gasto;
 
 public interface IGastoRepository {
-
-    void actualizar(Gasto gasto);
     
     Gasto getGastoPorId(Long id);
+
+    void actualizar(Gasto gasto);
 
     Gasto getGastoPorIdYEmpresa(long id_Gasto, long id_Empresa);
 

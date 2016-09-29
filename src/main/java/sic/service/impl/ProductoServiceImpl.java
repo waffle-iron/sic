@@ -173,8 +173,8 @@ public class ProductoServiceImpl implements IProductoService {
                 LOGGER.warn("Se intenta actualizar el stock de un producto eliminado.");
             }
             if (producto != null && producto.isIlimitado() == false) {
-
-                if (renglon.getFactura() instanceof FacturaVenta) {
+                
+                if (factura instanceof FacturaVenta) {
                     if (operacion == TipoDeOperacion.ALTA) {
                         producto.setCantidad(producto.getCantidad() - renglon.getCantidad());
                     }
@@ -182,7 +182,7 @@ public class ProductoServiceImpl implements IProductoService {
                     if (operacion == TipoDeOperacion.ELIMINACION) {
                         producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
                     }
-                } else if (renglon.getFactura() instanceof FacturaCompra) {
+                } else if (factura instanceof FacturaCompra) {
                     if (operacion == TipoDeOperacion.ALTA) {
                         producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
                     }
@@ -193,7 +193,6 @@ public class ProductoServiceImpl implements IProductoService {
                             result = 0;
                         }
                         producto.setCantidad(result);
-
                     }
                 }
                 productoRepository.actualizar(producto);

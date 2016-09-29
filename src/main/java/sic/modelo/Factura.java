@@ -1,5 +1,8 @@
 package sic.modelo;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +34,7 @@ import lombok.EqualsAndHashCode;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @EqualsAndHashCode(of = {"fecha", "tipoFactura", "numSerie", "numFactura", "empresa"})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Factura")
 public abstract class Factura implements Serializable {
 
     @Id
@@ -48,18 +52,25 @@ public abstract class Factura implements Serializable {
 
     private long numFactura;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura")
-    private List<Pago> pagos;
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaVencimiento;
+    
+    @ManyToOne
+    @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
+    private Pedido pedido;
 
     @ManyToOne
     @JoinColumn(name = "id_Transportista", referencedColumnName = "id_Transportista")
     private Transportista transportista;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_Factura")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private List<RenglonFactura> renglones;
+    
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_Factura")    
+    private List<Pago> pagos;
 
     private double subTotal;
     private double recargo_porcentaje;
@@ -82,9 +93,5 @@ public abstract class Factura implements Serializable {
     private Empresa empresa;
 
     private boolean eliminada;
-
-    @ManyToOne
-    @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
-    private Pedido pedido;
-
+   
 }

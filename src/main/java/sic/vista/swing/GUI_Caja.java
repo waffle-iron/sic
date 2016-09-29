@@ -380,11 +380,12 @@ public class GUI_Caja extends javax.swing.JDialog {
 //            LOGGER.error(msjError + " - " + ex.getMessage());
 //            JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
 //        }
+
     }
 
     private void verDetalleFacturaCompra(Object movimientoDeTabla) {
         FacturaCompra factura = (FacturaCompra) ((Pago) movimientoDeTabla).getFactura();
-        factura.setPagos(pagoService.getPagosDeLaFactura(factura));
+        //factura.setPagos(pagoService.getPagosDeLaFactura(factura));
         GUI_DetalleFacturaCompra gui_DetalleFacturaCompra = new GUI_DetalleFacturaCompra(factura);
         gui_DetalleFacturaCompra.setModal(true);
         gui_DetalleFacturaCompra.setLocationRelativeTo(this);
