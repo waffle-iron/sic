@@ -363,23 +363,23 @@ public class GUI_Caja extends javax.swing.JDialog {
     }
 
     private void lanzarReporteFacturaVenta(Object movimientoDeTabla) {
-        try {
-            FacturaVenta factura = (FacturaVenta) ((Pago) movimientoDeTabla).getFactura();
-            factura.setPagos(pagoService.getPagosDeLaFactura(factura));
-            JasperPrint report = facturaService.getReporteFacturaVenta(factura);
-            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-            viewer.setSize(this.getWidth(), this.getHeight());
-            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-            viewer.setIconImage(iconoVentana.getImage());
-            viewer.setLocationRelativeTo(null);
-            JRViewer jrv = new JRViewer(report);
-            viewer.getContentPane().add(jrv);
-            viewer.setVisible(true);
-        } catch (JRException ex) {
-            String msjError = "Se produjo un error procesando el reporte.";
-            LOGGER.error(msjError + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
-        }
+//        try {
+//            FacturaVenta factura = (FacturaVenta) ((Pago) movimientoDeTabla).getFactura();
+//            factura.setPagos(pagoService.getPagosDeLaFactura(factura));
+//            JasperPrint report = facturaService.getReporteFacturaVenta(factura);
+//            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+//            viewer.setSize(this.getWidth(), this.getHeight());
+//            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+//            viewer.setIconImage(iconoVentana.getImage());
+//            viewer.setLocationRelativeTo(null);
+//            JRViewer jrv = new JRViewer(report);
+//            viewer.getContentPane().add(jrv);
+//            viewer.setVisible(true);
+//        } catch (JRException ex) {
+//            String msjError = "Se produjo un error procesando el reporte.";
+//            LOGGER.error(msjError + " - " + ex.getMessage());
+//            JOptionPane.showInternalMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+//        }
     }
 
     private void verDetalleFacturaCompra(Object movimientoDeTabla) {
