@@ -349,7 +349,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         txt_IVA_21.setValue(facturaParaMostrar.getIva_21_neto());
         txt_ImpInterno_Neto.setValue(facturaParaMostrar.getRecargo_neto());
         txt_Total.setValue(facturaParaMostrar.getTotal());
-        facturaParaMostrar.setRenglones(new ArrayList<>(facturaService.getRenglonesDeLaFactura(facturaParaMostrar)));
+        facturaParaMostrar.setRenglones(new ArrayList<>(facturaService.getRenglonesDeLaFactura(facturaParaMostrar.getId_Factura())));
         for (RenglonFactura renglon : facturaParaMostrar.getRenglones()) {
             this.agregarRenglon(renglon);
         }

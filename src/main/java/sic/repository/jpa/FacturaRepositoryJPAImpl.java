@@ -11,7 +11,6 @@ import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
-import sic.modelo.RenglonFactura;
 import sic.repository.IFacturaRepository;
 import sic.util.FormatterFechaHora;
 
@@ -22,15 +21,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     private EntityManager em;
 
     @Override
-    public List<RenglonFactura> getRenglonesDeLaFactura(Factura factura) {
-        TypedQuery<RenglonFactura> typedQuery = em.createNamedQuery("RenglonFactura.getRenglonesDeLaFactura", RenglonFactura.class);
-        typedQuery.setParameter("factura", factura);
-        List<RenglonFactura> renglones = typedQuery.getResultList();
-        return renglones;
-        }
-    
-    @Override
-    public Factura getFacturaPorId(long id_Factura) {
+    public Factura getFacturaPorId(Long id_Factura) {
         TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.buscarPorId", Factura.class);
         typedQuery.setParameter("id", id_Factura);
         List<Factura> facturas = typedQuery.getResultList();

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Empresa;
-import sic.modelo.EmpresaActiva;
 import sic.modelo.Factura;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
@@ -217,7 +216,7 @@ public class PedidoServiceImpl implements IPedidoService {
         HashMap<Long, RenglonFactura> listaRenglonesUnificados = new HashMap<>();
         if (!facturas.isEmpty()) {
             for (Factura factura : facturas) {
-                renglonesDeFacturas.addAll(facturaService.getRenglonesDeLaFactura(factura));
+                renglonesDeFacturas.addAll(facturaService.getRenglonesDeLaFactura(factura.getId_Factura()));
             }
             for (RenglonFactura renglon : renglonesDeFacturas) {
                 if (listaRenglonesUnificados.containsKey(renglon.getId_ProductoItem())) {

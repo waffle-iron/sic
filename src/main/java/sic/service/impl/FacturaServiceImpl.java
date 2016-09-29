@@ -72,7 +72,7 @@ public class FacturaServiceImpl implements IFacturaService {
     }
     
     @Override
-    public Factura getFacturaPorId(long id_Factura) {
+    public Factura getFacturaPorId(Long id_Factura) {
         return facturaRepository.getFacturaPorId(id_Factura);
     }
 
@@ -175,8 +175,8 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public List<RenglonFactura> getRenglonesDeLaFactura(Factura factura) {
-        return facturaRepository.getRenglonesDeLaFactura(factura);
+    public List<RenglonFactura> getRenglonesDeLaFactura(Long id_Factura) {
+        return this.getFacturaPorId(id_Factura).getRenglones();
     }
 
     @Override
@@ -309,6 +309,7 @@ public class FacturaServiceImpl implements IFacturaService {
         List<Factura> facturas = pedido.getFacturas();
         facturas.add(factura);
         pedido.setFacturas(facturas);
+        factura.setPedido(pedido);
         this.validarFactura(factura);
         facturaRepository.guardar(factura);
         pedidoService.actualizar(pedido);
@@ -329,7 +330,7 @@ public class FacturaServiceImpl implements IFacturaService {
         factura.setEliminada(true);
         this.eliminarPagosDeFactura(factura);
         facturaRepository.actualizar(factura);
-        factura.setRenglones(this.getRenglonesDeLaFactura(factura));
+        factura.setRenglones(this.getRenglonesDeLaFactura(factura.getId_Factura()));
         productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);
     }
 
@@ -626,7 +627,7 @@ public class FacturaServiceImpl implements IFacturaService {
     public double calcularGananciaTotal(List<FacturaVenta> facturas) {
         double resultado = 0;
         for (FacturaVenta facturaVenta : facturas) {
-            List<RenglonFactura> renglones = this.getRenglonesDeLaFactura(facturaVenta);
+            List<RenglonFactura> renglones = this.getRenglonesDeLaFactura(facturaVenta.getId_Factura());
             for (RenglonFactura renglon : renglones) {
                 resultado += Utilidades.truncarDecimal(renglon.getGanancia_neto(), 3) * renglon.getCantidad();
             }
@@ -740,7 +741,7 @@ public class FacturaServiceImpl implements IFacturaService {
         params.put("facturaVenta", factura);
         params.put("nroComprobante", factura.getNumSerie() + "-" + factura.getNumFactura());
         params.put("logo", Utilidades.convertirByteArrayIntoImage(factura.getEmpresa().getLogo()));
-        List<RenglonFactura> renglones = this.getRenglonesDeLaFactura(factura);
+        List<RenglonFactura> renglones = this.getRenglonesDeLaFactura(factura.getId_Factura());
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(renglones);
          try {
             return JasperExportManager.exportReportToPdf(JasperFillManager.fillReport(isFileReport, params, ds));

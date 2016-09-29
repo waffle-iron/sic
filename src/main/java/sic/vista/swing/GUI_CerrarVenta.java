@@ -113,7 +113,7 @@ public class GUI_CerrarVenta extends JDialog {
     private Factura guardarFactura(Factura facturaVenta) throws BusinessServiceException {
         facturaService.guardar(facturaVenta);
         Factura facturaGuardada = facturaService.getFacturaVentaPorTipoSerieNum(facturaVenta.getTipoFactura(), facturaVenta.getNumSerie(), facturaVenta.getNumFactura());
-        //facturaGuardada.setPagos(pagoService.getPagosDeLaFactura(facturaGuardada));
+        facturaGuardada.setPagos(pagoService.getPagosDeLaFactura(facturaGuardada));
         return facturaGuardada;
     }
 

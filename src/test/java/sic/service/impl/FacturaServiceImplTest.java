@@ -435,32 +435,32 @@ public class FacturaServiceImplTest {
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
-    @Test
-    public void shouldCalcularGananciaTotal() {
-        List<RenglonFactura> renglones = new ArrayList<>();
-        RenglonFactura renglon1 = new RenglonFactura();
-        RenglonFactura renglon2 = new RenglonFactura();
-        renglon1.setGanancia_neto(50);
-        renglon1.setCantidad(2);
-        renglon2.setGanancia_neto(25);
-        renglon2.setCantidad(2);
-        renglones.add(renglon1);
-        renglones.add(renglon2);
-        List<FacturaVenta> facturas = new ArrayList<>();
-        FacturaVenta factura1 = FacturaVenta.builder()
-                    .renglones(renglones)
-                    .build();
-        FacturaVenta factura2 = FacturaVenta.builder()
-                    .renglones(renglones)
-                    .build();
-        facturas.add(factura1);
-        facturas.add(factura2);
-        when(facturaService.getRenglonesDeLaFactura(factura1)).thenReturn(renglones);
-        when(facturaService.getRenglonesDeLaFactura(factura2)).thenReturn(renglones);
-        double resultadoEsperado = 300;
-        double resultadoObtenido = facturaService.calcularGananciaTotal(facturas);
-        assertEquals(resultadoEsperado, resultadoObtenido, 0);
-    }
+//    @Test
+//    public void shouldCalcularGananciaTotal() {
+//        List<RenglonFactura> renglones = new ArrayList<>();
+//        RenglonFactura renglon1 = new RenglonFactura();
+//        RenglonFactura renglon2 = new RenglonFactura();
+//        renglon1.setGanancia_neto(50);
+//        renglon1.setCantidad(2);
+//        renglon2.setGanancia_neto(25);
+//        renglon2.setCantidad(2);
+//        renglones.add(renglon1);
+//        renglones.add(renglon2);
+//        List<FacturaVenta> facturas = new ArrayList<>();
+//        FacturaVenta factura1 = FacturaVenta.builder()
+//                    .renglones(renglones)
+//                    .build();
+//        FacturaVenta factura2 = FacturaVenta.builder()
+//                    .renglones(renglones)
+//                    .build();
+//        facturas.add(factura1);
+//        facturas.add(factura2);
+//        when(facturaService.getRenglonesDeLaFactura(factura1)).thenReturn(renglones);
+//        when(facturaService.getRenglonesDeLaFactura(factura2)).thenReturn(renglones);
+//        double resultadoEsperado = 300;
+//        double resultadoObtenido = facturaService.calcularGananciaTotal(facturas);
+//        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+//    }
 
     @Test
     public void shouldCalcularIVANetoWhenCompra() {

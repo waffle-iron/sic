@@ -3,6 +3,7 @@ package sic.controller;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ import sic.modelo.FacturaVenta;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Usuario;
+import sic.service.BusinessServiceException;
 import sic.service.IClienteService;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
@@ -86,22 +88,13 @@ public class FacturaController {
     public Factura guardar(@PathVariable("id") long id,
                            @RequestBody Factura factura) {
         facturaService.guardar(factura, pedidoService.getPedidoPorId(id)); 
-        return this.facturaService.getFacturaPorId(factura.getId_Factura());
-    }
-    
-    @PutMapping("/facturas")
-    @ResponseStatus(HttpStatus.OK)
-    public Factura actualizar(@RequestBody Factura factura) {
-        if(facturaService.getFacturaPorId(factura.getId_Factura()) != null) {
-            facturaService.actualizar(factura);
-        }
-        return facturaService.getFacturaPorId(factura.getId_Factura()); 
-    }
+        return facturaService.getFacturaVentaPorTipoSerieNum(factura.getTipoFactura(), factura.getNumSerie(), factura.getNumFactura());
+    }    
     
     @GetMapping("/facturass/{id}/renglones")
     @ResponseStatus(HttpStatus.OK)
     public List<RenglonFactura> getRenglonesDeLaFactura(@PathVariable("id") long id) {
-        return facturaService.getRenglonesDeLaFactura(facturaService.getFacturaPorId(id));
+        return facturaService.getRenglonesDeLaFactura(id);
     }
     
     @GetMapping("/facturas/compra/busqueda/criteria")
@@ -194,37 +187,37 @@ public class FacturaController {
         return facturaService.buscarFacturaVenta(criteria);
     }
     
-    @GetMapping("/facturas/empresa/{idEmpresa}/proveedor/{idProveedor}/tipos")
+    @GetMapping("/facturas/tipos/empresa/{idEmpresa}/proveedor/{idProveedor}")
     @ResponseStatus(HttpStatus.OK)
     public String[] getTipoFacturaCompra(@PathVariable("idEmpresa") long idEmpresa, @PathVariable("idProveedor") long idProveedor) {
         return facturaService.getTipoFacturaCompra(empresaService.getEmpresaPorId(idEmpresa), proveedorService.getProveedorPorId(idProveedor));
     }
     
-    @GetMapping("/facturas/empresa/{idEmpresa}/cliente/{idCliente}/tipos")
+    @GetMapping("/facturas/tipos/empresa/{idEmpresa}/cliente/{idCliente}")
     @ResponseStatus(HttpStatus.OK)
     public String[] getTipoFacturaVenta(@PathVariable("idEmpresa") long idEmpresa, @PathVariable("idCliente") long idCliente) {
         return facturaService.getTipoFacturaVenta(empresaService.getEmpresaPorId(idEmpresa), clienteService.getClientePorId(idCliente));
     }
     
-    @GetMapping("/facturas/empresa/{idEmpresa}/tipos")
+    @GetMapping("/facturas/tipos/empresa/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
     public char[] getTiposFacturaSegunEmpresa(@PathVariable("idEmpresa") long idEmpresa) {
         return facturaService.getTiposFacturaSegunEmpresa(empresaService.getEmpresaPorId(idEmpresa));
     }
     
-    @GetMapping("/facturas/venta/tipo-serie-num")
+    @GetMapping("/facturas/venta/tipo-serie-numero")
     @ResponseStatus(HttpStatus.OK)
-    public FacturaVenta getFacturaVentaPorTipoSerieNum(@RequestParam(value = "tipo") char tipo,
-                                                       @RequestParam(value = "serie") long serie,
-                                                       @RequestParam(value = "tipo") long num) {
+    public FacturaVenta getFacturaVentaPorTipoSerieNum(@RequestParam("tipo") char tipo,
+                                                       @RequestParam("serie") long serie,
+                                                       @RequestParam("numero") long num) {
         return facturaService.getFacturaVentaPorTipoSerieNum(tipo, serie, num);
     }
     
-    @GetMapping("/facturas/compra/tipo-serie-num")
+    @GetMapping("/facturas/compra/tipo-serie-numero")
     @ResponseStatus(HttpStatus.OK)
-    public FacturaCompra getFacturaCompraPorTipoSerieNum(@RequestParam(value = "tipo") char tipo,
-                                                         @RequestParam(value = "serie") long serie,
-                                                         @RequestParam(value = "tipo") long num) {
+    public FacturaCompra getFacturaCompraPorTipoSerieNum(@RequestParam("tipo") char tipo,
+                                                         @RequestParam("serie") long serie,
+                                                         @RequestParam("numero") long num) {
         return facturaService.getFacturaCompraPorTipoSerieNum(tipo, serie, num);
     }
     
@@ -233,41 +226,32 @@ public class FacturaController {
     public String getTipoFactura(@PathVariable("id") long id) {
         return facturaService.getTipoFactura(facturaService.getFacturaPorId(id));
     }
-    
-    @GetMapping("/facturas/pago-multiple")
+   
+    @GetMapping("/facturas/validaciones-pago-multiple")
     @ResponseStatus(HttpStatus.OK)
     public boolean validarFacturasParaPagoMultiple(@RequestParam("id") long[] ids,
                                                    @RequestParam("movimiento") Movimiento movimiento) {
         List<Factura> facturas = new ArrayList<>();
-        for(long id : ids) {
+        for (long id : ids) {
             facturas.add(facturaService.getFacturaPorId(id));
         }
-        return facturaService.validarClienteProveedorParaPagosMultiples(facturas, movimiento);
-    }
-    
-    @GetMapping("/facturas/pago-multiple-cliente-proveedor")
-    @ResponseStatus(HttpStatus.OK)
-    public boolean validarClienteProveedorParaPagosMultiples(@RequestParam("id") long[] ids,
-                                                             @RequestParam("movimiento") Movimiento movimiento) {
-        List<Factura> facturas = new ArrayList<>();
-        for(long id : ids) {
-            facturas.add(facturaService.getFacturaPorId(id));
+
+        if (facturaService.validarFacturasParaPagoMultiple(facturas, movimiento)) {
+            return true;
+        } else if (!facturaService.validarClienteProveedorParaPagosMultiples(facturas, movimiento)) {              
+            if (movimiento == Movimiento.COMPRA) {
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes").getString("mensaje_facturas_distintos_proveedores"));
+            } else if (movimiento == Movimiento.VENTA) {
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes").getString("mensaje_facturas_distintos_clientes"));
+            }
+
+        } else if (!facturaService.validarFacturasImpagasParaPagoMultiple(facturas)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes").getString("mensaje_facturas_seEncuentran_pagadas"));
         }
-        return facturaService.validarClienteProveedorParaPagosMultiples(facturas, movimiento);
+        return false;
     }
     
-    @GetMapping("/facturas/pago-multiple-impagas")
-    @ResponseStatus(HttpStatus.OK)
-    public boolean validarFacturasImpagasParaPagoMultiple(@RequestParam("id") long[] ids,
-                                                          @RequestParam("movimiento") Movimiento movimiento) {
-        List<Factura> facturas = new ArrayList<>();
-        for(long id : ids) {
-            facturas.add(facturaService.getFacturaPorId(id));
-        }
-        return facturaService.validarFacturasImpagasParaPagoMultiple(facturas);
-    }
-    
-    @GetMapping("/facturas/empresa/{id}/cantidad-renglones/{cantidad}")
+    @GetMapping("/facturas/empresa/{id}/validacion-cantidad-renglones/{cantidad}")
     @ResponseStatus(HttpStatus.OK)
     public boolean validarCantidadMaximaDeRenglones(@PathVariable("id") long idEmpresa,
                                                     @PathVariable("cantidad") int cantidad) {

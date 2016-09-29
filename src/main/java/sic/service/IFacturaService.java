@@ -16,7 +16,7 @@ import sic.modelo.RenglonPedido;
 
 public interface IFacturaService {
     
-    Factura getFacturaPorId(long id_Factura);
+    Factura getFacturaPorId(Long id_Factura);
 
     String[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor);
 
@@ -24,7 +24,7 @@ public interface IFacturaService {
 
     char[] getTiposFacturaSegunEmpresa(Empresa empresa);
 
-    List<RenglonFactura> getRenglonesDeLaFactura(Factura factura);
+    List<RenglonFactura> getRenglonesDeLaFactura(Long id_Factura);
 
     FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num);
 
