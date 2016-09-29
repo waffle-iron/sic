@@ -79,15 +79,15 @@ public class GUI_CerrarVenta extends JDialog {
     }
 
     private void lanzarReporteFactura(Factura factura) throws JRException {
-        JasperPrint report = facturaService.getReporteFacturaVenta(factura);
-        JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-        viewer.setSize(gui_puntoDeVenta.getWidth() - 25, gui_puntoDeVenta.getHeight() - 25);
-        ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-        viewer.setIconImage(iconoVentana.getImage());
-        viewer.setLocationRelativeTo(null);
-        JRViewer jrv = new JRViewer(report);
-        viewer.getContentPane().add(jrv);
-        viewer.setVisible(true);
+//        JasperPrint report = facturaService.getReporteFacturaVenta(factura);
+//        JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+//        viewer.setSize(gui_puntoDeVenta.getWidth() - 25, gui_puntoDeVenta.getHeight() - 25);
+//        ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+//        viewer.setIconImage(iconoVentana.getImage());
+//        viewer.setLocationRelativeTo(null);
+//        JRViewer jrv = new JRViewer(report);
+//        viewer.getContentPane().add(jrv);
+//        viewer.setVisible(true);
     }
 
     private void cargarFormasDePago() {
@@ -135,7 +135,6 @@ public class GUI_CerrarVenta extends JDialog {
             .fecha(gui_puntoDeVenta.getFechaFactura())
             .tipoFactura(gui_puntoDeVenta.getTipoDeComprobante().charAt(gui_puntoDeVenta.getTipoDeComprobante().length() - 1))
             .numSerie(1)
-            .numFactura(facturaService.calcularNumeroFactura(gui_puntoDeVenta.getTipoDeComprobante(), 1))
             .fechaVencimiento(gui_puntoDeVenta.getFechaVencimiento())
             .transportista((Transportista) cmb_Transporte.getSelectedItem())
             .renglones(gui_puntoDeVenta.getRenglones())
@@ -244,7 +243,7 @@ public class GUI_CerrarVenta extends JDialog {
                 this.lanzarReporteFactura(this.guardarFactura(factura));
                 exito = true;
             } else {
-                List<FacturaVenta> facturasDivididas = facturaService.dividirFactura(this.construirFactura(), indicesParaDividir);
+                List<FacturaVenta> facturasDivididas = facturaService.dividirYGuardarFactura(this.construirFactura(), indicesParaDividir);
                 for (Factura factura : facturasDivididas) {
                     if (facturasDivididas.size() == 2 && !factura.getRenglones().isEmpty()) {
                         if (gui_puntoDeVenta.getPedido() != null) {
@@ -256,7 +255,7 @@ public class GUI_CerrarVenta extends JDialog {
                 }
             }
             if (gui_puntoDeVenta.getPedido() != null) {
-                pedidoService.actualizarEstadoPedido(TipoDeOperacion.ALTA, gui_puntoDeVenta.getPedido());
+                pedidoService.actualizarEstadoPedido(gui_puntoDeVenta.getPedido());
                 gui_puntoDeVenta.dispose();
             }
             this.dispose();

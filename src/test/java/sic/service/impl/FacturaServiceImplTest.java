@@ -208,7 +208,7 @@ public class FacturaServiceImplTest {
         when(factura.getTipoFactura()).thenReturn('A');
         int[] indices = {0, 1};
         int cantidadDeFacturasEsperadas = 2;
-        List<FacturaVenta> result = facturaService.dividirFactura(factura, indices);
+        List<FacturaVenta> result = facturaService.dividirYGuardarFactura(factura, indices);
         double cantidadRenglon1PrimeraFactura = result.get(0).getRenglones().get(0).getCantidad();
         double cantidadRenglon2PrimeraFactura = result.get(0).getRenglones().get(1).getCantidad();
         double cantidadRenglon1SegundaFactura = result.get(1).getRenglones().get(0).getCantidad();

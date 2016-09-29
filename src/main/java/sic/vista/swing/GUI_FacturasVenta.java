@@ -374,19 +374,19 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }
 
     private void lanzarReporteFactura() throws JRException {
-        if (tbl_Resultados.getSelectedRow() != -1 && tbl_Resultados.getSelectedRowCount() == 1) {
-            int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
-            JasperPrint report = facturaService.getReporteFacturaVenta(facturas.get(indexFilaSeleccionada));
-
-            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-            viewer.setSize(this.getWidth(), this.getHeight());
-            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-            viewer.setIconImage(iconoVentana.getImage());
-            viewer.setLocationRelativeTo(null);
-            JRViewer jrv = new JRViewer(report);
-            viewer.getContentPane().add(jrv);
-            viewer.setVisible(true);
-        }
+//        if (tbl_Resultados.getSelectedRow() != -1 && tbl_Resultados.getSelectedRowCount() == 1) {
+//            int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
+//            JasperPrint report = facturaService.getReporteFacturaVenta(facturas.get(indexFilaSeleccionada));
+//
+//            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+//            viewer.setSize(this.getWidth(), this.getHeight());
+//            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+//            viewer.setIconImage(iconoVentana.getImage());
+//            viewer.setLocationRelativeTo(null);
+//            JRViewer jrv = new JRViewer(report);
+//            viewer.getContentPane().add(jrv);
+//            viewer.setVisible(true);
+//        }
     }
 
     private boolean existeClienteDisponible() {
@@ -924,7 +924,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     facturaService.eliminar(facturas.get(indexFilaSeleccionada));
                     if (facturas.get(indexFilaSeleccionada).getPedido() != null) {
                         Pedido pedidoDeFactura = pedidoService.getPedidoPorNumero(facturas.get(indexFilaSeleccionada).getPedido().getNroPedido(), EmpresaActiva.getInstance().getEmpresa().getId_Empresa());
-                        pedidoService.actualizarEstadoPedido(TipoDeOperacion.ELIMINACION, pedidoDeFactura);
+                        pedidoService.actualizarEstadoPedido(pedidoDeFactura);
                     }
                     this.buscar(this.getCriteriaDeComponentes());
 

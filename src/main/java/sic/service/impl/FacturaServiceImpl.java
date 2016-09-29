@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -41,6 +42,7 @@ import sic.service.IPedidoService;
 import sic.service.IProductoService;
 import sic.service.Movimiento;
 import sic.service.BusinessServiceException;
+import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
@@ -289,8 +291,23 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     @Transactional
     public void guardar(Factura factura) {
+        factura.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(factura), factura.getNumSerie()));
         this.validarFactura(factura);
         facturaRepository.guardar(factura);
+        productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
+        LOGGER.warn("La Factura " + factura + " se guardó correctamente." );
+    }
+    
+    @Override
+    @Transactional
+    public void guardar(Factura factura, Pedido pedido) {
+        List<Factura> facturas = pedido.getFacturas();
+        facturas.add(factura);
+        pedido.setFacturas(facturas);
+        this.validarFactura(factura);
+        facturaRepository.guardar(factura);
+        pedidoService.actualizar(pedido);
+        pedidoService.actualizarEstadoPedido(pedido);
         productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
         LOGGER.warn("La Factura " + factura + " se guardó correctamente." );
     }
@@ -703,7 +720,7 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public JasperPrint getReporteFacturaVenta(Factura factura) throws JRException {
+    public byte[] getReporteFacturaVenta(Factura factura) {
         ClassLoader classLoader = FacturaServiceImpl.class.getClassLoader();
         InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/FacturaVenta.jasper");
         Map params = new HashMap();
@@ -720,11 +737,16 @@ public class FacturaServiceImpl implements IFacturaService {
         params.put("logo", Utilidades.convertirByteArrayIntoImage(factura.getEmpresa().getLogo()));
         List<RenglonFactura> renglones = this.getRenglonesDeLaFactura(factura);
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(renglones);
-        return JasperFillManager.fillReport(isFileReport, params, ds);
+         try {
+            return JasperExportManager.exportReportToPdf(JasperFillManager.fillReport(isFileReport, params, ds));
+        } catch (JRException ex) {
+             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_error_reporte"), ex);
+        }
     }
 
     @Override
-    public List<FacturaVenta> dividirFactura(FacturaVenta factura, int[] indices) {
+    public List<FacturaVenta> dividirYGuardarFactura(FacturaVenta factura, int[] indices) {
         double FacturaABC = 0;
         double FacturaX = 0;
         List<RenglonFactura> renglonesConIVA = new ArrayList<>();
@@ -814,9 +836,11 @@ public class FacturaServiceImpl implements IFacturaService {
         facturaConIVA.setEmpresa(factura.getEmpresa());
         facturaConIVA.setEliminada(factura.isEliminada());
 
+        this.guardar(facturaConIVA);
+        this.guardar(facturaSinIVA);
         List<FacturaVenta> facturas = new ArrayList<>();
-        facturas.add(facturaConIVA);
-        facturas.add(facturaSinIVA);
+        facturas.add((FacturaVenta) this.getFacturaPorId(facturaConIVA.getId_Factura()));
+        facturas.add((FacturaVenta) this.getFacturaPorId(facturaSinIVA.getId_Factura()));
         return facturas;
     }
 

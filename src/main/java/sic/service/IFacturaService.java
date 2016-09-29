@@ -1,8 +1,6 @@
 package sic.service;
 
 import java.util.List;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
 import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Cliente;
@@ -41,6 +39,8 @@ public interface IFacturaService {
     List<FacturaVenta> buscarFacturaVenta(BusquedaFacturaVentaCriteria criteria);
 
     void guardar(Factura factura);
+    
+    void guardar(Factura factura, Pedido pedido);    
 
     void actualizar(Factura factura);
 
@@ -92,9 +92,9 @@ public interface IFacturaService {
 
     double calcularImporte(double cantidad, double precioUnitario, double descuento_neto);    
 
-    JasperPrint getReporteFacturaVenta(Factura factura) throws JRException;
+    byte[] getReporteFacturaVenta(Factura factura);
 
-    List<FacturaVenta> dividirFactura(FacturaVenta factura, int[] indices);
+    List<FacturaVenta> dividirYGuardarFactura(FacturaVenta factura, int[] indices);
 
     RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante);
 

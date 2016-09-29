@@ -6,7 +6,7 @@ import sic.modelo.UsuarioActivo;
 
 public interface IUsuarioService {
     
-    Usuario getUsuarioPorId(long id_Usuario);
+    Usuario getUsuarioPorId(Long id_Usuario);
 
     void actualizar(Usuario usuario);
 
