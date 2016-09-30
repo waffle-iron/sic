@@ -245,8 +245,14 @@ public class FacturaServiceImplTest {
         renglones.add(renglon1);
         renglones.add(renglon2);
         renglones.add(renglon3);
+        double[] importes = new double[renglones.size()];
+        int indice = 0;
+        for(RenglonFactura renglon : renglones) {
+            importes[indice] = renglon.getImporte();
+            indice++;
+        }
         double resultadoEsperado = 33.664;
-        double resultadoObtenido = facturaService.calcularSubTotal(renglones);
+        double resultadoObtenido = facturaService.calcularSubTotal(importes);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -327,8 +333,16 @@ public class FacturaServiceImplTest {
         renglones.add(renglon1);
         renglones.add(renglon2);
         renglones.add(renglon3);
+        double[] importes = new double[renglones.size()];
+        double[] impuestoPorcentajes = new double[renglones.size()];
+        int indice = 0;
+        for(RenglonFactura renglon : renglones) {
+            importes[indice] = renglon.getImporte();
+            impuestoPorcentajes[indice] = renglon.getImpuesto_porcentaje();
+            indice++;
+        }
         double resultadoEsperado = 3.319;
-        double resultadoObtenido = facturaService.calcularImpInterno_neto("Factura A", 9.104, 22.008, renglones);
+        double resultadoObtenido = facturaService.calcularImpInterno_neto("Factura A", 9.104, 22.008, importes, impuestoPorcentajes);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
