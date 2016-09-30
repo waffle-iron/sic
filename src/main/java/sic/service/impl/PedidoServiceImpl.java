@@ -103,7 +103,7 @@ public class PedidoServiceImpl implements IPedidoService {
             if (this.getFacturasDelPedido(pedido.getNroPedido()).isEmpty()) {
                 pedido.setEstado(EstadoPedido.ABIERTO);
             }
-            if (facturaService.convertirRenglonesPedidoARenglonesFactura(pedido, "Factura A").isEmpty()) {
+            if (facturaService.getRenglonesPedidoParaFacturar(pedido, "Factura A").isEmpty()) {
                 pedido.setEstado(EstadoPedido.CERRADO);
             }
             this.actualizar(pedido);

@@ -339,25 +339,25 @@ public class FacturaServiceImplTest {
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
-    @Test
-    public void shouldCalcularTotalFacturadoVenta() {
-        List<FacturaVenta> facturasDeVenta = new ArrayList<>();
-        FacturaVenta factura1 = FacturaVenta.builder()
-                      .total(1024.759)
-                      .build();
-        FacturaVenta factura2 = FacturaVenta.builder()
-                      .total(3424.089)
-                      .build();
-        FacturaVenta factura3 = FacturaVenta.builder()
-                      .total(21124.504)
-                      .build();
-        facturasDeVenta.add(factura1);
-        facturasDeVenta.add(factura2);
-        facturasDeVenta.add(factura3);
-        double resultadoEsperado = 25573.352;
-        double resultadoObtenido = facturaService.calcularTotalFacturadoVenta(facturasDeVenta);
-        assertEquals(resultadoEsperado, resultadoObtenido, 0);
-    }
+//    @Test
+//    public void shouldCalcularTotalFacturadoVenta() {
+//        List<FacturaVenta> facturasDeVenta = new ArrayList<>();
+//        FacturaVenta factura1 = FacturaVenta.builder()
+//                      .total(1024.759)
+//                      .build();
+//        FacturaVenta factura2 = FacturaVenta.builder()
+//                      .total(3424.089)
+//                      .build();
+//        FacturaVenta factura3 = FacturaVenta.builder()
+//                      .total(21124.504)
+//                      .build();
+//        facturasDeVenta.add(factura1);
+//        facturasDeVenta.add(factura2);
+//        facturasDeVenta.add(factura3);
+//        double resultadoEsperado = 25573.352;
+//        double resultadoObtenido = facturaService.calcularTotalFacturadoVenta(facturasDeVenta);
+//        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+//    }
 
     @Test
     public void shouldCalcularTotalFacturadoCompra() {
@@ -378,29 +378,29 @@ public class FacturaServiceImplTest {
         double resultadoObtenido = facturaService.calcularTotalFacturadoCompra(facturasDeCompra);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
-
-    @Test
-    public void shouldCalcularIvaVenta() {
-        List<FacturaVenta> facturasDeVenta = new ArrayList<>();
-        FacturaVenta factura1 = FacturaVenta.builder()
-                     .iva_105_neto(0)
-                     .iva_21_neto(35)
-                     .build();;
-        FacturaVenta factura2 = FacturaVenta.builder()
-                     .iva_105_neto(0)
-                     .iva_21_neto(30)
-                     .build();
-        FacturaVenta factura3 = FacturaVenta.builder()
-                     .iva_105_neto(25)
-                     .iva_21_neto(0)
-                     .build();
-        facturasDeVenta.add(factura1);
-        facturasDeVenta.add(factura2);
-        facturasDeVenta.add(factura3);
-        double resultadoEsperado = 90;
-        double resultadoObtenido = facturaService.calcularIVA_Venta(facturasDeVenta);
-        assertEquals(resultadoEsperado, resultadoObtenido, 0);
-    }
+//
+//    @Test
+//    public void shouldCalcularIvaVenta() {
+//        List<FacturaVenta> facturasDeVenta = new ArrayList<>();
+//        FacturaVenta factura1 = FacturaVenta.builder()
+//                     .iva_105_neto(0)
+//                     .iva_21_neto(35)
+//                     .build();;
+//        FacturaVenta factura2 = FacturaVenta.builder()
+//                     .iva_105_neto(0)
+//                     .iva_21_neto(30)
+//                     .build();
+//        FacturaVenta factura3 = FacturaVenta.builder()
+//                     .iva_105_neto(25)
+//                     .iva_21_neto(0)
+//                     .build();
+//        facturasDeVenta.add(factura1);
+//        facturasDeVenta.add(factura2);
+//        facturasDeVenta.add(factura3);
+//        double resultadoEsperado = 90;
+//        double resultadoObtenido = facturaService.calcularIVA_Venta(facturasDeVenta);
+//        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+//    }
 
     @Test
     public void shouldCalcularIvaCompra() {

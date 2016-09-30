@@ -199,7 +199,6 @@ public class GUI_FacturasVenta extends JInternalFrame {
     }
 
     private void calcularResultados() {
-        //
         txt_ResultTotalFacturado.setValue(facturaService.calcularTotalFacturadoVenta(facturas));
         txt_ResultGananciaTotal.setValue(facturaService.calcularGananciaTotal(facturas));
         txt_ResultTotalIVAVenta.setValue(facturaService.calcularIVA_Venta(facturas));

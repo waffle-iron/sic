@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,7 +76,7 @@ public class FacturaController {
         if (indices.length > 0 && factura instanceof FacturaVenta) {
             facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indices));
         } else {
-            facturas.add((FacturaVenta) factura);
+            facturas.add(factura);
             facturaService.guardar(factura);
         }
         return facturas;
@@ -100,18 +99,18 @@ public class FacturaController {
     @GetMapping("/facturas/compra/busqueda/criteria")
     @ResponseStatus(HttpStatus.OK)
     public List<FacturaCompra> buscarFacturaCompra(@RequestParam(value = "idEmpresa") Long idEmpresa,
-                                        @RequestParam(value = "desde", required = false) Long desde,
-                                        @RequestParam(value = "hasta", required = false) Long hasta,
-                                        @RequestParam(value = "idProveedor", required = false) Long idProveedor,
-                                        @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
-                                        @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
-                                        @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
-                                        @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
+                                                   @RequestParam(value = "desde", required = false) Long desde,
+                                                   @RequestParam(value = "hasta", required = false) Long hasta,
+                                                   @RequestParam(value = "idProveedor", required = false) Long idProveedor,
+                                                   @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
+                                                   @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
+                                                   @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
+                                                   @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
         Calendar fechaDesde = Calendar.getInstance();
         Calendar fechaHasta = Calendar.getInstance();
         if ((desde != null) && (hasta != null)) {
             fechaDesde.setTimeInMillis(desde);            
-           fechaHasta.setTimeInMillis(hasta);
+            fechaHasta.setTimeInMillis(hasta);
         }
         Proveedor proveedor = proveedorService.getProveedorPorId(idProveedor);
         if ((soloImpagas != null) && (soloPagas != null)) {
@@ -179,7 +178,7 @@ public class FacturaController {
                                                  .buscarPorPedido(nroPedido != null)
                                                  .nroPedido((nroPedido != null) ? nroPedido : 0)
                                                  .buscaPorTipoFactura(tipoFactura != null)
-                                                 .tipoFactura((tipoFactura != null) ? tipoFactura : new Character('-'))
+                                                 .tipoFactura((tipoFactura != null) ? tipoFactura : '-')
                                                  .buscaSoloImpagas(soloImpagas)
                                                  .buscaSoloPagadas(soloPagas)
                                                  .cantRegistros(0)
@@ -226,7 +225,25 @@ public class FacturaController {
     public String getTipoFactura(@PathVariable("id") long id) {
         return facturaService.getTipoFactura(facturaService.getFacturaPorId(id));
     }
-   
+    
+    @GetMapping("/facturas/{id}/reporte")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<byte[]> getReporteFacturaVenta(@PathVariable("id") long id) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        headers.setContentDispositionFormData("factura.pdf", "factura.pdf");
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        byte[] reportePDF = facturaService.getReporteFacturaVenta(facturaService.getFacturaPorId(id));
+        return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);
+    }
+    
+    @GetMapping("/facturas/pedido/{id}/renglones-pedido-a-renglon-factura")
+    @ResponseStatus(HttpStatus.OK)
+    public List<RenglonFactura> getRenglonesPedidoParaFacturar(@PathVariable("id") long id,
+                                                               @RequestParam("tipoComprobante") String tipoComprobante) {
+        return facturaService.getRenglonesPedidoParaFacturar(pedidoService.getPedidoPorId(id), tipoComprobante);
+    }    
+     
     @GetMapping("/facturas/validaciones-pago-multiple")
     @ResponseStatus(HttpStatus.OK)
     public boolean validarFacturasParaPagoMultiple(@RequestParam("id") long[] ids,
@@ -258,69 +275,81 @@ public class FacturaController {
         return facturaService.validarCantidadMaximaDeRenglones(cantidad, empresaService.getEmpresaPorId(idEmpresa));
     }
     
-    @PostMapping("/facturas/subtotal")
-    @ResponseStatus(HttpStatus.CREATED)
-    public double calcularSubTotal(@RequestBody List<RenglonFactura> renglones) {
-        return facturaService.calcularSubTotal(renglones);
+    @GetMapping("/facturas/producto/{id}/renglon")
+    @ResponseStatus(HttpStatus.OK)
+    public RenglonFactura calcularRenglon(@PathVariable("id") long id,
+                                          @RequestParam("tipoDeFactura") String tipoDeFactura,
+                                          @RequestParam("movimiento") Movimiento movimiento,
+                                          @RequestParam("cantidad") double cantidad, 
+                                          @RequestParam("descuentoPorcentaje") double descuento_porcentaje) {
+        return facturaService.calcularRenglon(tipoDeFactura, movimiento, cantidad, productoService.getProductoPorId(id), descuento_porcentaje);
     }
     
-    @PostMapping("/facturas/descuento-neto")
-    @ResponseStatus(HttpStatus.CREATED)
-    public double calcularDescuento_neto(@RequestParam(value = "subTotal", required = false) Double subTotal,
-                                         @RequestParam(value = "porcentaje", required = false) Double porcentaje) {
+    @GetMapping("/facturas/subtotal")
+    @ResponseStatus(HttpStatus.OK)
+    public double calcularSubTotal(@RequestParam("importe") double[] importes) {
+        return facturaService.calcularSubTotal(importes);
+    }
+    
+    @GetMapping("/facturas/descuento-neto")
+    @ResponseStatus(HttpStatus.OK)
+    public double calcularDescuento_neto(@RequestParam("subTotal") double subTotal,
+                                         @RequestParam("porcentaje") double porcentaje) {
         return facturaService.calcularDescuento_neto(subTotal, porcentaje);
     }
     
-    @PostMapping("/facturas/recargo-neto")
-    @ResponseStatus(HttpStatus.CREATED)
-    public double calcularRecargo_neto(@RequestParam(value = "subTotal", required = false) Double subTotal,
-                                       @RequestParam(value = "porcentaje", required = false) Double porcentaje) {
+    @GetMapping("/facturas/recargo-neto")
+    @ResponseStatus(HttpStatus.OK)
+    public double calcularRecargo_neto(@RequestParam("subTotal") double subTotal,
+                                       @RequestParam("porcentaje") double porcentaje) {
         return facturaService.calcularRecargo_neto(subTotal, porcentaje);
     }
     
-    @PostMapping("/facturas/subtotal-neto")
-    @ResponseStatus(HttpStatus.CREATED)
-    public double calcularSubTotal_neto(@RequestParam(value = "subTotal", required = false) Double subTotal,
-                                        @RequestParam(value = "recargo", required = false) Double recargo,
-                                        @RequestParam(value = "descuento", required = false) Double descuento) {
+    @GetMapping("/facturas/subtotal-neto")
+    @ResponseStatus(HttpStatus.OK)
+    public double calcularSubTotal_neto(@RequestParam("subTotal") double subTotal,
+                                        @RequestParam("recargo") double recargo,
+                                        @RequestParam("descuento") double descuento) {
         return facturaService.calcularSubTotal_neto(subTotal, recargo, descuento);
     }
     
-    @PostMapping("/facturas/producto/{id}/imp-interno-neto")
-    @ResponseStatus(HttpStatus.CREATED)
-    public double calcularImpInterno_neto(@PathVariable("idProducto") long id,
-                                          @RequestParam(value = "descuento", required = false) Double descuento,
-                                          @RequestParam("movimiento") Movimiento movimiento) {
-        return facturaService.calcularImpInterno_neto(movimiento, productoService.getProductoPorId(id), descuento);
+    @GetMapping("/facturas/imp-interno-neto")
+    @ResponseStatus(HttpStatus.OK)
+    public double calcularImpInterno_neto(@RequestParam("tipoFactura") String tipoDeFactura,
+                                          @RequestParam("descuentoPorcentaje") double descuento_porcentaje,
+                                          @RequestParam("recargoPorcentaje") double recargo_porcentaje,
+                                          @RequestParam("importe") double[] importes,
+                                          @RequestParam("impuestoPorcentaje") double[] impuesto_porcentajes) {
+        return facturaService.calcularImpInterno_neto(tipoDeFactura, descuento_porcentaje, recargo_porcentaje, importes, impuesto_porcentajes);
+
     }
     
-    @PostMapping("/facturas/total")
-    @ResponseStatus(HttpStatus.CREATED)
-    public double calcularTotal(@RequestParam(value = "subTotal", required = false) Double subTotal,
-                                @RequestParam(value = "descuentoNeto", required = false) Double descuentoNeto,
-                                @RequestParam(value = "recargoNeto", required = false) Double recargoNeto,
-                                @RequestParam(value = "iva105neto", required = false) Double iva105Neto,
-                                @RequestParam(value = "iva21neto", required = false) Double iva21Neto,
-                                @RequestParam(value = "impInternoneto", required = false) Double impInternoNeto) {
+    @GetMapping("/facturas/total")
+    @ResponseStatus(HttpStatus.OK)
+    public double calcularTotal(@RequestParam("subTotal") double subTotal,
+                                @RequestParam("descuentoNeto") double descuentoNeto,
+                                @RequestParam("recargoNeto") double recargoNeto,
+                                @RequestParam("iva105neto") double iva105Neto,
+                                @RequestParam("iva21neto") double iva21Neto,
+                                @RequestParam("impInternoneto") double impInternoNeto) {
         return facturaService.calcularTotal(subTotal, descuentoNeto, recargoNeto, iva105Neto, iva21Neto, impInternoNeto);
     }
     
-    @PostMapping("/facturas/total-facturado-venta")
-    @ResponseStatus(HttpStatus.CREATED)
+    @GetMapping("/facturas/total-facturado-venta")
+    @ResponseStatus(HttpStatus.OK)
     public double calcularTotalFacturadoVenta(@RequestParam("id") long[] ids) {
         List<FacturaVenta> facturas = new ArrayList<>();
-        Factura factura;
-        for (long id : ids) {
-            factura = facturaService.getFacturaPorId(id);
-            if (factura instanceof FacturaVenta) {
+        for(long id : ids) {
+            Factura factura = facturaService.getFacturaPorId(id);
+            if(factura instanceof FacturaVenta) {
                 facturas.add((FacturaVenta) factura);
             }
         }
         return facturaService.calcularTotalFacturadoVenta(facturas);
     }
     
-    @PostMapping("/facturas/total-facturado-compra")
-    @ResponseStatus(HttpStatus.CREATED)
+    @GetMapping("/facturas/total-facturado-compra")
+    @ResponseStatus(HttpStatus.OK)
     public double calcularTotalFacturadoCompra(@RequestParam("id") long[] ids) {
         List<FacturaCompra> facturas = new ArrayList<>();
         Factura factura;
@@ -333,22 +362,21 @@ public class FacturaController {
         return facturaService.calcularTotalFacturadoCompra(facturas);
     }
     
-    @PostMapping("/facturas/total-iva-venta")
-    @ResponseStatus(HttpStatus.CREATED)
+    @GetMapping("/facturas/total-iva-venta")
+    @ResponseStatus(HttpStatus.OK)
     public double calcularIvaVenta(@RequestParam("id") long[] ids) {
         List<FacturaVenta> facturas = new ArrayList<>();
-        Factura factura;
-        for (long id : ids) {
-            factura = facturaService.getFacturaPorId(id);
-            if (factura instanceof FacturaVenta) {
+        for(long id : ids) {
+            Factura factura = facturaService.getFacturaPorId(id);
+            if(factura instanceof FacturaVenta) {
                 facturas.add((FacturaVenta) factura);
             }
         }
         return facturaService.calcularIVA_Venta(facturas);
     }
     
-    @PostMapping("/facturas/total-iva-compra")
-    @ResponseStatus(HttpStatus.CREATED)
+    @GetMapping("/facturas/total-iva-compra")
+    @ResponseStatus(HttpStatus.OK)
     public double calcularTotalIvaCompra(@RequestParam("id") long[] ids) {
         List<FacturaCompra> facturas = new ArrayList<>();
         Factura factura;
@@ -361,72 +389,28 @@ public class FacturaController {
         return facturaService.calcularIVA_Compra(facturas);
     }
     
-    @PostMapping("/facturas/ganancia-total")
-    @ResponseStatus(HttpStatus.CREATED)
+    @GetMapping("/facturas/ganancia-total")
+    @ResponseStatus(HttpStatus.OK)
     public double calcularGananciaTotal(@RequestParam("id") long[] ids) {
         List<FacturaVenta> facturas = new ArrayList<>();
-        Factura factura;
-        for (long id : ids) {
-            factura = facturaService.getFacturaPorId(id);
-            if (factura instanceof FacturaVenta) {
+        for(long id : ids) {
+            Factura factura = facturaService.getFacturaPorId(id);
+            if(factura instanceof FacturaVenta) {
                 facturas.add((FacturaVenta) factura);
             }
         }
         return facturaService.calcularGananciaTotal(facturas);
     }
     
-    @PostMapping("/facturas/producto/{id}/iva-neto")
-    @ResponseStatus(HttpStatus.CREATED)
-    public double calcularIVA_neto(@PathVariable("idProducto") long id,
-                                   @RequestParam(value = "descuento", required = false) Double descuento,
-                                   @RequestParam("movimiento") Movimiento movimiento) {
-        return facturaService.calcularIVA_neto(movimiento, productoService.getProductoPorId(id), descuento);
-    }
-    
-    @PostMapping("/facturas/producto/{id}/precio-unitario")
-    @ResponseStatus(HttpStatus.CREATED)
-    public double calcularPrecioUnitario(@PathVariable("idProducto") long id,
-                                         @RequestParam("tipoDeFactura") String tipoDeFactura,
-                                         @RequestParam("movimiento") Movimiento movimiento) {
-        return facturaService.calcularPrecioUnitario(movimiento, tipoDeFactura, productoService.getProductoPorId(id));
-    }
-    
-    @GetMapping("/facturas/{id}/reporte")
+    @GetMapping("/facturas/producto/{id}/iva-neto")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<byte[]> getReporteFacturaVenta(@PathVariable("id") long id) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType("application/pdf"));
-        headers.setContentDispositionFormData("factura.pdf", "factura.pdf");
-        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-        byte[] reportePDF = facturaService.getReporteFacturaVenta(facturaService.getFacturaPorId(id));
-        return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);
+    public double calcularIVA_neto(@RequestParam("tipoFactura") String tipoDeFactura,
+                                   @RequestParam("descuentoPorcentaje") double descuento_porcentaje,
+                                   @RequestParam("recargoPorcentaje") double recargo_porcentaje,
+                                   @RequestParam("ivaPorcentaje") double iva_porcentaje,
+                                   @RequestBody List<RenglonFactura> renglones) {       
+        return facturaService.calcularIva_neto(tipoDeFactura, descuento_porcentaje, recargo_porcentaje, renglones, iva_porcentaje);
+
     }
-    
-    @PostMapping("/facturas/pedido/{id}/renglon-pedido-a-renglon-factura")
-    @ResponseStatus(HttpStatus.CREATED)
-    public List<RenglonFactura> convertirRenglonesPedidoARenglonesFactura(@PathVariable("id") long id,
-                                                                          @RequestParam("tipoComprobante") String tipoComprobante) {
-        return facturaService.convertirRenglonesPedidoARenglonesFactura(pedidoService.getPedidoPorId(id), tipoComprobante);
-    }
-    
-    @PostMapping("/facturas/pedido/{id}/calculo-renglon")
-    @ResponseStatus(HttpStatus.CREATED)
-    public RenglonFactura calcularRenglon(@PathVariable("id") long idProducto,
-                                          @RequestParam(value = "tipoFactura" , required = false) String tipoDeFactura,
-                                          @RequestParam(value = "cantidad" , required = false) Double cantidad,
-                                          @RequestParam(value = "descuentoPorcentaje", required = false) Double descuento_porcentaje,
-                                          @RequestParam("movimiento") Movimiento movimiento) {
-        return facturaService.calcularRenglon(tipoDeFactura, movimiento, 0, productoService.getProductoPorId(idProducto), 0);
-    }
-  
-    @PostMapping("/facturas/producto/{id}/renglon")
-    @ResponseStatus(HttpStatus.CREATED)
-    public RenglonFactura calcularRenglon(@PathVariable("id") long id,
-                                          @RequestParam("tipoDeFactura") String tipoDeFactura,
-                                          @RequestParam("movimiento") Movimiento movimiento,
-                                          @RequestParam("cantidad") double cantidad, 
-                                          @RequestParam("descuentoPorcentaje") double descuento_porcentaje) {
-        return facturaService.calcularRenglon(tipoDeFactura, movimiento, cantidad, productoService.getProductoPorId(id), descuento_porcentaje);
-    }
-    
+        
 }

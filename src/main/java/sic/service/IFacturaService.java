@@ -58,7 +58,7 @@ public interface IFacturaService {
 
     boolean validarCantidadMaximaDeRenglones(int cantidad, Empresa empresa);
 
-    double calcularSubTotal(List<RenglonFactura> renglones);
+    double calcularSubTotal(double[] importes);
 
     double calcularDescuento_neto(double subtotal, double descuento_porcentaje);
 
@@ -68,7 +68,7 @@ public interface IFacturaService {
 
     double calcularIva_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones, double iva_porcentaje);
 
-    double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones);
+    double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, double[] importes, double [] impuestoPorcentajes);
 
     double calcularImpInterno_neto(Movimiento movimiento, Producto producto, double descuento_neto);
 
@@ -100,7 +100,7 @@ public interface IFacturaService {
 
     RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante);
 
-    List<RenglonFactura> convertirRenglonesPedidoARenglonesFactura(Pedido pedido, String tipoComprobante);
+    List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido, String tipoComprobante);
 
     RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje);
 

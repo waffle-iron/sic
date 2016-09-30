@@ -106,7 +106,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.cargarCliente(pedido.getCliente());
         this.cargarTiposDeComprobantesDisponibles();
         this.tipoDeFactura = cmb_TipoComprobante.getSelectedItem().toString();
-        this.renglones = facturaService.convertirRenglonesPedidoARenglonesFactura(pedido, this.tipoDeFactura);
+        this.renglones = facturaService.getRenglonesPedidoParaFacturar(pedido, this.tipoDeFactura);
         EstadoRenglon[] marcaDeRenglonesDelPedido = new EstadoRenglon[renglones.size()];
         for (int i = 0; i < renglones.size(); i++) {
             marcaDeRenglonesDelPedido[i] = EstadoRenglon.DESMARCADO;
@@ -458,7 +458,13 @@ public class GUI_PuntoDeVenta extends JDialog {
         double total;
         this.validarComponentesDeResultados();
         //SubTotal  
-        subTotal = facturaService.calcularSubTotal(renglones);
+        double[] importes = new double[renglones.size()];
+        int indice = 0;
+        for(RenglonFactura renglon : renglones) {
+            importes[indice] = renglon.getImporte();
+            indice++;
+        }
+        subTotal = facturaService.calcularSubTotal(importes);
         txt_Subtotal.setValue(subTotal);
 
         //Recargo
@@ -479,7 +485,13 @@ public class GUI_PuntoDeVenta extends JDialog {
         txt_IVA21_neto.setValue(iva_21_neto);
 
         //Imp Interno neto
-        impInterno_neto = facturaService.calcularImpInterno_neto(this.tipoDeFactura, 0, recargo_porcentaje, renglones);
+        double[] impuestoPorcentajes = new double[renglones.size()];
+        indice = 0;
+        for (RenglonFactura renglon : renglones) {
+            impuestoPorcentajes[indice] = renglon.getImpuesto_porcentaje();
+            indice++;
+        }
+        impInterno_neto = facturaService.calcularImpInterno_neto(this.tipoDeFactura, 0, recargo_porcentaje, importes , impuestoPorcentajes);
         txt_ImpInterno_neto.setValue(impInterno_neto);
 
         //total
@@ -543,7 +555,13 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.pedido.setObservaciones(txta_Observaciones.getText());
         this.pedido.setUsuario(usuarioService.getUsuarioActivo().getUsuario());
         this.pedido.setNroPedido(pedidoService.calcularNumeroPedido(empresa));
-        this.pedido.setTotalEstimado(facturaService.calcularSubTotal(renglones));
+        double[] importes = new double[renglones.size()];
+        int indice = 0;
+        for(RenglonFactura renglon : renglones) {
+            importes[indice] = renglon.getImporte();
+            indice++;
+        }
+        this.pedido.setTotalEstimado(facturaService.calcularSubTotal(importes));
         this.pedido.setEstado(EstadoPedido.ABIERTO);
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
         for (RenglonFactura renglonFactura : renglones) {
@@ -589,7 +607,13 @@ public class GUI_PuntoDeVenta extends JDialog {
     private void actualizarPedido(Pedido pedido) {
         pedido = pedidoService.getPedidoPorId(pedido.getId_Pedido());
         pedido.setRenglones(this.convertirRenglonesFacturaARenglonesPedido(this.renglones));
-        pedido.setTotalEstimado(facturaService.calcularSubTotal(this.renglones));
+        double[] importes = new double[renglones.size()];
+        int indice = 0;
+        for(RenglonFactura renglon : renglones) {
+            importes[indice] = renglon.getImporte();
+            indice++;
+        }
+        pedido.setTotalEstimado(facturaService.calcularSubTotal(importes));
         pedidoService.actualizar(pedido);
     }
     
