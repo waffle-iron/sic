@@ -81,6 +81,10 @@ public class FacturaController {
             facturas.add(factura);
             facturaService.guardar(factura);
         }
+        facturas.add(0, facturaService.getFacturaCompraPorTipoSerieNum(facturas.get(0).getTipoFactura(), facturas.get(0).getNumSerie(), facturas.get(0).getNumFactura()));
+        if (facturas.size() > 1) {
+            facturas.add(1, facturaService.getFacturaCompraPorTipoSerieNum(facturas.get(1).getTipoFactura(), facturas.get(1).getNumSerie(), facturas.get(1).getNumFactura()));
+        }
         return facturas;
     }
     
