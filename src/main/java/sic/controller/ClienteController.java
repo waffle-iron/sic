@@ -81,10 +81,10 @@ public class ClienteController {
     }
     
     
-    @DeleteMapping("/clientes/{id}")
+    @DeleteMapping("/clientes/{idCliente}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-        clienteService.eliminar(clienteService.getClientePorId(id));
+    public void eliminar(@PathVariable("idCliente") long idCliente) {
+        clienteService.eliminar(idCliente);
     }
     
     @PostMapping("/clientes")

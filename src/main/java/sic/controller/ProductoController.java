@@ -87,15 +87,7 @@ public class ProductoController {
                                             .build();
         return productoService.buscarProductos(criteria);
     }
-    
-    @DeleteMapping("/productos/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {        
-        Producto producto = productoService.getProductoPorId(id);
-        producto.setEliminado(true);
-        productoService.actualizar(producto);
-    }
-    
+        
     @DeleteMapping("/productos")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminarMultiplesProductos(@RequestParam(value = "id") long[] id) {

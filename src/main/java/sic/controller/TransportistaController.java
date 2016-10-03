@@ -88,7 +88,7 @@ public class TransportistaController {
     @ResponseStatus(HttpStatus.OK)
     public Transportista guardar(@RequestBody Transportista transportista) {
         transportistaService.guardar(transportista);
-        return transportistaService.getTransportistaPorId(transportista.getId_Transportista());
+        return transportistaService.getTransportistaPorNombre(transportista.getNombre() , transportista.getEmpresa());
     }
     
 }

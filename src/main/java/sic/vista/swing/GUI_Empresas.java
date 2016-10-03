@@ -182,7 +182,7 @@ public class GUI_Empresas extends JDialog {
                     + empresaSeleccionada.getNombre() + "?",
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
-                empresaService.eliminar(empresaSeleccionada);
+                empresaService.eliminar(empresaSeleccionada.getId_Empresa());
                 LOGGER.warn("Empresa " + empresaSeleccionada.getNombre() + " eliminada.");
                 //actualiza la empresa en caso de que sea la seleccionada
                 if (empresaSeleccionada.equals(EmpresaActiva.getInstance().getEmpresa())) {                    

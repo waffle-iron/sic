@@ -66,13 +66,13 @@ public class CajaController {
     @ResponseStatus(HttpStatus.CREATED)
     public Caja guardar(@RequestBody Caja caja) {
         cajaService.guardar(caja);
-        return cajaService.getCajaPorId(caja.getId_Caja());
+        return cajaService.getCajaPorNroYEmpresa(caja.getNroCaja(), caja.getEmpresa().getId_Empresa());
     }
     
-    @DeleteMapping("/cajas/{id}")
+    @DeleteMapping("/cajas/{idCaja}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-        cajaService.eliminar(cajaService.getCajaPorId(id));
+    public void eliminar(@PathVariable("idCaja") long idCaja) {
+        cajaService.eliminar(idCaja);
     }
     
     @GetMapping("/cajas/total-pagos")

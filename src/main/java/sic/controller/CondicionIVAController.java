@@ -41,12 +41,10 @@ public class CondicionIVAController {
         return condicionIVAService.getCondicionIVAPorId(condicionIVA.getId_CondicionIVA());
     }
     
-    @DeleteMapping("/condiciones-iva")
+    @DeleteMapping("/condiciones-iva/{idCondicionIVA}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-        CondicionIVA condicionIVA = condicionIVAService.getCondicionIVAPorId(id);
-        condicionIVA.setEliminada(true);
-        condicionIVAService.actualizar(condicionIVA);
+    public void eliminar(@PathVariable("idCondicionIva") long idCondicionIva) {
+        condicionIVAService.eliminar(idCondicionIva);
     }
     
     @GetMapping("/condiciones-iva")

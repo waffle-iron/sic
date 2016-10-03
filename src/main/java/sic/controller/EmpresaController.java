@@ -42,7 +42,7 @@ public class EmpresaController {
     @ResponseStatus(HttpStatus.CREATED)
     public Empresa guardar(@RequestBody Empresa empresa) {
         empresaService.guardar(empresa);
-        return empresaService.getEmpresaPorId(empresa.getId_Empresa());
+        return empresaService.getEmpresaPorNombre(empresa.getNombre());
     }
     
     @PutMapping("/empresas")
@@ -54,11 +54,9 @@ public class EmpresaController {
         return empresaService.getEmpresaPorId(empresa.getId_Empresa());
     }
     
-    @DeleteMapping("/empresas/{id}")
+    @DeleteMapping("/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-        Empresa empresa = empresaService.getEmpresaPorId(id);
-        empresa.setEliminada(true);
-        empresaService.actualizar(empresa);
+    public void eliminar(@PathVariable("idEmpresa") long idEmpresa) {
+        empresaService.eliminar(idEmpresa);
     }
 }

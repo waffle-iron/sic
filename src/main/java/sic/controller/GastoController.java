@@ -60,7 +60,7 @@ public class GastoController {
     @ResponseStatus(HttpStatus.CREATED)
     public Gasto guardar(@RequestBody Gasto gasto) {
         gastoService.guardar(gasto);
-        return gastoService.getGastoPorId(gasto.getId_Gasto());
+        return gastoService.getGastosPorNroYEmpreas(gasto.getNroGasto(), gasto.getEmpresa().getId_Empresa());
     }
 
 }

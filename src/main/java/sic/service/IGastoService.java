@@ -13,6 +13,8 @@ public interface IGastoService {
     List<Gasto> getGastosPorFecha(Long id_Empresa, Date desde, Date hasta);
 
     List<Gasto> getGastosPorFechaYFormaDePago(Long id_Empresa, Long id_FormaDePago, Date desde, Date hasta);
+    
+    Gasto getGastosPorNroYEmpreas(Long nroPago, Long id_Empresa);
 
     long getUltimoNumeroDeCaja(long id_Empresa);
 

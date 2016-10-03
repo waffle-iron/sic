@@ -51,7 +51,8 @@ public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
 
     @Override
     @Transactional
-    public void eliminar(CondicionIVA condicionIVA) {
+    public void eliminar(Long idCondicionIVAService) {
+        CondicionIVA condicionIVA = this.getCondicionIVAPorId(idCondicionIVAService);
         condicionIVA.setEliminada(true);        
         condicionIVARepository.actualizar(condicionIVA);
     }

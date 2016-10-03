@@ -249,7 +249,7 @@ public class GUI_DetalleCondicionIVA extends JDialog {
                     + condicionIVASeleccionada.getNombre() + "?",
                     "Eliminar", JOptionPane.YES_NO_OPTION);
                 if (respuesta == JOptionPane.YES_OPTION) {                    
-                    condicionIVAService.eliminar(condicionIVASeleccionada);
+                    condicionIVAService.eliminar(condicionIVASeleccionada.getId_CondicionIVA());
                     LOGGER.warn("La condicion de IVA " + txt_Nombre.getText().trim() + " se eliminó correctamente.");
                     this.limpiarYRecargarComponentes();                
                 }

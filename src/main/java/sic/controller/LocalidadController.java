@@ -44,13 +44,10 @@ public class LocalidadController {
         return localidadService.getLocalidadPorId(localidad.getId_Localidad());
     }
     
-    @DeleteMapping("/localidades/{id}")
+    @DeleteMapping("/localidades/{idLocalidad}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-        Localidad localidad = localidadService.getLocalidadPorId(id);
-        if(localidad != null) {
-            localidadService.eliminar(localidad);
-        }
+    public void eliminar(@PathVariable("idLocalidad") long idLocalidad) {
+        localidadService.eliminar(idLocalidad);
     }
     
     @PostMapping("/localidades")

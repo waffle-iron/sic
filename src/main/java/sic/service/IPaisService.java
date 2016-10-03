@@ -9,7 +9,7 @@ public interface IPaisService {
 
     void actualizar(Pais pais);
 
-    void eliminar(Pais pais);
+    void eliminar(Long idPais);
 
     Pais getPaisPorNombre(String nombre);
 

@@ -9,7 +9,7 @@ public interface ICondicionIVAService {
 
     void actualizar(CondicionIVA condicionIVA);
 
-    void eliminar(CondicionIVA condicionIVA);
+    void eliminar(Long idCondicionIVAService);
 
     CondicionIVA getCondicionIVAPorNombre(String nombre);
 

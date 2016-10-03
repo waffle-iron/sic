@@ -42,20 +42,17 @@ public class PaisController {
         return paisService.getPaisPorId(pais.getId_Pais());
     }
     
-    @DeleteMapping("/paises/{id}")
+    @DeleteMapping("/paises/{idPais}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-        Pais pais = paisService.getPaisPorId(id);
-        if(pais != null) {
-            paisService.eliminar(pais);
-        }
+    public void eliminar(@PathVariable("idPais") long idPais) {
+            paisService.eliminar(idPais);
     }
     
     @PostMapping("/paises")
     @ResponseStatus(HttpStatus.CREATED)
     public Pais guardar(@RequestBody Pais pais) {
         paisService.guardar(pais);
-        return paisService.getPaisPorId(pais.getId_Pais());
+        return paisService.getPaisPorNombre(pais.getNombre());
     }
     
     @GetMapping("/paises")
