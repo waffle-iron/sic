@@ -57,7 +57,7 @@ public class CondicionIVAController {
     @ResponseStatus(HttpStatus.CREATED)
     public CondicionIVA guardar(@RequestBody CondicionIVA condicionIVA) {
         condicionIVAService.guardar(condicionIVA);
-        return condicionIVAService.getCondicionIVAPorId(condicionIVA.getId_CondicionIVA());
+        return condicionIVAService.getCondicionIVAPorNombre(condicionIVA.getNombre());
     }
     
 }

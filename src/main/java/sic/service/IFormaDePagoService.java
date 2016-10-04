@@ -18,4 +18,6 @@ public interface IFormaDePagoService {
 
     void setFormaDePagoPredeterminada(FormaDePago formaDePago);
 
+    FormaDePago getFormaDePagoPorNombreYEmpresa(String nombre, Long idEmpresa);
+    
 }

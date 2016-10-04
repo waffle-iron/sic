@@ -54,7 +54,7 @@ public class LocalidadController {
     @ResponseStatus(HttpStatus.OK)
     public Localidad guardar(@RequestBody Localidad localidad) {
         localidadService.guardar(localidad);
-        return localidadService.getLocalidadPorId(localidad.getId_Localidad());
+        return localidadService.getLocalidadPorNombre(localidad.getNombre(), localidad.getProvincia());
     }
     
     @GetMapping("/localidades/provincias/{idProvincia}")

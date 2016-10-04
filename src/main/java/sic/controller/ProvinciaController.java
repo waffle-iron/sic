@@ -60,6 +60,6 @@ public class ProvinciaController {
     @ResponseStatus(HttpStatus.CREATED)
     public Provincia guardar(@RequestBody Provincia provincia) {
         provinciaService.guardar(provincia);
-        return provinciaService.getProvinciaPorId(provincia.getId_Provincia());
+        return provinciaService.getProvinciaPorNombre(provincia.getNombre(), provincia.getPais());
     }
 }
