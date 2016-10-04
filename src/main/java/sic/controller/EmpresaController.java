@@ -34,7 +34,7 @@ public class EmpresaController {
     
     @GetMapping("/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public Empresa getEmpresaPorId(@PathVariable("idEmpresa") long idEmpresa) {
+    public Empresa getEmpresaPorId(@PathVariable long idEmpresa) {
         return empresaService.getEmpresaPorId(idEmpresa);
     }
     
@@ -56,7 +56,7 @@ public class EmpresaController {
     
     @DeleteMapping("/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("idEmpresa") long idEmpresa) {
+    public void eliminar(@PathVariable long idEmpresa) {
         empresaService.eliminar(idEmpresa);
     }
 }

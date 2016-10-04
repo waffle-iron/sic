@@ -29,7 +29,7 @@ public class GastoController {
     
     @GetMapping("/gastos/{idGasto}")
     @ResponseStatus(HttpStatus.OK)
-    public Gasto getProductoPorId(@PathVariable("idGasto") long idGasto) {
+    public Gasto getProductoPorId(@PathVariable long idGasto) {
         return gastoService.getGastoPorId(idGasto);
     }
     
@@ -44,10 +44,10 @@ public class GastoController {
     
     @GetMapping("/gastos/busqueda")
     @ResponseStatus(HttpStatus.OK)
-    public List<Gasto> getGastosPorFechaYFormaDePago(@RequestParam("idEmpresa") long idEmpresa,
-                                                     @RequestParam("idFormaDePago") long idFormaDePago,
-                                                     @RequestParam("desde") long desde,
-                                                     @RequestParam("hasta") long hasta) {
+    public List<Gasto> getGastosPorFechaYFormaDePago(@RequestParam long idEmpresa,
+                                                     @RequestParam long idFormaDePago,
+                                                     @RequestParam long desde,
+                                                     @RequestParam long hasta) {
         Calendar fechaDesde = Calendar.getInstance();
         fechaDesde.setTimeInMillis(desde);
         Calendar fechaHasta = Calendar.getInstance();

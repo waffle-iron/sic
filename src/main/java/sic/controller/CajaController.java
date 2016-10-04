@@ -51,7 +51,7 @@ public class CajaController {
     
     @GetMapping("/cajas/{idCaja}")
     @ResponseStatus(HttpStatus.OK)
-    public Caja getCajaPorId(@PathVariable("idCaja") long idCaja) {
+    public Caja getCajaPorId(@PathVariable long idCaja) {
         return cajaService.getCajaPorId(idCaja);
     }
     
@@ -71,13 +71,13 @@ public class CajaController {
     
     @DeleteMapping("/cajas/{idCaja}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("idCaja") long idCaja) {
+    public void eliminar(@PathVariable long idCaja) {
         cajaService.eliminar(idCaja);
     }
     
     @GetMapping("/cajas/total-pagos")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalPagos(@RequestParam(value = "idCaja") long[] idCaja) {
+    public double calcularTotalPagos(@RequestParam long[] idCaja) {
         List<Pago> pagos = new ArrayList<>();
         for(long i : idCaja) {
             pagos.add(pagoService.getPagoPorId(i));
@@ -87,7 +87,7 @@ public class CajaController {
     
     @GetMapping("/cajas/total-gastos")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalGastos(@RequestParam(value = "idCaja") long[] idCaja) {
+    public double calcularTotalGastos(@RequestParam long[] idCaja) {
         List<Gasto> gastos = new ArrayList<>();
         for(Long i : idCaja) {
             gastos.add(gastoService.getGastoPorId(i));

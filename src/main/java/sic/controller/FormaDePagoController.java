@@ -32,25 +32,25 @@ public class FormaDePagoController {
     
     @GetMapping("/formas-de-pago/{idFormaDePago}")
     @ResponseStatus(HttpStatus.OK)
-    public FormaDePago getFormaDePagoPorId(@PathVariable("idFormaDePago") long idFormaDePago) {
+    public FormaDePago getFormaDePagoPorId(@PathVariable long idFormaDePago) {
         return formaDePagoService.getFormasDePagoPorId(idFormaDePago);
     }
     
     @DeleteMapping("formas-de-pago/{idFormaDePago}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("idFormaDePago") long idFormaDePago) {
+    public void eliminar(@PathVariable long idFormaDePago) {
         formaDePagoService.eliminar(idFormaDePago);
     }
     
     @GetMapping("/formas-de-pago/predeterminada/empresa/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public FormaDePago getFormaDePagoPredeterminada(@PathVariable("idEmpresa") long idEmpresa) {
+    public FormaDePago getFormaDePagoPredeterminada(@PathVariable long idEmpresa) {
         return formaDePagoService.getFormaDePagoPredeterminada(empresaService.getEmpresaPorId(idEmpresa));
     }
     
     @GetMapping("/formas-de-pago/empresa/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public List<FormaDePago> getFormasDePago(@PathVariable("idEmpresa") long idEmpresa) {
+    public List<FormaDePago> getFormasDePago(@PathVariable long idEmpresa) {
         return formaDePagoService.getFormasDePago(empresaService.getEmpresaPorId(idEmpresa));
     }
     
@@ -63,7 +63,7 @@ public class FormaDePagoController {
     
     @PutMapping("/formas-de-pago/predeterminada/{idFormaDePago}")
     @ResponseStatus(HttpStatus.OK)
-    public FormaDePago setFormaDePagoPredeterminada(@PathVariable("idFormaDePago") long idFormaDePago) {
+    public FormaDePago setFormaDePagoPredeterminada(@PathVariable long idFormaDePago) {
         formaDePagoService.setFormaDePagoPredeterminada(formaDePagoService.getFormasDePagoPorId(idFormaDePago));
         return formaDePagoService.getFormasDePagoPorId(idFormaDePago);
     }

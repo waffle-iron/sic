@@ -31,7 +31,7 @@ public class LocalidadController {
     
     @GetMapping("/localidades/{idLocalidad}")
     @ResponseStatus(HttpStatus.OK)
-    public Localidad getLocalidadPorId(@PathVariable("idLocalidad") long idLocalidad) {
+    public Localidad getLocalidadPorId(@PathVariable long idLocalidad) {
         return localidadService.getLocalidadPorId(idLocalidad);
     }
     
@@ -46,7 +46,7 @@ public class LocalidadController {
     
     @DeleteMapping("/localidades/{idLocalidad}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("idLocalidad") long idLocalidad) {
+    public void eliminar(@PathVariable long idLocalidad) {
         localidadService.eliminar(idLocalidad);
     }
     
@@ -59,7 +59,7 @@ public class LocalidadController {
     
     @GetMapping("/localidades/provincias/{idProvincia}")
     @ResponseStatus(HttpStatus.OK)
-    List<Localidad> getLocalidadesDeLaProvincia(@PathVariable("idProvincia") long idProvincia) {
+    List<Localidad> getLocalidadesDeLaProvincia(@PathVariable long idProvincia) {
         return localidadService.getLocalidadesDeLaProvincia(provinciaService.getProvinciaPorId(idProvincia));
     }
 }

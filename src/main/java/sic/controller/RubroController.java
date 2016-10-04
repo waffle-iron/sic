@@ -31,7 +31,7 @@ public class RubroController {
     
     @GetMapping("/rubros/{idRubro}")
     @ResponseStatus(HttpStatus.OK)
-    public Rubro getRubroPorId(@PathVariable("idRubro") long idRubro) {
+    public Rubro getRubroPorId(@PathVariable long idRubro) {
         return rubroService.getRubroPorId(idRubro);
     }
     
@@ -46,7 +46,7 @@ public class RubroController {
     
     @DeleteMapping("/rubros/{idRubro}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("idRubro") long idRubro) {
+    public void eliminar(@PathVariable long idRubro) {
         rubroService.eliminar(idRubro);       
     }
     
@@ -59,7 +59,7 @@ public class RubroController {
     
     @GetMapping("/rubros/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Rubro> getRubros(@PathVariable("idEmpresa") long idEmpresa) {
+    public List<Rubro> getRubros(@PathVariable long idEmpresa) {
         return rubroService.getRubros(empresaService.getEmpresaPorId(idEmpresa));
     }
 }

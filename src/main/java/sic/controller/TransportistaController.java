@@ -44,7 +44,7 @@ public class TransportistaController {
     
     @GetMapping("/transportistas/{idTransportista}")
     @ResponseStatus(HttpStatus.OK)
-    public Transportista getTransportistaPorId(@PathVariable("idTransportista") long idTransportista) {
+    public Transportista getTransportistaPorId(@PathVariable long idTransportista) {
         return transportistaService.getTransportistaPorId(idTransportista);
     }
     
@@ -75,13 +75,13 @@ public class TransportistaController {
     
     @DeleteMapping("/transportistas/{idTransportista}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("idTransportista") long idTransportista) {
+    public void eliminar(@PathVariable long idTransportista) {
         transportistaService.eliminar(idTransportista);
     }
     
     @GetMapping("/transportistas/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Transportista> getTransportistas(@PathVariable("idEmpresa") long idEmpresa) {
+    public List<Transportista> getTransportistas(@PathVariable long idEmpresa) {
         return transportistaService.getTransportistas(empresaService.getEmpresaPorId(idEmpresa));
     }
     

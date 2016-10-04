@@ -48,13 +48,13 @@ public class PedidoController {
     
     @GetMapping("/pedidos/{idPedido}")
     @ResponseStatus(HttpStatus.OK)
-    public Pedido getPedido(@PathVariable("idPedido") long idPedido) {
+    public Pedido getPedido(@PathVariable long idPedido) {
         return pedidoService.getPedidoPorId(idPedido);
     }
     
     @GetMapping("/pedidos/{idPedido}/renglones")
     @ResponseStatus(HttpStatus.OK)
-    public List<RenglonPedido> getRenglonesDelPedido(@PathVariable("idPedido") long idPedido) {
+    public List<RenglonPedido> getRenglonesDelPedido(@PathVariable long idPedido) {
         return pedidoService.getRenglonesDelPedido(idPedido);
     }
     
@@ -113,12 +113,12 @@ public class PedidoController {
     
     @DeleteMapping("/pedidos/{idPedido}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("idPedido") long idPedido) {
+    public void eliminar(@PathVariable long idPedido) {
         pedidoService.eliminar(idPedido);
     }       
         
     @GetMapping("/pedidos/{idPedido}/reporte")
-    public ResponseEntity<byte[]> getReportePedido(@PathVariable("idPedido") long idPedido) {
+    public ResponseEntity<byte[]> getReportePedido(@PathVariable long idPedido) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("application/pdf"));
         headers.setContentDispositionFormData("reportePedido.pdf", "ReportePedido.pdf");

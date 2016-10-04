@@ -29,7 +29,7 @@ public class PaisController {
     
     @GetMapping("/paises/{idPais}")
     @ResponseStatus(HttpStatus.OK)
-    public Pais getPaisPorId(@PathVariable("idPais") long idPais) {
+    public Pais getPaisPorId(@PathVariable long idPais) {
         return paisService.getPaisPorId(idPais);
     }
     
@@ -44,7 +44,7 @@ public class PaisController {
     
     @DeleteMapping("/paises/{idPais}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("idPais") long idPais) {
+    public void eliminar(@PathVariable long idPais) {
         paisService.eliminar(idPais);
     }
     

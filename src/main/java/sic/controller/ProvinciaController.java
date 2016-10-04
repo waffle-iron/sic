@@ -31,7 +31,7 @@ public class ProvinciaController {
     
     @GetMapping("/provincias/{idProvincia}")
     @ResponseStatus(HttpStatus.OK)
-    public Provincia getProvinciaPorId(@PathVariable("idProvincia") long idProvincia) {
+    public Provincia getProvinciaPorId(@PathVariable long idProvincia) {
         return provinciaService.getProvinciaPorId(idProvincia);
     }
     
@@ -46,13 +46,13 @@ public class ProvinciaController {
     
     @DeleteMapping("/provincias/{idProvincia}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("idProvincia") long idProvincia) {
+    public void eliminar(@PathVariable long idProvincia) {
         provinciaService.eliminar(idProvincia);        
     }
     
     @GetMapping("/provincias/paises/{idPais}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Provincia> getProvinciasDelPais(@PathVariable("idPais") long idPais) {
+    public List<Provincia> getProvinciasDelPais(@PathVariable long idPais) {
         return provinciaService.getProvinciasDelPais(paisService.getPaisPorId(idPais));
     }
     

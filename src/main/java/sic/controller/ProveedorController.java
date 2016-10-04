@@ -43,7 +43,7 @@ public class ProveedorController {
     
     @GetMapping("/proveedores/{idProveedor}")
     @ResponseStatus(HttpStatus.OK)
-    public Proveedor getProveedorPorId(@PathVariable("idProveedor") long idProveedor) {
+    public Proveedor getProveedorPorId(@PathVariable long idProveedor) {
         return this.proveedorService.getProveedorPorId(idProveedor);
     }
     
@@ -85,13 +85,13 @@ public class ProveedorController {
     
     @DeleteMapping("/proveedores/{idProveedor}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("idProveedor") long idProveedor) {
+    public void eliminar(@PathVariable long idProveedor) {
         proveedorService.eliminar(idProveedor);
     }
     
     @GetMapping("/proveedores/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Proveedor> getProveedores(@PathVariable("idProveedor") long idEmpresa) {
+    public List<Proveedor> getProveedores(@PathVariable long idEmpresa) {
         return proveedorService.getProveedores(empresaService.getEmpresaPorId(idEmpresa));
     }
     

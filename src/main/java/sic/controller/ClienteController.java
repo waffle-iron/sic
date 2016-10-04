@@ -44,7 +44,7 @@ public class ClienteController {
   
     @GetMapping("/clientes/{idCliente}")
     @ResponseStatus(HttpStatus.OK)
-    public Cliente getCliente(@PathVariable("idCliente") long idCliente) {
+    public Cliente getCliente(@PathVariable long idCliente) {
         return clienteService.getClientePorId(idCliente);
     }
     
@@ -70,20 +70,20 @@ public class ClienteController {
        
     @GetMapping("/clientes/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Cliente> getClientes(@PathVariable("idEmpresa") long idEmpresa) {
+    public List<Cliente> getClientes(@PathVariable long idEmpresa) {
         return clienteService.getClientes(empresaService.getEmpresaPorId(idEmpresa));
     }
     
     @GetMapping("/clientes/predeterminado/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public Cliente getClientePredeterminado(@PathVariable("idEmpresa") long idEmpresa) {
+    public Cliente getClientePredeterminado(@PathVariable long idEmpresa) {
      return clienteService.getClientePredeterminado(empresaService.getEmpresaPorId(idEmpresa));
     }
     
     
     @DeleteMapping("/clientes/{idCliente}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("idCliente") long idCliente) {
+    public void eliminar(@PathVariable long idCliente) {
         clienteService.eliminar(idCliente);
     }
     
