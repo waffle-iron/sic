@@ -35,10 +35,10 @@ import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IProductoService;
 import sic.service.ITransportistaService;
-import sic.service.IUsuarioService;
 import sic.service.Movimiento;
 import sic.service.BusinessServiceException;
 import sic.modelo.RenglonPedido;
+import sic.modelo.UsuarioActivo;
 import sic.service.EstadoPedido;
 import sic.service.IPedidoService;
 import sic.util.RenderTabla;
@@ -57,7 +57,6 @@ public class GUI_PuntoDeVenta extends JDialog {
     private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
-    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger LOGGER = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());
@@ -76,7 +75,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.tbtn_marcarDesmarcar.setIcon(iconoNoMarcado);
 
         //aplica verificación de tipo de Usuario para deshabilitar componentes
-        if (!usuarioService.getUsuarioActivo().getUsuario().isPermisosAdministrador()) {
+        if (!UsuarioActivo.getInstance().getUsuario().isPermisosAdministrador()) {
             dc_fechaFactura.setEnabled(false);
             dc_fechaVencimiento.setEnabled(false);
             btn_nuevoProducto.setEnabled(false);
@@ -541,7 +540,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.pedido.setFecha(dc_fechaFactura.getDate());
         this.pedido.setFechaVencimiento(dc_fechaVencimiento.getDate());
         this.pedido.setObservaciones(txta_Observaciones.getText());
-        this.pedido.setUsuario(usuarioService.getUsuarioActivo().getUsuario());
+        this.pedido.setUsuario(UsuarioActivo.getInstance().getUsuario());
         this.pedido.setNroPedido(pedidoService.calcularNumeroPedido(empresa));
         this.pedido.setTotalEstimado(facturaService.calcularSubTotal(renglones));
         this.pedido.setEstado(EstadoPedido.ABIERTO);
@@ -1281,7 +1280,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         try {
             this.setColumnas();
             this.prepararComponentes(); //revisar esto
-            if (!this.usuarioService.getUsuarioActivo().getUsuario().isPermisosAdministrador()) {
+            if (!UsuarioActivo.getInstance().getUsuario().isPermisosAdministrador()) {
                 this.llamarGUI_SeleccionEmpresa();
             } else {
                 empresa = EmpresaActiva.getInstance().getEmpresa();

@@ -1,13 +1,11 @@
 package sic.service.impl;
 
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sic.modelo.UsuarioActivo;
 import sic.modelo.Usuario;
 import sic.repository.IUsuarioRepository;
 import sic.service.IUsuarioService;
@@ -28,8 +26,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
     }
 
     @Override
-    public Usuario getUsuarioPorId(long id_Usuario) {
-        return usuarioRepository.getUsuarioPorId(id_Usuario);
+    public Usuario getUsuarioPorId(long idUsuario) {
+        return usuarioRepository.getUsuarioPorId(idUsuario);
     }
     
     @Override
@@ -50,18 +48,6 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Override
     public Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) {
         return usuarioRepository.getUsuarioPorNombreContrasenia(nombre, contrasenia);
-    }
-
-    @Override
-    public UsuarioActivo getUsuarioActivo() {
-        return UsuarioActivo.getInstance();
-    }
-
-    @Override
-    public void setUsuarioActivo(Usuario usuario) {
-        UsuarioActivo usuarioActivo = UsuarioActivo.getInstance();
-        usuarioActivo.setUsuario(usuario);
-        usuarioActivo.setFechaHoraIngreso(new Date());
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Usuario usuario) {
@@ -119,20 +105,11 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Override
     @Transactional
-    public void eliminar(Usuario usuario) {
+    public void eliminar(long idUsuario) {
+        Usuario usuario = this.getUsuarioPorId(idUsuario);
         this.validarOperacion(TipoDeOperacion.ELIMINACION, usuario);
         usuario.setEliminado(true);
         usuarioRepository.actualizar(usuario);
     }
-
-    @Override
-    public Usuario validarUsuario(String nombre, String password) {
-        Usuario usuario = this.getUsuarioPorNombreContrasenia(nombre, Utilidades.encriptarConMD5(password));
-        if (usuario == null) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_usuario_logInInvalido"));
-        } else {
-            return usuario;
-        }
-    }
+   
 }

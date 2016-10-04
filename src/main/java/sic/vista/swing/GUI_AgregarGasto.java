@@ -8,7 +8,7 @@ import sic.modelo.Empresa;
 import sic.modelo.EmpresaActiva;
 import sic.modelo.FormaDePago;
 import sic.modelo.Gasto;
-import sic.modelo.Usuario;
+import sic.modelo.UsuarioActivo;
 import sic.service.IFormaDePagoService;
 import sic.service.IGastoService;
 import sic.service.IUsuarioService;
@@ -17,8 +17,7 @@ public class GUI_AgregarGasto extends JDialog {
 
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);    
-    private final IGastoService gastoService = appContext.getBean(IGastoService.class);
-    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
+    private final IGastoService gastoService = appContext.getBean(IGastoService.class);    
 
     public GUI_AgregarGasto(javax.swing.JDialog parent, boolean modal) {
         super(parent, modal);
@@ -26,8 +25,7 @@ public class GUI_AgregarGasto extends JDialog {
     }
 
     public Gasto construirGasto(String concepto, double monto, FormaDePago formaDePago) {
-        Empresa empresa = EmpresaActiva.getInstance().getEmpresa();
-        Usuario usuario = usuarioService.getUsuarioActivo().getUsuario();
+        Empresa empresa = EmpresaActiva.getInstance().getEmpresa();        
         Gasto gasto = new Gasto();
         gasto.setConcepto(concepto);
         gasto.setEliminado(false);
@@ -35,7 +33,7 @@ public class GUI_AgregarGasto extends JDialog {
         gasto.setFecha(new Date());
         gasto.setFormaDePago(formaDePago);
         gasto.setMonto(monto);
-        gasto.setUsuario(usuario);
+        gasto.setUsuario(UsuarioActivo.getInstance().getUsuario());
         return gasto;
     }
 

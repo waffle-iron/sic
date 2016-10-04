@@ -15,10 +15,10 @@ import sic.AppContextProvider;
 import sic.modelo.Caja;
 import sic.modelo.Empresa;
 import sic.modelo.EmpresaActiva;
+import sic.modelo.UsuarioActivo;
 import sic.service.EstadoCaja;
 import sic.service.ICajaService;
 import sic.service.IEmpresaService;
-import sic.service.IUsuarioService;
 import sic.service.BusinessServiceException;
 import sic.util.Utilidades;
 
@@ -27,7 +27,6 @@ public class GUI_Principal extends JFrame {
     private final JLabel lbl_Fondo;
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IEmpresaService empresaService = appContext.getBean(IEmpresaService.class);
-    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final ICajaService cajaService = appContext.getBean(ICajaService.class);
     private static final Logger LOGGER = Logger.getLogger(GUI_Principal.class.getPackage().getName());
 
@@ -343,7 +342,7 @@ public class GUI_Principal extends JFrame {
     }//GEN-LAST:event_mnuItm_CambiarUserActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        lbl_UsuarioActivo.setText("Usuario: " + usuarioService.getUsuarioActivo().getUsuario().getNombre());
+        lbl_UsuarioActivo.setText("Usuario: " + UsuarioActivo.getInstance().getUsuario().getNombre());
         try {
             if (empresaService.getEmpresas().isEmpty()) {
                 this.mnuItm_EmpresasActionPerformed(null);

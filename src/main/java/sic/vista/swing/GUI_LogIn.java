@@ -9,6 +9,7 @@ import javax.swing.SwingUtilities;
 import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Usuario;
+import sic.modelo.UsuarioActivo;
 import sic.service.IUsuarioService;
 import sic.service.BusinessServiceException;
 
@@ -27,16 +28,19 @@ public class GUI_LogIn extends JFrame {
     }
 
     private void validarUsuario() {
-        if (!txt_Usuario.getText().trim().equals("") || txt_Contrasenia.getPassword().length != 0) {
-            try {
-                usuario = usuarioService.validarUsuario(txt_Usuario.getText().trim(), new String(txt_Contrasenia.getPassword()));
-                usuarioService.setUsuarioActivo(usuario);
-            } catch (BusinessServiceException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } 
-        } else {
-            JOptionPane.showMessageDialog(this, "Ingrese un usuario y contraseña para poder continuar.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        
+        // REFACTORING
+        
+//        if (!txt_Usuario.getText().trim().equals("") || txt_Contrasenia.getPassword().length != 0) {
+//            try {
+//                usuario = usuarioService.validarUsuario(txt_Usuario.getText().trim(), new String(txt_Contrasenia.getPassword()));
+//                UsuarioActivo.getInstance().setUsuario(usuario);
+//            } catch (BusinessServiceException ex) {
+//                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//            } 
+//        } else {
+//            JOptionPane.showMessageDialog(this, "Ingrese un usuario y contraseña para poder continuar.", "Error", JOptionPane.ERROR_MESSAGE);
+//        }
     }
 
     private void ingresar() {
@@ -54,9 +58,8 @@ public class GUI_LogIn extends JFrame {
         }
     }
 
-    private void limpiarCredenciales() {
-        usuario = null;
-        usuarioService.setUsuarioActivo(usuario);
+    private void limpiarCredenciales() {        
+        UsuarioActivo.getInstance().setUsuario(null);
         this.txt_Usuario.setText("");
         this.txt_Contrasenia.setText("");
     }
