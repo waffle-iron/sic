@@ -22,8 +22,10 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
+import org.springframework.web.client.RestTemplate;
 import sic.AppContextProvider;
 import sic.modelo.Cliente;
+import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
 import sic.modelo.EmpresaActiva;
 import sic.modelo.FormaDePago;
@@ -59,10 +61,13 @@ public class GUI_PuntoDeVenta extends JDialog {
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
     private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
+    private static final String REST_URI =  "http://localhost:8080/api/v1";
+    private final RestTemplate restTemplate = new RestTemplate();
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger LOGGER = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());
     private Pedido pedido;
     private boolean modificarPedido;
+    private int cantidadMaximaRenglones = 0;
 
     public GUI_PuntoDeVenta() {
         this.initComponents();
@@ -376,7 +381,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     private void buscarProductoConVentanaAuxiliar() {
-        if (facturaService.validarCantidadMaximaDeRenglones(renglones.size(), empresa)) {
+        if (cantidadMaximaRenglones > renglones.size()) {
             Movimiento movimiento = cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido") ? Movimiento.PEDIDO : Movimiento.VENTA;
             GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones, movimiento, cmb_TipoComprobante.getSelectedItem().toString());
             GUI_buscarProducto.setVisible(true);
@@ -1321,6 +1326,10 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
+            ConfiguracionDelSistema cds = restTemplate.getForObject(REST_URI+
+                                          "/configuraciones-del-sistema/empresa/"+EmpresaActiva.getInstance().getEmpresa().getId_Empresa(), 
+                                          ConfiguracionDelSistema.class);
+            cantidadMaximaRenglones = cds.getCantidadMaximaDeRenglonesEnFactura();
             this.setColumnas();
             this.prepararComponentes(); //revisar esto
             if (!this.usuarioService.getUsuarioActivo().getUsuario().isPermisosAdministrador()) {
