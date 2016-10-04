@@ -33,7 +33,8 @@ public class TransportistaController {
     
     @Autowired
     public TransportistaController(ITransportistaService transportistaService, IEmpresaService empresaService,
-                                   IPaisService paisService, IProvinciaService provinciaService, ILocalidadService localidadService) {
+                                   IPaisService paisService, IProvinciaService provinciaService,
+                                   ILocalidadService localidadService) {
         this.transportistaService = transportistaService;
         this.empresaService = empresaService;
         this.paisService = paisService;
@@ -41,13 +42,13 @@ public class TransportistaController {
         this.localidadService = localidadService;
     }
     
-    @GetMapping("/transportistas/{id}")
+    @GetMapping("/transportistas/{idTransportista}")
     @ResponseStatus(HttpStatus.OK)
-    public Transportista getTransportistaPorId(@PathVariable long id) {
-        return transportistaService.getTransportistaPorId(id);
+    public Transportista getTransportistaPorId(@PathVariable("idTransportista") long idTransportista) {
+        return transportistaService.getTransportistaPorId(idTransportista);
     }
     
-    @PutMapping("/transportistas/{id}")
+    @PutMapping("/transportistas")
     @ResponseStatus(HttpStatus.OK)
     public Transportista actualizar(@RequestBody Transportista transportista) {
         if(transportistaService.getTransportistaPorId(transportista.getId_Transportista()) != null) {
@@ -72,16 +73,16 @@ public class TransportistaController {
         return transportistaService.buscarTransportistas(criteria);       
     }
     
-    @DeleteMapping("/transportistas/{id}")
+    @DeleteMapping("/transportistas/{idTransportista}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable long id) {
-        transportistaService.eliminar(transportistaService.getTransportistaPorId(id));
+    public void eliminar(@PathVariable("idTransportista") long idTransportista) {
+        transportistaService.eliminar(idTransportista);
     }
     
-    @GetMapping("/transportistas/empresa/{id}")
+    @GetMapping("/transportistas/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Transportista> getTransportistas(@PathVariable long id) {
-        return transportistaService.getTransportistas(empresaService.getEmpresaPorId(id));
+    public List<Transportista> getTransportistas(@PathVariable("idEmpresa") long idEmpresa) {
+        return transportistaService.getTransportistas(empresaService.getEmpresaPorId(idEmpresa));
     }
     
     @PostMapping("/transportistas")

@@ -666,15 +666,18 @@ public class GUI_Productos extends JInternalFrame {
                     "Eliminar", JOptionPane.YES_NO_OPTION);
 
             if (respuesta == JOptionPane.YES_OPTION) {
-                try {
-                    productoService.eliminarMultiplesProductos(
-                            this.getSeleccionMultipleDeProductos(
-                                    Utilidades.getSelectedRowsModelIndices(tbl_Resultados)));
-                    buscar();
-
-                } catch (BusinessServiceException ex) {
-                    JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                }
+                
+                // REFACTORIZAR !!!
+                
+//                try {
+//                    productoService.eliminarMultiplesProductos(
+//                            this.getSeleccionMultipleDeProductos(
+//                                    Utilidades.getSelectedRowsModelIndices(tbl_Resultados)));
+//                    buscar();
+//
+//                } catch (BusinessServiceException ex) {
+//                    JOptionPane.showInternalMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//                }
             }
         }
     }//GEN-LAST:event_btn_EliminarActionPerformed

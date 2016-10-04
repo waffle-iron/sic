@@ -27,10 +27,10 @@ public class PaisController {
         this.paisService = paisService;
     }
     
-    @GetMapping("/paises/{id}")
+    @GetMapping("/paises/{idPais}")
     @ResponseStatus(HttpStatus.OK)
-    public Pais getPaisPorId(@PathVariable("id") long id) {
-        return paisService.getPaisPorId(id);
+    public Pais getPaisPorId(@PathVariable("idPais") long idPais) {
+        return paisService.getPaisPorId(idPais);
     }
     
     @PutMapping("/paises")
@@ -45,7 +45,7 @@ public class PaisController {
     @DeleteMapping("/paises/{idPais}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable("idPais") long idPais) {
-            paisService.eliminar(idPais);
+        paisService.eliminar(idPais);
     }
     
     @PostMapping("/paises")

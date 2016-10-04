@@ -42,10 +42,10 @@ public class ClienteController {
         this.localidadService = localidadService;
     }
   
-    @GetMapping("/clientes/{id}")
+    @GetMapping("/clientes/{idCliente}")
     @ResponseStatus(HttpStatus.OK)
-    public Cliente getCliente(@PathVariable("id") long id) {
-        return clienteService.getClientePorId(id);
+    public Cliente getCliente(@PathVariable("idCliente") long idCliente) {
+        return clienteService.getClientePorId(idCliente);
     }
     
     @GetMapping("/clientes/busqueda/criteria")
@@ -68,16 +68,16 @@ public class ClienteController {
                 empresaService.getEmpresaPorId(idEmpresa)));
     }
        
-    @GetMapping("/clientes/empresa/{id}")
+    @GetMapping("/clientes/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Cliente> getClientes(@PathVariable("id") long id) {
-        return clienteService.getClientes(empresaService.getEmpresaPorId(id));
+    public List<Cliente> getClientes(@PathVariable("idEmpresa") long idEmpresa) {
+        return clienteService.getClientes(empresaService.getEmpresaPorId(idEmpresa));
     }
     
-    @GetMapping("/clientes/predeterminado/empresa/{id}")
+    @GetMapping("/clientes/predeterminado/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public Cliente getClientePredeterminado(@PathVariable("id") long id) {
-     return clienteService.getClientePredeterminado(empresaService.getEmpresaPorId(id));
+    public Cliente getClientePredeterminado(@PathVariable("idEmpresa") long idEmpresa) {
+     return clienteService.getClientePredeterminado(empresaService.getEmpresaPorId(idEmpresa));
     }
     
     

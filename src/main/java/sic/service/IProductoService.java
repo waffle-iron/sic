@@ -32,7 +32,7 @@ public interface IProductoService {
 
     double calcularPrecioLista(double PVP, double iva_porcentaje, double impInterno_porcentaje);
 
-    void eliminarMultiplesProductos(List<Producto> productos);
+    void eliminarMultiplesProductos(long[] idProducto);
 
     Producto getProductoPorCodigo(String codigo, Empresa empresa);
 

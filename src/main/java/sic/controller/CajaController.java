@@ -49,10 +49,10 @@ public class CajaController {
         this.usuarioService = usuarioService;
     }
     
-    @GetMapping("/cajas/{id}")
+    @GetMapping("/cajas/{idCaja}")
     @ResponseStatus(HttpStatus.OK)
-    public Caja getCajaPorId(@PathVariable("id") long id) {
-        return cajaService.getCajaPorId(id);
+    public Caja getCajaPorId(@PathVariable("idCaja") long idCaja) {
+        return cajaService.getCajaPorId(idCaja);
     }
     
     @PutMapping("/cajas")
@@ -77,20 +77,20 @@ public class CajaController {
     
     @GetMapping("/cajas/total-pagos")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalPagos(@RequestParam(value = "id") long[] id) {
+    public double calcularTotalPagos(@RequestParam(value = "idCaja") long[] idCaja) {
         List<Pago> pagos = new ArrayList<>();
-        for(long Id : id) {
-            pagos.add(pagoService.getPagoPorId(Id));
+        for(long i : idCaja) {
+            pagos.add(pagoService.getPagoPorId(i));
         }
         return cajaService.calcularTotalPagos(pagos);
     }
     
     @GetMapping("/cajas/total-gastos")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalGastos(@RequestParam(value = "id") long[] id) {
+    public double calcularTotalGastos(@RequestParam(value = "idCaja") long[] idCaja) {
         List<Gasto> gastos = new ArrayList<>();
-        for(Long Id : id) {
-            gastos.add(gastoService.getGastoPorId(Id));
+        for(Long i : idCaja) {
+            gastos.add(gastoService.getGastoPorId(i));
         }
         return cajaService.calcularTotalGastos(gastos);
     }
@@ -117,16 +117,16 @@ public class CajaController {
         return cajaService.getCajasCriteria(criteria);        
     }
     
-    @GetMapping("/cajas/empresa/{id}/ultima")
+    @GetMapping("/cajas/empresa/{idEmpresa}/ultima")
     @ResponseStatus(HttpStatus.OK)
-    public Caja getUltimaCaja(@PathVariable long id) {
-        return cajaService.getUltimaCaja(id);
+    public Caja getUltimaCaja(@PathVariable long idEmpresa) {
+        return cajaService.getUltimaCaja(idEmpresa);
     }
     
-    @PutMapping("/cajas/empresa/{id}/cerrar-dia-anterior")
+    @PutMapping("/cajas/empresa/{idEmpresa}/cerrar-dia-anterior")
     @ResponseStatus(HttpStatus.OK)
-    public Caja cerrarCajaDiaAnterior(@PathVariable long id) {
-        return cajaService.cerrarCajaDiaAnterior(empresaService.getEmpresaPorId(id));
+    public Caja cerrarCajaDiaAnterior(@PathVariable long idEmpresa) {
+        return cajaService.cerrarCajaDiaAnterior(empresaService.getEmpresaPorId(idEmpresa));
     }
     
     @GetMapping("/cajas/{idCaja}/empresa/{idEmpresa}/reporte")

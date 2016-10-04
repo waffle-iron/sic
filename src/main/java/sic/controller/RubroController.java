@@ -29,10 +29,10 @@ public class RubroController {
         this.empresaService = empresaService;
     }
     
-    @GetMapping("/rubros/{id}")
+    @GetMapping("/rubros/{idRubro}")
     @ResponseStatus(HttpStatus.OK)
-    public Rubro getRubroPorId(@PathVariable("id") long id) {
-        return rubroService.getRubroPorId(id);
+    public Rubro getRubroPorId(@PathVariable("idRubro") long idRubro) {
+        return rubroService.getRubroPorId(idRubro);
     }
     
     @PutMapping("/rubros")
@@ -44,13 +44,10 @@ public class RubroController {
         return rubroService.getRubroPorId(rubro.getId_Rubro());
     }
     
-    @DeleteMapping("/rubros/{id}")
+    @DeleteMapping("/rubros/{idRubro}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-       Rubro rubro = rubroService.getRubroPorId(id);
-       if(rubro != null) {
-           rubroService.eliminar(rubro);
-       }
+    public void eliminar(@PathVariable("idRubro") long idRubro) {
+        rubroService.eliminar(idRubro);       
     }
     
     @PostMapping("/rubros")
@@ -60,9 +57,9 @@ public class RubroController {
         return rubroService.getRubroPorNombre(rubro.getNombre() , rubro.getEmpresa());
     }
     
-    @GetMapping("/rubros/empresa/{id}")
+    @GetMapping("/rubros/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Rubro> getMedidas(@PathVariable long id) {
-        return rubroService.getRubros(empresaService.getEmpresaPorId(id));
+    public List<Rubro> getRubros(@PathVariable("idEmpresa") long idEmpresa) {
+        return rubroService.getRubros(empresaService.getEmpresaPorId(idEmpresa));
     }
 }

@@ -26,8 +26,8 @@ public class RubroServiceImpl implements IRubroService {
     }
     
     @Override
-    public Rubro getRubroPorId(Long id_Rubro){
-        return rubroRepository.getRubroPorId(id_Rubro);
+    public Rubro getRubroPorId(Long idRubro){
+        return rubroRepository.getRubroPorId(idRubro);
     }
 
     @Override
@@ -78,7 +78,8 @@ public class RubroServiceImpl implements IRubroService {
 
     @Override
     @Transactional
-    public void eliminar(Rubro rubro) {
+    public void eliminar(long idRubro) {
+        Rubro rubro = this.getRubroPorId(idRubro);
         rubro.setEliminado(true);
         rubroRepository.actualizar(rubro);
     }

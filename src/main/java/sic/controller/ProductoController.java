@@ -49,10 +49,10 @@ public class ProductoController {
        this.medidaService = medidaService;
     }
     
-    @GetMapping("/productos/{id}")
+    @GetMapping("/productos/{idProducto}")
     @ResponseStatus(HttpStatus.OK)
-    public Producto getProductoPorId(@PathVariable("id") long id) {
-        return productoService.getProductoPorId(id);
+    public Producto getProductoPorId(@PathVariable("idProducto") long idProducto) {
+        return productoService.getProductoPorId(idProducto);
     }
     
     @GetMapping("/productos/busqueda")
@@ -90,12 +90,8 @@ public class ProductoController {
         
     @DeleteMapping("/productos")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminarMultiplesProductos(@RequestParam(value = "id") long[] id) {
-        List<Producto> productos = new ArrayList<>();
-        for(Long Id : id){
-             productos.add(productoService.getProductoPorId(Id));
-        }
-        productoService.eliminarMultiplesProductos(productos);
+    public void eliminarMultiplesProductos(@RequestParam(value = "idProducto") long[] idProducto) {        
+        productoService.eliminarMultiplesProductos(idProducto);
     }
     
     @PutMapping("/productos")
@@ -114,11 +110,11 @@ public class ProductoController {
         return productoService.getProductoPorId(producto.getId_Producto());
     }
     
-    @GetMapping("/productos/{id}/stock/disponibilidad")
+    @GetMapping("/productos/{idProducto}/stock/disponibilidad")
     @ResponseStatus(HttpStatus.OK)
-    public boolean existeStockDisponible(@PathVariable("Id") long id,
+    public boolean existeStockDisponible(@PathVariable("idProducto") long idProducto,
                                          @RequestParam(value = "cantidad") double cantidad) {
-        return productoService.existeStockDisponible(id, cantidad);
+        return productoService.existeStockDisponible(idProducto, cantidad);
     }
     
     @GetMapping("/productos/ganancia-neto")
@@ -197,21 +193,20 @@ public class ProductoController {
     
     @PutMapping("/productos/multiples")
     @ResponseStatus(HttpStatus.OK)
-    public List<Producto> modificarMultiplesProductos(@RequestParam(value = "id") long[] id,                                                       
+    public List<Producto> modificarMultiplesProductos(@RequestParam(value = "idProducto") long[] idProducto,
                                                       @RequestParam(value = "idMedida", required = false) Long idMedida,
                                                       @RequestParam(value = "idRubro", required = false) Long idRubro,
                                                       @RequestParam(value = "idProveedor", required = false) Long idProveedor,
                                                       @RequestBody(required = false) PreciosProducto preciosProducto) {
         List<Producto> productos = new ArrayList<>();
-        for(long idProducto : id) {
-            productos.add(productoService.getProductoPorId(idProducto));
+        for(long i : idProducto) {
+            productos.add(productoService.getProductoPorId(i));
         }       
         productoService.modificarMultiplesProductos(productos,
                                                    (preciosProducto!=null), preciosProducto,
                                                    (idMedida!=null), medidaService.getMedidaPorId(idMedida),
                                                    (idRubro!=null), rubroService.getRubroPorId(idRubro),
                                                    (idProveedor!=null), proveedorService.getProveedorPorId(idProveedor));
-        return productos;
-    
+        return productos;    
     }
 }

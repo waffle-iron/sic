@@ -32,10 +32,10 @@ public class EmpresaController {
         return empresaService.getEmpresas();
     }
     
-    @GetMapping("/empresas/{id}")
+    @GetMapping("/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public Empresa getEmpresaPorId(@PathVariable("id") long id) {
-        return empresaService.getEmpresaPorId(id);
+    public Empresa getEmpresaPorId(@PathVariable("idEmpresa") long idEmpresa) {
+        return empresaService.getEmpresaPorId(idEmpresa);
     }
     
     @PostMapping("/empresas")

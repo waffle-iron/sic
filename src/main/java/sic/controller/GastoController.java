@@ -27,10 +27,10 @@ public class GastoController {
         this.gastoService = gastoService;
     }
     
-    @GetMapping("/gastos/{id}")
+    @GetMapping("/gastos/{idGasto}")
     @ResponseStatus(HttpStatus.OK)
-    public Gasto getProductoPorId(@PathVariable("id") long id) {
-        return gastoService.getGastoPorId(id);
+    public Gasto getProductoPorId(@PathVariable("idGasto") long idGasto) {
+        return gastoService.getGastoPorId(idGasto);
     }
     
     @PutMapping("/gastos")

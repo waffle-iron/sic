@@ -81,7 +81,8 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
 
     @Override
     @Transactional
-    public void eliminar(FormaDePago formaDePago) {
+    public void eliminar(long idFormaDePago) {
+        FormaDePago formaDePago = this.getFormasDePagoPorId(idFormaDePago);
         formaDePago.setEliminada(true);
         formaDePagoRepository.actualizar(formaDePago);
     }

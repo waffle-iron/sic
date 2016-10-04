@@ -46,16 +46,16 @@ public class PedidoController {
         this.clienteService = clienteService;
     }
     
-    @GetMapping("/pedidos/{id}")
+    @GetMapping("/pedidos/{idPedido}")
     @ResponseStatus(HttpStatus.OK)
-    public Pedido getPedido(@PathVariable("id") long id) {
-        return pedidoService.getPedidoPorId(id);
+    public Pedido getPedido(@PathVariable("idPedido") long idPedido) {
+        return pedidoService.getPedidoPorId(idPedido);
     }
     
-    @GetMapping("/pedidos/{id}/renglones")
+    @GetMapping("/pedidos/{idPedido}/renglones")
     @ResponseStatus(HttpStatus.OK)
-    public List<RenglonPedido> getRenglonesDelPedido(@PathVariable("id") long id) {
-        return pedidoService.getRenglonesDelPedido(id);
+    public List<RenglonPedido> getRenglonesDelPedido(@PathVariable("idPedido") long idPedido) {
+        return pedidoService.getRenglonesDelPedido(idPedido);
     }
     
     @PutMapping("/pedidos")
@@ -111,19 +111,19 @@ public class PedidoController {
         return pedidoService.buscarConCriteria(criteria);
     }
     
-    @DeleteMapping("/pedidos/{id}")
+    @DeleteMapping("/pedidos/{idPedido}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-        pedidoService.eliminar(pedidoService.getPedidoPorId(id));
+    public void eliminar(@PathVariable("idPedido") long idPedido) {
+        pedidoService.eliminar(idPedido);
     }       
         
-    @GetMapping("/pedidos/{id}/reporte")
-    public ResponseEntity<byte[]> getReportePedido(@PathVariable long id) {
+    @GetMapping("/pedidos/{idPedido}/reporte")
+    public ResponseEntity<byte[]> getReportePedido(@PathVariable("idPedido") long idPedido) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("application/pdf"));
         headers.setContentDispositionFormData("reportePedido.pdf", "ReportePedido.pdf");
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-        byte[] reportePDF = pedidoService.getReportePedido(pedidoService.getPedidoPorId(id));
+        byte[] reportePDF = pedidoService.getReportePedido(pedidoService.getPedidoPorId(idPedido));
         return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);
     }
     

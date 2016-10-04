@@ -36,7 +36,7 @@ public interface IPagoService {
 
     void guardar(Pago pago);
 
-    void eliminar(Pago pago);
+    void eliminar(long idPago);
     
     void setFacturaEstadoDePago(Factura factura);
 }
