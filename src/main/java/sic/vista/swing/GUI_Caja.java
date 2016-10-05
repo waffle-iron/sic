@@ -28,13 +28,13 @@ import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Gasto;
 import sic.modelo.Pago;
+import sic.modelo.UsuarioActivo;
 import sic.service.EstadoCaja;
 import sic.service.ICajaService;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IGastoService;
 import sic.service.IPagoService;
-import sic.service.IUsuarioService;
 import sic.util.FormatoFechasEnTablasRenderer;
 import sic.util.FormatterFechaHora;
 import sic.util.Utilidades;
@@ -45,8 +45,7 @@ public class GUI_Caja extends javax.swing.JDialog {
     private final ICajaService cajaService = appContext.getBean(ICajaService.class);    
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
-    private final IGastoService gastoService = appContext.getBean(IGastoService.class);
-    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
+    private final IGastoService gastoService = appContext.getBean(IGastoService.class);    
     private final IPagoService pagoService = appContext.getBean(IPagoService.class);
     private final FormatterFechaHora formatoHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_HORA_INTERNACIONAL);
     private ModeloTabla modeloTablaBalance;
@@ -671,7 +670,7 @@ public class GUI_Caja extends javax.swing.JDialog {
                     if (monto != null) {
                         this.caja.setSaldoReal(Double.parseDouble(monto));
                         this.caja.setFechaCierre(new Date());
-                        this.caja.setUsuarioCierraCaja(usuarioService.getUsuarioActivo().getUsuario());
+                        this.caja.setUsuarioCierraCaja(UsuarioActivo.getInstance().getUsuario());
                         this.caja.setEstado(EstadoCaja.CERRADA);
                         this.cajaService.actualizar(caja);
                         try {

@@ -9,14 +9,13 @@ import org.springframework.context.ApplicationContext;
 import sic.AppContextProvider;
 import sic.modelo.Caja;
 import sic.modelo.EmpresaActiva;
+import sic.modelo.UsuarioActivo;
 import sic.service.EstadoCaja;
 import sic.service.ICajaService;
-import sic.service.IUsuarioService;
 
 public class GUI_AbrirCaja extends javax.swing.JDialog {
 
-    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();    
-    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
+    private final ApplicationContext appContext = AppContextProvider.getApplicationContext();        
     private final ICajaService cajaService = appContext.getBean(ICajaService.class);
 
     public GUI_AbrirCaja(boolean modal) {
@@ -45,7 +44,7 @@ public class GUI_AbrirCaja extends javax.swing.JDialog {
         caja.setSaldoInicial(monto);
         caja.setSaldoFinal(0);
         caja.setSaldoReal(0);
-        caja.setUsuarioAbreCaja(usuarioService.getUsuarioActivo().getUsuario());
+        caja.setUsuarioAbreCaja(UsuarioActivo.getInstance().getUsuario());
         return caja;
     }
 

@@ -190,7 +190,7 @@ public class GUI_Usuarios extends JDialog {
                 }
 
                 if (respuesta == JOptionPane.YES_OPTION) {
-                    usuarioService.eliminar(usuarioSeleccionado);
+                    usuarioService.eliminar(usuarioSeleccionado.getId_Usuario());
                     LOGGER.warn("El usuario " + usuarioSeleccionado.getNombre() + " se elimino correctamente.");
                     usuarioSeleccionado = null;
                     this.cargarUsuarios();                    
@@ -228,7 +228,7 @@ public class GUI_Usuarios extends JDialog {
                 gui_DetalleUsuario.setLocationRelativeTo(this);
                 gui_DetalleUsuario.setVisible(true);                
                 if (mismoUsuarioActivo == true) {
-                    usuarioService.setUsuarioActivo(usuarioSeleccionado);
+                    UsuarioActivo.getInstance().setUsuario(usuarioSeleccionado);
                 }
                 this.cargarUsuarios();
             }

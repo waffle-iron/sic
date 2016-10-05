@@ -24,13 +24,13 @@ import sic.modelo.Pago;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
+import sic.modelo.UsuarioActivo;
 import sic.service.EstadoPedido;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IPagoService;
 import sic.service.IPedidoService;
 import sic.service.ITransportistaService;
-import sic.service.IUsuarioService;
 import sic.service.BusinessServiceException;
 import sic.service.TipoDeOperacion;
 
@@ -41,8 +41,7 @@ public class GUI_CerrarVenta extends JDialog {
     private final ApplicationContext appContext = AppContextProvider.getApplicationContext();
     private final IFormaDePagoService formaDePagoService = appContext.getBean(IFormaDePagoService.class);
     private final ITransportistaService transportistaService = appContext.getBean(ITransportistaService.class);
-    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
-    private final IUsuarioService usuarioService = appContext.getBean(IUsuarioService.class);
+    private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);    
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
     private final IPagoService pagoService = appContext.getBean(IPagoService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
@@ -152,7 +151,7 @@ public class GUI_CerrarVenta extends JDialog {
             .empresa(gui_puntoDeVenta.getEmpresa())
             .eliminada(false)
             .cliente(gui_puntoDeVenta.getCliente())
-            .usuario(usuarioService.getUsuarioActivo().getUsuario())
+            .usuario(UsuarioActivo.getInstance().getUsuario())
             .build();
         double montoPagado = 0.0;
         List<Pago> pagos = this.construirListaPagos();
@@ -571,7 +570,7 @@ public class GUI_CerrarVenta extends JDialog {
             this.setEstadosCmbFormaDePago();
             //set predeterminado
             cmb_Transporte.setSelectedIndex(0);
-            lbl_Vendedor.setText(usuarioService.getUsuarioActivo().getUsuario().getNombre());
+            lbl_Vendedor.setText(UsuarioActivo.getInstance().getUsuario().getNombre());
             txt_AbonaCon.requestFocus();
 
         } catch (BusinessServiceException ex) {
