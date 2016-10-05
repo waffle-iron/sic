@@ -2,6 +2,7 @@ package sic.modelo;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.Date;
@@ -65,7 +66,7 @@ public abstract class Factura implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "id_Factura")
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = Access.WRITE_ONLY)
     private List<RenglonFactura> renglones;
     
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

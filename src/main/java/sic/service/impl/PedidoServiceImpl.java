@@ -93,22 +93,14 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    @Transactional
-    public void actualizarEstadoPedido(TipoDeOperacion tipoDeOperacion, Pedido pedido) {
+    public void actualizarEstadoPedido(Pedido pedido) {
+        pedido.setEstado(EstadoPedido.ABIERTO);
         if (pedido != null) {
-            if (tipoDeOperacion == TipoDeOperacion.ELIMINACION) {
-                if (this.getFacturasDelPedido(pedido.getNroPedido()).isEmpty()) {
-                    pedido.setEstado(EstadoPedido.ABIERTO);
-                } else {
-                    pedido.setEstado(EstadoPedido.ACTIVO);
-                }
+            if (this.getFacturasDelPedido(pedido.getNroPedido()).isEmpty()) {
+                pedido.setEstado(EstadoPedido.ABIERTO);
             }
-            if (tipoDeOperacion == TipoDeOperacion.ALTA) {
-                if (facturaService.convertirRenglonesPedidoARenglonesFactura(pedido, "Factura A").isEmpty()) {
-                    pedido.setEstado(EstadoPedido.CERRADO);
-                } else {
-                    pedido.setEstado(EstadoPedido.ACTIVO);
-                }
+            if (facturaService.getRenglonesPedidoParaFacturar(pedido, "Factura A").isEmpty()) {
+                pedido.setEstado(EstadoPedido.CERRADO);
             }
             this.actualizar(pedido);
         }
@@ -221,7 +213,7 @@ public class PedidoServiceImpl implements IPedidoService {
         HashMap<Long, RenglonFactura> listaRenglonesUnificados = new HashMap<>();
         if (!facturas.isEmpty()) {
             for (Factura factura : facturas) {
-                renglonesDeFacturas.addAll(facturaService.getRenglonesDeLaFactura(factura));
+                renglonesDeFacturas.addAll(facturaService.getRenglonesDeLaFactura(factura.getId_Factura()));
             }
             for (RenglonFactura renglon : renglonesDeFacturas) {
                 if (listaRenglonesUnificados.containsKey(renglon.getId_ProductoItem())) {

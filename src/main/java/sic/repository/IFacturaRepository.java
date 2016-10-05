@@ -10,7 +10,7 @@ import sic.modelo.RenglonFactura;
 
 public interface IFacturaRepository {
 
-    Factura getFacturaPorId(long id_Factura);
+    Factura getFacturaPorId(Long id_Factura);
     
     void actualizar(Factura factura);
 
@@ -24,7 +24,7 @@ public interface IFacturaRepository {
     
     long getMayorNumFacturaSegunTipo(String tipoDeFactura, long serie);
 
-    List<RenglonFactura> getRenglonesDeLaFactura(Factura factura);
+//    List<RenglonFactura> getRenglonesDeLaFactura(Factura factura);
 
     void guardar(Factura factura);    
     

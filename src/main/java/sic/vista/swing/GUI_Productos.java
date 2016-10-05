@@ -19,7 +19,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.ResponseEntity;
 import sic.AppContextProvider;
 import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.EmpresaActiva;

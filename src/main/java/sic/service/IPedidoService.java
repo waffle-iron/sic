@@ -19,7 +19,7 @@ public interface IPedidoService {
 
     long calcularNumeroPedido(Empresa empresa);
     
-    void actualizarEstadoPedido(TipoDeOperacion tipoDeOperacion, Pedido pedido);
+    void actualizarEstadoPedido(Pedido pedido);
 
     Pedido calcularTotalActualDePedido(Pedido pedido);
 
