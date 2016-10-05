@@ -99,7 +99,7 @@ public class ProductoController {
     public Producto actualizar(@RequestBody Producto producto) {
         if(productoService.getProductoPorId(producto.getId_Producto()) != null) {
             productoService.actualizar(producto);
-        }
+        }        
         return productoService.getProductoPorId(producto.getId_Producto());
     }
     
@@ -107,7 +107,7 @@ public class ProductoController {
     @ResponseStatus(HttpStatus.CREATED)
     public Producto guardar(@RequestBody Producto producto) {
         productoService.guardar(producto);
-        return productoService.getProductoPorId(producto.getId_Producto());
+        return productoService.getProductoPorDescripcion(producto.getDescripcion(), producto.getEmpresa());
     }
     
     @GetMapping("/productos/{idProducto}/stock/disponibilidad")
