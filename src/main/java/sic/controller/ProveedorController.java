@@ -48,18 +48,11 @@ public class ProveedorController {
     }
     
     @PostMapping("/proveedores")
-    @ResponseStatus(HttpStatus.OK)
-    public Proveedor guardar(@RequestBody Proveedor proveedor) {
-        proveedorService.guardar(proveedor);
-        return proveedorService.getProveedorPorRazonSocial(proveedor.getRazonSocial(), proveedor.getEmpresa());
-    }
-    
-    @PostMapping("/proveedores")
     @ResponseStatus(HttpStatus.CREATED)
     public Proveedor guardar(@RequestBody Proveedor proveedor) {
         proveedorService.guardar(proveedor);
-        return proveedorService.getProveedorPorId(proveedor.getId_Proveedor());
-    }
+        return proveedorService.getProveedorPorRazonSocial(proveedor.getRazonSocial(), proveedor.getEmpresa());
+    }    
     
     @PutMapping("/proveedores")
     @ResponseStatus(HttpStatus.OK)
