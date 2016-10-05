@@ -325,7 +325,8 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     @Transactional
-    public void eliminar(Factura factura) {
+    public void eliminar(long idFactura) {
+        Factura factura = this.getFacturaPorId(idFactura);
         factura.setEliminada(true);
         this.eliminarPagosDeFactura(factura);
         facturaRepository.actualizar(factura);

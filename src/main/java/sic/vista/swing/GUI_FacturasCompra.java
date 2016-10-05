@@ -586,7 +586,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
-                    facturaService.eliminar(facturas.get(indexFilaSeleccionada));
+                    facturaService.eliminar(facturas.get(indexFilaSeleccionada).getId_Factura());
                     this.buscar();
 
                 } catch (BusinessServiceException ex) {

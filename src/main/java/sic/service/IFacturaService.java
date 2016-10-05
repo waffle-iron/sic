@@ -46,7 +46,7 @@ public interface IFacturaService {
     
     void actualizar(Factura factura);
 
-    void eliminar(Factura factura);
+    void eliminar(long idFactura);
 
     List<Factura> ordenarFacturasPorFechaAsc(List<Factura> facturas);
 

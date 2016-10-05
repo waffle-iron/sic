@@ -98,8 +98,8 @@ public class FacturaController {
     
     @DeleteMapping("/facturas/{idFactura}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable Long idFactura) {
-        facturaService.eliminar(facturaService.getFacturaPorId(idFactura));
+    public void eliminar(@PathVariable long idFactura) {
+        facturaService.eliminar(idFactura);
     }
     
     @GetMapping("/facturas/{idFactura}/renglones")

@@ -915,7 +915,7 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
-                    facturaService.eliminar(facturas.get(indexFilaSeleccionada));
+                    facturaService.eliminar(facturas.get(indexFilaSeleccionada).getId_Factura());
                     if (facturas.get(indexFilaSeleccionada).getPedido() != null) {
                         Pedido pedidoDeFactura = pedidoService.getPedidoPorId(facturas.get(indexFilaSeleccionada).getPedido().getId_Pedido());
                         pedidoService.actualizarEstadoPedido(pedidoDeFactura);
