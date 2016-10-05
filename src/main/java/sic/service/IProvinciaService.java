@@ -10,7 +10,7 @@ public interface IProvinciaService {
 
     void actualizar(Provincia provincia);
 
-    void eliminar(Provincia provincia);
+    void eliminar(long idProvincia);
 
     Provincia getProvinciaPorNombre(String nombre, Pais pais);
 

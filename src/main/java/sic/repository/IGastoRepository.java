@@ -11,6 +11,8 @@ public interface IGastoRepository {
     void actualizar(Gasto gasto);
 
     Gasto getGastoPorIdYEmpresa(long id_Gasto, long id_Empresa);
+    
+    Gasto getGastoPorNroYEmpresa(long nroPago, long id_Empresa);
 
     List<Gasto> getGastosPorFecha(long id_Empresa, Date desde, Date hasta);
 

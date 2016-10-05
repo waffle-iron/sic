@@ -62,7 +62,8 @@ public class PaisServiceImpl implements IPaisService {
 
     @Override
     @Transactional
-    public void eliminar(Pais pais) {
+    public void eliminar(Long idPais) {
+        Pais pais = this.getPaisPorId(idPais);
         pais.setEliminado(true);
         paisRepository.actualizar(pais);
     }

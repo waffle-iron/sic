@@ -101,7 +101,7 @@ public class GUI_FormasDePago extends JDialog {
 
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
-                    formaDePagoService.eliminar(formasDePago.get(filaSeleccionada));
+                    formaDePagoService.eliminar(formasDePago.get(filaSeleccionada).getId_FormaDePago());
                     formasDePago.remove(filaSeleccionada);
                     this.getFormasDePagos();
                     this.cargarResultadosAlTable();

@@ -310,7 +310,7 @@ public class FacturaServiceImpl implements IFacturaService {
 
     private void eliminarPagosDeFactura(Factura factura) {
         for (Pago pago : pagoService.getPagosDeLaFactura(factura)) {
-            pagoService.eliminar(pago);
+            pagoService.eliminar(pago.getId_Pago());
         }
     }
 

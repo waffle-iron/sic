@@ -152,7 +152,8 @@ public class ClienteServiceImpl implements IClienteService {
 
     @Override
     @Transactional
-    public void eliminar(Cliente cliente) {
+    public void eliminar(Long idCliente) {
+        Cliente cliente = this.getClientePorId(idCliente);
         cliente.setEliminado(true);        
         clienteRepository.actualizar(cliente);                   
     }

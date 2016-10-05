@@ -264,7 +264,7 @@ private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
             JOptionPane.showMessageDialog(this, "Seleccione una provincia de la lista para poder continuar.",
                     "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            provinciaService.eliminar(provinciaSeleccionada);
+            provinciaService.eliminar(provinciaSeleccionada.getId_Provincia());
             txt_Nombre.setText("");
             provinciaSeleccionada = null;
             cargarListProvincias(cmb_PaisesBusqueda.getSelectedItem());

@@ -13,7 +13,7 @@ public interface IProveedorService {
 
     List<Proveedor> buscarProveedores(BusquedaProveedorCriteria criteria);
 
-    void eliminar(Proveedor proveedor);
+    void eliminar(long idProveedor);
 
     Proveedor getProveedorPorCodigo(String codigo, Empresa empresa);
 

@@ -3,6 +3,7 @@ package sic.service.impl;
 import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.PreciosProducto;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -202,9 +203,12 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     @Transactional
-    public void eliminarMultiplesProductos(List<Producto> productos) {
-        for (Producto producto : productos) {
+    public void eliminarMultiplesProductos(long[] idProducto) {
+        List<Producto> productos = new ArrayList<>();
+        for (Long i : idProducto) {
+            Producto producto = this.getProductoPorId(i);
             producto.setEliminado(true);
+            productos.add(producto);
         }
         productoRepository.actualizarMultiplesProductos(productos);
     }

@@ -27,10 +27,10 @@ public class GastoController {
         this.gastoService = gastoService;
     }
     
-    @GetMapping("/gastos/{id}")
+    @GetMapping("/gastos/{idGasto}")
     @ResponseStatus(HttpStatus.OK)
-    public Gasto getProductoPorId(@PathVariable("id") long id) {
-        return gastoService.getGastoPorId(id);
+    public Gasto getProductoPorId(@PathVariable long idGasto) {
+        return gastoService.getGastoPorId(idGasto);
     }
     
     @PutMapping("/gastos")
@@ -44,10 +44,10 @@ public class GastoController {
     
     @GetMapping("/gastos/busqueda")
     @ResponseStatus(HttpStatus.OK)
-    public List<Gasto> getGastosPorFechaYFormaDePago(@RequestParam("idEmpresa") long idEmpresa,
-                                                     @RequestParam("idFormaDePago") long idFormaDePago,
-                                                     @RequestParam("desde") long desde,
-                                                     @RequestParam("hasta") long hasta) {
+    public List<Gasto> getGastosPorFechaYFormaDePago(@RequestParam long idEmpresa,
+                                                     @RequestParam long idFormaDePago,
+                                                     @RequestParam long desde,
+                                                     @RequestParam long hasta) {
         Calendar fechaDesde = Calendar.getInstance();
         fechaDesde.setTimeInMillis(desde);
         Calendar fechaHasta = Calendar.getInstance();
@@ -60,7 +60,7 @@ public class GastoController {
     @ResponseStatus(HttpStatus.CREATED)
     public Gasto guardar(@RequestBody Gasto gasto) {
         gastoService.guardar(gasto);
-        return gastoService.getGastoPorId(gasto.getId_Gasto());
+        return gastoService.getGastosPorNroYEmpreas(gasto.getNroGasto(), gasto.getEmpresa().getId_Empresa());
     }
 
 }

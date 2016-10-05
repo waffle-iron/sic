@@ -79,6 +79,19 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
     }
 
     @Override
+    public Caja getCajaPorNroYEmpresa(long nroCaja, long id_Empresa) {
+        TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.buscarCajaPorNumeroYEmpresa", Caja.class);
+        typedQuery.setParameter("nroCaja", nroCaja);
+        typedQuery.setParameter("id_Empresa", id_Empresa);
+        List<Caja> cajas = typedQuery.getResultList();
+        if (cajas.isEmpty()) {
+            return null;
+        } else {
+            return cajas.get(0);
+        }
+    }
+    
+    @Override
     public Caja getCajaPorFormaDePago(long idEmpresa, long idFormaDePago) {
         TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.cajaSinArqueoPorFormaDepago", Caja.class);
         typedQuery.setParameter("id_Empresa", idEmpresa);

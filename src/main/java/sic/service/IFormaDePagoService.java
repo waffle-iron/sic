@@ -6,7 +6,7 @@ import sic.modelo.FormaDePago;
 
 public interface IFormaDePagoService {
 
-    void eliminar(FormaDePago formaDePago);
+    void eliminar(long idFormaDePago);
 
     FormaDePago getFormaDePagoPredeterminada(Empresa empresa);
 
@@ -18,4 +18,6 @@ public interface IFormaDePagoService {
 
     void setFormaDePagoPredeterminada(FormaDePago formaDePago);
 
+    FormaDePago getFormaDePagoPorNombreYEmpresa(String nombre, Long idEmpresa);
+    
 }

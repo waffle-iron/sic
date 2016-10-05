@@ -143,7 +143,8 @@ public class ProveedorServiceImpl implements IProveedorService {
 
     @Override
     @Transactional
-    public void eliminar(Proveedor proveedor) {
+    public void eliminar(long idProveedor) {
+        Proveedor proveedor = this.getProveedorPorId(idProveedor);
         proveedor.setEliminado(true);
         proveedorRepository.actualizar(proveedor);
     }

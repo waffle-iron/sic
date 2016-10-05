@@ -577,7 +577,7 @@ public class GUI_Proveedores extends JInternalFrame {
                     JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
-                    proveedorService.eliminar(proveedores.get(indexFilaSeleccionada));
+                    proveedorService.eliminar(proveedores.get(indexFilaSeleccionada).getId_Proveedor());
                     this.buscar();
 
                 } catch (BusinessServiceException ex) {

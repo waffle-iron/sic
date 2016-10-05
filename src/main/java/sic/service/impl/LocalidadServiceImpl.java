@@ -37,7 +37,8 @@ public class LocalidadServiceImpl implements ILocalidadService {
 
     @Override
     @Transactional
-    public void eliminar(Localidad localidad) {
+    public void eliminar(Long  idLocalidad) {
+        Localidad localidad = this.getLocalidadPorId(idLocalidad);
         localidad.setEliminada(true);
         localidadRepository.actualizar(localidad);
     }

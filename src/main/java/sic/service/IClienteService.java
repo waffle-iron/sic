@@ -11,7 +11,7 @@ public interface IClienteService {
         
     List<Cliente> buscarClientes(BusquedaClienteCriteria criteria);
 
-    void eliminar(Cliente cliente);
+    void eliminar(Long idCliente);
 
     Cliente getClientePorId(Long id_Cliente);
 

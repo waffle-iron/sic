@@ -100,7 +100,8 @@ public class CajaServiceImpl implements ICajaService {
     
     @Override
     @Transactional
-    public void eliminar(Caja caja) {
+    public void eliminar(Long idCaja) {
+        Caja caja = this.getCajaPorId(idCaja);
         caja.setEliminada(true);
         this.actualizar(caja);
     }
@@ -118,6 +119,11 @@ public class CajaServiceImpl implements ICajaService {
     @Override
     public Caja getCajaPorIdYEmpresa(long id_Caja, long id_Empresa) {        
         return cajaRepository.getCajaPorIdYEmpresa(id_Caja, id_Empresa);        
+    }
+    
+    @Override
+    public Caja getCajaPorNroYEmpresa(long nroCaja, long id_Empresa) {        
+        return cajaRepository.getCajaPorNroYEmpresa(nroCaja, id_Empresa);        
     }
 
     @Override

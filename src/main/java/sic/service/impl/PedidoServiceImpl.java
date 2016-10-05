@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Empresa;
-import sic.modelo.EmpresaActiva;
 import sic.modelo.Factura;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
@@ -27,7 +26,6 @@ import sic.repository.IPedidoRepository;
 import sic.service.EstadoPedido;
 import sic.service.IFacturaService;
 import sic.service.IPedidoService;
-import sic.service.IProductoService;
 import sic.service.BusinessServiceException;
 import sic.service.ServiceException;
 import sic.service.TipoDeOperacion;
@@ -37,16 +35,13 @@ import sic.util.Utilidades;
 public class PedidoServiceImpl implements IPedidoService {
 
     private final IPedidoRepository pedidoRepository;
-    private final IFacturaService facturaService;
-    private final IProductoService productoService;
+    private final IFacturaService facturaService;    
     private static final Logger LOGGER = Logger.getLogger(PedidoServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public PedidoServiceImpl(IFacturaService facturaService,
-            IPedidoRepository pedidoRepository, IProductoService productoService) {
+    public PedidoServiceImpl(IFacturaService facturaService, IPedidoRepository pedidoRepository) {
         this.facturaService = facturaService;
-        this.pedidoRepository = pedidoRepository;
-        this.productoService = productoService;
+        this.pedidoRepository = pedidoRepository;        
     }
 
     @Override
@@ -205,7 +200,8 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     @Transactional
-    public boolean eliminar(Pedido pedido) {
+    public boolean eliminar(long idPedido) {
+        Pedido pedido = this.getPedidoPorId(idPedido);
         if (pedido.getEstado() == EstadoPedido.ABIERTO) {
             pedido.setEliminado(true);
             pedidoRepository.actualizar(pedido);

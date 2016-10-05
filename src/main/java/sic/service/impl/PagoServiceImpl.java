@@ -80,7 +80,8 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     @Transactional
-    public void eliminar(Pago pago) {
+    public void eliminar(long idPago) {
+        Pago pago = this.getPagoPorId(idPago);
         pago.setEliminado(true);
         pagoRepository.actualizar(pago);
         this.setFacturaEstadoDePago(pago.getFactura());

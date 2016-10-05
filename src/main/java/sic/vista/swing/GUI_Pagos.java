@@ -115,7 +115,7 @@ public class GUI_Pagos extends JDialog {
                     "Eliminar", JOptionPane.YES_NO_OPTION);
 
             if (respuesta == JOptionPane.YES_OPTION) {
-                pagoService.eliminar(pagos.get(indexFilaSeleccionada));
+                pagoService.eliminar(pagos.get(indexFilaSeleccionada).getId_Pago());
                 LOGGER.warn("El Pago: " + pagos.get(indexFilaSeleccionada).toString() + " se eliminó correctamente.");
                 pagos.remove(indexFilaSeleccionada);
                 this.cargarResultadosAlTable();

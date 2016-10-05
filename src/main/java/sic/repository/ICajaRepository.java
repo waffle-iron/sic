@@ -14,6 +14,8 @@ public interface ICajaRepository {
     Caja getCajaPorId(Long id);
 
     Caja getCajaPorIdYEmpresa(long id_Caja, long id_Empresa);
+    
+    Caja getCajaPorNroYEmpresa(long nroCaja, long id_Empresa);
 
     List<Caja> getCajas(long id_Empresa, Date desde, Date hasta);
 

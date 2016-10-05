@@ -65,7 +65,7 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
         }
         //Duplicados
         //Nombre
-        if (formaDePagoRepository.getFormaDePagoPorNombre(formaDePago.getNombre(), formaDePago.getEmpresa()) != null) {
+        if (formaDePagoRepository.getFormaDePagoPorNombreYEmpresa(formaDePago.getNombre(), formaDePago.getEmpresa().getId_Empresa()) != null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_formaDePago_duplicado_nombre"));
         }
@@ -81,8 +81,16 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
 
     @Override
     @Transactional
-    public void eliminar(FormaDePago formaDePago) {
+    public void eliminar(long idFormaDePago) {
+        FormaDePago formaDePago = this.getFormasDePagoPorId(idFormaDePago);
         formaDePago.setEliminada(true);
         formaDePagoRepository.actualizar(formaDePago);
     }
+    
+    @Override
+    @Transactional
+    public FormaDePago getFormaDePagoPorNombreYEmpresa(String nombre, Long idEmpresa) {
+        return formaDePagoRepository.getFormaDePagoPorNombreYEmpresa(nombre, idEmpresa);
+    }
+    
 }

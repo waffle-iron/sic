@@ -497,7 +497,7 @@ public class GUI_Transportistas extends JInternalFrame {
 
             if (respuesta == JOptionPane.YES_OPTION) {
                 try {
-                    transportistaService.eliminar(transportistas.get(indexFilaSeleccionada));
+                    transportistaService.eliminar(transportistas.get(indexFilaSeleccionada).getId_Transportista());
                     this.buscar();
 
                 } catch (BusinessServiceException ex) {

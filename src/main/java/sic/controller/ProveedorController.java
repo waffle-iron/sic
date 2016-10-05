@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,10 +41,17 @@ public class ProveedorController {
         this.empresaService = empresaService;
     }
     
-    @GetMapping("/proveedores/{id}")
+    @GetMapping("/proveedores/{idProveedor}")
     @ResponseStatus(HttpStatus.OK)
-    public Proveedor getProveedorPorId(@PathVariable("id") long id) {
-        return this.proveedorService.getProveedorPorId(id);
+    public Proveedor getProveedorPorId(@PathVariable long idProveedor) {
+        return this.proveedorService.getProveedorPorId(idProveedor);
+    }
+    
+    @PostMapping("/proveedores")
+    @ResponseStatus(HttpStatus.OK)
+    public Proveedor guardar(@RequestBody Proveedor proveedor) {
+        proveedorService.guardar(proveedor);
+        return proveedorService.getProveedorPorRazonSocial(proveedor.getRazonSocial(), proveedor.getEmpresa());
     }
     
     @PutMapping("/proveedores")
@@ -75,16 +83,16 @@ public class ProveedorController {
         return proveedorService.buscarProveedores(criteria);
     }
     
-    @DeleteMapping("/proveedores/{id}")
+    @DeleteMapping("/proveedores/{idProveedor}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-        proveedorService.eliminar(proveedorService.getProveedorPorId(id));
+    public void eliminar(@PathVariable long idProveedor) {
+        proveedorService.eliminar(idProveedor);
     }
     
-    @GetMapping("/proveedores/empresa/{id}")
+    @GetMapping("/proveedores/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Proveedor> getProveedores(@PathVariable("id") long id) {
-        return proveedorService.getProveedores(empresaService.getEmpresaPorId(id));
+    public List<Proveedor> getProveedores(@PathVariable long idEmpresa) {
+        return proveedorService.getProveedores(empresaService.getEmpresaPorId(idEmpresa));
     }
     
 }
