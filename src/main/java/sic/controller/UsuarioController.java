@@ -54,7 +54,7 @@ public class UsuarioController {
         usuarioService.eliminar(idUsuario);
     }
     
-    @GetMapping("/usuarios")
+    @GetMapping("/usuarios/auth")
     @ResponseStatus(HttpStatus.OK)
     public Usuario getUsuarioPorNombreContrasenia(@RequestParam String nombre,
                                                   @RequestParam String password) {
