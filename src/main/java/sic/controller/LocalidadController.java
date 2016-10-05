@@ -29,10 +29,10 @@ public class LocalidadController {
         this.provinciaService = provinciaService;
     }
     
-    @GetMapping("/localidades/{id}")
+    @GetMapping("/localidades/{idLocalidad}")
     @ResponseStatus(HttpStatus.OK)
-    public Localidad getLocalidadPorId(@PathVariable("id") long id) {
-        return localidadService.getLocalidadPorId(id);
+    public Localidad getLocalidadPorId(@PathVariable long idLocalidad) {
+        return localidadService.getLocalidadPorId(idLocalidad);
     }
     
     @PutMapping("/localidades")
@@ -44,25 +44,22 @@ public class LocalidadController {
         return localidadService.getLocalidadPorId(localidad.getId_Localidad());
     }
     
-    @DeleteMapping("/localidades/{id}")
+    @DeleteMapping("/localidades/{idLocalidad}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-        Localidad localidad = localidadService.getLocalidadPorId(id);
-        if(localidad != null) {
-            localidadService.eliminar(localidad);
-        }
+    public void eliminar(@PathVariable long idLocalidad) {
+        localidadService.eliminar(idLocalidad);
     }
     
     @PostMapping("/localidades")
     @ResponseStatus(HttpStatus.OK)
     public Localidad guardar(@RequestBody Localidad localidad) {
         localidadService.guardar(localidad);
-        return localidadService.getLocalidadPorId(localidad.getId_Localidad());
+        return localidadService.getLocalidadPorNombre(localidad.getNombre(), localidad.getProvincia());
     }
     
-    @GetMapping("/localidades/provincias/{id}")
+    @GetMapping("/localidades/provincias/{idProvincia}")
     @ResponseStatus(HttpStatus.OK)
-    List<Localidad> getLocalidadesDeLaProvincia(@PathVariable("id") long id) {
-        return localidadService.getLocalidadesDeLaProvincia(provinciaService.getProvinciaPorId(id));
+    List<Localidad> getLocalidadesDeLaProvincia(@PathVariable long idProvincia) {
+        return localidadService.getLocalidadesDeLaProvincia(provinciaService.getProvinciaPorId(idProvincia));
     }
 }

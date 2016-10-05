@@ -24,7 +24,7 @@ public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {
     }
     
     @Override
-    public Usuario getUsuarioPorId(long idUsuario) {
+    public Usuario getUsuarioPorId(Long idUsuario) {
         TypedQuery<Usuario> typedQuery = em.createNamedQuery("Usuario.buscarPorId", Usuario.class);
         typedQuery.setParameter("id", idUsuario);
         List<Usuario> usuarios = typedQuery.getResultList();

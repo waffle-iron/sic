@@ -66,6 +66,11 @@ public class GastoServiceImpl implements IGastoService {
     }
 
     @Override
+    public Gasto getGastosPorNroYEmpreas(Long nroPago, Long id_Empresa) {
+        return gastoRepository.getGastoPorNroYEmpresa(nroPago, id_Empresa);
+    }
+
+    @Override
     public List<Gasto> getGastosPorFechaYFormaDePago(Long id_Empresa, Long id_FormaDePago, Date desde, Date hasta) {
         return gastoRepository.getGastosPorFechaYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
     }

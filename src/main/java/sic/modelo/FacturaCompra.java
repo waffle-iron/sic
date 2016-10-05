@@ -33,20 +33,20 @@ public class FacturaCompra extends Factura implements Serializable {
     private Proveedor proveedor;
     
     @Builder
-    private FacturaCompra(Date fecha, char tipoFactura, long numSerie, long numFactura, List<Pago> pagos,Date fechaVencimiento, 
-            Transportista transportista, List<RenglonFactura> renglones, double subTotal, double recargo_porcentaje, 
+    private FacturaCompra(Date fecha, char tipoFactura, long numSerie, long numFactura, Date fechaVencimiento, 
+            Transportista transportista, List<RenglonFactura> renglones, List<Pago> pagos, double subTotal, double recargo_porcentaje, 
             double recargo_neto, double descuento_porcentaje, double descuento_neto, double subTotal_neto, double iva_105_neto, 
             double iva_21_neto, double impuestoInterno_neto, double total, String observaciones, boolean pagada, Empresa empresa,
-            boolean eliminada, Pedido pedido, Proveedor proveedor) {
+            boolean eliminada, Proveedor proveedor) {
         
         this.setFecha(fecha);
         this.setTipoFactura(tipoFactura);
         this.setNumSerie(numSerie);
         this.setNumFactura(numFactura);
-        this.setPagos(pagos);
         this.setFechaVencimiento(fechaVencimiento);
         this.setTransportista(transportista);
         this.setRenglones(renglones);
+        this.setPagos(pagos);
         this.setSubTotal(subTotal);
         this.setRecargo_porcentaje(recargo_porcentaje);
         this.setRecargo_neto(recargo_neto);
@@ -61,7 +61,6 @@ public class FacturaCompra extends Factura implements Serializable {
         this.setPagada(pagada);
         this.setEmpresa(empresa);
         this.setEliminada(eliminada);
-        this.setPedido(pedido);      
         this.setProveedor(proveedor);
     }
 

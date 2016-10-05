@@ -10,7 +10,7 @@ public interface ILocalidadService {
             
     void actualizar(Localidad localidad);
 
-    void eliminar(Localidad localidad);
+    void eliminar(Long idLocalidad);
 
     Localidad getLocalidadPorNombre(String nombre, Provincia provincia);
 

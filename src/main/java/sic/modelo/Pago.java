@@ -1,5 +1,7 @@
 package sic.modelo;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Column;
@@ -24,6 +26,10 @@ import lombok.NoArgsConstructor;
     @NamedQuery(name = "Pago.buscarPorId",
             query = "SELECT p FROM Pago p "
                     + "WHERE p.eliminado = false AND p.id_Pago= :id"),
+    @NamedQuery(name = "Pago.buscarPorNroYEmpresa",
+            query = "SELECT p FROM Pago p "
+                    + "WHERE p.eliminado = false AND p.nroPago= :nroPago "
+                    + "AND p.empresa.id_Empresa = :idEmpresa"),
     @NamedQuery(name = "Pago.buscarPagosEntreFechasYFormaDePago",
             query = "SELECT p FROM Pago p "
             + "WHERE p.empresa.id_Empresa = :id_Empresa "
@@ -38,11 +44,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pago")
 public class Pago implements Serializable {
 
     @Id
     @GeneratedValue
     private long id_Pago;
+    
+    private long nroPago;
 
     @ManyToOne
     @JoinColumn(name = "id_FormaDePago", referencedColumnName = "id_FormaDePago")

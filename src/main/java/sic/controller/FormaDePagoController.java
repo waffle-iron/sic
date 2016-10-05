@@ -30,42 +30,42 @@ public class FormaDePagoController {
         this.empresaService = empresaService;
     }
     
-    @GetMapping("/formas-de-pago/{id}")
+    @GetMapping("/formas-de-pago/{idFormaDePago}")
     @ResponseStatus(HttpStatus.OK)
-    public FormaDePago getFormaDePagoPorId(@PathVariable long id) {
-        return formaDePagoService.getFormasDePagoPorId(id);
+    public FormaDePago getFormaDePagoPorId(@PathVariable long idFormaDePago) {
+        return formaDePagoService.getFormasDePagoPorId(idFormaDePago);
     }
     
-    @DeleteMapping("formas-de-pago/{id}")
+    @DeleteMapping("formas-de-pago/{idFormaDePago}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable long id) {
-        formaDePagoService.eliminar(formaDePagoService.getFormasDePagoPorId(id));
+    public void eliminar(@PathVariable long idFormaDePago) {
+        formaDePagoService.eliminar(idFormaDePago);
     }
     
-    @GetMapping("/formas-de-pago/predeterminada/empresa/{id}")
+    @GetMapping("/formas-de-pago/predeterminada/empresa/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public FormaDePago getFormaDePagoPredeterminada(@PathVariable long id) {
-        return formaDePagoService.getFormaDePagoPredeterminada(empresaService.getEmpresaPorId(id));
+    public FormaDePago getFormaDePagoPredeterminada(@PathVariable long idEmpresa) {
+        return formaDePagoService.getFormaDePagoPredeterminada(empresaService.getEmpresaPorId(idEmpresa));
     }
     
-    @GetMapping("/formas-de-pago/empresa/{id}")
+    @GetMapping("/formas-de-pago/empresa/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public List<FormaDePago> getFormasDePago(@PathVariable long id) {
-        return formaDePagoService.getFormasDePago(empresaService.getEmpresaPorId(id));
+    public List<FormaDePago> getFormasDePago(@PathVariable long idEmpresa) {
+        return formaDePagoService.getFormasDePago(empresaService.getEmpresaPorId(idEmpresa));
     }
     
     @PostMapping("/formas-de-pago")
     @ResponseStatus(HttpStatus.CREATED)
     public FormaDePago guardar(@RequestBody FormaDePago formaDePago) {
         formaDePagoService.guardar(formaDePago);
-        return formaDePagoService.getFormasDePagoPorId(formaDePago.getId_FormaDePago());
+        return formaDePagoService.getFormaDePagoPorNombreYEmpresa(formaDePago.getNombre(), formaDePago.getEmpresa().getId_Empresa());
     }
     
-    @PutMapping("/formas-de-pago/predeterminada/{id}")
+    @PutMapping("/formas-de-pago/predeterminada/{idFormaDePago}")
     @ResponseStatus(HttpStatus.OK)
-    public FormaDePago setFormaDePagoPredeterminada(@PathVariable long id) {
-        formaDePagoService.setFormaDePagoPredeterminada(formaDePagoService.getFormasDePagoPorId(id));
-        return formaDePagoService.getFormasDePagoPorId(id);
+    public FormaDePago setFormaDePagoPredeterminada(@PathVariable long idFormaDePago) {
+        formaDePagoService.setFormaDePagoPredeterminada(formaDePagoService.getFormasDePagoPorId(idFormaDePago));
+        return formaDePagoService.getFormasDePagoPorId(idFormaDePago);
     }
     
 }

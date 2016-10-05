@@ -9,22 +9,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 @Entity
 @Table(name = "renglonpedido")
 @Data
-@ToString(exclude= "pedido")
-@EqualsAndHashCode(of = {"pedido", "producto"})
+@EqualsAndHashCode(of = "producto")
 public class RenglonPedido implements Serializable {
 
     @Id
     @GeneratedValue
     private long id_RenglonPedido;
-
-    @ManyToOne
-    @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
-    private Pedido pedido;
 
     @ManyToOne
     @JoinColumn(name = "id_Producto", referencedColumnName = "id_Producto")

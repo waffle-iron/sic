@@ -25,7 +25,8 @@ import lombok.EqualsAndHashCode;
                     + "WHERE f.eliminada = false AND f.id_FormaDePago = :id"),
     @NamedQuery(name = "FormaDePago.buscarPorNombre",
             query = "SELECT f FROM FormaDePago f "
-                    + "WHERE f.eliminada = false AND f.empresa = :empresa AND f.nombre = :nombre"),
+                    + "WHERE f.eliminada = false AND f.empresa.id_Empresa = :idEmpresa "
+                    + "AND f.nombre = :nombre"),
     @NamedQuery(name = "FormaDePago.buscarPredeterminada",
             query = "SELECT f FROM FormaDePago f "
                     + "WHERE f.predeterminado = true and f.empresa = :empresa and f.eliminada = false")

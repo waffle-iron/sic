@@ -49,10 +49,10 @@ public class FormaDePagoRepositoryJPAImpl implements IFormaDePagoRepository {
     }
 
     @Override
-    public FormaDePago getFormaDePagoPorNombre(String nombre, Empresa empresa) {
+    public FormaDePago getFormaDePagoPorNombreYEmpresa(String nombre, Long idEmpresa) {
         TypedQuery<FormaDePago> typedQuery = em.createNamedQuery("FormaDePago.buscarPorNombre", FormaDePago.class);
         typedQuery.setParameter("nombre", nombre);
-        typedQuery.setParameter("empresa", empresa);
+        typedQuery.setParameter("idEmpresa", idEmpresa);
         List<FormaDePago> formasDePago = typedQuery.getResultList();
         if (formasDePago.isEmpty()) {
             return null;

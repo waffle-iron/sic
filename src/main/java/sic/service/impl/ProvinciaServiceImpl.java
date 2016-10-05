@@ -67,7 +67,8 @@ public class ProvinciaServiceImpl implements IProvinciaService {
 
     @Override
     @Transactional
-    public void eliminar(Provincia provincia) {
+    public void eliminar(long idProvincia) {
+        Provincia provincia = this.getProvinciaPorId(idProvincia);
         provincia.setEliminada(true);
         provinciaRepository.actualizar(provincia);
     }

@@ -22,8 +22,10 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
+import org.springframework.web.client.RestTemplate;
 import sic.AppContextProvider;
 import sic.modelo.Cliente;
+import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
 import sic.modelo.EmpresaActiva;
 import sic.modelo.FormaDePago;
@@ -58,10 +60,13 @@ public class GUI_PuntoDeVenta extends JDialog {
     private final IFacturaService facturaService = appContext.getBean(IFacturaService.class);
     private final IProductoService productoService = appContext.getBean(IProductoService.class);
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
+    private static final String REST_URI =  "http://localhost:8080/api/v1";
+    private final RestTemplate restTemplate = new RestTemplate();
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private static final Logger LOGGER = Logger.getLogger(GUI_PuntoDeVenta.class.getPackage().getName());
     private Pedido pedido;
     private boolean modificarPedido;
+    private int cantidadMaximaRenglones = 0;
 
     public GUI_PuntoDeVenta() {
         this.initComponents();
@@ -105,7 +110,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.cargarCliente(pedido.getCliente());
         this.cargarTiposDeComprobantesDisponibles();
         this.tipoDeFactura = cmb_TipoComprobante.getSelectedItem().toString();
-        this.renglones = facturaService.convertirRenglonesPedidoARenglonesFactura(pedido, this.tipoDeFactura);
+        this.renglones = facturaService.getRenglonesPedidoParaFacturar(pedido, this.tipoDeFactura);
         EstadoRenglon[] marcaDeRenglonesDelPedido = new EstadoRenglon[renglones.size()];
         for (int i = 0; i < renglones.size(); i++) {
             marcaDeRenglonesDelPedido[i] = EstadoRenglon.DESMARCADO;
@@ -375,7 +380,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     private void buscarProductoConVentanaAuxiliar() {
-        if (facturaService.validarCantidadMaximaDeRenglones(renglones.size(), empresa)) {
+        if (cantidadMaximaRenglones > renglones.size()) {
             Movimiento movimiento = cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido") ? Movimiento.PEDIDO : Movimiento.VENTA;
             GUI_BuscarProductos GUI_buscarProducto = new GUI_BuscarProductos(this, true, renglones, movimiento, cmb_TipoComprobante.getSelectedItem().toString());
             GUI_buscarProducto.setVisible(true);
@@ -457,7 +462,13 @@ public class GUI_PuntoDeVenta extends JDialog {
         double total;
         this.validarComponentesDeResultados();
         //SubTotal  
-        subTotal = facturaService.calcularSubTotal(renglones);
+        double[] importes = new double[renglones.size()];
+        int indice = 0;
+        for(RenglonFactura renglon : renglones) {
+            importes[indice] = renglon.getImporte();
+            indice++;
+        }
+        subTotal = facturaService.calcularSubTotal(importes);
         txt_Subtotal.setValue(subTotal);
 
         //Recargo
@@ -478,7 +489,13 @@ public class GUI_PuntoDeVenta extends JDialog {
         txt_IVA21_neto.setValue(iva_21_neto);
 
         //Imp Interno neto
-        impInterno_neto = facturaService.calcularImpInterno_neto(this.tipoDeFactura, 0, recargo_porcentaje, renglones);
+        double[] impuestoPorcentajes = new double[renglones.size()];
+        indice = 0;
+        for (RenglonFactura renglon : renglones) {
+            impuestoPorcentajes[indice] = renglon.getImpuesto_porcentaje();
+            indice++;
+        }
+        impInterno_neto = facturaService.calcularImpInterno_neto(this.tipoDeFactura, 0, recargo_porcentaje, importes , impuestoPorcentajes);
         txt_ImpInterno_neto.setValue(impInterno_neto);
 
         //total
@@ -542,44 +559,74 @@ public class GUI_PuntoDeVenta extends JDialog {
         this.pedido.setObservaciones(txta_Observaciones.getText());
         this.pedido.setUsuario(UsuarioActivo.getInstance().getUsuario());
         this.pedido.setNroPedido(pedidoService.calcularNumeroPedido(empresa));
-        this.pedido.setTotalEstimado(facturaService.calcularSubTotal(renglones));
+        double[] importes = new double[renglones.size()];
+        int indice = 0;
+        for(RenglonFactura renglon : renglones) {
+            importes[indice] = renglon.getImporte();
+            indice++;
+        }
+        this.pedido.setTotalEstimado(facturaService.calcularSubTotal(importes));
         this.pedido.setEstado(EstadoPedido.ABIERTO);
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
         for (RenglonFactura renglonFactura : renglones) {
-            renglonesPedido.add(pedidoService.convertirRenglonFacturaARenglonPedido(renglonFactura, this.pedido));
+            renglonesPedido.add(this.convertirRenglonFacturaARenglonPedido(renglonFactura));
         }
         this.pedido.setRenglones(renglonesPedido);
+    }
+    
+    public RenglonPedido convertirRenglonFacturaARenglonPedido(RenglonFactura renglonFactura) {
+        RenglonPedido nuevoRenglon = new RenglonPedido();
+        nuevoRenglon.setCantidad(renglonFactura.getCantidad());
+        nuevoRenglon.setDescuento_porcentaje(renglonFactura.getDescuento_porcentaje());
+        nuevoRenglon.setDescuento_neto(renglonFactura.getDescuento_neto());
+        Producto producto = productoService.getProductoPorId(renglonFactura.getId_ProductoItem());
+        nuevoRenglon.setProducto(producto);
+        nuevoRenglon.setSubTotal(renglonFactura.getImporte());
+        return nuevoRenglon;
     }
 
     private Pedido guardarPedido(Pedido pedido) {
         pedidoService.guardar(pedido);
-        return pedidoService.getPedidoPorNumero(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa());
+        return pedidoService.getPedidoPorNumeroYEmpresa(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa());
     }
 
     private void lanzarReportePedido(Pedido pedido) {
-        try {
-            JasperPrint report = pedidoService.getReportePedido(pedido);
-            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-            viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
-            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-            viewer.setIconImage(iconoVentana.getImage());
-            viewer.setLocationRelativeTo(null);
-            JRViewer jrv = new JRViewer(report);
-            viewer.getContentPane().add(jrv);
-            viewer.setVisible(true);
-        } catch (JRException jre) {
-            String msjError = "Se produjo un error procesando el reporte.";
-            LOGGER.error(msjError + " - " + jre.getMessage());
-            JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
-        }
+//        try {
+//            JasperPrint report = pedidoService.getReportePedido(pedido);
+//            JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+//            viewer.setSize(this.getWidth() - 25, this.getHeight() - 25);
+//            ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+//            viewer.setIconImage(iconoVentana.getImage());
+//            viewer.setLocationRelativeTo(null);
+//            JRViewer jrv = new JRViewer(report);
+//            viewer.getContentPane().add(jrv);
+//            viewer.setVisible(true);
+//        } catch (JRException jre) {
+//            String msjError = "Se produjo un error procesando el reporte.";
+//            LOGGER.error(msjError + " - " + jre.getMessage());
+//            JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+//        }
     }
 
     private void actualizarPedido(Pedido pedido) {
-        pedido = pedidoService.getPedidoPorNumeroConRenglones(pedido.getNroPedido(), this.empresa.getId_Empresa());
-        pedido.getRenglones().clear();
-        pedido.getRenglones().addAll(pedidoService.convertirRenglonesFacturaARenglonesPedido(this.renglones, pedido));
-        pedido.setTotalEstimado(facturaService.calcularSubTotal(this.renglones));
+        pedido = pedidoService.getPedidoPorId(pedido.getId_Pedido());
+        pedido.setRenglones(this.convertirRenglonesFacturaARenglonesPedido(this.renglones));
+        double[] importes = new double[renglones.size()];
+        int indice = 0;
+        for(RenglonFactura renglon : renglones) {
+            importes[indice] = renglon.getImporte();
+            indice++;
+        }
+        pedido.setTotalEstimado(facturaService.calcularSubTotal(importes));
         pedidoService.actualizar(pedido);
+    }
+    
+    public List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(List<RenglonFactura> renglonesDeFactura) {
+        List<RenglonPedido> renglonesPedido = new ArrayList();
+        for (RenglonFactura renglonFactura : renglonesDeFactura) {
+            renglonesPedido.add(this.convertirRenglonFacturaARenglonPedido(renglonFactura));
+        }
+        return renglonesPedido;
     }
 
     /**
@@ -1278,6 +1325,10 @@ public class GUI_PuntoDeVenta extends JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
+            ConfiguracionDelSistema cds = restTemplate.getForObject(REST_URI+
+                                          "/configuraciones-del-sistema/empresa/"+EmpresaActiva.getInstance().getEmpresa().getId_Empresa(), 
+                                          ConfiguracionDelSistema.class);
+            cantidadMaximaRenglones = cds.getCantidadMaximaDeRenglonesEnFactura();
             this.setColumnas();
             this.prepararComponentes(); //revisar esto
             if (!UsuarioActivo.getInstance().getUsuario().isPermisosAdministrador()) {
@@ -1397,7 +1448,8 @@ public class GUI_PuntoDeVenta extends JDialog {
             if (this.pedido == null || this.pedido.getId_Pedido() == 0) {
                 this.construirPedido();
             }
-            if (pedidoService.getPedidoPorNumero(this.pedido.getNroPedido(), this.empresa.getId_Empresa()) == null) {
+            pedidoService.guardar(this.pedido);
+            if (pedidoService.getPedidoPorNumeroYEmpresa(this.pedido.getNroPedido(), this.empresa.getId_Empresa()) == null) {
                 try {
                     this.lanzarReportePedido(this.guardarPedido(this.pedido));
                     this.limpiarYRecargarComponentes();

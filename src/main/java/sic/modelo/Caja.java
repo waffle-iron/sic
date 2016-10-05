@@ -27,9 +27,13 @@ import sic.service.EstadoCaja;
             query = "SELECT c FROM Caja c "
                     + "WHERE c.empresa.id_Empresa = :id_Empresa AND c.eliminada = false "
                     + "ORDER BY c.fechaApertura DESC"),
-    @NamedQuery(name = "Caja.buscarCajaPorIYEmpresa",
+    @NamedQuery(name = "Caja.buscarCajaPorIdYEmpresa",
             query = "SELECT c FROM Caja c "
                     + "WHERE c.id_Caja = :id_caja AND c.empresa.id_Empresa = :id_Empresa "
+                    + "ORDER BY c.fechaApertura ASC"),
+    @NamedQuery(name = "Caja.buscarCajaPorNumeroYEmpresa",
+            query = "SELECT c FROM Caja c "
+                    + "WHERE c.nroCaja = :nroCaja AND c.empresa.id_Empresa = :id_Empresa "
                     + "ORDER BY c.fechaApertura ASC"),
     @NamedQuery(name = "Caja.buscarCajaPorId",
             query = "SELECT c FROM Caja c "

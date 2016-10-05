@@ -29,10 +29,10 @@ public class MedidaController {
         this.empresaService = empresaService;
     }
     
-    @GetMapping("/medidas/{id}")
+    @GetMapping("/medidas/{idMedida}")
     @ResponseStatus(HttpStatus.OK)
-    public Medida getMedidaPorId(@PathVariable("id") long id) {
-        return medidaService.getMedidaPorId(id);
+    public Medida getMedidaPorId(@PathVariable long idMedida) {
+        return medidaService.getMedidaPorId(idMedida);
     }
     
     @PutMapping("/medidas")
@@ -44,22 +44,22 @@ public class MedidaController {
         return medidaService.getMedidaPorId(medida.getId_Medida());
     }
     
-    @DeleteMapping("/medidas/{id}")
+    @DeleteMapping("/medidas/{idMedida}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-        medidaService.eliminar(medidaService.getMedidaPorId(id));
+    public void eliminar(@PathVariable long idMedida) {
+        medidaService.eliminar(idMedida);
     }
     
     @PostMapping("/medidas")
     @ResponseStatus(HttpStatus.OK)
     public Medida guardar(@RequestBody Medida medida) {
         medidaService.guardar(medida);
-        return medidaService.getMedidaPorId(medida.getId_Medida());
+        return medidaService.getMedidaPorNombre(medida.getNombre(), medida.getEmpresa());
     }
     
-    @GetMapping("/medidas/empresa/{id}")
+    @GetMapping("/medidas/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Medida> getMedidas(@PathVariable long id) {
-        return medidaService.getUnidadMedidas(empresaService.getEmpresaPorId(id));
+    public List<Medida> getMedidas(@PathVariable long idEmpresa) {
+        return medidaService.getUnidadMedidas(empresaService.getEmpresaPorId(idEmpresa));
     }
 }

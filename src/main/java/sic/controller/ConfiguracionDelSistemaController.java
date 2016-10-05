@@ -27,10 +27,10 @@ public class ConfiguracionDelSistemaController {
         this.empresaService = empresaService;
     }
     
-    @GetMapping("/configuraciones-del-sistema/{id}")
+    @GetMapping("/configuraciones-del-sistema/{idConfiguracionDelSistema}")
     @ResponseStatus(HttpStatus.OK)
-    public ConfiguracionDelSistema getConfiguracionDelSistemaPorId(@PathVariable long id) {
-        return configuracionDelSistemaService.getConfiguracionDelSistemaPorId(id);
+    public ConfiguracionDelSistema getConfiguracionDelSistemaPorId(@PathVariable long idConfiguracionDelSistema) {
+        return configuracionDelSistemaService.getConfiguracionDelSistemaPorId(idConfiguracionDelSistema);
     }
     
     @PutMapping("/configuracion-del-sistema")
@@ -42,9 +42,9 @@ public class ConfiguracionDelSistemaController {
         return configuracionDelSistemaService.getConfiguracionDelSistemaPorId(configuracionDelSistema.getId_ConfiguracionDelSistema());
     }
     
-    @GetMapping("/configuraciones-del-sistema/empresa/{id}")
+    @GetMapping("/configuraciones-del-sistema/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public ConfiguracionDelSistema getconfiguracionDelSistemaPorEmpresa(@PathVariable long id) {
-        return configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(empresaService.getEmpresaPorId(id));
+    public ConfiguracionDelSistema getconfiguracionDelSistemaPorEmpresa(@PathVariable long idEmpresa) {
+        return configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(empresaService.getEmpresaPorId(idEmpresa));
     }
 }

@@ -224,7 +224,7 @@ public class GUI_DetallePais extends JDialog {
                         "Seleccione un Pais de la lista para poder continuar.",
                         "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                paisService.eliminar(paisSeleccionado);
+                paisService.eliminar(paisSeleccionado.getId_Pais());
                 txt_ModicaElimina.setText("");
                 this.cargarListPaises();
             }

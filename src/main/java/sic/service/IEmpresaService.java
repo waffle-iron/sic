@@ -9,7 +9,7 @@ public interface IEmpresaService {
 
     void actualizar(Empresa empresa);
 
-    void eliminar(Empresa empresa);    
+    void eliminar(Long idEmpresa);    
 
     Empresa getEmpresaPorCUIP(long cuip);
 

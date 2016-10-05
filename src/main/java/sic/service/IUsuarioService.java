@@ -4,7 +4,7 @@ import java.util.List;
 import sic.modelo.Usuario;
 
 public interface IUsuarioService {
-    
+   
     Usuario getUsuarioPorId(long idUsuario);
 
     void actualizar(Usuario usuario);

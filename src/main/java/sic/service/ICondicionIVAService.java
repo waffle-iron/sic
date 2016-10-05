@@ -5,11 +5,11 @@ import sic.modelo.CondicionIVA;
 
 public interface ICondicionIVAService {
     
-    CondicionIVA getCondicionIVAPorId(long id_CondicionIVA);
+    CondicionIVA getCondicionIVAPorId(long idCondicionIVA);
 
     void actualizar(CondicionIVA condicionIVA);
 
-    void eliminar(CondicionIVA condicionIVA);
+    void eliminar(Long idCondicionIVA);
 
     CondicionIVA getCondicionIVAPorNombre(String nombre);
 

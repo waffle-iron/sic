@@ -10,7 +10,7 @@ public interface IMedidaService {
 
     void actualizar(Medida medida);
 
-    void eliminar(Medida medida);
+    void eliminar(long idMedida);
 
     Medida getMedidaPorNombre(String nombre, Empresa empresa);
 

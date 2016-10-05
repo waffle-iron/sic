@@ -12,7 +12,7 @@ public interface ICajaService {
 
     void actualizar(Caja caja);
     
-    void eliminar(Caja caja);
+    void eliminar(Long idCaja);
     
     Caja getCajaPorId(Long id);
   
@@ -21,6 +21,8 @@ public interface ICajaService {
     double calcularTotalGastos(List<Gasto> movimientos);
 
     Caja getCajaPorIdYEmpresa(long id_Caja, long id_Empresa);
+    
+    Caja getCajaPorNroYEmpresa(long nroCaja, long id_Empresa);
 
     List<Caja> getCajas(long id_Empresa, Date desde, Date hasta);
 

@@ -232,7 +232,7 @@ public class GUI_DetalleMedida extends JDialog {
                             + "Medida de la lista para poder continuar.",
                             "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    medidaService.eliminar(medidaSeleccionada);
+                    medidaService.eliminar(medidaSeleccionada.getId_Medida());
                     txt_ModicaElimina.setText("");
                     medidaSeleccionada = null;
                     this.cargarListMedidas();

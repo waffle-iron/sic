@@ -334,7 +334,7 @@ public class GUI_DetalleLocalidad extends JDialog {
                 JOptionPane.showMessageDialog(this, "Seleccione una localidad de la lista para poder continuar.",
                         "Error", JOptionPane.ERROR_MESSAGE);
             } else {
-                localidadService.eliminar(localidadSeleccionada);
+                localidadService.eliminar(localidadSeleccionada.getId_Localidad());
                 txt_Nombre.setText("");
                 txt_CodigoPostal.setText("");
                 localidadSeleccionada = null;

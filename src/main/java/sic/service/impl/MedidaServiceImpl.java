@@ -79,7 +79,8 @@ public class MedidaServiceImpl implements IMedidaService {
 
     @Override
     @Transactional
-    public void eliminar(Medida medida) {
+    public void eliminar(long idMedida) {
+        Medida medida = this.getMedidaPorId(idMedida);
         medida.setEliminada(true);
         medidaRepository.actualizar(medida);
     }

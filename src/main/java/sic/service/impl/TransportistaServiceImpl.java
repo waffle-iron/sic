@@ -92,7 +92,8 @@ public class TransportistaServiceImpl implements ITransportistaService {
 
     @Override
     @Transactional
-    public void eliminar(Transportista transportista) {
+    public void eliminar(long idTransportista) {
+        Transportista transportista = this.getTransportistaPorId(idTransportista);
         transportista.setEliminado(true);
         transportistaRepository.actualizar(transportista);
     }

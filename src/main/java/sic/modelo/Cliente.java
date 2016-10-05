@@ -13,8 +13,11 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "cliente")
@@ -44,6 +47,9 @@ import lombok.EqualsAndHashCode;
                     + "WHERE c.predeterminado = true AND c.eliminado = false AND c.empresa = :empresa")
 })
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of = {"razonSocial", "id_Fiscal", "empresa"})
 public class Cliente implements Serializable {
 

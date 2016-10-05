@@ -25,8 +25,8 @@ public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
     }
     
     @Override
-    public CondicionIVA getCondicionIVAPorId(long id_CondicionIVA) {        
-        return condicionIVARepository.getCondicionIVAPorId(id_CondicionIVA);
+    public CondicionIVA getCondicionIVAPorId(long idCondicionIVA) {        
+        return condicionIVARepository.getCondicionIVAPorId(idCondicionIVA);
     }
 
     @Override
@@ -51,7 +51,8 @@ public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
 
     @Override
     @Transactional
-    public void eliminar(CondicionIVA condicionIVA) {
+    public void eliminar(Long idCondicionIVA) {
+        CondicionIVA condicionIVA = this.getCondicionIVAPorId(idCondicionIVA);
         condicionIVA.setEliminada(true);        
         condicionIVARepository.actualizar(condicionIVA);
     }

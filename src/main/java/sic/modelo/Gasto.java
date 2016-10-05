@@ -40,6 +40,10 @@ import lombok.EqualsAndHashCode;
             query = "SELECT g FROM Gasto g "
                     + "WHERE g.id_Gasto = :id_Gasto AND g.empresa.id_Empresa = :id_Empresa "
                     + "ORDER BY g.fecha ASC"),
+    @NamedQuery(name = "Gasto.getGastoPorNroYEmpresa",
+            query = "SELECT g FROM Gasto g "
+                    + "WHERE g.nroGasto = :nroGasto AND g.empresa.id_Empresa = :id_Empresa "
+                    + "ORDER BY g.fecha ASC"),
     @NamedQuery(name = "Gasto.getUltimoNumeroDeGasto",
             query = "SELECT max(g.nroGasto) FROM Gasto g "
                     + "WHERE g.empresa.id_Empresa = :id_Empresa")
@@ -52,7 +56,7 @@ public class Gasto implements Serializable {
     @GeneratedValue
     private long id_Gasto;
 
-    private int nroGasto;
+    private long nroGasto;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)

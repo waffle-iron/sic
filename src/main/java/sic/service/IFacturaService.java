@@ -1,8 +1,6 @@
 package sic.service;
 
 import java.util.List;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
 import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Cliente;
@@ -18,7 +16,7 @@ import sic.modelo.RenglonPedido;
 
 public interface IFacturaService {
     
-    Factura getFacturaPorId(long id_Factura);
+    Factura getFacturaPorId(Long id_Factura);
 
     String[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor);
 
@@ -26,7 +24,7 @@ public interface IFacturaService {
 
     char[] getTiposFacturaSegunEmpresa(Empresa empresa);
 
-    List<RenglonFactura> getRenglonesDeLaFactura(Factura factura);
+    List<RenglonFactura> getRenglonesDeLaFactura(Long id_Factura);
 
     FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num);
 
@@ -41,7 +39,11 @@ public interface IFacturaService {
     List<FacturaVenta> buscarFacturaVenta(BusquedaFacturaVentaCriteria criteria);
 
     void guardar(Factura factura);
-
+    
+    void guardar(List<Factura> facturas);
+    
+    void guardar(Factura factura, Pedido pedido);    
+    
     void actualizar(Factura factura);
 
     void eliminar(Factura factura);
@@ -56,7 +58,7 @@ public interface IFacturaService {
 
     boolean validarCantidadMaximaDeRenglones(int cantidad, Empresa empresa);
 
-    double calcularSubTotal(List<RenglonFactura> renglones);
+    double calcularSubTotal(double[] importes);
 
     double calcularDescuento_neto(double subtotal, double descuento_porcentaje);
 
@@ -66,7 +68,7 @@ public interface IFacturaService {
 
     double calcularIva_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones, double iva_porcentaje);
 
-    double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones);
+    double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, double[] importes, double [] impuestoPorcentajes);
 
     double calcularImpInterno_neto(Movimiento movimiento, Producto producto, double descuento_neto);
 
@@ -92,13 +94,13 @@ public interface IFacturaService {
 
     double calcularImporte(double cantidad, double precioUnitario, double descuento_neto);    
 
-    JasperPrint getReporteFacturaVenta(Factura factura) throws JRException;
+    byte[] getReporteFacturaVenta(Factura factura);
 
-    List<FacturaVenta> dividirFactura(FacturaVenta factura, int[] indices);
+    List<Factura> dividirFactura(FacturaVenta factura, int[] indices);
 
     RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante);
 
-    List<RenglonFactura> convertirRenglonesPedidoARenglonesFactura(Pedido pedido, String tipoComprobante);
+    List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido, String tipoComprobante);
 
     RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje);
 

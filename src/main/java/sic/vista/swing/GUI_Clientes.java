@@ -523,7 +523,7 @@ public class GUI_Clientes extends JInternalFrame {
                     + clientes.get(indexFilaSeleccionada) + "?",
                     "Eliminar", JOptionPane.YES_NO_OPTION);
             if (respuesta == JOptionPane.YES_OPTION) {
-                clienteService.eliminar(clientes.get(indexFilaSeleccionada));
+                clienteService.eliminar(clientes.get(indexFilaSeleccionada).getId_Cliente());
                 //actualiza JTable
                 this.buscar();
             }

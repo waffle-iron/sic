@@ -6,11 +6,11 @@ import sic.modelo.Rubro;
 
 public interface IRubroService {
 
-    Rubro getRubroPorId(Long id_Rubro);
+    Rubro getRubroPorId(Long idRubro);
     
     void actualizar(Rubro rubro);
 
-    void eliminar(Rubro rubro);
+    void eliminar(long idRubro);
 
     Rubro getRubroPorNombre(String nombre, Empresa empresa);
 

@@ -126,7 +126,8 @@ public class EmpresaServiceImpl implements IEmpresaService {
 
     @Override
     @Transactional
-    public void eliminar(Empresa empresa) {
+    public void eliminar(Long idEmpresa) {
+        Empresa empresa = this.getEmpresaPorId(idEmpresa);
         empresa.setEliminada(true);
         empresaRepository.actualizar(empresa);
     }

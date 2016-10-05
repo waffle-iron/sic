@@ -13,7 +13,7 @@ public interface ITransportistaService {
 
     List<Transportista> buscarTransportistas(BusquedaTransportistaCriteria criteria);
 
-    void eliminar(Transportista transportista);
+    void eliminar(long idTransportista);
 
     Transportista getTransportistaPorNombre(String nombre, Empresa empresa);
 

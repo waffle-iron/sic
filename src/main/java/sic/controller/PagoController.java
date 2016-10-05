@@ -37,49 +37,49 @@ public class PagoController {
         this.formaDePagoService = formaDePago;
     }
     
-    @GetMapping("/pagos/{id}")
+    @GetMapping("/pagos/{idPago}")
     @ResponseStatus(HttpStatus.OK)
-    public Pago getProductoPorId(@PathVariable("id") long id) {
-        return pagoService.getPagoPorId(id);
+    public Pago getProductoPorId(@PathVariable long idPago) {
+        return pagoService.getPagoPorId(idPago);
     }
     
     @PostMapping("/pagos")
     @ResponseStatus(HttpStatus.CREATED)
     public Pago guardar(@RequestBody Pago pago) {
-        pagoService.guardar(pago);
+        pagoService.guardar(pago); // hace falta agregarle identidad a pago para poder recuperarlo.
         return pago;
     }
     
-    @DeleteMapping("/pagos/{id}")
+    @DeleteMapping("/pagos/{idPago}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-        pagoService.eliminar(pagoService.getPagoPorId(id));
+    public void eliminar(@PathVariable long idPago) {
+        pagoService.eliminar(idPago);
     }
     
-    @GetMapping("/pagos/facturas/{id}")
+    @GetMapping("/pagos/facturas/{idFactura}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Pago> getPagosDeLaFactura(@PathVariable("id") long id) {
-        return pagoService.getPagosDeLaFactura(facturaService.getFacturaPorId(id));
+    public List<Pago> getPagosDeLaFactura(@PathVariable long idFactura) {
+        return pagoService.getPagosDeLaFactura(facturaService.getFacturaPorId(idFactura));
     }
     
-    @GetMapping("pagos/facturas/{id}/saldo")
+    @GetMapping("/pagos/facturas/{idFactura}/saldo")
     @ResponseStatus(HttpStatus.OK)
-    public double getSaldoAPagar(@PathVariable("id") long id) {
-        return pagoService.getSaldoAPagar(facturaService.getFacturaPorId(id));
+    public double getSaldoAPagar(@PathVariable long idFactura) {
+        return pagoService.getSaldoAPagar(facturaService.getFacturaPorId(idFactura));
     }
     
-    @GetMapping("pagos/facturas/{id}/total-pagado")
+    @GetMapping("/pagos/facturas/{idFactura}/total-pagado")
     @ResponseStatus(HttpStatus.OK)
-    public double getTotalPagado(@PathVariable("id") long id) {
-        return pagoService.getTotalPagado(facturaService.getFacturaPorId(id));
+    public double getTotalPagado(@PathVariable long idFactura) {
+        return pagoService.getTotalPagado(facturaService.getFacturaPorId(idFactura));
     }
     
     @GetMapping("/pagos")
     @ResponseStatus(HttpStatus.OK)
-    public List<Pago> getPagosEntreFechasYFormaDePago(@RequestParam("idEmpresa") long idEmpresa,
-                                                      @RequestParam("idFormaDePago") long idFormaDePago,
-                                                      @RequestParam("desde") long desde,
-                                                      @RequestParam("hasta") long hasta) {
+    public List<Pago> getPagosEntreFechasYFormaDePago(@RequestParam long idEmpresa,
+                                                      @RequestParam long idFormaDePago,
+                                                      @RequestParam long desde,
+                                                      @RequestParam long hasta) {
         Calendar fechaDesde = Calendar.getInstance();
         fechaDesde.setTimeInMillis(desde);
         Calendar fechaHasta = Calendar.getInstance();
@@ -90,15 +90,15 @@ public class PagoController {
     
     @PutMapping("/pagos/pagar-multiples-facturas")
     @ResponseStatus(HttpStatus.OK)
-    public void pagarMultiplesFacturas(@RequestParam("id") long[] id,
-                                       @RequestParam("monto") double monto,
-                                       @RequestParam("idFormaDePago") long idFormaDePago,
-                                       @RequestParam("nota") String nota,
-                                       @RequestParam("fechaYHora") long date) {
+    public void pagarMultiplesFacturas(@RequestParam long[] idFactura,
+                                       @RequestParam double monto,
+                                       @RequestParam long idFormaDePago,
+                                       @RequestParam String nota,
+                                       @RequestParam long fechaHora) {
         Calendar fechaYHora = Calendar.getInstance();
-        fechaYHora.setTimeInMillis(date);
+        fechaYHora.setTimeInMillis(fechaHora);
         List<Factura> facturas = new ArrayList<>();
-        for (long i : id) {
+        for (long i : idFactura) {
             facturas.add(facturaService.getFacturaPorId(i));
         }
         pagoService.pagarMultiplesFacturas(facturas, monto,

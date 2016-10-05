@@ -196,9 +196,9 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                 .eliminada(false)
                 .proveedor((Proveedor) cmb_Proveedor.getSelectedItem())
                 .build();
-        for (RenglonFactura renglon : renglones) {
-            renglon.setFactura(facturaCompra);
-        }
+//        for (RenglonFactura renglon : renglones) {
+//            renglon.setFactura(facturaCompra);
+//        }
         facturaService.guardar(facturaCompra);
     }
 
@@ -249,7 +249,13 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         double total;
         this.validarComponentesDeResultados();
         //subtotal        
-        subTotal = facturaService.calcularSubTotal(renglones);
+        double[] importes = new double[renglones.size()];
+        int indice = 0;
+        for(RenglonFactura renglon : renglones) {
+            importes[indice] = renglon.getImporte();
+            indice++;
+        }
+        subTotal = facturaService.calcularSubTotal(importes);
         txt_SubTotal.setValue(subTotal);
 
         //descuento
@@ -270,7 +276,13 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         txt_IVA_21.setValue(iva21_neto);
 
         //imp. Interno
-        impInterno_neto = facturaService.calcularImpInterno_neto(tipoDeFactura, descuento_porcentaje, 0, renglones);
+        double[] impuestoPorcentajes = new double[renglones.size()];
+        indice = 0;
+        for (RenglonFactura renglon : renglones) {
+            impuestoPorcentajes[indice] = renglon.getImpuesto_porcentaje();
+            indice++;
+        }
+        impInterno_neto = facturaService.calcularImpInterno_neto(tipoDeFactura, descuento_porcentaje, 0, importes, impuestoPorcentajes);
         txt_ImpInterno_Neto.setValue(impInterno_neto);
 
         //total
@@ -349,7 +361,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         txt_IVA_21.setValue(facturaParaMostrar.getIva_21_neto());
         txt_ImpInterno_Neto.setValue(facturaParaMostrar.getRecargo_neto());
         txt_Total.setValue(facturaParaMostrar.getTotal());
-        facturaParaMostrar.setRenglones(new ArrayList<>(facturaService.getRenglonesDeLaFactura(facturaParaMostrar)));
+        facturaParaMostrar.setRenglones(new ArrayList<>(facturaService.getRenglonesDeLaFactura(facturaParaMostrar.getId_Factura())));
         for (RenglonFactura renglon : facturaParaMostrar.getRenglones()) {
             this.agregarRenglon(renglon);
         }

@@ -19,8 +19,6 @@ public interface IPagoService {
     double getTotalPagado(Factura factura);
 
     List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
-
-    List<Factura> getFacturasEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
     
     void pagarMultiplesFacturasVenta(List<FacturaVenta> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora);
     
@@ -38,7 +36,7 @@ public interface IPagoService {
 
     void guardar(Pago pago);
 
-    void eliminar(Pago pago);
+    void eliminar(long idPago);
     
     void setFacturaEstadoDePago(Factura factura);
 }

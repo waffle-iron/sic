@@ -3,6 +3,7 @@ package sic.service.impl;
 import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.PreciosProducto;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -173,8 +174,8 @@ public class ProductoServiceImpl implements IProductoService {
                 LOGGER.warn("Se intenta actualizar el stock de un producto eliminado.");
             }
             if (producto != null && producto.isIlimitado() == false) {
-
-                if (renglon.getFactura() instanceof FacturaVenta) {
+                
+                if (factura instanceof FacturaVenta) {
                     if (operacion == TipoDeOperacion.ALTA) {
                         producto.setCantidad(producto.getCantidad() - renglon.getCantidad());
                     }
@@ -182,7 +183,7 @@ public class ProductoServiceImpl implements IProductoService {
                     if (operacion == TipoDeOperacion.ELIMINACION) {
                         producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
                     }
-                } else if (renglon.getFactura() instanceof FacturaCompra) {
+                } else if (factura instanceof FacturaCompra) {
                     if (operacion == TipoDeOperacion.ALTA) {
                         producto.setCantidad(producto.getCantidad() + renglon.getCantidad());
                     }
@@ -193,7 +194,6 @@ public class ProductoServiceImpl implements IProductoService {
                             result = 0;
                         }
                         producto.setCantidad(result);
-
                     }
                 }
                 productoRepository.actualizar(producto);
@@ -203,9 +203,12 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     @Transactional
-    public void eliminarMultiplesProductos(List<Producto> productos) {
-        for (Producto producto : productos) {
+    public void eliminarMultiplesProductos(long[] idProducto) {
+        List<Producto> productos = new ArrayList<>();
+        for (Long i : idProducto) {
+            Producto producto = this.getProductoPorId(i);
             producto.setEliminado(true);
+            productos.add(producto);
         }
         productoRepository.actualizarMultiplesProductos(productos);
     }

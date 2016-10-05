@@ -225,7 +225,7 @@ private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
             JOptionPane.showMessageDialog(this, "Seleccione un rubro de la lista para poder continuar.",
                     "Error", JOptionPane.ERROR_MESSAGE);
         } else {
-            rubroService.eliminar(rubroSeleccionado);
+            rubroService.eliminar(rubroSeleccionado.getId_Rubro());
             txt_ModicaElimina.setText("");
             rubroSeleccionado = null;
             cargarListRubros();

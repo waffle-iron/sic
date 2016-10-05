@@ -75,6 +75,19 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
             return gastos.get(0);
         }
     }
+    
+    @Override
+    public Gasto getGastoPorNroYEmpresa(long nroPago, long id_Empresa) {
+        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastoPorNroYEmpresa", Gasto.class);
+        typedQuery.setParameter("nroPago", nroPago);
+        typedQuery.setParameter("id_Empresa", id_Empresa);
+        List<Gasto> gastos = typedQuery.getResultList();
+        if (gastos.isEmpty()) {
+            return null;
+        } else {
+            return gastos.get(0);
+        }
+    }
 
     @Override
     public int getUltimoNumeroDeGasto(long idEmpresa) {

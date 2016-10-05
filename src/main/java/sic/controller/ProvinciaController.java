@@ -29,10 +29,10 @@ public class ProvinciaController {
             this.paisService = paisService;
     }
     
-    @GetMapping("/provincias/{id}")
+    @GetMapping("/provincias/{idProvincia}")
     @ResponseStatus(HttpStatus.OK)
-    public Provincia getProvinciaPorId(@PathVariable("id") long id) {
-        return provinciaService.getProvinciaPorId(id);
+    public Provincia getProvinciaPorId(@PathVariable long idProvincia) {
+        return provinciaService.getProvinciaPorId(idProvincia);
     }
     
     @PutMapping("/provincias")
@@ -44,25 +44,22 @@ public class ProvinciaController {
         return provinciaService.getProvinciaPorId(provincia.getId_Provincia());
     }
     
-    @DeleteMapping("/provincias/{id}")
+    @DeleteMapping("/provincias/{idProvincia}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") long id) {
-        Provincia provincia = provinciaService.getProvinciaPorId(id);
-        if(provincia != null) {
-            provinciaService.eliminar(provincia);
-        }
+    public void eliminar(@PathVariable long idProvincia) {
+        provinciaService.eliminar(idProvincia);        
     }
     
-    @GetMapping("/provincias/paises/{id}")
+    @GetMapping("/provincias/paises/{idPais}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Provincia> getProvinciasDelPais(@PathVariable("id") long id) {
-        return provinciaService.getProvinciasDelPais(paisService.getPaisPorId(id));
+    public List<Provincia> getProvinciasDelPais(@PathVariable long idPais) {
+        return provinciaService.getProvinciasDelPais(paisService.getPaisPorId(idPais));
     }
     
     @PostMapping("/provincias")
     @ResponseStatus(HttpStatus.CREATED)
     public Provincia guardar(@RequestBody Provincia provincia) {
         provinciaService.guardar(provincia);
-        return provinciaService.getProvinciaPorId(provincia.getId_Provincia());
+        return provinciaService.getProvinciaPorNombre(provincia.getNombre(), provincia.getPais());
     }
 }
