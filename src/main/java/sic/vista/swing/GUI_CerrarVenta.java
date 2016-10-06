@@ -1,21 +1,37 @@
 package sic.vista.swing;
 
+import java.awt.Desktop;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.swing.JRViewer;
 import org.apache.log4j.Logger;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.web.client.RestTemplate;
 import sic.AppContextProvider;
 import sic.modelo.Factura;
 import sic.modelo.FacturaVenta;
@@ -45,6 +61,8 @@ public class GUI_CerrarVenta extends JDialog {
     private final IPedidoService pedidoService = appContext.getBean(IPedidoService.class);
     private final IPagoService pagoService = appContext.getBean(IPagoService.class);
     private final HotKeysHandler keyHandler = new HotKeysHandler();
+    private static final String REST_URI =  "http://localhost:8080/api/v1";
+    private final RestTemplate restTemplate = new RestTemplate();
     private static final Logger LOGGER = Logger.getLogger(GUI_CerrarVenta.class.getPackage().getName());
 
     public GUI_CerrarVenta(JDialog parent, boolean modal) {
@@ -77,16 +95,31 @@ public class GUI_CerrarVenta extends JDialog {
         this.setIconImage(iconoVentana.getImage());
     }
 
-    private void lanzarReporteFactura(Factura factura) throws JRException {
-//        JasperPrint report = facturaService.getReporteFacturaVenta(factura);
-//        JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
-//        viewer.setSize(gui_puntoDeVenta.getWidth() - 25, gui_puntoDeVenta.getHeight() - 25);
-//        ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
-//        viewer.setIconImage(iconoVentana.getImage());
-//        viewer.setLocationRelativeTo(null);
-//        JRViewer jrv = new JRViewer(report);
-//        viewer.getContentPane().add(jrv);
-//        viewer.setVisible(true);
+    private void lanzarReporteFactura(Factura factura) throws JRException, IOException {
+//        restTemplate.getInterceptors().add((request, body, execution) -> {
+//            ClientHttpResponse response = execution.execute(request, body);
+//            response.getHeaders().setContentType(MediaType.parseMediaType("application/pdf"));
+//            response.getHeaders().setContentDispositionFormData("factura.pdf", "factura.pdf");
+//              response.getHeaders().setCacheControl("must-revalidate, post-check=0, pre-check=0");
+//            return response;
+//        });
+////        byte[] pdf = restTemplate.getForObject(REST_URI + "/facturas/" + factura.getId_Factura() + "/reporte", byte[].class);
+            Files.write(Paths.get("reportTemp.pdf"), restTemplate.getForObject(REST_URI + "/facturas/" + factura.getId_Factura() + "/reporte", byte[].class));
+            if(Desktop.isDesktopSupported()) {
+                File myFile = new File("reportTemp.pdf");
+                Desktop.getDesktop().open(myFile);
+            }
+////        ByteArrayInputStream bis = new ByteArrayInputStream(pdf);
+////        JasperPrint report = JasperFillManager.fillReport(bis, null, new JREmptyDataSource());
+////        
+////        JDialog viewer = new JDialog(new JFrame(), "Vista Previa", true);
+////        viewer.setSize(gui_puntoDeVenta.getWidth() - 25, gui_puntoDeVenta.getHeight() - 25);
+////        ImageIcon iconoVentana = new ImageIcon(GUI_DetalleCliente.class.getResource("/sic/icons/SIC_16_square.png"));
+////        viewer.setIconImage(iconoVentana.getImage());
+////        viewer.setLocationRelativeTo(null);
+////        JRViewer jrv = new JRViewer(report);
+////        viewer.getContentPane().add(jrv);
+////        viewer.setVisible(true);
     }
 
     private void cargarFormasDePago() {
@@ -130,29 +163,28 @@ public class GUI_CerrarVenta extends JDialog {
     }
 
     private FacturaVenta construirFactura() {
-        FacturaVenta facturaVenta = FacturaVenta.builder()
-            .fecha(gui_puntoDeVenta.getFechaFactura())
-            .tipoFactura(gui_puntoDeVenta.getTipoDeComprobante().charAt(gui_puntoDeVenta.getTipoDeComprobante().length() - 1))
-            .numSerie(1)
-            .fechaVencimiento(gui_puntoDeVenta.getFechaVencimiento())
-            .transportista((Transportista) cmb_Transporte.getSelectedItem())
-            .renglones(gui_puntoDeVenta.getRenglones())
-            .subTotal(gui_puntoDeVenta.getResultadosFactura().getSubTotal())
-            .recargo_porcentaje(gui_puntoDeVenta.getResultadosFactura().getRecargo_porcentaje())
-            .recargo_neto(gui_puntoDeVenta.getResultadosFactura().getRecargo_neto())
-            .descuento_porcentaje(0)
-            .descuento_neto(0)
-            .subTotal_neto(gui_puntoDeVenta.getResultadosFactura().getSubTotal_neto())
-            .iva_105_neto(gui_puntoDeVenta.getResultadosFactura().getIva_105_neto())
-            .iva_21_neto(gui_puntoDeVenta.getResultadosFactura().getIva_21_neto())
-            .impuestoInterno_neto(gui_puntoDeVenta.getResultadosFactura().getImpuestoInterno_neto())
-            .total(gui_puntoDeVenta.getResultadosFactura().getTotal())
-            .observaciones(gui_puntoDeVenta.getTxta_Observaciones().getText().trim())
-            .empresa(gui_puntoDeVenta.getEmpresa())
-            .eliminada(false)
-            .cliente(gui_puntoDeVenta.getCliente())
-            .usuario(UsuarioActivo.getInstance().getUsuario())
-            .build();
+        FacturaVenta facturaVenta = new FacturaVenta();
+        facturaVenta.setFecha(gui_puntoDeVenta.getFechaFactura());
+        facturaVenta.setTipoFactura(gui_puntoDeVenta.getTipoDeComprobante().charAt(gui_puntoDeVenta.getTipoDeComprobante().length() - 1));
+        facturaVenta.setNumSerie(1);
+        facturaVenta.setFechaVencimiento(gui_puntoDeVenta.getFechaVencimiento());
+        facturaVenta.setTransportista((Transportista) cmb_Transporte.getSelectedItem());
+        facturaVenta.setRenglones(gui_puntoDeVenta.getRenglones());
+        facturaVenta.setSubTotal(gui_puntoDeVenta.getResultadosFactura().getSubTotal());
+        facturaVenta.setRecargo_porcentaje(gui_puntoDeVenta.getResultadosFactura().getRecargo_porcentaje());
+        facturaVenta.setRecargo_neto(gui_puntoDeVenta.getResultadosFactura().getRecargo_neto());
+        facturaVenta.setDescuento_porcentaje(0);
+        facturaVenta.setDescuento_neto(0);
+        facturaVenta.setSubTotal_neto(gui_puntoDeVenta.getResultadosFactura().getSubTotal_neto());
+        facturaVenta.setIva_105_neto(gui_puntoDeVenta.getResultadosFactura().getIva_105_neto());
+        facturaVenta.setIva_21_neto(gui_puntoDeVenta.getResultadosFactura().getIva_21_neto());
+        facturaVenta.setImpuestoInterno_neto(gui_puntoDeVenta.getResultadosFactura().getImpuestoInterno_neto());
+        facturaVenta.setTotal(gui_puntoDeVenta.getResultadosFactura().getTotal());
+        facturaVenta.setObservaciones(gui_puntoDeVenta.getTxta_Observaciones().getText().trim());
+        facturaVenta.setEmpresa(gui_puntoDeVenta.getEmpresa());
+        facturaVenta.setEliminada(false);
+        facturaVenta.setCliente(gui_puntoDeVenta.getCliente());
+        facturaVenta.setUsuario(UsuarioActivo.getInstance().getUsuario());          
         double montoPagado = 0.0;
         List<Pago> pagos = this.construirListaPagos();
         for (Pago pago : pagos) {
@@ -160,10 +192,7 @@ public class GUI_CerrarVenta extends JDialog {
             montoPagado += pago.getMonto();
         }
         facturaVenta.setPagos(pagos);
-        facturaVenta.setPagada((facturaVenta.getTotal() - montoPagado) <= 0);
-//         for (RenglonFactura renglon : gui_puntoDeVenta.getRenglones()) {
-//             renglon.setFactura(facturaVenta);
-//         }               
+        facturaVenta.setPagada((facturaVenta.getTotal() - montoPagado) <= 0);            
         return facturaVenta;
     }
 
@@ -236,9 +265,9 @@ public class GUI_CerrarVenta extends JDialog {
             }
             if (!dividir) {
                 FacturaVenta factura = this.construirFactura();
-//                if (gui_puntoDeVenta.getPedido() != null) {
-//                    factura.setPedido(pedidoService.getPedidoPorId(gui_puntoDeVenta.getPedido().getId_Pedido()));
-//                }
+                if (gui_puntoDeVenta.getPedido() != null) {
+                    factura.setPedido(pedidoService.getPedidoPorId(gui_puntoDeVenta.getPedido().getId_Pedido()));
+                }
                 this.lanzarReporteFactura(this.guardarFactura(factura));
                 exito = true;
             } else {
@@ -267,6 +296,8 @@ public class GUI_CerrarVenta extends JDialog {
             String msjError = "Se produjo un error procesando el reporte.";
             LOGGER.error(msjError + " - " + ex.getMessage());
             JOptionPane.showMessageDialog(this, msjError, "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(GUI_CerrarVenta.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

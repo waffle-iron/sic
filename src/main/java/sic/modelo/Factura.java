@@ -69,8 +69,7 @@ public abstract class Factura implements Serializable {
     @JsonProperty(access = Access.WRITE_ONLY)
     private List<RenglonFactura> renglones;
     
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "id_Factura")    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "factura")    
     private List<Pago> pagos;
 
     private double subTotal;

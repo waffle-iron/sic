@@ -68,10 +68,10 @@ public class FacturaController {
     
     @PostMapping("/facturas")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Factura> guardar(@RequestBody Factura factura,
+    public List<Factura> guardar(@RequestBody FacturaVenta factura,
                                  @RequestParam(value = "indices", required = false) int[] indices) {
         List<Factura> facturas =  new ArrayList<>();
-        if (indices.length > 0 && factura instanceof FacturaVenta) {
+        if (indices != null && factura instanceof FacturaVenta) {
             facturas.addAll(facturaService.dividirFactura((FacturaVenta) factura, indices));
             facturaService.guardar(facturas);
         } else {

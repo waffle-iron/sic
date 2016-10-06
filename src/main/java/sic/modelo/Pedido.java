@@ -76,8 +76,7 @@ public class Pedido implements Serializable {
     @JoinColumn(name = "id_Usuario", referencedColumnName = "id_Usuario")
     private Usuario usuario;
 
-    @OneToMany
-    @JoinColumn(name = "id_Pedido")
+    @OneToMany(mappedBy = "pedido")
     @JsonProperty(access = Access.WRITE_ONLY)
     private List<Factura> facturas;
 

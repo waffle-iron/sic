@@ -208,16 +208,14 @@ public class FacturaServiceImplTest {
         List<RenglonFactura> renglones = new ArrayList<>();
         renglones.add(renglon1);
         renglones.add(renglon2);
-        FacturaVenta factura = FacturaVenta.builder()
-                               .renglones(renglones)
-                               .fecha(new Date())
-                               .transportista(Transportista.builder().nombre("demonte").build())
-                               .empresa(Empresa.builder().nombre("CocaCola").build())
-                               .cliente(Cliente.builder().nombreFantasia("Enrrique Iglesias").build())
-                               .usuario(Usuario.builder().nombre("Marian Jhons  help").build())
-                               .tipoFactura('A').build();
-//        when(factura.getRenglones()).thenReturn(renglones);
-//        when(factura.getTipoFactura()).thenReturn('A');
+        FacturaVenta factura = new FacturaVenta();
+        factura.setRenglones(renglones);
+        factura.setFecha(new Date());
+        factura.setTransportista(Transportista.builder().nombre("demonte").build());
+        factura.setEmpresa(Empresa.builder().nombre("CocaCola").build());
+        factura.setCliente(Cliente.builder().nombreFantasia("Enrrique Iglesias").build());
+        factura.setUsuario(Usuario.builder().nombre("Marian Jhons  help").build());
+        factura.setTipoFactura('A');
         int[] indices = {0, 1};
         int cantidadDeFacturasEsperadas = 2;
         List<Factura> result = facturaService.dividirFactura(factura, indices);
@@ -376,15 +374,12 @@ public class FacturaServiceImplTest {
     @Test
     public void shouldCalcularTotalFacturadoCompra() {
         List<FacturaCompra> facturasDeCompra = new ArrayList<>();
-        FacturaCompra factura1 = FacturaCompra.builder()
-                      .total(1024.759)
-                      .build();
-        FacturaCompra factura2 = FacturaCompra.builder()
-                      .total(3424.089)
-                      .build();
-        FacturaCompra factura3 = FacturaCompra.builder()
-                      .total(21124.504)
-                      .build();
+        FacturaCompra factura1 = new FacturaCompra();
+        factura1.setTotal(1024.759);
+        FacturaCompra factura2 = new FacturaCompra();
+        factura2.setTotal(3424.089);
+        FacturaCompra factura3 = new FacturaCompra();
+        factura3.setTotal(21124.504);
         facturasDeCompra.add(factura1);
         facturasDeCompra.add(factura2);
         facturasDeCompra.add(factura3);
@@ -419,18 +414,15 @@ public class FacturaServiceImplTest {
     @Test
     public void shouldCalcularIvaCompra() {
         List<FacturaCompra> facturasDeCompra = new ArrayList<>();
-        FacturaCompra factura1 = FacturaCompra.builder()
-                      .iva_105_neto(0)
-                      .iva_21_neto(35)
-                      .build();;
-        FacturaCompra factura2 = FacturaCompra.builder()
-                      .iva_105_neto(0)
-                      .iva_21_neto(30)
-                      .build();
-        FacturaCompra factura3 = FacturaCompra.builder()
-                      .iva_105_neto(25)
-                      .iva_21_neto(0)
-                      .build();
+        FacturaCompra factura1 = new FacturaCompra();
+        factura1.setIva_105_neto(0);
+        factura1.setIva_21_neto(35);
+        FacturaCompra factura2 = new FacturaCompra();
+        factura2.setIva_105_neto(0);
+        factura2.setIva_21_neto(30);
+        FacturaCompra factura3 = new FacturaCompra();
+        factura3.setIva_105_neto(25);
+        factura3.setIva_21_neto(0);
         facturasDeCompra.add(factura1);
         facturasDeCompra.add(factura2);
         facturasDeCompra.add(factura3);
