@@ -33,6 +33,8 @@ public interface IPagoService {
     void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora);
     
     void validarOperacion(Pago pago);
+    
+    long calcularSiguienteNroPago(Long idEmpresa);
 
     void guardar(Pago pago);
 

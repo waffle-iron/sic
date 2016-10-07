@@ -73,6 +73,7 @@ public class PagoServiceImpl implements IPagoService {
     @Transactional
     public void guardar(Pago pago) {
         this.validarOperacion(pago);
+        pago.setNroPago(this.calcularSiguienteNroPago(pago.getEmpresa().getId_Empresa()));
         pagoRepository.guardar(pago);
         this.setFacturaEstadoDePago(pago.getFactura());
         LOGGER.warn("El Pago " + pago + " se guardó correctamente.");
@@ -86,6 +87,11 @@ public class PagoServiceImpl implements IPagoService {
         pagoRepository.actualizar(pago);
         this.setFacturaEstadoDePago(pago.getFactura());
         LOGGER.warn("El Pago " + pago + " se eliminó correctamente.");
+    }
+    
+    @Override
+    public long calcularSiguienteNroPago(Long idEmpresa) {
+        return 1 + pagoRepository.buscarMayorNroPago(idEmpresa);
     }
 
     @Override

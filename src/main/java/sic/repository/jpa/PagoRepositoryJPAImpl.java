@@ -47,6 +47,20 @@ public class PagoRepositoryJPAImpl implements IPagoRepository {
         List<Pago> Pagos = typedQuery.getResultList();
         return Pagos;
     }
+    
+    
+    @Override
+    public long buscarMayorNroPago(long idEmpresa) {
+        TypedQuery<Long> typedQuery = em.createNamedQuery("Pago.buscarMayorNroPago", Long.class);
+        typedQuery.setParameter("idEmpresa", idEmpresa);
+        Long resultado = typedQuery.getSingleResult();
+        if (resultado == null) {
+            return 0;
+        } else {
+            return resultado;
+        }
+    }
+
     @Override
     @Transactional
     public void guardar(Pago pago) {
