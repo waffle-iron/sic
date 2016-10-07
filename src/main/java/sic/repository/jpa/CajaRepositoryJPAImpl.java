@@ -79,7 +79,7 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
     }
 
     @Override
-    public Caja getCajaPorNroYEmpresa(long nroCaja, long id_Empresa) {
+    public Caja getCajaPorNroYEmpresa(int nroCaja, long id_Empresa) {
         TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.buscarCajaPorNumeroYEmpresa", Caja.class);
         typedQuery.setParameter("nroCaja", nroCaja);
         typedQuery.setParameter("id_Empresa", id_Empresa);

@@ -22,7 +22,7 @@ public interface ICajaService {
 
     Caja getCajaPorIdYEmpresa(long id_Caja, long id_Empresa);
     
-    Caja getCajaPorNroYEmpresa(long nroCaja, long id_Empresa);
+    Caja getCajaPorNroYEmpresa(int nroCaja, long id_Empresa);
 
     List<Caja> getCajas(long id_Empresa, Date desde, Date hasta);
 

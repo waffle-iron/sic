@@ -87,7 +87,7 @@ public class CajaServiceImpl implements ICajaService {
     @Transactional
     public void guardar(Caja caja) {
         this.validarCaja(caja);
-        caja.setNroCaja(this.getUltimoNumeroDeCaja(EmpresaActiva.getInstance().getEmpresa().getId_Empresa()) + 1);
+        caja.setNroCaja(this.getUltimoNumeroDeCaja(caja.getEmpresa().getId_Empresa()) + 1);
         cajaRepository.guardar(caja);
         LOGGER.warn("La Caja " + caja + " se guardó correctamente." );
     }
@@ -122,7 +122,7 @@ public class CajaServiceImpl implements ICajaService {
     }
     
     @Override
-    public Caja getCajaPorNroYEmpresa(long nroCaja, long id_Empresa) {        
+    public Caja getCajaPorNroYEmpresa(int nroCaja, long id_Empresa) {        
         return cajaRepository.getCajaPorNroYEmpresa(nroCaja, id_Empresa);        
     }
 
@@ -132,25 +132,24 @@ public class CajaServiceImpl implements ICajaService {
     }
  
     @Override
-    public double calcularTotalPagos(List<Pago> movimientos) {
+    public double calcularTotalPagos(List<Pago> pagos) {
         double total = 0.0;
-        for (Object movimiento : movimientos) {
-                Pago pago = (Pago) movimiento;
-                if (pago.getFactura() instanceof FacturaVenta) {
-                    total += pago.getMonto();
-                }
-                if (pago.getFactura() instanceof FacturaCompra) {
-                    total -= pago.getMonto();
-                }
+        for (Pago pago : pagos) {
+            if (pago.getFactura() instanceof FacturaVenta) {
+                total += pago.getMonto();
+            }
+            if (pago.getFactura() instanceof FacturaCompra) {
+                total -= pago.getMonto();
+            }
         }
         return total;
     }
     
     @Override
-    public double calcularTotalGastos(List<Gasto> movimientos) {
+    public double calcularTotalGastos(List<Gasto> gastos) {
         double total = 0.0;
-        for (Object movimiento : movimientos) {
-                total += ((Gasto) movimiento).getMonto();
+        for (Gasto gasto : gastos) {
+            total += gasto.getMonto();
         }
         return total;
     }

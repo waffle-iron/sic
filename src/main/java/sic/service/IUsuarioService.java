@@ -5,7 +5,7 @@ import sic.modelo.Usuario;
 
 public interface IUsuarioService {
    
-    Usuario getUsuarioPorId(long idUsuario);
+    Usuario getUsuarioPorId(Long idUsuario);
 
     void actualizar(Usuario usuario);
 

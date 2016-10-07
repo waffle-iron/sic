@@ -77,20 +77,20 @@ public class CajaController {
     
     @GetMapping("/cajas/total-pagos")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalPagos(@RequestParam long[] idCaja) {
+    public double calcularTotalPagos(@RequestParam long[] idPago) {
         List<Pago> pagos = new ArrayList<>();
-        for(long i : idCaja) {
-            pagos.add(pagoService.getPagoPorId(i));
+        for(long id : idPago) {
+            pagos.add(pagoService.getPagoPorId(id));
         }
         return cajaService.calcularTotalPagos(pagos);
     }
     
     @GetMapping("/cajas/total-gastos")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalGastos(@RequestParam long[] idCaja) {
+    public double calcularTotalGastos(@RequestParam long[] idGasto) {
         List<Gasto> gastos = new ArrayList<>();
-        for(Long i : idCaja) {
-            gastos.add(gastoService.getGastoPorId(i));
+        for(long id : idGasto) {
+            gastos.add(gastoService.getGastoPorId(id));
         }
         return cajaService.calcularTotalGastos(gastos);
     }
