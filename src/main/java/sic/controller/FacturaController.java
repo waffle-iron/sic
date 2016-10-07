@@ -66,12 +66,12 @@ public class FacturaController {
         return facturaService.getFacturaPorId(idFactura);
     }
     
-    @PostMapping("/facturas")
+    @PostMapping("/facturas/venta")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Factura> guardar(@RequestBody FacturaVenta factura,
-                                 @RequestParam(value = "indices", required = false) int[] indices) {
+    public List<Factura> guardarFacturaVenta(@RequestBody FacturaVenta factura,
+                                             @RequestParam(value = "indices", required = false) int[] indices) {
         List<Factura> facturas =  new ArrayList<>();
-        if (indices != null && factura instanceof FacturaVenta) {
+        if (indices != null) {
             facturas.addAll(facturaService.dividirFactura((FacturaVenta) factura, indices));
             facturaService.guardar(facturas);
         } else {
@@ -87,10 +87,17 @@ public class FacturaController {
         return facturas;
     }
     
+    @PostMapping("/facturas/compra")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Factura guardarFacturaCompra(@RequestBody FacturaVenta factura) {
+        facturaService.guardar(factura);        
+        return factura;
+    }
+    
     @PostMapping("/facturas/pedidos/{idPedido}")
     @ResponseStatus(HttpStatus.CREATED)
     public Factura guardar(@PathVariable long idPedido,
-                           @RequestBody Factura factura) {
+                           @RequestBody FacturaVenta factura) {
         facturaService.guardar(factura, pedidoService.getPedidoPorId(idPedido)); 
         return facturaService.getFacturaVentaPorTipoSerieNum(factura.getTipoFactura(),
                 factura.getNumSerie(), factura.getNumFactura());
