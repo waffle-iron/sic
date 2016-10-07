@@ -289,9 +289,14 @@ public class FacturaServiceImpl implements IFacturaService {
     public void guardar(Factura factura) {
         factura.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(factura), factura.getNumSerie()));
         this.validarFactura(factura);
+        int i = 0;
+        for(Pago pago : factura.getPagos()) {
+            pago.setNroPago(pagoService.getSiguienteNroPago(pago.getEmpresa().getId_Empresa()) + i);
+            i++;
+        }
         facturaRepository.guardar(factura);
         productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
-        LOGGER.warn("La Factura " + factura + " se guardó correctamente." );
+        LOGGER.warn("La Factura " + factura + " se guardó correctamente.");
     }
     
     @Override
