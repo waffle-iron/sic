@@ -50,7 +50,7 @@ public class PagoRepositoryJPAImpl implements IPagoRepository {
     
     
     @Override
-    public long buscarMayorNroPago(long idEmpresa) {
+    public long getMayorNroPago(long idEmpresa) {
         TypedQuery<Long> typedQuery = em.createNamedQuery("Pago.buscarMayorNroPago", Long.class);
         typedQuery.setParameter("idEmpresa", idEmpresa);
         Long resultado = typedQuery.getSingleResult();

@@ -17,6 +17,8 @@ public interface IPagoService {
     double getSaldoAPagar(Factura factura);
 
     double getTotalPagado(Factura factura);
+    
+    long getSiguienteNroPago(Long idEmpresa);
 
     List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
     
@@ -32,9 +34,7 @@ public interface IPagoService {
             
     void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora);
     
-    void validarOperacion(Pago pago);
-    
-    long calcularSiguienteNroPago(Long idEmpresa);
+    void validarOperacion(Pago pago);     
 
     void guardar(Pago pago);
 

@@ -13,7 +13,7 @@ public interface IPagoRepository {
     
     List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
 
-    long buscarMayorNroPago(long idEmpresa);
+    long getMayorNroPago(long idEmpresa);
     
     void guardar(Pago pago);
     

@@ -291,12 +291,12 @@ public class FacturaServiceImpl implements IFacturaService {
         this.validarFactura(factura);
         int i = 0;
         for(Pago pago : factura.getPagos()) {
-            pago.setNroPago(pagoService.calcularSiguienteNroPago(pago.getEmpresa().getId_Empresa()) + i);
+            pago.setNroPago(pagoService.getSiguienteNroPago(pago.getEmpresa().getId_Empresa()) + i);
             i++;
         }
         facturaRepository.guardar(factura);
         productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
-        LOGGER.warn("La Factura " + factura + " se guardó correctamente." );
+        LOGGER.warn("La Factura " + factura + " se guardó correctamente.");
     }
     
     @Override
