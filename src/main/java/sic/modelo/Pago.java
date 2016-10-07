@@ -35,6 +35,9 @@ import lombok.NoArgsConstructor;
             + "WHERE p.empresa.id_Empresa = :id_Empresa "
             + "AND p.formaDePago.id_FormaDePago = :id_FormaDePago "
             + "AND p.eliminado = false AND p.fecha BETWEEN :desde AND :hasta"),
+    @NamedQuery(name = "Pago.buscarMayorNroPago",
+            query = "SELECT MAX(p.nroPago) FROM Pago p "
+            + "WHERE p.empresa.id_Empresa = :idEmpresa"),
     @NamedQuery(name = "Pago.buscarPorFactura",
             query = "SELECT p FROM Pago p "
             + "WHERE p.factura = :factura AND p.eliminado = false "

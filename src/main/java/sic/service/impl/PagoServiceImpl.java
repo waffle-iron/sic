@@ -70,9 +70,15 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     @Override
+    public long getSiguienteNroPago(Long idEmpresa) {
+        return 1 + pagoRepository.getMayorNroPago(idEmpresa);
+    }
+    
+    @Override
     @Transactional
     public void guardar(Pago pago) {
         this.validarOperacion(pago);
+        pago.setNroPago(this.getSiguienteNroPago(pago.getEmpresa().getId_Empresa()));
         pagoRepository.guardar(pago);
         this.setFacturaEstadoDePago(pago.getFactura());
         LOGGER.warn("El Pago " + pago + " se guardó correctamente.");
@@ -87,7 +93,7 @@ public class PagoServiceImpl implements IPagoService {
         this.setFacturaEstadoDePago(pago.getFactura());
         LOGGER.warn("El Pago " + pago + " se eliminó correctamente.");
     }
-
+     
     @Override
     public void pagarMultiplesFacturasVenta(List<FacturaVenta> facturasVenta, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
         List<Factura> facturas = new ArrayList<>();
