@@ -25,7 +25,6 @@ import javax.persistence.TemporalType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import sic.service.EstadoPedido;
 
 @Entity
 @Table(name = "pedido")

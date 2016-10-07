@@ -15,7 +15,7 @@ import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
 import sic.modelo.EmpresaActiva;
 import sic.modelo.Usuario;
-import sic.service.EstadoCaja;
+import sic.modelo.EstadoCaja;
 import sic.service.ICajaService;
 import sic.service.IUsuarioService;
 import sic.service.BusinessServiceException;

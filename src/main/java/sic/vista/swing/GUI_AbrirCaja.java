@@ -10,7 +10,7 @@ import sic.AppContextProvider;
 import sic.modelo.Caja;
 import sic.modelo.EmpresaActiva;
 import sic.modelo.UsuarioActivo;
-import sic.service.EstadoCaja;
+import sic.modelo.EstadoCaja;
 import sic.service.ICajaService;
 
 public class GUI_AbrirCaja extends javax.swing.JDialog {

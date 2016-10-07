@@ -5,8 +5,8 @@ import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import sic.service.EstadoCaja;
-import sic.service.EstadoPedido;
+import sic.modelo.EstadoCaja;
+import sic.modelo.EstadoPedido;
 
 public class ColoresEstadosRenderer extends DefaultTableCellRenderer {
 

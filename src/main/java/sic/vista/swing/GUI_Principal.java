@@ -16,7 +16,7 @@ import sic.modelo.Caja;
 import sic.modelo.Empresa;
 import sic.modelo.EmpresaActiva;
 import sic.modelo.UsuarioActivo;
-import sic.service.EstadoCaja;
+import sic.modelo.EstadoCaja;
 import sic.service.ICajaService;
 import sic.service.IEmpresaService;
 import sic.service.BusinessServiceException;
