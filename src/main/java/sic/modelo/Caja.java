@@ -18,7 +18,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import sic.service.EstadoCaja;
 
 @Entity
 @Table(name = "caja")

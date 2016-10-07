@@ -27,7 +27,7 @@ import sic.modelo.Pedido;
 import sic.modelo.RenglonPedido;
 import sic.modelo.Usuario;
 import sic.service.BusinessServiceException;
-import sic.service.EstadoPedido;
+import sic.modelo.EstadoPedido;
 import sic.service.IClienteService;
 import sic.service.IPedidoService;
 import sic.service.IUsuarioService;

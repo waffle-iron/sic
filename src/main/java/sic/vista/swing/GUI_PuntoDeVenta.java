@@ -41,7 +41,7 @@ import sic.service.Movimiento;
 import sic.service.BusinessServiceException;
 import sic.modelo.RenglonPedido;
 import sic.modelo.UsuarioActivo;
-import sic.service.EstadoPedido;
+import sic.modelo.EstadoPedido;
 import sic.service.IPedidoService;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;

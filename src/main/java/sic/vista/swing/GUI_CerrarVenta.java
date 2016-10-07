@@ -41,7 +41,7 @@ import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.modelo.UsuarioActivo;
-import sic.service.EstadoPedido;
+import sic.modelo.EstadoPedido;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IPagoService;

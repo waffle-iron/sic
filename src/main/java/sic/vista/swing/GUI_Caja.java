@@ -29,7 +29,7 @@ import sic.modelo.FormaDePago;
 import sic.modelo.Gasto;
 import sic.modelo.Pago;
 import sic.modelo.UsuarioActivo;
-import sic.service.EstadoCaja;
+import sic.modelo.EstadoCaja;
 import sic.service.ICajaService;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;

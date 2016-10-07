@@ -28,7 +28,7 @@ import sic.modelo.FormaDePago;
 import sic.modelo.Gasto;
 import sic.modelo.Pago;
 import sic.repository.ICajaRepository;
-import sic.service.EstadoCaja;
+import sic.modelo.EstadoCaja;
 import sic.service.BusinessServiceException;
 import sic.service.IEmpresaService;
 import sic.service.IFormaDePagoService;

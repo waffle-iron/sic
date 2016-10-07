@@ -1,4 +1,4 @@
-package sic.service;
+package sic.modelo;
 
 /**
  * Describe los distintos estados de un Pedido.
