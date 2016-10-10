@@ -22,6 +22,6 @@ public interface IGastoService {
 
     void validarGasto(Gasto gasto);
 
-    int getUltimoNumeroDeGasto(long id_empresa);
+    long getUltimoNumeroDeGasto(long id_empresa);
 
 }
