@@ -26,6 +26,6 @@ public interface IFacturaRepository {
 
 //    List<RenglonFactura> getRenglonesDeLaFactura(Factura factura);
 
-    void guardar(Factura factura);    
+    Factura guardar(Factura factura);
     
 }

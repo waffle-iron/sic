@@ -55,8 +55,8 @@ public class PedidoServiceImpl implements IPedidoService {
         if (pedido.getFecha() == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_fecha_vacia"));
-        }
-        if (pedido.getRenglones().isEmpty()) {
+        }        
+        if (pedido.getRenglones() == null || pedido.getRenglones().isEmpty()) {  
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_renglones_vacio"));
         }
@@ -94,16 +94,16 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     public void actualizarEstadoPedido(Pedido pedido) {
-        pedido.setEstado(EstadoPedido.ABIERTO);
         if (pedido != null) {
-            if (this.getFacturasDelPedido(pedido.getNroPedido()).isEmpty()) {
-                pedido.setEstado(EstadoPedido.ABIERTO);
-            }
-            if (facturaService.getRenglonesPedidoParaFacturar(pedido, "Factura A").isEmpty()) {
-                pedido.setEstado(EstadoPedido.CERRADO);
-            }
-            this.actualizar(pedido);
-        }
+           pedido.setEstado(EstadoPedido.ACTIVO);
+           if (this.getFacturasDelPedido(pedido.getNroPedido()).isEmpty()) {
+               pedido.setEstado(EstadoPedido.ABIERTO);
+           }
+           if (facturaService.getRenglonesPedidoParaFacturar(pedido, "Factura A").isEmpty()) {
+               pedido.setEstado(EstadoPedido.CERRADO);
+           }
+           this.actualizar(pedido);
+       }
     }
 
     @Override

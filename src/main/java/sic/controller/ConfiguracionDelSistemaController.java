@@ -33,7 +33,7 @@ public class ConfiguracionDelSistemaController {
         return configuracionDelSistemaService.getConfiguracionDelSistemaPorId(idConfiguracionDelSistema);
     }
     
-    @PutMapping("/configuracion-del-sistema")
+    @PutMapping("/configuraciones-del-sistema")
     @ResponseStatus(HttpStatus.OK)
     public ConfiguracionDelSistema actualizar(@RequestBody ConfiguracionDelSistema configuracionDelSistema) {
         if(configuracionDelSistemaService.getConfiguracionDelSistemaPorId(configuracionDelSistema.getId_ConfiguracionDelSistema()) != null) {

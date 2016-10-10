@@ -157,8 +157,10 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
 
     @Override
     @Transactional
-    public void guardar(Factura factura) {;
-        em.persist(em.merge(factura));
+    public Factura guardar(Factura factura) {
+        factura = em.merge(factura);
+        em.persist(factura);
+        return factura;
     }
 
     @Override

@@ -286,41 +286,45 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     @Transactional
-    public void guardar(Factura factura) {
-        factura.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(factura), factura.getNumSerie()));
-        this.validarFactura(factura);
-        int i = 0;
-        for(Pago pago : factura.getPagos()) {
-            pago.setNroPago(pagoService.getSiguienteNroPago(pago.getEmpresa().getId_Empresa()) + i);
-            i++;
+    public Factura guardar(Factura factura) {
+        if (factura instanceof FacturaVenta) {
+            //Serie de la factura hardcodeada a 1
+            factura.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(factura), 1));
         }
-        facturaRepository.guardar(factura);
+        this.validarFactura(factura);
+        //PAGOS
+        int i = 0;
+        if (factura.getPagos() != null) {
+            for (Pago pago : factura.getPagos()) {
+                pago.setNroPago(pagoService.getSiguienteNroPago(pago.getEmpresa().getId_Empresa()) + i);
+                pago.setFactura(factura);
+                i++;
+            }
+        }
+        //PEDIDO
+        if (factura.getPedido() != null) {
+            List<Factura> facturas = factura.getPedido().getFacturas();
+            facturas.add(factura);
+            factura.getPedido().setFacturas(facturas);            
+            pedidoService.actualizar(factura.getPedido());
+            pedidoService.actualizarEstadoPedido(factura.getPedido());
+        }
+        factura = facturaRepository.guardar(factura);
         productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
         LOGGER.warn("La Factura " + factura + " se guardó correctamente.");
+        return factura;
     }
     
     @Override
     @Transactional
-    public void guardar(List<Factura> facturas) {
+    public List<Factura> guardar(List<Factura> facturas) {
+        List<Factura> facturasGuardadas = new ArrayList<>();
         for (Factura f : facturas) {
             this.guardar(f);
+            facturasGuardadas.add(f);
         }
-    }
-    
-    @Override
-    @Transactional
-    public void guardar(Factura factura, Pedido pedido) {
-        List<Factura> facturas = pedido.getFacturas();
-        facturas.add(factura);
-        pedido.setFacturas(facturas);
-        factura.setPedido(pedido);
-        this.validarFactura(factura);
-        facturaRepository.guardar(factura);
-        pedidoService.actualizar(pedido);
-        pedidoService.actualizarEstadoPedido(pedido);
-        productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
-        LOGGER.warn("La Factura " + factura + " se guardó correctamente." );
-    }
+        return facturasGuardadas;
+    }    
 
     @Override
     @Transactional
@@ -381,7 +385,7 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_transportista_vacio"));
         }
-        if (factura.getRenglones().isEmpty() | factura.getRenglones() == null) {
+        if (factura.getRenglones() == null || factura.getRenglones().isEmpty()) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_renglones_vacio"));
         }

@@ -137,13 +137,12 @@ public class PagoServiceImpl implements IPagoService {
         for (Factura factura : facturasOrdenadas) {
             if (monto > 0) {
                 factura.setPagos(this.getPagosDeLaFactura(factura));
-                Pago nuevoPago = Pago.builder()
-                        .formaDePago(formaDePago)
-                        .factura(factura)
-                        .fecha(fechaYHora)
-                        .empresa(factura.getEmpresa())
-                        .nota(nota)
-                        .build();
+                Pago nuevoPago = new Pago();
+                nuevoPago.setFormaDePago(formaDePago);
+                nuevoPago .setFactura(factura);
+                nuevoPago.setFecha(fechaYHora);
+                nuevoPago.setEmpresa(factura.getEmpresa());
+                nuevoPago.setNota(nota);                        
                 double saldoAPagar = this.getSaldoAPagar(factura);
                 if (saldoAPagar <= monto) {
                     monto = monto - saldoAPagar;

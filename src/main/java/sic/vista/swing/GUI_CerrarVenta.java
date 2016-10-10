@@ -166,7 +166,7 @@ public class GUI_CerrarVenta extends JDialog {
         FacturaVenta facturaVenta = new FacturaVenta();
         facturaVenta.setFecha(gui_puntoDeVenta.getFechaFactura());
         facturaVenta.setTipoFactura(gui_puntoDeVenta.getTipoDeComprobante().charAt(gui_puntoDeVenta.getTipoDeComprobante().length() - 1));
-        facturaVenta.setNumSerie(1);
+        //facturaVenta.setNumSerie(1);  HARDCODEADO EN EL SERVICE
         facturaVenta.setFechaVencimiento(gui_puntoDeVenta.getFechaVencimiento());
         facturaVenta.setTransportista((Transportista) cmb_Transporte.getSelectedItem());
         facturaVenta.setRenglones(gui_puntoDeVenta.getRenglones());

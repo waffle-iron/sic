@@ -70,38 +70,28 @@ public class FacturaController {
     @ResponseStatus(HttpStatus.CREATED)
     public List<Factura> guardarFacturaVenta(@RequestBody FacturaVenta factura,
                                              @RequestParam(value = "indices", required = false) int[] indices) {
-        List<Factura> facturas =  new ArrayList<>();
         if (indices != null) {
-            facturas.addAll(facturaService.dividirFactura((FacturaVenta) factura, indices));
-            facturaService.guardar(facturas);
+            return facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indices));
         } else {
-            facturas.add(factura);
-            facturaService.guardar(factura);
+            List<Factura> facturas = new ArrayList<>();
+            facturas.add(facturaService.guardar(factura));            
+            return facturas;
         }
-        facturas.add(0, facturaService.getFacturaCompraPorTipoSerieNum(facturas.get(0).getTipoFactura(),
-                facturas.get(0).getNumSerie(), facturas.get(0).getNumFactura()));
-        if (facturas.size() > 1) {
-            facturas.add(1, facturaService.getFacturaCompraPorTipoSerieNum(facturas.get(1).getTipoFactura(),
-                    facturas.get(1).getNumSerie(), facturas.get(1).getNumFactura()));
-        }
-        return facturas;
     }
     
     @PostMapping("/facturas/compra")
     @ResponseStatus(HttpStatus.CREATED)
-    public Factura guardarFacturaCompra(@RequestBody FacturaVenta factura) {
-        facturaService.guardar(factura);        
-        return factura;
+    public Factura guardarFacturaCompra(@RequestBody FacturaCompra factura) {
+        return facturaService.guardar(factura);
     }
     
     @PostMapping("/facturas/pedidos/{idPedido}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Factura guardar(@PathVariable long idPedido,
-                           @RequestBody FacturaVenta factura) {
-        facturaService.guardar(factura, pedidoService.getPedidoPorId(idPedido)); 
-        return facturaService.getFacturaVentaPorTipoSerieNum(factura.getTipoFactura(),
-                factura.getNumSerie(), factura.getNumFactura());
-    }    
+    public Factura guardarFacturaConPedido(@PathVariable long idPedido,
+                                           @RequestBody FacturaVenta factura) {
+        factura.setPedido(pedidoService.getPedidoPorId(idPedido));
+        return facturaService.guardar(factura);
+    }
     
     @DeleteMapping("/facturas/{idFactura}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

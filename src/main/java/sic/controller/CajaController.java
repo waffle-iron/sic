@@ -117,19 +117,19 @@ public class CajaController {
         return cajaService.getCajasCriteria(criteria);        
     }
     
-    @GetMapping("/cajas/empresa/{idEmpresa}/ultima")
+    @GetMapping("/cajas/empresas/{idEmpresa}/ultima")
     @ResponseStatus(HttpStatus.OK)
     public Caja getUltimaCaja(@PathVariable long idEmpresa) {
         return cajaService.getUltimaCaja(idEmpresa);
     }
     
-    @PutMapping("/cajas/empresa/{idEmpresa}/cerrar-dia-anterior")
+    @PutMapping("/cajas/empresas/{idEmpresa}/cerrar-dia-anterior")
     @ResponseStatus(HttpStatus.OK)
     public Caja cerrarCajaDiaAnterior(@PathVariable long idEmpresa) {
         return cajaService.cerrarCajaDiaAnterior(empresaService.getEmpresaPorId(idEmpresa));
     }
     
-    @GetMapping("/cajas/{idCaja}/empresa/{idEmpresa}/reporte")
+    @GetMapping("/cajas/{idCaja}/empresas/{idEmpresa}/reporte")
     public ResponseEntity<byte[]> getReporteCaja(@PathVariable long idCaja,
                                                  @PathVariable long idEmpresa) {
         HttpHeaders headers = new HttpHeaders();

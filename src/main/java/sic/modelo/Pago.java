@@ -44,9 +44,6 @@ import lombok.NoArgsConstructor;
             + "ORDER BY p.fecha ASC")
 })
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pago")
 public class Pago implements Serializable {
 
