@@ -1,5 +1,6 @@
 package sic.controller;
 
+import java.util.Date;
 import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -18,15 +19,19 @@ public class ControllersExceptionHandler {
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public String handleServiceException(BusinessServiceException ex) {
-        LOGGER.error(ex);
-        return ex.getMessage();
+        long transactionId = new Date().getTime();
+        String mensaje = ex.getMessage() + "\nTransaction ID: " + transactionId;
+        LOGGER.error(mensaje);
+        return mensaje;
     }
     
     @ExceptionHandler(Exception.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public String handleException(Exception ex) {
-        LOGGER.error(ex);
-        return ResourceBundle.getBundle("Mensajes").getString("mensaje_error_request");
+        long transactionId = new Date().getTime();
+        String mensaje = "\nTransaction ID: " + transactionId;
+        LOGGER.error(ex.getMessage() + mensaje);
+        return ResourceBundle.getBundle("Mensajes").getString("mensaje_error_request") + mensaje;
     }
 }
