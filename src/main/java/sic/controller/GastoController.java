@@ -29,7 +29,7 @@ public class GastoController {
     
     @GetMapping("/gastos/{idGasto}")
     @ResponseStatus(HttpStatus.OK)
-    public Gasto getProductoPorId(@PathVariable long idGasto) {
+    public Gasto getGastoPorId(@PathVariable long idGasto) {
         return gastoService.getGastoPorId(idGasto);
     }
     

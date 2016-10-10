@@ -18,7 +18,7 @@ public interface IGastoRepository {
 
     List<Gasto> getGastosPorFechaYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
 
-    int getUltimoNumeroDeGasto(long idEmpresa);
+    long getUltimoNumeroDeGasto(long idEmpresa);
 
     void guardar(Gasto gasto);
 

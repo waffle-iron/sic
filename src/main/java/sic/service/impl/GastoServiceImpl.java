@@ -87,7 +87,7 @@ public class GastoServiceImpl implements IGastoService {
     }
 
     @Override
-    public int getUltimoNumeroDeGasto(long id_empresa) {
+    public long getUltimoNumeroDeGasto(long id_empresa) {
         return gastoRepository.getUltimoNumeroDeGasto(id_empresa);
     }
 

@@ -77,9 +77,9 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
     }
     
     @Override
-    public Gasto getGastoPorNroYEmpresa(long nroPago, long id_Empresa) {
+    public Gasto getGastoPorNroYEmpresa(long nroGasto, long id_Empresa) {
         TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastoPorNroYEmpresa", Gasto.class);
-        typedQuery.setParameter("nroPago", nroPago);
+        typedQuery.setParameter("nroGasto", nroGasto);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         List<Gasto> gastos = typedQuery.getResultList();
         if (gastos.isEmpty()) {
@@ -90,10 +90,10 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
     }
 
     @Override
-    public int getUltimoNumeroDeGasto(long idEmpresa) {
-        TypedQuery<Integer> typedQuery = em.createNamedQuery("Gasto.getUltimoNumeroDeGasto", Integer.class);
+    public long getUltimoNumeroDeGasto(long idEmpresa) {
+        TypedQuery<Long> typedQuery = em.createNamedQuery("Gasto.getUltimoNumeroDeGasto", Long.class);
         typedQuery.setParameter("id_Empresa", idEmpresa);
-        Integer ultimoNumeroDeGasto = typedQuery.getSingleResult();
+        Long ultimoNumeroDeGasto = typedQuery.getSingleResult();
         if (ultimoNumeroDeGasto == null) {
             return 0;
         } else {
