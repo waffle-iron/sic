@@ -14,6 +14,6 @@ public interface IProvinciaRepository {
 
     List<Provincia> getProvinciasDelPais(Pais pais);
 
-    void guardar(Provincia provincia);
+    Provincia guardar(Provincia provincia);
     
 }

@@ -16,6 +16,6 @@ public interface IFormaDePagoRepository {
 
     List<FormaDePago> getFormasDePago(Empresa empresa);
 
-    void guardar(FormaDePago formaDePago);
+    FormaDePago guardar(FormaDePago formaDePago);
     
 }

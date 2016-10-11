@@ -15,6 +15,6 @@ public interface IEmpresaRepository {
 
     List<Empresa> getEmpresas();
 
-    void guardar(Empresa empresa);
+    Empresa guardar(Empresa empresa);
     
 }

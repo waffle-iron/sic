@@ -19,6 +19,6 @@ public interface IProductoRepository {
 
     Producto getProductoPorId(long id_Producto);
 
-    void guardar(Producto producto);
+    Producto guardar(Producto producto);
     
 }

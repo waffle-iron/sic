@@ -3,7 +3,6 @@ package sic.repository;
 import java.util.List;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Pedido;
-import sic.modelo.RenglonPedido;
 
 public interface IPedidoRepository {
     
@@ -17,6 +16,6 @@ public interface IPedidoRepository {
 
     Pedido getPedidoPorNro(long nroPedido, long idEmpresa);
 
-    void guardar(Pedido pedido);
+    Pedido guardar(Pedido pedido);
 
 }

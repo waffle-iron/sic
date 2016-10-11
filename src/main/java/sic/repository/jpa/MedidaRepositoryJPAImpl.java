@@ -49,8 +49,10 @@ public class MedidaRepositoryJPAImpl implements IMedidaRepository {
     }
 
     @Override
-    public void guardar(Medida medida) {
-        em.persist(em.merge(medida));
+    public Medida guardar(Medida medida) {
+        medida = em.merge(medida);
+        em.persist(medida);
+        return medida;
     }
 
     @Override

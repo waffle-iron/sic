@@ -153,10 +153,11 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     @Transactional
-    public void guardar(Producto producto) {
+    public Producto guardar(Producto producto) {
         this.validarOperacion(TipoDeOperacion.ALTA, producto);
         productoRepository.guardar(producto);
         LOGGER.warn("El Producto " + producto + " se guardó correctamente.");
+        return producto;
     }
 
     @Override

@@ -41,8 +41,7 @@ public class EmpresaController {
     @PostMapping("/empresas")
     @ResponseStatus(HttpStatus.CREATED)
     public Empresa guardar(@RequestBody Empresa empresa) {
-        empresaService.guardar(empresa);
-        return empresaService.getEmpresaPorNombre(empresa.getNombre());
+        return empresaService.guardar(empresa);
     }
     
     @PutMapping("/empresas")

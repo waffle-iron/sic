@@ -11,6 +11,6 @@ public interface IConfiguracionDelSistemaRepository {
 
     ConfiguracionDelSistema getConfiguracionDelSistemaPorId(long id_ConfiguracionDelSistema);
 
-    void guardar(ConfiguracionDelSistema cds);
+    ConfiguracionDelSistema guardar(ConfiguracionDelSistema cds);
     
 }

@@ -106,8 +106,7 @@ public class ProductoController {
     @PostMapping("/productos")
     @ResponseStatus(HttpStatus.CREATED)
     public Producto guardar(@RequestBody Producto producto) {
-        productoService.guardar(producto);
-        return productoService.getProductoPorDescripcion(producto.getDescripcion(), producto.getEmpresa());
+        return productoService.guardar(producto);
     }
     
     @GetMapping("/productos/{idProducto}/stock/disponibilidad")

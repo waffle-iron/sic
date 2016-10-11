@@ -62,8 +62,10 @@ public class FormaDePagoRepositoryJPAImpl implements IFormaDePagoRepository {
     }
 
     @Override
-    public void guardar(FormaDePago formaDePago) {
-        em.persist(em.merge(formaDePago));
+    public FormaDePago guardar(FormaDePago formaDePago) {
+        formaDePago = em.merge(formaDePago);
+        em.persist(formaDePago);
+        return formaDePago;
     }
 
     @Override

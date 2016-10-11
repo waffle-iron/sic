@@ -46,8 +46,7 @@ public class PagoController {
     @PostMapping("/pagos")
     @ResponseStatus(HttpStatus.CREATED)
     public Pago guardar(@RequestBody Pago pago) {
-        pagoService.guardar(pago); // hace falta agregarle identidad a pago para poder recuperarlo.
-        return pago;
+        return pagoService.guardar(pago); 
     }
     
     @DeleteMapping("/pagos/{idPago}")

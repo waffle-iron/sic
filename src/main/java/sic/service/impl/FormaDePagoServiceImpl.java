@@ -73,10 +73,11 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
 
     @Override
     @Transactional
-    public void guardar(FormaDePago formaDePago) {
+    public FormaDePago guardar(FormaDePago formaDePago) {
         this.validarOperacion(formaDePago);
         formaDePagoRepository.guardar(formaDePago);
         LOGGER.warn("La Forma de Pago " + formaDePago + " se guardó correctamente." );
+        return formaDePago;
     }
 
     @Override

@@ -76,12 +76,13 @@ public class PagoServiceImpl implements IPagoService {
     
     @Override
     @Transactional
-    public void guardar(Pago pago) {
+    public Pago guardar(Pago pago) {
         this.validarOperacion(pago);
         pago.setNroPago(this.getSiguienteNroPago(pago.getEmpresa().getId_Empresa()));
         pagoRepository.guardar(pago);
         this.setFacturaEstadoDePago(pago.getFactura());
         LOGGER.warn("El Pago " + pago + " se guardó correctamente.");
+        return pago;
     }
 
     @Override

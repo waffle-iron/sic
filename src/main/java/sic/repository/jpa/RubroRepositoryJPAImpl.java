@@ -49,8 +49,10 @@ public class RubroRepositoryJPAImpl implements IRubroRepository {
     }
 
     @Override
-    public void guardar(Rubro rubro) {
-        em.persist(em.merge(rubro));
+    public Rubro guardar(Rubro rubro) {
+        rubro = em.merge(rubro);
+        em.persist(rubro);
+        return rubro;
     }
 
     @Override

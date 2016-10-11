@@ -51,7 +51,9 @@ public class CondicionIVARepositoryJPAImpl implements ICondicionIVARepository {
     }
 
     @Override
-    public void guardar(CondicionIVA condicionIVA) {
+    public CondicionIVA guardar(CondicionIVA condicionIVA) {
+        condicionIVA = em.merge(condicionIVA);
         em.persist(condicionIVA);
+        return condicionIVA;
     }
 }

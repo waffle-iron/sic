@@ -80,8 +80,10 @@ public class TransportistaRepositoryJPAImpl implements ITransportistaRepository 
     }
 
     @Override
-    public void guardar(Transportista transportista) {
-        em.persist(em.merge(transportista));
+    public Transportista guardar(Transportista transportista) {
+        transportista = em.merge(transportista);
+        em.persist(transportista);
+        return transportista;
     }
 
     @Override

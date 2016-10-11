@@ -20,6 +20,6 @@ public interface IGastoRepository {
 
     long getUltimoNumeroDeGasto(long idEmpresa);
 
-    void guardar(Gasto gasto);
+    Gasto guardar(Gasto gasto);
 
 }

@@ -58,8 +58,10 @@ public class EmpresaRepositoryJPAImpl implements IEmpresaRepository {
     }
 
     @Override
-    public void guardar(Empresa empresa) {
-        em.persist(em.merge(empresa));
+    public Empresa guardar(Empresa empresa) {
+        empresa = em.merge(empresa);
+        em.persist(empresa);
+        return empresa;
     }
 
     @Override

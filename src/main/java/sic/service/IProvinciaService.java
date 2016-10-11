@@ -16,6 +16,6 @@ public interface IProvinciaService {
 
     List<Provincia> getProvinciasDelPais(Pais pais);
 
-    void guardar(Provincia provincia);
+    Provincia guardar(Provincia provincia);
     
 }

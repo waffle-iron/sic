@@ -77,9 +77,10 @@ public class PaisServiceImpl implements IPaisService {
 
     @Override
     @Transactional
-    public void guardar(Pais pais) {
+    public Pais guardar(Pais pais) {
         this.validarOperacion(TipoDeOperacion.ALTA, pais);
         paisRepository.guardar(pais);
         LOGGER.warn("El Pais " + pais + " se guardó correctamente.");
+        return pais;
     }
 }

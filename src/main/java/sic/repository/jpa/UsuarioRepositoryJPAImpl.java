@@ -74,7 +74,9 @@ public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {
     }
 
     @Override
-    public void guardar(Usuario usuario) {
+    public Usuario guardar(Usuario usuario) {
+        usuario = em.merge(usuario);
         em.persist(usuario);
+        return usuario;
     }
 }

@@ -70,10 +70,11 @@ public class RubroServiceImpl implements IRubroService {
 
     @Override
     @Transactional
-    public void guardar(Rubro rubro) {
+    public Rubro guardar(Rubro rubro) {
         this.validarOperacion(TipoDeOperacion.ALTA, rubro);
         rubroRepository.guardar(rubro);
         LOGGER.warn("El Rubro " + rubro + " se guardó correctamente.");
+        return rubro;
     }
 
     @Override

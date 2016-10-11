@@ -15,7 +15,7 @@ public interface IPagoRepository {
 
     long getMayorNroPago(long idEmpresa);
     
-    void guardar(Pago pago);
+    Pago guardar(Pago pago);
     
     void actualizar(Pago pago);
 }

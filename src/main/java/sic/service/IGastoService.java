@@ -18,7 +18,7 @@ public interface IGastoService {
 
     long getUltimoNumeroDeCaja(long id_Empresa);
 
-    void guardar(Gasto gasto);
+    Gasto guardar(Gasto gasto);
 
     void validarGasto(Gasto gasto);
 

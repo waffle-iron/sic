@@ -44,8 +44,7 @@ public class UsuarioController {
     @PostMapping("/usuarios")
     @ResponseStatus(HttpStatus.CREATED)
     public Usuario guardar(@RequestBody Usuario usuario) {
-        usuarioService.guardar(usuario);
-        return usuarioService.getUsuarioPorNombre(usuario.getNombre());
+        return usuarioService.guardar(usuario);
     }
     
     @DeleteMapping("/usuarios/{idUsuario}")

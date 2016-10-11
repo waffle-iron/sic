@@ -92,8 +92,10 @@ public class ProductoRepositoryJPAImpl implements IProductoRepository {
     }
 
     @Override
-    public void guardar(Producto producto) {
-        em.persist(em.merge(producto));
+    public Producto guardar(Producto producto) {
+        producto = em.merge(producto);
+        em.persist(producto);
+        return producto;
     }
 
     @Override

@@ -137,11 +137,12 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     @Transactional
-    public void guardar(Pedido pedido) {
+    public Pedido guardar(Pedido pedido) {
         this.validarPedido(TipoDeOperacion.ALTA , pedido);
         pedido.setNroPedido(this.calcularNumeroPedido(pedido.getEmpresa()));
         pedidoRepository.guardar(pedido);
         LOGGER.warn("El Pedido " + pedido + " se guardó correctamente.");
+        return pedido;
     }
 
     @Override

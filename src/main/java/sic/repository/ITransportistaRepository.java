@@ -17,6 +17,6 @@ public interface ITransportistaRepository {
 
     List<Transportista> getTransportistas(Empresa empresa);
 
-    void guardar(Transportista transportista);
+    Transportista guardar(Transportista transportista);
     
 }

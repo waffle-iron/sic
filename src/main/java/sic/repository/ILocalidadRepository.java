@@ -14,6 +14,6 @@ public interface ILocalidadRepository {
 
     List<Localidad> getLocalidadesDeLaProvincia(Provincia provincia);
 
-    void guardar(Localidad localidad);
+    Localidad guardar(Localidad localidad);
     
 }

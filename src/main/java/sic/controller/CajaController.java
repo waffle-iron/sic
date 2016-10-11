@@ -65,8 +65,7 @@ public class CajaController {
     @PostMapping("/cajas")
     @ResponseStatus(HttpStatus.CREATED)
     public Caja guardar(@RequestBody Caja caja) {
-        cajaService.guardar(caja);
-        return cajaService.getCajaPorNroYEmpresa(caja.getNroCaja(), caja.getEmpresa().getId_Empresa());
+        return cajaService.guardar(caja);
     }
     
     @DeleteMapping("/cajas/{idCaja}")

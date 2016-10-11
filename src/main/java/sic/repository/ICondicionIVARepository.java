@@ -13,6 +13,6 @@ public interface ICondicionIVARepository {
 
     List<CondicionIVA> getCondicionesIVA();
 
-    void guardar(CondicionIVA condicionIVA);
+    CondicionIVA guardar(CondicionIVA condicionIVA);
     
 }

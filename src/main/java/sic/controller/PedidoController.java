@@ -75,8 +75,7 @@ public class PedidoController {
     @PostMapping("/pedidos")
     @ResponseStatus(HttpStatus.CREATED)
     public Pedido guardar(@RequestBody Pedido pedido) {
-        pedidoService.guardar(pedido);
-        return pedidoService.getPedidoPorNumeroYEmpresa(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa());
+        return pedidoService.guardar(pedido);
     }
     
     @GetMapping("/pedidos/busqueda/criteria")

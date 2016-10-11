@@ -18,8 +18,10 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
     private EntityManager em;
 
     @Override
-    public void guardar(Caja caja) {
-        em.persist(em.merge(caja));
+    public Caja guardar(Caja caja) {
+        caja = em.merge(caja);
+        em.persist(caja);
+        return caja;
     }
     
     @Override

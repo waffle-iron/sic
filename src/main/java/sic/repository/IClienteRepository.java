@@ -23,6 +23,6 @@ public interface IClienteRepository {
 
     List<Cliente> getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(String criteria, Empresa empresa);
 
-    void guardar(Cliente cliente);
+    Cliente guardar(Cliente cliente);
     
 }

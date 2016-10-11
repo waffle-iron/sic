@@ -25,6 +25,6 @@ public interface ICajaRepository {
 
     int getUltimoNumeroDeCaja(long idEmpresa);
 
-    void guardar(Caja caja);
+    Caja guardar(Caja caja);
 
 }

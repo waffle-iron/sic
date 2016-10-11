@@ -77,10 +77,11 @@ public class TransportistaServiceImpl implements ITransportistaService {
 
     @Override
     @Transactional
-    public void guardar(Transportista transportista) {
+    public Transportista guardar(Transportista transportista) {
         this.validarOperacion(TipoDeOperacion.ALTA, transportista);
         transportistaRepository.guardar(transportista);
         LOGGER.warn("El Transportista " + transportista + " se guardó correctamente.");
+        return transportista;
     }
 
     @Override

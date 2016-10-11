@@ -51,7 +51,9 @@ public class PaisRepositoryJPAImpl implements IPaisRepository {
     }
 
     @Override
-    public void guardar(Pais pais) {
+    public Pais guardar(Pais pais) {
+        pais = em.merge(pais);
         em.persist(pais);
+        return pais;
     }
 }

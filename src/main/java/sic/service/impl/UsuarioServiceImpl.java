@@ -96,11 +96,12 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Override
     @Transactional
-    public void guardar(Usuario usuario) {
+    public Usuario guardar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ALTA, usuario);
         usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
         usuarioRepository.guardar(usuario);
         LOGGER.warn("El Usuario " + usuario + " se guardó correctamente.");
+        return usuario;
     }
 
     @Override

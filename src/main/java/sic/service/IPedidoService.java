@@ -35,6 +35,6 @@ public interface IPedidoService {
 
     byte[] getReportePedido(Pedido pedido);
 
-    void guardar(Pedido pedido);
+    Pedido guardar(Pedido pedido);
 
 }

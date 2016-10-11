@@ -110,11 +110,12 @@ public class EmpresaServiceImpl implements IEmpresaService {
 
     @Override
     @Transactional
-    public void guardar(Empresa empresa) {
+    public Empresa guardar(Empresa empresa) {
         validarOperacion(TipoDeOperacion.ALTA, empresa);
         empresaRepository.guardar(empresa);
         crearConfiguracionDelSistema(empresa);
         LOGGER.warn("La Empresa " + empresa + " se guardó correctamente." );
+        return empresa;
     }
 
     @Override

@@ -126,8 +126,10 @@ public class ClienteRepositoryJPAImpl implements IClienteRepository {
     }
 
     @Override
-    public void guardar(Cliente cliente) {
-        em.persist(em.merge(cliente));
+    public Cliente guardar(Cliente cliente) {
+        cliente = em.merge(cliente);
+        em.persist(cliente);
+        return cliente;
     }
 
     @Override

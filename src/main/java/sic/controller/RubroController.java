@@ -53,8 +53,7 @@ public class RubroController {
     @PostMapping("/rubros")
     @ResponseStatus(HttpStatus.OK)
     public Rubro guardar(@RequestBody Rubro rubro) {
-        rubroService.guardar(rubro);
-        return rubroService.getRubroPorNombre(rubro.getNombre() , rubro.getEmpresa());
+        return rubroService.guardar(rubro);
     }
     
     @GetMapping("/rubros/empresas/{idEmpresa}")

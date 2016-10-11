@@ -42,7 +42,7 @@ public interface IProductoService {
   
     byte[] getReporteListaDePreciosPorEmpresa(List<Producto> productos, long idEmpresa);
 
-    void guardar(Producto producto);
+    Producto guardar(Producto producto);
 
     void modificarMultiplesProductos(List<Producto> productos, boolean checkPrecios, PreciosProducto preciosProducto, boolean checkMedida, Medida medida, boolean checkRubro, Rubro rubro, boolean checkProveedor, Proveedor proveedor);
 

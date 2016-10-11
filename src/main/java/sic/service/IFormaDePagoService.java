@@ -14,7 +14,7 @@ public interface IFormaDePagoService {
 
     FormaDePago getFormasDePagoPorId(long id);
 
-    void guardar(FormaDePago formaDePago);
+    FormaDePago guardar(FormaDePago formaDePago);
 
     void setFormaDePagoPredeterminada(FormaDePago formaDePago);
 

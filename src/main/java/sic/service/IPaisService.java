@@ -15,6 +15,6 @@ public interface IPaisService {
 
     List<Pais> getPaises();
 
-    void guardar(Pais pais);
+    Pais guardar(Pais pais);
     
 }

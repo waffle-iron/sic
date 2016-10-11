@@ -83,9 +83,10 @@ public class LocalidadServiceImpl implements ILocalidadService {
 
     @Override
     @Transactional
-    public void guardar(Localidad localidad) {
+    public Localidad guardar(Localidad localidad) {
         this.validarOperacion(TipoDeOperacion.ALTA, localidad);
         localidadRepository.guardar(localidad);
         LOGGER.warn("La Localidad " + localidad + " se guardó correctamente." );
+        return localidad;
     }
 }

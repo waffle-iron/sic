@@ -63,8 +63,10 @@ public class PagoRepositoryJPAImpl implements IPagoRepository {
 
     @Override
     @Transactional
-    public void guardar(Pago pago) {
-        em.persist(em.merge(pago));
+    public Pago guardar(Pago pago) {
+        pago = em.merge(pago);
+        em.persist(pago);
+        return pago;
     }
 
     @Override

@@ -14,6 +14,6 @@ public interface IMedidaRepository {
 
     List<Medida> getUnidadMedidas(Empresa empresa);
 
-    void guardar(Medida medida);
+    Medida guardar(Medida medida);
     
 }

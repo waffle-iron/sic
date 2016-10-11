@@ -59,8 +59,7 @@ public class GastoController {
     @PostMapping("/gastos")
     @ResponseStatus(HttpStatus.CREATED)
     public Gasto guardar(@RequestBody Gasto gasto) {
-        gastoService.guardar(gasto);
-        return gastoService.getGastosPorNroYEmpreas(gasto.getNroGasto(), gasto.getEmpresa().getId_Empresa());
+        return gastoService.guardar(gasto);
     }
 
 }

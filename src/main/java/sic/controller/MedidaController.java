@@ -53,8 +53,7 @@ public class MedidaController {
     @PostMapping("/medidas")
     @ResponseStatus(HttpStatus.OK)
     public Medida guardar(@RequestBody Medida medida) {
-        medidaService.guardar(medida);
-        return medidaService.getMedidaPorNombre(medida.getNombre(), medida.getEmpresa());
+        return medidaService.guardar(medida);
     }
     
     @GetMapping("/medidas/empresas/{idEmpresa}")

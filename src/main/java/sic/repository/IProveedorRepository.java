@@ -21,6 +21,6 @@ public interface IProveedorRepository {
 
     List<Proveedor> getProveedores(Empresa empresa);
 
-    void guardar(Proveedor proveedor);
+    Proveedor guardar(Proveedor proveedor);
     
 }

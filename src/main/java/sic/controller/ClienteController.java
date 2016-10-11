@@ -90,8 +90,7 @@ public class ClienteController {
     @PostMapping("/clientes")
     @ResponseStatus(HttpStatus.CREATED)
     public Cliente guardar(@RequestBody Cliente cliente) {
-        clienteService.guardar(cliente);
-        return clienteService.getClientePorRazonSocial(cliente.getRazonSocial(), cliente.getEmpresa());
+        return clienteService.guardar(cliente);
     }
     
     @PutMapping("/clientes")

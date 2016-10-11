@@ -72,8 +72,10 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
     }
 
     @Override
-    public void guardar(Pedido pedido) {
-        em.persist(em.merge(pedido));
+    public Pedido guardar(Pedido pedido) {
+        pedido = em.merge(pedido);
+        em.persist(pedido);
+        return pedido;
     }
 
     @Override

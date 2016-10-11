@@ -16,6 +16,6 @@ public interface IRubroService {
 
     List<Rubro> getRubros(Empresa empresa);
 
-    void guardar(Rubro rubro);
+    Rubro guardar(Rubro rubro);
     
 }

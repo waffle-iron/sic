@@ -117,8 +117,10 @@ public class ProveedorRepositoryJPAImpl implements IProveedorRepository {
     }
 
     @Override
-    public void guardar(Proveedor proveedor) {
-        em.persist(em.merge(proveedor));
+    public Proveedor guardar(Proveedor proveedor) {
+        proveedor = em.merge(proveedor);
+        em.persist(proveedor);
+        return proveedor;
     }
 
     @Override

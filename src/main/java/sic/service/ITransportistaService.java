@@ -19,6 +19,6 @@ public interface ITransportistaService {
 
     List<Transportista> getTransportistas(Empresa empresa);
 
-    void guardar(Transportista transportista);
+    Transportista guardar(Transportista transportista);
     
 }

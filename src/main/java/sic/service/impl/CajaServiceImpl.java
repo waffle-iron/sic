@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
 import sic.modelo.Empresa;
-import sic.modelo.EmpresaActiva;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
@@ -85,11 +84,12 @@ public class CajaServiceImpl implements ICajaService {
 
     @Override
     @Transactional
-    public void guardar(Caja caja) {
+    public Caja guardar(Caja caja) {
         this.validarCaja(caja);
         caja.setNroCaja(this.getUltimoNumeroDeCaja(caja.getEmpresa().getId_Empresa()) + 1);
         cajaRepository.guardar(caja);
         LOGGER.warn("La Caja " + caja + " se guardó correctamente." );
+        return caja;
     }
 
     @Override

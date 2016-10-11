@@ -57,8 +57,7 @@ public class FormaDePagoController {
     @PostMapping("/formas-de-pago")
     @ResponseStatus(HttpStatus.CREATED)
     public FormaDePago guardar(@RequestBody FormaDePago formaDePago) {
-        formaDePagoService.guardar(formaDePago);
-        return formaDePagoService.getFormaDePagoPorNombreYEmpresa(formaDePago.getNombre(), formaDePago.getEmpresa().getId_Empresa());
+        return formaDePagoService.guardar(formaDePago);
     }
     
     @PutMapping("/formas-de-pago/predeterminada/{idFormaDePago}")

@@ -59,7 +59,6 @@ public class ProvinciaController {
     @PostMapping("/provincias")
     @ResponseStatus(HttpStatus.CREATED)
     public Provincia guardar(@RequestBody Provincia provincia) {
-        provinciaService.guardar(provincia);
-        return provinciaService.getProvinciaPorNombre(provincia.getNombre(), provincia.getPais());
+        return provinciaService.guardar(provincia);
     }
 }

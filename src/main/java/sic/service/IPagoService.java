@@ -36,7 +36,7 @@ public interface IPagoService {
     
     void validarOperacion(Pago pago);     
 
-    void guardar(Pago pago);
+    Pago guardar(Pago pago);
 
     void eliminar(long idPago);
     

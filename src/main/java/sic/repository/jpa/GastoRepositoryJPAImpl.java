@@ -29,8 +29,10 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
     }
 
     @Override
-    public void guardar(Gasto gasto) {
-        em.persist(em.merge(gasto));
+    public Gasto guardar(Gasto gasto) {
+        gasto = em.merge(gasto);
+        em.persist(gasto);
+        return gasto;
     }
 
     @Override

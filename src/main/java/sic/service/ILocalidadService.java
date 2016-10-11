@@ -16,7 +16,7 @@ public interface ILocalidadService {
 
     List<Localidad> getLocalidadesDeLaProvincia(Provincia provincia);
 
-    void guardar(Localidad localidad);
+    Localidad guardar(Localidad localidad);
 
     void validarOperacion(TipoDeOperacion operacion, Localidad localidad);
 

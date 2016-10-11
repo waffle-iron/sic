@@ -137,10 +137,11 @@ public class ClienteServiceImpl implements IClienteService {
 
     @Override
     @Transactional
-    public void guardar(Cliente cliente) {        
+    public Cliente guardar(Cliente cliente) {        
         this.validarOperacion(TipoDeOperacion.ALTA, cliente);
         clienteRepository.guardar(cliente);          
         LOGGER.warn("El Cliente " + cliente + " se guardó correctamente." );
+        return cliente;
     }
 
     @Override

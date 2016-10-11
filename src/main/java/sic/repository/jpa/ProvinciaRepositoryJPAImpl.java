@@ -54,7 +54,9 @@ public class ProvinciaRepositoryJPAImpl implements IProvinciaRepository {
     }
 
     @Override
-    public void guardar(Provincia provincia) {
-        em.persist(em.merge(provincia));
+    public Provincia guardar(Provincia provincia) {
+        provincia = em.merge(provincia);
+        em.persist(provincia);
+        return provincia;
     }
 }

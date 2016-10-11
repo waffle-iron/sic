@@ -13,6 +13,6 @@ public interface IPaisRepository {
 
     List<Pais> getPaises();
 
-    void guardar(Pais pais);
+    Pais guardar(Pais pais);
     
 }

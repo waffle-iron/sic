@@ -32,7 +32,7 @@ public interface ICajaService {
 
     int getUltimoNumeroDeCaja(long id_Empresa);
 
-    void guardar(Caja caja);
+    Caja guardar(Caja caja);
 
     void validarCaja(Caja caja);
 

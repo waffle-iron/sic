@@ -71,10 +71,11 @@ public class MedidaServiceImpl implements IMedidaService {
 
     @Override
     @Transactional
-    public void guardar(Medida medida) {
+    public Medida guardar(Medida medida) {
         this.validarOperacion(TipoDeOperacion.ALTA, medida);
         medidaRepository.guardar(medida);
         LOGGER.warn("La Medida " + medida + " se guardó correctamente." );
+        return medida;
     }
 
     @Override

@@ -54,7 +54,9 @@ public class LocalidadRepositoryJPAImpl implements ILocalidadRepository {
     }
 
     @Override
-    public void guardar(Localidad localidad) {
-        em.persist(em.merge(localidad));
+    public Localidad guardar(Localidad localidad) {
+        localidad = em.merge(localidad);
+        em.persist(localidad);
+        return localidad;
     }
 }

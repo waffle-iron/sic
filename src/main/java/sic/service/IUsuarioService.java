@@ -19,6 +19,6 @@ public interface IUsuarioService {
 
     List<Usuario> getUsuariosAdministradores();
 
-    void guardar(Usuario usuario);
+    Usuario guardar(Usuario usuario);
     
 }

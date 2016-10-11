@@ -51,8 +51,7 @@ public class PaisController {
     @PostMapping("/paises")
     @ResponseStatus(HttpStatus.CREATED)
     public Pais guardar(@RequestBody Pais pais) {
-        paisService.guardar(pais);
-        return paisService.getPaisPorNombre(pais.getNombre());
+        return paisService.guardar(pais);
     }
     
     @GetMapping("/paises")
