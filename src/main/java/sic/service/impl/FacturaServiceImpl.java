@@ -306,10 +306,9 @@ public class FacturaServiceImpl implements IFacturaService {
             List<Factura> facturas = factura.getPedido().getFacturas();
             facturas.add(factura);
             factura.getPedido().setFacturas(facturas);            
-            pedidoService.actualizar(factura.getPedido());
-            pedidoService.actualizarEstadoPedido(factura.getPedido());
         }
         factura = facturaRepository.guardar(factura);
+        pedidoService.actualizarEstadoPedido(factura.getPedido());
         productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
         LOGGER.warn("La Factura " + factura + " se guardó correctamente.");
         return factura;
@@ -889,7 +888,7 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido, String tipoComprobante) {
+    public List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido) {
         List<RenglonFactura> renglonesRestantes = new ArrayList<>();
         HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getNroPedido());
         List<RenglonPedido> renglonesDelPedido = pedidoService.getRenglonesDelPedido(pedido.getNroPedido());
@@ -897,10 +896,10 @@ public class FacturaServiceImpl implements IFacturaService {
             if (renglonesDeFacturas.containsKey(renglon.getProducto().getId_Producto())) {
                 if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
                     renglon.setCantidad(renglon.getCantidad() - renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad());
-                    renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon, tipoComprobante));
+                    renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon, "Factura A")); // tipo de comprobante hardcodeado
                 }
             } else {
-                renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon, tipoComprobante));
+                renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon, "Factura A"));
             }
         }
         return renglonesRestantes;

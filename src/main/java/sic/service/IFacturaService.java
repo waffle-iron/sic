@@ -98,7 +98,7 @@ public interface IFacturaService {
 
     RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante);
 
-    List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido, String tipoComprobante);
+    List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido);
 
     RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje);
 

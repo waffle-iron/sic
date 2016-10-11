@@ -245,9 +245,8 @@ public class FacturaController {
     
     @GetMapping("/facturas/renglones/pedidos/{idPedido}")
     @ResponseStatus(HttpStatus.OK)
-    public List<RenglonFactura> getRenglonesPedidoParaFacturar(@PathVariable long idPedido,
-                                                               @RequestParam String tipoComprobante) {
-        return facturaService.getRenglonesPedidoParaFacturar(pedidoService.getPedidoPorId(idPedido), tipoComprobante);
+    public List<RenglonFactura> getRenglonesPedidoParaFacturar(@PathVariable long idPedido) {
+        return facturaService.getRenglonesPedidoParaFacturar(pedidoService.getPedidoPorId(idPedido));
     }    
      
     @GetMapping("/facturas/validaciones-pago-multiple")

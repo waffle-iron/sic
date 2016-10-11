@@ -99,7 +99,7 @@ public class PedidoServiceImpl implements IPedidoService {
            if (this.getFacturasDelPedido(pedido.getNroPedido()).isEmpty()) {
                pedido.setEstado(EstadoPedido.ABIERTO);
            }
-           if (facturaService.getRenglonesPedidoParaFacturar(pedido, "Factura A").isEmpty()) {
+           if (facturaService.getRenglonesPedidoParaFacturar(pedido).isEmpty()) {
                pedido.setEstado(EstadoPedido.CERRADO);
            }
            this.actualizar(pedido);
@@ -213,7 +213,7 @@ public class PedidoServiceImpl implements IPedidoService {
         HashMap<Long, RenglonFactura> listaRenglonesUnificados = new HashMap<>();
         if (!facturas.isEmpty()) {
             for (Factura factura : facturas) {
-                renglonesDeFacturas.addAll(facturaService.getRenglonesDeLaFactura(factura.getId_Factura()));
+                renglonesDeFacturas.addAll(factura.getRenglones());
             }
             for (RenglonFactura renglon : renglonesDeFacturas) {
                 if (listaRenglonesUnificados.containsKey(renglon.getId_ProductoItem())) {
