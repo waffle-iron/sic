@@ -155,7 +155,7 @@ public class ProductoServiceImpl implements IProductoService {
     @Transactional
     public Producto guardar(Producto producto) {
         this.validarOperacion(TipoDeOperacion.ALTA, producto);
-        productoRepository.guardar(producto);
+        producto = productoRepository.guardar(producto);
         LOGGER.warn("El Producto " + producto + " se guardó correctamente.");
         return producto;
     }

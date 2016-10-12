@@ -79,7 +79,7 @@ public class PaisServiceImpl implements IPaisService {
     @Transactional
     public Pais guardar(Pais pais) {
         this.validarOperacion(TipoDeOperacion.ALTA, pais);
-        paisRepository.guardar(pais);
+        pais = paisRepository.guardar(pais);
         LOGGER.warn("El Pais " + pais + " se guardó correctamente.");
         return pais;
     }

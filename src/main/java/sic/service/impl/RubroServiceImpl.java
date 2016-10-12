@@ -72,7 +72,7 @@ public class RubroServiceImpl implements IRubroService {
     @Transactional
     public Rubro guardar(Rubro rubro) {
         this.validarOperacion(TipoDeOperacion.ALTA, rubro);
-        rubroRepository.guardar(rubro);
+        rubro = rubroRepository.guardar(rubro);
         LOGGER.warn("El Rubro " + rubro + " se guardó correctamente.");
         return rubro;
     }

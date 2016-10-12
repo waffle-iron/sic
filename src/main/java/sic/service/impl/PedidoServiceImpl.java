@@ -140,7 +140,7 @@ public class PedidoServiceImpl implements IPedidoService {
     public Pedido guardar(Pedido pedido) {
         this.validarPedido(TipoDeOperacion.ALTA , pedido);
         pedido.setNroPedido(this.calcularNumeroPedido(pedido.getEmpresa()));
-        pedidoRepository.guardar(pedido);
+        pedido = pedidoRepository.guardar(pedido);
         LOGGER.warn("El Pedido " + pedido + " se guardó correctamente.");
         return pedido;
     }

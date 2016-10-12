@@ -139,7 +139,7 @@ public class ClienteServiceImpl implements IClienteService {
     @Transactional
     public Cliente guardar(Cliente cliente) {        
         this.validarOperacion(TipoDeOperacion.ALTA, cliente);
-        clienteRepository.guardar(cliente);          
+        cliente = clienteRepository.guardar(cliente);          
         LOGGER.warn("El Cliente " + cliente + " se guardó correctamente." );
         return cliente;
     }

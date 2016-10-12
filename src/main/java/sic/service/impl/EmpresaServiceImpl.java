@@ -112,7 +112,7 @@ public class EmpresaServiceImpl implements IEmpresaService {
     @Transactional
     public Empresa guardar(Empresa empresa) {
         validarOperacion(TipoDeOperacion.ALTA, empresa);
-        empresaRepository.guardar(empresa);
+        empresa = empresaRepository.guardar(empresa);
         crearConfiguracionDelSistema(empresa);
         LOGGER.warn("La Empresa " + empresa + " se guardó correctamente." );
         return empresa;

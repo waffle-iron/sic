@@ -79,7 +79,7 @@ public class TransportistaServiceImpl implements ITransportistaService {
     @Transactional
     public Transportista guardar(Transportista transportista) {
         this.validarOperacion(TipoDeOperacion.ALTA, transportista);
-        transportistaRepository.guardar(transportista);
+        transportista = transportistaRepository.guardar(transportista);
         LOGGER.warn("El Transportista " + transportista + " se guardó correctamente.");
         return transportista;
     }

@@ -99,7 +99,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public Usuario guardar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ALTA, usuario);
         usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
-        usuarioRepository.guardar(usuario);
+        usuario = usuarioRepository.guardar(usuario);
         LOGGER.warn("El Usuario " + usuario + " se guardó correctamente.");
         return usuario;
     }

@@ -33,7 +33,7 @@ public class ConfiguracionDelSistemaServiceImpl implements IConfiguracionDelSist
     @Override
     @Transactional
     public ConfiguracionDelSistema guardar(ConfiguracionDelSistema cds) {        
-        configuracionRepository.guardar(cds);        
+        cds = configuracionRepository.guardar(cds);        
         LOGGER.warn("La Configuracion del Sistema " + cds + " se guardó correctamente." );
         return cds;
     }

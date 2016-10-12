@@ -87,7 +87,7 @@ public class CajaServiceImpl implements ICajaService {
     public Caja guardar(Caja caja) {
         this.validarCaja(caja);
         caja.setNroCaja(this.getUltimoNumeroDeCaja(caja.getEmpresa().getId_Empresa()) + 1);
-        cajaRepository.guardar(caja);
+        caja = cajaRepository.guardar(caja);
         LOGGER.warn("La Caja " + caja + " se guardó correctamente." );
         return caja;
     }

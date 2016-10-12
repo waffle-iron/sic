@@ -130,7 +130,7 @@ public class ProveedorServiceImpl implements IProveedorService {
     @Transactional
     public Proveedor guardar(Proveedor proveedor) {
         this.validarOperacion(TipoDeOperacion.ALTA, proveedor);
-        proveedorRepository.guardar(proveedor);
+        proveedor = proveedorRepository.guardar(proveedor);
         LOGGER.warn("El Proveedor " + proveedor + " se guardó correctamente.");
         return proveedor;
     }

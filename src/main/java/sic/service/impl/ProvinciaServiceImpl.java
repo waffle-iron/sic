@@ -84,7 +84,7 @@ public class ProvinciaServiceImpl implements IProvinciaService {
     @Transactional
     public Provincia guardar(Provincia provincia) {
         this.validarOperacion(TipoDeOperacion.ALTA, provincia);
-        provinciaRepository.guardar(provincia);
+        provincia = provinciaRepository.guardar(provincia);
         LOGGER.warn("La Provincia " + provincia + " se guardó correctamente.");
         return provincia;
     }

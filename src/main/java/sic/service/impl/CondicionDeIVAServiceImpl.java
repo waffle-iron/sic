@@ -45,7 +45,7 @@ public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
     @Transactional
     public CondicionIVA guardar(CondicionIVA condicionIVA) {
         this.validarOperacion(TipoDeOperacion.ALTA, condicionIVA);        
-        condicionIVARepository.guardar(condicionIVA);       
+        condicionIVA = condicionIVARepository.guardar(condicionIVA);       
         LOGGER.warn("La Condicion IVA " + condicionIVA + " se guardó correctamente." );
         return condicionIVA;
     }

@@ -85,7 +85,7 @@ public class LocalidadServiceImpl implements ILocalidadService {
     @Transactional
     public Localidad guardar(Localidad localidad) {
         this.validarOperacion(TipoDeOperacion.ALTA, localidad);
-        localidadRepository.guardar(localidad);
+        localidad = localidadRepository.guardar(localidad);
         LOGGER.warn("La Localidad " + localidad + " se guardó correctamente." );
         return localidad;
     }

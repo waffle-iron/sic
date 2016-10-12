@@ -79,7 +79,7 @@ public class PagoServiceImpl implements IPagoService {
     public Pago guardar(Pago pago) {
         this.validarOperacion(pago);
         pago.setNroPago(this.getSiguienteNroPago(pago.getEmpresa().getId_Empresa()));
-        pagoRepository.guardar(pago);
+        pago = pagoRepository.guardar(pago);
         this.setFacturaEstadoDePago(pago.getFactura());
         LOGGER.warn("El Pago " + pago + " se guardó correctamente.");
         return pago;
