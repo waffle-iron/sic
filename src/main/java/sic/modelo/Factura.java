@@ -30,7 +30,10 @@ import lombok.EqualsAndHashCode;
 @NamedQueries({
     @NamedQuery(name = "Factura.buscarPorId",
             query = "SELECT f FROM Factura f "
-                    + "WHERE f.eliminada = false AND f.id_Factura = :id")
+                    + "WHERE f.eliminada = false AND f.id_Factura = :id"),
+    @NamedQuery(name = "Factura.relacionadasConPedido",
+            query = "SELECT f FROM Factura f "
+                    + "WHERE f.eliminada = false AND f.pedido.id_Pedido = :id")
 })
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
@@ -70,6 +73,7 @@ public abstract class Factura implements Serializable {
     private List<RenglonFactura> renglones;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "factura")    
+    @JsonProperty(access = Access.WRITE_ONLY)
     private List<Pago> pagos;
 
     private double subTotal;

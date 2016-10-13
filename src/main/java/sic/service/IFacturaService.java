@@ -17,6 +17,8 @@ import sic.modelo.RenglonPedido;
 public interface IFacturaService {
     
     Factura getFacturaPorId(Long id_Factura);
+    
+    List<Factura> getFacturasDelPedido(Long idPedido);
 
     String[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor);
 
@@ -45,6 +47,10 @@ public interface IFacturaService {
     void actualizar(Factura factura);
 
     void eliminar(long idFactura);
+    
+    void actualizarEstadoFactura(Factura factura);
+    
+    double getTotalPagado(Factura factura);
 
     List<Factura> ordenarFacturasPorFechaAsc(List<Factura> facturas);
 

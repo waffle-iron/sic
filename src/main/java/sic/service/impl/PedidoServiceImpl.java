@@ -125,9 +125,9 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public List<Factura> getFacturasDelPedido(long id_pedido) {
+    public List<Factura> getFacturasDelPedido(long idPedido) {
         List<Factura> facturasSinEliminar = new ArrayList<>();
-        for (Factura factura : pedidoRepository.getPedidoPorId(id_pedido).getFacturas()) {
+        for (Factura factura : facturaService.getFacturasDelPedido(idPedido)) {
             if (!factura.isEliminada()) {
                 facturasSinEliminar.add(factura);
             }

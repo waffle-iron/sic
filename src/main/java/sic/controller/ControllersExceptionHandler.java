@@ -20,7 +20,7 @@ public class ControllersExceptionHandler {
     @ResponseBody
     public String handleServiceException(BusinessServiceException ex) {
         long transactionId = new Date().getTime();
-        String mensaje = ex.getMessage() + "\nTransaction ID: " + transactionId;
+        String mensaje = ex.getMessage() + "\nReference ID: " + transactionId;
         LOGGER.error(mensaje);
         return mensaje;
     }
@@ -30,7 +30,7 @@ public class ControllersExceptionHandler {
     @ResponseBody
     public String handleException(Exception ex) {
         long transactionId = new Date().getTime();
-        String mensaje = "\nTransaction ID: " + transactionId;
+        String mensaje = "\nReference ID: " + transactionId;
         LOGGER.error(ex.getMessage() + mensaje);
         return ResourceBundle.getBundle("Mensajes").getString("mensaje_error_request") + mensaje;
     }

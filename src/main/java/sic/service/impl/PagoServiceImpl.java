@@ -56,15 +56,6 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     @Override
-    public double getTotalPagado(Factura factura) {
-        double pagado = 0.0;
-        for (Pago pago : this.getPagosDeLaFactura(factura)) {
-            pagado = pagado + pago.getMonto();
-        }
-        return pagado;
-    }
-
-    @Override
     public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
         return pagoRepository.getPagosEntreFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
     }
@@ -80,7 +71,7 @@ public class PagoServiceImpl implements IPagoService {
         this.validarOperacion(pago);
         pago.setNroPago(this.getSiguienteNroPago(pago.getEmpresa().getId_Empresa()));
         pago = pagoRepository.guardar(pago);
-        this.setFacturaEstadoDePago(pago.getFactura());
+        facturaService.actualizarEstadoFactura(pago.getFactura());
         LOGGER.warn("El Pago " + pago + " se guardó correctamente.");
         return pago;
     }
@@ -89,9 +80,13 @@ public class PagoServiceImpl implements IPagoService {
     @Transactional
     public void eliminar(long idPago) {
         Pago pago = this.getPagoPorId(idPago);
+        if (pago == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pago_inexistente_eliminado"));
+        }
         pago.setEliminado(true);
         pagoRepository.actualizar(pago);
-        this.setFacturaEstadoDePago(pago.getFactura());
+        facturaService.actualizarEstadoFactura(pago.getFactura());
         LOGGER.warn("El Pago " + pago + " se eliminó correctamente.");
     }
      
@@ -180,18 +175,15 @@ public class PagoServiceImpl implements IPagoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_formaDePago_vacia"));
         }
-    }
-
-    @Override
-    @Transactional
-    public void setFacturaEstadoDePago(Factura factura) {
-        double totalFactura = Math.floor(factura.getTotal() * 100) / 100;
-        if (this.getTotalPagado(factura) >= totalFactura) {
-            factura.setPagada(true);
-        } else {
-            factura.setPagada(false);
+        if (pago.getFactura().isPagada() == true) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_pagada"));
         }
-        facturaService.actualizar(factura);
-    }
+        //POSIBLE CONFLICTO CON DECIMALES
+//        if (pago.getMonto() > this.getSaldoAPagar(pago.getFactura())) {
+//            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+//                    .getString("mensaje_pago_mayorADeuda_monto"));
+//        }
+    }  
 
 }

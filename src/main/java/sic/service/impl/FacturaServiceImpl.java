@@ -76,6 +76,11 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
+    public List<Factura> getFacturasDelPedido(Long idPedido) {
+        return facturaRepository.getFacturasDelPedido(idPedido);
+    }
+    
+    @Override
     public String[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor) {
         //cuando la Empresa discrimina IVA
         if (empresa.getCondicionIVA().isDiscriminaIVA()) {
@@ -287,20 +292,31 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     @Transactional
     public Factura guardar(Factura factura) {
+        factura.setEliminada(false);
         if (factura instanceof FacturaVenta) {
             //Serie de la factura hardcodeada a 1
-            factura.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(factura), 1));
+            factura.setNumSerie(1);
+            factura.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(factura), factura.getNumSerie()));
         }
         this.validarFactura(factura);
         //PAGOS
         int i = 0;
+        double totalPagos = 0;
         if (factura.getPagos() != null) {
             for (Pago pago : factura.getPagos()) {
                 pago.setNroPago(pagoService.getSiguienteNroPago(pago.getEmpresa().getId_Empresa()) + i);
                 pago.setFactura(factura);
+                totalPagos += pago.getMonto();
                 i++;
             }
+            if (factura.getTotal() < totalPagos) {
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_pagos_superan_total_factura"));
+            }
+        } else {
+            factura.setPagada(false);
         }
+        
         //PEDIDO
         if (factura.getPedido() != null) {
             List<Factura> facturas = factura.getPedido().getFacturas();
@@ -308,6 +324,7 @@ public class FacturaServiceImpl implements IFacturaService {
             factura.getPedido().setFacturas(facturas);            
         }
         factura = facturaRepository.guardar(factura);
+        this.actualizarEstadoFactura(factura);
         pedidoService.actualizarEstadoPedido(factura.getPedido());
         productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
         LOGGER.warn("La Factura " + factura + " se guardó correctamente.");
@@ -412,6 +429,27 @@ public class FacturaServiceImpl implements IFacturaService {
         }
     }
 
+    @Override
+    @Transactional
+    public void actualizarEstadoFactura(Factura factura) {
+        double totalFactura = Math.floor(factura.getTotal() * 100) / 100;
+        if (this.getTotalPagado(factura) >= totalFactura) {
+            factura.setPagada(true);
+        } else {
+            factura.setPagada(false);
+        }
+        this.actualizar(factura);
+    }
+    
+    @Override
+    public double getTotalPagado(Factura factura) {
+        double pagado = 0.0;
+        for (Pago pago : pagoService.getPagosDeLaFactura(factura)) {
+            pagado = pagado + pago.getMonto();
+        }
+        return pagado;
+    }
+    
     @Override
     public List<Factura> ordenarFacturasPorFechaAsc(List<Factura> facturas) {
         Comparator comparador = new Comparator<Factura>() {

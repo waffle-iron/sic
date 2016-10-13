@@ -14,9 +14,7 @@ public interface IPagoService {
 
     List<Pago> getPagosDeLaFactura(Factura factura);
 
-    double getSaldoAPagar(Factura factura);
-
-    double getTotalPagado(Factura factura);
+    double getSaldoAPagar(Factura factura);    
     
     long getSiguienteNroPago(Long idEmpresa);
 
@@ -39,6 +37,4 @@ public interface IPagoService {
     Pago guardar(Pago pago);
 
     void eliminar(long idPago);
-    
-    void setFacturaEstadoDePago(Factura factura);
 }

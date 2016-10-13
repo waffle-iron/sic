@@ -61,6 +61,18 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     }
 
     @Override
+    public List<Factura> getFacturasDelPedido(Long idPedido) {
+        TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.relacionadasConPedido", Factura.class);
+        typedQuery.setParameter("id", idPedido);
+        List<Factura> facturas = typedQuery.getResultList();
+        if (facturas.isEmpty()) {
+            return null;
+        } else {
+            return facturas;
+        }
+    }
+    
+    @Override
     public List<FacturaCompra> buscarFacturasCompra(BusquedaFacturaCompraCriteria criteria) {
         String query = "SELECT f FROM FacturaCompra f WHERE f.empresa = :empresa AND f.eliminada = false";
         //Fecha Factura

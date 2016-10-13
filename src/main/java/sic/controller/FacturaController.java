@@ -23,11 +23,13 @@ import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
+import sic.modelo.Pago;
 import sic.modelo.RenglonFactura;
 import sic.service.BusinessServiceException;
 import sic.service.IClienteService;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
+import sic.service.IPagoService;
 import sic.service.IPedidoService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
@@ -45,12 +47,13 @@ public class FacturaController {
     private final IUsuarioService usuarioService;
     private final IPedidoService pedidoService;
     private final IProductoService productoService;
+    private final IPagoService pagoService;
     
     @Autowired
     public FacturaController(IFacturaService facturaService, IEmpresaService empresaService,
                              IProveedorService proveedorService, IClienteService clienteService,
                              IUsuarioService usuarioService, IPedidoService pedidoService,
-                             IProductoService productoService) {
+                             IProductoService productoService, IPagoService pagoService) {
         this.facturaService = facturaService;
         this.empresaService = empresaService;
         this.proveedorService = proveedorService;
@@ -58,6 +61,7 @@ public class FacturaController {
         this.usuarioService = usuarioService;
         this.pedidoService = pedidoService;
         this.productoService = productoService;
+        this.pagoService = pagoService;
     }
     
     @GetMapping("/facturas/{idFactura}")
@@ -91,6 +95,12 @@ public class FacturaController {
                                            @RequestBody FacturaVenta factura) {
         factura.setPedido(pedidoService.getPedidoPorId(idPedido));
         return facturaService.guardar(factura);
+    }
+    
+    @GetMapping("/facturas/{idFactura}/pagos")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Pago> getPagosDeLaFactura(@PathVariable long idFactura) {       
+        return pagoService.getPagosDeLaFactura(facturaService.getFacturaPorId(idFactura));
     }
     
     @DeleteMapping("/facturas/{idFactura}")

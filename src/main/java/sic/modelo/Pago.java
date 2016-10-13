@@ -22,23 +22,23 @@ import lombok.Data;
 @NamedQueries({
     @NamedQuery(name = "Pago.buscarPorId",
             query = "SELECT p FROM Pago p "
-                    + "WHERE p.eliminado = false AND p.id_Pago= :id"),
+                + "WHERE p.eliminado = false AND p.id_Pago= :id"),
     @NamedQuery(name = "Pago.buscarPorNroYEmpresa",
             query = "SELECT p FROM Pago p "
-                    + "WHERE p.eliminado = false AND p.nroPago= :nroPago "
-                    + "AND p.empresa.id_Empresa = :idEmpresa"),
+                + "WHERE p.eliminado = false AND p.nroPago= :nroPago "
+                + "AND p.empresa.id_Empresa = :idEmpresa"),
     @NamedQuery(name = "Pago.buscarPagosEntreFechasYFormaDePago",
             query = "SELECT p FROM Pago p "
-            + "WHERE p.empresa.id_Empresa = :id_Empresa "
-            + "AND p.formaDePago.id_FormaDePago = :id_FormaDePago "
-            + "AND p.eliminado = false AND p.fecha BETWEEN :desde AND :hasta"),
+                + "WHERE p.empresa.id_Empresa = :id_Empresa "
+                + "AND p.formaDePago.id_FormaDePago = :id_FormaDePago "
+                + "AND p.eliminado = false AND p.fecha BETWEEN :desde AND :hasta"),
     @NamedQuery(name = "Pago.buscarMayorNroPago",
             query = "SELECT MAX(p.nroPago) FROM Pago p "
-            + "WHERE p.empresa.id_Empresa = :idEmpresa"),
+                + "WHERE p.empresa.id_Empresa = :idEmpresa"),
     @NamedQuery(name = "Pago.buscarPorFactura",
             query = "SELECT p FROM Pago p "
-            + "WHERE p.factura = :factura AND p.eliminado = false "
-            + "ORDER BY p.fecha ASC")
+                + "WHERE p.factura = :factura AND p.eliminado = false "
+                + "ORDER BY p.fecha ASC")
 })
 @Data
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pago")

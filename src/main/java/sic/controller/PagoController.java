@@ -43,9 +43,11 @@ public class PagoController {
         return pagoService.getPagoPorId(idPago);
     }
     
-    @PostMapping("/pagos")
+    @PostMapping("/pagos/facturas/{idFactura}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Pago guardar(@RequestBody Pago pago) {
+    public Pago guardar(@PathVariable long idFactura,
+                        @RequestBody Pago pago) {
+        pago.setFactura(facturaService.getFacturaPorId(idFactura));
         return pagoService.guardar(pago); 
     }
     
@@ -70,7 +72,7 @@ public class PagoController {
     @GetMapping("/pagos/facturas/{idFactura}/total-pagado")
     @ResponseStatus(HttpStatus.OK)
     public double getTotalPagado(@PathVariable long idFactura) {
-        return pagoService.getTotalPagado(facturaService.getFacturaPorId(idFactura));
+        return facturaService.getTotalPagado(facturaService.getFacturaPorId(idFactura));
     }
     
     @GetMapping("/pagos")

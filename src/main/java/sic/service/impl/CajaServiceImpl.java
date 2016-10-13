@@ -30,6 +30,7 @@ import sic.repository.ICajaRepository;
 import sic.modelo.EstadoCaja;
 import sic.service.BusinessServiceException;
 import sic.service.IEmpresaService;
+import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IGastoService;
 import sic.service.IPagoService;
@@ -46,17 +47,20 @@ public class CajaServiceImpl implements ICajaService {
     private final IPagoService pagoService;
     private final IGastoService gastoService;
     private final IEmpresaService empresaService;
+    private final IFacturaService facturaService;
     private final FormatterFechaHora formatoHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_HORA_INTERNACIONAL);
     private static final Logger LOGGER = Logger.getLogger(CajaServiceImpl.class.getPackage().getName());
 
     @Autowired
     public CajaServiceImpl(ICajaRepository cajaRepository, IFormaDePagoService formaDePagoService,
-                           IPagoService pagoService, IGastoService gastoService, IEmpresaService empresaService) {
+                           IPagoService pagoService, IGastoService gastoService,
+                           IEmpresaService empresaService, IFacturaService facturaService) {
         this.cajaRepository = cajaRepository;
         this.formaDePagoService = formaDePagoService;
         this.pagoService = pagoService;
         this.gastoService = gastoService;
         this.empresaService = empresaService;
+        this.facturaService = facturaService;
     }
 
     @Override
@@ -197,7 +201,7 @@ public class CajaServiceImpl implements ICajaService {
             List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(idEmpresa,
                     formaDePago.getId_FormaDePago(), caja.getFechaApertura(), caja.getFechaCorteInforme());
             for (Pago pago : pagos) {
-                totalPorCorteFormaDePago += pagoService.getTotalPagado(pago.getFactura());
+                totalPorCorteFormaDePago += facturaService.getTotalPagado(pago.getFactura());
             }
             for (Gasto gasto : gastos) {
                 totalPorCorteFormaDePago -= ((Gasto) gasto).getMonto();
