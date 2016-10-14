@@ -2,6 +2,7 @@ package sic.controller;
 
 import java.util.Date;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,9 +19,17 @@ public class ControllersExceptionHandler {
     @ExceptionHandler(BusinessServiceException.class)
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public String handleServiceException(BusinessServiceException ex) {
-        long transactionId = new Date().getTime();
-        String mensaje = ex.getMessage() + "\nReference ID: " + transactionId;
+    public String handleBusinessServiceException(BusinessServiceException ex) {        
+        String mensaje = ex.getMessage() + "\nReference ID: " + new Date().getTime();
+        LOGGER.error(mensaje);
+        return mensaje;
+    }
+    
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ResponseBody
+    public String handleEntityNotFoundException(EntityNotFoundException ex) {        
+        String mensaje = ex.getMessage() + "\nReference ID: " + new Date().getTime();
         LOGGER.error(mensaje);
         return mensaje;
     }
@@ -29,8 +38,7 @@ public class ControllersExceptionHandler {
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public String handleException(Exception ex) {
-        long transactionId = new Date().getTime();
-        String mensaje = "\nReference ID: " + transactionId;
+        String mensaje = "\nReference ID: " + new Date().getTime();
         LOGGER.error(ex.getMessage() + mensaje);
         return ResourceBundle.getBundle("Mensajes").getString("mensaje_error_request") + mensaje;
     }
