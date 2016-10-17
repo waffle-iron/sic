@@ -2,6 +2,7 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,11 @@ public class MedidaServiceImpl implements IMedidaService {
 
     @Override
     public Medida getMedidaPorId(Long id_Medida) {
-        return medidaRepository.getMedidaPorId(id_Medida);
+        Medida medida = medidaRepository.getMedidaPorId(id_Medida);
+        if (medida == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_no_existente"));
+        }
+        return medida;
     }
     
     @Override
@@ -82,6 +87,9 @@ public class MedidaServiceImpl implements IMedidaService {
     @Transactional
     public void eliminar(long idMedida) {
         Medida medida = this.getMedidaPorId(idMedida);
+        if (medida == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_no_existente"));
+        }
         medida.setEliminada(true);
         medidaRepository.actualizar(medida);
     }

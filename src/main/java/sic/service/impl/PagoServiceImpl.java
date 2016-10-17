@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +36,11 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     public Pago getPagoPorId(long id_pago) {
-        return this.pagoRepository.getPagoPorId(id_pago);
+        Pago pago = this.pagoRepository.getPagoPorId(id_pago);
+        if (pago == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_pago_inexistente_eliminado"));
+        }
+        return pago;
     }
     
     @Override

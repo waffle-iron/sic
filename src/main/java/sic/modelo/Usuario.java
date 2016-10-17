@@ -1,5 +1,6 @@
 package sic.modelo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -50,8 +51,10 @@ public class Usuario implements Serializable {
     private String nombre;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private boolean permisosAdministrador;
 
     private boolean eliminado;

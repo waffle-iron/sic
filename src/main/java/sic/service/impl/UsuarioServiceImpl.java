@@ -2,6 +2,7 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,11 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Override
     public Usuario getUsuarioPorId(Long idUsuario) {
-        return usuarioRepository.getUsuarioPorId(idUsuario);
+        Usuario usuario = usuarioRepository.getUsuarioPorId(idUsuario);;
+        if (usuario == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_no_existente"));
+        }
+        return usuario;
     }
     
     @Override
@@ -108,6 +113,9 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Transactional
     public void eliminar(long idUsuario) {
         Usuario usuario = this.getUsuarioPorId(idUsuario);
+        if (usuario == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_no_existente"));
+        }
         this.validarOperacion(TipoDeOperacion.ELIMINACION, usuario);
         usuario.setEliminado(true);
         usuarioRepository.actualizar(usuario);

@@ -2,6 +2,7 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,9 @@ public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
     @Transactional
     public void eliminar(Long idCondicionIVA) {
         CondicionIVA condicionIVA = this.getCondicionIVAPorId(idCondicionIVA);
+        if (condicionIVA == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_CondicionIVA_no_existente"));
+        }
         condicionIVA.setEliminada(true);        
         condicionIVARepository.actualizar(condicionIVA);
     }

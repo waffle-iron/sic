@@ -2,6 +2,7 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,11 @@ public class PaisServiceImpl implements IPaisService {
     
     @Override
     public Pais getPaisPorId(Long id_Pais) {
-        return paisRepository.getPaisPorId(id_Pais);
+        Pais pais = paisRepository.getPaisPorId(id_Pais);
+        if (pais == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaja_pais_no_existente"));
+        }
+        return pais;
     }
 
     @Override
@@ -64,6 +69,9 @@ public class PaisServiceImpl implements IPaisService {
     @Transactional
     public void eliminar(Long idPais) {
         Pais pais = this.getPaisPorId(idPais);
+        if (pais == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaja_pais_no_existente"));
+        }
         pais.setEliminado(true);
         paisRepository.actualizar(pais);
     }

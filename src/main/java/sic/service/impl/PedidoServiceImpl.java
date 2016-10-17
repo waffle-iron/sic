@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -46,7 +47,11 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     public Pedido getPedidoPorId(Long id) {
-        return this.pedidoRepository.getPedidoPorId(id);
+        Pedido pedido = this.pedidoRepository.getPedidoPorId(id);
+        if (pedido == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_no_existente"));
+        }
+        return pedido;
     }
     
     private void validarPedido(TipoDeOperacion operacion, Pedido pedido) {
@@ -67,6 +72,10 @@ public class PedidoServiceImpl implements IPedidoService {
         if (pedido.getUsuario() == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_usuario_vacio"));
+        }
+        //ValidarEstado
+        if(pedido.getEstado() != EstadoPedido.ABIERTO & pedido.getEstado() != EstadoPedido.ACTIVO & pedido.getEstado() != EstadoPedido.CERRADO) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes").getString("mensaja_estado_no_valido"));
         }
         if (operacion == TipoDeOperacion.ALTA) {
             //Duplicados       
@@ -165,6 +174,10 @@ public class PedidoServiceImpl implements IPedidoService {
             cal.set(Calendar.SECOND, 59);
             criteria.setFechaHasta(cal.getTime());
         }
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_empresa_no_existente"));
+        }
         //Cliente
         if (criteria.isBuscaCliente() == true && criteria.getCliente() == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
@@ -195,6 +208,9 @@ public class PedidoServiceImpl implements IPedidoService {
     @Transactional
     public boolean eliminar(long idPedido) {
         Pedido pedido = this.getPedidoPorId(idPedido);
+        if (pedido == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_no_existente"));
+        }
         if (pedido.getEstado() == EstadoPedido.ABIERTO) {
             pedido.setEliminado(true);
             pedidoRepository.actualizar(pedido);

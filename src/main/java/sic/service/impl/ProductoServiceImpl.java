@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -107,7 +108,8 @@ public class ProductoServiceImpl implements IProductoService {
         }
         //Duplicados
         //Codigo
-        if (!producto.getCodigo().equals("")) {
+        if (producto.getCodigo() != null) {
+            if (!producto.getCodigo().equals("")) {
             Producto productoDuplicado = this.getProductoPorCodigo(producto.getCodigo(), producto.getEmpresa());
             if (operacion.equals(TipoDeOperacion.ACTUALIZACION)
                     && productoDuplicado != null
@@ -120,7 +122,10 @@ public class ProductoServiceImpl implements IProductoService {
                     && !producto.getCodigo().equals("")) {
                 throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_producto_duplicado_codigo"));
+                }
             }
+        } else {
+            producto.setCodigo("");
         }
         //Descripcion
         Producto productoDuplicado = this.getProductoPorDescripcion(producto.getDescripcion(), producto.getEmpresa());
@@ -138,6 +143,10 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     public List<Producto> buscarProductos(BusquedaProductoCriteria criteria) {
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_empresa_no_existente"));
+        }
         //Rubro
         if (criteria.isBuscarPorRubro() == true && criteria.getRubro() == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
@@ -208,6 +217,9 @@ public class ProductoServiceImpl implements IProductoService {
         List<Producto> productos = new ArrayList<>();
         for (Long i : idProducto) {
             Producto producto = this.getProductoPorId(i);
+            if (producto == null) {
+                throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_producto_no_existente"));
+            }
             producto.setEliminado(true);
             productos.add(producto);
         }
@@ -276,7 +288,11 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     public Producto getProductoPorId(long id_Producto) {
-        return productoRepository.getProductoPorId(id_Producto);
+        Producto producto = productoRepository.getProductoPorId(id_Producto);
+        if (producto == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_producto_no_existente"));
+        }
+        return producto;
     }
 
     @Override

@@ -2,6 +2,7 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,11 @@ public class RubroServiceImpl implements IRubroService {
     
     @Override
     public Rubro getRubroPorId(Long idRubro){
-        return rubroRepository.getRubroPorId(idRubro);
+        Rubro rubro = rubroRepository.getRubroPorId(idRubro);
+        if (rubro == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_no_existente"));
+        }
+        return rubro;
     }
 
     @Override
@@ -81,6 +86,9 @@ public class RubroServiceImpl implements IRubroService {
     @Transactional
     public void eliminar(long idRubro) {
         Rubro rubro = this.getRubroPorId(idRubro);
+        if (rubro == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_no_existente"));
+        }
         rubro.setEliminado(true);
         rubroRepository.actualizar(rubro);
     }

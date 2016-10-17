@@ -4,6 +4,7 @@ import sic.service.IGastoService;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,11 @@ public class GastoServiceImpl implements IGastoService {
     
     @Override
     public Gasto getGastoPorId(Long id) {
-       return gastoRepository.getGastoPorId(id);
+        Gasto gasto = gastoRepository.getGastoPorId(id);
+        if (gasto == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_gasto_no_existente"));
+        }
+        return gasto;
     }
 
     @Override

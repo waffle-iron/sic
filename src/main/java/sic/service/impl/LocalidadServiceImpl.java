@@ -2,6 +2,7 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,11 @@ public class LocalidadServiceImpl implements ILocalidadService {
 
     @Override
     public Localidad getLocalidadPorId(Long id_Localidad) {
-        return localidadRepository.getLocalidadPorId(id_Localidad);
+        Localidad localidad = localidadRepository.getLocalidadPorId(id_Localidad);
+        if (localidad == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_localidad_no_existente"));
+        }
+        return localidad;
     }
     
     @Override

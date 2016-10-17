@@ -1,5 +1,7 @@
 package sic.service.impl;
 
+import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,8 +23,12 @@ public class ConfiguracionDelSistemaServiceImpl implements IConfiguracionDelSist
     }
 
     @Override
-    public ConfiguracionDelSistema getConfiguracionDelSistemaPorId(long id_ConfiguracionDelSistema) {        
-        return configuracionRepository.getConfiguracionDelSistemaPorId(id_ConfiguracionDelSistema);        
+    public ConfiguracionDelSistema getConfiguracionDelSistemaPorId(long id_ConfiguracionDelSistema) {
+        ConfiguracionDelSistema cds = configuracionRepository.getConfiguracionDelSistemaPorId(id_ConfiguracionDelSistema); 
+        if (cds == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_cds_no_existente"));
+        }
+        return cds;        
     }
 
     @Override
