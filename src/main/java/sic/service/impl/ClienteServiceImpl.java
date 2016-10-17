@@ -152,6 +152,11 @@ public class ClienteServiceImpl implements IClienteService {
                         .getString("mensaje_cliente_duplicado_razonSocial"));
             }
         }
+        //Predeterminado 
+        if(cliente.isPredeterminado() == this.getClientePredeterminado(cliente.getEmpresa()).isPredeterminado()) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_formaDePago_predeterminada_existente"));
+        }
     }
 
     @Override
