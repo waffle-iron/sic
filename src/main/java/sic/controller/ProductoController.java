@@ -197,15 +197,10 @@ public class ProductoController {
                                                       @RequestParam(value = "idRubro", required = false) Long idRubro,
                                                       @RequestParam(value = "idProveedor", required = false) Long idProveedor,
                                                       @RequestBody(required = false) PreciosProducto preciosProducto) {
-        List<Producto> productos = new ArrayList<>();
-        for(long i : idProducto) {
-            productos.add(productoService.getProductoPorId(i));
-        }       
-        productoService.modificarMultiplesProductos(productos,
+        return productoService.modificarMultiplesProductos(idProducto,
                                                    (preciosProducto!=null), preciosProducto,
                                                    (idMedida!=null), medidaService.getMedidaPorId(idMedida),
                                                    (idRubro!=null), rubroService.getRubroPorId(idRubro),
-                                                   (idProveedor!=null), proveedorService.getProveedorPorId(idProveedor));
-        return productos;    
+                                                   (idProveedor!=null), proveedorService.getProveedorPorId(idProveedor));   
     }
 }

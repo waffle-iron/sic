@@ -214,6 +214,10 @@ public class ProductoServiceImpl implements IProductoService {
     @Override
     @Transactional
     public void eliminarMultiplesProductos(long[] idProducto) {
+        if(Validator.tieneDuplicados(idProducto)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_ids_duplicados"));
+        }
         List<Producto> productos = new ArrayList<>();
         for (Long i : idProducto) {
             Producto producto = this.getProductoPorId(i);
@@ -229,12 +233,19 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     @Transactional
-    public void modificarMultiplesProductos(List<Producto> productos,
+    public List<Producto> modificarMultiplesProductos(long[] idProducto,
             boolean checkPrecios, PreciosProducto preciosProducto,
             boolean checkMedida, Medida medida,
             boolean checkRubro, Rubro rubro,
-            boolean checkProveedor, Proveedor proveedor) {
-
+            boolean checkProveedor, Proveedor proveedor) {    
+        if(Validator.tieneDuplicados(idProducto)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_ids_duplicados"));
+        }
+        List<Producto> productos = new ArrayList<>();
+        for(long i : idProducto) {
+            productos.add(this.getProductoPorId(i));
+        }  
         //Requeridos
         if (checkMedida == true && medida == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
@@ -285,6 +296,7 @@ public class ProductoServiceImpl implements IProductoService {
             }
         }
         productoRepository.actualizarMultiplesProductos(productos);
+        return productos;
     }
 
     @Override
