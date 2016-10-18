@@ -20,7 +20,7 @@ public class ControllersExceptionHandler {
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public String handleBusinessServiceException(BusinessServiceException ex) {        
-        String mensaje = ex.getMessage() + "\nReference ID: " + new Date().getTime();
+        String mensaje = ex.getMessage() + " Reference ID: " + new Date().getTime();
         LOGGER.error(mensaje);
         return mensaje;
     }
@@ -29,7 +29,7 @@ public class ControllersExceptionHandler {
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ResponseBody
     public String handleEntityNotFoundException(EntityNotFoundException ex) {        
-        String mensaje = ex.getMessage() + "\nReference ID: " + new Date().getTime();
+        String mensaje = ex.getMessage() + " Reference ID: " + new Date().getTime();
         LOGGER.error(mensaje);
         return mensaje;
     }
@@ -38,7 +38,7 @@ public class ControllersExceptionHandler {
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public String handleException(Exception ex) {
-        String mensaje = "\nReference ID: " + new Date().getTime();
+        String mensaje = " Reference ID: " + new Date().getTime();
         LOGGER.error(ex.getMessage() + mensaje);
         return ResourceBundle.getBundle("Mensajes").getString("mensaje_error_request") + mensaje;
     }
