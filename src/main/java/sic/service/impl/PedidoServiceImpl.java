@@ -46,10 +46,11 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public Pedido getPedidoPorId(Long id) {
-        Pedido pedido = this.pedidoRepository.getPedidoPorId(id);
+    public Pedido getPedidoPorId(Long idPedido) {
+        Pedido pedido = this.pedidoRepository.getPedidoPorId(idPedido);
         if (pedido == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pedido_no_existente"));
         }
         return pedido;
     }
@@ -74,8 +75,10 @@ public class PedidoServiceImpl implements IPedidoService {
                     .getString("mensaje_pedido_usuario_vacio"));
         }
         //ValidarEstado
-        if(pedido.getEstado() != EstadoPedido.ABIERTO & pedido.getEstado() != EstadoPedido.ACTIVO & pedido.getEstado() != EstadoPedido.CERRADO) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes").getString("mensaja_estado_no_valido"));
+        EstadoPedido estadoPedido = pedido.getEstado();
+        if(estadoPedido != EstadoPedido.ABIERTO & estadoPedido!= EstadoPedido.ACTIVO & estadoPedido != EstadoPedido.CERRADO) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaja_estado_no_valido"));
         }
         if (operacion == TipoDeOperacion.ALTA) {
             //Duplicados       
@@ -176,7 +179,8 @@ public class PedidoServiceImpl implements IPedidoService {
         }
         //Empresa
         if (criteria.getEmpresa() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_empresa_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
         }
         //Cliente
         if (criteria.isBuscaCliente() == true && criteria.getCliente() == null) {
@@ -209,7 +213,8 @@ public class PedidoServiceImpl implements IPedidoService {
     public boolean eliminar(long idPedido) {
         Pedido pedido = this.getPedidoPorId(idPedido);
         if (pedido == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pedido_no_existente"));
         }
         if (pedido.getEstado() == EstadoPedido.ABIERTO) {
             pedido.setEliminado(true);

@@ -30,7 +30,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public Usuario getUsuarioPorId(Long idUsuario) {
         Usuario usuario = usuarioRepository.getUsuarioPorId(idUsuario);;
         if (usuario == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_usuario_no_existente"));
         }
         return usuario;
     }
@@ -114,7 +115,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public void eliminar(long idUsuario) {
         Usuario usuario = this.getUsuarioPorId(idUsuario);
         if (usuario == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_usuario_no_existente"));
         }
         this.validarOperacion(TipoDeOperacion.ELIMINACION, usuario);
         usuario.setEliminado(true);

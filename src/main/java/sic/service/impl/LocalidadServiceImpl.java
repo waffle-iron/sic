@@ -27,10 +27,11 @@ public class LocalidadServiceImpl implements ILocalidadService {
     }
 
     @Override
-    public Localidad getLocalidadPorId(Long id_Localidad) {
-        Localidad localidad = localidadRepository.getLocalidadPorId(id_Localidad);
+    public Localidad getLocalidadPorId(Long idLocalidad) {
+        Localidad localidad = localidadRepository.getLocalidadPorId(idLocalidad);
         if (localidad == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_localidad_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_localidad_no_existente"));
         }
         return localidad;
     }

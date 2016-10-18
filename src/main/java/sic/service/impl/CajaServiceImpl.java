@@ -88,7 +88,7 @@ public class CajaServiceImpl implements ICajaService {
                     .getString("mensaje_caja_anterior_abierta"));
         }
         int comparacion = Validator.compararFechas(ultimaCaja.getFechaApertura() , caja.getFechaApertura());
-        if(comparacion < 0 || comparacion == 0) {
+        if (comparacion <= 0) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_fecha_apertura_no_valida"));
         }
@@ -120,7 +120,8 @@ public class CajaServiceImpl implements ICajaService {
     public void eliminar(Long idCaja) {
         Caja caja = this.getCajaPorId(idCaja);
         if (caja == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_caja_no_existente"));
         }
         caja.setEliminada(true);
         this.actualizar(caja);
@@ -135,7 +136,8 @@ public class CajaServiceImpl implements ICajaService {
     public Caja getCajaPorId(Long id) {
         Caja caja = cajaRepository.getCajaPorId(id);
         if (caja == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_caja_no_existente"));
         }
         return caja;
     }
@@ -187,15 +189,18 @@ public class CajaServiceImpl implements ICajaService {
     public List<Caja> getCajasCriteria(BusquedaCajaCriteria criteria) {
         //Empresa
         if (criteria.getEmpresa() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_empresa_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
         }
         //Usuario
         if(criteria.isBuscaPorUsuario() == true && criteria.getUsuario() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_usuario_no_existente"));
         }
         //Fecha
         if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_fechas_invalidas"));
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_caja_fechas_invalidas"));
         }
         if (criteria.isBuscaPorFecha() == true) {
             Calendar cal = new GregorianCalendar();
@@ -211,7 +216,8 @@ public class CajaServiceImpl implements ICajaService {
             criteria.setFechaHasta(cal.getTime());
         }        
         if (criteria.getEmpresa() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_empresa_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
         }
         
         return cajaRepository.getCajasCriteria(criteria);        

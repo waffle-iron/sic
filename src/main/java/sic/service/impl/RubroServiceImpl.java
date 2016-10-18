@@ -30,7 +30,8 @@ public class RubroServiceImpl implements IRubroService {
     public Rubro getRubroPorId(Long idRubro){
         Rubro rubro = rubroRepository.getRubroPorId(idRubro);
         if (rubro == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pedido_no_existente"));
         }
         return rubro;
     }
@@ -87,7 +88,8 @@ public class RubroServiceImpl implements IRubroService {
     public void eliminar(long idRubro) {
         Rubro rubro = this.getRubroPorId(idRubro);
         if (rubro == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_pedido_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pedido_no_existente"));
         }
         rubro.setEliminado(true);
         rubroRepository.actualizar(rubro);

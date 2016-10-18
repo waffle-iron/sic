@@ -26,7 +26,8 @@ public class ConfiguracionDelSistemaServiceImpl implements IConfiguracionDelSist
     public ConfiguracionDelSistema getConfiguracionDelSistemaPorId(long id_ConfiguracionDelSistema) {
         ConfiguracionDelSistema cds = configuracionRepository.getConfiguracionDelSistemaPorId(id_ConfiguracionDelSistema); 
         if (cds == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_cds_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_cds_no_existente"));
         }
         return cds;        
     }

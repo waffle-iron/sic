@@ -27,10 +27,11 @@ public class ProvinciaServiceImpl implements IProvinciaService {
     }
     
     @Override
-    public Provincia getProvinciaPorId(Long id_Provincia) {
-        Provincia provincia = provinciaRepository.getProvinciaPorId(id_Provincia);
+    public Provincia getProvinciaPorId(Long idProvincia) {
+        Provincia provincia = provinciaRepository.getProvinciaPorId(idProvincia);
         if (provincia == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_provincia_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_provincia_no_existente"));
         }
         return provincia;
     }
@@ -75,7 +76,8 @@ public class ProvinciaServiceImpl implements IProvinciaService {
     public void eliminar(long idProvincia) {
         Provincia provincia = this.getProvinciaPorId(idProvincia);
         if (provincia == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_provincia_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_provincia_no_existente"));
         }
         provincia.setEliminada(true);
         provinciaRepository.actualizar(provincia);

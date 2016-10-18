@@ -27,10 +27,11 @@ public class MedidaServiceImpl implements IMedidaService {
     }
 
     @Override
-    public Medida getMedidaPorId(Long id_Medida) {
-        Medida medida = medidaRepository.getMedidaPorId(id_Medida);
+    public Medida getMedidaPorId(Long idMedida) {
+        Medida medida = medidaRepository.getMedidaPorId(idMedida);
         if (medida == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_medida_no_existente"));
         }
         return medida;
     }
@@ -88,7 +89,8 @@ public class MedidaServiceImpl implements IMedidaService {
     public void eliminar(long idMedida) {
         Medida medida = this.getMedidaPorId(idMedida);
         if (medida == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_medida_no_existente"));
         }
         medida.setEliminada(true);
         medidaRepository.actualizar(medida);

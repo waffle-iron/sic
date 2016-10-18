@@ -28,12 +28,13 @@ public class ClienteServiceImpl implements IClienteService {
     }
 
     @Override
-    public Cliente getClientePorId(Long id_Cliente) {    
-        Cliente cliente = clienteRepository.getClientePorId(id_Cliente);
+    public Cliente getClientePorId(Long idCliente) {    
+        Cliente cliente = clienteRepository.getClientePorId(idCliente);
         if (cliente == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_cliente_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_cliente_no_existente"));
         }
-        return clienteRepository.getClientePorId(id_Cliente);                  
+        return cliente;                  
     }
 
     @Override
@@ -84,17 +85,21 @@ public class ClienteServiceImpl implements IClienteService {
     public List<Cliente> buscarClientes(BusquedaClienteCriteria criteria) {
         //Empresa
         if (criteria.getEmpresa() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_empresa_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
         }
         //Pais, Provincia y Localidad
         if (criteria.getPais() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaja_pais_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaja_pais_no_existente"));
         }
         if (criteria.getProvincia() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_provincia_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_provincia_no_existente"));
         }
         if(criteria.getLocalidad() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_localidad_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_localidad_no_existente"));
         }
         return clienteRepository.buscarClientes(criteria);
     }
@@ -180,7 +185,8 @@ public class ClienteServiceImpl implements IClienteService {
     public void eliminar(Long idCliente) {
         Cliente cliente = this.getClientePorId(idCliente);
         if (cliente == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_cliente_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_cliente_no_existente"));
         }
         cliente.setEliminado(true);        
         clienteRepository.actualizar(cliente);                   

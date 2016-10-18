@@ -56,7 +56,8 @@ public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
     public void eliminar(Long idCondicionIVA) {
         CondicionIVA condicionIVA = this.getCondicionIVAPorId(idCondicionIVA);
         if (condicionIVA == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_CondicionIVA_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_CondicionIVA_no_existente"));
         }
         condicionIVA.setEliminada(true);        
         condicionIVARepository.actualizar(condicionIVA);

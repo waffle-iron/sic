@@ -31,10 +31,11 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
     }
 
     @Override
-    public FormaDePago getFormasDePagoPorId(long id) {
-        FormaDePago formaDePago = formaDePagoRepository.getFormaDePagoPorId(id);
+    public FormaDePago getFormasDePagoPorId(long idFormaDePago) {
+        FormaDePago formaDePago = formaDePagoRepository.getFormaDePagoPorId(idFormaDePago);
         if (formaDePago == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_formaDePago_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_formaDePago_no_existente"));
         }
         return formaDePago;
     }
@@ -95,7 +96,8 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
     public void eliminar(long idFormaDePago) {
         FormaDePago formaDePago = this.getFormasDePagoPorId(idFormaDePago);
         if (formaDePago == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_formaDePago_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_formaDePago_no_existente"));
         }
         formaDePago.setEliminada(true);
         formaDePagoRepository.actualizar(formaDePago);

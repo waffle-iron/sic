@@ -233,7 +233,8 @@ public class FacturaServiceImpl implements IFacturaService {
     public List<FacturaCompra> buscarFacturaCompra(BusquedaFacturaCompraCriteria criteria) {
         //Empresa
         if (criteria.getEmpresa() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_empresa_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
         }
         //Fecha de Factura        
         if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
@@ -265,10 +266,11 @@ public class FacturaServiceImpl implements IFacturaService {
     public List<FacturaVenta> buscarFacturaVenta(BusquedaFacturaVentaCriteria criteria) {
         //Empresa
         if(criteria.getEmpresa() == null ) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_empresa_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
         }
         //Fecha de Factura        
-        if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
+        if (criteria.isBuscaPorFecha() == true && (criteria.getFechaDesde() == null || criteria.getFechaHasta() == null)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_fechas_busqueda_invalidas"));
         }

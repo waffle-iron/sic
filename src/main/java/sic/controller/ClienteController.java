@@ -1,8 +1,6 @@
 package sic.controller;
 
 import java.util.List;
-import java.util.ResourceBundle;
-import javax.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,9 +15,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import sic.modelo.BusquedaClienteCriteria;
 import sic.modelo.Cliente;
-import sic.modelo.Localidad;
-import sic.modelo.Pais;
-import sic.modelo.Provincia;
 import sic.service.IClienteService;
 import sic.service.IEmpresaService;
 import sic.service.ILocalidadService;
@@ -105,7 +100,7 @@ public class ClienteController {
        return clienteService.getClientePorId(cliente.getId_Cliente());
     }
     
-    @PutMapping("/clientes/predeterminado/{idCliente}")
+    @PutMapping("/clientes/{idCliente}/predeterminado/")
     @ResponseStatus(HttpStatus.OK)
     public Cliente setClientePredeterminado(@PathVariable long idCliente) {
        clienteService.setClientePredeterminado(clienteService.getClientePorId(idCliente));

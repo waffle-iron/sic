@@ -25,10 +25,11 @@ public class GastoServiceImpl implements IGastoService {
     }
     
     @Override
-    public Gasto getGastoPorId(Long id) {
-        Gasto gasto = gastoRepository.getGastoPorId(id);
+    public Gasto getGastoPorId(Long idGasto) {
+        Gasto gasto = gastoRepository.getGastoPorId(idGasto);
         if (gasto == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_gasto_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_gasto_no_existente"));
         }
         return gasto;
     }
@@ -67,8 +68,8 @@ public class GastoServiceImpl implements IGastoService {
     }
 
     @Override
-    public List<Gasto> getGastosPorFecha(Long id_Empresa, Date desde, Date hasta) {
-        return gastoRepository.getGastosPorFecha(id_Empresa, desde, hasta);
+    public List<Gasto> getGastosPorFecha(Long idEmpresa, Date desde, Date hasta) {
+        return gastoRepository.getGastosPorFecha(idEmpresa, desde, hasta);
     }
 
     @Override
@@ -77,8 +78,8 @@ public class GastoServiceImpl implements IGastoService {
     }
 
     @Override
-    public List<Gasto> getGastosPorFechaYFormaDePago(Long id_Empresa, Long id_FormaDePago, Date desde, Date hasta) {
-        return gastoRepository.getGastosPorFechaYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
+    public List<Gasto> getGastosPorFechaYFormaDePago(Long idEmpresa, Long idFormaDePago, Date desde, Date hasta) {
+        return gastoRepository.getGastosPorFechaYFormaDePago(idEmpresa, idFormaDePago, desde, hasta);
     }
 
     @Override
@@ -88,13 +89,13 @@ public class GastoServiceImpl implements IGastoService {
     }
 
     @Override
-    public long getUltimoNumeroDeCaja(long id_Empresa) {
-        return gastoRepository.getUltimoNumeroDeGasto(id_Empresa);
+    public long getUltimoNumeroDeCaja(long idEmpresa) {
+        return gastoRepository.getUltimoNumeroDeGasto(idEmpresa);
     }
 
     @Override
-    public long getUltimoNumeroDeGasto(long id_empresa) {
-        return gastoRepository.getUltimoNumeroDeGasto(id_empresa);
+    public long getUltimoNumeroDeGasto(long idEmpresa) {
+        return gastoRepository.getUltimoNumeroDeGasto(idEmpresa);
     }
 
 }

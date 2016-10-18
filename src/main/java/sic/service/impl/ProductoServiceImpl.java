@@ -108,8 +108,7 @@ public class ProductoServiceImpl implements IProductoService {
         }
         //Duplicados
         //Codigo
-        if (producto.getCodigo() != null) {
-            if (!producto.getCodigo().equals("")) {
+        if (!producto.getCodigo().equals("")) {
             Producto productoDuplicado = this.getProductoPorCodigo(producto.getCodigo(), producto.getEmpresa());
             if (operacion.equals(TipoDeOperacion.ACTUALIZACION)
                     && productoDuplicado != null
@@ -122,10 +121,7 @@ public class ProductoServiceImpl implements IProductoService {
                     && !producto.getCodigo().equals("")) {
                 throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_producto_duplicado_codigo"));
-                }
             }
-        } else {
-            producto.setCodigo("");
         }
         //Descripcion
         Producto productoDuplicado = this.getProductoPorDescripcion(producto.getDescripcion(), producto.getEmpresa());
@@ -145,7 +141,8 @@ public class ProductoServiceImpl implements IProductoService {
     public List<Producto> buscarProductos(BusquedaProductoCriteria criteria) {
         //Empresa
         if (criteria.getEmpresa() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_empresa_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
         }
         //Rubro
         if (criteria.isBuscarPorRubro() == true && criteria.getRubro() == null) {
@@ -163,6 +160,9 @@ public class ProductoServiceImpl implements IProductoService {
     @Override
     @Transactional
     public Producto guardar(Producto producto) {
+        if (producto.getCodigo() == null) {
+            producto.setCodigo("");
+        }
         this.validarOperacion(TipoDeOperacion.ALTA, producto);
         producto = productoRepository.guardar(producto);
         LOGGER.warn("El Producto " + producto + " se guardó correctamente.");
@@ -218,7 +218,8 @@ public class ProductoServiceImpl implements IProductoService {
         for (Long i : idProducto) {
             Producto producto = this.getProductoPorId(i);
             if (producto == null) {
-                throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_producto_no_existente"));
+                throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_producto_no_existente"));
             }
             producto.setEliminado(true);
             productos.add(producto);
@@ -287,10 +288,11 @@ public class ProductoServiceImpl implements IProductoService {
     }
 
     @Override
-    public Producto getProductoPorId(long id_Producto) {
-        Producto producto = productoRepository.getProductoPorId(id_Producto);
+    public Producto getProductoPorId(long idProducto) {
+        Producto producto = productoRepository.getProductoPorId(idProducto);
         if (producto == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_producto_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_producto_no_existente"));
         }
         return producto;
     }

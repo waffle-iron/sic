@@ -9,11 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "usuario")
@@ -37,9 +34,6 @@ import lombok.NoArgsConstructor;
                     + "WHERE u.eliminado = false AND u.nombre = :nombre AND u.password = :password")
 })
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @EqualsAndHashCode(of = {"nombre"})
 public class Usuario implements Serializable {
 

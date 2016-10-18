@@ -28,10 +28,11 @@ public class TransportistaServiceImpl implements ITransportistaService {
     }
     
     @Override
-    public Transportista getTransportistaPorId(long id_Transportista) {
-        Transportista transportista = transportistaRepository.getTransportistaPorId(id_Transportista);
+    public Transportista getTransportistaPorId(long idTransportista) {
+        Transportista transportista = transportistaRepository.getTransportistaPorId(idTransportista);
         if (transportista == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_transportista_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_transportista_no_existente"));
         }
         return transportista;
     }
@@ -45,17 +46,21 @@ public class TransportistaServiceImpl implements ITransportistaService {
     public List<Transportista> buscarTransportistas(BusquedaTransportistaCriteria criteria) {
         //Empresa
         if (criteria.getEmpresa() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_empresa_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
         }
         //Pais, Provincia y Localidad
         if (criteria.getPais() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaja_pais_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaja_pais_no_existente"));
         }
         if (criteria.getProvincia() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_provincia_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_provincia_no_existente"));
         }
         if(criteria.getLocalidad() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_localidad_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_localidad_no_existente"));
         }
         return transportistaRepository.busquedaPersonalizada(criteria);
     }
@@ -115,7 +120,8 @@ public class TransportistaServiceImpl implements ITransportistaService {
     public void eliminar(long idTransportista) {
         Transportista transportista = this.getTransportistaPorId(idTransportista);
         if (transportista == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes").getString("mensaje_transportista_no_existente"));
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_transportista_no_existente"));
         }
         transportista.setEliminado(true);
         transportistaRepository.actualizar(transportista);
