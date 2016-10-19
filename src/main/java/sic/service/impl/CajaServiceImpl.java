@@ -87,8 +87,7 @@ public class CajaServiceImpl implements ICajaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_anterior_abierta"));
         }
-        int comparacion = Validator.compararFechas(ultimaCaja.getFechaApertura() , caja.getFechaApertura());
-        if (comparacion <= 0) {
+        if (Validator.compararFechas(ultimaCaja.getFechaApertura(), caja.getFechaApertura()) <= 0) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_fecha_apertura_no_valida"));
         }
@@ -198,7 +197,7 @@ public class CajaServiceImpl implements ICajaService {
                     .getString("mensaje_usuario_no_existente"));
         }
         //Fecha
-        if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
+        if (criteria.isBuscaPorFecha() == true && (criteria.getFechaDesde() == null || criteria.getFechaHasta() == null)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_fechas_invalidas"));
         }

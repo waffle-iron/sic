@@ -237,15 +237,16 @@ public class ProductoServiceImpl implements IProductoService {
             boolean checkPrecios, PreciosProducto preciosProducto,
             boolean checkMedida, Medida medida,
             boolean checkRubro, Rubro rubro,
-            boolean checkProveedor, Proveedor proveedor) {    
-        if(Validator.tieneDuplicados(idProducto)) {
+            boolean checkProveedor, Proveedor proveedor) {
+        
+        if (Validator.tieneDuplicados(idProducto)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_ids_duplicados"));
         }
         List<Producto> productos = new ArrayList<>();
-        for(long i : idProducto) {
+        for (long i : idProducto) {
             productos.add(this.getProductoPorId(i));
-        }  
+        }        
         //Requeridos
         if (checkMedida == true && medida == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")

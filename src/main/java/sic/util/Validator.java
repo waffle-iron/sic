@@ -80,7 +80,7 @@ public class Validator {
     }
     
     public static boolean tieneDuplicados(long[] array) {
-        Set<Long> set = new HashSet<Long>();
+        Set<Long> set = new HashSet<>();
         for (long i : array) {
             if (set.contains(i)) {
                 return true;

@@ -44,7 +44,7 @@ public class EmpresaServiceImpl implements IEmpresaService {
     @Override
     public List<Empresa> getEmpresas() {
         return empresaRepository.getEmpresas();
-        }
+    }
 
     @Override
     public Empresa getEmpresaPorNombre(String nombre) {

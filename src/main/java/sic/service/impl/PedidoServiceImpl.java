@@ -74,9 +74,9 @@ public class PedidoServiceImpl implements IPedidoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_usuario_vacio"));
         }
-        //ValidarEstado
-        EstadoPedido estadoPedido = pedido.getEstado();
-        if(estadoPedido != EstadoPedido.ABIERTO & estadoPedido!= EstadoPedido.ACTIVO & estadoPedido != EstadoPedido.CERRADO) {
+        //Validar Estado
+        EstadoPedido estado = pedido.getEstado();
+        if ((estado != EstadoPedido.ABIERTO) && (estado != EstadoPedido.ACTIVO) && (estado != EstadoPedido.CERRADO)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaja_estado_no_valido"));
         }
