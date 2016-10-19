@@ -2,6 +2,7 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,13 @@ public class ProvinciaServiceImpl implements IProvinciaService {
     }
     
     @Override
-    public Provincia getProvinciaPorId(Long id_Provincia) {
-        return provinciaRepository.getProvinciaPorId(id_Provincia);
+    public Provincia getProvinciaPorId(Long idProvincia) {
+        Provincia provincia = provinciaRepository.getProvinciaPorId(idProvincia);
+        if (provincia == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_provincia_no_existente"));
+        }
+        return provincia;
     }
 
     @Override
@@ -69,6 +75,10 @@ public class ProvinciaServiceImpl implements IProvinciaService {
     @Transactional
     public void eliminar(long idProvincia) {
         Provincia provincia = this.getProvinciaPorId(idProvincia);
+        if (provincia == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_provincia_no_existente"));
+        }
         provincia.setEliminada(true);
         provinciaRepository.actualizar(provincia);
     }

@@ -100,10 +100,10 @@ public class ClienteController {
        return clienteService.getClientePorId(cliente.getId_Cliente());
     }
     
-    @PutMapping("/clientes/predeterminado")
+    @PutMapping("/clientes/{idCliente}/predeterminado/")
     @ResponseStatus(HttpStatus.OK)
-    public Cliente setClientePredeterminado(@RequestBody Cliente cliente) {
-       clienteService.setClientePredeterminado(cliente);
-       return clienteService.getClientePorId(cliente.getId_Cliente());
+    public Cliente setClientePredeterminado(@PathVariable long idCliente) {
+       clienteService.setClientePredeterminado(clienteService.getClientePorId(idCliente));
+       return clienteService.getClientePorId(idCliente);
     }
 }

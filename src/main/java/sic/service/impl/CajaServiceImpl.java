@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -38,6 +39,7 @@ import sic.service.ServiceException;
 import sic.util.FormatterFechaHora;
 import sic.util.FormatterNumero;
 import sic.util.Utilidades;
+import sic.util.Validator;
 
 @Service
 public class CajaServiceImpl implements ICajaService {
@@ -79,6 +81,16 @@ public class CajaServiceImpl implements ICajaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_usuario_vacio"));
         }
+        //Una Caja por dia
+        Caja ultimaCaja = this.getUltimaCaja(caja.getEmpresa().getId_Empresa());
+        if(ultimaCaja.getEstado() == EstadoCaja.ABIERTA) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_caja_anterior_abierta"));
+        }
+        if (Validator.compararFechas(ultimaCaja.getFechaApertura(), caja.getFechaApertura()) <= 0) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_fecha_apertura_no_valida"));
+        }
         //Duplicados        
         if (cajaRepository.getCajaPorIdYEmpresa(caja.getId_Caja(), caja.getEmpresa().getId_Empresa()) != null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
@@ -106,6 +118,10 @@ public class CajaServiceImpl implements ICajaService {
     @Transactional
     public void eliminar(Long idCaja) {
         Caja caja = this.getCajaPorId(idCaja);
+        if (caja == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_caja_no_existente"));
+        }
         caja.setEliminada(true);
         this.actualizar(caja);
     }
@@ -117,7 +133,12 @@ public class CajaServiceImpl implements ICajaService {
     
     @Override
     public Caja getCajaPorId(Long id) {
-        return cajaRepository.getCajaPorId(id);
+        Caja caja = cajaRepository.getCajaPorId(id);
+        if (caja == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_caja_no_existente"));
+        }
+        return caja;
     }
 
     @Override
@@ -165,8 +186,20 @@ public class CajaServiceImpl implements ICajaService {
 
     @Override
     public List<Caja> getCajasCriteria(BusquedaCajaCriteria criteria) {
-        if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_fechas_invalidas"));
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        //Usuario
+        if(criteria.isBuscaPorUsuario() == true && criteria.getUsuario() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_usuario_no_existente"));
+        }
+        //Fecha
+        if (criteria.isBuscaPorFecha() == true && (criteria.getFechaDesde() == null || criteria.getFechaHasta() == null)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_caja_fechas_invalidas"));
         }
         if (criteria.isBuscaPorFecha() == true) {
             Calendar cal = new GregorianCalendar();
@@ -181,6 +214,10 @@ public class CajaServiceImpl implements ICajaService {
             cal.set(Calendar.SECOND, 59);
             criteria.setFechaHasta(cal.getTime());
         }        
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
         
         return cajaRepository.getCajasCriteria(criteria);        
     }

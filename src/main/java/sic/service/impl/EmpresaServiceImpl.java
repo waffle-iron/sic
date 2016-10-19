@@ -2,6 +2,7 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,8 +32,13 @@ public class EmpresaServiceImpl implements IEmpresaService {
     }
     
     @Override
-    public Empresa getEmpresaPorId(Long id_Empresa){
-        return empresaRepository.getEmpresaPorId(id_Empresa);
+    public Empresa getEmpresaPorId(Long idEmpresa){
+        Empresa empresa = empresaRepository.getEmpresaPorId(idEmpresa);
+        if (empresa == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        return empresa;
     }
 
     @Override
@@ -129,6 +135,10 @@ public class EmpresaServiceImpl implements IEmpresaService {
     @Transactional
     public void eliminar(Long idEmpresa) {
         Empresa empresa = this.getEmpresaPorId(idEmpresa);
+        if (empresa == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
         empresa.setEliminada(true);
         empresaRepository.actualizar(empresa);
     }

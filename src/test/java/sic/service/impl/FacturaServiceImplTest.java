@@ -214,7 +214,9 @@ public class FacturaServiceImplTest {
         factura.setTransportista(Transportista.builder().nombre("demonte").build());
         factura.setEmpresa(Empresa.builder().nombre("CocaCola").build());
         factura.setCliente(Cliente.builder().nombreFantasia("Enrrique Iglesias").build());
-        factura.setUsuario(Usuario.builder().nombre("Marian Jhons  help").build());
+        Usuario usuario = new Usuario();
+        usuario.setNombre("Marian Jhons  help");
+        factura.setUsuario(usuario);
         factura.setTipoFactura('A');
         int[] indices = {0, 1};
         int cantidadDeFacturasEsperadas = 2;

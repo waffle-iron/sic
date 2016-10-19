@@ -44,6 +44,6 @@ public interface IProductoService {
 
     Producto guardar(Producto producto);
 
-    void modificarMultiplesProductos(List<Producto> productos, boolean checkPrecios, PreciosProducto preciosProducto, boolean checkMedida, Medida medida, boolean checkRubro, Rubro rubro, boolean checkProveedor, Proveedor proveedor);
+    List<Producto> modificarMultiplesProductos(long[] idProductos, boolean checkPrecios, PreciosProducto preciosProducto, boolean checkMedida, Medida medida, boolean checkRubro, Rubro rubro, boolean checkProveedor, Proveedor proveedor);
 
 }

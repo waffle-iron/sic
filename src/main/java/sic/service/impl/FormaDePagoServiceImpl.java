@@ -2,6 +2,7 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,8 +31,13 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
     }
 
     @Override
-    public FormaDePago getFormasDePagoPorId(long id) {
-        return formaDePagoRepository.getFormaDePagoPorId(id);
+    public FormaDePago getFormasDePagoPorId(long idFormaDePago) {
+        FormaDePago formaDePago = formaDePagoRepository.getFormaDePagoPorId(idFormaDePago);
+        if (formaDePago == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_formaDePago_no_existente"));
+        }
+        return formaDePago;
     }
 
     @Override
@@ -69,6 +75,11 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_formaDePago_duplicado_nombre"));
         }
+        //Predeterminado 
+        if(formaDePago.isPredeterminado() == this.getFormaDePagoPredeterminada(formaDePago.getEmpresa()).isPredeterminado()) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_formaDePago_predeterminada_existente"));
+        }
     }
 
     @Override
@@ -84,6 +95,10 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
     @Transactional
     public void eliminar(long idFormaDePago) {
         FormaDePago formaDePago = this.getFormasDePagoPorId(idFormaDePago);
+        if (formaDePago == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_formaDePago_no_existente"));
+        }
         formaDePago.setEliminada(true);
         formaDePagoRepository.actualizar(formaDePago);
     }

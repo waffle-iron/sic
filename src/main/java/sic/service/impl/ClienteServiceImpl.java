@@ -2,6 +2,7 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,8 +28,13 @@ public class ClienteServiceImpl implements IClienteService {
     }
 
     @Override
-    public Cliente getClientePorId(Long id_Cliente) {        
-        return clienteRepository.getClientePorId(id_Cliente);                  
+    public Cliente getClientePorId(Long idCliente) {    
+        Cliente cliente = clienteRepository.getClientePorId(idCliente);
+        if (cliente == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_cliente_no_existente"));
+        }
+        return cliente;                  
     }
 
     @Override
@@ -76,7 +82,25 @@ public class ClienteServiceImpl implements IClienteService {
     }
 
     @Override
-    public List<Cliente> buscarClientes(BusquedaClienteCriteria criteria) {    
+    public List<Cliente> buscarClientes(BusquedaClienteCriteria criteria) {
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        //Pais, Provincia y Localidad
+        if (criteria.getPais() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaja_pais_no_existente"));
+        }
+        if (criteria.getProvincia() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_provincia_no_existente"));
+        }
+        if(criteria.getLocalidad() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_localidad_no_existente"));
+        }
         return clienteRepository.buscarClientes(criteria);
     }
 
@@ -133,6 +157,11 @@ public class ClienteServiceImpl implements IClienteService {
                         .getString("mensaje_cliente_duplicado_razonSocial"));
             }
         }
+        //Predeterminado 
+        if(cliente.isPredeterminado() == this.getClientePredeterminado(cliente.getEmpresa()).isPredeterminado()) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_formaDePago_predeterminada_existente"));
+        }
     }
 
     @Override
@@ -155,6 +184,10 @@ public class ClienteServiceImpl implements IClienteService {
     @Transactional
     public void eliminar(Long idCliente) {
         Cliente cliente = this.getClientePorId(idCliente);
+        if (cliente == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_cliente_no_existente"));
+        }
         cliente.setEliminado(true);        
         clienteRepository.actualizar(cliente);                   
     }

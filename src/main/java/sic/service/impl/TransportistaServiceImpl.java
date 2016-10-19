@@ -3,6 +3,7 @@ package sic.service.impl;
 import sic.modelo.BusquedaTransportistaCriteria;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,8 +28,13 @@ public class TransportistaServiceImpl implements ITransportistaService {
     }
     
     @Override
-    public Transportista getTransportistaPorId(long id_Transportista) {
-        return transportistaRepository.getTransportistaPorId(id_Transportista);
+    public Transportista getTransportistaPorId(long idTransportista) {
+        Transportista transportista = transportistaRepository.getTransportistaPorId(idTransportista);
+        if (transportista == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_transportista_no_existente"));
+        }
+        return transportista;
     }
 
     @Override
@@ -38,6 +44,24 @@ public class TransportistaServiceImpl implements ITransportistaService {
 
     @Override
     public List<Transportista> buscarTransportistas(BusquedaTransportistaCriteria criteria) {
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        //Pais, Provincia y Localidad
+        if (criteria.getPais() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaja_pais_no_existente"));
+        }
+        if (criteria.getProvincia() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_provincia_no_existente"));
+        }
+        if(criteria.getLocalidad() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_localidad_no_existente"));
+        }
         return transportistaRepository.busquedaPersonalizada(criteria);
     }
 
@@ -95,6 +119,10 @@ public class TransportistaServiceImpl implements ITransportistaService {
     @Transactional
     public void eliminar(long idTransportista) {
         Transportista transportista = this.getTransportistaPorId(idTransportista);
+        if (transportista == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_transportista_no_existente"));
+        }
         transportista.setEliminado(true);
         transportistaRepository.actualizar(transportista);
     }

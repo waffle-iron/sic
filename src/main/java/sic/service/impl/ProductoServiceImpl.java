@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -138,6 +139,11 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     public List<Producto> buscarProductos(BusquedaProductoCriteria criteria) {
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
         //Rubro
         if (criteria.isBuscarPorRubro() == true && criteria.getRubro() == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
@@ -154,6 +160,9 @@ public class ProductoServiceImpl implements IProductoService {
     @Override
     @Transactional
     public Producto guardar(Producto producto) {
+        if (producto.getCodigo() == null) {
+            producto.setCodigo("");
+        }
         this.validarOperacion(TipoDeOperacion.ALTA, producto);
         producto = productoRepository.guardar(producto);
         LOGGER.warn("El Producto " + producto + " se guardó correctamente.");
@@ -205,9 +214,17 @@ public class ProductoServiceImpl implements IProductoService {
     @Override
     @Transactional
     public void eliminarMultiplesProductos(long[] idProducto) {
+        if(Validator.tieneDuplicados(idProducto)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_ids_duplicados"));
+        }
         List<Producto> productos = new ArrayList<>();
         for (Long i : idProducto) {
             Producto producto = this.getProductoPorId(i);
+            if (producto == null) {
+                throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_producto_no_existente"));
+            }
             producto.setEliminado(true);
             productos.add(producto);
         }
@@ -216,12 +233,20 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     @Transactional
-    public void modificarMultiplesProductos(List<Producto> productos,
+    public List<Producto> modificarMultiplesProductos(long[] idProducto,
             boolean checkPrecios, PreciosProducto preciosProducto,
             boolean checkMedida, Medida medida,
             boolean checkRubro, Rubro rubro,
             boolean checkProveedor, Proveedor proveedor) {
-
+        
+        if (Validator.tieneDuplicados(idProducto)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_ids_duplicados"));
+        }
+        List<Producto> productos = new ArrayList<>();
+        for (long i : idProducto) {
+            productos.add(this.getProductoPorId(i));
+        }        
         //Requeridos
         if (checkMedida == true && medida == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
@@ -272,11 +297,17 @@ public class ProductoServiceImpl implements IProductoService {
             }
         }
         productoRepository.actualizarMultiplesProductos(productos);
+        return productos;
     }
 
     @Override
-    public Producto getProductoPorId(long id_Producto) {
-        return productoRepository.getProductoPorId(id_Producto);
+    public Producto getProductoPorId(long idProducto) {
+        Producto producto = productoRepository.getProductoPorId(idProducto);
+        if (producto == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_producto_no_existente"));
+        }
+        return producto;
     }
 
     @Override

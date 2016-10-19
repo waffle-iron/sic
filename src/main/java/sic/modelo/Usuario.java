@@ -1,5 +1,6 @@
 package sic.modelo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,11 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "usuario")
@@ -36,9 +34,6 @@ import lombok.NoArgsConstructor;
                     + "WHERE u.eliminado = false AND u.nombre = :nombre AND u.password = :password")
 })
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 @EqualsAndHashCode(of = {"nombre"})
 public class Usuario implements Serializable {
 
@@ -50,8 +45,10 @@ public class Usuario implements Serializable {
     private String nombre;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private boolean permisosAdministrador;
 
     private boolean eliminado;
