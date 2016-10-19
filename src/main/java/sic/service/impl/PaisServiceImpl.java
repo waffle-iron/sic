@@ -11,7 +11,7 @@ import sic.modelo.Pais;
 import sic.repository.IPaisRepository;
 import sic.service.IPaisService;
 import sic.service.BusinessServiceException;
-import sic.service.TipoDeOperacion;
+import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
 
 @Service

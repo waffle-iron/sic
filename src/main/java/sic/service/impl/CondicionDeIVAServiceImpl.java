@@ -11,7 +11,7 @@ import sic.modelo.CondicionIVA;
 import sic.repository.ICondicionIVARepository;
 import sic.service.ICondicionIVAService;
 import sic.service.BusinessServiceException;
-import sic.service.TipoDeOperacion;
+import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
 
 @Service

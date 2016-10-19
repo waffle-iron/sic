@@ -29,7 +29,7 @@ import sic.service.IFacturaService;
 import sic.service.IPedidoService;
 import sic.service.BusinessServiceException;
 import sic.service.ServiceException;
-import sic.service.TipoDeOperacion;
+import sic.modelo.TipoDeOperacion;
 import sic.util.Utilidades;
 
 @Service

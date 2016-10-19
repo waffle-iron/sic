@@ -13,7 +13,7 @@ import sic.modelo.Empresa;
 import sic.repository.IClienteRepository;
 import sic.service.IClienteService;
 import sic.service.BusinessServiceException;
-import sic.service.TipoDeOperacion;
+import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
 
 @Service

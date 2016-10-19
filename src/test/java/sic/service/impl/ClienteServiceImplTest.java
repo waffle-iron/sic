@@ -14,7 +14,7 @@ import sic.modelo.Localidad;
 import sic.repository.IClienteRepository;
 import sic.service.IClienteService;
 import sic.service.BusinessServiceException;
-import sic.service.TipoDeOperacion;
+import sic.modelo.TipoDeOperacion;
 
 @Service
 public class ClienteServiceImplTest {

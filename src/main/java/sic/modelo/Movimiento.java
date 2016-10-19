@@ -1,4 +1,4 @@
-package sic.service;
+package sic.modelo;
 
 /**
  * Describe las distintas operaciones comerciales que se pueden realizar.

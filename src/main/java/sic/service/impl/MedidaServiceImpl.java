@@ -12,7 +12,7 @@ import sic.modelo.Medida;
 import sic.repository.IMedidaRepository;
 import sic.service.IMedidaService;
 import sic.service.BusinessServiceException;
-import sic.service.TipoDeOperacion;
+import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
 
 @Service

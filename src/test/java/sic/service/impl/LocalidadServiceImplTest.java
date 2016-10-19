@@ -10,7 +10,7 @@ import sic.repository.ILocalidadRepository;
 import sic.repository.jpa.LocalidadRepositoryJPAImpl;
 import sic.service.ILocalidadService;
 import sic.service.BusinessServiceException;
-import sic.service.TipoDeOperacion;
+import sic.modelo.TipoDeOperacion;
 
 public class LocalidadServiceImplTest {
 

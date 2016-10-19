@@ -11,7 +11,7 @@ import sic.modelo.Medida;
 import sic.repository.IMedidaRepository;
 import sic.repository.jpa.MedidaRepositoryJPAImpl;
 import sic.service.BusinessServiceException;
-import sic.service.TipoDeOperacion;
+import sic.modelo.TipoDeOperacion;
 
 public class MedidaServiceImplTest {
 

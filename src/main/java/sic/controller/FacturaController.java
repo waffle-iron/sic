@@ -34,7 +34,7 @@ import sic.service.IPedidoService;
 import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.IUsuarioService;
-import sic.service.Movimiento;
+import sic.modelo.Movimiento;
 
 @RestController
 @RequestMapping("/api/v1")

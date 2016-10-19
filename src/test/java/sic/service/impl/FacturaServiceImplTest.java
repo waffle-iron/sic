@@ -23,7 +23,7 @@ import sic.modelo.Usuario;
 import sic.repository.IFacturaRepository;
 import sic.service.IFacturaService;
 import sic.service.IProductoService;
-import sic.service.Movimiento;
+import sic.modelo.Movimiento;
 
 public class FacturaServiceImplTest {
 

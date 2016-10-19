@@ -13,7 +13,7 @@ import sic.modelo.Transportista;
 import sic.repository.ITransportistaRepository;
 import sic.service.ITransportistaService;
 import sic.service.BusinessServiceException;
-import sic.service.TipoDeOperacion;
+import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
 
 @Service

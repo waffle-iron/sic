@@ -12,7 +12,7 @@ import sic.modelo.Rubro;
 import sic.repository.IRubroRepository;
 import sic.service.IRubroService;
 import sic.service.BusinessServiceException;
-import sic.service.TipoDeOperacion;
+import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
 
 @Service

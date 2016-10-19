@@ -12,7 +12,7 @@ import sic.modelo.Provincia;
 import sic.repository.ILocalidadRepository;
 import sic.service.ILocalidadService;
 import sic.service.BusinessServiceException;
-import sic.service.TipoDeOperacion;
+import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
 
 @Service

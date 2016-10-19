@@ -1,4 +1,4 @@
-package sic.service;
+package sic.modelo;
 
 /**
  * Describe las distintas operaciones que se pueden realizar sobre una entidad.

@@ -11,7 +11,7 @@ import sic.modelo.Usuario;
 import sic.repository.IUsuarioRepository;
 import sic.service.IUsuarioService;
 import sic.service.BusinessServiceException;
-import sic.service.TipoDeOperacion;
+import sic.modelo.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
 

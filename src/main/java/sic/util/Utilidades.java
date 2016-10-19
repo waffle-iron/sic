@@ -11,51 +11,8 @@ import java.security.CodeSource;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import javax.swing.ImageIcon;
-import javax.swing.JDesktopPane;
-import javax.swing.JInternalFrame;
-import javax.swing.JTable;
 
-public class Utilidades {
-
-    /**
-     * Verifica si ya existe una instancia de la clase @tipo dentro de @desktop
-     * 
-     * @param desktop Contenedor de internal frames donde debe buscar
-     * @param tipo Clase buscada
-     * @return Internal frame encontrado, en caso contrario devuelve NULL
-     */
-    public static JInternalFrame estaEnDesktop(JDesktopPane desktop, Class tipo) {
-        JInternalFrame[] frames = desktop.getAllFrames();
-        for (JInternalFrame fr : frames) {
-            if (tipo.isAssignableFrom(fr.getClass())) {
-                return fr;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Verifica si existen frames dentro de @desktop
-     * 
-     * @param desktop Contenenedor de frames donde debe buscar
-     * @return True si existen frames dentro del
-     * @desktop, false en caso contrario
-     */
-    public static boolean contieneVentanas(JDesktopPane desktop) {
-        JInternalFrame[] frames = desktop.getAllFrames();
-        if (frames.length == 0) {
-            return false;
-        }
-
-        return true;
-    }
-
-    public static void cerrarTodasVentanas(JDesktopPane desktop) {
-        JInternalFrame[] frames = desktop.getAllFrames();
-        for (int i = 0; i < frames.length; i++) {
-            frames[i].dispose();
-        }
-    }
+public class Utilidades {   
 
     /**
      * Convierte un caracter de minusculas a mayusculas
@@ -115,48 +72,6 @@ public class Utilidades {
     }
 
     /**
-     * Devuelve los indices de las filas seleccionadas luego de que el JTable
-     * haya sido ordenado. Al utilizar getSelectedRows() despues de un
-     * ordenamiento, devuelve mal los indices.
-     *
-     * @param table JTable donde debe buscar los indices correctos
-     * @return indices seleccionados
-     */
-    public static int[] getSelectedRowsModelIndices(JTable table) {
-        if (table == null) {
-            throw new NullPointerException("table == null");
-        }
-
-        int[] selectedRowIndices = table.getSelectedRows();
-        int countSelected = selectedRowIndices.length;
-
-        for (int i = 0; i < countSelected; i++) {
-            selectedRowIndices[i] = table.convertRowIndexToModel(selectedRowIndices[i]);
-        }
-
-        return selectedRowIndices;
-    }
-
-    /**
-     * Devuelve el indice de la fila seleccionada luego de que el JTable haya
-     * sido ordenado. Al utilizar getSelectedRow() despues de un ordenamiento,
-     * devuelve mal el indice.
-     *
-     * @param table JTable donde debe buscar el indice correcto
-     * @return indice seleccionado
-     */
-    public static int getSelectedRowModelIndice(JTable table) {
-        if (table == null) {
-            throw new NullPointerException("table == null");
-        }
-
-        int selectedRowIndice = table.getSelectedRow();
-        selectedRowIndice = table.convertRowIndexToModel(selectedRowIndice);
-
-        return selectedRowIndice;
-    }
-
-    /**
      * Convierte el archivo en un array de bytes.
      *
      * @param archivo Archivo a ser convertido.
@@ -170,7 +85,7 @@ public class Utilidades {
         fileInputStream.close();
         return bArchivo;
     }
-
+    
     /**
      * Convierte un array de bytes en una Image.
      *

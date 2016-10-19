@@ -1,5 +1,6 @@
 package sic.service;
 
+import sic.modelo.TipoDeOperacion;
 import java.util.List;
 import sic.modelo.Empresa;
 import sic.modelo.Medida;

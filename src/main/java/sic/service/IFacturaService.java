@@ -1,5 +1,6 @@
 package sic.service;
 
+import sic.modelo.Movimiento;
 import java.util.List;
 import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;

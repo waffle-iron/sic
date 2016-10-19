@@ -34,7 +34,7 @@ import sic.service.IEmpresaService;
 import sic.service.IProductoService;
 import sic.service.BusinessServiceException;
 import sic.service.ServiceException;
-import sic.service.TipoDeOperacion;
+import sic.modelo.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
 
