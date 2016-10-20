@@ -48,7 +48,6 @@ public class Usuario implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private boolean permisosAdministrador;
 
     private boolean eliminado;

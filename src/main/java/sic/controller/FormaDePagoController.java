@@ -42,13 +42,13 @@ public class FormaDePagoController {
         formaDePagoService.eliminar(idFormaDePago);
     }
     
-    @GetMapping("/formas-de-pago/predeterminada/empresa/{idEmpresa}")
+    @GetMapping("/formas-de-pago/predeterminada/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
     public FormaDePago getFormaDePagoPredeterminada(@PathVariable long idEmpresa) {
         return formaDePagoService.getFormaDePagoPredeterminada(empresaService.getEmpresaPorId(idEmpresa));
     }
     
-    @GetMapping("/formas-de-pago/empresa/{idEmpresa}")
+    @GetMapping("/formas-de-pago/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
     public List<FormaDePago> getFormasDePago(@PathVariable long idEmpresa) {
         return formaDePagoService.getFormasDePago(empresaService.getEmpresaPorId(idEmpresa));
