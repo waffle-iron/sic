@@ -95,15 +95,13 @@ public class ClienteController {
     
     @PutMapping("/clientes")
     @ResponseStatus(HttpStatus.OK)
-    public Cliente actualizar(@RequestBody Cliente cliente) {
-       clienteService.actualizar(cliente);
-       return clienteService.getClientePorId(cliente.getId_Cliente());
+    public void actualizar(@RequestBody Cliente cliente) {
+       clienteService.actualizar(cliente);       
     }
     
     @PutMapping("/clientes/{idCliente}/predeterminado/")
     @ResponseStatus(HttpStatus.OK)
-    public Cliente setClientePredeterminado(@PathVariable long idCliente) {
-       clienteService.setClientePredeterminado(clienteService.getClientePorId(idCliente));
-       return clienteService.getClientePorId(idCliente);
+    public void setClientePredeterminado(@PathVariable long idCliente) {
+       clienteService.setClientePredeterminado(clienteService.getClientePorId(idCliente));       
     }
 }

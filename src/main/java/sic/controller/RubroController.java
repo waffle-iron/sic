@@ -37,11 +37,10 @@ public class RubroController {
     
     @PutMapping("/rubros")
     @ResponseStatus(HttpStatus.OK)
-    public Rubro actualizar(@RequestBody Rubro rubro) { 
-        if(rubroService.getRubroPorId(rubro.getId_Rubro()) != null) {
+    public void actualizar(@RequestBody Rubro rubro) { 
+        if (rubroService.getRubroPorId(rubro.getId_Rubro()) != null) {
            rubroService.actualizar(rubro);
         }
-        return rubroService.getRubroPorId(rubro.getId_Rubro());
     }
     
     @DeleteMapping("/rubros/{idRubro}")

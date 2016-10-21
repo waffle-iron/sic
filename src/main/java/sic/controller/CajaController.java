@@ -57,9 +57,8 @@ public class CajaController {
     
     @PutMapping("/cajas")
     @ResponseStatus(HttpStatus.OK)
-    public Caja actualizar(@RequestBody Caja caja) {
-        cajaService.actualizar(caja);
-        return cajaService.getCajaPorId(caja.getId_Caja());
+    public void actualizar(@RequestBody Caja caja) {
+        cajaService.actualizar(caja);        
     }
     
     @PostMapping("/cajas")
@@ -122,10 +121,10 @@ public class CajaController {
         return cajaService.getUltimaCaja(idEmpresa);
     }
     
-    @PutMapping("/cajas/empresas/{idEmpresa}/cerrar-dia-anterior")
+    @PutMapping("/cajas/empresas/{idEmpresa}/cerrar-anterior")
     @ResponseStatus(HttpStatus.OK)
-    public Caja cerrarCajaDiaAnterior(@PathVariable long idEmpresa) {
-        return cajaService.cerrarCajaDiaAnterior(empresaService.getEmpresaPorId(idEmpresa));
+    public void cerrarCajaAnterior(@PathVariable long idEmpresa) {
+        cajaService.cerrarCajaAnterior(empresaService.getEmpresaPorId(idEmpresa));
     }
     
     @GetMapping("/cajas/{idCaja}/empresas/{idEmpresa}/reporte")

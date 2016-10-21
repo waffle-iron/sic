@@ -36,11 +36,10 @@ public class ConfiguracionDelSistemaController {
     
     @PutMapping("/configuraciones-del-sistema")
     @ResponseStatus(HttpStatus.OK)
-    public ConfiguracionDelSistema actualizar(@RequestBody ConfiguracionDelSistema configuracionDelSistema) {
+    public void actualizar(@RequestBody ConfiguracionDelSistema configuracionDelSistema) {
         if(configuracionDelSistemaService.getConfiguracionDelSistemaPorId(configuracionDelSistema.getId_ConfiguracionDelSistema()) != null) {
             configuracionDelSistemaService.actualizar(configuracionDelSistema);
         }
-        return configuracionDelSistemaService.getConfiguracionDelSistemaPorId(configuracionDelSistema.getId_ConfiguracionDelSistema());
     }
     
     @PostMapping("/configuracion-del-sistema")

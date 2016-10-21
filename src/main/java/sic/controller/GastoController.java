@@ -35,11 +35,10 @@ public class GastoController {
     
     @PutMapping("/gastos")
     @ResponseStatus(HttpStatus.OK)
-    public Gasto actualizar(@RequestBody Gasto gasto) {
-        if(gastoService.getGastoPorId(gasto.getId_Gasto()) != null) {
+    public void actualizar(@RequestBody Gasto gasto) {
+        if (gastoService.getGastoPorId(gasto.getId_Gasto()) != null) {
             gastoService.actualizar(gasto);
         }
-        return gastoService.getGastoPorId(gasto.getId_Gasto());
     }
     
     @GetMapping("/gastos/busqueda")

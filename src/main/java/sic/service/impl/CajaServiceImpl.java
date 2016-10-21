@@ -291,7 +291,7 @@ public class CajaServiceImpl implements ICajaService {
     }
 
     @Override
-    public Caja cerrarCajaDiaAnterior(Empresa empresa) {
+    public Caja cerrarCajaAnterior(Empresa empresa) {
         Caja cajaACerrar = this.getUltimaCaja(empresa.getId_Empresa());
         if ((cajaACerrar != null) && (cajaACerrar.getEstado() == EstadoCaja.ABIERTA)) {
             Calendar fechaAperturaMasUnDia = Calendar.getInstance();

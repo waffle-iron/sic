@@ -50,11 +50,10 @@ public class TransportistaController {
     
     @PutMapping("/transportistas")
     @ResponseStatus(HttpStatus.OK)
-    public Transportista actualizar(@RequestBody Transportista transportista) {
-        if(transportistaService.getTransportistaPorId(transportista.getId_Transportista()) != null) {
+    public void actualizar(@RequestBody Transportista transportista) {
+        if (transportistaService.getTransportistaPorId(transportista.getId_Transportista()) != null) {
             transportistaService.actualizar(transportista);
         }
-        return transportistaService.getTransportistaPorId(transportista.getId_Transportista());
     }
     
     @GetMapping("/transportistas/busqueda/criteria") 

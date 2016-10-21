@@ -38,6 +38,6 @@ public interface ICajaService {
 
     byte[] getReporteCaja(Caja caja, Long idEmpresa);
 
-    Caja cerrarCajaDiaAnterior(Empresa empresa);
+    Caja cerrarCajaAnterior(Empresa empresa);
 
 }

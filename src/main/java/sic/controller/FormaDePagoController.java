@@ -62,9 +62,7 @@ public class FormaDePagoController {
     
     @PutMapping("/formas-de-pago/predeterminada/{idFormaDePago}")
     @ResponseStatus(HttpStatus.OK)
-    public FormaDePago setFormaDePagoPredeterminada(@PathVariable long idFormaDePago) {
+    public void setFormaDePagoPredeterminada(@PathVariable long idFormaDePago) {
         formaDePagoService.setFormaDePagoPredeterminada(formaDePagoService.getFormasDePagoPorId(idFormaDePago));
-        return formaDePagoService.getFormasDePagoPorId(idFormaDePago);
-    }
-    
+    }    
 }

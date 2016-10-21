@@ -46,11 +46,10 @@ public class EmpresaController {
     
     @PutMapping("/empresas")
     @ResponseStatus(HttpStatus.OK)
-    public Empresa actualizar(@RequestBody Empresa empresa) {
+    public void actualizar(@RequestBody Empresa empresa) {
         if(empresaService.getEmpresaPorId(empresa.getId_Empresa()) != null) {
             empresaService.actualizar(empresa);
         }
-        return empresaService.getEmpresaPorId(empresa.getId_Empresa());
     }
     
     @DeleteMapping("/empresas/{idEmpresa}")

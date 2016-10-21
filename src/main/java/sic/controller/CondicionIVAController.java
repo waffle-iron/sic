@@ -34,11 +34,10 @@ public class CondicionIVAController {
     
     @PutMapping("/condiciones-iva")
     @ResponseStatus(HttpStatus.OK)
-    public CondicionIVA actualizar(@RequestBody CondicionIVA condicionIVA) {
+    public void actualizar(@RequestBody CondicionIVA condicionIVA) {
         if(condicionIVAService.getCondicionIVAPorId(condicionIVA.getId_CondicionIVA()) != null) {
             condicionIVAService.actualizar(condicionIVA);
         }
-        return condicionIVAService.getCondicionIVAPorId(condicionIVA.getId_CondicionIVA());
     }
     
     @DeleteMapping("/condiciones-iva/{idCondicionIva}")

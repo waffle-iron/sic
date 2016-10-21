@@ -95,11 +95,10 @@ public class ProductoController {
     
     @PutMapping("/productos")
     @ResponseStatus(HttpStatus.OK)
-    public Producto actualizar(@RequestBody Producto producto) {
-        if(productoService.getProductoPorId(producto.getId_Producto()) != null) {
+    public void actualizar(@RequestBody Producto producto) {
+        if (productoService.getProductoPorId(producto.getId_Producto()) != null) {
             productoService.actualizar(producto);
-        }        
-        return productoService.getProductoPorId(producto.getId_Producto());
+        }
     }
     
     @PostMapping("/productos")
@@ -191,15 +190,15 @@ public class ProductoController {
     
     @PutMapping("/productos/multiples")
     @ResponseStatus(HttpStatus.OK)
-    public List<Producto> modificarMultiplesProductos(@RequestParam(value = "idProducto") long[] idProducto,
-                                                      @RequestParam(value = "idMedida", required = false) Long idMedida,
-                                                      @RequestParam(value = "idRubro", required = false) Long idRubro,
-                                                      @RequestParam(value = "idProveedor", required = false) Long idProveedor,
-                                                      @RequestBody(required = false) PreciosProducto preciosProducto) {
-        return productoService.modificarMultiplesProductos(idProducto,
-                                                   (preciosProducto!=null), preciosProducto,
-                                                   (idMedida!=null), medidaService.getMedidaPorId(idMedida),
-                                                   (idRubro!=null), rubroService.getRubroPorId(idRubro),
-                                                   (idProveedor!=null), proveedorService.getProveedorPorId(idProveedor));   
+    public void modificarMultiplesProductos(@RequestParam(value = "idProducto") long[] idProducto,
+                                            @RequestParam(value = "idMedida", required = false) Long idMedida,
+                                            @RequestParam(value = "idRubro", required = false) Long idRubro,
+                                            @RequestParam(value = "idProveedor", required = false) Long idProveedor,
+                                            @RequestBody(required = false) PreciosProducto preciosProducto) {
+        productoService.modificarMultiplesProductos(idProducto,
+                (preciosProducto != null), preciosProducto,
+                (idMedida != null), medidaService.getMedidaPorId(idMedida),
+                (idRubro != null), rubroService.getRubroPorId(idRubro),
+                (idProveedor != null), proveedorService.getProveedorPorId(idProveedor));
     }
 }

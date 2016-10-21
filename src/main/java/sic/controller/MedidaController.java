@@ -37,11 +37,10 @@ public class MedidaController {
     
     @PutMapping("/medidas")
     @ResponseStatus(HttpStatus.OK)
-    public Medida actualizar(@RequestBody Medida medida) { 
-        if(medidaService.getMedidaPorId(medida.getId_Medida()) != null) {
+    public void actualizar(@RequestBody Medida medida) {
+        if (medidaService.getMedidaPorId(medida.getId_Medida()) != null) {
             medidaService.actualizar(medida);
         }
-        return medidaService.getMedidaPorId(medida.getId_Medida());
     }
     
     @DeleteMapping("/medidas/{idMedida}")

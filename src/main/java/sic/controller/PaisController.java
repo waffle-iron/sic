@@ -35,11 +35,10 @@ public class PaisController {
     
     @PutMapping("/paises")
     @ResponseStatus(HttpStatus.OK)
-    public Pais actualizar(@RequestBody Pais pais) {
-        if(paisService.getPaisPorId(pais.getId_Pais()) != null) {
+    public void actualizar(@RequestBody Pais pais) {
+        if (paisService.getPaisPorId(pais.getId_Pais()) != null) {
             paisService.actualizar(pais);
         }
-        return paisService.getPaisPorId(pais.getId_Pais());
     }
     
     @DeleteMapping("/paises/{idPais}")

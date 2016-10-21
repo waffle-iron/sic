@@ -60,7 +60,7 @@ public class PedidoController {
     
     @PutMapping("/pedidos")
     @ResponseStatus(HttpStatus.OK)
-    public Pedido actualizar(@RequestBody Pedido pedido) {
+    public void actualizar(@RequestBody Pedido pedido) {
         //Las facturas se recuperan para evitar cambios no deseados.
         pedido.setFacturas(pedidoService.getFacturasDelPedido(pedido.getId_Pedido()));
         //Si los renglones vienen null, recupera los renglones del pedido para actualizar
@@ -68,8 +68,7 @@ public class PedidoController {
         if (pedido.getRenglones() == null) {
             pedido.setRenglones(pedidoService.getRenglonesDelPedido(pedido.getId_Pedido()));
         }
-        pedidoService.actualizar(pedido);
-        return pedidoService.getPedidoPorId(pedido.getId_Pedido());
+        pedidoService.actualizar(pedido);        
     }
     
     @PostMapping("/pedidos")

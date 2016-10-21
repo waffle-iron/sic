@@ -37,11 +37,10 @@ public class LocalidadController {
     
     @PutMapping("/localidades")
     @ResponseStatus(HttpStatus.OK)
-    public Localidad actualizar(@RequestBody Localidad localidad) { 
-        if(localidadService.getLocalidadPorId(localidad.getId_Localidad()) != null) {
+    public void actualizar(@RequestBody Localidad localidad) { 
+        if (localidadService.getLocalidadPorId(localidad.getId_Localidad()) != null) {
             localidadService.actualizar(localidad);
         }
-        return localidadService.getLocalidadPorId(localidad.getId_Localidad());
     }
     
     @DeleteMapping("/localidades/{idLocalidad}")
@@ -58,7 +57,7 @@ public class LocalidadController {
     
     @GetMapping("/localidades/provincias/{idProvincia}")
     @ResponseStatus(HttpStatus.OK)
-    List<Localidad> getLocalidadesDeLaProvincia(@PathVariable long idProvincia) {
+    public List<Localidad> getLocalidadesDeLaProvincia(@PathVariable long idProvincia) {
         return localidadService.getLocalidadesDeLaProvincia(provinciaService.getProvinciaPorId(idProvincia));
     }
 }

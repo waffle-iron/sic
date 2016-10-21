@@ -37,11 +37,10 @@ public class ProvinciaController {
     
     @PutMapping("/provincias")
     @ResponseStatus(HttpStatus.OK)
-    public Provincia actualizar(@RequestBody Provincia provincia) { 
-        if(provinciaService.getProvinciaPorId(provincia.getId_Provincia()) != null) {
+    public void actualizar(@RequestBody Provincia provincia) { 
+        if (provinciaService.getProvinciaPorId(provincia.getId_Provincia()) != null) {
             provinciaService.actualizar(provincia);
         }
-        return provinciaService.getProvinciaPorId(provincia.getId_Provincia());
     }
     
     @DeleteMapping("/provincias/{idProvincia}")

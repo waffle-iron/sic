@@ -55,11 +55,10 @@ public class ProveedorController {
     
     @PutMapping("/proveedores")
     @ResponseStatus(HttpStatus.OK)
-    public Proveedor actualizar(@RequestBody Proveedor proveedor) {
-        if(proveedorService.getProveedorPorId(proveedor.getId_Proveedor()) != null) {
+    public void actualizar(@RequestBody Proveedor proveedor) {
+        if (proveedorService.getProveedorPorId(proveedor.getId_Proveedor()) != null) {
             proveedorService.actualizar(proveedor);
-        }
-        return proveedorService.getProveedorPorId(proveedor.getId_Proveedor());
+        }        
     }
     
     @GetMapping("/proveedores/busqueda/criteria")
