@@ -1,1 +1,1 @@
-[![Build Status](https://travis-ci.org/belluccifranco/sic.svg)](https://travis-ci.org/belluccifranco/sic)
+[![Build Status](https://travis-ci.org/belluccifranco/sic-api.svg?branch=master)](https://travis-ci.org/belluccifranco/sic-api)
