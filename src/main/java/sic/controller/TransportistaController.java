@@ -71,7 +71,7 @@ public class TransportistaController {
             pais = paisService.getPaisPorId(idPais);
         }
         Provincia provincia = null;
-        if (idPais != null) {
+        if (idProvincia != null) {
             provincia = provinciaService.getProvinciaPorId(idProvincia);
         }
         Localidad localidad = null;
