@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import sic.modelo.BusquedaTransportistaCriteria;
+import sic.modelo.Localidad;
+import sic.modelo.Pais;
+import sic.modelo.Provincia;
 import sic.modelo.Transportista;
 import sic.service.IEmpresaService;
 import sic.service.ILocalidadService;
@@ -63,11 +66,23 @@ public class TransportistaController {
                                                    @RequestParam(value = "idPais", required = false) Long idPais,
                                                    @RequestParam(value = "idProvincia", required = false) Long idProvincia,
                                                    @RequestParam(value = "idLocalidad", required = false) Long idLocalidad) { 
+        Pais pais = null;
+        if (idPais != null) {
+            pais = paisService.getPaisPorId(idPais);
+        }
+        Provincia provincia = null;
+        if (idPais != null) {
+            provincia = provinciaService.getProvinciaPorId(idProvincia);
+        }
+        Localidad localidad = null;
+        if (idLocalidad != null) {
+            localidad = localidadService.getLocalidadPorId(idLocalidad);
+        }
         BusquedaTransportistaCriteria criteria = new BusquedaTransportistaCriteria(
                                                      (nombre != null),nombre,
-                                                     (idPais != null),paisService.getPaisPorId(idPais),
-                                                     (idProvincia != null),provinciaService.getProvinciaPorId(idProvincia),
-                                                     (idLocalidad != null),localidadService.getLocalidadPorId(idLocalidad),
+                                                     (idPais != null), pais,
+                                                     (idProvincia != null), provincia,
+                                                     (idLocalidad != null),localidad,
                                                      empresaService.getEmpresaPorId(idEmpresa));
         return transportistaService.buscarTransportistas(criteria);       
     }

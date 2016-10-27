@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import sic.modelo.BusquedaProveedorCriteria;
+import sic.modelo.Localidad;
+import sic.modelo.Pais;
 import sic.modelo.Proveedor;
+import sic.modelo.Provincia;
 import sic.service.IEmpresaService;
 import sic.service.ILocalidadService;
 import sic.service.IPaisService;
@@ -70,13 +73,25 @@ public class ProveedorController {
                                              @RequestParam(value = "idProvincia", required = false) Long idProvincia,
                                              @RequestParam(value = "idLocalidad", required = false) Long idLocalidad,
                                              @RequestParam(value = "idEmpresa") long idEmpresa) {
+        Pais pais = null;
+        if (idPais != null) {
+            pais = paisService.getPaisPorId(idPais);
+        }
+        Provincia provincia = null;
+        if (idPais != null) {
+            provincia = provinciaService.getProvinciaPorId(idProvincia);
+        }       
+        Localidad localidad = null;
+        if (idLocalidad != null) {
+            localidad = localidadService.getLocalidadPorId(idLocalidad);
+        }
         BusquedaProveedorCriteria criteria = new BusquedaProveedorCriteria(
                                                  (codigo != null), codigo,
                                                  (razonSocial != null), razonSocial,
                                                  (idFiscal != null), idFiscal,
-                                                 (idPais != null), paisService.getPaisPorId(idPais),
-                                                 (idProvincia != null), provinciaService.getProvinciaPorId(idProvincia),
-                                                 (idLocalidad != null), localidadService.getLocalidadPorId(idLocalidad),
+                                                 (idPais != null), pais,
+                                                 (idProvincia != null), provincia,
+                                                 (idLocalidad != null), localidad,
                                                   empresaService.getEmpresaPorId(idEmpresa), 0);
         return proveedorService.buscarProveedores(criteria);
     }

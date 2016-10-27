@@ -88,19 +88,6 @@ public class ClienteServiceImpl implements IClienteService {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_empresa_no_existente"));
         }
-        //Pais, Provincia y Localidad
-        if (criteria.getPais() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaja_pais_no_existente"));
-        }
-        if (criteria.getProvincia() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_provincia_no_existente"));
-        }
-        if(criteria.getLocalidad() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_localidad_no_existente"));
-        }
         return clienteRepository.buscarClientes(criteria);
     }
 

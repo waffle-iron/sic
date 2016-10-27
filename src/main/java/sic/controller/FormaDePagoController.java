@@ -36,7 +36,7 @@ public class FormaDePagoController {
         return formaDePagoService.getFormasDePagoPorId(idFormaDePago);
     }
     
-    @DeleteMapping("formas-de-pago/{idFormaDePago}")
+    @DeleteMapping("/formas-de-pago/{idFormaDePago}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable long idFormaDePago) {
         formaDePagoService.eliminar(idFormaDePago);
