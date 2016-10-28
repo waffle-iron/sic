@@ -114,7 +114,7 @@ public class ClienteController {
        clienteService.actualizar(cliente);       
     }
     
-    @PutMapping("/clientes/{idCliente}/predeterminado/")
+    @PutMapping("/clientes/{idCliente}/predeterminado")
     @ResponseStatus(HttpStatus.OK)
     public void setClientePredeterminado(@PathVariable long idCliente) {
        clienteService.setClientePredeterminado(clienteService.getClientePorId(idCliente));       
