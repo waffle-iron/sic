@@ -118,8 +118,8 @@ public class PedidoController {
     @GetMapping("/pedidos/{idPedido}/reporte")
     public ResponseEntity<byte[]> getReportePedido(@PathVariable long idPedido) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType("application/pdf"));
-        headers.setContentDispositionFormData("reportePedido.pdf", "ReportePedido.pdf");
+        headers.setContentType(MediaType.APPLICATION_PDF);        
+        headers.add("content-disposition", "inline; filename=pedido.pdf");
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         byte[] reportePDF = pedidoService.getReportePedido(pedidoService.getPedidoPorId(idPedido));
         return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);

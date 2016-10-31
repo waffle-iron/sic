@@ -244,10 +244,10 @@ public class FacturaController {
     
     @GetMapping("/facturas/{idFactura}/reporte")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<byte[]> getReporteFacturaVenta(@PathVariable long idFactura) {
+    public ResponseEntity<byte[]> getReporteFacturaVenta(@PathVariable long idFactura) {        
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType("application/pdf"));
-        headers.setContentDispositionFormData("factura.pdf", "factura.pdf");
+        headers.setContentType(MediaType.APPLICATION_PDF);        
+        headers.add("content-disposition", "inline; filename=factura.pdf");
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         byte[] reportePDF = facturaService.getReporteFacturaVenta(facturaService.getFacturaPorId(idFactura));
         return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);

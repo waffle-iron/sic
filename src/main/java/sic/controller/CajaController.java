@@ -131,8 +131,8 @@ public class CajaController {
     public ResponseEntity<byte[]> getReporteCaja(@PathVariable long idCaja,
                                                  @PathVariable long idEmpresa) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType("application/pdf"));
-        headers.setContentDispositionFormData("reporteCaja.pdf", "ReporteCaja.pdf");
+        headers.setContentType(MediaType.APPLICATION_PDF);        
+        headers.add("content-disposition", "inline; filename=caja.pdf");
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         byte[] reportePDF = cajaService.getReporteCaja(cajaService.getCajaPorId(idCaja), idEmpresa);
         return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);
