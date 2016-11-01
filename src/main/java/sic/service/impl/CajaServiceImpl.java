@@ -191,11 +191,6 @@ public class CajaServiceImpl implements ICajaService {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_empresa_no_existente"));
         }
-        //Usuario
-        if(criteria.isBuscaPorUsuario() == true && criteria.getUsuario() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_usuario_no_existente"));
-        }
         //Fecha
         if (criteria.isBuscaPorFecha() == true && (criteria.getFechaDesde() == null || criteria.getFechaHasta() == null)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
@@ -292,20 +287,21 @@ public class CajaServiceImpl implements ICajaService {
 
     @Override
     public Caja cerrarCajaAnterior(Empresa empresa) {
-        Caja cajaACerrar = this.getUltimaCaja(empresa.getId_Empresa());
-        if ((cajaACerrar != null) && (cajaACerrar.getEstado() == EstadoCaja.ABIERTA)) {
+        Caja cajaCerrada = this.getUltimaCaja(empresa.getId_Empresa());
+        if ((cajaCerrada != null) && (cajaCerrada.getEstado() == EstadoCaja.ABIERTA)) {
             Calendar fechaAperturaMasUnDia = Calendar.getInstance();
-            fechaAperturaMasUnDia.setTime(cajaACerrar.getFechaApertura());
+            fechaAperturaMasUnDia.setTime(cajaCerrada.getFechaApertura());
             fechaAperturaMasUnDia.add(Calendar.DATE, 1);
             if (fechaAperturaMasUnDia.get(Calendar.DATE) == Calendar.getInstance().get(Calendar.DATE)
                     || fechaAperturaMasUnDia.before(Calendar.getInstance())) {
-                cajaACerrar.setFechaCierre(new Date());
-                cajaACerrar.setUsuarioCierraCaja(cajaACerrar.getUsuarioAbreCaja());
-                cajaACerrar.setEstado(EstadoCaja.CERRADA);
-                cajaACerrar.setSaldoReal(cajaACerrar.getSaldoFinal());
+                cajaCerrada.setFechaCierre(new Date());
+                cajaCerrada.setUsuarioCierraCaja(cajaCerrada.getUsuarioAbreCaja());
+                cajaCerrada.setEstado(EstadoCaja.CERRADA);
+                cajaCerrada.setSaldoReal(cajaCerrada.getSaldoFinal());
+                this.actualizar(cajaCerrada);
             }
         }
-        return cajaACerrar;
+        return cajaCerrada;
     }
 
 }

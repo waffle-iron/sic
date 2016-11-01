@@ -35,6 +35,7 @@ import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.IUsuarioService;
 import sic.modelo.Movimiento;
+import sic.modelo.Proveedor;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -73,9 +74,9 @@ public class FacturaController {
     @PostMapping("/facturas/venta")
     @ResponseStatus(HttpStatus.CREATED)
     public List<Factura> guardarFacturaVenta(@RequestBody FacturaVenta factura,
-                                             @RequestParam(value = "indices", required = false) int[] indices) {
-        if (indices != null) {
-            return facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indices));
+                                             @RequestParam(value = "indices", required = false) int[] indice) {
+        if (indice != null) {
+            return facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indice));
         } else {
             List<Factura> facturas = new ArrayList<>();
             facturas.add(facturaService.guardar(factura));            
@@ -131,11 +132,21 @@ public class FacturaController {
             fechaDesde.setTimeInMillis(desde);            
             fechaHasta.setTimeInMillis(hasta);
         }
-        if ((soloImpagas != null) && (soloPagas != null)) {
-            if ((soloImpagas == true) && (soloPagas == true)) {
+        if (soloImpagas == null) {
+            soloImpagas = false;
+        }
+        if (soloPagas == null) {
+            soloPagas = false;
+        }
+        if(soloImpagas != null && soloPagas != null) {
+            if (soloImpagas == true && soloPagas == true) {
                 soloImpagas = false;
                 soloPagas = false;
             }
+        }
+        Proveedor proveedor = null;
+        if(idProveedor != null) {
+            proveedor = proveedorService.getProveedorPorId(idProveedor);
         }
         BusquedaFacturaCompraCriteria criteria = BusquedaFacturaCompraCriteria.builder()
                                                  .empresa(empresaService.getEmpresaPorId(idEmpresa))
@@ -143,7 +154,7 @@ public class FacturaController {
                                                  .fechaDesde(fechaDesde.getTime())
                                                  .fechaHasta(fechaHasta.getTime())
                                                  .buscaPorProveedor(idProveedor != null)
-                                                 .proveedor(proveedorService.getProveedorPorId(idProveedor))
+                                                 .proveedor(proveedor)
                                                  .buscaPorNumeroFactura((nroSerie != null) && (nroFactura != null))
                                                  .numSerie((nroSerie != null) ? nroSerie : 0)
                                                  .numFactura((nroFactura != null) ? nroFactura : 0)
@@ -422,9 +433,10 @@ public class FacturaController {
                                    @RequestParam double descuentoPorcentaje,
                                    @RequestParam double recargoPorcentaje,
                                    @RequestParam double ivaPorcentaje,
-                                   @RequestBody List<RenglonFactura> renglones) {       
+                                   @RequestParam double[] importe, 
+                                   @RequestParam double[] ivaRenglones) {       
         return facturaService.calcularIva_neto(tipoFactura, descuentoPorcentaje,
-                recargoPorcentaje, renglones, ivaPorcentaje);
+                recargoPorcentaje, importe, ivaRenglones, ivaPorcentaje);
     }
         
 }

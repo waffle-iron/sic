@@ -19,15 +19,32 @@ public class ProductoRepositoryJPAImpl implements IProductoRepository {
     @Override
     public List<Producto> buscarProductos(BusquedaProductoCriteria criteria) {
         String query = "SELECT p FROM Producto p WHERE p.empresa = :empresa AND p.eliminado = false";
-        //Codigo        
-        if (criteria.isBuscarPorCodigo() == true) {
-            query += " AND p.codigo LIKE '%" + criteria.getCodigo() + "%'";
-        }
-        //Descripcion
-        if (criteria.isBuscarPorDescripcion() == true) {
+        //Codigo y Descripcion
+        if (criteria.isBuscarPorCodigo() == true && criteria.isBuscarPorDescripcion() == true) {
+            query += " AND (p.codigo LIKE '%" + criteria.getCodigo() + "%' OR (";
             String[] terminos = criteria.getDescripcion().split(" ");
-            for (String termino : terminos) {
-                query += " AND p.descripcion LIKE '%" + termino + "%'";
+            for (int i = 0; i < terminos.length; i++) {
+                query += "p.descripcion LIKE '%" + terminos[i] + "%'";
+                if (i != (terminos.length - 1)) {
+                    query += " AND ";
+                }
+            }
+            query += ")) ";
+        } else {
+            //Codigo        
+            if (criteria.isBuscarPorCodigo() == true) {
+                query += " AND p.codigo LIKE '%" + criteria.getCodigo() + "%'";
+            }
+            //Descripcion
+            if (criteria.isBuscarPorDescripcion() == true) {
+                String[] terminos = criteria.getDescripcion().split(" ");
+                query += " AND ";
+                for (int i = 0; i < terminos.length; i++) {
+                    query += "p.descripcion LIKE '%" + terminos[i] + "%'";
+                    if (i != (terminos.length - 1)) {
+                        query += " AND ";
+                    }
+                }
             }
         }
         //Rubro

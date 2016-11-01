@@ -69,8 +69,14 @@ public class ProductoController {
                                           @RequestParam(value = "idProveedor", required = false) Long idProveedor,
                                           @RequestParam(value = "idEmpresa") long idEmpresa,
                                           @RequestParam(value = "soloFaltantes", required = false) boolean soloFantantes) {        
-        Rubro rubro = rubroService.getRubroPorId(idRubro);
-        Proveedor proveedor = proveedorService.getProveedorPorId(idProveedor);
+        Rubro rubro = null;
+        if (idRubro != null) {
+            rubro = rubroService.getRubroPorId(idRubro);
+        }
+        Proveedor proveedor = null;
+        if (idProveedor != null) {
+            proveedor = proveedorService.getProveedorPorId(idProveedor);
+        }
         BusquedaProductoCriteria criteria = BusquedaProductoCriteria.builder()
                                             .buscarPorCodigo((codigo!=null))
                                             .codigo(codigo)

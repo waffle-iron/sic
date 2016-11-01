@@ -22,6 +22,7 @@ import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
 import sic.modelo.Gasto;
 import sic.modelo.Pago;
+import sic.modelo.Usuario;
 import sic.service.ICajaService;
 import sic.service.IEmpresaService;
 import sic.service.IGastoService;
@@ -99,10 +100,16 @@ public class CajaController {
                                        @RequestParam(value = "desde", required = false) Long desde,
                                        @RequestParam(value = "hasta", required = false) Long hasta,
                                        @RequestParam(value = "idUsuario", required = false) Long idUsuario) {
-        Calendar fechaDesde = Calendar.getInstance();
-        fechaDesde.setTimeInMillis(desde);
+        Calendar fechaDesde = Calendar.getInstance();            
         Calendar fechaHasta = Calendar.getInstance();
-        fechaHasta.setTimeInMillis(hasta);
+        if (desde != null && hasta != null) {           
+            fechaDesde.setTimeInMillis(desde);
+            fechaHasta.setTimeInMillis(hasta);
+        }
+        Usuario usuario = new Usuario();
+        if(idUsuario != null) {
+            usuario = usuarioService.getUsuarioPorId(idUsuario);
+        }
         BusquedaCajaCriteria criteria = BusquedaCajaCriteria.builder()
                                         .buscaPorFecha((desde != null) && (hasta != null))
                                         .fechaDesde(fechaDesde.getTime())
@@ -110,7 +117,7 @@ public class CajaController {
                                         .empresa(empresaService.getEmpresaPorId(idEmpresa))
                                         .cantidadDeRegistros(0)
                                         .buscaPorUsuario(idUsuario != null)
-                                        .usuario(usuarioService.getUsuarioPorId(idUsuario))
+                                        .usuario(usuario)
                                         .build();
         return cajaService.getCajasCriteria(criteria);        
     }

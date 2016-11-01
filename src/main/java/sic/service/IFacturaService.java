@@ -71,7 +71,7 @@ public interface IFacturaService {
 
     double calcularSubTotal_neto(double subtotal, double recargo_neto, double descuento_neto);
 
-    double calcularIva_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, List<RenglonFactura> renglones, double iva_porcentaje);
+    double calcularIva_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, double[] importe, double[] ivaPorcentaje, double iva_porcentaje);
 
     double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, double[] importes, double [] impuestoPorcentajes);
 

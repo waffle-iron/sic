@@ -43,6 +43,7 @@ public class ProductoServiceImpl implements IProductoService {
 
     private final IProductoRepository productoRepository;
     private final IEmpresaService empresaService;
+    private static final int CANT_REGISTROS = 300;
     private static final Logger LOGGER = Logger.getLogger(ProductoServiceImpl.class.getPackage().getName());
 
     @Autowired
@@ -154,6 +155,7 @@ public class ProductoServiceImpl implements IProductoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_producto_vacio_proveedor"));
         }
+        criteria.setCantRegistros(CANT_REGISTROS);
         return productoRepository.buscarProductos(criteria);
     }
 
