@@ -187,8 +187,8 @@ public class ProductoController {
                 .listarSoloFaltantes(soloFantantes)
                 .build();
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType("application/pdf"));
-        headers.setContentDispositionFormData("ListaDePrecios.pdf", "ListaDePrecios.pdf");
+        headers.setContentType(MediaType.APPLICATION_PDF);        
+        headers.add("content-disposition", "inline; filename=listaDePrecios.pdf");
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         byte[] reportePDF = productoService.getReporteListaDePreciosPorEmpresa(productoService.buscarProductos(criteria), idEmpresa);
         return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);
