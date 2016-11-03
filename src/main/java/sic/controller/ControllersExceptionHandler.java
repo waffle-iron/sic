@@ -25,6 +25,15 @@ public class ControllersExceptionHandler {
         return mensaje;
     }
     
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public String handleUnauthorizedException(UnauthorizedException ex) {
+        String mensaje = ex.getMessage() + " Reference ID: " + new Date().getTime();
+        LOGGER.error(mensaje + " " + ex.getCause());
+        return mensaje;
+    }
+    
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ResponseBody

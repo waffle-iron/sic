@@ -61,8 +61,7 @@ public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {
         typedQuery.setParameter("password", contrasenia);
         List<Usuario> usuarios = typedQuery.getResultList();
         if (usuarios.isEmpty()) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_usuario_logInInvalido"));
+            return null;
         } else {
             return usuarios.get(0);
         }

@@ -53,7 +53,12 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Override
     public Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) {
-        return usuarioRepository.getUsuarioPorNombreContrasenia(nombre, contrasenia);
+        Usuario usuario = usuarioRepository.getUsuarioPorNombreContrasenia(nombre, contrasenia);
+        if (usuario == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_usuario_no_existente")); //cambiar mensaje??
+        }
+        return usuario;
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Usuario usuario) {
