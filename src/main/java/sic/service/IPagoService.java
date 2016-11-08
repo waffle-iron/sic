@@ -12,7 +12,7 @@ public interface IPagoService {
     
     Pago getPagoPorId(long id_pago);
 
-    List<Pago> getPagosDeLaFactura(Factura factura);
+    List<Pago> getPagosDeLaFactura(long idFactura);
 
     double getSaldoAPagar(Factura factura);    
     

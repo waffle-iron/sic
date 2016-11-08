@@ -45,14 +45,14 @@ public class PagoServiceImpl implements IPagoService {
     }
     
     @Override
-    public List<Pago> getPagosDeLaFactura(Factura factura) {
-        return this.pagoRepository.getPagosDeLaFactura(factura);
+    public List<Pago> getPagosDeLaFactura(long idFactura) {
+        return this.pagoRepository.getPagosDeLaFactura(idFactura);
     }
 
     @Override
     public double getSaldoAPagar(Factura factura) {
         double saldo = factura.getTotal();
-        for (Pago pago : this.getPagosDeLaFactura(factura)) {
+        for (Pago pago : this.getPagosDeLaFactura(factura.getId_Factura())) {
             saldo = saldo - pago.getMonto();
         }
         if (saldo < 0) {
@@ -138,7 +138,7 @@ public class PagoServiceImpl implements IPagoService {
         List<Factura> facturasOrdenadas = facturaService.ordenarFacturasPorFechaAsc(facturas);
         for (Factura factura : facturasOrdenadas) {
             if (monto > 0) {
-                factura.setPagos(this.getPagosDeLaFactura(factura));
+                factura.setPagos(this.getPagosDeLaFactura(factura.getId_Factura()));
                 Pago nuevoPago = new Pago();
                 nuevoPago.setFormaDePago(formaDePago);
                 nuevoPago .setFactura(factura);

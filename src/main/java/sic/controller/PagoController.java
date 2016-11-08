@@ -60,7 +60,7 @@ public class PagoController {
     @GetMapping("/pagos/facturas/{idFactura}")
     @ResponseStatus(HttpStatus.OK)
     public List<Pago> getPagosDeLaFactura(@PathVariable long idFactura) {
-        return pagoService.getPagosDeLaFactura(facturaService.getFacturaPorId(idFactura));
+        return pagoService.getPagosDeLaFactura(idFactura);
     }
     
     @GetMapping("/pagos/facturas/{idFactura}/saldo")

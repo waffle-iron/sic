@@ -7,7 +7,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import sic.modelo.Factura;
 import sic.modelo.Pago;
 import sic.repository.IPagoRepository;
 
@@ -18,9 +17,9 @@ public class PagoRepositoryJPAImpl implements IPagoRepository {
     private EntityManager em;
 
     @Override
-    public List<Pago> getPagosDeLaFactura(Factura factura) {
+    public List<Pago> getPagosDeLaFactura(long idFactura) {
         TypedQuery<Pago> typedQuery = em.createNamedQuery("Pago.buscarPorFactura", Pago.class);
-        typedQuery.setParameter("factura", factura);
+        typedQuery.setParameter("idFactura", idFactura);
         List<Pago> pagosFacturaCompra = typedQuery.getResultList();
         return pagosFacturaCompra;
     }

@@ -371,9 +371,9 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     private void eliminarPagosDeFactura(Factura factura) {
-        for (Pago pago : pagoService.getPagosDeLaFactura(factura)) {
+        pagoService.getPagosDeLaFactura(factura.getId_Factura()).stream().forEach((pago) -> {
             pagoService.eliminar(pago.getId_Pago());
-        }
+        });
     }
 
     private void validarFactura(Factura factura) {
@@ -455,7 +455,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public double getTotalPagado(Factura factura) {
         double pagado = 0.0;
-        for (Pago pago : pagoService.getPagosDeLaFactura(factura)) {
+        for (Pago pago : pagoService.getPagosDeLaFactura(factura.getId_Factura())) {
             pagado = pagado + pago.getMonto();
         }
         return pagado;
@@ -796,7 +796,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 .getConfiguracionDelSistemaPorEmpresa(factura.getEmpresa());
         params.put("preImpresa", cds.isUsarFacturaVentaPreImpresa());
         String formasDePago = new String();
-        for (Pago pago : pagoService.getPagosDeLaFactura(factura)) {
+        for (Pago pago : pagoService.getPagosDeLaFactura(factura.getId_Factura())) {
             formasDePago = formasDePago + " " + pago.getFormaDePago().getNombre() + " ";
         }
         params.put("formasDePago", formasDePago);

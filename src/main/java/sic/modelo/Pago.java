@@ -37,7 +37,7 @@ import lombok.Data;
                 + "WHERE p.empresa.id_Empresa = :idEmpresa"),
     @NamedQuery(name = "Pago.buscarPorFactura",
             query = "SELECT p FROM Pago p "
-                + "WHERE p.factura = :factura AND p.eliminado = false "
+                + "WHERE p.factura.id_Factura = :idFactura AND p.eliminado = false "
                 + "ORDER BY p.fecha ASC")
 })
 @Data
