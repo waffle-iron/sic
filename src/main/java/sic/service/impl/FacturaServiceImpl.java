@@ -364,10 +364,9 @@ public class FacturaServiceImpl implements IFacturaService {
     public void eliminar(long idFactura) {
         Factura factura = this.getFacturaPorId(idFactura);
         factura.setEliminada(true);
-        this.eliminarPagosDeFactura(factura);
-        facturaRepository.actualizar(factura);
-        factura.setRenglones(this.getRenglonesDeLaFactura(factura.getId_Factura()));
+        this.eliminarPagosDeFactura(factura);        
         productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);
+        facturaRepository.actualizar(factura);
     }
 
     private void eliminarPagosDeFactura(Factura factura) {
