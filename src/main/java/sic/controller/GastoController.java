@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +40,12 @@ public class GastoController {
         if (gastoService.getGastoPorId(gasto.getId_Gasto()) != null) {
             gastoService.actualizar(gasto);
         }
+    }
+    
+    @DeleteMapping("/gastos/{idGasto}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@PathVariable long idGasto) {
+        gastoService.eliminar(idGasto);
     }
     
     @GetMapping("/gastos/busqueda")

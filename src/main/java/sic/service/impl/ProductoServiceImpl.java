@@ -354,14 +354,14 @@ public class ProductoServiceImpl implements IProductoService {
     }
 
     @Override
-    public double calcularIVA_Neto(double precioCosto, double iva_porcentaje) {
-        double resultado = (precioCosto * iva_porcentaje) / 100;
+    public double calcularIVA_Neto(double pvp, double iva_porcentaje) {
+        double resultado = (pvp * iva_porcentaje) / 100;
         return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
-    public double calcularImpInterno_Neto(double precioCosto, double impInterno_porcentaje) {
-        double resultado = (precioCosto * impInterno_porcentaje) / 100;
+    public double calcularImpInterno_Neto(double pvp, double impInterno_porcentaje) {
+        double resultado = (pvp * impInterno_porcentaje) / 100;
         return Utilidades.truncarDecimal(resultado, 3);
     }
 

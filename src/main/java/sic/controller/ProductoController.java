@@ -136,16 +136,16 @@ public class ProductoController {
     
     @GetMapping("/productos/iva-neto")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularIVA_Neto(@RequestParam double precioCosto, 
+    public double calcularIVA_Neto(@RequestParam double pvp, 
                                    @RequestParam double ivaPorcentaje) {
-        return productoService.calcularIVA_Neto(precioCosto, ivaPorcentaje);
+        return productoService.calcularIVA_Neto(pvp, ivaPorcentaje);
     }
     
     @GetMapping("/productos/imp-interno-neto")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularImpInterno_Neto(@RequestParam double precioCosto, 
+    public double calcularImpInterno_Neto(@RequestParam double pvp, 
                                           @RequestParam double impInternoPorcentaje){
-        return productoService.calcularImpInterno_Neto(precioCosto, impInternoPorcentaje);
+        return productoService.calcularImpInterno_Neto(pvp, impInternoPorcentaje);
     }
     
     @GetMapping("/productos/pvp")

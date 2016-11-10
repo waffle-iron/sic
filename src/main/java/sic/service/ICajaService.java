@@ -7,6 +7,7 @@ import sic.modelo.Caja;
 import sic.modelo.Empresa;
 import sic.modelo.Gasto;
 import sic.modelo.Pago;
+import sic.modelo.Usuario;
 
 public interface ICajaService {
 
@@ -38,6 +39,8 @@ public interface ICajaService {
 
     byte[] getReporteCaja(Caja caja, Long idEmpresa);
 
-    Caja cerrarCajaAnterior(Empresa empresa);
+    Caja cerrarCajaAnterior(long idEmpresa);
+    
+    Caja cerrarCaja(long idCaja, double monto, long idUsuario);
 
 }

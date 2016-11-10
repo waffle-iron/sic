@@ -129,12 +129,6 @@ public class FacturaController {
         if (soloPagas == null) {
             soloPagas = false;
         }
-        if(soloImpagas != null && soloPagas != null) {
-            if (soloImpagas == true && soloPagas == true) {
-                soloImpagas = false;
-                soloPagas = false;
-            }
-        }
         Proveedor proveedor = null;
         if(idProveedor != null) {
             proveedor = proveedorService.getProveedorPorId(idProveedor);

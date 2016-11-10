@@ -75,7 +75,7 @@ public class PagoController {
         return facturaService.getTotalPagado(facturaService.getFacturaPorId(idFactura));
     }
     
-    @GetMapping("/pagos")
+    @GetMapping("/pagos/busqueda")
     @ResponseStatus(HttpStatus.OK)
     public List<Pago> getPagosEntreFechasYFormaDePago(@RequestParam long idEmpresa,
                                                       @RequestParam long idFormaDePago,

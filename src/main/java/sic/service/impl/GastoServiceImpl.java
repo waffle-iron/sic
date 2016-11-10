@@ -87,6 +87,14 @@ public class GastoServiceImpl implements IGastoService {
     public void actualizar(Gasto gasto) {
         gastoRepository.actualizar(gasto);
     }
+    
+    @Override
+    @Transactional
+    public void eliminar(long idGasto) {
+        Gasto gastoParaEliminar = this.getGastoPorId(idGasto);
+        gastoParaEliminar.setEliminado(true);
+        gastoRepository.actualizar(gastoParaEliminar);
+    }
 
     @Override
     public long getUltimoNumeroDeCaja(long idEmpresa) {

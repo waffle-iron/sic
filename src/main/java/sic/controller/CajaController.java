@@ -74,6 +74,14 @@ public class CajaController {
         cajaService.eliminar(idCaja);
     }
     
+    @PutMapping("/cajas/{idCaja}/cerrar")
+    @ResponseStatus(HttpStatus.OK)
+    public Caja cerrarCaja(@PathVariable long idCaja,
+                           @RequestParam double monto,
+                           @RequestParam long idUsuarioCierre) {
+        return cajaService.cerrarCaja(idCaja, monto, idUsuarioCierre);
+    }
+    
     @GetMapping("/cajas/total-pagos")
     @ResponseStatus(HttpStatus.OK)
     public double calcularTotalPagos(@RequestParam long[] idPago) {
@@ -131,7 +139,7 @@ public class CajaController {
     @PutMapping("/cajas/empresas/{idEmpresa}/cerrar-anterior")
     @ResponseStatus(HttpStatus.OK)
     public void cerrarCajaAnterior(@PathVariable long idEmpresa) {
-        cajaService.cerrarCajaAnterior(empresaService.getEmpresaPorId(idEmpresa));
+        cajaService.cerrarCajaAnterior(idEmpresa);
     }
     
     @GetMapping("/cajas/{idCaja}/empresas/{idEmpresa}/reporte")

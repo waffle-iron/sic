@@ -9,6 +9,8 @@ public interface IGastoService {
     Gasto getGastoPorId(Long id);
     
     void actualizar(Gasto gasto);
+    
+    void eliminar(long idGasto);
 
     List<Gasto> getGastosPorFecha(Long id_Empresa, Date desde, Date hasta);
 
