@@ -28,7 +28,17 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Override
     public Usuario getUsuarioPorId(Long idUsuario) {
-        Usuario usuario = usuarioRepository.getUsuarioPorId(idUsuario);;
+        Usuario usuario = usuarioRepository.getUsuarioPorId(idUsuario);
+        if (usuario == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_usuario_no_existente"));
+        }
+        return usuario;
+    }
+    
+    @Override
+    public Usuario getUsuarioPorNombre(String nombre) {
+        Usuario usuario = usuarioRepository.getUsuarioPorNombre(nombre);
         if (usuario == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_no_existente"));
@@ -39,12 +49,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Override
     public List<Usuario> getUsuarios() {
         return usuarioRepository.getUsuarios();
-    }
-
-    @Override
-    public Usuario getUsuarioPorNombre(String nombre) {
-        return usuarioRepository.getUsuarioPorNombre(nombre);
-    }
+    }    
 
     @Override
     public List<Usuario> getUsuariosAdministradores() {
@@ -56,7 +61,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
         Usuario usuario = usuarioRepository.getUsuarioPorNombreContrasenia(nombre, contrasenia);
         if (usuario == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_usuario_no_existente")); //cambiar mensaje??
+                    .getString("mensaje_usuario_no_existente"));
         }
         return usuario;
     }

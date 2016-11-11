@@ -1,7 +1,6 @@
 package sic.controller;
 
 import java.util.List;
-import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import sic.modelo.Usuario;
-import sic.service.BusinessServiceException;
 import sic.service.IUsuarioService;
-import sic.util.Utilidades;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -35,6 +32,12 @@ public class UsuarioController {
         return usuarioService.getUsuarioPorId(idUsuario);
     }
     
+    @GetMapping("/usuarios/busqueda")
+    @ResponseStatus(HttpStatus.OK)
+    public Usuario getUsuarioPorNombre(@RequestParam String nombre) {
+        return usuarioService.getUsuarioPorNombre(nombre);
+    }
+    
     @GetMapping("/usuarios")
     @ResponseStatus(HttpStatus.OK)
     public List<Usuario> getUsuarios() {
@@ -51,20 +54,5 @@ public class UsuarioController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable long idUsuario) {
         usuarioService.eliminar(idUsuario);
-    }
-    
-    @GetMapping("/usuarios/auth")
-    @ResponseStatus(HttpStatus.OK)
-    public Usuario getUsuarioPorNombreContrasenia(@RequestParam String nombre,
-                                                  @RequestParam String password) {
-        
-        Usuario usuario = usuarioService.getUsuarioPorNombreContrasenia(nombre, Utilidades.encriptarConMD5(password));
-        if (usuario == null) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_usuario_logInInvalido"));
-        } else {
-            return usuario;
-        }
-    }
-    
+    }    
 }

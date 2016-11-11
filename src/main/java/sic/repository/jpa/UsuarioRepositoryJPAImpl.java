@@ -1,14 +1,12 @@
 package sic.repository.jpa;
 
 import java.util.List;
-import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import sic.modelo.Usuario;
 import sic.repository.IUsuarioRepository;
-import sic.service.BusinessServiceException;
 
 @Repository
 public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {

@@ -17,27 +17,22 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
     
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-
-        //final HttpServletRequest httpRequest = (HttpServletRequest) req;
         final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_usuario_logInInvalido"));
+                    .getString("mensaje_error_token_vacio_invalido"));
         }
-
         final String token = authHeader.substring(7); // The part after "Bearer "
-
         try {
             Claims claims = Jwts.parser()
-                    .setSigningKey(secretkey)
-                    .parseClaimsJws(token)
-                    .getBody();
+                                .setSigningKey(secretkey)
+                                .parseClaimsJws(token)
+                                .getBody();
             request.setAttribute("claims", claims);
         } catch (JwtException ex) {
             throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_usuario_logInInvalido"));
+                    .getString("mensaje_error_token_vacio_invalido"), ex);
         }
-
         return true;
     }
 }

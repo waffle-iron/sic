@@ -21,7 +21,7 @@ public class ControllersExceptionHandler {
     @ResponseBody
     public String handleBusinessServiceException(BusinessServiceException ex) {        
         String mensaje = ex.getMessage() + " Reference ID: " + new Date().getTime();
-        LOGGER.error(mensaje);
+        LOGGER.error(mensaje + " " + ex.getCause().getMessage());
         return mensaje;
     }
     
@@ -30,7 +30,7 @@ public class ControllersExceptionHandler {
     @ResponseBody
     public String handleUnauthorizedException(UnauthorizedException ex) {
         String mensaje = ex.getMessage() + " Reference ID: " + new Date().getTime();
-        LOGGER.error(mensaje + " " + ex.getCause());
+        LOGGER.error(mensaje + " " + ex.getCause().getMessage());
         return mensaje;
     }
     
@@ -39,7 +39,7 @@ public class ControllersExceptionHandler {
     @ResponseBody
     public String handleEntityNotFoundException(EntityNotFoundException ex) {        
         String mensaje = ex.getMessage() + " Reference ID: " + new Date().getTime();
-        LOGGER.error(mensaje);
+        LOGGER.error(mensaje + " " + ex.getCause().getMessage());
         return mensaje;
     }
     
@@ -48,7 +48,7 @@ public class ControllersExceptionHandler {
     @ResponseBody
     public String handleException(Exception ex) {
         String mensaje = " Reference ID: " + new Date().getTime();
-        LOGGER.error(ex.getMessage() + mensaje);
+        LOGGER.error(mensaje + " " + ex.getCause().getMessage());
         return ResourceBundle.getBundle("Mensajes").getString("mensaje_error_request") + mensaje;
     }
 }
