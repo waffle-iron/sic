@@ -74,7 +74,7 @@ public class CajaController {
         cajaService.eliminar(idCaja);
     }
     
-    @PutMapping("/cajas/{idCaja}/cerrar")
+    @PutMapping("/cajas/{idCaja}/cierre")
     @ResponseStatus(HttpStatus.OK)
     public Caja cerrarCaja(@PathVariable long idCaja,
                            @RequestParam double monto,
