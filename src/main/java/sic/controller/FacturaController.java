@@ -423,5 +423,12 @@ public class FacturaController {
         return facturaService.calcularIva_neto(tipoFactura, descuentoPorcentaje,
                 recargoPorcentaje, importe, ivaRenglones, ivaPorcentaje);
     }
+    
+    @GetMapping("/facturas/calculo-vuelto")
+    @ResponseStatus(HttpStatus.OK)
+    public double calcularVuelto(@RequestParam double importeAPagar,
+                                 @RequestParam double importeAbonado) {
+        return facturaService.calcularVuelto(importeAPagar, importeAbonado);
+    }
         
 }
