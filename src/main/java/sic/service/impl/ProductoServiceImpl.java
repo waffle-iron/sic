@@ -218,7 +218,7 @@ public class ProductoServiceImpl implements IProductoService {
     public void eliminarMultiplesProductos(long[] idProducto) {
         if(Validator.tieneDuplicados(idProducto)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                        .getString("mensaje_ids_duplicados"));
+                        .getString("mensaje_error_ids_duplicados"));
         }
         List<Producto> productos = new ArrayList<>();
         for (Long i : idProducto) {
@@ -243,7 +243,7 @@ public class ProductoServiceImpl implements IProductoService {
         
         if (Validator.tieneDuplicados(idProducto)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                        .getString("mensaje_ids_duplicados"));
+                        .getString("mensaje_error_ids_duplicados"));
         }
         List<Producto> productos = new ArrayList<>();
         for (long i : idProducto) {

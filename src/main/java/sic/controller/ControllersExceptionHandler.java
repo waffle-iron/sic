@@ -16,30 +16,41 @@ public class ControllersExceptionHandler {
     
     private static final Logger LOGGER = Logger.getLogger(ControllersExceptionHandler.class.getPackage().getName());
      
-    @ExceptionHandler(BusinessServiceException.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    @ResponseBody
-    public String handleBusinessServiceException(BusinessServiceException ex) {        
-        String mensaje = ex.getMessage() + " Reference ID: " + new Date().getTime();
-        LOGGER.error(mensaje);
+    private String log(Exception ex) {
+        String mensaje = ex.getMessage() + " Reference ID: " + new Date().getTime() + ".";
+        if (ex.getCause() != null) {                        
+            LOGGER.error(mensaje + " " + ex.getCause().getMessage());
+        } else {
+            LOGGER.error(mensaje + " " + ResourceBundle.getBundle("Mensajes").getString("mensaje_error_sin_causa"));
+        }
         return mensaje;
     }
     
+    @ExceptionHandler(BusinessServiceException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public String handleBusinessServiceException(BusinessServiceException ex) {        
+        return log(ex);
+    }
+    
+    @ExceptionHandler(UnauthorizedException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public String handleUnauthorizedException(UnauthorizedException ex) {
+        return log(ex);        
+    }       
+    
     @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public String handleEntityNotFoundException(EntityNotFoundException ex) {        
-        String mensaje = ex.getMessage() + " Reference ID: " + new Date().getTime();
-        LOGGER.error(mensaje);
-        return mensaje;
+        return log(ex);
     }
     
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public String handleException(Exception ex) {
-        String mensaje = " Reference ID: " + new Date().getTime();
-        LOGGER.error(ex.getMessage() + mensaje);
-        return ResourceBundle.getBundle("Mensajes").getString("mensaje_error_request") + mensaje;
+        return log(new Exception(ResourceBundle.getBundle("Mensajes").getString("mensaje_error_request")));
     }
 }
