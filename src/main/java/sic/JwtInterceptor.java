@@ -11,8 +11,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import sic.controller.UnauthorizedException;
 
 public class JwtInterceptor extends HandlerInterceptorAdapter {
-
-    @Value("${jwt.secretkey}")
+    
+    @Value("${SIC_JWT_KEY}")
     private String secretkey;
     
     @Override

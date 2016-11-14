@@ -21,8 +21,8 @@ import sic.util.Utilidades;
 public class AuthController {
     
     private final IUsuarioService usuarioService;
-    
-    @Value("${jwt.secretkey}")
+        
+    @Value("${SIC_JWT_KEY}")
     private String secretkey;
     
     @Autowired
