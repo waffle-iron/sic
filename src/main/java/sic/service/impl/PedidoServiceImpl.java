@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import javax.persistence.EntityNotFoundException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -139,10 +140,11 @@ public class PedidoServiceImpl implements IPedidoService {
     @Override
     public List<Factura> getFacturasDelPedido(long idPedido) {
         List<Factura> facturasSinEliminar = new ArrayList<>();
-        for (Factura factura : facturaService.getFacturasDelPedido(idPedido)) {
-            if (!factura.isEliminada()) {
-                facturasSinEliminar.add(factura);
-            }
+        List<Factura> facturasDePedido = facturaService.getFacturasDelPedido(idPedido);
+        if (facturasDePedido != null) {
+            facturasDePedido.stream().filter((Factura f) -> !f.isEliminada()).forEach((f) -> {
+                facturasSinEliminar.add(f);
+            });
         }
         return facturasSinEliminar;
     }

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;
+import sic.modelo.Cliente;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
@@ -35,6 +36,7 @@ import sic.service.IProveedorService;
 import sic.service.IUsuarioService;
 import sic.modelo.Movimiento;
 import sic.modelo.Proveedor;
+import sic.modelo.Usuario;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -175,15 +177,23 @@ public class FacturaController {
                 soloPagas = false;
             }
         }
+        Cliente cliente = new Cliente();
+        if (idCliente != null) {
+            cliente = clienteService.getClientePorId(idCliente);
+        }
+        Usuario usuario = new Usuario();
+        if(idUsuario != null) {
+            usuario = usuarioService.getUsuarioPorId(idUsuario);
+        }
         BusquedaFacturaVentaCriteria criteria = BusquedaFacturaVentaCriteria.builder()
                                                  .empresa(empresaService.getEmpresaPorId(idEmpresa))
                                                  .buscaPorFecha((desde != null) && (hasta != null))
                                                  .fechaDesde(fechaDesde.getTime())
                                                  .fechaHasta(fechaHasta.getTime())
                                                  .buscaCliente(idCliente != null)
-                                                 .cliente(clienteService.getClientePorId(idCliente))
+                                                 .cliente(cliente)
                                                  .buscaUsuario(idUsuario != null)
-                                                 .usuario(usuarioService.getUsuarioPorId(idUsuario))
+                                                 .usuario(usuario)
                                                  .buscaPorNumeroFactura((nroSerie != null) && (nroFactura != null))
                                                  .numSerie((nroSerie != null)? nroSerie : 0)
                                                  .numFactura((nroFactura != null) ? nroFactura : 0)

@@ -92,15 +92,21 @@ public class PedidoController {
             fechaDesde.setTimeInMillis(desde);            
             fechaHasta.setTimeInMillis(hasta);
         }
-        Usuario usuario = usuarioService.getUsuarioPorId(idUsuario);
-        Cliente cliente = clienteService.getClientePorId(idCliente);
+        Usuario usuario = null;
+        if (idUsuario != null) {
+            usuario = usuarioService.getUsuarioPorId(idUsuario);
+        }
+        Cliente cliente = null;
+        if (idCliente != null) {
+            cliente = clienteService.getClientePorId(idCliente);
+        }
         BusquedaPedidoCriteria criteria = BusquedaPedidoCriteria.builder()
                                           .buscaPorFecha((desde != null) && (hasta != null))
                                           .fechaDesde(fechaDesde.getTime())
                                           .fechaHasta(fechaHasta.getTime())
                                           .buscaCliente(cliente != null)
                                           .cliente(cliente)
-                                          .buscaUsuario(usuario != null)
+                                          .buscaUsuario(idUsuario != null)
                                           .usuario(usuario)
                                           .buscaPorNroPedido(nroPedido != null)
                                           .nroPedido((nroPedido != null)? nroPedido : 0)

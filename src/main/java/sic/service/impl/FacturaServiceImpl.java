@@ -956,7 +956,7 @@ public class FacturaServiceImpl implements IFacturaService {
     public List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido) {
         List<RenglonFactura> renglonesRestantes = new ArrayList<>();
         HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getNroPedido());
-        List<RenglonPedido> renglonesDelPedido = pedidoService.getRenglonesDelPedido(pedido.getNroPedido());
+        List<RenglonPedido> renglonesDelPedido = pedido.getRenglones();
         for (RenglonPedido renglon : renglonesDelPedido) {
             if (renglonesDeFacturas.containsKey(renglon.getProducto().getId_Producto())) {
                 if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
