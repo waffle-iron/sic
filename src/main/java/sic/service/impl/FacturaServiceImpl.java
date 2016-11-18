@@ -331,8 +331,11 @@ public class FacturaServiceImpl implements IFacturaService {
         //PEDIDO
         if (factura.getPedido() != null) {
             List<Factura> facturas = factura.getPedido().getFacturas();
+            if (facturas == null) {
+                facturas = new ArrayList<>();
+            }
             facturas.add(factura);
-            factura.getPedido().setFacturas(facturas);            
+            factura.getPedido().setFacturas(facturas);
         }
         factura = facturaRepository.guardar(factura);
         this.actualizarEstadoFactura(factura);
@@ -347,8 +350,7 @@ public class FacturaServiceImpl implements IFacturaService {
     public List<Factura> guardar(List<Factura> facturas) {
         List<Factura> facturasGuardadas = new ArrayList<>();
         for (Factura f : facturas) {
-            this.guardar(f);
-            facturasGuardadas.add(f);
+            facturasGuardadas.add(this.guardar(f));
         }
         return facturasGuardadas;
     }    

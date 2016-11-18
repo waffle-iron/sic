@@ -352,74 +352,259 @@ public class FacturaController {
                 iva105Neto, iva21Neto, impuestoInternoNeto);
     }
     
-    @GetMapping("/facturas/total-facturado-venta")
+    @GetMapping("/facturas/total-facturado-venta/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalFacturadoVenta(@RequestParam long[] idFactura) {
-        List<FacturaVenta> facturas = new ArrayList<>();
-        Factura factura;
-        for(long id : idFactura) {
-            factura = facturaService.getFacturaPorId(id);
-            if(factura instanceof FacturaVenta) {
-                facturas.add((FacturaVenta) factura);
+    public double calcularTotalFacturadoVenta(@RequestParam(value = "idEmpresa") Long idEmpresa,
+                                              @RequestParam(value = "desde", required = false) Long desde,
+                                              @RequestParam(value = "hasta", required = false) Long hasta,
+                                              @RequestParam(value = "idCliente", required = false) Long idCliente,
+                                              @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
+                                              @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
+                                              @RequestParam(value = "tipoFactura", required = false) Character tipoFactura,
+                                              @RequestParam(value = "idUsuario", required = false) Long idUsuario,
+                                              @RequestParam(value = "nroPedido", required = false) Long nroPedido,
+                                              @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
+                                              @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
+
+        Calendar fechaDesde = Calendar.getInstance();
+        Calendar fechaHasta = Calendar.getInstance();
+        if ((desde != null) && (hasta != null)) {
+            fechaDesde.setTimeInMillis(desde);
+            fechaHasta.setTimeInMillis(hasta);
+        }
+        if ((soloImpagas != null) && (soloPagas != null)) {
+            if ((soloImpagas == true) && (soloPagas == true)) {
+                soloImpagas = false;
+                soloPagas = false;
             }
         }
-        return facturaService.calcularTotalFacturadoVenta(facturas);
+        Cliente cliente = new Cliente();
+        if (idCliente != null) {
+            cliente = clienteService.getClientePorId(idCliente);
+        }
+        Usuario usuario = new Usuario();
+        if(idUsuario != null) {
+            usuario = usuarioService.getUsuarioPorId(idUsuario);
+        }
+        BusquedaFacturaVentaCriteria criteria = BusquedaFacturaVentaCriteria.builder()
+                                                 .empresa(empresaService.getEmpresaPorId(idEmpresa))
+                                                 .buscaPorFecha((desde != null) && (hasta != null))
+                                                 .fechaDesde(fechaDesde.getTime())
+                                                 .fechaHasta(fechaHasta.getTime())
+                                                 .buscaCliente(idCliente != null)
+                                                 .cliente(cliente)
+                                                 .buscaUsuario(idUsuario != null)
+                                                 .usuario(usuario)
+                                                 .buscaPorNumeroFactura((nroSerie != null) && (nroFactura != null))
+                                                 .numSerie((nroSerie != null)? nroSerie : 0)
+                                                 .numFactura((nroFactura != null) ? nroFactura : 0)
+                                                 .buscarPorPedido(nroPedido != null)
+                                                 .nroPedido((nroPedido != null) ? nroPedido : 0)
+                                                 .buscaPorTipoFactura(tipoFactura != null)
+                                                 .tipoFactura((tipoFactura != null) ? tipoFactura : '-')
+                                                 .buscaSoloImpagas(soloImpagas)
+                                                 .buscaSoloPagadas(soloPagas)
+                                                 .cantRegistros(0)
+                                                 .build();
+        return facturaService.calcularTotalFacturadoVenta(facturaService.buscarFacturaVenta(criteria));
     }
     
-    @GetMapping("/facturas/total-facturado-compra")
+    @GetMapping("/facturas/total-facturado-compra/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalFacturadoCompra(@RequestParam long[] idFactura) {
-        List<FacturaCompra> facturas = new ArrayList<>();
-        Factura factura;
-        for (long id : idFactura) {
-            factura = facturaService.getFacturaPorId(id);
-            if (factura instanceof FacturaCompra) {
-                facturas.add((FacturaCompra) factura);
-            }
+    public double calcularTotalFacturadoCompra(@RequestParam(value = "idEmpresa") Long idEmpresa,
+                                                   @RequestParam(value = "desde", required = false) Long desde,
+                                                   @RequestParam(value = "hasta", required = false) Long hasta,
+                                                   @RequestParam(value = "idProveedor", required = false) Long idProveedor,
+                                                   @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
+                                                   @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
+                                                   @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
+                                                   @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
+        Calendar fechaDesde = Calendar.getInstance();
+        Calendar fechaHasta = Calendar.getInstance();
+        if ((desde != null) && (hasta != null)) {
+            fechaDesde.setTimeInMillis(desde);            
+            fechaHasta.setTimeInMillis(hasta);
         }
-        return facturaService.calcularTotalFacturadoCompra(facturas);
+        if (soloImpagas == null) {
+            soloImpagas = false;
+        }
+        if (soloPagas == null) {
+            soloPagas = false;
+        }
+        Proveedor proveedor = null;
+        if(idProveedor != null) {
+            proveedor = proveedorService.getProveedorPorId(idProveedor);
+        }
+        BusquedaFacturaCompraCriteria criteria = BusquedaFacturaCompraCriteria.builder()
+                                                 .empresa(empresaService.getEmpresaPorId(idEmpresa))
+                                                 .buscaPorFecha((desde != null) && (hasta != null))
+                                                 .fechaDesde(fechaDesde.getTime())
+                                                 .fechaHasta(fechaHasta.getTime())
+                                                 .buscaPorProveedor(idProveedor != null)
+                                                 .proveedor(proveedor)
+                                                 .buscaPorNumeroFactura((nroSerie != null) && (nroFactura != null))
+                                                 .numSerie((nroSerie != null) ? nroSerie : 0)
+                                                 .numFactura((nroFactura != null) ? nroFactura : 0)
+                                                 .buscarSoloInpagas(soloImpagas)
+                                                 .buscaSoloPagadas(soloPagas)
+                                                 .cantRegistros(0)
+                                                 .build();
+        return facturaService.calcularTotalFacturadoCompra(facturaService.buscarFacturaCompra(criteria));
     }
     
-    @GetMapping("/facturas/total-iva-venta")
+    @GetMapping("/facturas/total-iva-venta/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularIvaVenta(@RequestParam long[] idFactura) {
-        List<FacturaVenta> facturas = new ArrayList<>();
-        Factura factura;
-        for(long id : idFactura) {
-            factura = facturaService.getFacturaPorId(id);
-            if(factura instanceof FacturaVenta) {
-                facturas.add((FacturaVenta) factura);
+    public double calcularIvaVenta(@RequestParam(value = "idEmpresa") Long idEmpresa,
+                                              @RequestParam(value = "desde", required = false) Long desde,
+                                              @RequestParam(value = "hasta", required = false) Long hasta,
+                                              @RequestParam(value = "idCliente", required = false) Long idCliente,
+                                              @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
+                                              @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
+                                              @RequestParam(value = "tipoFactura", required = false) Character tipoFactura,
+                                              @RequestParam(value = "idUsuario", required = false) Long idUsuario,
+                                              @RequestParam(value = "nroPedido", required = false) Long nroPedido,
+                                              @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
+                                              @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
+        Calendar fechaDesde = Calendar.getInstance();
+        Calendar fechaHasta = Calendar.getInstance();
+        if ((desde != null) && (hasta != null)) {
+            fechaDesde.setTimeInMillis(desde);
+            fechaHasta.setTimeInMillis(hasta);
+        }
+        if ((soloImpagas != null) && (soloPagas != null)) {
+            if ((soloImpagas == true) && (soloPagas == true)) {
+                soloImpagas = false;
+                soloPagas = false;
             }
         }
-        return facturaService.calcularIVA_Venta(facturas);
+        Cliente cliente = new Cliente();
+        if (idCliente != null) {
+            cliente = clienteService.getClientePorId(idCliente);
+        }
+        Usuario usuario = new Usuario();
+        if(idUsuario != null) {
+            usuario = usuarioService.getUsuarioPorId(idUsuario);
+        }
+        BusquedaFacturaVentaCriteria criteria = BusquedaFacturaVentaCriteria.builder()
+                                                 .empresa(empresaService.getEmpresaPorId(idEmpresa))
+                                                 .buscaPorFecha((desde != null) && (hasta != null))
+                                                 .fechaDesde(fechaDesde.getTime())
+                                                 .fechaHasta(fechaHasta.getTime())
+                                                 .buscaCliente(idCliente != null)
+                                                 .cliente(cliente)
+                                                 .buscaUsuario(idUsuario != null)
+                                                 .usuario(usuario)
+                                                 .buscaPorNumeroFactura((nroSerie != null) && (nroFactura != null))
+                                                 .numSerie((nroSerie != null)? nroSerie : 0)
+                                                 .numFactura((nroFactura != null) ? nroFactura : 0)
+                                                 .buscarPorPedido(nroPedido != null)
+                                                 .nroPedido((nroPedido != null) ? nroPedido : 0)
+                                                 .buscaPorTipoFactura(tipoFactura != null)
+                                                 .tipoFactura((tipoFactura != null) ? tipoFactura : '-')
+                                                 .buscaSoloImpagas(soloImpagas)
+                                                 .buscaSoloPagadas(soloPagas)
+                                                 .cantRegistros(0)
+                                                 .build();
+        return facturaService.calcularIVA_Venta(facturaService.buscarFacturaVenta(criteria));
     }
     
-    @GetMapping("/facturas/total-iva-compra")
+    @GetMapping("/facturas/total-iva-compra/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalIvaCompra(@RequestParam long[] idFactura) {
-        List<FacturaCompra> facturas = new ArrayList<>();
-        Factura factura;
-        for (long id : idFactura) {
-            factura = facturaService.getFacturaPorId(id);
-            if (factura instanceof FacturaCompra) {
-                facturas.add((FacturaCompra) factura);
-            }
+    public double calcularTotalIvaCompra(@RequestParam(value = "idEmpresa") Long idEmpresa,
+                                                   @RequestParam(value = "desde", required = false) Long desde,
+                                                   @RequestParam(value = "hasta", required = false) Long hasta,
+                                                   @RequestParam(value = "idProveedor", required = false) Long idProveedor,
+                                                   @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
+                                                   @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
+                                                   @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
+                                                   @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
+        Calendar fechaDesde = Calendar.getInstance();
+        Calendar fechaHasta = Calendar.getInstance();
+        if ((desde != null) && (hasta != null)) {
+            fechaDesde.setTimeInMillis(desde);            
+            fechaHasta.setTimeInMillis(hasta);
         }
-        return facturaService.calcularIVA_Compra(facturas);
+        if (soloImpagas == null) {
+            soloImpagas = false;
+        }
+        if (soloPagas == null) {
+            soloPagas = false;
+        }
+        Proveedor proveedor = null;
+        if(idProveedor != null) {
+            proveedor = proveedorService.getProveedorPorId(idProveedor);
+        }
+        BusquedaFacturaCompraCriteria criteria = BusquedaFacturaCompraCriteria.builder()
+                                                 .empresa(empresaService.getEmpresaPorId(idEmpresa))
+                                                 .buscaPorFecha((desde != null) && (hasta != null))
+                                                 .fechaDesde(fechaDesde.getTime())
+                                                 .fechaHasta(fechaHasta.getTime())
+                                                 .buscaPorProveedor(idProveedor != null)
+                                                 .proveedor(proveedor)
+                                                 .buscaPorNumeroFactura((nroSerie != null) && (nroFactura != null))
+                                                 .numSerie((nroSerie != null) ? nroSerie : 0)
+                                                 .numFactura((nroFactura != null) ? nroFactura : 0)
+                                                 .buscarSoloInpagas(soloImpagas)
+                                                 .buscaSoloPagadas(soloPagas)
+                                                 .cantRegistros(0)
+                                                 .build();
+        return facturaService.calcularIVA_Compra(facturaService.buscarFacturaCompra(criteria));
     }
     
-    @GetMapping("/facturas/ganancia-total")
+    @GetMapping("/facturas/ganancia-total/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularGananciaTotal(@RequestParam long[] idFactura) {
-        List<FacturaVenta> facturas = new ArrayList<>();
-        Factura factura;
-        for(long id : idFactura) {
-            factura = facturaService.getFacturaPorId(id);
-            if(factura instanceof FacturaVenta) {
-                facturas.add((FacturaVenta) factura);
+    public double calcularGananciaTotal(@RequestParam(value = "idEmpresa") Long idEmpresa,
+                                              @RequestParam(value = "desde", required = false) Long desde,
+                                              @RequestParam(value = "hasta", required = false) Long hasta,
+                                              @RequestParam(value = "idCliente", required = false) Long idCliente,
+                                              @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
+                                              @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
+                                              @RequestParam(value = "tipoFactura", required = false) Character tipoFactura,
+                                              @RequestParam(value = "idUsuario", required = false) Long idUsuario,
+                                              @RequestParam(value = "nroPedido", required = false) Long nroPedido,
+                                              @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
+                                              @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
+        Calendar fechaDesde = Calendar.getInstance();
+        Calendar fechaHasta = Calendar.getInstance();
+        if ((desde != null) && (hasta != null)) {
+            fechaDesde.setTimeInMillis(desde);
+            fechaHasta.setTimeInMillis(hasta);
+        }
+        if ((soloImpagas != null) && (soloPagas != null)) {
+            if ((soloImpagas == true) && (soloPagas == true)) {
+                soloImpagas = false;
+                soloPagas = false;
             }
         }
-        return facturaService.calcularGananciaTotal(facturas);
+        Cliente cliente = new Cliente();
+        if (idCliente != null) {
+            cliente = clienteService.getClientePorId(idCliente);
+        }
+        Usuario usuario = new Usuario();
+        if(idUsuario != null) {
+            usuario = usuarioService.getUsuarioPorId(idUsuario);
+        }
+        BusquedaFacturaVentaCriteria criteria = BusquedaFacturaVentaCriteria.builder()
+                                                 .empresa(empresaService.getEmpresaPorId(idEmpresa))
+                                                 .buscaPorFecha((desde != null) && (hasta != null))
+                                                 .fechaDesde(fechaDesde.getTime())
+                                                 .fechaHasta(fechaHasta.getTime())
+                                                 .buscaCliente(idCliente != null)
+                                                 .cliente(cliente)
+                                                 .buscaUsuario(idUsuario != null)
+                                                 .usuario(usuario)
+                                                 .buscaPorNumeroFactura((nroSerie != null) && (nroFactura != null))
+                                                 .numSerie((nroSerie != null)? nroSerie : 0)
+                                                 .numFactura((nroFactura != null) ? nroFactura : 0)
+                                                 .buscarPorPedido(nroPedido != null)
+                                                 .nroPedido((nroPedido != null) ? nroPedido : 0)
+                                                 .buscaPorTipoFactura(tipoFactura != null)
+                                                 .tipoFactura((tipoFactura != null) ? tipoFactura : '-')
+                                                 .buscaSoloImpagas(soloImpagas)
+                                                 .buscaSoloPagadas(soloPagas)
+                                                 .cantRegistros(0)
+                                                 .build();
+        return facturaService.calcularGananciaTotal(facturaService.buscarFacturaVenta(criteria));
     }
     
     @GetMapping("/facturas/iva-neto")

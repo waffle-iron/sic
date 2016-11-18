@@ -31,7 +31,7 @@ public class RubroServiceImpl implements IRubroService {
         Rubro rubro = rubroRepository.getRubroPorId(idRubro);
         if (rubro == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_pedido_no_existente"));
+                    .getString("mensaje_rubro_no_existente"));
         }
         return rubro;
     }

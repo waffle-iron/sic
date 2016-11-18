@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "pago")
@@ -41,12 +42,13 @@ import lombok.Data;
                 + "ORDER BY p.fecha ASC")
 })
 @Data
+@EqualsAndHashCode(of = {"nroPago", "empresa"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pago")
 public class Pago implements Serializable {
 
     @Id
     @GeneratedValue
-    private long id_Pago;
+    private Long id_Pago;
     
     private long nroPago;
 
