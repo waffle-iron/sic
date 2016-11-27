@@ -339,8 +339,8 @@ public class FacturaServiceImpl implements IFacturaService {
         }
         factura = facturaRepository.guardar(factura);
         this.actualizarEstadoFactura(factura);
-        pedidoService.actualizarEstadoPedido(factura.getPedido());
         productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
+        pedidoService.actualizarEstadoPedido(factura.getPedido());
         LOGGER.warn("La Factura " + factura + " se guardó correctamente.");
         return factura;
     }
@@ -369,6 +369,7 @@ public class FacturaServiceImpl implements IFacturaService {
         this.eliminarPagosDeFactura(factura);        
         productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);
         facturaRepository.actualizar(factura);
+        pedidoService.actualizarEstadoPedido(factura.getPedido());
     }
 
     private void eliminarPagosDeFactura(Factura factura) {
@@ -957,18 +958,18 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido) {
         List<RenglonFactura> renglonesRestantes = new ArrayList<>();
-        HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getNroPedido());
-        List<RenglonPedido> renglonesDelPedido = pedido.getRenglones();
-        for (RenglonPedido renglon : renglonesDelPedido) {
+        HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getId_Pedido());
+        pedido.getRenglones().forEach((renglon) -> {
             if (renglonesDeFacturas.containsKey(renglon.getProducto().getId_Producto())) {
                 if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
-                    renglon.setCantidad(renglon.getCantidad() - renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad());
-                    renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon, "Factura A")); // tipo de comprobante hardcodeado
+                    renglonesRestantes.add(this.calcularRenglon("Factura A",
+                            Movimiento.VENTA, renglon.getCantidad() - renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad(),
+                            renglon.getProducto(), renglon.getDescuento_porcentaje())); // tipo de comprobante hardcodeado
                 }
             } else {
                 renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon, "Factura A"));
             }
-        }
+        });
         return renglonesRestantes;
     }
 

@@ -205,7 +205,22 @@ public class ProductoController {
                                             @RequestParam(value = "idMedida", required = false) Long idMedida,
                                             @RequestParam(value = "idRubro", required = false) Long idRubro,
                                             @RequestParam(value = "idProveedor", required = false) Long idProveedor,
-                                            @RequestBody(required = false) PreciosProducto preciosProducto) {
+                                            @RequestParam(value = "idProveedor", required = false) double gananciaNeto,
+                                            @RequestParam(value = "idProveedor", required = false) double gananciaPorcentaje,
+                                            @RequestParam(value = "idProveedor", required = false) double impuestoInternoNeto,
+                                            @RequestParam(value = "idProveedor", required = false) double impuestoInternoPorcentaje,
+                                            @RequestParam(value = "idProveedor", required = false) double IVANeto,
+                                            @RequestParam(value = "idProveedor", required = false) double IVAPorcentaje,
+                                            @RequestParam(value = "idProveedor", required = false) double precioCosto,
+                                            @RequestParam(value = "idProveedor", required = false) double precioLista,
+                                            @RequestParam(value = "idProveedor", required = false) double precioVentaPublico) {
+        PreciosProducto preciosProducto = new PreciosProducto();
+        preciosProducto.setGanancia_neto(gananciaNeto);
+        preciosProducto.setGanancia_porcentaje(gananciaPorcentaje);
+        preciosProducto.setImpuestoInterno_neto(impuestoInternoNeto);
+        preciosProducto.setImpuestoInterno_porcentaje(impuestoInternoPorcentaje);
+        preciosProducto.setIva_neto(IVANeto);
+        preciosProducto.setIva_porcentaje(IVAPorcentaje);
         productoService.modificarMultiplesProductos(idProducto,
                 (preciosProducto != null), preciosProducto,
                 (idMedida != null), medidaService.getMedidaPorId(idMedida),
