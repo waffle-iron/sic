@@ -32,7 +32,6 @@ import sic.modelo.Pedido;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
-import sic.modelo.RenglonPedido;
 import sic.repository.IFacturaRepository;
 import sic.service.IConfiguracionDelSistemaService;
 import sic.service.IFacturaService;
@@ -326,8 +325,7 @@ public class FacturaServiceImpl implements IFacturaService {
             }
         } else {
             factura.setPagada(false);
-        }
-        
+        }        
         //PEDIDO
         if (factura.getPedido() != null) {
             List<Factura> facturas = factura.getPedido().getFacturas();
@@ -951,11 +949,6 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante) {
-        return this.calcularRenglon(tipoComprobante, Movimiento.VENTA, renglon.getCantidad(), renglon.getProducto(), renglon.getDescuento_porcentaje());
-    }
-
-    @Override
     public List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido) {
         List<RenglonFactura> renglonesRestantes = new ArrayList<>();
         HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getId_Pedido());
@@ -964,10 +957,11 @@ public class FacturaServiceImpl implements IFacturaService {
                 if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
                     renglonesRestantes.add(this.calcularRenglon("Factura A",
                             Movimiento.VENTA, renglon.getCantidad() - renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad(),
-                            renglon.getProducto(), renglon.getDescuento_porcentaje())); // tipo de comprobante hardcodeado
+                            renglon.getProducto(), renglon.getDescuento_porcentaje()));
                 }
-            } else {
-                renglonesRestantes.add(this.getRenglonFacturaPorRenglonPedido(renglon, "Factura A"));
+            } else {                
+                renglonesRestantes.add(this.calcularRenglon("Factura A", Movimiento.VENTA,
+                        renglon.getCantidad(), renglon.getProducto(), renglon.getDescuento_porcentaje()));
             }
         });
         return renglonesRestantes;

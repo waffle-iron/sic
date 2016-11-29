@@ -1,7 +1,6 @@
 package sic.service.impl;
 
 import sic.modelo.BusquedaProductoCriteria;
-import sic.modelo.PreciosProducto;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -236,10 +235,19 @@ public class ProductoServiceImpl implements IProductoService {
     @Override
     @Transactional
     public List<Producto> modificarMultiplesProductos(long[] idProducto,
-            boolean checkPrecios, PreciosProducto preciosProducto,
-            boolean checkMedida, Medida medida,
-            boolean checkRubro, Rubro rubro,
-            boolean checkProveedor, Proveedor proveedor) {
+                                                      boolean checkPrecios,            
+                                                      Double gananciaNeto,
+                                                      Double gananciaPorcentaje,
+                                                      Double impuestoInternoNeto,
+                                                      Double impuestoInternoPorcentaje,
+                                                      Double IVANeto,
+                                                      Double IVAPorcentaje,
+                                                      Double precioCosto,
+                                                      Double precioLista,
+                                                      Double precioVentaPublico,                                                                     
+                                                      boolean checkMedida, Medida medida,
+                                                      boolean checkRubro, Rubro rubro,
+                                                      boolean checkProveedor, Proveedor proveedor) {
         
         if (Validator.tieneDuplicados(idProducto)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
@@ -262,41 +270,41 @@ public class ProductoServiceImpl implements IProductoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_producto_vacio_proveedor"));
         }
-        if (checkPrecios == true) {
-            for (Producto producto : productos) {
-                producto.setPrecioCosto(preciosProducto.getPrecioCosto());
-                producto.setGanancia_porcentaje(preciosProducto.getGanancia_porcentaje());
-                producto.setGanancia_neto(preciosProducto.getGanancia_neto());
-                producto.setPrecioVentaPublico(preciosProducto.getPrecioVentaPublico());
-                producto.setIva_porcentaje(preciosProducto.getIva_porcentaje());
-                producto.setIva_neto(preciosProducto.getIva_neto());
-                producto.setImpuestoInterno_porcentaje(preciosProducto.getImpuestoInterno_porcentaje());
-                producto.setImpuestoInterno_neto(preciosProducto.getImpuestoInterno_neto());
-                producto.setPrecioLista(preciosProducto.getPrecioLista());
-            }
+        if (checkPrecios == true) {                       
+            productos.forEach((producto) -> {
+                producto.setPrecioCosto(precioCosto);
+                producto.setGanancia_porcentaje(gananciaPorcentaje);
+                producto.setGanancia_neto(gananciaNeto);
+                producto.setPrecioVentaPublico(precioVentaPublico);
+                producto.setIva_porcentaje(IVAPorcentaje);
+                producto.setIva_neto(IVANeto);
+                producto.setImpuestoInterno_porcentaje(impuestoInternoPorcentaje);
+                producto.setImpuestoInterno_neto(impuestoInternoNeto);
+                producto.setPrecioLista(precioLista);
+            });
         }
         if (checkMedida == true) {
-            for (Producto producto : productos) {
+            productos.stream().forEach((producto) -> {
                 producto.setMedida(medida);
-            }
+            });
         }
         if (checkRubro == true) {
-            for (Producto producto : productos) {
+            productos.stream().forEach((producto) -> {
                 producto.setRubro(rubro);
-            }
+            });
         }
         if (checkProveedor == true) {
-            for (Producto producto : productos) {
+            productos.stream().forEach((producto) -> {
                 producto.setProveedor(proveedor);
-            }
+            });
         }
         //modifica el campo fecha ultima modificacion
         if (checkPrecios == true || checkMedida == true || checkRubro == true || checkProveedor == true) {
             Calendar fechaHora = new GregorianCalendar();
             Date fechaHoraActual = fechaHora.getTime();
-            for (Producto producto : productos) {
+            productos.stream().forEach((producto) -> {
                 producto.setFechaUltimaModificacion(fechaHoraActual);
-            }
+            });
         }
         productoRepository.actualizarMultiplesProductos(productos);
         return productos;

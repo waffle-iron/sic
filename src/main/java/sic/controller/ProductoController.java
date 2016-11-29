@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import sic.modelo.BusquedaProductoCriteria;
-import sic.modelo.PreciosProducto;
+import sic.modelo.Medida;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
@@ -201,30 +201,50 @@ public class ProductoController {
     
     @PutMapping("/productos/multiples")
     @ResponseStatus(HttpStatus.OK)
-    public void modificarMultiplesProductos(@RequestParam(value = "idProducto") long[] idProducto,
-                                            @RequestParam(value = "idMedida", required = false) Long idMedida,
-                                            @RequestParam(value = "idRubro", required = false) Long idRubro,
-                                            @RequestParam(value = "idProveedor", required = false) Long idProveedor,
-                                            @RequestParam(value = "idProveedor", required = false) double gananciaNeto,
-                                            @RequestParam(value = "idProveedor", required = false) double gananciaPorcentaje,
-                                            @RequestParam(value = "idProveedor", required = false) double impuestoInternoNeto,
-                                            @RequestParam(value = "idProveedor", required = false) double impuestoInternoPorcentaje,
-                                            @RequestParam(value = "idProveedor", required = false) double IVANeto,
-                                            @RequestParam(value = "idProveedor", required = false) double IVAPorcentaje,
-                                            @RequestParam(value = "idProveedor", required = false) double precioCosto,
-                                            @RequestParam(value = "idProveedor", required = false) double precioLista,
-                                            @RequestParam(value = "idProveedor", required = false) double precioVentaPublico) {
-        PreciosProducto preciosProducto = new PreciosProducto();
-        preciosProducto.setGanancia_neto(gananciaNeto);
-        preciosProducto.setGanancia_porcentaje(gananciaPorcentaje);
-        preciosProducto.setImpuestoInterno_neto(impuestoInternoNeto);
-        preciosProducto.setImpuestoInterno_porcentaje(impuestoInternoPorcentaje);
-        preciosProducto.setIva_neto(IVANeto);
-        preciosProducto.setIva_porcentaje(IVAPorcentaje);
+    public void modificarMultiplesProductos(@RequestParam long[] idProducto,
+                                            @RequestParam(required = false) Long idMedida,
+                                            @RequestParam(required = false) Long idRubro,
+                                            @RequestParam(required = false) Long idProveedor,
+                                            @RequestParam(required = false) Double gananciaNeto,
+                                            @RequestParam(required = false) Double gananciaPorcentaje,
+                                            @RequestParam(required = false) Double impuestoInternoNeto,
+                                            @RequestParam(required = false) Double impuestoInternoPorcentaje,
+                                            @RequestParam(required = false) Double IVANeto,
+                                            @RequestParam(required = false) Double IVAPorcentaje,
+                                            @RequestParam(required = false) Double precioCosto,
+                                            @RequestParam(required = false) Double precioLista,
+                                            @RequestParam(required = false) Double precioVentaPublico) {
+        
+        boolean actualizaPrecios = false;
+        if (gananciaNeto != null && gananciaPorcentaje != null && impuestoInternoNeto != null && impuestoInternoPorcentaje != null
+                && IVANeto != null && IVAPorcentaje != null && precioCosto != null && precioLista != null && precioVentaPublico != null) {
+            actualizaPrecios = true;
+        }        
+        Medida medida = null;
+        if (idMedida != null) {
+            medida = medidaService.getMedidaPorId(idMedida);
+        }
+        Rubro rubro = null;
+        if (idRubro != null) {
+            rubro = rubroService.getRubroPorId(idRubro);
+        }
+        Proveedor proveedor = null;
+        if (idProveedor != null) {
+            proveedor = proveedorService.getProveedorPorId(idProveedor);
+        }        
         productoService.modificarMultiplesProductos(idProducto,
-                (preciosProducto != null), preciosProducto,
-                (idMedida != null), medidaService.getMedidaPorId(idMedida),
-                (idRubro != null), rubroService.getRubroPorId(idRubro),
-                (idProveedor != null), proveedorService.getProveedorPorId(idProveedor));
+                actualizaPrecios,
+                gananciaNeto,
+                gananciaPorcentaje,
+                impuestoInternoNeto,
+                impuestoInternoPorcentaje,
+                IVANeto,
+                IVAPorcentaje,
+                precioCosto,
+                precioLista,
+                precioVentaPublico,                                             
+                (idMedida != null), medida,
+                (idRubro != null), rubro,
+                (idProveedor != null), proveedor);
     }
 }

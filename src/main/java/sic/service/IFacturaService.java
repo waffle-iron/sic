@@ -103,8 +103,6 @@ public interface IFacturaService {
 
     List<Factura> dividirFactura(FacturaVenta factura, int[] indices);
 
-    RenglonFactura getRenglonFacturaPorRenglonPedido(RenglonPedido renglon, String tipoComprobante);
-
     List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido);
 
     RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Producto producto, double descuento_porcentaje);

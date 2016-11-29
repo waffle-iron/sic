@@ -6,7 +6,6 @@ import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.Medida;
-import sic.modelo.PreciosProducto;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
@@ -45,6 +44,19 @@ public interface IProductoService {
 
     Producto guardar(Producto producto);
 
-    List<Producto> modificarMultiplesProductos(long[] idProductos, boolean checkPrecios, PreciosProducto preciosProducto, boolean checkMedida, Medida medida, boolean checkRubro, Rubro rubro, boolean checkProveedor, Proveedor proveedor);
+    List<Producto> modificarMultiplesProductos(long[] idProducto,
+                                               boolean checkPrecios,            
+                                               Double gananciaNeto,
+                                               Double gananciaPorcentaje,
+                                               Double impuestoInternoNeto,
+                                               Double impuestoInternoPorcentaje,
+                                               Double IVANeto,
+                                               Double IVAPorcentaje,
+                                               Double precioCosto,
+                                               Double precioLista,
+                                               Double precioVentaPublico,                                                                     
+                                               boolean checkMedida, Medida medida,
+                                               boolean checkRubro, Rubro rubro,
+                                               boolean checkProveedor, Proveedor proveedor);
 
 }
