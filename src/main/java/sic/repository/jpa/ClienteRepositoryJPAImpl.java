@@ -86,30 +86,26 @@ public class ClienteRepositoryJPAImpl implements IClienteRepository {
     @Override
     public List<Cliente> buscarClientes(BusquedaClienteCriteria criteria) {
         String query = "SELECT c FROM Cliente c WHERE c.empresa = :empresa AND c.eliminado = false";
-
-        //OR entre razonSocial y nombreFantasia
-        if (criteria.isBuscaPorRazonSocial() && criteria.isBuscaPorNombreFantasia()) {
+        //OR entre razonSocial, nombreFantasia y idFiscal
+        if (criteria.isBuscaPorRazonSocial() && criteria.isBuscaPorNombreFantasia() && criteria.isBuscaPorId_Fiscal()) {
             String[] terminos = criteria.getRazonSocial().split(" ");
             for (String termino : terminos) {
-                query += " AND (c.razonSocial LIKE '%" + termino + "%'" + " OR c.nombreFantasia LIKE '%" + termino + "%')";
+                query += " AND (c.razonSocial LIKE '%" + termino + "%' OR c.nombreFantasia LIKE '%" + termino + "%' OR c.id_Fiscal = '" + termino + "')";
             }
         } else {
-            if (criteria.isBuscaPorRazonSocial() == true) {
+            //OR entre razonSocial y nombreFantasia
+            if (criteria.isBuscaPorRazonSocial() && criteria.isBuscaPorNombreFantasia()) {
                 String[] terminos = criteria.getRazonSocial().split(" ");
                 for (String termino : terminos) {
-                    query += " AND c.razonSocial LIKE '%" + termino + "%'";
+                    query += " AND (c.razonSocial LIKE '%" + termino + "%'" + " OR c.nombreFantasia LIKE '%" + termino + "%')";
+                }
+            } else {
+                //solo idFiscal
+                if (criteria.isBuscaPorId_Fiscal() == true) {
+                    query = query + " AND c.id_Fiscal = '" + criteria.getId_Fiscal() + "'";
                 }
             }
-            if (criteria.isBuscaPorNombreFantasia() == true) {
-                String[] terminos = criteria.getNombreFantasia().split(" ");
-                for (String termino : terminos) {
-                    query += " AND c.nombreFantasia LIKE '%" + termino + "%'";
-                }
-            }
-        }
-        if (criteria.isBuscaPorId_Fiscal() == true) {
-            query = query + " AND c.id_Fiscal = '" + criteria.getId_Fiscal() + "'";
-        }
+        }        
         if (criteria.isBuscaPorLocalidad() == true) {
             query = query + " AND c.localidad = " + criteria.getLocalidad().getId_Localidad();
         }

@@ -106,8 +106,9 @@ public class CajaServiceImpl implements ICajaService {
     @Override
     @Transactional
     public Caja guardar(Caja caja) {
+        caja.setFechaApertura(new Date());
         this.validarCaja(caja);
-        caja.setNroCaja(this.getUltimoNumeroDeCaja(caja.getEmpresa().getId_Empresa()) + 1);
+        caja.setNroCaja(this.getUltimoNumeroDeCaja(caja.getEmpresa().getId_Empresa()) + 1);        
         caja = cajaRepository.guardar(caja);
         LOGGER.warn("La Caja " + caja + " se guardó correctamente." );
         return caja;

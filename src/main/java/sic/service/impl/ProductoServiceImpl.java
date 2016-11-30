@@ -41,8 +41,7 @@ import sic.util.Validator;
 public class ProductoServiceImpl implements IProductoService {
 
     private final IProductoRepository productoRepository;
-    private final IEmpresaService empresaService;
-    private static final int CANT_REGISTROS = 300;
+    private final IEmpresaService empresaService;    
     private static final Logger LOGGER = Logger.getLogger(ProductoServiceImpl.class.getPackage().getName());
 
     @Autowired
@@ -153,8 +152,7 @@ public class ProductoServiceImpl implements IProductoService {
         if (criteria.isBuscarPorProveedor() == true && criteria.getProveedor() == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_producto_vacio_proveedor"));
-        }
-        criteria.setCantRegistros(CANT_REGISTROS);
+        }        
         return productoRepository.buscarProductos(criteria);
     }
 
@@ -215,7 +213,7 @@ public class ProductoServiceImpl implements IProductoService {
     @Override
     @Transactional
     public void eliminarMultiplesProductos(long[] idProducto) {
-        if(Validator.tieneDuplicados(idProducto)) {
+        if (Validator.tieneDuplicados(idProducto)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_error_ids_duplicados"));
         }

@@ -292,11 +292,11 @@ public class FacturaController {
     @GetMapping("/facturas/renglon")
     @ResponseStatus(HttpStatus.OK)
     public RenglonFactura calcularRenglon(@RequestParam long idProducto,
-                                          @RequestParam String tipoFactura,
+                                          @RequestParam String tipoComprobante,
                                           @RequestParam Movimiento movimiento,
                                           @RequestParam double cantidad, 
                                           @RequestParam double descuentoPorcentaje) {
-        return facturaService.calcularRenglon(tipoFactura, movimiento, cantidad,
+        return facturaService.calcularRenglon(tipoComprobante, movimiento, cantidad,
                 productoService.getProductoPorId(idProducto), descuentoPorcentaje);
     }
     

@@ -39,10 +39,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Override
     public Usuario getUsuarioPorNombre(String nombre) {
         Usuario usuario = usuarioRepository.getUsuarioPorNombre(nombre);
-        if (usuario == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_usuario_no_existente"));
-        }
+//        if (usuario == null) {
+//            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+//                    .getString("mensaje_usuario_no_existente"));
+//        }
         return usuario;
     }
     

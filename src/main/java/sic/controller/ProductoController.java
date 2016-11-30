@@ -63,12 +63,13 @@ public class ProductoController {
     
     @GetMapping("/productos/busqueda/criteria") 
     @ResponseStatus(HttpStatus.OK)
-    public List<Producto> buscarProductos(@RequestParam(value = "codigo", required = false) String codigo,
-                                          @RequestParam(value = "descripcion", required = false) String descripcion,
-                                          @RequestParam(value = "idRubro", required = false) Long idRubro,
-                                          @RequestParam(value = "idProveedor", required = false) Long idProveedor,
-                                          @RequestParam(value = "idEmpresa") long idEmpresa,
-                                          @RequestParam(value = "soloFaltantes", required = false) boolean soloFantantes) {        
+    public List<Producto> buscarProductos(@RequestParam long idEmpresa,
+                                          @RequestParam(required = false) String codigo,
+                                          @RequestParam(required = false) String descripcion,
+                                          @RequestParam(required = false) Long idRubro,
+                                          @RequestParam(required = false) Long idProveedor,                                          
+                                          @RequestParam(required = false) Integer cantidadRegistros,
+                                          @RequestParam(required = false) boolean soloFantantes) {
         Rubro rubro = null;
         if (idRubro != null) {
             rubro = rubroService.getRubroPorId(idRubro);
@@ -76,6 +77,9 @@ public class ProductoController {
         Proveedor proveedor = null;
         if (idProveedor != null) {
             proveedor = proveedorService.getProveedorPorId(idProveedor);
+        }
+        if (cantidadRegistros == null) {
+            cantidadRegistros = 0;
         }
         BusquedaProductoCriteria criteria = BusquedaProductoCriteria.builder()
                                             .buscarPorCodigo((codigo!=null))
@@ -87,7 +91,7 @@ public class ProductoController {
                                             .buscarPorProveedor(proveedor!=null)
                                             .proveedor(proveedor)
                                             .empresa(empresaService.getEmpresaPorId(idEmpresa))
-                                            .cantRegistros(0)
+                                            .cantRegistros(cantidadRegistros)
                                             .listarSoloFaltantes(soloFantantes)
                                             .build();
         return productoService.buscarProductos(criteria);
