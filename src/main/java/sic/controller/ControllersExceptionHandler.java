@@ -1,5 +1,6 @@
 package sic.controller;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.ResourceBundle;
 import javax.persistence.EntityNotFoundException;
@@ -19,9 +20,10 @@ public class ControllersExceptionHandler {
     private String log(Exception ex) {
         String mensaje = ex.getMessage() + " Reference ID: " + new Date().getTime() + ".";
         if (ex.getCause() != null) {                        
-            LOGGER.error(mensaje + " " + ex.getCause().getMessage());
+            LOGGER.error(mensaje + " " + ex.getCause().getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
         } else {
-            LOGGER.error(mensaje + " " + ResourceBundle.getBundle("Mensajes").getString("mensaje_error_sin_causa"));
+            LOGGER.error(mensaje + " " + ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_error_sin_causa") + "\n" + Arrays.toString(ex.getStackTrace()));
         }
         return mensaje;
     }
