@@ -646,7 +646,7 @@ public class FacturaServiceImpl implements IFacturaService {
 
         double resultado;
         resultado = (subTotal + recargo_neto - descuento_neto) + iva105_neto + iva21_neto + impInterno_neto;
-        return Utilidades.truncarDecimal(resultado, 2);
+        return Utilidades.truncarDecimal(resultado, 3);
     }
 
     @Override
