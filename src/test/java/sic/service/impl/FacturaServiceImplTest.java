@@ -251,14 +251,14 @@ public class FacturaServiceImplTest {
             importes[indice] = renglon.getImporte();
             indice++;
         }
-        double resultadoEsperado = 33.664;
+        double resultadoEsperado = 33.66;
         double resultadoObtenido = facturaService.calcularSubTotal(importes);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
     @Test
-    public void shouldCalcularDescuentoNeto() {
-        double resultadoEsperado = 11.773;
+    public void shouldCacularDescuentoNeto() {
+        double resultadoEsperado = 11.77;
         double resultadoObtenido = facturaService.calcularDescuento_neto(78.255, 15.045);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
@@ -272,7 +272,7 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldCalcularSubTotal_neto() {
-        double resultadoEsperado = 220.477;
+        double resultadoEsperado = 220.47;
         double resultadoObtenido = facturaService.calcularSubTotal_neto(225.025, 10.454, 15.002);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
@@ -341,14 +341,14 @@ public class FacturaServiceImplTest {
             impuestoPorcentajes[indice] = renglon.getImpuesto_porcentaje();
             indice++;
         }
-        double resultadoEsperado = 3.319;
+        double resultadoEsperado = 3.31;
         double resultadoObtenido = facturaService.calcularImpInterno_neto("Factura A", 9.104, 22.008, importes, impuestoPorcentajes);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
     @Test
     public void shouldCalcularTotal() {
-        double resultadoEsperado = 460.883;
+        double resultadoEsperado = 460.88;
         double resultadoObtenido = facturaService.calcularTotal(350.451, 10.753, 25.159, 1.451, 84.525, 10.050);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
@@ -385,7 +385,7 @@ public class FacturaServiceImplTest {
         facturasDeCompra.add(factura1);
         facturasDeCompra.add(factura2);
         facturasDeCompra.add(factura3);
-        double resultadoEsperado = 25573.352;
+        double resultadoEsperado = 25573.35;
         double resultadoObtenido = facturaService.calcularTotalFacturadoCompra(facturasDeCompra);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
