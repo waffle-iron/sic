@@ -54,6 +54,7 @@ public class FacturaServiceImpl implements IFacturaService {
     private final IPedidoService pedidoService;
     private final IPagoService pagoService;
     private static final Logger LOGGER = Logger.getLogger(FacturaServiceImpl.class.getPackage().getName());
+    private static final int CANTIDAD_DECIMALES_TRUNCAMIENTO = 2;
 
     @Autowired
     @Lazy
@@ -552,32 +553,32 @@ public class FacturaServiceImpl implements IFacturaService {
     public double calcularSubTotal(double[] importes) {
         double resultado = 0;
         for (double importe : importes) {
-            resultado += Utilidades.truncarDecimal(importe, 3);
+            resultado += importe;
         }
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularDescuento_neto(double subtotal, double descuento_porcentaje) {
         double resultado = 0;
         if (descuento_porcentaje != 0) {
-            resultado = (Utilidades.truncarDecimal(subtotal, 3) * descuento_porcentaje) / 100;
+            resultado = (subtotal * descuento_porcentaje) / 100;
         }
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularRecargo_neto(double subtotal, double recargo_porcentaje) {
         double resultado = 0;
         if (recargo_porcentaje != 0) {
-            resultado = (Utilidades.truncarDecimal(subtotal, 3) * recargo_porcentaje) / 100;
+            resultado = (subtotal * recargo_porcentaje) / 100;
         }
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularSubTotal_neto(double subtotal, double recargo_neto, double descuento_neto) {
-        return Utilidades.truncarDecimal((subtotal + recargo_neto - descuento_neto), 3);
+        return Utilidades.truncarDecimal((subtotal + recargo_neto - descuento_neto), CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
@@ -588,28 +589,22 @@ public class FacturaServiceImpl implements IFacturaService {
         int indice = importes.length;
         if (tipoDeFactura.charAt(tipoDeFactura.length() - 1) == 'A') {
             for (int i = 0 ; i < indice; i++) {
-                //descuento
                 double descuento = 0;
-                if (descuento_porcentaje != 0) {
-                    descuento = (Utilidades.truncarDecimal(importes[i], 3)
-                            * Utilidades.truncarDecimal(descuento_porcentaje, 3)) / 100;
+                if (descuento_porcentaje != 0) {                    
+                    descuento = (importes[i] * descuento_porcentaje) / 100;
                 }
-                //recargo
                 double recargo = 0;
-                if (recargo_porcentaje != 0) {
-                    recargo = (Utilidades.truncarDecimal(importes[i], 3)
-                            * Utilidades.truncarDecimal(recargo_porcentaje, 3)) / 100;
+                if (recargo_porcentaje != 0) {                    
+                    recargo = (importes[i] * recargo_porcentaje) / 100;
                 }
                 double iva_neto = 0;
-                if (ivaPorcentaje[i] == iva_porcentaje) {
-                    iva_neto = ((Utilidades.truncarDecimal(importes[i], 3)
-                            + Utilidades.truncarDecimal(recargo, 3)
-                            - Utilidades.truncarDecimal(descuento, 3)) * ivaPorcentaje[i]) / 100;
+                if (ivaPorcentaje[i] == iva_porcentaje) {                    
+                    iva_neto = ((importes[i] + recargo - descuento) * ivaPorcentaje[i]) / 100;
                 }
                 resultado += iva_neto;
             }
         }
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
@@ -620,14 +615,12 @@ public class FacturaServiceImpl implements IFacturaService {
         if (tipoDeFactura.charAt(tipoDeFactura.length() - 1) == 'A') {
             int longitudImportes = importes.length;
             int longitudImpuestos = impuestoPorcentajes.length;
-            if(longitudImportes == longitudImpuestos) {
-                for(int i = 0; i < longitudImportes; i++) {
-                //descuento
+            if (longitudImportes == longitudImpuestos) {
+                for (int i = 0; i < longitudImportes; i++) {                
                 double descuento = 0;
                 if (descuento_porcentaje != 0) {
                     descuento = (importes[i] * descuento_porcentaje) / 100;
                 }
-                //recargo
                 double recargo = 0;
                 if (recargo_porcentaje != 0) {
                     recargo = (importes[i]  * recargo_porcentaje) / 100;
@@ -637,7 +630,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 }
             }
         }
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
@@ -646,43 +639,43 @@ public class FacturaServiceImpl implements IFacturaService {
 
         double resultado;
         resultado = (subTotal + recargo_neto - descuento_neto) + iva105_neto + iva21_neto + impInterno_neto;
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularTotalFacturadoVenta(List<FacturaVenta> facturas) {
         double resultado = 0;
         for (FacturaVenta facturaVenta : facturas) {
-            resultado += Utilidades.truncarDecimal(facturaVenta.getTotal(), 3);
+            resultado += facturaVenta.getTotal();
         }
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularTotalFacturadoCompra(List<FacturaCompra> facturas) {
         double resultado = 0;
         for (FacturaCompra FacturaCompra : facturas) {
-            resultado += Utilidades.truncarDecimal(FacturaCompra.getTotal(), 3);
+            resultado += FacturaCompra.getTotal();
         }
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularIVA_Venta(List<FacturaVenta> facturas) {
         double resultado = 0;
         for (FacturaVenta facturaVenta : facturas) {
-            resultado += (Utilidades.truncarDecimal(facturaVenta.getIva_105_neto(), 3) + Utilidades.truncarDecimal(facturaVenta.getIva_21_neto(), 3));
+            resultado += (facturaVenta.getIva_105_neto() + facturaVenta.getIva_21_neto());
         }
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularIVA_Compra(List<FacturaCompra> facturas) {
         double resultado = 0;
         for (FacturaCompra facturaCompra : facturas) {
-            resultado += (Utilidades.truncarDecimal(facturaCompra.getIva_105_neto(), 3) + Utilidades.truncarDecimal(facturaCompra.getIva_21_neto(), 3));
+            resultado += (facturaCompra.getIva_105_neto() + facturaCompra.getIva_21_neto());
         }
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
@@ -691,42 +684,34 @@ public class FacturaServiceImpl implements IFacturaService {
         for (FacturaVenta facturaVenta : facturas) {
             List<RenglonFactura> renglones = this.getRenglonesDeLaFactura(facturaVenta.getId_Factura());
             for (RenglonFactura renglon : renglones) {
-                resultado += Utilidades.truncarDecimal(renglon.getGanancia_neto(), 3) * renglon.getCantidad();
+                resultado += renglon.getGanancia_neto() * renglon.getCantidad();
             }
         }
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularIVA_neto(Movimiento movimiento, Producto producto, double descuento_neto) {
         double resultado = 0;
-
         if (movimiento == Movimiento.COMPRA) {
-            resultado = ((Utilidades.truncarDecimal(producto.getPrecioCosto(), 3) - Utilidades.truncarDecimal(descuento_neto, 3))
-                    * Utilidades.truncarDecimal(producto.getIva_porcentaje(), 3)) / 100;
+            resultado = ((producto.getPrecioCosto() - descuento_neto) * producto.getIva_porcentaje()) / 100;
         }
-
         if (movimiento == Movimiento.VENTA) {
-            resultado = ((Utilidades.truncarDecimal(producto.getPrecioVentaPublico(), 3) - Utilidades.truncarDecimal(descuento_neto, 3))
-                    * producto.getIva_porcentaje()) / 100;
+            resultado = ((producto.getPrecioVentaPublico() - descuento_neto) * producto.getIva_porcentaje()) / 100;
         }
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularImpInterno_neto(Movimiento movimiento, Producto producto, double descuento_neto) {
         double resultado = 0;
-
         if (movimiento == Movimiento.COMPRA) {
-            resultado = ((Utilidades.truncarDecimal(producto.getPrecioCosto(), 3) - Utilidades.truncarDecimal(descuento_neto, 3))
-                    * Utilidades.truncarDecimal(producto.getImpuestoInterno_porcentaje(), 3)) / 100;
+            resultado = ((producto.getPrecioCosto() - descuento_neto) * producto.getImpuestoInterno_porcentaje()) / 100;
         }
-
         if (movimiento == Movimiento.VENTA) {
-            resultado = ((Utilidades.truncarDecimal(producto.getPrecioVentaPublico(), 3) - Utilidades.truncarDecimal(descuento_neto, 3))
-                    * producto.getImpuestoInterno_porcentaje()) / 100;
+            resultado = ((producto.getPrecioVentaPublico() - descuento_neto) * producto.getImpuestoInterno_porcentaje()) / 100;
         }
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
@@ -734,37 +719,30 @@ public class FacturaServiceImpl implements IFacturaService {
         double iva_resultado;
         double impInterno_resultado;
         double resultado = 0;
-
         if (movimiento == Movimiento.COMPRA) {
             if (tipoDeFactura.equals("Factura A") || tipoDeFactura.equals("Factura X")) {
-                resultado = Utilidades.truncarDecimal(producto.getPrecioCosto(), 3);
+                resultado = producto.getPrecioCosto();
             } else {
                 iva_resultado = (producto.getPrecioCosto() * producto.getIva_porcentaje()) / 100;
                 impInterno_resultado = (producto.getPrecioCosto() * producto.getImpuestoInterno_porcentaje()) / 100;
-                resultado = Utilidades.truncarDecimal(producto.getPrecioCosto(), 3)
-                        + Utilidades.truncarDecimal(iva_resultado, 3)
-                        + Utilidades.truncarDecimal(impInterno_resultado, 3);
+                resultado = producto.getPrecioCosto() + iva_resultado + impInterno_resultado;
             }
         }
-
         if (movimiento == Movimiento.VENTA) {
             if (tipoDeFactura.equals("Factura A") || tipoDeFactura.equals("Factura X")) {
-                resultado = Utilidades.truncarDecimal(producto.getPrecioVentaPublico(), 3);
+                resultado = producto.getPrecioVentaPublico();
             } else if (tipoDeFactura.equals("Factura Y")) {
-                iva_resultado = (Utilidades.truncarDecimal(producto.getPrecioVentaPublico(), 3)
-                        * Utilidades.truncarDecimal(producto.getIva_porcentaje(), 3) / 2) / 100;
-                impInterno_resultado = (Utilidades.truncarDecimal(producto.getPrecioVentaPublico(), 3)
-                        * Utilidades.truncarDecimal(producto.getImpuestoInterno_porcentaje(), 3)) / 100;
-                resultado = Utilidades.truncarDecimal(producto.getPrecioVentaPublico(), 3)
-                        + Utilidades.truncarDecimal(iva_resultado, 3) + Utilidades.truncarDecimal(impInterno_resultado, 3);
+                iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje() / 2) / 100;
+                impInterno_resultado = (producto.getPrecioVentaPublico() * producto.getImpuestoInterno_porcentaje()) / 100;
+                resultado = producto.getPrecioVentaPublico() + iva_resultado + impInterno_resultado;
             } else {
-                resultado = Utilidades.truncarDecimal(producto.getPrecioLista(), 3);
+                resultado = producto.getPrecioLista();
             }
         }
         if (movimiento == Movimiento.PEDIDO) {
-            resultado = Utilidades.truncarDecimal(producto.getPrecioLista(), 3);
+            resultado = producto.getPrecioLista();
         }
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
@@ -783,8 +761,8 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     public double calcularImporte(double cantidad, double precioUnitario, double descuento_neto) {
-        double resultado = (Utilidades.truncarDecimal(precioUnitario, 3) - descuento_neto) * cantidad;
-        return Utilidades.truncarDecimal(resultado, 3);
+        double resultado = (precioUnitario - descuento_neto) * cantidad;
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override

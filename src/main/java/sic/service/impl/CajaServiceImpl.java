@@ -29,7 +29,6 @@ import sic.modelo.Gasto;
 import sic.modelo.Pago;
 import sic.repository.ICajaRepository;
 import sic.modelo.EstadoCaja;
-import sic.modelo.Usuario;
 import sic.service.BusinessServiceException;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
@@ -55,6 +54,7 @@ public class CajaServiceImpl implements ICajaService {
     private final IUsuarioService usuarioService;
     private final FormatterFechaHora formatoHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_HORA_INTERNACIONAL);
     private static final Logger LOGGER = Logger.getLogger(CajaServiceImpl.class.getPackage().getName());
+    private static final int CANTIDAD_DECIMALES_TRUNCAMIENTO = 2;
 
     @Autowired
     public CajaServiceImpl(ICajaRepository cajaRepository, IFormaDePagoService formaDePagoService,
@@ -224,12 +224,10 @@ public class CajaServiceImpl implements ICajaService {
     }
 
     @Override
-    public byte[] getReporteCaja(Caja caja, Long idEmpresa) {
-        
+    public byte[] getReporteCaja(Caja caja, Long idEmpresa) {        
         Empresa empresa = empresaService.getEmpresaPorId(idEmpresa);
         List<String> dataSource = new ArrayList<>();
         dataSource.add("Saldo Apertura-" + String.valueOf(FormatterNumero.formatConRedondeo(caja.getSaldoInicial())));
-
         List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(empresa);
         double totalPorCorte = caja.getSaldoInicial();
         for (FormaDePago formaDePago : formasDePago) {
@@ -251,7 +249,6 @@ public class CajaServiceImpl implements ICajaService {
         }
         dataSource.add("Total hasta la hora de control:-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) totalPorCorte)));
         dataSource.add("..........................Corte a las: " + formatoHora.format(caja.getFechaCorteInforme()) + "...........................-");
-
         Date fechaReporte = new Date();
         if (caja.getFechaCierre() != null) {
             fechaReporte = caja.getFechaCierre();
@@ -265,16 +262,12 @@ public class CajaServiceImpl implements ICajaService {
             totalFormaDePago = this.calcularTotalPagos(pagos) - this.calcularTotalGastos(gastos);
             if (totalFormaDePago > 0) {
                 if (formaDePago.isAfectaCaja()) {
-                    dataSource.add(formaDePago.getNombre() + " (Afecta Caja)"
-                            + "-" + Utilidades.truncarDecimal(totalFormaDePago,2));
+                    dataSource.add(formaDePago.getNombre() + " (Afecta Caja)" + "-" + Utilidades.truncarDecimal(totalFormaDePago, CANTIDAD_DECIMALES_TRUNCAMIENTO));
                 } else {
-                    dataSource.add(formaDePago.getNombre() + " (No afecta Caja)"
-                            + "-" + Utilidades.truncarDecimal(totalFormaDePago,2));
+                    dataSource.add(formaDePago.getNombre() + " (No afecta Caja)" + "-" + Utilidades.truncarDecimal(totalFormaDePago, CANTIDAD_DECIMALES_TRUNCAMIENTO));
                 }
             }
         }
-        
-        
         ClassLoader classLoader = PedidoServiceImpl.class.getClassLoader();
         InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/Caja.jasper");
         Map params = new HashMap();

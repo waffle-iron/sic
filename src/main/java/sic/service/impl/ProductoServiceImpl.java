@@ -43,6 +43,7 @@ public class ProductoServiceImpl implements IProductoService {
     private final IProductoRepository productoRepository;
     private final IEmpresaService empresaService;    
     private static final Logger LOGGER = Logger.getLogger(ProductoServiceImpl.class.getPackage().getName());
+    private static final int CANTIDAD_DECIMALES_TRUNCAMIENTO = 2;
 
     @Autowired
     public ProductoServiceImpl(IProductoRepository productoRepository, IEmpresaService empresaService) {
@@ -344,31 +345,31 @@ public class ProductoServiceImpl implements IProductoService {
             return 0;
         }
         double resultado = ((PVP - precioCosto) / precioCosto) * 100;
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularGanancia_Neto(double precioCosto, double ganancia_porcentaje) {
         double resultado = (precioCosto * ganancia_porcentaje) / 100;
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularPVP(double precioCosto, double ganancia_porcentaje) {
         double resultado = (precioCosto * (ganancia_porcentaje / 100)) + precioCosto;
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularIVA_Neto(double pvp, double iva_porcentaje) {
         double resultado = (pvp * iva_porcentaje) / 100;
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularImpInterno_Neto(double pvp, double impInterno_porcentaje) {
         double resultado = (pvp * impInterno_porcentaje) / 100;
-        return Utilidades.truncarDecimal(resultado, 3);
+        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
@@ -376,7 +377,7 @@ public class ProductoServiceImpl implements IProductoService {
         double resulIVA = PVP * (iva_porcentaje / 100);
         double resultImpInterno = PVP * (impInterno_porcentaje / 100);
         double PVPConImpuestos = PVP + resulIVA + resultImpInterno;
-        return Utilidades.truncarDecimal(PVPConImpuestos, 3);
+        return Utilidades.truncarDecimal(PVPConImpuestos, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
