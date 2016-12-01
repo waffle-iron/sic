@@ -470,7 +470,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 return f1.getFecha().compareTo(f2.getFecha());
             }
         };
-
+        
         facturas.sort(comparador);
         return facturas;
     }
