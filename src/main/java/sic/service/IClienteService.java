@@ -1,5 +1,6 @@
 package sic.service;
 
+import sic.modelo.TipoDeOperacion;
 import java.util.List;
 import sic.modelo.BusquedaClienteCriteria;
 import sic.modelo.Cliente;
@@ -8,12 +9,12 @@ import sic.modelo.Empresa;
 public interface IClienteService {
 
     void actualizar(Cliente cliente);
-
+        
     List<Cliente> buscarClientes(BusquedaClienteCriteria criteria);
 
-    void eliminar(Cliente cliente);
+    void eliminar(Long idCliente);
 
-    Cliente getClientePorId(long id_Cliente);
+    Cliente getClientePorId(Long id_Cliente);
 
     Cliente getClientePorIdFiscal(String idFiscal, Empresa empresa);
 
@@ -25,7 +26,7 @@ public interface IClienteService {
 
     List<Cliente> getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(String criteria, Empresa empresa);
 
-    void guardar(Cliente cliente);
+    Cliente guardar(Cliente cliente);
 
     void setClientePredeterminado(Cliente cliente);
 

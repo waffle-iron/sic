@@ -7,7 +7,6 @@ import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import sic.modelo.BusquedaPedidoCriteria;
 import sic.modelo.Pedido;
-import sic.modelo.RenglonPedido;
 import sic.repository.IPedidoRepository;
 import sic.util.FormatterFechaHora;
 
@@ -18,14 +17,17 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
     private EntityManager em;
 
     @Override
-    public List<RenglonPedido> getRenglonesDelPedido(long nroPedido) {
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarRenglonesDelPedido", Pedido.class);
-        typedQuery.setParameter("nroPedido", nroPedido);
-        List<Pedido> paraObtenerRenglones = typedQuery.getResultList();
-        em.close();
-        return paraObtenerRenglones.get(0).getRenglones();
+    public Pedido getPedidoPorId(Long id) {
+        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorId", Pedido.class);
+        typedQuery.setParameter("id", id);
+        List<Pedido> pedidos = typedQuery.getResultList();
+        if (pedidos.isEmpty()) {
+            return null;
+        } else {
+            return pedidos.get(0);
+        }
     }
-
+    
     @Override
     public List<Pedido> buscarPedidosPorCriteria(BusquedaPedidoCriteria criteria) {
         String query = "SELECT p FROM Pedido p WHERE p.empresa = :empresa AND p.eliminado = false";
@@ -54,7 +56,6 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
         List<Pedido> pedidos = typedQuery.getResultList();
-        em.close();
         return pedidos;
     }
 
@@ -63,7 +64,6 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
         TypedQuery<Long> typedQuery = em.createNamedQuery("Pedido.buscarMayorNroPedido", Long.class);
         typedQuery.setParameter("idEmpresa", idEmpresa);
         Long resultado = typedQuery.getSingleResult();
-        em.close();
         if (resultado == null) {
             return 0;
         } else {
@@ -72,8 +72,10 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
     }
 
     @Override
-    public void guardar(Pedido pedido) {
-        em.persist(em.merge(pedido));
+    public Pedido guardar(Pedido pedido) {
+        pedido = em.merge(pedido);
+        em.persist(pedido);
+        return pedido;
     }
 
     @Override
@@ -82,7 +84,6 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
         typedQuery.setParameter("idEmpresa", idEmpresa);
         typedQuery.setParameter("nroPedido", nroPedido);
         List<Pedido> pedidos = typedQuery.getResultList();
-        em.close();
         if (pedidos.isEmpty()) {
             return null;
         } else {
@@ -95,30 +96,4 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
         em.merge(pedido);
     }
 
-    @Override
-    public Pedido getPedidoPorNumeroConFacturas(long nroPedido) {
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroConFacturas", Pedido.class);
-        typedQuery.setParameter("nroPedido", nroPedido);
-        List<Pedido> pedidos = typedQuery.getResultList();
-        em.close();
-        if (pedidos.isEmpty()) {
-            return null;
-        } else {
-            return pedidos.get(0);
-        }
-    }
-
-    @Override
-    public Pedido getPedidoPorNumeroConRenglones(long nroPedido, long idEmpresa) {
-        TypedQuery<Pedido> typedQuery = em.createNamedQuery("Pedido.buscarPorNumeroConRenglones", Pedido.class);
-        typedQuery.setParameter("nroPedido", nroPedido);
-        typedQuery.setParameter("idEmpresa", idEmpresa);
-        List<Pedido> pedidos = typedQuery.getResultList();
-        em.close();
-        if (pedidos.isEmpty()) {
-            return null;
-        } else {
-            return pedidos.get(0);
-        }
-    }
 }

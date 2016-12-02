@@ -2,15 +2,14 @@ package sic.service;
 
 import java.util.List;
 import sic.modelo.Empresa;
-import sic.modelo.EmpresaActiva;
 
 public interface IEmpresaService {
+    
+    Empresa getEmpresaPorId(Long id_Empresa);
 
     void actualizar(Empresa empresa);
 
-    void eliminar(Empresa empresa);
-
-    EmpresaActiva getEmpresaActiva();
+    void eliminar(Long idEmpresa);    
 
     Empresa getEmpresaPorCUIP(long cuip);
 
@@ -18,8 +17,5 @@ public interface IEmpresaService {
 
     List<Empresa> getEmpresas();
 
-    void guardar(Empresa empresa);
-
-    void setEmpresaActiva(Empresa empresa);
-    
+    Empresa guardar(Empresa empresa);    
 }

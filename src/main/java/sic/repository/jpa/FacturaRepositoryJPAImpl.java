@@ -11,7 +11,6 @@ import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
-import sic.modelo.RenglonFactura;
 import sic.repository.IFacturaRepository;
 import sic.util.FormatterFechaHora;
 
@@ -22,11 +21,15 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     private EntityManager em;
 
     @Override
-    public List<RenglonFactura> getRenglonesDeLaFactura(Factura factura) {
-        TypedQuery<RenglonFactura> typedQuery = em.createNamedQuery("RenglonFactura.getRenglonesDeLaFactura", RenglonFactura.class);
-        typedQuery.setParameter("factura", factura);
-        List<RenglonFactura> renglones = typedQuery.getResultList();
-        return renglones;
+    public Factura getFacturaPorId(Long id_Factura) {
+        TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.buscarPorId", Factura.class);
+        typedQuery.setParameter("id", id_Factura);
+        List<Factura> facturas = typedQuery.getResultList();
+        if (facturas.isEmpty()) {
+            return null;
+        } else {
+            return facturas.get(0);
+        }
     }
 
     @Override
@@ -57,6 +60,18 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         }
     }
 
+    @Override
+    public List<Factura> getFacturasDelPedido(Long idPedido) {
+        TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.relacionadasConPedido", Factura.class);
+        typedQuery.setParameter("id", idPedido);
+        List<Factura> facturas = typedQuery.getResultList();
+        if (facturas.isEmpty()) {
+            return null;
+        } else {
+            return facturas;
+        }
+    }
+    
     @Override
     public List<FacturaCompra> buscarFacturasCompra(BusquedaFacturaCompraCriteria criteria) {
         String query = "SELECT f FROM FacturaCompra f WHERE f.empresa = :empresa AND f.eliminada = false";
@@ -119,7 +134,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         //Pedido
         if (criteria.isBuscarPorPedido() == true) {
             query += " AND f.pedido.nroPedido = " + criteria.getNroPedido();
-        }
+        }    
         //Inpagas
         if (criteria.isBuscaSoloImpagas() == true) {
             query += " AND f.pagada = false";
@@ -154,8 +169,10 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
 
     @Override
     @Transactional
-    public void guardar(Factura factura) {;
-        em.persist(em.merge(factura));
+    public Factura guardar(Factura factura) {
+        factura = em.merge(factura);
+        em.persist(factura);
+        return factura;
     }
 
     @Override

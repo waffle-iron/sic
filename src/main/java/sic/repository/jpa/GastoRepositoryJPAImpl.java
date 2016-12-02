@@ -15,19 +15,33 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
 
     @PersistenceContext
     private EntityManager em;
-
+    
     @Override
-    public void guardar(Gasto gasto) {
-        em.persist(em.merge(gasto));
+    public Gasto getGastoPorId(Long id_Gasto) {
+        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastoPorId", Gasto.class);
+        typedQuery.setParameter("id_Gasto", id_Gasto);
+        List<Gasto> gastos = typedQuery.getResultList();
+        if (gastos.isEmpty()) {
+            return null;
+        } else {
+            return gastos.get(0);
+        }
     }
 
     @Override
-    public List<Object> getGastosPorFecha(long id_Empresa, Date desde, Date hasta) {
-        TypedQuery<Object> typedQuery = (TypedQuery<Object>) em.createNamedQuery("Gasto.getGastosSinArqueoPorFecha");
+    public Gasto guardar(Gasto gasto) {
+        gasto = em.merge(gasto);
+        em.persist(gasto);
+        return gasto;
+    }
+
+    @Override
+    public List<Gasto> getGastosPorFecha(long id_Empresa, Date desde, Date hasta) {
+        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastosSinArqueoPorFecha", Gasto.class);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
-        List<Object> gastos = typedQuery.getResultList();
+        List<Gasto> gastos = typedQuery.getResultList();
         if (gastos.isEmpty()) {
             return null;
         } else {
@@ -36,13 +50,13 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
     }
 
     @Override
-    public List<Object> getGastosPorFechaYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
-        TypedQuery<Object> typedQuery = (TypedQuery<Object>) em.createNamedQuery("Gasto.getGastosSinArqueoPorFormaDePagoYFecha");
+    public List<Gasto> getGastosPorFechaYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
+        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastosSinArqueoPorFormaDePagoYFecha", Gasto.class);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         typedQuery.setParameter("id_FormaDePago", id_FormaDePago);
         typedQuery.setParameter("desde", desde);
         typedQuery.setParameter("hasta", hasta);
-        List<Object> gastos = typedQuery.getResultList();
+        List<Gasto> gastos = typedQuery.getResultList();
         return gastos;
     }
 
@@ -52,9 +66,22 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
     }
 
     @Override
-    public Gasto getCajaPorID(long id_Gasto, long id_Empresa) {
-        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastoPorId", Gasto.class);
+    public Gasto getGastoPorIdYEmpresa(long id_Gasto, long id_Empresa) {
+        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastoPorIdYEmpresa", Gasto.class);
         typedQuery.setParameter("id_Gasto", id_Gasto);
+        typedQuery.setParameter("id_Empresa", id_Empresa);
+        List<Gasto> gastos = typedQuery.getResultList();
+        if (gastos.isEmpty()) {
+            return null;
+        } else {
+            return gastos.get(0);
+        }
+    }
+    
+    @Override
+    public Gasto getGastoPorNroYEmpresa(long nroGasto, long id_Empresa) {
+        TypedQuery<Gasto> typedQuery = em.createNamedQuery("Gasto.getGastoPorNroYEmpresa", Gasto.class);
+        typedQuery.setParameter("nroGasto", nroGasto);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         List<Gasto> gastos = typedQuery.getResultList();
         if (gastos.isEmpty()) {
@@ -65,10 +92,10 @@ public class GastoRepositoryJPAImpl implements IGastoRepository {
     }
 
     @Override
-    public int getUltimoNumeroDeGasto(long idEmpresa) {
-        TypedQuery<Integer> typedQuery = em.createNamedQuery("Gasto.getUltimoNumeroDeGasto", Integer.class);
+    public long getUltimoNumeroDeGasto(long idEmpresa) {
+        TypedQuery<Long> typedQuery = em.createNamedQuery("Gasto.getUltimoNumeroDeGasto", Long.class);
         typedQuery.setParameter("id_Empresa", idEmpresa);
-        Integer ultimoNumeroDeGasto = typedQuery.getSingleResult();
+        Long ultimoNumeroDeGasto = typedQuery.getSingleResult();
         if (ultimoNumeroDeGasto == null) {
             return 0;
         } else {

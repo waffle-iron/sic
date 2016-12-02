@@ -24,6 +24,18 @@ public class MedidaRepositoryJPAImpl implements IMedidaRepository {
     }
 
     @Override
+    public Medida getMedidaPorId(Long id_Medida) {
+        TypedQuery<Medida> typedQuery = em.createNamedQuery("Medida.buscarPorId", Medida.class);
+        typedQuery.setParameter("id", id_Medida);
+        List<Medida> medidas = typedQuery.getResultList();
+        if (medidas.isEmpty()) {
+            return null;
+        } else {
+            return medidas.get(0);
+        }
+    }
+    
+    @Override
     public Medida getMedidaPorNombre(String nombreMedida, Empresa empresa) {
         TypedQuery<Medida> typedQuery = em.createNamedQuery("Medida.buscarPorNombre", Medida.class);
         typedQuery.setParameter("nombre", nombreMedida);
@@ -37,8 +49,10 @@ public class MedidaRepositoryJPAImpl implements IMedidaRepository {
     }
 
     @Override
-    public void guardar(Medida medida) {
-        em.persist(em.merge(medida));
+    public Medida guardar(Medida medida) {
+        medida = em.merge(medida);
+        em.persist(medida);
+        return medida;
     }
 
     @Override

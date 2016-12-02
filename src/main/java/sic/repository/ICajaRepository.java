@@ -10,8 +10,12 @@ public interface ICajaRepository {
     void actualizar(Caja caja);
 
     Caja getCajaPorFormaDePago(long idEmpresa, long idFormaDePago);
+    
+    Caja getCajaPorId(Long id);
 
-    Caja getCajaPorID(long id_Caja, long id_Empresa);
+    Caja getCajaPorIdYEmpresa(long id_Caja, long id_Empresa);
+    
+    Caja getCajaPorNroYEmpresa(int nroCaja, long id_Empresa);
 
     List<Caja> getCajas(long id_Empresa, Date desde, Date hasta);
 
@@ -21,6 +25,6 @@ public interface ICajaRepository {
 
     int getUltimoNumeroDeCaja(long idEmpresa);
 
-    void guardar(Caja caja);
+    Caja guardar(Caja caja);
 
 }

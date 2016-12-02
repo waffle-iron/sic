@@ -2,15 +2,14 @@ package sic.service;
 
 import java.util.List;
 import sic.modelo.Usuario;
-import sic.modelo.UsuarioActivo;
 
 public interface IUsuarioService {
+   
+    Usuario getUsuarioPorId(Long idUsuario);
 
     void actualizar(Usuario usuario);
 
-    void eliminar(Usuario usuario);
-
-    UsuarioActivo getUsuarioActivo();
+    void eliminar(long idUsuario);
 
     Usuario getUsuarioPorNombre(String nombre);
 
@@ -20,10 +19,6 @@ public interface IUsuarioService {
 
     List<Usuario> getUsuariosAdministradores();
 
-    void guardar(Usuario usuario);
-
-    void setUsuarioActivo(Usuario usuario);
-
-    Usuario validarUsuario(String nombre, String password);
+    Usuario guardar(Usuario usuario);
     
 }

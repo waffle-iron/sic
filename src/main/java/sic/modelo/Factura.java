@@ -1,5 +1,12 @@
 package sic.modelo;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -12,6 +19,8 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -21,9 +30,23 @@ import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "factura")
+@NamedQueries({
+    @NamedQuery(name = "Factura.buscarPorId",
+            query = "SELECT f FROM Factura f "
+                    + "WHERE f.eliminada = false AND f.id_Factura = :id"),
+    @NamedQuery(name = "Factura.relacionadasConPedido",
+            query = "SELECT f FROM Factura f "
+                    + "WHERE f.eliminada = false AND f.pedido.id_Pedido = :id")
+})
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @EqualsAndHashCode(of = {"fecha", "tipoFactura", "numSerie", "numFactura", "empresa"})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Factura")
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({
+   @Type(value = FacturaCompra.class),
+   @Type(value = FacturaVenta.class),    
+})
 public abstract class Factura implements Serializable {
 
     @Id
@@ -41,18 +64,25 @@ public abstract class Factura implements Serializable {
 
     private long numFactura;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura")
-    private List<Pago> pagos;
-
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaVencimiento;
+    
+    @ManyToOne
+    @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
+    private Pedido pedido;
 
     @ManyToOne
     @JoinColumn(name = "id_Transportista", referencedColumnName = "id_Transportista")
     private Transportista transportista;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "factura")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_Factura")
+    @JsonProperty(access = Access.WRITE_ONLY)
     private List<RenglonFactura> renglones;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "factura")    
+    @JsonProperty(access = Access.WRITE_ONLY)
+    private List<Pago> pagos;
 
     private double subTotal;
     private double recargo_porcentaje;
@@ -75,9 +105,5 @@ public abstract class Factura implements Serializable {
     private Empresa empresa;
 
     private boolean eliminada;
-
-    @ManyToOne
-    @JoinColumn(name = "id_Pedido", referencedColumnName = "id_Pedido")
-    private Pedido pedido;
-
+   
 }

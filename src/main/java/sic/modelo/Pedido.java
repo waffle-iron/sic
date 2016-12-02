@@ -1,5 +1,9 @@
 package sic.modelo;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -20,32 +24,25 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import sic.service.EstadoPedido;
+import lombok.ToString;
 
 @Entity
 @Table(name = "pedido")
 @NamedQueries({
     @NamedQuery(name = "Pedido.buscarMayorNroPedido",
             query = "SELECT MAX(p.nroPedido) FROM Pedido p "
-                    + "WHERE p.empresa.id_Empresa = :idEmpresa"),
-    @NamedQuery(name = "Pedido.buscarRenglonesDelPedido",
-            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones "
-                    + "WHERE p.nroPedido = :nroPedido"),
+                    + "WHERE p.empresa.id_Empresa = :idEmpresa AND p.eliminado = false"),
     @NamedQuery(name = "Pedido.buscarPorId",
             query = "SELECT p FROM Pedido p "
-                    + "WHERE p.id_Pedido = :id"),
+                    + "WHERE p.id_Pedido = :id AND p.eliminado = false"),
     @NamedQuery(name = "Pedido.buscarPorNumero",
             query = "SELECT p FROM Pedido p "
-                    + "WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa"),
-    @NamedQuery(name = "Pedido.buscarPorNumeroConFacturas",
-            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.facturas "
-                    + "WHERE p.nroPedido = :nroPedido"),
-    @NamedQuery(name = "Pedido.buscarPorNumeroConRenglones",
-            query = "SELECT p FROM Pedido p LEFT JOIN FETCH p.renglones "
-                    + "WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa")
+                    + "WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa AND p.eliminado = false")
 })
 @Data
+@ToString(exclude = {"facturas", "renglones"})
 @EqualsAndHashCode(of = {"nroPedido", "empresa"})
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pedido")
 public class Pedido implements Serializable {
 
     @Id
@@ -79,9 +76,12 @@ public class Pedido implements Serializable {
     private Usuario usuario;
 
     @OneToMany(mappedBy = "pedido")
+    @JsonProperty(access = Access.WRITE_ONLY)
     private List<Factura> facturas;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy = "pedido", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "id_Pedido")
+    @JsonProperty(access = Access.WRITE_ONLY)
     private List<RenglonPedido> renglones;
 
     private double totalEstimado;

@@ -7,7 +7,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import sic.modelo.Factura;
 import sic.modelo.Pago;
 import sic.repository.IPagoRepository;
 
@@ -18,13 +17,25 @@ public class PagoRepositoryJPAImpl implements IPagoRepository {
     private EntityManager em;
 
     @Override
-    public List<Pago> getPagosDeLaFactura(Factura factura) {
+    public List<Pago> getPagosDeLaFactura(long idFactura) {
         TypedQuery<Pago> typedQuery = em.createNamedQuery("Pago.buscarPorFactura", Pago.class);
-        typedQuery.setParameter("factura", factura);
+        typedQuery.setParameter("idFactura", idFactura);
         List<Pago> pagosFacturaCompra = typedQuery.getResultList();
         return pagosFacturaCompra;
     }
 
+    @Override
+    public Pago getPagoPorId(long id_Pago) {
+        TypedQuery<Pago> typedQuery = em.createNamedQuery("Pago.buscarPorId", Pago.class);
+        typedQuery.setParameter("id", id_Pago);
+        List<Pago> pagos = typedQuery.getResultList();
+         if (pagos.isEmpty()) {
+            return null;
+        } else {
+            return pagos.get(0);
+        }
+    }
+    
     @Override
     public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
         TypedQuery<Pago> typedQuery = em.createNamedQuery("Pago.buscarPagosEntreFechasYFormaDePago", Pago.class);
@@ -35,10 +46,26 @@ public class PagoRepositoryJPAImpl implements IPagoRepository {
         List<Pago> Pagos = typedQuery.getResultList();
         return Pagos;
     }
+    
+    
+    @Override
+    public long getMayorNroPago(long idEmpresa) {
+        TypedQuery<Long> typedQuery = em.createNamedQuery("Pago.buscarMayorNroPago", Long.class);
+        typedQuery.setParameter("idEmpresa", idEmpresa);
+        Long resultado = typedQuery.getSingleResult();
+        if (resultado == null) {
+            return 0;
+        } else {
+            return resultado;
+        }
+    }
+
     @Override
     @Transactional
-    public void guardar(Pago pago) {
-        em.persist(em.merge(pago));
+    public Pago guardar(Pago pago) {
+        pago = em.merge(pago);
+        em.persist(pago);
+        return pago;
     }
 
     @Override

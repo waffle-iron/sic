@@ -4,6 +4,8 @@ import java.util.List;
 import sic.modelo.Empresa;
 
 public interface IEmpresaRepository {
+    
+    Empresa getEmpresaPorId(Long id_Empresa);
 
     void actualizar(Empresa empresa);
 
@@ -13,6 +15,6 @@ public interface IEmpresaRepository {
 
     List<Empresa> getEmpresas();
 
-    void guardar(Empresa empresa);
+    Empresa guardar(Empresa empresa);
     
 }

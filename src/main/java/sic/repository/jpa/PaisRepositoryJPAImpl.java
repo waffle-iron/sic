@@ -22,6 +22,18 @@ public class PaisRepositoryJPAImpl implements IPaisRepository {
     }
 
     @Override
+    public Pais getPaisPorId(Long id_Pais) {
+        TypedQuery<Pais> typedQuery = em.createNamedQuery("Pais.buscarPorId", Pais.class);
+        typedQuery.setParameter("id", id_Pais);
+        List<Pais> paises = typedQuery.getResultList();
+        if (paises.isEmpty()) {
+            return null;
+        } else {
+            return paises.get(0);
+        }
+    }
+
+    @Override
     public Pais getPaisPorNombre(String nombre) {
         TypedQuery<Pais> typedQuery = em.createNamedQuery("Pais.buscarPorNombre", Pais.class);
         typedQuery.setParameter("nombre", nombre);
@@ -39,7 +51,9 @@ public class PaisRepositoryJPAImpl implements IPaisRepository {
     }
 
     @Override
-    public void guardar(Pais pais) {
+    public Pais guardar(Pais pais) {
+        pais = em.merge(pais);
         em.persist(pais);
+        return pais;
     }
 }

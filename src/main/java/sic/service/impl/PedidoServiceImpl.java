@@ -8,70 +8,93 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaPedidoCriteria;
+import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.Pedido;
-import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
 import sic.modelo.RenglonPedido;
 import sic.repository.IPedidoRepository;
-import sic.service.EstadoPedido;
-import sic.service.IEmpresaService;
+import sic.modelo.EstadoPedido;
 import sic.service.IFacturaService;
 import sic.service.IPedidoService;
-import sic.service.IProductoService;
+import sic.service.BusinessServiceException;
 import sic.service.ServiceException;
+import sic.modelo.TipoDeOperacion;
 import sic.util.Utilidades;
 
 @Service
 public class PedidoServiceImpl implements IPedidoService {
 
     private final IPedidoRepository pedidoRepository;
-    private final IEmpresaService empresaService;
-    private final IFacturaService facturaService;
-    private final IProductoService productoService;
+    private final IFacturaService facturaService;    
+    private static final Logger LOGGER = Logger.getLogger(PedidoServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public PedidoServiceImpl(IEmpresaService empresaService, IFacturaService facturaService,
-            IPedidoRepository pedidoRepository, IProductoService productoService) {
-        
-        this.empresaService = empresaService;
+    public PedidoServiceImpl(IFacturaService facturaService, IPedidoRepository pedidoRepository) {
         this.facturaService = facturaService;
-        this.pedidoRepository = pedidoRepository;
-        this.productoService = productoService;
+        this.pedidoRepository = pedidoRepository;        
     }
 
-    private void validarPedido(Pedido pedido) {
+    @Override
+    public Pedido getPedidoPorId(Long idPedido) {
+        Pedido pedido = this.pedidoRepository.getPedidoPorId(idPedido);
+        if (pedido == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pedido_no_existente"));
+        }
+        return pedido;
+    }
+    
+    private void validarPedido(TipoDeOperacion operacion, Pedido pedido) {
         //Entrada de Datos
         //Requeridos
         if (pedido.getFecha() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_fecha_vacia"));
-        }
-        if (pedido.getRenglones().isEmpty()) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+        }        
+        if (pedido.getRenglones() == null || pedido.getRenglones().isEmpty()) {  
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_renglones_vacio"));
         }
         if (pedido.getEmpresa() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_empresa_vacia"));
         }
         if (pedido.getUsuario() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_usuario_vacio"));
         }
-        //Duplicados
-        if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) != null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_pedido_duplicado"));
+        //Validar Estado
+        EstadoPedido estado = pedido.getEstado();
+        if ((estado != EstadoPedido.ABIERTO) && (estado != EstadoPedido.ACTIVO) && (estado != EstadoPedido.CERRADO)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaja_estado_no_valido"));
         }
+        if (operacion == TipoDeOperacion.ALTA) {
+            //Duplicados       
+            if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) != null) {
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_pedido_duplicado"));
+            }
+        }
+        if (operacion == TipoDeOperacion.ACTUALIZACION) {
+            //Duplicados       
+            if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) == null) {
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_pedido_no_existente"));
+            }
+        }
+        
     }
 
     private List<Pedido> calcularTotalActualDePedidos(List<Pedido> pedidos) {
@@ -81,20 +104,25 @@ public class PedidoServiceImpl implements IPedidoService {
         return pedidos;
     }
 
-    private Pedido actualizarSubTotalRenglonesPedido(Pedido pedido) {
-        double porcentajeDescuento;
-        for (RenglonPedido renglonPedido : pedido.getRenglones()) {
-            porcentajeDescuento = (1 - (renglonPedido.getDescuento_porcentaje() / 100));
-            renglonPedido.setSubTotal(renglonPedido.getCantidad() * renglonPedido.getProducto().getPrecioLista() * porcentajeDescuento);
-        }
-        return pedido;
+    @Override
+    public void actualizarEstadoPedido(Pedido pedido) {
+        if (pedido != null) {
+           pedido.setEstado(EstadoPedido.ACTIVO);
+           if (this.getFacturasDelPedido(pedido.getId_Pedido()).isEmpty()) {
+               pedido.setEstado(EstadoPedido.ABIERTO);
+           }
+           if (facturaService.getRenglonesPedidoParaFacturar(pedido).isEmpty()) {
+               pedido.setEstado(EstadoPedido.CERRADO);
+           }
+           this.actualizar(pedido);
+       }
     }
 
     @Override
     public Pedido calcularTotalActualDePedido(Pedido pedido) {
         double porcentajeDescuento;
         double totalActual = 0;
-        for (RenglonPedido renglonPedido : pedidoRepository.getRenglonesDelPedido(pedido.getNroPedido())) {
+        for (RenglonPedido renglonPedido : this.getRenglonesDelPedido(pedido.getId_Pedido())) {
             porcentajeDescuento = (1 - (renglonPedido.getDescuento_porcentaje() / 100));
             renglonPedido.setSubTotal((renglonPedido.getProducto().getPrecioLista() * renglonPedido.getCantidad() * porcentajeDescuento));
             totalActual += renglonPedido.getSubTotal();
@@ -104,33 +132,37 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public long calcularNumeroPedido() {
-        return 1 + pedidoRepository.buscarMayorNroPedido(empresaService.getEmpresaActiva().getEmpresa().getId_Empresa());
+    public long calcularNumeroPedido(Empresa empresa) {
+        return 1 + pedidoRepository.buscarMayorNroPedido(empresa.getId_Empresa());
     }
 
     @Override
-    public List<Factura> getFacturasDelPedido(long nroPedido) {
+    public List<Factura> getFacturasDelPedido(long idPedido) {
         List<Factura> facturasSinEliminar = new ArrayList<>();
-        for (Factura factura : pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido).getFacturas()) {
-            if (!factura.isEliminada()) {
-                facturasSinEliminar.add(factura);
-            }
+        List<Factura> facturasDePedido = facturaService.getFacturasDelPedido(idPedido);
+        if (facturasDePedido != null) {
+            facturasDePedido.stream().filter((Factura f) -> !f.isEliminada()).forEach((f) -> {
+                facturasSinEliminar.add(f);
+            });
         }
         return facturasSinEliminar;
     }
 
     @Override
     @Transactional
-    public void guardar(Pedido pedido) {
-        this.validarPedido(pedido);
-        pedidoRepository.guardar(pedido);
+    public Pedido guardar(Pedido pedido) {
+        this.validarPedido(TipoDeOperacion.ALTA , pedido);
+        pedido.setNroPedido(this.calcularNumeroPedido(pedido.getEmpresa()));
+        pedido = pedidoRepository.guardar(pedido);
+        LOGGER.warn("El Pedido " + pedido + " se guardó correctamente.");
+        return pedido;
     }
 
     @Override
     public List<Pedido> buscarConCriteria(BusquedaPedidoCriteria criteria) {
         //Fecha
         if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_fechas_busqueda_invalidas"));
         }
         if (criteria.isBuscaPorFecha() == true) {
@@ -146,14 +178,19 @@ public class PedidoServiceImpl implements IPedidoService {
             cal.set(Calendar.SECOND, 59);
             criteria.setFechaHasta(cal.getTime());
         }
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
         //Cliente
         if (criteria.isBuscaCliente() == true && criteria.getCliente() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_cliente_vacio_razonSocial"));
         }
         //Usuario
         if (criteria.isBuscaUsuario() == true && criteria.getUsuario() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_vacio_nombre"));
         }
         List<Pedido> pedidos = pedidoRepository.buscarPedidosPorCriteria(criteria);
@@ -163,27 +200,23 @@ public class PedidoServiceImpl implements IPedidoService {
     @Override
     @Transactional
     public void actualizar(Pedido pedido) {
+        this.validarPedido(TipoDeOperacion.ACTUALIZACION , pedido);
         pedidoRepository.actualizar(pedido);
     }
 
     @Override
-    public Pedido getPedidoPorNumero(long nroPedido, long idEmpresa) {
+    public Pedido getPedidoPorNumeroYEmpresa(long nroPedido, long idEmpresa) {
         return pedidoRepository.getPedidoPorNro(nroPedido, idEmpresa);
     }
 
     @Override
-    public Pedido getPedidoPorNumeroConFacturas(long nroPedido) {
-        return pedidoRepository.getPedidoPorNumeroConFacturas(nroPedido);
-    }
-
-    @Override
-    public Pedido getPedidoPorNumeroConRenglones(long nroPedido, long idEmpresa) {
-        return pedidoRepository.getPedidoPorNumeroConRenglones(nroPedido, idEmpresa);
-    }
-
-    @Override
     @Transactional
-    public boolean eliminar(Pedido pedido) {
+    public boolean eliminar(long idPedido) {
+        Pedido pedido = this.getPedidoPorId(idPedido);
+        if (pedido == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pedido_no_existente"));
+        }
         if (pedido.getEstado() == EstadoPedido.ABIERTO) {
             pedido.setEliminado(true);
             pedidoRepository.actualizar(pedido);
@@ -192,13 +225,8 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public List<RenglonPedido> getRenglonesDelPedido(long nroPedido) {
-        return pedidoRepository.getRenglonesDelPedido(nroPedido);
-    }
-
-    @Override
-    public Pedido getPedidoPorNumeroConRenglonesActualizandoSubtotales(long nroPedido, long idEmpresa) {
-        return this.actualizarSubTotalRenglonesPedido(this.getPedidoPorNumeroConRenglones(nroPedido, idEmpresa));
+    public List<RenglonPedido> getRenglonesDelPedido(Long idPedido) {       
+        return this.getPedidoPorId(idPedido).getRenglones();
     }
 
     @Override
@@ -208,7 +236,7 @@ public class PedidoServiceImpl implements IPedidoService {
         HashMap<Long, RenglonFactura> listaRenglonesUnificados = new HashMap<>();
         if (!facturas.isEmpty()) {
             for (Factura factura : facturas) {
-                renglonesDeFacturas.addAll(facturaService.getRenglonesDeLaFactura(factura));
+                renglonesDeFacturas.addAll(factura.getRenglones());
             }
             for (RenglonFactura renglon : renglonesDeFacturas) {
                 if (listaRenglonesUnificados.containsKey(renglon.getId_ProductoItem())) {
@@ -224,36 +252,20 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public JasperPrint getReportePedido(Pedido pedido) throws JRException {
+    public byte[] getReportePedido(Pedido pedido) {
         ClassLoader classLoader = PedidoServiceImpl.class.getClassLoader();
         InputStream isFileReport = classLoader.getResourceAsStream("sic/vista/reportes/Pedido.jasper");
         Map params = new HashMap();
         params.put("pedido", pedido);
         params.put("logo", Utilidades.convertirByteArrayIntoImage(pedido.getEmpresa().getLogo()));
-        List<RenglonPedido> renglones = this.getRenglonesDelPedido(pedido.getNroPedido());
+        List<RenglonPedido> renglones = this.getRenglonesDelPedido(pedido.getId_Pedido());
         JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(renglones);
-        return JasperFillManager.fillReport(isFileReport, params, ds);
-    }
-
-    @Override
-    public RenglonPedido convertirRenglonFacturaARenglonPedido(RenglonFactura renglonFactura, Pedido pedido) {
-        RenglonPedido nuevoRenglon = new RenglonPedido();
-        nuevoRenglon.setCantidad(renglonFactura.getCantidad());
-        nuevoRenglon.setPedido(pedido);
-        nuevoRenglon.setDescuento_porcentaje(renglonFactura.getDescuento_porcentaje());
-        nuevoRenglon.setDescuento_neto(renglonFactura.getDescuento_neto());
-        Producto producto = productoService.getProductoPorId(renglonFactura.getId_ProductoItem());
-        nuevoRenglon.setProducto(producto);
-        nuevoRenglon.setSubTotal(renglonFactura.getImporte());
-        return nuevoRenglon;
-    }
-
-    @Override
-    public List<RenglonPedido> convertirRenglonesFacturaARenglonesPedido(List<RenglonFactura> renglonesDeFactura, Pedido pedido) {
-        List<RenglonPedido> renglonesPedido = new ArrayList();
-        for (RenglonFactura renglonFactura : renglonesDeFactura) {
-            renglonesPedido.add(this.convertirRenglonFacturaARenglonPedido(renglonFactura, pedido));
+        try {
+            return JasperExportManager.exportReportToPdf(JasperFillManager.fillReport(isFileReport, params, ds));
+        } catch (JRException ex) {
+            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_error_reporte"), ex);
         }
-        return renglonesPedido;
     }
+  
 }

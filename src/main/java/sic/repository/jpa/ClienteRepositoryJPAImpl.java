@@ -20,12 +20,12 @@ public class ClienteRepositoryJPAImpl implements IClienteRepository {
     public List<Cliente> getClientes(Empresa empresa) {
         TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarTodos", Cliente.class);
         typedQuery.setParameter("empresa", empresa);
-        List<Cliente> clientes = typedQuery.getResultList();
+        List<Cliente> clientes = typedQuery.getResultList();        
         return clientes;
     }
 
     @Override
-    public Cliente getClientePorId(long id_Cliente) {
+    public Cliente getClientePorId(Long id_Cliente) {        
         TypedQuery<Cliente> typedQuery = em.createNamedQuery("Cliente.buscarPorId", Cliente.class);
         typedQuery.setParameter("id", id_Cliente);
         List<Cliente> clientes = typedQuery.getResultList();
@@ -86,30 +86,26 @@ public class ClienteRepositoryJPAImpl implements IClienteRepository {
     @Override
     public List<Cliente> buscarClientes(BusquedaClienteCriteria criteria) {
         String query = "SELECT c FROM Cliente c WHERE c.empresa = :empresa AND c.eliminado = false";
-
-        //OR entre razonSocial y nombreFantasia
-        if (criteria.isBuscaPorRazonSocial() && criteria.isBuscaPorNombreFantasia()) {
+        //OR entre razonSocial, nombreFantasia y idFiscal
+        if (criteria.isBuscaPorRazonSocial() && criteria.isBuscaPorNombreFantasia() && criteria.isBuscaPorId_Fiscal()) {
             String[] terminos = criteria.getRazonSocial().split(" ");
             for (String termino : terminos) {
-                query += " AND (c.razonSocial LIKE '%" + termino + "%'" + " OR c.nombreFantasia LIKE '%" + termino + "%')";
+                query += " AND (c.razonSocial LIKE '%" + termino + "%' OR c.nombreFantasia LIKE '%" + termino + "%' OR c.id_Fiscal = '" + termino + "')";
             }
         } else {
-            if (criteria.isBuscaPorRazonSocial() == true) {
+            //OR entre razonSocial y nombreFantasia
+            if (criteria.isBuscaPorRazonSocial() && criteria.isBuscaPorNombreFantasia()) {
                 String[] terminos = criteria.getRazonSocial().split(" ");
                 for (String termino : terminos) {
-                    query += " AND c.razonSocial LIKE '%" + termino + "%'";
+                    query += " AND (c.razonSocial LIKE '%" + termino + "%'" + " OR c.nombreFantasia LIKE '%" + termino + "%')";
+                }
+            } else {
+                //solo idFiscal
+                if (criteria.isBuscaPorId_Fiscal() == true) {
+                    query = query + " AND c.id_Fiscal = '" + criteria.getId_Fiscal() + "'";
                 }
             }
-            if (criteria.isBuscaPorNombreFantasia() == true) {
-                String[] terminos = criteria.getNombreFantasia().split(" ");
-                for (String termino : terminos) {
-                    query += " AND c.nombreFantasia LIKE '%" + termino + "%'";
-                }
-            }
-        }
-        if (criteria.isBuscaPorId_Fiscal() == true) {
-            query = query + " AND c.id_Fiscal = '" + criteria.getId_Fiscal() + "'";
-        }
+        }        
         if (criteria.isBuscaPorLocalidad() == true) {
             query = query + " AND c.localidad = " + criteria.getLocalidad().getId_Localidad();
         }
@@ -126,8 +122,10 @@ public class ClienteRepositoryJPAImpl implements IClienteRepository {
     }
 
     @Override
-    public void guardar(Cliente cliente) {
-        em.persist(em.merge(cliente));
+    public Cliente guardar(Cliente cliente) {
+        cliente = em.merge(cliente);
+        em.persist(cliente);
+        return cliente;
     }
 
     @Override

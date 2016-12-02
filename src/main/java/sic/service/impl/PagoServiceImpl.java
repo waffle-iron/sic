@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,11 @@ import sic.modelo.Pago;
 import sic.repository.IPagoRepository;
 import sic.service.IFacturaService;
 import sic.service.IPagoService;
-import sic.service.ServiceException;
+import sic.service.BusinessServiceException;
 
 @Service
 public class PagoServiceImpl implements IPagoService {
-    
+
     private final IPagoRepository pagoRepository;
     private final IFacturaService facturaService;
     private static final Logger LOGGER = Logger.getLogger(PagoServiceImpl.class.getPackage().getName());
@@ -34,14 +35,24 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     @Override
-    public List<Pago> getPagosDeLaFactura(Factura factura) {
-        return this.pagoRepository.getPagosDeLaFactura(factura);
+    public Pago getPagoPorId(long idPago) {
+        Pago pago = this.pagoRepository.getPagoPorId(idPago);
+        if (pago == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pago_inexistente_eliminado"));
+        }
+        return pago;
+    }
+    
+    @Override
+    public List<Pago> getPagosDeLaFactura(long idFactura) {
+        return this.pagoRepository.getPagosDeLaFactura(idFactura);
     }
 
     @Override
     public double getSaldoAPagar(Factura factura) {
         double saldo = factura.getTotal();
-        for (Pago pago : this.getPagosDeLaFactura(factura)) {
+        for (Pago pago : this.getPagosDeLaFactura(factura.getId_Factura())) {
             saldo = saldo - pago.getMonto();
         }
         if (saldo < 0) {
@@ -51,54 +62,47 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     @Override
-    public double getTotalPagado(Factura factura) {
-        double pagado = 0.0;
-        for (Pago pago : this.getPagosDeLaFactura(factura)) {
-            pagado = pagado + pago.getMonto();
-        }
-        return pagado;
-    }
-
-    @Override
     public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
         return pagoRepository.getPagosEntreFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
     }
 
     @Override
-    public List<Factura> getFacturasEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
-        List<Pago> pagos = this.getPagosEntreFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
-        List<Factura> facturas = new ArrayList<>();
-        for (Pago pago : pagos) {
-            facturas.add(pago.getFactura());
-        }
-        return facturas;
+    public long getSiguienteNroPago(Long idEmpresa) {
+        return 1 + pagoRepository.getMayorNroPago(idEmpresa);
     }
-
+    
     @Override
     @Transactional
-    public void guardar(Pago pago) {
+    public Pago guardar(Pago pago) {
         this.validarOperacion(pago);
-        pagoRepository.guardar(pago);
-        this.setFacturaEstadoDePago(pago.getFactura());
-        LOGGER.warn("El Pago: " + pago.toString() + " se guardó correctamente.");
+        pago.setNroPago(this.getSiguienteNroPago(pago.getEmpresa().getId_Empresa()));
+        pago = pagoRepository.guardar(pago);
+        facturaService.actualizarEstadoFactura(pago.getFactura());
+        LOGGER.warn("El Pago " + pago + " se guardó correctamente.");
+        return pago;
     }
 
     @Override
     @Transactional
-    public void eliminar(Pago pago) {
+    public void eliminar(long idPago) {
+        Pago pago = this.getPagoPorId(idPago);
+        if (pago == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pago_inexistente_eliminado"));
+        }
         pago.setEliminado(true);
         pagoRepository.actualizar(pago);
-        this.setFacturaEstadoDePago(pago.getFactura());
-        LOGGER.warn("El Pago: " + pago.toString() + " se eliminó correctamente.");
+        facturaService.actualizarEstadoFactura(pago.getFactura());
+        LOGGER.warn("El Pago " + pago + " se eliminó correctamente.");
     }
-
+     
     @Override
     public void pagarMultiplesFacturasVenta(List<FacturaVenta> facturasVenta, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
         List<Factura> facturas = new ArrayList<>();
         facturas.addAll(facturasVenta);
         this.pagarMultiplesFacturas(facturas, monto, formaDePago, nota, fechaYHora);
     }
-    
+
     @Override
     public void pagarMultiplesFacturasCompra(List<FacturaCompra> facturasCompra, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
         List<Factura> facturas = new ArrayList<>();
@@ -112,7 +116,7 @@ public class PagoServiceImpl implements IPagoService {
         facturas.addAll(facturasVenta);
         return this.calcularTotalAdeudadoFacturas(facturas);
     }
-    
+
     @Override
     public double calcularTotalAdeudadoFacturasCompra(List<FacturaCompra> facturasCompra) {
         List<Factura> facturas = new ArrayList<>();
@@ -132,16 +136,15 @@ public class PagoServiceImpl implements IPagoService {
     @Override
     public void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
         List<Factura> facturasOrdenadas = facturaService.ordenarFacturasPorFechaAsc(facturas);
-        for (Factura factura : facturasOrdenadas ) {
+        for (Factura factura : facturasOrdenadas) {
             if (monto > 0) {
-                factura.setPagos(this.getPagosDeLaFactura(factura));
-                Pago nuevoPago = Pago.builder()
-                        .formaDePago(formaDePago)
-                        .factura(factura)
-                        .fecha(fechaYHora)
-                        .empresa(factura.getEmpresa())
-                        .nota(nota)
-                        .build();
+                factura.setPagos(this.getPagosDeLaFactura(factura.getId_Factura()));
+                Pago nuevoPago = new Pago();
+                nuevoPago.setFormaDePago(formaDePago);
+                nuevoPago .setFactura(factura);
+                nuevoPago.setFecha(fechaYHora);
+                nuevoPago.setEmpresa(factura.getEmpresa());
+                nuevoPago.setNota(nota);                        
                 double saldoAPagar = this.getSaldoAPagar(factura);
                 if (saldoAPagar <= monto) {
                     monto = monto - saldoAPagar;
@@ -159,37 +162,34 @@ public class PagoServiceImpl implements IPagoService {
     public void validarOperacion(Pago pago) {
         //Requeridos
         if (pago.getMonto() <= 0) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_mayorQueCero_monto"));
         }
         if (pago.getFecha() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_fecha_vacia"));
         }
         if (pago.getFactura() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_factura_vacia"));
         }
         if (pago.getEmpresa() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_empresa_vacia"));
         }
         if (pago.getFormaDePago() == null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_formaDePago_vacia"));
         }
-    }
-
-    @Override
-    @Transactional
-    public void setFacturaEstadoDePago(Factura factura) {
-        double totalFactura = Math.floor(factura.getTotal() * 100) / 100;
-        if (this.getTotalPagado(factura) >= totalFactura) {
-            factura.setPagada(true);
-        } else {
-            factura.setPagada(false);
+        if (pago.getFactura().isPagada() == true) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_pagada"));
         }
-        facturaService.actualizar(factura);
-    }
+        //POSIBLE CONFLICTO CON DECIMALES
+//        if (pago.getMonto() > this.getSaldoAPagar(pago.getFactura())) {
+//            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+//                    .getString("mensaje_pago_mayorADeuda_monto"));
+//        }
+    }  
 
 }

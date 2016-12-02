@@ -2,6 +2,8 @@ package sic.service.impl;
 
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.persistence.EntityNotFoundException;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,20 +11,31 @@ import sic.modelo.Empresa;
 import sic.modelo.Medida;
 import sic.repository.IMedidaRepository;
 import sic.service.IMedidaService;
-import sic.service.ServiceException;
-import sic.service.TipoDeOperacion;
+import sic.service.BusinessServiceException;
+import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
 
 @Service
 public class MedidaServiceImpl implements IMedidaService {
 
     private final IMedidaRepository medidaRepository;
+    private static final Logger LOGGER = Logger.getLogger(MedidaServiceImpl.class.getPackage().getName());
 
     @Autowired
     public MedidaServiceImpl(IMedidaRepository medidaRepository) {
         this.medidaRepository = medidaRepository;
     }
 
+    @Override
+    public Medida getMedidaPorId(Long idMedida) {
+        Medida medida = medidaRepository.getMedidaPorId(idMedida);
+        if (medida == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_medida_no_existente"));
+        }
+        return medida;
+    }
+    
     @Override
     public List<Medida> getUnidadMedidas(Empresa empresa) {
         return medidaRepository.getUnidadMedidas(empresa);
@@ -37,19 +50,19 @@ public class MedidaServiceImpl implements IMedidaService {
     public void validarOperacion(TipoDeOperacion operacion, Medida medida) {
         //Requeridos
         if (Validator.esVacio(medida.getNombre())) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_medida_vacio_nombre"));
         }
         //Duplicados
         //Nombre
         Medida medidaDuplicada = this.getMedidaPorNombre(medida.getNombre(), medida.getEmpresa());
         if (operacion.equals(TipoDeOperacion.ALTA) && medidaDuplicada != null) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_medida_duplicada_nombre"));
         }
         if (operacion.equals(TipoDeOperacion.ACTUALIZACION)) {
             if (medidaDuplicada != null && medidaDuplicada.getId_Medida() != medida.getId_Medida()) {
-                throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_medida_duplicada_nombre"));
             }
         }
@@ -64,14 +77,21 @@ public class MedidaServiceImpl implements IMedidaService {
 
     @Override
     @Transactional
-    public void guardar(Medida medida) {
+    public Medida guardar(Medida medida) {
         this.validarOperacion(TipoDeOperacion.ALTA, medida);
-        medidaRepository.guardar(medida);
+        medida = medidaRepository.guardar(medida);
+        LOGGER.warn("La Medida " + medida + " se guardó correctamente." );
+        return medida;
     }
 
     @Override
     @Transactional
-    public void eliminar(Medida medida) {
+    public void eliminar(long idMedida) {
+        Medida medida = this.getMedidaPorId(idMedida);
+        if (medida == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_medida_no_existente"));
+        }
         medida.setEliminada(true);
         medidaRepository.actualizar(medida);
     }

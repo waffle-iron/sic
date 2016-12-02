@@ -4,6 +4,8 @@ import java.util.List;
 import sic.modelo.Pais;
 
 public interface IPaisRepository {
+    
+    Pais getPaisPorId(Long id_Pais);
 
     void actualizar(Pais pais);
 
@@ -11,6 +13,6 @@ public interface IPaisRepository {
 
     List<Pais> getPaises();
 
-    void guardar(Pais pais);
+    Pais guardar(Pais pais);
     
 }

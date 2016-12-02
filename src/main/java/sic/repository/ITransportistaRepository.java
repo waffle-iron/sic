@@ -6,6 +6,8 @@ import sic.modelo.Empresa;
 import sic.modelo.Transportista;
 
 public interface ITransportistaRepository {
+    
+    Transportista getTransportistaPorId(long id_Transportista);
 
     void actualizar(Transportista transportista);
 
@@ -15,6 +17,6 @@ public interface ITransportistaRepository {
 
     List<Transportista> getTransportistas(Empresa empresa);
 
-    void guardar(Transportista transportista);
+    Transportista guardar(Transportista transportista);
     
 }

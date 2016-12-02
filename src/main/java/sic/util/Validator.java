@@ -2,6 +2,8 @@ package sic.util;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class Validator {
@@ -75,5 +77,16 @@ public class Validator {
         anterior.setTime(fechaAnterior);
         siguiente.setTime(fechaSiguiente);
         return siguiente.compareTo(anterior);
+    }
+    
+    public static boolean tieneDuplicados(long[] array) {
+        Set<Long> set = new HashSet<>();
+        for (long i : array) {
+            if (set.contains(i)) {
+                return true;
+            }
+            set.add(i);
+        }
+        return false;
     }
 }

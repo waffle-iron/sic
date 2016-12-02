@@ -9,8 +9,8 @@ import sic.modelo.Provincia;
 import sic.repository.ILocalidadRepository;
 import sic.repository.jpa.LocalidadRepositoryJPAImpl;
 import sic.service.ILocalidadService;
-import sic.service.ServiceException;
-import sic.service.TipoDeOperacion;
+import sic.service.BusinessServiceException;
+import sic.modelo.TipoDeOperacion;
 
 public class LocalidadServiceImplTest {
 
@@ -22,7 +22,7 @@ public class LocalidadServiceImplTest {
         provincia = new Provincia();
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenNombreVacio() {
         Localidad localidad = new Localidad();
         localidad.setNombre("");
@@ -31,7 +31,7 @@ public class LocalidadServiceImplTest {
         localidadService.validarOperacion(TipoDeOperacion.ALTA, localidad);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenProvinciaNull() {
         Localidad localidad = new Localidad();
         localidad.setNombre("Capital");
@@ -40,7 +40,7 @@ public class LocalidadServiceImplTest {
         localidadService.validarOperacion(TipoDeOperacion.ALTA, localidad);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenNombreDuplicadoAlta() {
         Localidad localidad = new Localidad();
         localidad.setNombre("Capital");
@@ -51,7 +51,7 @@ public class LocalidadServiceImplTest {
         localidadService.validarOperacion(TipoDeOperacion.ALTA, localidad);
     }
 
-    @Test(expected = ServiceException.class)
+    @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenNombreDuplicadoActualizacion() {
         Localidad localidad = new Localidad();
         localidad.setNombre("Capital");

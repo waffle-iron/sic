@@ -4,6 +4,8 @@ import java.util.List;
 import sic.modelo.CondicionIVA;
 
 public interface ICondicionIVARepository {
+    
+    CondicionIVA getCondicionIVAPorId(long id_CondicionIVA);
 
     void actualizar(CondicionIVA condicionIVA);
 
@@ -11,6 +13,6 @@ public interface ICondicionIVARepository {
 
     List<CondicionIVA> getCondicionesIVA();
 
-    void guardar(CondicionIVA condicionIVA);
+    CondicionIVA guardar(CondicionIVA condicionIVA);
     
 }

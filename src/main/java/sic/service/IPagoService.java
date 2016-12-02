@@ -9,16 +9,16 @@ import sic.modelo.FormaDePago;
 import sic.modelo.Pago;
 
 public interface IPagoService {
+    
+    Pago getPagoPorId(long id_pago);
 
-    List<Pago> getPagosDeLaFactura(Factura factura);
+    List<Pago> getPagosDeLaFactura(long idFactura);
 
-    double getSaldoAPagar(Factura factura);
-
-    double getTotalPagado(Factura factura);
+    double getSaldoAPagar(Factura factura);    
+    
+    long getSiguienteNroPago(Long idEmpresa);
 
     List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
-
-    List<Factura> getFacturasEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
     
     void pagarMultiplesFacturasVenta(List<FacturaVenta> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora);
     
@@ -32,11 +32,9 @@ public interface IPagoService {
             
     void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora);
     
-    void validarOperacion(Pago pago);
+    void validarOperacion(Pago pago);     
 
-    void guardar(Pago pago);
+    Pago guardar(Pago pago);
 
-    void eliminar(Pago pago);
-    
-    void setFacturaEstadoDePago(Factura factura);
+    void eliminar(long idPago);
 }

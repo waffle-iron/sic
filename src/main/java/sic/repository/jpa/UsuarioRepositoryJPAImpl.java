@@ -1,15 +1,12 @@
 package sic.repository.jpa;
 
 import java.util.List;
-import java.util.ResourceBundle;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 import sic.modelo.Usuario;
 import sic.repository.IUsuarioRepository;
-import sic.service.ServiceException;
 
 @Repository
 public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {
@@ -22,6 +19,18 @@ public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {
         TypedQuery<Usuario> typedQuery = em.createNamedQuery("Usuario.buscarTodos", Usuario.class);
         List<Usuario> usuarios = typedQuery.getResultList();
         return usuarios;
+    }
+    
+    @Override
+    public Usuario getUsuarioPorId(Long idUsuario) {
+        TypedQuery<Usuario> typedQuery = em.createNamedQuery("Usuario.buscarPorId", Usuario.class);
+        typedQuery.setParameter("id", idUsuario);
+        List<Usuario> usuarios = typedQuery.getResultList();
+        if (usuarios.isEmpty()) {
+            return null;
+        } else {
+            return usuarios.get(0);
+        }
     }
 
     @Override
@@ -44,13 +53,13 @@ public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {
     }
 
     @Override
-    public Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) throws ServiceException {
+    public Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) {
         TypedQuery<Usuario> typedQuery = em.createNamedQuery("Usuario.buscarPorNombreContrasenia", Usuario.class);
         typedQuery.setParameter("nombre", nombre);
         typedQuery.setParameter("password", contrasenia);
         List<Usuario> usuarios = typedQuery.getResultList();
         if (usuarios.isEmpty()) {
-            throw new ServiceException(ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_logInInvalido"));
+            return null;
         } else {
             return usuarios.get(0);
         }
@@ -62,7 +71,9 @@ public class UsuarioRepositoryJPAImpl implements IUsuarioRepository {
     }
 
     @Override
-    public void guardar(Usuario usuario) {
+    public Usuario guardar(Usuario usuario) {
+        usuario = em.merge(usuario);
         em.persist(usuario);
+        return usuario;
     }
 }

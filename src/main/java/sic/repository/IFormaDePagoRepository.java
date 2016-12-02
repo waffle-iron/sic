@@ -10,12 +10,12 @@ public interface IFormaDePagoRepository {
 
     FormaDePago getFormaDePagoPorId(long id);
 
-    FormaDePago getFormaDePagoPorNombre(String nombre, Empresa empresa);
+    FormaDePago getFormaDePagoPorNombreYEmpresa(String nombre, Long idEmpresa);
 
     FormaDePago getFormaDePagoPredeterminado(Empresa empresa);
 
     List<FormaDePago> getFormasDePago(Empresa empresa);
 
-    void guardar(FormaDePago formaDePago);
+    FormaDePago guardar(FormaDePago formaDePago);
     
 }

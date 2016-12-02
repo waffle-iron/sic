@@ -43,8 +43,10 @@ public class ConfiguracionDelSistemaRepositoryJPAImpl implements IConfiguracionD
     }
 
     @Override
-    public void guardar(ConfiguracionDelSistema cds) {
-        em.persist(em.merge(cds));
+    public ConfiguracionDelSistema guardar(ConfiguracionDelSistema cds) {
+        cds = em.merge(cds);
+        em.persist(cds);
+        return cds;
     }
 
     @Override

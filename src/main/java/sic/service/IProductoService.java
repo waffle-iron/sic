@@ -1,13 +1,11 @@
 package sic.service;
 
+import sic.modelo.TipoDeOperacion;
 import java.util.List;
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperPrint;
 import sic.modelo.BusquedaProductoCriteria;
 import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.Medida;
-import sic.modelo.PreciosProducto;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.Rubro;
@@ -24,8 +22,6 @@ public interface IProductoService {
 
     boolean existeStockDisponible(long idProducto, double cantidad);
 
-    //**************************************************************************
-    //Calculos
     double calcularGanancia_Porcentaje(double precioCosto, double PVP);
 
     double calcularIVA_Neto(double precioCosto, double iva_porcentaje);
@@ -36,22 +32,31 @@ public interface IProductoService {
 
     double calcularPrecioLista(double PVP, double iva_porcentaje, double impInterno_porcentaje);
 
-    void eliminarMultiplesProductos(List<Producto> productos);
+    void eliminarMultiplesProductos(long[] idProducto);
 
     Producto getProductoPorCodigo(String codigo, Empresa empresa);
 
     Producto getProductoPorDescripcion(String descripcion, Empresa empresa);
 
     Producto getProductoPorId(long id_Producto);
+  
+    byte[] getReporteListaDePreciosPorEmpresa(List<Producto> productos, long idEmpresa);
 
-    List<Producto> getProductosPorDescripcionQueContenga(String criteria, int cantRegistros, Empresa empresa);
+    Producto guardar(Producto producto);
 
-    //**************************************************************************
-    //Reportes
-    JasperPrint getReporteListaDePrecios(List<Producto> productos) throws JRException;
-
-    void guardar(Producto producto);
-
-    void modificarMultiplesProductos(List<Producto> productos, boolean checkPrecios, PreciosProducto preciosProducto, boolean checkMedida, Medida medida, boolean checkRubro, Rubro rubro, boolean checkProveedor, Proveedor proveedor);
+    List<Producto> modificarMultiplesProductos(long[] idProducto,
+                                               boolean checkPrecios,            
+                                               Double gananciaNeto,
+                                               Double gananciaPorcentaje,
+                                               Double impuestoInternoNeto,
+                                               Double impuestoInternoPorcentaje,
+                                               Double IVANeto,
+                                               Double IVAPorcentaje,
+                                               Double precioCosto,
+                                               Double precioLista,
+                                               Double precioVentaPublico,                                                                     
+                                               boolean checkMedida, Medida medida,
+                                               boolean checkRubro, Rubro rubro,
+                                               boolean checkProveedor, Proveedor proveedor);
 
 }

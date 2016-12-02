@@ -5,19 +5,25 @@ import java.util.List;
 import sic.modelo.Gasto;
 
 public interface IGastoService {
-
+    
+    Gasto getGastoPorId(Long id);
+    
     void actualizar(Gasto gasto);
+    
+    void eliminar(long idGasto);
 
-    List<Object> getGastosPorFecha(Long id_Empresa, Date desde, Date hasta);
+    List<Gasto> getGastosPorFecha(Long id_Empresa, Date desde, Date hasta);
 
-    List<Object> getGastosPorFechaYFormaDePago(Long id_Empresa, Long id_FormaDePago, Date desde, Date hasta);
+    List<Gasto> getGastosPorFechaYFormaDePago(Long id_Empresa, Long id_FormaDePago, Date desde, Date hasta);
+    
+    Gasto getGastosPorNroYEmpreas(Long nroPago, Long id_Empresa);
 
     long getUltimoNumeroDeCaja(long id_Empresa);
 
-    void guardar(Gasto gasto);
+    Gasto guardar(Gasto gasto);
 
     void validarGasto(Gasto gasto);
 
-    int getUltimoNumeroDeGasto(long id_empresa);
+    long getUltimoNumeroDeGasto(long id_empresa);
 
 }

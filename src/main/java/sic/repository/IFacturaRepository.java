@@ -6,10 +6,11 @@ import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
-import sic.modelo.RenglonFactura;
 
 public interface IFacturaRepository {
 
+    Factura getFacturaPorId(Long id_Factura);
+    
     void actualizar(Factura factura);
 
     List<FacturaCompra> buscarFacturasCompra(BusquedaFacturaCompraCriteria criteria);
@@ -20,10 +21,9 @@ public interface IFacturaRepository {
 
     FacturaCompra getFacturaCompraPorTipoSerieNum(char tipo, long serie, long num);
     
+    List<Factura> getFacturasDelPedido(Long idPedido);
+    
     long getMayorNumFacturaSegunTipo(String tipoDeFactura, long serie);
 
-    List<RenglonFactura> getRenglonesDeLaFactura(Factura factura);
-
-    void guardar(Factura factura);    
-    
+    Factura guardar(Factura factura);    
 }

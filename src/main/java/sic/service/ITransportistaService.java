@@ -7,16 +7,18 @@ import sic.modelo.Transportista;
 
 public interface ITransportistaService {
 
+    Transportista getTransportistaPorId(long id_Transportista);
+            
     void actualizar(Transportista transportista);
 
     List<Transportista> buscarTransportistas(BusquedaTransportistaCriteria criteria);
 
-    void eliminar(Transportista transportista);
+    void eliminar(long idTransportista);
 
     Transportista getTransportistaPorNombre(String nombre, Empresa empresa);
 
     List<Transportista> getTransportistas(Empresa empresa);
 
-    void guardar(Transportista transportista);
+    Transportista guardar(Transportista transportista);
     
 }

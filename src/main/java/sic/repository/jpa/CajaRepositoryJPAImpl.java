@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
 import sic.util.FormatterFechaHora;
@@ -18,8 +19,22 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
     private EntityManager em;
 
     @Override
-    public void guardar(Caja caja) {
-        em.persist(em.merge(caja));
+    public Caja guardar(Caja caja) {
+        caja = em.merge(caja);
+        em.persist(caja);
+        return caja;
+    }
+    
+    @Override
+    public Caja getCajaPorId(Long id) {
+        TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.buscarCajaPorId", Caja.class);
+        typedQuery.setParameter("id", id);
+        List<Caja> cajas = typedQuery.getResultList();
+        if (cajas.isEmpty()) {
+            return null;
+        } else {
+            return cajas.get(0);
+        }
     }
 
     @Override
@@ -49,13 +64,14 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
     }
 
     @Override
+    @Transactional
     public void actualizar(Caja caja) {
         em.merge(caja);
     }
 
     @Override
-    public Caja getCajaPorID(long id_Caja, long id_Empresa) {
-        TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.buscarCajaPorID", Caja.class);
+    public Caja getCajaPorIdYEmpresa(long id_Caja, long id_Empresa) {
+        TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.buscarCajaPorIdYEmpresa", Caja.class);
         typedQuery.setParameter("id_caja", id_Caja);
         typedQuery.setParameter("id_Empresa", id_Empresa);
         List<Caja> cajas = typedQuery.getResultList();
@@ -66,6 +82,19 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
         }
     }
 
+    @Override
+    public Caja getCajaPorNroYEmpresa(int nroCaja, long id_Empresa) {
+        TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.buscarCajaPorNumeroYEmpresa", Caja.class);
+        typedQuery.setParameter("nroCaja", nroCaja);
+        typedQuery.setParameter("id_Empresa", id_Empresa);
+        List<Caja> cajas = typedQuery.getResultList();
+        if (cajas.isEmpty()) {
+            return null;
+        } else {
+            return cajas.get(0);
+        }
+    }
+    
     @Override
     public Caja getCajaPorFormaDePago(long idEmpresa, long idFormaDePago) {
         TypedQuery<Caja> typedQuery = em.createNamedQuery("Caja.cajaSinArqueoPorFormaDepago", Caja.class);

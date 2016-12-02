@@ -2,8 +2,6 @@ package sic.modelo;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -12,12 +10,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "cliente")
@@ -47,6 +47,9 @@ import lombok.EqualsAndHashCode;
                     + "WHERE c.predeterminado = true AND c.eliminado = false AND c.empresa = :empresa")
 })
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of = {"razonSocial", "id_Fiscal", "empresa"})
 public class Cliente implements Serializable {
 
@@ -96,12 +99,6 @@ public class Cliente implements Serializable {
     private boolean eliminado;
 
     private boolean predeterminado;
-
-    @OneToMany(mappedBy = "cliente")
-    private Set<FacturaVenta> facturasVenta;
-
-    @OneToMany(mappedBy = "cliente")
-    private List<Pedido> pedidos;
 
     @Override
     public String toString() {
