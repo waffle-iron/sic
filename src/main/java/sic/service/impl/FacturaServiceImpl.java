@@ -822,10 +822,8 @@ public class FacturaServiceImpl implements IFacturaService {
                     FacturaX = (double) Math.round(FacturaX * 100) / 100;
                 }
                 RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(this.getTipoFactura(factura), Movimiento.VENTA, FacturaABC, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
-                //nuevoRenglonConIVA.setFactura(facturaConIVA);
                 renglonesConIVA.add(nuevoRenglonConIVA);
                 RenglonFactura nuevoRenglonSinIVA = this.calcularRenglon("Factura X", Movimiento.VENTA, FacturaX, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
-                //nuevoRenglonSinIVA.setFactura(facturaSinIVA);
                 if (nuevoRenglonSinIVA.getCantidad() != 0) {
                     renglonesSinIVA.add(nuevoRenglonSinIVA);
                 }
@@ -834,7 +832,6 @@ public class FacturaServiceImpl implements IFacturaService {
             } else {
                 numeroDeRenglon++;
                 RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(this.getTipoFactura(factura), Movimiento.VENTA, renglon.getCantidad(), productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
-                //nuevoRenglonConIVA.setFactura(facturaConIVA);
                 renglonesConIVA.add(nuevoRenglonConIVA);
             }
         }
@@ -890,7 +887,7 @@ public class FacturaServiceImpl implements IFacturaService {
         importe = new double[renglonesConIVA.size()];
         ivaPorcentaje = new double[renglonesConIVA.size()];
         indice = 0;
-        for(RenglonFactura renglon : renglonesSinIVA) {
+        for(RenglonFactura renglon : renglonesConIVA) {
             importe[indice] = renglon.getImporte();
             ivaPorcentaje[indice] = renglon.getIva_porcentaje();
             indice++;
