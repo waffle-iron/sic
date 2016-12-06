@@ -259,10 +259,11 @@ public class FacturaController {
         return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);
     }
     
-    @GetMapping("/facturas/renglones/pedidos/{idPedido}")
+    @GetMapping("/facturas/renglones/pedidos/{idPedido}") 
     @ResponseStatus(HttpStatus.OK)
-    public List<RenglonFactura> getRenglonesPedidoParaFacturar(@PathVariable long idPedido) {
-        return facturaService.getRenglonesPedidoParaFacturar(pedidoService.getPedidoPorId(idPedido));
+    public List<RenglonFactura> getRenglonesPedidoParaFacturar(@PathVariable long idPedido,
+                                                               @RequestParam String tipoComprobante) {
+        return facturaService.getRenglonesPedidoParaFacturar(pedidoService.getPedidoPorId(idPedido), tipoComprobante);
     }    
      
     @GetMapping("/facturas/validaciones-pago-multiple")

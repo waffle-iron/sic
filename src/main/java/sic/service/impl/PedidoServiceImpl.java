@@ -105,13 +105,13 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public void actualizarEstadoPedido(Pedido pedido) {
+    public void actualizarEstadoPedido(Pedido pedido, String tipoComprobante) {
         if (pedido != null) {
            pedido.setEstado(EstadoPedido.ACTIVO);
            if (this.getFacturasDelPedido(pedido.getId_Pedido()).isEmpty()) {
                pedido.setEstado(EstadoPedido.ABIERTO);
            }
-           if (facturaService.getRenglonesPedidoParaFacturar(pedido).isEmpty()) {
+           if (facturaService.getRenglonesPedidoParaFacturar(pedido, tipoComprobante).isEmpty()) {
                pedido.setEstado(EstadoPedido.CERRADO);
            }
            this.actualizar(pedido);

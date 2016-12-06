@@ -339,7 +339,7 @@ public class FacturaServiceImpl implements IFacturaService {
         factura = facturaRepository.guardar(factura);
         this.actualizarEstadoFactura(factura);
         productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
-        pedidoService.actualizarEstadoPedido(factura.getPedido());
+        pedidoService.actualizarEstadoPedido(factura.getPedido() , "Factura " + factura.getTipoFactura());
         LOGGER.warn("La Factura " + factura + " se guardó correctamente.");
         return factura;
     }
@@ -348,9 +348,9 @@ public class FacturaServiceImpl implements IFacturaService {
     @Transactional
     public List<Factura> guardar(List<Factura> facturas) {
         List<Factura> facturasGuardadas = new ArrayList<>();
-        for (Factura f : facturas) {
+        facturas.forEach((f) -> {
             facturasGuardadas.add(this.guardar(f));
-        }
+        });
         return facturasGuardadas;
     }    
 
@@ -368,7 +368,7 @@ public class FacturaServiceImpl implements IFacturaService {
         this.eliminarPagosDeFactura(factura);        
         productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);
         facturaRepository.actualizar(factura);
-        pedidoService.actualizarEstadoPedido(factura.getPedido());
+        pedidoService.actualizarEstadoPedido(factura.getPedido(), "Factura " + factura.getTipoFactura());
     }
 
     private void eliminarPagosDeFactura(Factura factura) {
@@ -464,13 +464,7 @@ public class FacturaServiceImpl implements IFacturaService {
     
     @Override
     public List<Factura> ordenarFacturasPorFechaAsc(List<Factura> facturas) {
-        Comparator comparador = new Comparator<Factura>() {
-            @Override
-            public int compare(Factura f1, Factura f2) {
-                return f1.getFecha().compareTo(f2.getFecha());
-            }
-        };
-        
+        Comparator comparador = (Comparator<Factura>) (Factura f1, Factura f2) -> f1.getFecha().compareTo(f2.getFecha());
         facturas.sort(comparador);
         return facturas;
     }
@@ -645,36 +639,28 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public double calcularTotalFacturadoVenta(List<FacturaVenta> facturas) {
         double resultado = 0;
-        for (FacturaVenta facturaVenta : facturas) {
-            resultado += facturaVenta.getTotal();
-        }
+        resultado = facturas.stream().map((facturaVenta) -> facturaVenta.getTotal()).reduce(resultado, (accumulator, _item) -> accumulator + _item);
         return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularTotalFacturadoCompra(List<FacturaCompra> facturas) {
         double resultado = 0;
-        for (FacturaCompra FacturaCompra : facturas) {
-            resultado += FacturaCompra.getTotal();
-        }
+        resultado = facturas.stream().map((FacturaCompra) -> FacturaCompra.getTotal()).reduce(resultado, (accumulator, _item) -> accumulator + _item);
         return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularIVA_Venta(List<FacturaVenta> facturas) {
         double resultado = 0;
-        for (FacturaVenta facturaVenta : facturas) {
-            resultado += (facturaVenta.getIva_105_neto() + facturaVenta.getIva_21_neto());
-        }
+        resultado = facturas.stream().map((facturaVenta) -> (facturaVenta.getIva_105_neto() + facturaVenta.getIva_21_neto())).reduce(resultado, (accumulator, _item) -> accumulator + _item);
         return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularIVA_Compra(List<FacturaCompra> facturas) {
         double resultado = 0;
-        for (FacturaCompra facturaCompra : facturas) {
-            resultado += (facturaCompra.getIva_105_neto() + facturaCompra.getIva_21_neto());
-        }
+        resultado = facturas.stream().map((facturaCompra) -> (facturaCompra.getIva_105_neto() + facturaCompra.getIva_21_neto())).reduce(resultado, (accumulator, _item) -> accumulator + _item);
         return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
@@ -729,14 +715,19 @@ public class FacturaServiceImpl implements IFacturaService {
             }
         }
         if (movimiento == Movimiento.VENTA) {
-            if (tipoDeFactura.equals("Factura A") || tipoDeFactura.equals("Factura X")) {
-                resultado = producto.getPrecioVentaPublico();
-            } else if (tipoDeFactura.equals("Factura Y")) {
-                iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje() / 2) / 100;
-                impInterno_resultado = (producto.getPrecioVentaPublico() * producto.getImpuestoInterno_porcentaje()) / 100;
-                resultado = producto.getPrecioVentaPublico() + iva_resultado + impInterno_resultado;
-            } else {
-                resultado = producto.getPrecioLista();
+            switch (tipoDeFactura) {
+                case "Factura A":
+                case "Factura X":
+                    resultado = producto.getPrecioVentaPublico();
+                    break;
+                case "Factura Y":
+                    iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje() / 2) / 100;
+                    impInterno_resultado = (producto.getPrecioVentaPublico() * producto.getImpuestoInterno_porcentaje()) / 100;
+                    resultado = producto.getPrecioVentaPublico() + iva_resultado + impInterno_resultado;
+                    break;
+                default:
+                    resultado = producto.getPrecioLista();
+                    break;
             }
         }
         if (movimiento == Movimiento.PEDIDO) {
@@ -924,18 +915,18 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido) {
+    public List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido, String tipoDeComprobante) {
         List<RenglonFactura> renglonesRestantes = new ArrayList<>();
         HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getId_Pedido());
         pedido.getRenglones().forEach((renglon) -> {
             if (renglonesDeFacturas.containsKey(renglon.getProducto().getId_Producto())) {
                 if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
-                    renglonesRestantes.add(this.calcularRenglon("Factura A",
+                    renglonesRestantes.add(this.calcularRenglon(tipoDeComprobante,
                             Movimiento.VENTA, renglon.getCantidad() - renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad(),
                             renglon.getProducto(), renglon.getDescuento_porcentaje()));
                 }
             } else {                
-                renglonesRestantes.add(this.calcularRenglon("Factura A", Movimiento.VENTA,
+                renglonesRestantes.add(this.calcularRenglon(tipoDeComprobante, Movimiento.VENTA,
                         renglon.getCantidad(), renglon.getProducto(), renglon.getDescuento_porcentaje()));
             }
         });
