@@ -47,7 +47,7 @@ public interface IFacturaService {
     
     void actualizar(Factura factura);
 
-    void eliminar(long idFactura);
+    void eliminar(long[] idFactura);
     
     void actualizarEstadoFactura(Factura factura);
     

@@ -97,9 +97,9 @@ public class FacturaController {
         return facturaService.guardar(factura);
     }    
     
-    @DeleteMapping("/facturas/{idFactura}")
+    @DeleteMapping("/facturas")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable long idFactura) {
+    public void eliminar(@RequestParam long[] idFactura) {
         facturaService.eliminar(idFactura);
     }
     
