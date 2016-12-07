@@ -43,7 +43,7 @@ import lombok.EqualsAndHashCode;
 })
 @Data
 @EqualsAndHashCode(of = {"nroPago", "empresa"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pago")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pago", scope = Pago.class)
 public class Pago implements Serializable {
 
     @Id

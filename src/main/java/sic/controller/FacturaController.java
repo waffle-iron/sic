@@ -170,12 +170,12 @@ public class FacturaController {
         if ((desde != null) && (hasta != null)) {
             fechaDesde.setTimeInMillis(desde);
             fechaHasta.setTimeInMillis(hasta);
-        }
-        if ((soloImpagas != null) && (soloPagas != null)) {
-            if ((soloImpagas == true) && (soloPagas == true)) {
-                soloImpagas = false;
-                soloPagas = false;
-            }
+        }        
+        soloImpagas = (soloImpagas == null) ? false : soloImpagas;
+        soloPagas = (soloPagas == null) ? false : soloPagas;
+        if ((soloImpagas == true) && (soloPagas == true)) {
+            soloImpagas = false;
+            soloPagas = false;
         }
         Cliente cliente = new Cliente();
         if (idCliente != null) {

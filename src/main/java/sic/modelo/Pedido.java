@@ -42,7 +42,7 @@ import lombok.ToString;
 @Data
 @ToString(exclude = {"facturas", "renglones"})
 @EqualsAndHashCode(of = {"nroPedido", "empresa"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pedido")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pedido", scope = Pedido.class)
 public class Pedido implements Serializable {
 
     @Id
