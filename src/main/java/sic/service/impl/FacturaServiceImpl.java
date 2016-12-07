@@ -639,28 +639,36 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public double calcularTotalFacturadoVenta(List<FacturaVenta> facturas) {
         double resultado = 0;
-        resultado = facturas.stream().map((facturaVenta) -> facturaVenta.getTotal()).reduce(resultado, (accumulator, _item) -> accumulator + _item);
+        resultado = facturas.stream()
+                            .map((facturaVenta) -> facturaVenta.getTotal())
+                            .reduce(resultado, (accumulator, _item) -> accumulator + _item);
         return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularTotalFacturadoCompra(List<FacturaCompra> facturas) {
         double resultado = 0;
-        resultado = facturas.stream().map((FacturaCompra) -> FacturaCompra.getTotal()).reduce(resultado, (accumulator, _item) -> accumulator + _item);
+        resultado = facturas.stream()
+                            .map((FacturaCompra) -> FacturaCompra.getTotal())
+                            .reduce(resultado, (accumulator, _item) -> accumulator + _item);
         return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularIVA_Venta(List<FacturaVenta> facturas) {
         double resultado = 0;
-        resultado = facturas.stream().map((facturaVenta) -> (facturaVenta.getIva_105_neto() + facturaVenta.getIva_21_neto())).reduce(resultado, (accumulator, _item) -> accumulator + _item);
+        resultado = facturas.stream()
+                            .map((facturaVenta) -> (facturaVenta.getIva_105_neto() + facturaVenta.getIva_21_neto()))
+                            .reduce(resultado, (accumulator, _item) -> accumulator + _item);
         return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularIVA_Compra(List<FacturaCompra> facturas) {
         double resultado = 0;
-        resultado = facturas.stream().map((facturaCompra) -> (facturaCompra.getIva_105_neto() + facturaCompra.getIva_21_neto())).reduce(resultado, (accumulator, _item) -> accumulator + _item);
+        resultado = facturas.stream()
+                            .map((facturaCompra) -> (facturaCompra.getIva_105_neto() + facturaCompra.getIva_21_neto()))
+                            .reduce(resultado, (accumulator, _item) -> accumulator + _item);
         return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
@@ -715,19 +723,14 @@ public class FacturaServiceImpl implements IFacturaService {
             }
         }
         if (movimiento == Movimiento.VENTA) {
-            switch (tipoDeFactura) {
-                case "Factura A":
-                case "Factura X":
-                    resultado = producto.getPrecioVentaPublico();
-                    break;
-                case "Factura Y":
-                    iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje() / 2) / 100;
-                    impInterno_resultado = (producto.getPrecioVentaPublico() * producto.getImpuestoInterno_porcentaje()) / 100;
-                    resultado = producto.getPrecioVentaPublico() + iva_resultado + impInterno_resultado;
-                    break;
-                default:
-                    resultado = producto.getPrecioLista();
-                    break;
+            if (tipoDeFactura.equals("Factura A") || tipoDeFactura.equals("Factura X")) {
+                resultado = producto.getPrecioVentaPublico();
+            } else if (tipoDeFactura.equals("Factura Y")) {
+                iva_resultado = (producto.getPrecioVentaPublico() * producto.getIva_porcentaje() / 2) / 100;
+                impInterno_resultado = (producto.getPrecioVentaPublico() * producto.getImpuestoInterno_porcentaje()) / 100;
+                resultado = producto.getPrecioVentaPublico() + iva_resultado + impInterno_resultado;
+            } else {
+                resultado = producto.getPrecioLista();
             }
         }
         if (movimiento == Movimiento.PEDIDO) {
@@ -837,7 +840,7 @@ public class FacturaServiceImpl implements IFacturaService {
         double[] importe = new double[renglonesSinIVA.size()];
         double[] ivaPorcentaje = new double[renglonesSinIVA.size()];
         int indice = 0;
-        for(RenglonFactura renglon : renglonesSinIVA) {
+        for (RenglonFactura renglon : renglonesSinIVA) {
             importe[indice] = renglon.getImporte();
             ivaPorcentaje[indice] = renglon.getIva_porcentaje();
             indice++;
@@ -856,7 +859,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 importe, ivaPorcentaje, 21));
         double[] impuestoPorcentajes = new double[renglonesSinIVA.size()];
         indice = 0;
-        for(RenglonFactura renglon : renglonesSinIVA) {
+        for (RenglonFactura renglon : renglonesSinIVA) {
             impuestoPorcentajes[indice] = renglon.getImpuesto_porcentaje();
             indice++;
         }
@@ -878,7 +881,7 @@ public class FacturaServiceImpl implements IFacturaService {
         importe = new double[renglonesConIVA.size()];
         ivaPorcentaje = new double[renglonesConIVA.size()];
         indice = 0;
-        for(RenglonFactura renglon : renglonesConIVA) {
+        for (RenglonFactura renglon : renglonesConIVA) {
             importe[indice] = renglon.getImporte();
             ivaPorcentaje[indice] = renglon.getIva_porcentaje();
             indice++;

@@ -98,9 +98,9 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     private List<Pedido> calcularTotalActualDePedidos(List<Pedido> pedidos) {
-        for (Pedido pedido : pedidos) {
+        pedidos.stream().forEach((pedido) -> {
             this.calcularTotalActualDePedido(pedido);
-        }
+        });
         return pedidos;
     }
 
