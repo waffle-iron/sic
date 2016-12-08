@@ -187,7 +187,6 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldDividirFactura() {
-//        FacturaVenta factura = Mockito.mock(FacturaVenta.class);
         RenglonFactura renglon1 = Mockito.mock(RenglonFactura.class);
         RenglonFactura renglon2 = Mockito.mock(RenglonFactura.class);
         Producto producto = Mockito.mock(Producto.class);
@@ -226,10 +225,10 @@ public class FacturaServiceImplTest {
         double cantidadRenglon1SegundaFactura = result.get(1).getRenglones().get(0).getCantidad();
         double cantidadRenglon2SegundaFactura = result.get(1).getRenglones().get(1).getCantidad();
         assertEquals(cantidadDeFacturasEsperadas, result.size());
+        assertEquals(2, cantidadRenglon1SegundaFactura, 0); 
+        assertEquals(4, cantidadRenglon2SegundaFactura, 0); 
         assertEquals(2, cantidadRenglon1PrimeraFactura, 0);
-        assertEquals(4, cantidadRenglon2PrimeraFactura, 0);
-        assertEquals(2, cantidadRenglon1SegundaFactura, 0);
-        assertEquals(3, cantidadRenglon2SegundaFactura, 0);
+        assertEquals(3, cantidadRenglon2PrimeraFactura, 0);
     }
 
     //Calculos

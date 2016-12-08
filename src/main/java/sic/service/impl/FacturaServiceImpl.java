@@ -787,22 +787,23 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     public List<Factura> dividirFactura(FacturaVenta facturaADividir, int[] indices) {
-        FacturaVenta Remito = new FacturaVenta();
-        Remito.setCliente(facturaADividir.getCliente());
-        Remito.setUsuario(facturaADividir.getUsuario());
-        Remito.setPedido(facturaADividir.getPedido());
+        FacturaVenta FacturaSinIVA = new FacturaVenta();
+        FacturaSinIVA.setCliente(facturaADividir.getCliente());
+        FacturaSinIVA.setUsuario(facturaADividir.getUsuario());
+        FacturaSinIVA.setPedido(facturaADividir.getPedido());
         FacturaVenta facturaConIVA = new FacturaVenta();
         facturaConIVA.setCliente(facturaADividir.getCliente());
         facturaConIVA.setUsuario(facturaADividir.getUsuario());
         facturaConIVA.setPedido(facturaADividir.getPedido());
+        facturaConIVA.setTipoFactura(facturaADividir.getTipoFactura());
         List<Factura> facturas = new ArrayList<>();
         // TratamientoRenglones 
-        Remito = this.agregarRenglonesRemito(Remito, indices, facturaADividir.getRenglones());
-        facturaConIVA = this.agregarRenglonesFactura(facturaConIVA, indices, this.getTipoFactura(facturaADividir) ,facturaADividir.getRenglones());
+        FacturaSinIVA = this.agregarRenglonesRemito(FacturaSinIVA, indices, facturaADividir.getRenglones());
+        facturaConIVA = this.agregarRenglonesFactura(facturaConIVA, indices,facturaADividir.getRenglones());
         // Fin Tratamiento Renglones - Comienzo tratamiento de Remito
-        if (Remito.getRenglones().size() > 0) {
-            Remito = this.completarRemito(facturaADividir, Remito);
-            facturas.add(Remito);
+        if (FacturaSinIVA.getRenglones().size() > 0) {
+            FacturaSinIVA = this.completarRemito(facturaADividir, FacturaSinIVA);
+            facturas.add(FacturaSinIVA);
         }
         // Fin tratamiento con remito - Comienzo Tratamiento Factura
         facturaConIVA = this.construirFactura(facturaADividir, facturaConIVA);
@@ -965,7 +966,7 @@ public class FacturaServiceImpl implements IFacturaService {
         return remito;
     }
 
-    private FacturaVenta agregarRenglonesFactura(FacturaVenta facturaConIVA, int[] indices, String tipoFactura,  List<RenglonFactura> renglones) {
+    private FacturaVenta agregarRenglonesFactura(FacturaVenta facturaConIVA, int[] indices,  List<RenglonFactura> renglones) {
         double cantidadProductosRenglonFactura = 0;
         List<RenglonFactura> renglonesConIVA = new ArrayList<>();
         int renglonMarcado = 0;
@@ -980,13 +981,13 @@ public class FacturaServiceImpl implements IFacturaService {
                 } else if ((renglon.getCantidad() % 2) != 0) {
                     cantidadProductosRenglonFactura = Math.ceil(renglon.getCantidad() / 2);
                 }
-                RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(tipoFactura, Movimiento.VENTA, cantidadProductosRenglonFactura, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+                RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(this.getTipoFactura(facturaConIVA), Movimiento.VENTA, cantidadProductosRenglonFactura, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
                 renglonesConIVA.add(nuevoRenglonConIVA);
                 renglonMarcado++;
                 numeroDeRenglon++;
             } else {
                 numeroDeRenglon++;
-                RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(tipoFactura, Movimiento.VENTA, renglon.getCantidad(), productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+                RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(this.getTipoFactura(facturaConIVA), Movimiento.VENTA, renglon.getCantidad(), productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
                 renglonesConIVA.add(nuevoRenglonConIVA);
             }
         }
