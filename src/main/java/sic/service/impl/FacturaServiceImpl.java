@@ -786,134 +786,28 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public List<Factura> dividirFactura(FacturaVenta factura, int[] indices) {
-        double FacturaABC = 0;
-        double FacturaX = 0;
-        List<RenglonFactura> renglonesConIVA = new ArrayList<>();
-        List<RenglonFactura> renglonesSinIVA = new ArrayList<>();
-        FacturaVenta facturaSinIVA = new FacturaVenta();
-        facturaSinIVA.setCliente(factura.getCliente());
-        facturaSinIVA.setUsuario(factura.getUsuario());
+    public List<Factura> dividirFactura(FacturaVenta facturaADividir, int[] indices) {
+        FacturaVenta Remito = new FacturaVenta();
+        Remito.setCliente(facturaADividir.getCliente());
+        Remito.setUsuario(facturaADividir.getUsuario());
+        Remito.setPedido(facturaADividir.getPedido());
         FacturaVenta facturaConIVA = new FacturaVenta();
-        facturaConIVA.setCliente(factura.getCliente());
-        facturaConIVA.setUsuario(factura.getUsuario());
-        int renglonMarcado = 0;
-        int numeroDeRenglon = 0;
-        for (RenglonFactura renglon : factura.getRenglones()) {
-            if (numeroDeRenglon == indices[renglonMarcado]) {
-                if (renglon.getCantidad() < 1) {
-                    FacturaABC = renglon.getCantidad();
-                } else if (renglon.getCantidad() - Math.ceil(renglon.getCantidad()) == 0) {
-                    FacturaABC = Math.ceil(renglon.getCantidad() / 2);
-                    FacturaX = Math.floor(renglon.getCantidad() / 2);
-                } else if ((renglon.getCantidad() % 2) == 0) {
-                    FacturaABC = renglon.getCantidad() / 2;
-                    FacturaX = renglon.getCantidad() - FacturaABC;
-                    FacturaX = (double) Math.round(FacturaX * 100) / 100;
-                } else {
-                    FacturaABC = Math.ceil(renglon.getCantidad() / 2);
-                    FacturaX = renglon.getCantidad() - FacturaABC;
-                    FacturaX = (double) Math.round(FacturaX * 100) / 100;
-                }
-                RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(this.getTipoFactura(factura), Movimiento.VENTA, FacturaABC, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
-                renglonesConIVA.add(nuevoRenglonConIVA);
-                RenglonFactura nuevoRenglonSinIVA = this.calcularRenglon("Factura X", Movimiento.VENTA, FacturaX, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
-                if (nuevoRenglonSinIVA.getCantidad() != 0) {
-                    renglonesSinIVA.add(nuevoRenglonSinIVA);
-                }
-                numeroDeRenglon++;
-                renglonMarcado++;
-            } else {
-                numeroDeRenglon++;
-                RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(this.getTipoFactura(factura), Movimiento.VENTA, renglon.getCantidad(), productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
-                renglonesConIVA.add(nuevoRenglonConIVA);
-            }
-        }
-        List<RenglonFactura> listRenglonesSinIVA = new ArrayList<>(renglonesSinIVA);
-        facturaSinIVA.setFecha(factura.getFecha());
-        facturaSinIVA.setTipoFactura('X');
-        facturaSinIVA.setNumSerie(factura.getNumSerie());
-        facturaSinIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaSinIVA), facturaSinIVA.getNumSerie()));
-        facturaSinIVA.setFechaVencimiento(factura.getFechaVencimiento());
-        facturaSinIVA.setTransportista(factura.getTransportista());
-        facturaSinIVA.setRenglones(listRenglonesSinIVA);
-        double[] importe = new double[renglonesSinIVA.size()];
-        double[] ivaPorcentaje = new double[renglonesSinIVA.size()];
-        int indice = 0;
-        for (RenglonFactura renglon : renglonesSinIVA) {
-            importe[indice] = renglon.getImporte();
-            ivaPorcentaje[indice] = renglon.getIva_porcentaje();
-            indice++;
-        }
-        facturaSinIVA.setSubTotal(this.calcularSubTotal(importe));
-        facturaSinIVA.setDescuento_neto(this.calcularDescuento_neto(facturaSinIVA.getSubTotal(), facturaSinIVA.getDescuento_porcentaje()));
-        facturaSinIVA.setRecargo_neto(this.calcularRecargo_neto(facturaSinIVA.getSubTotal(), facturaSinIVA.getRecargo_porcentaje()));
-        facturaSinIVA.setSubTotal_neto(this.calcularSubTotal_neto(facturaSinIVA.getSubTotal(), facturaSinIVA.getRecargo_neto(), facturaSinIVA.getDescuento_neto()));
-        facturaSinIVA.setIva_105_neto(this.calcularIva_neto(this.getTipoFactura(facturaSinIVA),
-                facturaSinIVA.getDescuento_porcentaje(),
-                facturaSinIVA.getRecargo_porcentaje(),
-                importe, ivaPorcentaje, 10.5));
-        facturaSinIVA.setIva_21_neto(this.calcularIva_neto(this.getTipoFactura(facturaSinIVA),
-                facturaSinIVA.getDescuento_porcentaje(),
-                facturaSinIVA.getRecargo_porcentaje(),
-                importe, ivaPorcentaje, 21));
-        double[] impuestoPorcentajes = new double[renglonesSinIVA.size()];
-        indice = 0;
-        for (RenglonFactura renglon : renglonesSinIVA) {
-            impuestoPorcentajes[indice] = renglon.getImpuesto_porcentaje();
-            indice++;
-        }
-        facturaSinIVA.setImpuestoInterno_neto(this.calcularImpInterno_neto(this.getTipoFactura(facturaSinIVA), facturaSinIVA.getDescuento_porcentaje(), facturaSinIVA.getRecargo_porcentaje(), importe, impuestoPorcentajes));
-        facturaSinIVA.setTotal(this.calcularTotal(facturaSinIVA.getSubTotal(), facturaSinIVA.getDescuento_neto(), facturaSinIVA.getRecargo_neto(), facturaSinIVA.getIva_105_neto(), facturaSinIVA.getIva_21_neto(), facturaSinIVA.getImpuestoInterno_neto()));
-        facturaSinIVA.setObservaciones(factura.getObservaciones());
-        facturaSinIVA.setPagada(factura.isPagada());
-        facturaSinIVA.setEmpresa(factura.getEmpresa());
-        facturaSinIVA.setEliminada(factura.isEliminada());
-
-        List<RenglonFactura> listRenglonesConIVA = new ArrayList<>(renglonesConIVA);
-        facturaConIVA.setFecha(factura.getFecha());
-        facturaConIVA.setTipoFactura(factura.getTipoFactura());
-        facturaConIVA.setNumSerie(factura.getNumSerie());
-        facturaConIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaConIVA), facturaConIVA.getNumSerie()));
-        facturaConIVA.setFechaVencimiento(factura.getFechaVencimiento());
-        facturaConIVA.setTransportista(factura.getTransportista());
-        facturaConIVA.setRenglones(listRenglonesConIVA);
-        importe = new double[renglonesConIVA.size()];
-        ivaPorcentaje = new double[renglonesConIVA.size()];
-        indice = 0;
-        for (RenglonFactura renglon : renglonesConIVA) {
-            importe[indice] = renglon.getImporte();
-            ivaPorcentaje[indice] = renglon.getIva_porcentaje();
-            indice++;
-        }
-        facturaConIVA.setSubTotal(this.calcularSubTotal(importe));
-        facturaConIVA.setDescuento_neto(this.calcularDescuento_neto(facturaConIVA.getSubTotal(), facturaConIVA.getDescuento_porcentaje()));
-        facturaConIVA.setRecargo_neto(this.calcularRecargo_neto(facturaConIVA.getSubTotal(), facturaConIVA.getRecargo_porcentaje()));
-        facturaConIVA.setSubTotal_neto(this.calcularSubTotal_neto(facturaConIVA.getSubTotal(), facturaConIVA.getRecargo_neto(), facturaConIVA.getDescuento_neto()));
-        facturaConIVA.setIva_105_neto(this.calcularIva_neto(this.getTipoFactura(facturaConIVA),
-                facturaConIVA.getDescuento_porcentaje(),
-                facturaConIVA.getRecargo_porcentaje(),
-                importe, ivaPorcentaje, 10.5));
-        facturaConIVA.setIva_21_neto(this.calcularIva_neto(this.getTipoFactura(facturaConIVA),
-                facturaConIVA.getDescuento_porcentaje(),
-                facturaConIVA.getRecargo_porcentaje(),
-                importe, ivaPorcentaje, 21));
-        impuestoPorcentajes = new double[renglonesConIVA.size()];
-        indice = 0;
-        for (RenglonFactura renglon : renglonesSinIVA) {
-            impuestoPorcentajes[indice] = renglon.getImpuesto_porcentaje();
-            indice++;
-        }
-        facturaConIVA.setImpuestoInterno_neto(this.calcularImpInterno_neto(this.getTipoFactura(facturaConIVA), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), importe, impuestoPorcentajes));
-        facturaConIVA.setTotal(this.calcularTotal(facturaConIVA.getSubTotal(), facturaConIVA.getDescuento_neto(), facturaConIVA.getRecargo_neto(), facturaConIVA.getIva_105_neto(), facturaConIVA.getIva_21_neto(), facturaConIVA.getImpuestoInterno_neto()));
-        facturaConIVA.setObservaciones(factura.getObservaciones());
-        facturaConIVA.setPagada(factura.isPagada());
-        facturaConIVA.setEmpresa(factura.getEmpresa());
-        facturaConIVA.setEliminada(factura.isEliminada());
-
+        facturaConIVA.setCliente(facturaADividir.getCliente());
+        facturaConIVA.setUsuario(facturaADividir.getUsuario());
+        facturaConIVA.setPedido(facturaADividir.getPedido());
         List<Factura> facturas = new ArrayList<>();
+        // TratamientoRenglones 
+        Remito = this.agregarRenglonesRemito(Remito, indices, facturaADividir.getRenglones());
+        facturaConIVA = this.agregarRenglonesFactura(facturaConIVA, indices, this.getTipoFactura(facturaADividir) ,facturaADividir.getRenglones());
+        // Fin Tratamiento Renglones - Comienzo tratamiento de Remito
+        if (Remito.getRenglones().size() > 0) {
+            Remito = this.completarRemito(facturaADividir, Remito);
+            facturas.add(Remito);
+        }
+        // Fin tratamiento con remito - Comienzo Tratamiento Factura
+        facturaConIVA = this.construirFactura(facturaADividir, facturaConIVA);
+        // Fin tratamiento Factura
         facturas.add(facturaConIVA);
-        facturas.add(facturaSinIVA);
         return facturas;
     }
 
@@ -960,6 +854,144 @@ public class FacturaServiceImpl implements IFacturaService {
         nuevoRenglon.setGanancia_neto(producto.getGanancia_neto());
         nuevoRenglon.setImporte(this.calcularImporte(cantidad, nuevoRenglon.getPrecioUnitario(), nuevoRenglon.getDescuento_neto()));
         return nuevoRenglon;
+    }
+
+    private FacturaVenta completarRemito(FacturaVenta factura, FacturaVenta Remito) {
+        double[] importe = new double[Remito.getRenglones().size()];
+        double[] ivaPorcentaje = new double[Remito.getRenglones().size()];
+        double[] impuestoPorcentajes = new double[Remito.getRenglones().size()];
+        int indice = 0;
+        List<RenglonFactura> listRenglonesSinIVA = new ArrayList<>(Remito.getRenglones());
+        Remito.setFecha(factura.getFecha());
+        Remito.setTipoFactura('X');
+        Remito.setNumSerie(factura.getNumSerie());
+        Remito.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(Remito), Remito.getNumSerie()));
+        Remito.setFechaVencimiento(factura.getFechaVencimiento());
+        Remito.setTransportista(factura.getTransportista());
+        Remito.setRenglones(listRenglonesSinIVA);
+        for (RenglonFactura renglon : Remito.getRenglones()) {
+            importe[indice] = renglon.getImporte();
+            ivaPorcentaje[indice] = renglon.getIva_porcentaje();
+            impuestoPorcentajes[indice] = renglon.getImpuesto_porcentaje();
+            indice++;
+        }
+        Remito.setSubTotal(this.calcularSubTotal(importe));
+        Remito.setDescuento_neto(this.calcularDescuento_neto(Remito.getSubTotal(), Remito.getDescuento_porcentaje()));
+        Remito.setRecargo_neto(this.calcularRecargo_neto(Remito.getSubTotal(), Remito.getRecargo_porcentaje()));
+        Remito.setSubTotal_neto(this.calcularSubTotal_neto(Remito.getSubTotal(), Remito.getRecargo_neto(), Remito.getDescuento_neto()));
+        Remito.setIva_105_neto(this.calcularIva_neto(this.getTipoFactura(Remito),
+                Remito.getDescuento_porcentaje(),
+                Remito.getRecargo_porcentaje(),
+                importe, ivaPorcentaje, 10.5));
+        Remito.setIva_21_neto(this.calcularIva_neto(this.getTipoFactura(Remito),
+                Remito.getDescuento_porcentaje(),
+                Remito.getRecargo_porcentaje(),
+                importe, ivaPorcentaje, 21));
+        Remito.setImpuestoInterno_neto(this.calcularImpInterno_neto(this.getTipoFactura(Remito), Remito.getDescuento_porcentaje(), Remito.getRecargo_porcentaje(), importe, impuestoPorcentajes));
+        Remito.setTotal(this.calcularTotal(Remito.getSubTotal(), Remito.getDescuento_neto(), Remito.getRecargo_neto(), Remito.getIva_105_neto(), Remito.getIva_21_neto(), Remito.getImpuestoInterno_neto()));
+        Remito.setObservaciones(factura.getObservaciones());
+        Remito.setPagada(factura.isPagada());
+        Remito.setEmpresa(factura.getEmpresa());
+        Remito.setEliminada(factura.isEliminada());
+        return Remito;
+    }
+
+    private FacturaVenta construirFactura(FacturaVenta facturaADividir, FacturaVenta facturaConIVA) {
+        double[] importe = new double[facturaConIVA.getRenglones().size()];
+        double[] ivaPorcentaje = new double[facturaConIVA.getRenglones().size()];
+        double[] impuestoPorcentajes = new double[facturaConIVA.getRenglones().size()];
+        int indice = 0;
+        List<RenglonFactura> listRenglonesConIVA = new ArrayList<>(facturaConIVA.getRenglones());
+        facturaConIVA.setFecha(facturaADividir.getFecha());
+        facturaConIVA.setTipoFactura(facturaADividir.getTipoFactura());
+        facturaConIVA.setNumSerie(facturaADividir.getNumSerie());
+        facturaConIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaConIVA), facturaConIVA.getNumSerie()));
+        facturaConIVA.setFechaVencimiento(facturaADividir.getFechaVencimiento());
+        facturaConIVA.setTransportista(facturaADividir.getTransportista());
+        facturaConIVA.setRenglones(listRenglonesConIVA);
+        for (RenglonFactura renglon : facturaConIVA.getRenglones()) {
+            importe[indice] = renglon.getImporte();
+            ivaPorcentaje[indice] = renglon.getIva_porcentaje();
+            impuestoPorcentajes[indice] = renglon.getImpuesto_porcentaje();
+            indice++;
+        }
+        facturaConIVA.setSubTotal(this.calcularSubTotal(importe));
+        facturaConIVA.setDescuento_neto(this.calcularDescuento_neto(facturaConIVA.getSubTotal(), facturaConIVA.getDescuento_porcentaje()));
+        facturaConIVA.setRecargo_neto(this.calcularRecargo_neto(facturaConIVA.getSubTotal(), facturaConIVA.getRecargo_porcentaje()));
+        facturaConIVA.setSubTotal_neto(this.calcularSubTotal_neto(facturaConIVA.getSubTotal(), facturaConIVA.getRecargo_neto(), facturaConIVA.getDescuento_neto()));
+        facturaConIVA.setIva_105_neto(this.calcularIva_neto(this.getTipoFactura(facturaConIVA),
+                facturaConIVA.getDescuento_porcentaje(),
+                facturaConIVA.getRecargo_porcentaje(),
+                importe, ivaPorcentaje, 10.5));
+        facturaConIVA.setIva_21_neto(this.calcularIva_neto(this.getTipoFactura(facturaConIVA),
+                facturaConIVA.getDescuento_porcentaje(),
+                facturaConIVA.getRecargo_porcentaje(),
+                importe, ivaPorcentaje, 21));
+        facturaConIVA.setImpuestoInterno_neto(this.calcularImpInterno_neto(this.getTipoFactura(facturaConIVA), facturaConIVA.getDescuento_porcentaje(), facturaConIVA.getRecargo_porcentaje(), importe, impuestoPorcentajes));
+        facturaConIVA.setTotal(this.calcularTotal(facturaConIVA.getSubTotal(), facturaConIVA.getDescuento_neto(), facturaConIVA.getRecargo_neto(), facturaConIVA.getIva_105_neto(), facturaConIVA.getIva_21_neto(), facturaConIVA.getImpuestoInterno_neto()));
+        facturaConIVA.setObservaciones(facturaADividir.getObservaciones());
+        facturaConIVA.setPagada(facturaADividir.isPagada());
+        facturaConIVA.setEmpresa(facturaADividir.getEmpresa());
+        facturaConIVA.setEliminada(facturaADividir.isEliminada());
+        return facturaConIVA;
+    }
+
+    private FacturaVenta agregarRenglonesRemito(FacturaVenta remito, int[] indices, List<RenglonFactura> renglones) {
+        List<RenglonFactura> renglonesSinIVA = new ArrayList<>();
+        double cantidadProductosRenglonRemito = 0;
+        int renglonMarcado = 0;
+        int numeroDeRenglon = 0;
+        for (RenglonFactura renglon : renglones) {
+            if (numeroDeRenglon == indices[renglonMarcado]) {
+                double cantidad = renglon.getCantidad();
+                if(cantidad > 1) {
+                   if ((cantidad % 2) == 0){
+                       cantidadProductosRenglonRemito = cantidad / 2;
+                    } else if ((cantidad % 2) != 0) {
+                        cantidadProductosRenglonRemito = cantidad - (Math.ceil(cantidad / 2));
+                    }
+                }
+                RenglonFactura nuevoRenglonSinIVA = this.calcularRenglon("Factura X", Movimiento.VENTA, cantidadProductosRenglonRemito, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+                if (nuevoRenglonSinIVA.getCantidad() != 0) {
+                    renglonesSinIVA.add(nuevoRenglonSinIVA);
+                }
+                numeroDeRenglon++;
+                renglonMarcado++;
+            } else {
+                numeroDeRenglon++;
+            }
+        }
+        remito.setRenglones(renglonesSinIVA);
+        return remito;
+    }
+
+    private FacturaVenta agregarRenglonesFactura(FacturaVenta facturaConIVA, int[] indices, String tipoFactura,  List<RenglonFactura> renglones) {
+        double cantidadProductosRenglonFactura = 0;
+        List<RenglonFactura> renglonesConIVA = new ArrayList<>();
+        int renglonMarcado = 0;
+        int numeroDeRenglon = 0;
+        for (RenglonFactura renglon : renglones) {
+            if (numeroDeRenglon == indices[renglonMarcado]) {
+                double cantidad = renglon.getCantidad();
+                if (cantidad < 1 || cantidad == 1) {
+                    cantidadProductosRenglonFactura = cantidad;
+                } else if ((renglon.getCantidad() % 2) == 0) {
+                    cantidadProductosRenglonFactura = renglon.getCantidad() / 2;
+                } else if ((renglon.getCantidad() % 2) != 0) {
+                    cantidadProductosRenglonFactura = Math.ceil(renglon.getCantidad() / 2);
+                }
+                RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(tipoFactura, Movimiento.VENTA, cantidadProductosRenglonFactura, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+                renglonesConIVA.add(nuevoRenglonConIVA);
+                renglonMarcado++;
+                numeroDeRenglon++;
+            } else {
+                numeroDeRenglon++;
+                RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(tipoFactura, Movimiento.VENTA, renglon.getCantidad(), productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+                renglonesConIVA.add(nuevoRenglonConIVA);
+            }
+        }
+        facturaConIVA.setRenglones(renglonesConIVA);
+        return facturaConIVA;
     }
 
 }

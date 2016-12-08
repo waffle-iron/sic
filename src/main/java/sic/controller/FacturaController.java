@@ -75,7 +75,7 @@ public class FacturaController {
     public List<Factura> guardarFacturaVenta(@RequestBody FacturaVenta factura,
                                              @RequestParam(value = "indices", required = false) int[] indice) {
         if (indice != null) {
-            return facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indice));
+            return facturaService.guardar(facturaService.dividirFactura(factura, indice));
         } else {
             List<Factura> facturas = new ArrayList<>();
             facturas.add(facturaService.guardar(factura));            
