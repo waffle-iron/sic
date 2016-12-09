@@ -197,7 +197,7 @@ public class ProductoController {
                 .build();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);        
-        headers.add("content-disposition", "inline; filename=listaDePrecios.pdf");
+        headers.add("content-disposition", "inline; filename=ListaPrecios.pdf");
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         byte[] reportePDF = productoService.getReporteListaDePreciosPorEmpresa(productoService.buscarProductos(criteria), idEmpresa);
         return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);
