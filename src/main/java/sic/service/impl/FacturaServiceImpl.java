@@ -767,9 +767,9 @@ public class FacturaServiceImpl implements IFacturaService {
         ConfiguracionDelSistema cds = configuracionDelSistemaService
                 .getConfiguracionDelSistemaPorEmpresa(factura.getEmpresa());
         params.put("preImpresa", cds.isUsarFacturaVentaPreImpresa());
-        String formasDePago = new String("Pago: ");
+        String formasDePago = "";
         for (Pago pago : pagoService.getPagosDeLaFactura(factura.getId_Factura())) {
-            formasDePago += pago.getFormaDePago().getNombre() + "-";
+            formasDePago += pago.getFormaDePago().getNombre() + " -";
         }
         params.put("formasDePago", formasDePago);
         params.put("facturaVenta", factura);
