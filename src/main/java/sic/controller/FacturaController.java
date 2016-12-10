@@ -253,7 +253,7 @@ public class FacturaController {
     public ResponseEntity<byte[]> getReporteFacturaVenta(@PathVariable long idFactura) {        
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);        
-        headers.add("content-disposition", "inline; filename=factura.pdf");
+        headers.add("content-disposition", "inline; filename=Factura.pdf");
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         byte[] reportePDF = facturaService.getReporteFacturaVenta(facturaService.getFacturaPorId(idFactura));
         return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);

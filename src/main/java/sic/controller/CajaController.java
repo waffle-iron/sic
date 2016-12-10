@@ -147,7 +147,7 @@ public class CajaController {
                                                  @PathVariable long idEmpresa) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);        
-        headers.add("content-disposition", "inline; filename=caja.pdf");
+        headers.add("content-disposition", "inline; filename=Caja.pdf");
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         byte[] reportePDF = cajaService.getReporteCaja(cajaService.getCajaPorId(idCaja), idEmpresa);
         return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);
