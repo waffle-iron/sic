@@ -70,32 +70,22 @@ public class FacturaController {
         return facturaService.getFacturaPorId(idFactura);
     }
     
-    @PostMapping("/facturas/venta")
+    @PostMapping("/facturas")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Factura> guardarFacturaVenta(@RequestBody FacturaVenta factura,
-                                             @RequestParam(value = "indices", required = false) int[] indice) {
-        if (indice != null) {
-            return facturaService.guardar(facturaService.dividirFactura(factura, indice));
+    public List<Factura> guardarFactura(@RequestBody Factura factura,
+                                        @RequestParam(required = false) int[] indices,
+                                        @RequestParam(required = false) Long idPedido) {
+        if (idPedido != null) {
+            factura.setPedido(pedidoService.getPedidoPorId(idPedido));
+        }
+        if (factura instanceof FacturaVenta && indices != null) {
+            return facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indices));
         } else {
             List<Factura> facturas = new ArrayList<>();
-            facturas.add(facturaService.guardar(factura));            
+            facturas.add(facturaService.guardar(factura));
             return facturas;
         }
-    }
-    
-    @PostMapping("/facturas/compra")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Factura guardarFacturaCompra(@RequestBody FacturaCompra factura) {
-        return facturaService.guardar(factura);
-    }
-    
-    @PostMapping("/facturas/pedidos/{idPedido}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Factura guardarFacturaConPedido(@PathVariable long idPedido,
-                                           @RequestBody FacturaVenta factura) {
-        factura.setPedido(pedidoService.getPedidoPorId(idPedido));
-        return facturaService.guardar(factura);
-    }    
+    }   
     
     @DeleteMapping("/facturas/{idFactura}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

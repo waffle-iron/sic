@@ -787,27 +787,23 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     public List<Factura> dividirFactura(FacturaVenta facturaADividir, int[] indices) {
-        FacturaVenta FacturaSinIVA = new FacturaVenta();
-        FacturaSinIVA.setCliente(facturaADividir.getCliente());
-        FacturaSinIVA.setUsuario(facturaADividir.getUsuario());
-        FacturaSinIVA.setPedido(facturaADividir.getPedido());
+        FacturaVenta comprobanteX = new FacturaVenta();
+        comprobanteX.setCliente(facturaADividir.getCliente());
+        comprobanteX.setUsuario(facturaADividir.getUsuario());
+        comprobanteX.setPedido(facturaADividir.getPedido());
         FacturaVenta facturaConIVA = new FacturaVenta();
         facturaConIVA.setCliente(facturaADividir.getCliente());
         facturaConIVA.setUsuario(facturaADividir.getUsuario());
         facturaConIVA.setPedido(facturaADividir.getPedido());
         facturaConIVA.setTipoFactura(facturaADividir.getTipoFactura());
         List<Factura> facturas = new ArrayList<>();
-        // TratamientoRenglones 
-        FacturaSinIVA = this.agregarRenglonesRemito(FacturaSinIVA, indices, facturaADividir.getRenglones());
+        comprobanteX = this.agregarRenglonesComprobante(comprobanteX, indices, facturaADividir.getRenglones());
         facturaConIVA = this.agregarRenglonesFactura(facturaConIVA, indices,facturaADividir.getRenglones());
-        // Fin Tratamiento Renglones - Comienzo tratamiento de Remito
-        if (FacturaSinIVA.getRenglones().size() > 0) {
-            FacturaSinIVA = this.completarRemito(facturaADividir, FacturaSinIVA);
-            facturas.add(FacturaSinIVA);
+        if (comprobanteX.getRenglones().size() > 0) {
+            comprobanteX = this.completarComprobanteX(facturaADividir, comprobanteX);
+            facturas.add(comprobanteX);
         }
-        // Fin tratamiento con remito - Comienzo Tratamiento Factura
         facturaConIVA = this.construirFactura(facturaADividir, facturaConIVA);
-        // Fin tratamiento Factura
         facturas.add(facturaConIVA);
         return facturas;
     }
@@ -857,44 +853,44 @@ public class FacturaServiceImpl implements IFacturaService {
         return nuevoRenglon;
     }
 
-    private FacturaVenta completarRemito(FacturaVenta factura, FacturaVenta Remito) {
-        double[] importe = new double[Remito.getRenglones().size()];
-        double[] ivaPorcentaje = new double[Remito.getRenglones().size()];
-        double[] impuestoPorcentajes = new double[Remito.getRenglones().size()];
+    private FacturaVenta completarComprobanteX(FacturaVenta factura, FacturaVenta comprobanteX) {
+        double[] importe = new double[comprobanteX.getRenglones().size()];
+        double[] ivaPorcentaje = new double[comprobanteX.getRenglones().size()];
+        double[] impuestoPorcentajes = new double[comprobanteX.getRenglones().size()];
         int indice = 0;
-        List<RenglonFactura> listRenglonesSinIVA = new ArrayList<>(Remito.getRenglones());
-        Remito.setFecha(factura.getFecha());
-        Remito.setTipoFactura('X');
-        Remito.setNumSerie(factura.getNumSerie());
-        Remito.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(Remito), Remito.getNumSerie()));
-        Remito.setFechaVencimiento(factura.getFechaVencimiento());
-        Remito.setTransportista(factura.getTransportista());
-        Remito.setRenglones(listRenglonesSinIVA);
-        for (RenglonFactura renglon : Remito.getRenglones()) {
+        List<RenglonFactura> listRenglonesSinIVA = new ArrayList<>(comprobanteX.getRenglones());
+        comprobanteX.setFecha(factura.getFecha());
+        comprobanteX.setTipoFactura('X');
+        comprobanteX.setNumSerie(factura.getNumSerie());
+        comprobanteX.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(comprobanteX), comprobanteX.getNumSerie()));
+        comprobanteX.setFechaVencimiento(factura.getFechaVencimiento());
+        comprobanteX.setTransportista(factura.getTransportista());
+        comprobanteX.setRenglones(listRenglonesSinIVA);
+        for (RenglonFactura renglon : comprobanteX.getRenglones()) {
             importe[indice] = renglon.getImporte();
             ivaPorcentaje[indice] = renglon.getIva_porcentaje();
             impuestoPorcentajes[indice] = renglon.getImpuesto_porcentaje();
             indice++;
         }
-        Remito.setSubTotal(this.calcularSubTotal(importe));
-        Remito.setDescuento_neto(this.calcularDescuento_neto(Remito.getSubTotal(), Remito.getDescuento_porcentaje()));
-        Remito.setRecargo_neto(this.calcularRecargo_neto(Remito.getSubTotal(), Remito.getRecargo_porcentaje()));
-        Remito.setSubTotal_neto(this.calcularSubTotal_neto(Remito.getSubTotal(), Remito.getRecargo_neto(), Remito.getDescuento_neto()));
-        Remito.setIva_105_neto(this.calcularIva_neto(this.getTipoFactura(Remito),
-                Remito.getDescuento_porcentaje(),
-                Remito.getRecargo_porcentaje(),
+        comprobanteX.setSubTotal(this.calcularSubTotal(importe));
+        comprobanteX.setDescuento_neto(this.calcularDescuento_neto(comprobanteX.getSubTotal(), comprobanteX.getDescuento_porcentaje()));
+        comprobanteX.setRecargo_neto(this.calcularRecargo_neto(comprobanteX.getSubTotal(), comprobanteX.getRecargo_porcentaje()));
+        comprobanteX.setSubTotal_neto(this.calcularSubTotal_neto(comprobanteX.getSubTotal(), comprobanteX.getRecargo_neto(), comprobanteX.getDescuento_neto()));
+        comprobanteX.setIva_105_neto(this.calcularIva_neto(this.getTipoFactura(comprobanteX),
+                comprobanteX.getDescuento_porcentaje(),
+                comprobanteX.getRecargo_porcentaje(),
                 importe, ivaPorcentaje, 10.5));
-        Remito.setIva_21_neto(this.calcularIva_neto(this.getTipoFactura(Remito),
-                Remito.getDescuento_porcentaje(),
-                Remito.getRecargo_porcentaje(),
+        comprobanteX.setIva_21_neto(this.calcularIva_neto(this.getTipoFactura(comprobanteX),
+                comprobanteX.getDescuento_porcentaje(),
+                comprobanteX.getRecargo_porcentaje(),
                 importe, ivaPorcentaje, 21));
-        Remito.setImpuestoInterno_neto(this.calcularImpInterno_neto(this.getTipoFactura(Remito), Remito.getDescuento_porcentaje(), Remito.getRecargo_porcentaje(), importe, impuestoPorcentajes));
-        Remito.setTotal(this.calcularTotal(Remito.getSubTotal(), Remito.getDescuento_neto(), Remito.getRecargo_neto(), Remito.getIva_105_neto(), Remito.getIva_21_neto(), Remito.getImpuestoInterno_neto()));
-        Remito.setObservaciones(factura.getObservaciones());
-        Remito.setPagada(factura.isPagada());
-        Remito.setEmpresa(factura.getEmpresa());
-        Remito.setEliminada(factura.isEliminada());
-        return Remito;
+        comprobanteX.setImpuestoInterno_neto(this.calcularImpInterno_neto(this.getTipoFactura(comprobanteX), comprobanteX.getDescuento_porcentaje(), comprobanteX.getRecargo_porcentaje(), importe, impuestoPorcentajes));
+        comprobanteX.setTotal(this.calcularTotal(comprobanteX.getSubTotal(), comprobanteX.getDescuento_neto(), comprobanteX.getRecargo_neto(), comprobanteX.getIva_105_neto(), comprobanteX.getIva_21_neto(), comprobanteX.getImpuestoInterno_neto()));
+        comprobanteX.setObservaciones(factura.getObservaciones());
+        comprobanteX.setPagada(factura.isPagada());
+        comprobanteX.setEmpresa(factura.getEmpresa());
+        comprobanteX.setEliminada(factura.isEliminada());
+        return comprobanteX;
     }
 
     private FacturaVenta construirFactura(FacturaVenta facturaADividir, FacturaVenta facturaConIVA) {
@@ -937,7 +933,7 @@ public class FacturaServiceImpl implements IFacturaService {
         return facturaConIVA;
     }
 
-    private FacturaVenta agregarRenglonesRemito(FacturaVenta remito, int[] indices, List<RenglonFactura> renglones) {
+    private FacturaVenta agregarRenglonesComprobante(FacturaVenta comprobanteX, int[] indices, List<RenglonFactura> renglones) {
         List<RenglonFactura> renglonesSinIVA = new ArrayList<>();
         double cantidadProductosRenglonRemito = 0;
         int renglonMarcado = 0;
@@ -962,8 +958,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 numeroDeRenglon++;
             }
         }
-        remito.setRenglones(renglonesSinIVA);
-        return remito;
+        comprobanteX.setRenglones(renglonesSinIVA);
+        return comprobanteX;
     }
 
     private FacturaVenta agregarRenglonesFactura(FacturaVenta facturaConIVA, int[] indices,  List<RenglonFactura> renglones) {
