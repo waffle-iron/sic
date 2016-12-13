@@ -31,7 +31,6 @@ import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IPagoService;
 import sic.service.IPedidoService;
-import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.IUsuarioService;
 import sic.modelo.Movimiento;
@@ -47,21 +46,19 @@ public class FacturaController {
     private final IProveedorService proveedorService;
     private final IClienteService clienteService;
     private final IUsuarioService usuarioService;
-    private final IPedidoService pedidoService;
-    private final IProductoService productoService;    
+    private final IPedidoService pedidoService;   
     
     @Autowired
     public FacturaController(IFacturaService facturaService, IEmpresaService empresaService,
                              IProveedorService proveedorService, IClienteService clienteService,
                              IUsuarioService usuarioService, IPedidoService pedidoService,
-                             IProductoService productoService, IPagoService pagoService) {
+                             IPagoService pagoService) {
         this.facturaService = facturaService;
         this.empresaService = empresaService;
         this.proveedorService = proveedorService;
         this.clienteService = clienteService;
         this.usuarioService = usuarioService;
-        this.pedidoService = pedidoService;
-        this.productoService = productoService;        
+        this.pedidoService = pedidoService;       
     }
     
     @GetMapping("/facturas/{idFactura}")
@@ -271,8 +268,7 @@ public class FacturaController {
                                           @RequestParam Movimiento movimiento,
                                           @RequestParam double cantidad, 
                                           @RequestParam double descuentoPorcentaje) {
-        return facturaService.calcularRenglon(tipoComprobante, movimiento, cantidad,
-                productoService.getProductoPorId(idProducto), descuentoPorcentaje);
+        return facturaService.calcularRenglon(tipoComprobante, movimiento, cantidad, idProducto, descuentoPorcentaje);
     }
     
     @GetMapping("/facturas/subtotal")

@@ -3,6 +3,7 @@ package sic.service.impl;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.log4j.Logger;
+import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ import sic.modelo.RenglonFactura;
 import sic.modelo.RenglonPedido;
 import sic.repository.IPedidoRepository;
 import sic.modelo.EstadoPedido;
+import sic.modelo.Movimiento;
 import sic.service.IFacturaService;
 import sic.service.IPedidoService;
 import sic.service.BusinessServiceException;
@@ -106,7 +109,8 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     public Pedido actualizarEstadoPedido(Pedido pedido, List<Factura> facturas) {
-        facturas.forEach((f) -> {
+//        facturas.forEach((f) -> {
+          for (Factura f : facturas ) {
             pedido.setEstado(EstadoPedido.ACTIVO);
             if (this.getFacturasDelPedido(pedido.getId_Pedido()).isEmpty()) {
                 pedido.setEstado(EstadoPedido.ABIERTO);
@@ -114,7 +118,8 @@ public class PedidoServiceImpl implements IPedidoService {
             if (facturaService.getRenglonesPedidoParaFacturar(pedido, "Factura " + f.getTipoFactura()).isEmpty()) {
                 pedido.setEstado(EstadoPedido.CERRADO);
             }
-        });
+        }
+//        });
         return pedido;       
     }
 
@@ -231,14 +236,19 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     public HashMap<Long, RenglonFactura> getRenglonesDeFacturasUnificadosPorNroPedido(long nroPedido) {
-        List<Factura> facturas = this.getFacturasDelPedido(nroPedido);
         List<RenglonFactura> renglonesDeFacturas = new ArrayList<>();
+        this.getFacturasDelPedido(nroPedido).stream().forEach((f) -> {
+            f.getRenglones().stream().forEach((r) -> {
+                renglonesDeFacturas.add(facturaService.calcularRenglon("Factura " + f.getTipoFactura(),
+                        Movimiento.VENTA, r.getCantidad(),r.getId_ProductoItem(), r.getDescuento_porcentaje()));
+            });
+        });       
         HashMap<Long, RenglonFactura> listaRenglonesUnificados = new HashMap<>();
-        if (!facturas.isEmpty()) {
-            for (Factura factura : facturas) {
+        if (!this.getFacturasDelPedido(nroPedido).isEmpty()) {
+            this.getFacturasDelPedido(nroPedido).stream().forEach((factura) -> {
                 renglonesDeFacturas.addAll(factura.getRenglones());
-            }
-            for (RenglonFactura renglon : renglonesDeFacturas) {
+            });
+            renglonesDeFacturas.stream().forEach((renglon) -> {
                 if (listaRenglonesUnificados.containsKey(renglon.getId_ProductoItem())) {
                     listaRenglonesUnificados.get(renglon.getId_ProductoItem())
                             .setCantidad(listaRenglonesUnificados
@@ -246,7 +256,7 @@ public class PedidoServiceImpl implements IPedidoService {
                 } else {
                     listaRenglonesUnificados.put(renglon.getId_ProductoItem(), renglon);
                 }
-            }
+            });
         }
         return listaRenglonesUnificados;
     }
