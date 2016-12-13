@@ -75,15 +75,15 @@ public class FacturaController {
     public List<Factura> guardarFactura(@RequestBody Factura factura,
                                         @RequestParam(required = false) int[] indices,
                                         @RequestParam(required = false) Long idPedido) {
-        if (idPedido != null) {
-            factura.setPedido(pedidoService.getPedidoPorId(idPedido));
-        }
+        //if (idPedido != null) {
+        //    factura.setPedido(pedidoService.getPedidoPorId(idPedido));
+        //}
         if (factura instanceof FacturaVenta && indices != null) {
-            return facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indices));
+            return facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indices), idPedido);
         } else {
             List<Factura> facturas = new ArrayList<>();
             facturas.add(facturaService.guardar(factura));
-            return facturas;
+            return facturas;            
         }
     }   
     
@@ -214,23 +214,7 @@ public class FacturaController {
     @ResponseStatus(HttpStatus.OK)
     public char[] getTiposFacturaSegunEmpresa(@PathVariable long idEmpresa) {
         return facturaService.getTiposFacturaSegunEmpresa(empresaService.getEmpresaPorId(idEmpresa));
-    }
-    
-    @GetMapping("/facturas/venta")
-    @ResponseStatus(HttpStatus.OK)
-    public FacturaVenta getFacturaVentaPorTipoSerieNum(@RequestParam char tipo,
-                                                       @RequestParam long serie,
-                                                       @RequestParam long numero) {
-        return facturaService.getFacturaVentaPorTipoSerieNum(tipo, serie, numero);
-    }
-    
-    @GetMapping("/facturas/compra")
-    @ResponseStatus(HttpStatus.OK)
-    public FacturaCompra getFacturaCompraPorTipoSerieNum(@RequestParam char tipo,
-                                                         @RequestParam long serie,
-                                                         @RequestParam long numero) {
-        return facturaService.getFacturaCompraPorTipoSerieNum(tipo, serie, numero);
-    }
+    }    
     
     @GetMapping("/facturas/{idFactura}/tipo")
     @ResponseStatus(HttpStatus.OK)

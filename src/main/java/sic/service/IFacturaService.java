@@ -13,7 +13,6 @@ import sic.modelo.Pedido;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
-import sic.modelo.RenglonPedido;
 
 public interface IFacturaService {
     
@@ -28,10 +27,8 @@ public interface IFacturaService {
     char[] getTiposFacturaSegunEmpresa(Empresa empresa);
 
     List<RenglonFactura> getRenglonesDeLaFactura(Long id_Factura);
-
-    FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num);
-
-    FacturaCompra getFacturaCompraPorTipoSerieNum(char tipo, long serie, long num);
+    
+    Factura getFacturaPorTipoSerieNum(char tipo, long serie, long num, long idEmpresa);
 
     String getTipoFactura(Factura factura);
 
@@ -43,13 +40,13 @@ public interface IFacturaService {
 
     Factura guardar(Factura factura);
     
-    List<Factura> guardar(List<Factura> facturas);     
+    List<Factura> guardar(List<Factura> facturas, long idPedido);     
     
     void actualizar(Factura factura);
 
     void eliminar(long idFactura);
     
-    void actualizarEstadoFactura(Factura factura);
+    Factura actualizarEstadoFactura(Factura factura);
     
     double getTotalPagado(Factura factura);
 

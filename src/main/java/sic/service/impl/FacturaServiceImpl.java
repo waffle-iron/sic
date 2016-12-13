@@ -4,6 +4,7 @@ import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
@@ -185,14 +186,9 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {
-        return facturaRepository.getFacturaVentaPorTipoSerieNum(tipo, serie, num);
-    }
-
-    @Override
-    public FacturaCompra getFacturaCompraPorTipoSerieNum(char tipo, long serie, long num) {
-        return facturaRepository.getFacturaCompraPorTipoSerieNum(tipo, serie, num);
-    }
+    public Factura getFacturaPorTipoSerieNum(char tipo, long serie, long num, long idEmpresa) {
+        return facturaRepository.getFacturaPorTipoSerieNum(tipo, serie, num, idEmpresa);
+    }    
 
     @Override
     public String getTipoFactura(Factura factura) {
@@ -328,29 +324,33 @@ public class FacturaServiceImpl implements IFacturaService {
             factura.setPagada(false);
         }        
         //PEDIDO
-        if (factura.getPedido() != null) {
-            List<Factura> facturas = factura.getPedido().getFacturas();
-            if (facturas == null) {
-                facturas = new ArrayList<>();
-            }
-            facturas.add(factura);
-            factura.getPedido().setFacturas(facturas);
-        }
-        factura = facturaRepository.guardar(factura);
-        this.actualizarEstadoFactura(factura);
-        productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
-        pedidoService.actualizarEstadoPedido(factura.getPedido() , "Factura " + factura.getTipoFactura());
+//        if (factura.getPedido() != null) {
+//            List<Factura> facturas = factura.getPedido().getFacturas();
+//            facturas.add(factura);
+//            factura.getPedido().setFacturas(facturas);            
+//        }
+        //factura = facturaRepository.guardar(factura);
+        //this.actualizarEstadoFactura(factura);
+        //productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
+        //pedidoService.actualizarEstadoPedido(factura.getPedido() , "Factura " + factura.getTipoFactura());
         LOGGER.warn("La Factura " + factura + " se guardó correctamente.");
         return factura;
     }
     
     @Override
     @Transactional
-    public List<Factura> guardar(List<Factura> facturas) {
-        List<Factura> facturasGuardadas = new ArrayList<>();
+    public List<Factura> guardar(List<Factura> facturas, long idPedido) {
+        List<Factura> facturasGuardadas = new ArrayList<>();              
+        Pedido pedido = pedidoService.getPedidoPorId(idPedido);        
         facturas.forEach((f) -> {
             facturasGuardadas.add(this.guardar(f));
+            productoService.actualizarStock(f, TipoDeOperacion.ALTA);
+            this.actualizarEstadoFactura(f);            
+            f.setPedido(pedido);
         });
+        pedido.setFacturas(facturasGuardadas);        
+        pedidoService.actualizar(pedido);        
+        pedidoService.actualizarEstadoPedido(pedido, facturasGuardadas);
         return facturasGuardadas;
     }    
 
@@ -368,7 +368,9 @@ public class FacturaServiceImpl implements IFacturaService {
         this.eliminarPagosDeFactura(factura);        
         productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);
         facturaRepository.actualizar(factura);
-        pedidoService.actualizarEstadoPedido(factura.getPedido(), "Factura " + factura.getTipoFactura());
+        List<Factura> facturas = new ArrayList<>();
+        facturas.add(factura);
+        pedidoService.actualizarEstadoPedido(factura.getPedido(), facturas);
     }
 
     private void eliminarPagosDeFactura(Factura factura) {
@@ -443,14 +445,15 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     @Transactional
-    public void actualizarEstadoFactura(Factura factura) {
+    public Factura actualizarEstadoFactura(Factura factura) {
         double totalFactura = Math.floor(factura.getTotal() * 100) / 100;
         if (this.getTotalPagado(factura) >= totalFactura) {
             factura.setPagada(true);
         } else {
             factura.setPagada(false);
         }
-        this.actualizar(factura);
+        return factura;
+        //this.actualizar(factura);
     }
     
     @Override
