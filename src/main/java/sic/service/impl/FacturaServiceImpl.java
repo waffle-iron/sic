@@ -298,15 +298,18 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     @Transactional
-    public Factura guardar(Factura factura) {
+    public Factura procesarFactura(Factura factura) {
         factura.setEliminada(false);
         if (factura instanceof FacturaVenta) {
-            //Serie de la factura hardcodeada a 1
             factura.setNumSerie(1);
             factura.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(factura), factura.getNumSerie()));
         }
         this.validarFactura(factura);
-        //PAGOS
+        this.procesarPagos(factura);     
+        return factura;
+    }
+    
+    private void procesarPagos(Factura factura) {
         int i = 0;
         double totalPagos = 0;
         if (factura.getPagos() != null) {
@@ -322,37 +325,46 @@ public class FacturaServiceImpl implements IFacturaService {
             }
         } else {
             factura.setPagada(false);
-        }        
-        //PEDIDO
-//        if (factura.getPedido() != null) {
-//            List<Factura> facturas = factura.getPedido().getFacturas();
-//            facturas.add(factura);
-//            factura.getPedido().setFacturas(facturas);            
-//        }
-        //factura = facturaRepository.guardar(factura);
-        //this.actualizarEstadoFactura(factura);
-        //productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
-        //pedidoService.actualizarEstadoPedido(factura.getPedido() , "Factura " + factura.getTipoFactura());
-        LOGGER.warn("La Factura " + factura + " se guardó correctamente.");
-        return factura;
+        }
     }
     
     @Override
     @Transactional
-    public List<Factura> guardar(List<Factura> facturas, long idPedido) {
-        List<Factura> facturasGuardadas = new ArrayList<>();              
-        Pedido pedido = pedidoService.getPedidoPorId(idPedido);        
-        facturas.forEach((f) -> {
-            facturasGuardadas.add(this.guardar(f));
+    public List<Factura> guardar(List<Factura> facturas, Long idPedido) {
+        List<Factura> facturasAGuardar = new ArrayList<>(); 
+        for (Factura f : facturas ) {
+            facturasAGuardar.add(this.procesarFactura(f));
             productoService.actualizarStock(f, TipoDeOperacion.ALTA);
-            this.actualizarEstadoFactura(f);            
-            f.setPedido(pedido);
+            this.actualizarEstadoFactura(f);
+        }
+        if (idPedido != null) {
+            Pedido pedido = pedidoService.getPedidoPorId(idPedido);
+            facturas.forEach((f) -> {
+                f.setPedido(pedido);
+            });
+            pedido.setFacturas(facturasAGuardar);
+            pedidoService.actualizar(pedido);
+            facturasAGuardar.stream().forEach((f) -> {
+                LOGGER.warn("La Factura " + f + " se guardó correctamente.");
+            });
+            pedidoService.actualizarEstadoPedido(pedido, facturasAGuardar);
+        } else {
+            facturasAGuardar = this.guardar(facturas);
+        }
+        return facturasAGuardar;
+    }
+    
+    @Transactional
+    private List<Factura> guardar(List<Factura> facturas) {
+        List<Factura> facturasPersistidas = new ArrayList<>();
+        facturas.stream().forEach((f) -> {
+            facturasPersistidas.add(facturaRepository.guardar(f));
         });
-        pedido.setFacturas(facturasGuardadas);        
-        pedidoService.actualizar(pedido);        
-        pedidoService.actualizarEstadoPedido(pedido, facturasGuardadas);
-        return facturasGuardadas;
-    }    
+        facturasPersistidas.stream().forEach((f) -> {
+            LOGGER.warn("La Factura " + f + " se guardó correctamente.");
+        });
+        return facturasPersistidas;
+    }
 
     @Override
     @Transactional
@@ -945,7 +957,7 @@ public class FacturaServiceImpl implements IFacturaService {
         for (RenglonFactura renglon : renglones) {
             if (numeroDeRenglon == indices[renglonMarcado]) {
                 double cantidad = renglon.getCantidad();
-                if(cantidad > 1) {
+                if(cantidad >= 1) {
                    if ((cantidad % 2) == 0){
                        cantidadProductosRenglonRemito = cantidad / 2;
                     } else if ((cantidad % 2) != 0) {
@@ -994,5 +1006,7 @@ public class FacturaServiceImpl implements IFacturaService {
         facturaConIVA.setRenglones(renglonesConIVA);
         return facturaConIVA;
     }
+
+
 
 }

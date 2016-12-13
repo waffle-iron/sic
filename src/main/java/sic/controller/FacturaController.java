@@ -72,15 +72,12 @@ public class FacturaController {
     public List<Factura> guardarFactura(@RequestBody Factura factura,
                                         @RequestParam(required = false) int[] indices,
                                         @RequestParam(required = false) Long idPedido) {
-        //if (idPedido != null) {
-        //    factura.setPedido(pedidoService.getPedidoPorId(idPedido));
-        //}
         if (factura instanceof FacturaVenta && indices != null) {
             return facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indices), idPedido);
         } else {
             List<Factura> facturas = new ArrayList<>();
-            facturas.add(facturaService.guardar(factura));
-            return facturas;            
+            facturas.add(facturaService.procesarFactura(factura));
+            return facturaService.guardar(facturas, idPedido);         
         }
     }   
     

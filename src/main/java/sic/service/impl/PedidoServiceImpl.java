@@ -109,8 +109,7 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     public Pedido actualizarEstadoPedido(Pedido pedido, List<Factura> facturas) {
-//        facturas.forEach((f) -> {
-          for (Factura f : facturas ) {
+        facturas.stream().forEach((f) -> {
             pedido.setEstado(EstadoPedido.ACTIVO);
             if (this.getFacturasDelPedido(pedido.getId_Pedido()).isEmpty()) {
                 pedido.setEstado(EstadoPedido.ABIERTO);
@@ -118,8 +117,7 @@ public class PedidoServiceImpl implements IPedidoService {
             if (facturaService.getRenglonesPedidoParaFacturar(pedido, "Factura " + f.getTipoFactura()).isEmpty()) {
                 pedido.setEstado(EstadoPedido.CERRADO);
             }
-        }
-//        });
+        });
         return pedido;       
     }
 
