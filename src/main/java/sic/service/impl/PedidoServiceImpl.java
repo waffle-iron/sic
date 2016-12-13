@@ -3,7 +3,6 @@ package sic.service.impl;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.log4j.Logger;
-import org.hibernate.mapping.Collection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -250,7 +248,7 @@ public class PedidoServiceImpl implements IPedidoService {
                 if (listaRenglonesUnificados.containsKey(renglon.getId_ProductoItem())) {
                     listaRenglonesUnificados.get(renglon.getId_ProductoItem())
                             .setCantidad(listaRenglonesUnificados
-                                    .get(renglon.getId_ProductoItem()).getCantidad() + renglon.getCantidad());
+                            .get(renglon.getId_ProductoItem()).getCantidad() + renglon.getCantidad());
                 } else {
                     listaRenglonesUnificados.put(renglon.getId_ProductoItem(), renglon);
                 }

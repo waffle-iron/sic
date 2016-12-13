@@ -40,9 +40,7 @@ public interface IFacturaService {
 
     Factura procesarFactura(Factura factura);
     
-    List<Factura> guardar(List<Factura> facturas, Long idPedido);     
-    
-//    List<Factura> guardar(List<Factura> facturas);
+    List<Factura> guardar(List<Factura> facturas, Long idPedido);
     
     void actualizar(Factura factura);
 

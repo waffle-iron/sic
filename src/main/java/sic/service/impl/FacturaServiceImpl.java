@@ -4,7 +4,6 @@ import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
@@ -301,7 +300,7 @@ public class FacturaServiceImpl implements IFacturaService {
     public Factura procesarFactura(Factura factura) {
         factura.setEliminada(false);
         if (factura instanceof FacturaVenta) {
-            factura.setNumSerie(1);
+            factura.setNumSerie(1); //Serie de la factura hardcodeada a 1
             factura.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(factura), factura.getNumSerie()));
         }
         this.validarFactura(factura);
@@ -359,6 +358,7 @@ public class FacturaServiceImpl implements IFacturaService {
         List<Factura> facturasPersistidas = new ArrayList<>();
         facturas.stream().forEach((f) -> {
             facturasPersistidas.add(facturaRepository.guardar(f));
+            LOGGER.warn("La Factura " + f + " se guardó correctamente.");
         });
         facturasPersistidas.stream().forEach((f) -> {
             LOGGER.warn("La Factura " + f + " se guardó correctamente.");
@@ -465,7 +465,6 @@ public class FacturaServiceImpl implements IFacturaService {
             factura.setPagada(false);
         }
         return factura;
-        //this.actualizar(factura);
     }
     
     @Override
@@ -801,29 +800,6 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public List<Factura> dividirFactura(FacturaVenta facturaADividir, int[] indices) {
-        FacturaVenta comprobanteX = new FacturaVenta();
-        comprobanteX.setCliente(facturaADividir.getCliente());
-        comprobanteX.setUsuario(facturaADividir.getUsuario());
-        comprobanteX.setPedido(facturaADividir.getPedido());
-        FacturaVenta facturaConIVA = new FacturaVenta();
-        facturaConIVA.setCliente(facturaADividir.getCliente());
-        facturaConIVA.setUsuario(facturaADividir.getUsuario());
-        facturaConIVA.setPedido(facturaADividir.getPedido());
-        facturaConIVA.setTipoFactura(facturaADividir.getTipoFactura());
-        List<Factura> facturas = new ArrayList<>();
-        comprobanteX = this.agregarRenglonesComprobante(comprobanteX, indices, facturaADividir.getRenglones());
-        facturaConIVA = this.agregarRenglonesFactura(facturaConIVA, indices,facturaADividir.getRenglones());
-        if (comprobanteX.getRenglones().size() > 0) {
-            comprobanteX = this.completarComprobanteX(facturaADividir, comprobanteX);
-            facturas.add(comprobanteX);
-        }
-        facturaConIVA = this.construirFactura(facturaADividir, facturaConIVA);
-        facturas.add(facturaConIVA);
-        return facturas;
-    }
-
-    @Override
     public List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido, String tipoDeComprobante) {
         List<RenglonFactura> renglonesRestantes = new ArrayList<>();
         HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getId_Pedido());
@@ -869,6 +845,29 @@ public class FacturaServiceImpl implements IFacturaService {
         return nuevoRenglon;
     }
 
+    @Override
+    public List<Factura> dividirFactura(FacturaVenta facturaADividir, int[] indices) {
+        FacturaVenta comprobanteX = new FacturaVenta();
+        comprobanteX.setCliente(facturaADividir.getCliente());
+        comprobanteX.setUsuario(facturaADividir.getUsuario());
+        comprobanteX.setPedido(facturaADividir.getPedido());
+        FacturaVenta facturaConIVA = new FacturaVenta();
+        facturaConIVA.setCliente(facturaADividir.getCliente());
+        facturaConIVA.setUsuario(facturaADividir.getUsuario());
+        facturaConIVA.setPedido(facturaADividir.getPedido());
+        facturaConIVA.setTipoFactura(facturaADividir.getTipoFactura());
+        List<Factura> facturas = new ArrayList<>();
+        comprobanteX = this.agregarRenglonesComprobante(comprobanteX, indices, facturaADividir.getRenglones());
+        facturaConIVA = this.agregarRenglonesFactura(facturaConIVA, indices,facturaADividir.getRenglones());
+        if (comprobanteX.getRenglones().size() > 0) {
+            comprobanteX = this.completarComprobanteX(facturaADividir, comprobanteX);
+            facturas.add(comprobanteX);
+        }
+        facturaConIVA = this.construirFactura(facturaADividir, facturaConIVA);
+        facturas.add(facturaConIVA);
+        return facturas;
+    }
+    
     private FacturaVenta completarComprobanteX(FacturaVenta factura, FacturaVenta comprobanteX) {
         double[] importe = new double[comprobanteX.getRenglones().size()];
         double[] ivaPorcentaje = new double[comprobanteX.getRenglones().size()];
@@ -1006,7 +1005,5 @@ public class FacturaServiceImpl implements IFacturaService {
         facturaConIVA.setRenglones(renglonesConIVA);
         return facturaConIVA;
     }
-
-
 
 }
