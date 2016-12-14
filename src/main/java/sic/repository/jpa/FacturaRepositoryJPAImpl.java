@@ -33,30 +33,17 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     }
 
     @Override
-    public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {
-        TypedQuery<FacturaVenta> typedQuery = em.createNamedQuery("Factura.buscarPorTipoSerieNum", FacturaVenta.class);
+    public Factura getFacturaPorTipoSerieNum(char tipo, long serie, long num, long idEmpresa) {
+        TypedQuery<Factura> typedQuery = em.createNamedQuery("Factura.buscarPorTipoSerieNum", Factura.class);
         typedQuery.setParameter("tipo", tipo);
         typedQuery.setParameter("serie", serie);
         typedQuery.setParameter("num", num);
-        List<FacturaVenta> facturasVenta = typedQuery.getResultList();
-        if (facturasVenta.isEmpty()) {
+        typedQuery.setParameter("idEmpresa", idEmpresa);
+        List<Factura> facturas = typedQuery.getResultList();
+        if (facturas.isEmpty()) {
             return null;
         } else {
-            return facturasVenta.get(0);
-        }
-    }
-
-    @Override
-    public FacturaCompra getFacturaCompraPorTipoSerieNum(char tipo, long serie, long num) {
-        TypedQuery<FacturaCompra> typedQuery = em.createNamedQuery("FacturaCompra.buscarPorTipoSerieNum", FacturaCompra.class);
-        typedQuery.setParameter("tipo", tipo);
-        typedQuery.setParameter("serie", serie);
-        typedQuery.setParameter("num", num);
-        List<FacturaCompra> facturasVenta = typedQuery.getResultList();
-        if (facturasVenta.isEmpty()) {
-            return null;
-        } else {
-            return facturasVenta.get(0);
+            return facturas.get(0);
         }
     }
 

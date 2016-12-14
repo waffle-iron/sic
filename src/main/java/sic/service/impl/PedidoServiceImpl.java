@@ -25,6 +25,7 @@ import sic.modelo.RenglonFactura;
 import sic.modelo.RenglonPedido;
 import sic.repository.IPedidoRepository;
 import sic.modelo.EstadoPedido;
+import sic.modelo.Movimiento;
 import sic.service.IFacturaService;
 import sic.service.IPedidoService;
 import sic.service.BusinessServiceException;
@@ -105,17 +106,17 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public void actualizarEstadoPedido(Pedido pedido, String tipoComprobante) {
-        if (pedido != null) {
-           pedido.setEstado(EstadoPedido.ACTIVO);
-           if (this.getFacturasDelPedido(pedido.getId_Pedido()).isEmpty()) {
-               pedido.setEstado(EstadoPedido.ABIERTO);
-           }
-           if (facturaService.getRenglonesPedidoParaFacturar(pedido, tipoComprobante).isEmpty()) {
-               pedido.setEstado(EstadoPedido.CERRADO);
-           }
-           this.actualizar(pedido);
-       }
+    public Pedido actualizarEstadoPedido(Pedido pedido, List<Factura> facturas) {
+        facturas.stream().forEach((f) -> {
+            pedido.setEstado(EstadoPedido.ACTIVO);
+            if (this.getFacturasDelPedido(pedido.getId_Pedido()).isEmpty()) {
+                pedido.setEstado(EstadoPedido.ABIERTO);
+            }
+            if (facturaService.convertirRenglonesPedidoARenglonesFactura(pedido, "Factura " + f.getTipoFactura()).isEmpty()) {
+                pedido.setEstado(EstadoPedido.CERRADO);
+            }
+        });
+        return pedido;
     }
 
     @Override
@@ -230,15 +231,17 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public HashMap<Long, RenglonFactura> getRenglonesDeFacturasUnificadosPorNroPedido(long nroPedido) {
-        List<Factura> facturas = this.getFacturasDelPedido(nroPedido);
+    public HashMap<Long, RenglonFactura> getRenglonesFacturadosDelPedido(long nroPedido) {
         List<RenglonFactura> renglonesDeFacturas = new ArrayList<>();
+        this.getFacturasDelPedido(nroPedido).stream().forEach((f) -> {
+            f.getRenglones().stream().forEach((r) -> {
+                renglonesDeFacturas.add(facturaService.calcularRenglon("Factura " + f.getTipoFactura(),
+                        Movimiento.VENTA, r.getCantidad(),r.getId_ProductoItem(), r.getDescuento_porcentaje()));
+            });      
+        });
         HashMap<Long, RenglonFactura> listaRenglonesUnificados = new HashMap<>();
-        if (!facturas.isEmpty()) {
-            for (Factura factura : facturas) {
-                renglonesDeFacturas.addAll(factura.getRenglones());
-            }
-            for (RenglonFactura renglon : renglonesDeFacturas) {
+        if (!renglonesDeFacturas.isEmpty()) {
+            renglonesDeFacturas.stream().forEach((renglon) -> {
                 if (listaRenglonesUnificados.containsKey(renglon.getId_ProductoItem())) {
                     listaRenglonesUnificados.get(renglon.getId_ProductoItem())
                             .setCantidad(listaRenglonesUnificados
@@ -246,7 +249,7 @@ public class PedidoServiceImpl implements IPedidoService {
                 } else {
                     listaRenglonesUnificados.put(renglon.getId_ProductoItem(), renglon);
                 }
-            }
+            });
         }
         return listaRenglonesUnificados;
     }

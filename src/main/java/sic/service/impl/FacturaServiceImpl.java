@@ -185,14 +185,9 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num) {
-        return facturaRepository.getFacturaVentaPorTipoSerieNum(tipo, serie, num);
-    }
-
-    @Override
-    public FacturaCompra getFacturaCompraPorTipoSerieNum(char tipo, long serie, long num) {
-        return facturaRepository.getFacturaCompraPorTipoSerieNum(tipo, serie, num);
-    }
+    public Factura getFacturaPorTipoSerieNum(char tipo, long serie, long num, long idEmpresa) {
+        return facturaRepository.getFacturaPorTipoSerieNum(tipo, serie, num, idEmpresa);
+    }    
 
     @Override
     public String getTipoFactura(Factura factura) {
@@ -300,17 +295,18 @@ public class FacturaServiceImpl implements IFacturaService {
         return facturaRepository.buscarFacturasVenta(criteria);
     }
 
-    @Override
-    @Transactional
-    public Factura guardar(Factura factura) {
+    private Factura procesarFactura(Factura factura) {
         factura.setEliminada(false);
         if (factura instanceof FacturaVenta) {
-            //Serie de la factura hardcodeada a 1
-            factura.setNumSerie(1);
+            factura.setNumSerie(1); //Serie de la factura hardcodeada a 1
             factura.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(factura), factura.getNumSerie()));
         }
         this.validarFactura(factura);
-        //PAGOS
+        this.procesarPagos(factura);     
+        return factura;
+    }
+    
+    private void procesarPagos(Factura factura) {
         int i = 0;
         double totalPagos = 0;
         if (factura.getPagos() != null) {
@@ -326,33 +322,39 @@ public class FacturaServiceImpl implements IFacturaService {
             }
         } else {
             factura.setPagada(false);
-        }        
-        //PEDIDO
-        if (factura.getPedido() != null) {
-            List<Factura> facturas = factura.getPedido().getFacturas();
-            if (facturas == null) {
-                facturas = new ArrayList<>();
-            }
-            facturas.add(factura);
-            factura.getPedido().setFacturas(facturas);
         }
-        factura = facturaRepository.guardar(factura);
-        this.actualizarEstadoFactura(factura);
-        productoService.actualizarStock(factura, TipoDeOperacion.ALTA);
-        pedidoService.actualizarEstadoPedido(factura.getPedido() , "Factura " + factura.getTipoFactura());
-        LOGGER.warn("La Factura " + factura + " se guardó correctamente.");
-        return factura;
     }
     
     @Override
     @Transactional
-    public List<Factura> guardar(List<Factura> facturas) {
-        List<Factura> facturasGuardadas = new ArrayList<>();
-        facturas.forEach((f) -> {
-            facturasGuardadas.add(this.guardar(f));
-        });
-        return facturasGuardadas;
-    }    
+    public List<Factura> guardar(List<Factura> facturas, Long idPedido) {
+        List<Factura> facturasProcesadas = new ArrayList<>();
+        for (Factura f : facturas) {
+            facturasProcesadas.add(this.procesarFactura(f));
+            productoService.actualizarStock(f, TipoDeOperacion.ALTA);
+            this.actualizarEstadoFactura(f);
+        }
+        if (idPedido != null) {
+            Pedido pedido = pedidoService.getPedidoPorId(idPedido);
+            facturas.forEach((f) -> {
+                f.setPedido(pedido);
+            });
+            pedido.setFacturas(facturasProcesadas);
+            pedidoService.actualizar(pedido);
+            facturasProcesadas.stream().forEach((f) -> {
+                LOGGER.warn("La Factura " + f + " se guardó correctamente.");
+            });
+            pedidoService.actualizarEstadoPedido(pedido, facturasProcesadas);
+        } else {
+            facturasProcesadas = new ArrayList<>();
+            for (Factura f : facturas) {
+                Factura facturaGuardada = facturaRepository.guardar(f);
+                facturasProcesadas.add(facturaGuardada);
+                LOGGER.warn("La Factura " + facturaGuardada + " se guardó correctamente.");
+            }            
+        }
+        return facturasProcesadas;
+    }
 
     @Override
     @Transactional
@@ -368,7 +370,9 @@ public class FacturaServiceImpl implements IFacturaService {
         this.eliminarPagosDeFactura(factura);        
         productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);
         facturaRepository.actualizar(factura);
-        pedidoService.actualizarEstadoPedido(factura.getPedido(), "Factura " + factura.getTipoFactura());
+        List<Factura> facturas = new ArrayList<>();
+        facturas.add(factura);
+        pedidoService.actualizarEstadoPedido(factura.getPedido(), facturas);
     }
 
     private void eliminarPagosDeFactura(Factura factura) {
@@ -443,14 +447,14 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     @Transactional
-    public void actualizarEstadoFactura(Factura factura) {
+    public Factura actualizarEstadoFactura(Factura factura) {
         double totalFactura = Math.floor(factura.getTotal() * 100) / 100;
         if (this.getTotalPagado(factura) >= totalFactura) {
             factura.setPagada(true);
         } else {
             factura.setPagada(false);
         }
-        this.actualizar(factura);
+        return factura;
     }
     
     @Override
@@ -768,9 +772,10 @@ public class FacturaServiceImpl implements IFacturaService {
                 .getConfiguracionDelSistemaPorEmpresa(factura.getEmpresa());
         params.put("preImpresa", cds.isUsarFacturaVentaPreImpresa());
         String formasDePago = "";
-        for (Pago pago : pagoService.getPagosDeLaFactura(factura.getId_Factura())) {
-            formasDePago += pago.getFormaDePago().getNombre() + " -";
-        }
+        formasDePago = pagoService.getPagosDeLaFactura(factura.getId_Factura())
+                                  .stream()
+                                  .map((pago) -> pago.getFormaDePago().getNombre() + " -")
+                                  .reduce(formasDePago, String::concat);
         params.put("formasDePago", formasDePago);
         params.put("facturaVenta", factura);
         params.put("nroComprobante", factura.getNumSerie() + "-" + factura.getNumFactura());
@@ -786,51 +791,37 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public List<Factura> dividirFactura(FacturaVenta facturaADividir, int[] indices) {
-        FacturaVenta comprobanteX = new FacturaVenta();
-        comprobanteX.setCliente(facturaADividir.getCliente());
-        comprobanteX.setUsuario(facturaADividir.getUsuario());
-        comprobanteX.setPedido(facturaADividir.getPedido());
-        FacturaVenta facturaConIVA = new FacturaVenta();
-        facturaConIVA.setCliente(facturaADividir.getCliente());
-        facturaConIVA.setUsuario(facturaADividir.getUsuario());
-        facturaConIVA.setPedido(facturaADividir.getPedido());
-        facturaConIVA.setTipoFactura(facturaADividir.getTipoFactura());
-        List<Factura> facturas = new ArrayList<>();
-        comprobanteX = this.agregarRenglonesComprobante(comprobanteX, indices, facturaADividir.getRenglones());
-        facturaConIVA = this.agregarRenglonesFactura(facturaConIVA, indices,facturaADividir.getRenglones());
-        if (comprobanteX.getRenglones().size() > 0) {
-            comprobanteX = this.completarComprobanteX(facturaADividir, comprobanteX);
-            facturas.add(comprobanteX);
-        }
-        facturaConIVA = this.construirFactura(facturaADividir, facturaConIVA);
-        facturas.add(facturaConIVA);
-        return facturas;
-    }
-
-    @Override
-    public List<RenglonFactura> getRenglonesPedidoParaFacturar(Pedido pedido, String tipoDeComprobante) {
+    public List<RenglonFactura> convertirRenglonesPedidoARenglonesFactura(Pedido pedido, String tipoDeComprobante) {
         List<RenglonFactura> renglonesRestantes = new ArrayList<>();
-        HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getId_Pedido());
-        pedido.getRenglones().forEach((renglon) -> {
-            if (renglonesDeFacturas.containsKey(renglon.getProducto().getId_Producto())) {
-                if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
-                    renglonesRestantes.add(this.calcularRenglon(tipoDeComprobante,
-                            Movimiento.VENTA, renglon.getCantidad() - renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad(),
-                            renglon.getProducto(), renglon.getDescuento_porcentaje()));
+        HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesFacturadosDelPedido(pedido.getId_Pedido());
+        List<Factura> facturasDePedido = this.getFacturasDelPedido(pedido.getId_Pedido());
+        if (facturasDePedido != null) {
+            pedido.getRenglones().stream().forEach((renglon) -> {
+                if (renglonesDeFacturas.containsKey(renglon.getProducto().getId_Producto())) {
+                    if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
+                        renglonesRestantes.add(this.calcularRenglon(tipoDeComprobante,
+                                Movimiento.VENTA, renglon.getCantidad() - renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad(),
+                                renglon.getProducto().getId_Producto(), renglon.getDescuento_porcentaje()));
+                    }
+                } else {
+                    renglonesRestantes.add(this.calcularRenglon(tipoDeComprobante, Movimiento.VENTA,
+                            renglon.getCantidad(), renglon.getProducto().getId_Producto(), renglon.getDescuento_porcentaje()));
                 }
-            } else {                
+            });
+        } else {
+            pedido.getRenglones().stream().forEach((renglon) -> {
                 renglonesRestantes.add(this.calcularRenglon(tipoDeComprobante, Movimiento.VENTA,
-                        renglon.getCantidad(), renglon.getProducto(), renglon.getDescuento_porcentaje()));
-            }
-        });
+                        renglon.getCantidad(), renglon.getProducto().getId_Producto(), renglon.getDescuento_porcentaje()));
+            });
+        }
         return renglonesRestantes;
     }
 
     @Override
     public RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento,
-            double cantidad, Producto producto, double descuento_porcentaje) {
+            double cantidad, Long idProducto, double descuento_porcentaje) {
 
+        Producto producto = productoService.getProductoPorId(idProducto);
         RenglonFactura nuevoRenglon = new RenglonFactura();
         nuevoRenglon.setId_ProductoItem(producto.getId_Producto());
         nuevoRenglon.setCodigoItem(producto.getCodigo());
@@ -853,47 +844,70 @@ public class FacturaServiceImpl implements IFacturaService {
         return nuevoRenglon;
     }
 
-    private FacturaVenta completarComprobanteX(FacturaVenta factura, FacturaVenta comprobanteX) {
-        double[] importe = new double[comprobanteX.getRenglones().size()];
-        double[] ivaPorcentaje = new double[comprobanteX.getRenglones().size()];
-        double[] impuestoPorcentajes = new double[comprobanteX.getRenglones().size()];
+    @Override
+    public List<Factura> dividirFactura(FacturaVenta facturaADividir, int[] indices) {
+        FacturaVenta facturaSinIVA = new FacturaVenta();
+        facturaSinIVA.setCliente(facturaADividir.getCliente());
+        facturaSinIVA.setUsuario(facturaADividir.getUsuario());
+        facturaSinIVA.setPedido(facturaADividir.getPedido());
+        FacturaVenta facturaConIVA = new FacturaVenta();
+        facturaConIVA.setCliente(facturaADividir.getCliente());
+        facturaConIVA.setUsuario(facturaADividir.getUsuario());
+        facturaConIVA.setPedido(facturaADividir.getPedido());
+        facturaConIVA.setTipoFactura(facturaADividir.getTipoFactura());
+        List<Factura> facturas = new ArrayList<>();
+        facturaSinIVA = this.agregarRenglonesAFacturaSinIVA(facturaSinIVA, indices, facturaADividir.getRenglones());
+        facturaConIVA = this.agregarRenglonesAFacturaConIVA(facturaConIVA, indices,facturaADividir.getRenglones());
+        if (facturaSinIVA.getRenglones().size() > 0) {
+            facturaSinIVA = this.procesarFacturaSinIVA(facturaADividir, facturaSinIVA);
+            facturas.add(facturaSinIVA);
+        }
+        facturaConIVA = this.procesarFacturaConIVA(facturaADividir, facturaConIVA);
+        facturas.add(facturaConIVA);
+        return facturas;
+    }
+    
+    private FacturaVenta procesarFacturaSinIVA(FacturaVenta facturaADividir, FacturaVenta facturaSinIVA) {
+        double[] importe = new double[facturaSinIVA.getRenglones().size()];
+        double[] ivaPorcentaje = new double[facturaSinIVA.getRenglones().size()];
+        double[] impuestoPorcentajes = new double[facturaSinIVA.getRenglones().size()];
         int indice = 0;
-        List<RenglonFactura> listRenglonesSinIVA = new ArrayList<>(comprobanteX.getRenglones());
-        comprobanteX.setFecha(factura.getFecha());
-        comprobanteX.setTipoFactura('X');
-        comprobanteX.setNumSerie(factura.getNumSerie());
-        comprobanteX.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(comprobanteX), comprobanteX.getNumSerie()));
-        comprobanteX.setFechaVencimiento(factura.getFechaVencimiento());
-        comprobanteX.setTransportista(factura.getTransportista());
-        comprobanteX.setRenglones(listRenglonesSinIVA);
-        for (RenglonFactura renglon : comprobanteX.getRenglones()) {
+        List<RenglonFactura> listRenglonesSinIVA = new ArrayList<>(facturaSinIVA.getRenglones());
+        facturaSinIVA.setFecha(facturaADividir.getFecha());
+        facturaSinIVA.setTipoFactura('X');
+        facturaSinIVA.setNumSerie(facturaADividir.getNumSerie());
+        facturaSinIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaSinIVA), facturaSinIVA.getNumSerie()));
+        facturaSinIVA.setFechaVencimiento(facturaADividir.getFechaVencimiento());
+        facturaSinIVA.setTransportista(facturaADividir.getTransportista());
+        facturaSinIVA.setRenglones(listRenglonesSinIVA);
+        for (RenglonFactura renglon : facturaSinIVA.getRenglones()) {
             importe[indice] = renglon.getImporte();
             ivaPorcentaje[indice] = renglon.getIva_porcentaje();
             impuestoPorcentajes[indice] = renglon.getImpuesto_porcentaje();
             indice++;
         }
-        comprobanteX.setSubTotal(this.calcularSubTotal(importe));
-        comprobanteX.setDescuento_neto(this.calcularDescuento_neto(comprobanteX.getSubTotal(), comprobanteX.getDescuento_porcentaje()));
-        comprobanteX.setRecargo_neto(this.calcularRecargo_neto(comprobanteX.getSubTotal(), comprobanteX.getRecargo_porcentaje()));
-        comprobanteX.setSubTotal_neto(this.calcularSubTotal_neto(comprobanteX.getSubTotal(), comprobanteX.getRecargo_neto(), comprobanteX.getDescuento_neto()));
-        comprobanteX.setIva_105_neto(this.calcularIva_neto(this.getTipoFactura(comprobanteX),
-                comprobanteX.getDescuento_porcentaje(),
-                comprobanteX.getRecargo_porcentaje(),
+        facturaSinIVA.setSubTotal(this.calcularSubTotal(importe));
+        facturaSinIVA.setDescuento_neto(this.calcularDescuento_neto(facturaSinIVA.getSubTotal(), facturaSinIVA.getDescuento_porcentaje()));
+        facturaSinIVA.setRecargo_neto(this.calcularRecargo_neto(facturaSinIVA.getSubTotal(), facturaSinIVA.getRecargo_porcentaje()));
+        facturaSinIVA.setSubTotal_neto(this.calcularSubTotal_neto(facturaSinIVA.getSubTotal(), facturaSinIVA.getRecargo_neto(), facturaSinIVA.getDescuento_neto()));
+        facturaSinIVA.setIva_105_neto(this.calcularIva_neto(this.getTipoFactura(facturaSinIVA),
+                facturaSinIVA.getDescuento_porcentaje(),
+                facturaSinIVA.getRecargo_porcentaje(),
                 importe, ivaPorcentaje, 10.5));
-        comprobanteX.setIva_21_neto(this.calcularIva_neto(this.getTipoFactura(comprobanteX),
-                comprobanteX.getDescuento_porcentaje(),
-                comprobanteX.getRecargo_porcentaje(),
+        facturaSinIVA.setIva_21_neto(this.calcularIva_neto(this.getTipoFactura(facturaSinIVA),
+                facturaSinIVA.getDescuento_porcentaje(),
+                facturaSinIVA.getRecargo_porcentaje(),
                 importe, ivaPorcentaje, 21));
-        comprobanteX.setImpuestoInterno_neto(this.calcularImpInterno_neto(this.getTipoFactura(comprobanteX), comprobanteX.getDescuento_porcentaje(), comprobanteX.getRecargo_porcentaje(), importe, impuestoPorcentajes));
-        comprobanteX.setTotal(this.calcularTotal(comprobanteX.getSubTotal(), comprobanteX.getDescuento_neto(), comprobanteX.getRecargo_neto(), comprobanteX.getIva_105_neto(), comprobanteX.getIva_21_neto(), comprobanteX.getImpuestoInterno_neto()));
-        comprobanteX.setObservaciones(factura.getObservaciones());
-        comprobanteX.setPagada(factura.isPagada());
-        comprobanteX.setEmpresa(factura.getEmpresa());
-        comprobanteX.setEliminada(factura.isEliminada());
-        return comprobanteX;
+        facturaSinIVA.setImpuestoInterno_neto(this.calcularImpInterno_neto(this.getTipoFactura(facturaSinIVA), facturaSinIVA.getDescuento_porcentaje(), facturaSinIVA.getRecargo_porcentaje(), importe, impuestoPorcentajes));
+        facturaSinIVA.setTotal(this.calcularTotal(facturaSinIVA.getSubTotal(), facturaSinIVA.getDescuento_neto(), facturaSinIVA.getRecargo_neto(), facturaSinIVA.getIva_105_neto(), facturaSinIVA.getIva_21_neto(), facturaSinIVA.getImpuestoInterno_neto()));
+        facturaSinIVA.setObservaciones(facturaADividir.getObservaciones());
+        facturaSinIVA.setPagada(facturaADividir.isPagada());
+        facturaSinIVA.setEmpresa(facturaADividir.getEmpresa());
+        facturaSinIVA.setEliminada(facturaADividir.isEliminada());
+        return facturaSinIVA;
     }
 
-    private FacturaVenta construirFactura(FacturaVenta facturaADividir, FacturaVenta facturaConIVA) {
+    private FacturaVenta procesarFacturaConIVA(FacturaVenta facturaADividir, FacturaVenta facturaConIVA) {
         double[] importe = new double[facturaConIVA.getRenglones().size()];
         double[] ivaPorcentaje = new double[facturaConIVA.getRenglones().size()];
         double[] impuestoPorcentajes = new double[facturaConIVA.getRenglones().size()];
@@ -933,22 +947,25 @@ public class FacturaServiceImpl implements IFacturaService {
         return facturaConIVA;
     }
 
-    private FacturaVenta agregarRenglonesComprobante(FacturaVenta comprobanteX, int[] indices, List<RenglonFactura> renglones) {
+    private FacturaVenta agregarRenglonesAFacturaSinIVA(FacturaVenta facturaSinIVA, int[] indices, List<RenglonFactura> renglones) {
         List<RenglonFactura> renglonesSinIVA = new ArrayList<>();
-        double cantidadProductosRenglonRemito = 0;
+        double cantidadProductosRenglonFacturaSinIVA = 0;
         int renglonMarcado = 0;
         int numeroDeRenglon = 0;
         for (RenglonFactura renglon : renglones) {
             if (numeroDeRenglon == indices[renglonMarcado]) {
                 double cantidad = renglon.getCantidad();
-                if(cantidad > 1) {
-                   if ((cantidad % 2) == 0){
-                       cantidadProductosRenglonRemito = cantidad / 2;
+                if (cantidad >= 1) {
+                    if ((cantidad % 1 != 0) || (cantidad % 2) == 0) {
+                        cantidadProductosRenglonFacturaSinIVA = cantidad / 2;
                     } else if ((cantidad % 2) != 0) {
-                        cantidadProductosRenglonRemito = cantidad - (Math.ceil(cantidad / 2));
+                        cantidadProductosRenglonFacturaSinIVA = cantidad - (Math.ceil(cantidad / 2));
                     }
+                } else {
+                    cantidadProductosRenglonFacturaSinIVA = 0;
                 }
-                RenglonFactura nuevoRenglonSinIVA = this.calcularRenglon("Factura X", Movimiento.VENTA, cantidadProductosRenglonRemito, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+                RenglonFactura nuevoRenglonSinIVA = this.calcularRenglon("Factura X", Movimiento.VENTA, 
+                            cantidadProductosRenglonFacturaSinIVA, renglon.getId_ProductoItem(), renglon.getDescuento_porcentaje());
                 if (nuevoRenglonSinIVA.getCantidad() != 0) {
                     renglonesSinIVA.add(nuevoRenglonSinIVA);
                 }
@@ -958,32 +975,34 @@ public class FacturaServiceImpl implements IFacturaService {
                 numeroDeRenglon++;
             }
         }
-        comprobanteX.setRenglones(renglonesSinIVA);
-        return comprobanteX;
+        facturaSinIVA.setRenglones(renglonesSinIVA);
+        return facturaSinIVA;
     }
 
-    private FacturaVenta agregarRenglonesFactura(FacturaVenta facturaConIVA, int[] indices,  List<RenglonFactura> renglones) {
-        double cantidadProductosRenglonFactura = 0;
+    private FacturaVenta agregarRenglonesAFacturaConIVA(FacturaVenta facturaConIVA, int[] indices,  List<RenglonFactura> renglones) {
         List<RenglonFactura> renglonesConIVA = new ArrayList<>();
+        double cantidadProductosRenglonFacturaConIVA = 0;
         int renglonMarcado = 0;
         int numeroDeRenglon = 0;
         for (RenglonFactura renglon : renglones) {
             if (numeroDeRenglon == indices[renglonMarcado]) {
                 double cantidad = renglon.getCantidad();
                 if (cantidad < 1 || cantidad == 1) {
-                    cantidadProductosRenglonFactura = cantidad;
-                } else if ((renglon.getCantidad() % 2) == 0) {
-                    cantidadProductosRenglonFactura = renglon.getCantidad() / 2;
+                    cantidadProductosRenglonFacturaConIVA = cantidad;
+                } else if ((cantidad % 1 != 0) || (renglon.getCantidad() % 2) == 0) {
+                    cantidadProductosRenglonFacturaConIVA = renglon.getCantidad() / 2;
                 } else if ((renglon.getCantidad() % 2) != 0) {
-                    cantidadProductosRenglonFactura = Math.ceil(renglon.getCantidad() / 2);
+                    cantidadProductosRenglonFacturaConIVA = Math.ceil(renglon.getCantidad() / 2);
                 }
-                RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(this.getTipoFactura(facturaConIVA), Movimiento.VENTA, cantidadProductosRenglonFactura, productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+                RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(this.getTipoFactura(facturaConIVA), Movimiento.VENTA,
+                        cantidadProductosRenglonFacturaConIVA, renglon.getId_ProductoItem(), renglon.getDescuento_porcentaje());
                 renglonesConIVA.add(nuevoRenglonConIVA);
                 renglonMarcado++;
                 numeroDeRenglon++;
             } else {
                 numeroDeRenglon++;
-                RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(this.getTipoFactura(facturaConIVA), Movimiento.VENTA, renglon.getCantidad(), productoService.getProductoPorId(renglon.getId_ProductoItem()), renglon.getDescuento_porcentaje());
+                RenglonFactura nuevoRenglonConIVA = this.calcularRenglon(this.getTipoFactura(facturaConIVA), Movimiento.VENTA,
+                        renglon.getCantidad(), renglon.getId_ProductoItem(), renglon.getDescuento_porcentaje());
                 renglonesConIVA.add(nuevoRenglonConIVA);
             }
         }

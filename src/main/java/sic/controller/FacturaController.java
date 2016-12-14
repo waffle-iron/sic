@@ -31,7 +31,6 @@ import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IPagoService;
 import sic.service.IPedidoService;
-import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.IUsuarioService;
 import sic.modelo.Movimiento;
@@ -47,21 +46,19 @@ public class FacturaController {
     private final IProveedorService proveedorService;
     private final IClienteService clienteService;
     private final IUsuarioService usuarioService;
-    private final IPedidoService pedidoService;
-    private final IProductoService productoService;    
+    private final IPedidoService pedidoService;   
     
     @Autowired
     public FacturaController(IFacturaService facturaService, IEmpresaService empresaService,
                              IProveedorService proveedorService, IClienteService clienteService,
                              IUsuarioService usuarioService, IPedidoService pedidoService,
-                             IProductoService productoService, IPagoService pagoService) {
+                             IPagoService pagoService) {
         this.facturaService = facturaService;
         this.empresaService = empresaService;
         this.proveedorService = proveedorService;
         this.clienteService = clienteService;
         this.usuarioService = usuarioService;
-        this.pedidoService = pedidoService;
-        this.productoService = productoService;        
+        this.pedidoService = pedidoService;       
     }
     
     @GetMapping("/facturas/{idFactura}")
@@ -75,15 +72,12 @@ public class FacturaController {
     public List<Factura> guardarFactura(@RequestBody Factura factura,
                                         @RequestParam(required = false) int[] indices,
                                         @RequestParam(required = false) Long idPedido) {
-        if (idPedido != null) {
-            factura.setPedido(pedidoService.getPedidoPorId(idPedido));
-        }
         if (factura instanceof FacturaVenta && indices != null) {
-            return facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indices));
+            return facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indices), idPedido);
         } else {
             List<Factura> facturas = new ArrayList<>();
-            facturas.add(facturaService.guardar(factura));
-            return facturas;
+            facturas.add(factura);
+            return facturaService.guardar(facturas, idPedido);         
         }
     }   
     
@@ -214,23 +208,7 @@ public class FacturaController {
     @ResponseStatus(HttpStatus.OK)
     public char[] getTiposFacturaSegunEmpresa(@PathVariable long idEmpresa) {
         return facturaService.getTiposFacturaSegunEmpresa(empresaService.getEmpresaPorId(idEmpresa));
-    }
-    
-    @GetMapping("/facturas/venta")
-    @ResponseStatus(HttpStatus.OK)
-    public FacturaVenta getFacturaVentaPorTipoSerieNum(@RequestParam char tipo,
-                                                       @RequestParam long serie,
-                                                       @RequestParam long numero) {
-        return facturaService.getFacturaVentaPorTipoSerieNum(tipo, serie, numero);
-    }
-    
-    @GetMapping("/facturas/compra")
-    @ResponseStatus(HttpStatus.OK)
-    public FacturaCompra getFacturaCompraPorTipoSerieNum(@RequestParam char tipo,
-                                                         @RequestParam long serie,
-                                                         @RequestParam long numero) {
-        return facturaService.getFacturaCompraPorTipoSerieNum(tipo, serie, numero);
-    }
+    }    
     
     @GetMapping("/facturas/{idFactura}/tipo")
     @ResponseStatus(HttpStatus.OK)
@@ -253,7 +231,7 @@ public class FacturaController {
     @ResponseStatus(HttpStatus.OK)
     public List<RenglonFactura> getRenglonesPedidoParaFacturar(@PathVariable long idPedido,
                                                                @RequestParam String tipoComprobante) {
-        return facturaService.getRenglonesPedidoParaFacturar(pedidoService.getPedidoPorId(idPedido), tipoComprobante);
+        return facturaService.convertirRenglonesPedidoARenglonesFactura(pedidoService.getPedidoPorId(idPedido), tipoComprobante);
     }    
      
     @GetMapping("/facturas/validaciones-pago-multiple")
@@ -287,8 +265,7 @@ public class FacturaController {
                                           @RequestParam Movimiento movimiento,
                                           @RequestParam double cantidad, 
                                           @RequestParam double descuentoPorcentaje) {
-        return facturaService.calcularRenglon(tipoComprobante, movimiento, cantidad,
-                productoService.getProductoPorId(idProducto), descuentoPorcentaje);
+        return facturaService.calcularRenglon(tipoComprobante, movimiento, cantidad, idProducto, descuentoPorcentaje);
     }
     
     @GetMapping("/facturas/subtotal")

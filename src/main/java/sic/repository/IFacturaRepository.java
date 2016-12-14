@@ -17,9 +17,7 @@ public interface IFacturaRepository {
 
     List<FacturaVenta> buscarFacturasVenta(BusquedaFacturaVentaCriteria criteria);
 
-    FacturaVenta getFacturaVentaPorTipoSerieNum(char tipo, long serie, long num);
-
-    FacturaCompra getFacturaCompraPorTipoSerieNum(char tipo, long serie, long num);
+    Factura getFacturaPorTipoSerieNum(char tipo, long serie, long num, long idEmpresa);
     
     List<Factura> getFacturasDelPedido(Long idPedido);
     
