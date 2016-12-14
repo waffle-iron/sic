@@ -112,7 +112,7 @@ public class PedidoServiceImpl implements IPedidoService {
             if (this.getFacturasDelPedido(pedido.getId_Pedido()).isEmpty()) {
                 pedido.setEstado(EstadoPedido.ABIERTO);
             }
-            if (facturaService.getRenglonesPedidoParaFacturar(pedido, "Factura " + f.getTipoFactura()).isEmpty()) {
+            if (facturaService.convertirRenglonesPedidoARenglonesFactura(pedido, "Factura " + f.getTipoFactura()).isEmpty()) {
                 pedido.setEstado(EstadoPedido.CERRADO);
             }
         });
@@ -231,7 +231,7 @@ public class PedidoServiceImpl implements IPedidoService {
     }
 
     @Override
-    public HashMap<Long, RenglonFactura> getRenglonesDeFacturasUnificadosPorNroPedido(long nroPedido) {
+    public HashMap<Long, RenglonFactura> getRenglonesFacturadosDelPedido(long nroPedido) {
         List<RenglonFactura> renglonesDeFacturas = new ArrayList<>();
         this.getFacturasDelPedido(nroPedido).stream().forEach((f) -> {
             f.getRenglones().stream().forEach((r) -> {

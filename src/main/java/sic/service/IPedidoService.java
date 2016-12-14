@@ -29,7 +29,7 @@ public interface IPedidoService {
 
     Pedido getPedidoPorNumeroYEmpresa(long nroPedido, long idEmpresa);
 
-    HashMap<Long, RenglonFactura> getRenglonesDeFacturasUnificadosPorNroPedido(long nroPedido);
+    HashMap<Long, RenglonFactura> getRenglonesFacturadosDelPedido(long nroPedido);
 
     List<RenglonPedido> getRenglonesDelPedido(Long idPedido);
 
