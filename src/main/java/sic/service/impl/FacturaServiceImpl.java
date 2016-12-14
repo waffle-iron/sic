@@ -39,7 +39,6 @@ import sic.service.IPagoService;
 import sic.service.IPedidoService;
 import sic.service.IProductoService;
 import sic.modelo.Movimiento;
-import sic.modelo.RenglonPedido;
 import sic.service.BusinessServiceException;
 import sic.service.ServiceException;
 import sic.modelo.TipoDeOperacion;
@@ -775,9 +774,8 @@ public class FacturaServiceImpl implements IFacturaService {
                 .getConfiguracionDelSistemaPorEmpresa(factura.getEmpresa());
         params.put("preImpresa", cds.isUsarFacturaVentaPreImpresa());
         String formasDePago = "";
-        for (Pago pago : pagoService.getPagosDeLaFactura(factura.getId_Factura())) {
-            formasDePago += pago.getFormaDePago().getNombre() + " -";
-        }
+        formasDePago = pagoService.getPagosDeLaFactura(factura.getId_Factura()).stream().map((pago) -> pago.getFormaDePago().getNombre() + " -")
+                       .reduce(formasDePago, String::concat);
         params.put("formasDePago", formasDePago);
         params.put("facturaVenta", factura);
         params.put("nroComprobante", factura.getNumSerie() + "-" + factura.getNumFactura());
@@ -798,7 +796,7 @@ public class FacturaServiceImpl implements IFacturaService {
         HashMap<Long, RenglonFactura> renglonesDeFacturas = pedidoService.getRenglonesDeFacturasUnificadosPorNroPedido(pedido.getId_Pedido());
         List<Factura> facturasDePedido = this.getFacturasDelPedido(pedido.getId_Pedido());
         if (facturasDePedido != null) {
-            for (RenglonPedido renglon : pedido.getRenglones()) {
+            pedido.getRenglones().stream().forEach((renglon) -> {
                 if (renglonesDeFacturas.containsKey(renglon.getProducto().getId_Producto())) {
                     if (renglon.getCantidad() > renglonesDeFacturas.get(renglon.getProducto().getId_Producto()).getCantidad()) {
                         renglonesRestantes.add(this.calcularRenglon(tipoDeComprobante,
@@ -809,12 +807,12 @@ public class FacturaServiceImpl implements IFacturaService {
                     renglonesRestantes.add(this.calcularRenglon(tipoDeComprobante, Movimiento.VENTA,
                             renglon.getCantidad(), renglon.getProducto().getId_Producto(), renglon.getDescuento_porcentaje()));
                 }
-            }
+            });
         } else {
-            for (RenglonPedido renglon : pedido.getRenglones()) {
+            pedido.getRenglones().stream().forEach((renglon) -> {
                 renglonesRestantes.add(this.calcularRenglon(tipoDeComprobante, Movimiento.VENTA,
                         renglon.getCantidad(), renglon.getProducto().getId_Producto(), renglon.getDescuento_porcentaje()));
-            }
+            });
         }
         return renglonesRestantes;
     }
@@ -958,13 +956,16 @@ public class FacturaServiceImpl implements IFacturaService {
             if (numeroDeRenglon == indices[renglonMarcado]) {
                 double cantidad = renglon.getCantidad();
                 if(cantidad >= 1) {
-                   if ((cantidad % 2) == 0){
-                       cantidadProductosRenglonRemito = cantidad / 2;
+                    if ((cantidad % 1 != 0) || (cantidad % 2) == 0) {
+                        cantidadProductosRenglonRemito = cantidad / 2;
                     } else if ((cantidad % 2) != 0) {
                         cantidadProductosRenglonRemito = cantidad - (Math.ceil(cantidad / 2));
                     }
+                } else {
+                    cantidadProductosRenglonRemito = 0;
                 }
-                RenglonFactura nuevoRenglonSinIVA = this.calcularRenglon("Factura X", Movimiento.VENTA, cantidadProductosRenglonRemito, renglon.getId_ProductoItem(), renglon.getDescuento_porcentaje());
+                RenglonFactura nuevoRenglonSinIVA = this.calcularRenglon("Factura X", Movimiento.VENTA, 
+                                                    cantidadProductosRenglonRemito, renglon.getId_ProductoItem(), renglon.getDescuento_porcentaje());
                 if (nuevoRenglonSinIVA.getCantidad() != 0) {
                     renglonesSinIVA.add(nuevoRenglonSinIVA);
                 }
@@ -988,7 +989,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 double cantidad = renglon.getCantidad();
                 if (cantidad < 1 || cantidad == 1) {
                     cantidadProductosRenglonFactura = cantidad;
-                } else if ((renglon.getCantidad() % 2) == 0) {
+                } else if ((cantidad % 1 != 0) || (renglon.getCantidad() % 2) == 0) {
                     cantidadProductosRenglonFactura = renglon.getCantidad() / 2;
                 } else if ((renglon.getCantidad() % 2) != 0) {
                     cantidadProductosRenglonFactura = Math.ceil(renglon.getCantidad() / 2);
