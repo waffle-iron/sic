@@ -37,8 +37,6 @@ public interface IFacturaService {
     List<FacturaCompra> buscarFacturaCompra(BusquedaFacturaCompraCriteria criteria);
 
     List<FacturaVenta> buscarFacturaVenta(BusquedaFacturaVentaCriteria criteria);
-
-    Factura procesarFactura(Factura factura);
     
     List<Factura> guardar(List<Factura> facturas, Long idPedido);
     

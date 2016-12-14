@@ -76,7 +76,7 @@ public class FacturaController {
             return facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indices), idPedido);
         } else {
             List<Factura> facturas = new ArrayList<>();
-            facturas.add(facturaService.procesarFactura(factura));
+            facturas.add(factura);
             return facturaService.guardar(facturas, idPedido);         
         }
     }   
