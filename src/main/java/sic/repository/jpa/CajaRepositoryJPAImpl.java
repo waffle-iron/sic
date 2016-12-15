@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
 import sic.util.FormatterFechaHora;
@@ -63,8 +62,7 @@ public class CajaRepositoryJPAImpl implements ICajaRepository {
         }
     }
 
-    @Override
-    @Transactional
+    @Override    
     public void actualizar(Caja caja) {
         em.merge(caja);
     }

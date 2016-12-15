@@ -369,12 +369,11 @@ public class FacturaServiceImpl implements IFacturaService {
             Factura factura = this.getFacturaPorId(idFactura);
             factura.setEliminada(true);
             this.eliminarPagosDeFactura(factura);
-            productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);
-            facturaRepository.actualizar(factura);
+            productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);            
             if (factura.getPedido() != null) {
                 List<Factura> facturas = new ArrayList<>();
                 facturas.add(factura);
-                pedidoService.actualizarEstadoPedido(factura.getPedido(), facturas);
+                pedidoService.actualizarEstadoPedido(factura.getPedido(), facturas);                
             }            
         }       
     }

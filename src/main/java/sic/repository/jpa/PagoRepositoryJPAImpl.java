@@ -6,7 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Pago;
 import sic.repository.IPagoRepository;
 
@@ -46,8 +45,7 @@ public class PagoRepositoryJPAImpl implements IPagoRepository {
         List<Pago> Pagos = typedQuery.getResultList();
         return Pagos;
     }
-    
-    
+        
     @Override
     public long getMayorNroPago(long idEmpresa) {
         TypedQuery<Long> typedQuery = em.createNamedQuery("Pago.buscarMayorNroPago", Long.class);
@@ -60,16 +58,14 @@ public class PagoRepositoryJPAImpl implements IPagoRepository {
         }
     }
 
-    @Override
-    @Transactional
+    @Override    
     public Pago guardar(Pago pago) {
         pago = em.merge(pago);
         em.persist(pago);
         return pago;
     }
 
-    @Override
-    @Transactional
+    @Override    
     public void actualizar(Pago pago) {
         em.merge(pago);
     }
