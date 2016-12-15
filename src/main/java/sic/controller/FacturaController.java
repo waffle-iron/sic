@@ -31,7 +31,6 @@ import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
 import sic.service.IPagoService;
 import sic.service.IPedidoService;
-import sic.service.IProductoService;
 import sic.service.IProveedorService;
 import sic.service.IUsuarioService;
 import sic.modelo.Movimiento;
@@ -47,21 +46,19 @@ public class FacturaController {
     private final IProveedorService proveedorService;
     private final IClienteService clienteService;
     private final IUsuarioService usuarioService;
-    private final IPedidoService pedidoService;
-    private final IProductoService productoService;    
+    private final IPedidoService pedidoService;   
     
     @Autowired
     public FacturaController(IFacturaService facturaService, IEmpresaService empresaService,
                              IProveedorService proveedorService, IClienteService clienteService,
                              IUsuarioService usuarioService, IPedidoService pedidoService,
-                             IProductoService productoService, IPagoService pagoService) {
+                             IPagoService pagoService) {
         this.facturaService = facturaService;
         this.empresaService = empresaService;
         this.proveedorService = proveedorService;
         this.clienteService = clienteService;
         this.usuarioService = usuarioService;
-        this.pedidoService = pedidoService;
-        this.productoService = productoService;        
+        this.pedidoService = pedidoService;       
     }
     
     @GetMapping("/facturas/{idFactura}")
@@ -70,32 +67,19 @@ public class FacturaController {
         return facturaService.getFacturaPorId(idFactura);
     }
     
-    @PostMapping("/facturas/venta")
+    @PostMapping("/facturas")
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Factura> guardarFacturaVenta(@RequestBody FacturaVenta factura,
-                                             @RequestParam(value = "indices", required = false) int[] indice) {
-        if (indice != null) {
-            return facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indice));
+    public List<Factura> guardarFactura(@RequestBody Factura factura,
+                                        @RequestParam(required = false) int[] indices,
+                                        @RequestParam(required = false) Long idPedido) {
+        if (factura instanceof FacturaVenta && indices != null) {
+            return facturaService.guardar(facturaService.dividirFactura((FacturaVenta) factura, indices), idPedido);
         } else {
             List<Factura> facturas = new ArrayList<>();
-            facturas.add(facturaService.guardar(factura));            
-            return facturas;
+            facturas.add(factura);
+            return facturaService.guardar(facturas, idPedido);         
         }
-    }
-    
-    @PostMapping("/facturas/compra")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Factura guardarFacturaCompra(@RequestBody FacturaCompra factura) {
-        return facturaService.guardar(factura);
-    }
-    
-    @PostMapping("/facturas/pedidos/{idPedido}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Factura guardarFacturaConPedido(@PathVariable long idPedido,
-                                           @RequestBody FacturaVenta factura) {
-        factura.setPedido(pedidoService.getPedidoPorId(idPedido));
-        return facturaService.guardar(factura);
-    }    
+    }   
     
     @DeleteMapping("/facturas")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -170,12 +154,12 @@ public class FacturaController {
         if ((desde != null) && (hasta != null)) {
             fechaDesde.setTimeInMillis(desde);
             fechaHasta.setTimeInMillis(hasta);
-        }
-        if ((soloImpagas != null) && (soloPagas != null)) {
-            if ((soloImpagas == true) && (soloPagas == true)) {
-                soloImpagas = false;
-                soloPagas = false;
-            }
+        }        
+        soloImpagas = (soloImpagas == null) ? false : soloImpagas;
+        soloPagas = (soloPagas == null) ? false : soloPagas;
+        if ((soloImpagas == true) && (soloPagas == true)) {
+            soloImpagas = false;
+            soloPagas = false;
         }
         Cliente cliente = new Cliente();
         if (idCliente != null) {
@@ -224,23 +208,7 @@ public class FacturaController {
     @ResponseStatus(HttpStatus.OK)
     public char[] getTiposFacturaSegunEmpresa(@PathVariable long idEmpresa) {
         return facturaService.getTiposFacturaSegunEmpresa(empresaService.getEmpresaPorId(idEmpresa));
-    }
-    
-    @GetMapping("/facturas/venta")
-    @ResponseStatus(HttpStatus.OK)
-    public FacturaVenta getFacturaVentaPorTipoSerieNum(@RequestParam char tipo,
-                                                       @RequestParam long serie,
-                                                       @RequestParam long numero) {
-        return facturaService.getFacturaVentaPorTipoSerieNum(tipo, serie, numero);
-    }
-    
-    @GetMapping("/facturas/compra")
-    @ResponseStatus(HttpStatus.OK)
-    public FacturaCompra getFacturaCompraPorTipoSerieNum(@RequestParam char tipo,
-                                                         @RequestParam long serie,
-                                                         @RequestParam long numero) {
-        return facturaService.getFacturaCompraPorTipoSerieNum(tipo, serie, numero);
-    }
+    }    
     
     @GetMapping("/facturas/{idFactura}/tipo")
     @ResponseStatus(HttpStatus.OK)
@@ -253,16 +221,17 @@ public class FacturaController {
     public ResponseEntity<byte[]> getReporteFacturaVenta(@PathVariable long idFactura) {        
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);        
-        headers.add("content-disposition", "inline; filename=factura.pdf");
+        headers.add("content-disposition", "inline; filename=Factura.pdf");
         headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
         byte[] reportePDF = facturaService.getReporteFacturaVenta(facturaService.getFacturaPorId(idFactura));
         return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);
     }
     
-    @GetMapping("/facturas/renglones/pedidos/{idPedido}")
+    @GetMapping("/facturas/renglones/pedidos/{idPedido}") 
     @ResponseStatus(HttpStatus.OK)
-    public List<RenglonFactura> getRenglonesPedidoParaFacturar(@PathVariable long idPedido) {
-        return facturaService.getRenglonesPedidoParaFacturar(pedidoService.getPedidoPorId(idPedido));
+    public List<RenglonFactura> getRenglonesPedidoParaFacturar(@PathVariable long idPedido,
+                                                               @RequestParam String tipoComprobante) {
+        return facturaService.convertirRenglonesPedidoARenglonesFactura(pedidoService.getPedidoPorId(idPedido), tipoComprobante);
     }    
      
     @GetMapping("/facturas/validaciones-pago-multiple")
@@ -296,8 +265,7 @@ public class FacturaController {
                                           @RequestParam Movimiento movimiento,
                                           @RequestParam double cantidad, 
                                           @RequestParam double descuentoPorcentaje) {
-        return facturaService.calcularRenglon(tipoComprobante, movimiento, cantidad,
-                productoService.getProductoPorId(idProducto), descuentoPorcentaje);
+        return facturaService.calcularRenglon(tipoComprobante, movimiento, cantidad, idProducto, descuentoPorcentaje);
     }
     
     @GetMapping("/facturas/subtotal")

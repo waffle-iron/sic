@@ -93,7 +93,7 @@ public class PedidoRepositoryJPAImpl implements IPedidoRepository {
 
     @Override
     public void actualizar(Pedido pedido) {
-        em.merge(pedido);
+        em.merge(pedido);        
     }
 
 }

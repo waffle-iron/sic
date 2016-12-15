@@ -285,6 +285,7 @@ public class CajaServiceImpl implements ICajaService {
     }
 
     @Override
+    @Transactional
     public Caja cerrarCajaAnterior(long idEmpresa) {
         Caja cajaCerrada = this.getUltimaCaja(idEmpresa);
         if ((cajaCerrada != null) && (cajaCerrada.getEstado() == EstadoCaja.ABIERTA)) {

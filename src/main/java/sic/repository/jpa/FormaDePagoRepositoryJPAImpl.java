@@ -5,7 +5,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Empresa;
 import sic.modelo.FormaDePago;
 import sic.repository.IFormaDePagoRepository;
@@ -68,8 +67,7 @@ public class FormaDePagoRepositoryJPAImpl implements IFormaDePagoRepository {
         return formaDePago;
     }
 
-    @Override
-    @Transactional
+    @Override    
     public void actualizar(FormaDePago formaDePago) {
         em.merge(formaDePago);
     }

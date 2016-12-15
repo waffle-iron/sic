@@ -42,7 +42,7 @@ import lombok.ToString;
 @Data
 @ToString(exclude = {"facturas", "renglones"})
 @EqualsAndHashCode(of = {"nroPedido", "empresa"})
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pedido")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pedido", scope = Pedido.class)
 public class Pedido implements Serializable {
 
     @Id
@@ -75,7 +75,7 @@ public class Pedido implements Serializable {
     @JoinColumn(name = "id_Usuario", referencedColumnName = "id_Usuario")
     private Usuario usuario;
 
-    @OneToMany(mappedBy = "pedido")
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     @JsonProperty(access = Access.WRITE_ONLY)
     private List<Factura> facturas;
 
