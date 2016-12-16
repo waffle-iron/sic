@@ -1,19 +1,15 @@
 package sic.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 import sic.modelo.RenglonFactura;
-import sic.service.BusinessServiceException;
 
 public class RenglonFacturaBuilder {
     
     private long id_RenglonFactura = 0L;
     private long id_ProductoItem =0L;
-    private String codigoItem = "aca.va.el.c0d1g0";
+    private String codigoItem = "mdk.mdf";
     private String descripcionItem = "Ventiladores de pie";
     private String medidaItem = "UNIDAD";
-    private double cantidad = 10;
+    private double cantidad = 1;
     private double precioUnitario = 1300;
     private double descuento_porcentaje = 0.0;
     private double descuento_neto = 0.0;
@@ -22,8 +18,8 @@ public class RenglonFacturaBuilder {
     private double impuesto_porcentaje = 0.0;
     private double impuesto_neto = 0;
     private double ganancia_porcentaje = 10;
-    private double ganancia_neto = 140;
-    private double importe = 1713;
+    private double ganancia_neto = 130;
+    private double importe = 1703;
     
     public RenglonFactura build() {
         return new RenglonFactura(id_RenglonFactura, id_ProductoItem, codigoItem, 
@@ -112,16 +108,4 @@ public class RenglonFacturaBuilder {
         return this;
     }
     
-    public List<RenglonFactura> listWithCantidadRenglonesYCantidadesEnUnidades(int cantRenglones, double[] cantUnidades) {
-        List<RenglonFactura> renglones = new ArrayList<>();
-        if (cantRenglones == cantUnidades.length) {
-            for (int i = 0; i < cantRenglones; i++) {
-                renglones.add(this.withCantidad(cantUnidades[i]).build());
-            }
-        } else {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_renglones_cantidades_no_coincidentes"));
-        }
-        return renglones;
-    }
 }
