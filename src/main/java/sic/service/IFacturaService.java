@@ -44,7 +44,7 @@ public interface IFacturaService {
 
     void eliminar(long[] idFactura);
     
-    Factura actualizarEstadoFactura(Factura factura);
+    Factura actualizarFacturaEstadoPagada(Factura factura);
     
     double getTotalPagado(Factura factura);
 

@@ -331,8 +331,7 @@ public class FacturaServiceImpl implements IFacturaService {
         List<Factura> facturasProcesadas = new ArrayList<>();
         for (Factura f : facturas) {
             facturasProcesadas.add(this.procesarFactura(f));
-            productoService.actualizarStock(f, TipoDeOperacion.ALTA);
-            this.actualizarEstadoFactura(f);
+            productoService.actualizarStock(f, TipoDeOperacion.ALTA);            
         }
         if (idPedido != null) {
             Pedido pedido = pedidoService.getPedidoPorId(idPedido);
@@ -342,6 +341,7 @@ public class FacturaServiceImpl implements IFacturaService {
             pedido.setFacturas(facturasProcesadas);
             pedidoService.actualizar(pedido);
             facturasProcesadas.stream().forEach((f) -> {
+                this.actualizarFacturaEstadoPagada(f);
                 LOGGER.warn("La Factura " + f + " se guardó correctamente.");
             });
             pedidoService.actualizarEstadoPedido(pedido, facturasProcesadas);
@@ -349,6 +349,7 @@ public class FacturaServiceImpl implements IFacturaService {
             facturasProcesadas = new ArrayList<>();
             for (Factura f : facturas) {
                 Factura facturaGuardada = facturaRepository.guardar(f);
+                this.actualizarFacturaEstadoPagada(facturaGuardada);
                 facturasProcesadas.add(facturaGuardada);
                 LOGGER.warn("La Factura " + facturaGuardada + " se guardó correctamente.");
             }            
@@ -450,7 +451,7 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     @Transactional
-    public Factura actualizarEstadoFactura(Factura factura) {
+    public Factura actualizarFacturaEstadoPagada(Factura factura) {
         double totalFactura = Math.floor(factura.getTotal() * 100) / 100;
         if (this.getTotalPagado(factura) >= totalFactura) {
             factura.setPagada(true);
