@@ -134,24 +134,27 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     @Override
+    @Transactional
     public void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
         List<Factura> facturasOrdenadas = facturaService.ordenarFacturasPorFechaAsc(facturas);
         for (Factura factura : facturasOrdenadas) {
-            if (monto > 0) {
+            if (monto > 0.0) {
                 factura.setPagos(this.getPagosDeLaFactura(factura.getId_Factura()));
                 Pago nuevoPago = new Pago();
                 nuevoPago.setFormaDePago(formaDePago);
-                nuevoPago .setFactura(factura);
+                nuevoPago.setFactura(factura);
                 nuevoPago.setFecha(fechaYHora);
                 nuevoPago.setEmpresa(factura.getEmpresa());
                 nuevoPago.setNota(nota);                        
                 double saldoAPagar = this.getSaldoAPagar(factura);
                 if (saldoAPagar <= monto) {
                     monto = monto - saldoAPagar;
+                    // Se utiliza round por un problema de presicion de la maquina ej: 828.65 - 614.0 = 214.64999...
+                    monto = Math.round(monto * 100.0) / 100.0;
                     nuevoPago.setMonto(saldoAPagar);
                 } else {
                     nuevoPago.setMonto(monto);
-                    monto = 0;
+                    monto = 0.0;
                 }
                 this.guardar(nuevoPago);
             }

@@ -18,7 +18,7 @@ public class ControllersExceptionHandler {
     private static final Logger LOGGER = Logger.getLogger(ControllersExceptionHandler.class.getPackage().getName());
      
     private String log(Exception ex) {
-        String mensaje = ex.getMessage() + " Reference ID: " + new Date().getTime() + ".";
+        String mensaje = ex.getMessage() + "\n(Transaction ID: " + new Date().getTime() + ")";
         if (ex.getCause() != null) {                        
             LOGGER.error(mensaje + " " + ex.getCause().getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
         } else {
