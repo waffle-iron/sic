@@ -5,7 +5,7 @@ import sic.modelo.Provincia;
 
 public class ProvinciaBuilder {
     
-    private long id_Provincia = 0;
+    private long id_Provincia = 0L;
     private String nombre = "Corrientes";
     private Pais pais = new PaisBuilder().build();
     private boolean eliminada = false;

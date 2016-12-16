@@ -7,7 +7,7 @@ import sic.modelo.Proveedor;
 
 public class ProveedorBuilder {
 
-    private long id_Proveedor = 0;
+    private long id_Proveedor = 0L;
     private String codigo = "ABC123";
     private String razonSocial = "Chamaco S.R.L.";
     private String direccion = "La Rioja 2047";

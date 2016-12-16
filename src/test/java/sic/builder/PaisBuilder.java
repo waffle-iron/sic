@@ -4,7 +4,7 @@ import sic.modelo.Pais;
 
 public class PaisBuilder {
 
-    private long id_Pais = 0;
+    private long id_Pais = 0L;
     private String nombre = "Argentina";
     private boolean eliminado = false;
 

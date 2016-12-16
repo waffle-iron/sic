@@ -7,7 +7,7 @@ import sic.modelo.Localidad;
 
 public class EmpresaBuilder {
 
-    private long id_Empresa = 0;
+    private long id_Empresa = 0L;
     private String nombre = "Globo Corporation";
     private String lema = "Enjoy the life";
     private String direccion = "Viamonte 542";

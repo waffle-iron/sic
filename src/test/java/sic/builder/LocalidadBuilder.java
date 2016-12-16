@@ -5,7 +5,7 @@ import sic.modelo.Provincia;
 
 public class LocalidadBuilder {
     
-    private long id_Localidad = 0;
+    private long id_Localidad = 0L;
     private String nombre = "Goya";
     private String codigoPostal = "3450";
     private Provincia provincia = new ProvinciaBuilder().build();

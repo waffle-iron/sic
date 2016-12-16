@@ -4,7 +4,7 @@ import sic.modelo.CondicionIVA;
 
 public class CondicionIVABuilder {
 
-    private long id_CondicionIVA = 0;
+    private long id_CondicionIVA = 0L;
     private String nombre = "Responsable Inscripto";
     private boolean discriminaIVA = true;
     private boolean eliminada = false;

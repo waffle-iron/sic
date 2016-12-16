@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
+import sic.builder.EmpresaBuilder;
 import sic.modelo.Empresa;
 import sic.modelo.Medida;
 import sic.repository.IMedidaRepository;
@@ -27,7 +28,7 @@ public class MedidaServiceImplTest {
 
     @Before
     public void setUp() {
-        empresa = Empresa.builder().build();
+        empresa = new EmpresaBuilder().build();
         medida = new Medida();
         MockitoAnnotations.initMocks(this);
         medidaRepository = Mockito.mock(MedidaRepositoryJPAImpl.class);

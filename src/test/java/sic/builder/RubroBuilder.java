@@ -5,7 +5,7 @@ import sic.modelo.Rubro;
 
 public class RubroBuilder {
     
-    private long id_Rubro = 0;
+    private long id_Rubro = 0L;
     private String nombre = "Ferreteria";
     private Empresa empresa = new EmpresaBuilder().build();
     private boolean eliminado = false;

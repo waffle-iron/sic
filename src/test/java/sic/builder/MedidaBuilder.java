@@ -5,7 +5,7 @@ import sic.modelo.Medida;
 
 public class MedidaBuilder {
 
-    private long id_Medida = 0;
+    private long id_Medida = 0L;
     private String nombre = "Metro";
     private Empresa empresa = new EmpresaBuilder().build();
     private boolean eliminada = false;

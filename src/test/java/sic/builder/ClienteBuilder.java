@@ -8,7 +8,7 @@ import sic.modelo.Localidad;
 
 public class ClienteBuilder {
 
-    private long id_Cliente = 0;
+    private long id_Cliente = 0L;
     private String razonSocial = "Construcciones S.A.";
     private String nombreFantasia = "Servimetal";
     private String direccion = "Perugorria 2421";
@@ -24,7 +24,7 @@ public class ClienteBuilder {
     private boolean eliminado = false;
     private boolean predeterminado = false;
     
-    public Cliente buid() {
+    public Cliente build() {
         return new Cliente(id_Cliente, razonSocial, nombreFantasia, direccion, condicionIVA,
                 id_Fiscal, email, telPrimario, telSecundario, localidad, contacto, fechaAlta,
                 empresa, eliminado, predeterminado);
