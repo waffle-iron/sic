@@ -4,9 +4,9 @@ import sic.modelo.RenglonFactura;
 
 public class RenglonFacturaBuilder {
     
-    private long id_RenglonFactura = 0L;
-    private long id_ProductoItem =0L;
-    private String codigoItem = "mdk.mdf";
+    private long id_RenglonFactura = 1L;
+    private long id_ProductoItem =1L;
+    private String codigoItem = "mdk.03617";
     private String descripcionItem = "Ventiladores de pie";
     private String medidaItem = "UNIDAD";
     private double cantidad = 1;
@@ -17,9 +17,9 @@ public class RenglonFacturaBuilder {
     private double iva_neto = 273;
     private double impuesto_porcentaje = 0.0;
     private double impuesto_neto = 0;
-    private double ganancia_porcentaje = 10;
-    private double ganancia_neto = 130;
-    private double importe = 1703;
+    private double ganancia_porcentaje = 30;
+    private double ganancia_neto = 300;
+    private double importe = 1573;
     
     public RenglonFactura build() {
         return new RenglonFactura(id_RenglonFactura, id_ProductoItem, codigoItem, 

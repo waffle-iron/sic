@@ -5,14 +5,15 @@ import java.util.Date;
 import java.util.List;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
-import sic.modelo.FacturaVenta;
+import sic.modelo.FacturaCompra;
 import sic.modelo.Pago;
 import sic.modelo.Pedido;
+import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.modelo.Usuario;
 
-public class FacturaVentaBuilder {
+public class FacturaCompraBuilder {
     
     private long id_Factura = 0L;
     private Date fecha = new Date();
@@ -24,8 +25,7 @@ public class FacturaVentaBuilder {
     private Transportista transportista = new TransportistaBuilder().build();
     private List<RenglonFactura> renglones = new ArrayList<>();
     private List<Pago> pagos = new ArrayList<>();
-    private Cliente cliente = new ClienteBuilder().build();
-    private Usuario usuario = new UsuarioBuilder().build();
+    private Proveedor  proveedor= new ProveedorBuilder().build();
     private double subTotal = 7885;
     private double recargo_porcentaje = 0.0;
     private double recargo_neto = 0.0;
@@ -40,9 +40,9 @@ public class FacturaVentaBuilder {
     private boolean pagada = false;
     private Empresa empresa = new EmpresaBuilder().build();
     private boolean eliminada = false;
-      
-    public FacturaVenta build() {
-        FacturaVenta factura = new FacturaVenta(cliente, usuario);
+    
+    public FacturaCompra build() {
+        FacturaCompra factura = new FacturaCompra(proveedor);
         factura.setId_Factura(id_Factura);
         factura.setFecha(fecha);
         factura.setTipoFactura(tipoFactura);
@@ -68,8 +68,7 @@ public class FacturaVentaBuilder {
         } else {
             factura.setRenglones(renglones);
         }
-        factura.setCliente(cliente);
-        factura.setUsuario(usuario);
+        factura.setProveedor(proveedor);
         factura.setSubTotal(subTotal);
         factura.setRecargo_porcentaje(recargo_porcentaje);
         factura.setRecargo_neto(recargo_neto);
@@ -87,134 +86,130 @@ public class FacturaVentaBuilder {
         return factura;
     }
     
-    public FacturaVentaBuilder withId_Factura(long idFactura) {
+    public FacturaCompraBuilder withId_Factura(long idFactura) {
         this.id_Factura = idFactura;
         return this;
     }
     
-    public FacturaVentaBuilder withFecha(Date fecha) {
+    public FacturaCompraBuilder withFecha(Date fecha) {
         this.fecha = fecha;
         return this;
     }
     
-    public FacturaVentaBuilder withTipoFactura(char tipoFactura) {
+    public FacturaCompraBuilder withTipoFactura(char tipoFactura) {
         this.tipoFactura = tipoFactura;
         return this;
     }
     
-    public FacturaVentaBuilder withTransportista(Transportista transportista) {
+    public FacturaCompraBuilder withTransportista(Transportista transportista) {
         this.transportista = transportista;
         return this;
     }
 
-    public FacturaVentaBuilder withPedido(Pedido pedido) {
+    public FacturaCompraBuilder withPedido(Pedido pedido) {
         this.pedido = pedido;
         return this;
     }
 
-    public FacturaVentaBuilder withPagos(List<Pago> pagos) {
+    public FacturaCompraBuilder withPagos(List<Pago> pagos) {
         this.pagos = pagos;
         return this;
     }
 
-    public FacturaVentaBuilder withRenglones(List<RenglonFactura> renglones) {
+    public FacturaCompraBuilder withRenglones(List<RenglonFactura> renglones) {
         this.renglones = renglones;
         return this;
     }
     
-    public FacturaVentaBuilder withNumSerie(long numeroDeSerie) {
+    public FacturaCompraBuilder withNumSerie(long numeroDeSerie) {
         this.numSerie = numeroDeSerie;
         return this;
     }
     
-    public FacturaVentaBuilder withNumFactura(long numeroFactura) {
+    public FacturaCompraBuilder withNumFactura(long numeroFactura) {
         this.numFactura = numeroFactura;
         return this;
     }
     
-    public FacturaVentaBuilder withFechaVencimiento(Date fechaDeVencimiento) {
+    public FacturaCompraBuilder withFechaVencimiento(Date fechaDeVencimiento) {
         this.fechaVencimiento = fechaDeVencimiento;
         return this;
     }  
-    
-    public FacturaVentaBuilder withCliente(Cliente cliente) {
-        this.cliente = cliente;
+
+    public FacturaCompraBuilder withUsuario(Proveedor proveedor) {
+        this.proveedor = proveedor;
         return this;
     }
 
-    public FacturaVentaBuilder withUsuario(Usuario usuario) {
-        this.usuario = usuario;
-        return this;
-    }
-
-    public FacturaVentaBuilder withSubTotal(double subTotal) {
+    public FacturaCompraBuilder withSubTotal(double subTotal) {
         this.subTotal = subTotal;
         return this;
     }
 
-    public FacturaVentaBuilder withRecargo_porcentaje(double recargoPorcentaje) {
+    public FacturaCompraBuilder withRecargo_porcentaje(double recargoPorcentaje) {
         this.recargo_porcentaje = recargoPorcentaje;
         return this;
     }
 
-    public FacturaVentaBuilder withRecargo_neto(double recargoNeto) {
+    public FacturaCompraBuilder withRecargo_neto(double recargoNeto) {
         this.recargo_neto = recargoNeto;
         return this;
     }
 
-    public FacturaVentaBuilder withDescuento_porcentaje(double descuentoPorcentaje) {
+    public FacturaCompraBuilder withDescuento_porcentaje(double descuentoPorcentaje) {
         this.descuento_porcentaje = descuentoPorcentaje;
         return this;
     }
 
-    public FacturaVentaBuilder withDescuento_neto(double descuentoNeto) {
+    public FacturaCompraBuilder withDescuento_neto(double descuentoNeto) {
         this.descuento_neto = descuentoNeto;
         return this;
     }
 
-    public FacturaVentaBuilder withSubTotal_neto(double subTotalNeto) {
+    public FacturaCompraBuilder withSubTotal_neto(double subTotalNeto) {
         this.subTotal_neto = subTotalNeto;
         return this;
     }
 
-    public FacturaVentaBuilder withIva_105_neto(double iva105Neto) {
+    public FacturaCompraBuilder withIva_105_neto(double iva105Neto) {
         this.iva_105_neto = iva105Neto;
         return this;
     }
 
-    public FacturaVentaBuilder withIva_21_neto(double iva21Neto) {
+    public FacturaCompraBuilder withIva_21_neto(double iva21Neto) {
         this.iva_21_neto = iva21Neto;
         return this;
     }
 
-    public FacturaVentaBuilder withImpuestoInterno_neto(double impuestoInternoNeto) {
+    public FacturaCompraBuilder withImpuestoInterno_neto(double impuestoInternoNeto) {
         this.impuestoInterno_neto = impuestoInternoNeto;
         return this;
     }
 
-    public FacturaVentaBuilder withTotal(double total) {
+    public FacturaCompraBuilder withTotal(double total) {
         this.total = total;
         return this;
     }
 
-    public FacturaVentaBuilder withObservaciones(String observarciones) {
+    public FacturaCompraBuilder withObservaciones(String observarciones) {
         this.observaciones = observarciones;
         return this;
     }
 
-    public FacturaVentaBuilder withPagada(boolean pagada) {
+    public FacturaCompraBuilder withPagada(boolean pagada) {
         this.pagada = pagada;
         return this;
     }
 
-    public FacturaVentaBuilder withEmpresa(Empresa empresa) {
+    public FacturaCompraBuilder withEmpresa(Empresa empresa) {
         this.empresa = empresa;
         return this;
     }
 
-    public FacturaVentaBuilder withEliminada(boolean eliminada) {
+    public FacturaCompraBuilder withEliminada(boolean eliminada) {
         this.eliminada = eliminada;
         return this;
     }
     
 }
+

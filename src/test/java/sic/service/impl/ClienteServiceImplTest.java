@@ -12,9 +12,6 @@ import sic.builder.CondicionIVABuilder;
 import sic.builder.EmpresaBuilder;
 import sic.builder.LocalidadBuilder;
 import sic.modelo.Cliente;
-import sic.modelo.CondicionIVA;
-import sic.modelo.Empresa;
-import sic.modelo.Localidad;
 import sic.repository.IClienteRepository;
 import sic.service.IClienteService;
 import sic.service.BusinessServiceException;
@@ -24,9 +21,6 @@ import sic.modelo.TipoDeOperacion;
 public class ClienteServiceImplTest {
 
     private IClienteService clienteService;
-//    private Empresa empresa;
-//    private Cliente cliente;
-//    private Cliente clienteDuplicado;
 
     @Mock
     private IClienteRepository clienteRepository;
@@ -34,9 +28,6 @@ public class ClienteServiceImplTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-//        empresa = EmpresaBuilder.build();
-//        cliente = Cliente.builder().build();
-//        clienteDuplicado = Cliente.builder().build();
     }
 
     @Test

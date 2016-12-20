@@ -14,8 +14,10 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "gasto")
@@ -49,6 +51,8 @@ import lombok.EqualsAndHashCode;
                     + "WHERE g.empresa.id_Empresa = :id_Empresa")
 })
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of = {"nroGasto", "empresa"})
 public class Gasto implements Serializable {
 
