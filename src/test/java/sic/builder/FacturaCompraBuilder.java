@@ -24,16 +24,16 @@ public class FacturaCompraBuilder {
     private List<RenglonFactura> renglones;
     private List<Pago> pagos;
     private Proveedor proveedor = new ProveedorBuilder().build();
-    private double subTotal = 7885;
+    private double subTotal = 6500;
     private double recargo_porcentaje = 0.0;
     private double recargo_neto = 0.0;
     private double descuento_porcentaje = 0.0;
     private double descuento_neto = 0.0;
-    private double subTotal_neto = 7885;
+    private double subTotal_neto = 6500;
     private double iva_105_neto = 0.0;
-    private double iva_21_neto = 1655.85;
+    private double iva_21_neto = 1365;
     private double impuestoInterno_neto = 0.0;
-    private double total = 7885;
+    private double total = 7865;
     private String observaciones = "Factura por Default";
     private boolean pagada = false;
     private Empresa empresa = new EmpresaBuilder().build();
@@ -56,7 +56,7 @@ public class FacturaCompraBuilder {
                                             .withId_ProductoItem(890L)
                                             .withCodigoItem("mate.0923")
                                             .withIVAneto(1092)
-                                            .withImporte(6292)
+                                            .withPrecioUnitario(5200)
                                             .build();
             List<RenglonFactura> renglonesFactura = new ArrayList<>();
             renglonesFactura.add(renglon1);

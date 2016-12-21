@@ -13,20 +13,20 @@ import sic.modelo.Usuario;
 
 public class PedidoBuilder {
 
-    private long id_Pedido;
-    private long nroPedido;
-    private Date fecha;
+    private long id_Pedido = 0L;
+    private long nroPedido = 46L;
+    private Date fecha = new Date();
     private Date fechaVencimiento;
-    private String observaciones;
-    private Empresa empresa;
-    private boolean eliminado;
-    private Cliente cliente;
-    private Usuario usuario;
+    private String observaciones = "Los precios se encuentran sujetos a modificaciones.";
+    private Empresa empresa = new EmpresaBuilder().build();
+    private boolean eliminado = false;
+    private Cliente cliente = new ClienteBuilder().build();
+    private Usuario usuario =  new UsuarioBuilder().build();
     private List<Factura> facturas;
     private List<RenglonPedido> renglones;
-    private double totalEstimado;
+    private double totalEstimado = 544.5;
     private double totalActual;
-    private EstadoPedido estado;
+    private EstadoPedido estado = EstadoPedido.ABIERTO;
 
     public Pedido build() {
         if (renglones == null) {

@@ -6,8 +6,13 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
+import org.mockito.MockitoAnnotations;
+import org.mockito.runners.MockitoJUnitRunner;
 import sic.builder.ClienteBuilder;
 import sic.builder.EmpresaBuilder;
 import sic.builder.FacturaVentaBuilder;
@@ -26,16 +31,16 @@ import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Usuario;
 import sic.repository.IFacturaRepository;
+import sic.modelo.Movimiento;
 import sic.service.IFacturaService;
 import sic.service.IProductoService;
-import sic.modelo.Movimiento;
 
-public class FacturaServiceImplTest {
-
+public class FacturaServiceImplTest {    
+    
     private IFacturaService facturaService;
     private IFacturaRepository facturaRepository;
     private IProductoService productoService;
-
+    
     @Before
     public void before() {
         productoService = Mockito.mock(ProductoServiceImpl.class);

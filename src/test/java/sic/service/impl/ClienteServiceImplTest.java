@@ -27,9 +27,10 @@ public class ClienteServiceImplTest {
 
     @Test
     public void shouldSetClientePredeterminado() {
-        when(clienteRepositoryJPAImpl.getClientePredeterminado((new EmpresaBuilder()).build()))
-                .thenReturn((new ClienteBuilder()).build());        
         Cliente resultadoEsperado = (new ClienteBuilder()).build();
+        clienteServiceImpl.setClientePredeterminado(resultadoEsperado);
+        when(clienteRepositoryJPAImpl.getClientePredeterminado((new EmpresaBuilder()).build()))
+                .thenReturn((new ClienteBuilder()).build());    
         Cliente resultadoObtenido = clienteServiceImpl.getClientePredeterminado((new EmpresaBuilder()).build());
         assertEquals(resultadoEsperado, resultadoObtenido);
     }

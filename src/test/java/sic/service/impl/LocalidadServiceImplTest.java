@@ -1,26 +1,25 @@
 package sic.service.impl;
 
 import org.junit.Test;
-import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
+import org.mockito.runners.MockitoJUnitRunner;
 import sic.modelo.Localidad;
 import sic.modelo.Provincia;
 import sic.repository.ILocalidadRepository;
 import sic.repository.jpa.LocalidadRepositoryJPAImpl;
-import sic.service.ILocalidadService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 
+@RunWith(MockitoJUnitRunner.class)
 public class LocalidadServiceImplTest {
 
-    private ILocalidadService localidadService;
+    @InjectMocks
+    private LocalidadServiceImpl localidadService;
     private Provincia provincia;
 
-    @Before
-    public void setUp() {
-        provincia = new Provincia();
-    }
 
     @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenNombreVacio() {
