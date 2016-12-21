@@ -4,8 +4,8 @@ import sic.modelo.RenglonFactura;
 
 public class RenglonFacturaBuilder {
     
-    private long id_RenglonFactura = 1L;
-    private long id_ProductoItem =1L;
+    private long id_RenglonFactura = 0L;
+    private long id_ProductoItem = 1L;
     private String codigoItem = "mdk.03617";
     private String descripcionItem = "Ventiladores de pie";
     private String medidaItem = "UNIDAD";

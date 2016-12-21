@@ -5,7 +5,7 @@ import sic.modelo.RenglonPedido;
 
 public class RenglonPedidoBuilder {
     
-    private long id_RenglonPedido = 7L;
+    private long id_RenglonPedido = 0L;
     private Producto producto = new ProductoBuilder().build();
     private double cantidad = 2;
     private double descuento_porcentaje = 0.0;

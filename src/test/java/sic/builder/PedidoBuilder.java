@@ -22,25 +22,28 @@ public class PedidoBuilder {
     private boolean eliminado;
     private Cliente cliente;
     private Usuario usuario;
-    private List<Factura> facturas = new ArrayList<>();
-    private List<RenglonPedido> renglones = new ArrayList<>();
+    private List<Factura> facturas;
+    private List<RenglonPedido> renglones;
     private double totalEstimado;
     private double totalActual;
     private EstadoPedido estado;
 
     public Pedido build() {
-        if (this.renglones.isEmpty()) {
+        if (renglones == null) {
             RenglonPedido renglon1 = new RenglonPedidoBuilder().build();
             RenglonPedido renglon2 = new RenglonPedidoBuilder().withCantidad(1)
-                    .withIdRenglonPedido(90L)
-                    .withProducto(new ProductoBuilder().withId_Producto(77L)
-                            .withDescripcion("Pack 6 Vasos")
-                            .withEmpresa(new EmpresaBuilder().build()).build())
-                    .build();
-            this.renglones.add(renglon1);
-            this.renglones.add(renglon2);
+                                            .withIdRenglonPedido(90L)
+                                            .withProducto(new ProductoBuilder().withId_Producto(77L)
+                                            .withDescripcion("Pack 6 Vasos")
+                                            .withEmpresa(new EmpresaBuilder().build()).build())
+                                            .build();
+            List<RenglonPedido> renglonesPedido = new ArrayList<>();
+            renglonesPedido.add(renglon1);
+            renglonesPedido.add(renglon2);
+            this.renglones = renglonesPedido;
         }
-        return new Pedido(id_Pedido, nroPedido, fecha, fechaVencimiento, observaciones, empresa, eliminado, cliente, usuario, facturas, renglones, totalEstimado, totalActual, estado);
+        return new Pedido(id_Pedido, nroPedido, fecha, fechaVencimiento, observaciones, empresa,
+                eliminado, cliente, usuario, facturas, renglones, totalEstimado, totalActual, estado);
     }
 
     public PedidoBuilder withIdPedido(long idPedido) {

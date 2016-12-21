@@ -3,7 +3,6 @@ package sic.builder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import sic.modelo.Cliente;
 import sic.modelo.Empresa;
 import sic.modelo.FacturaCompra;
 import sic.modelo.Pago;
@@ -11,7 +10,6 @@ import sic.modelo.Pedido;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
-import sic.modelo.Usuario;
 
 public class FacturaCompraBuilder {
     
@@ -20,12 +18,12 @@ public class FacturaCompraBuilder {
     private char tipoFactura = 'A';
     private long numSerie = 0;
     private long numFactura = 1;
-    private Date fechaVencimiento = new Date();    
-    private Pedido pedido =  null;
+    private Date fechaVencimiento = new Date();
+    private Pedido pedido = null;
     private Transportista transportista = new TransportistaBuilder().build();
-    private List<RenglonFactura> renglones = new ArrayList<>();
-    private List<Pago> pagos = new ArrayList<>();
-    private Proveedor  proveedor= new ProveedorBuilder().build();
+    private List<RenglonFactura> renglones;
+    private List<Pago> pagos;
+    private Proveedor proveedor = new ProveedorBuilder().build();
     private double subTotal = 7885;
     private double recargo_porcentaje = 0.0;
     private double recargo_neto = 0.0;
@@ -50,24 +48,25 @@ public class FacturaCompraBuilder {
         factura.setNumFactura(numFactura);
         factura.setFechaVencimiento(fechaVencimiento);
         factura.setPedido(pedido);
-        factura.setTransportista(transportista);
-        //Renglones
-        if (this.renglones.isEmpty()) {
-            RenglonFactura rf1 = new RenglonFacturaBuilder().build();
-            RenglonFactura rf2 = new RenglonFacturaBuilder().withCantidad(4)
-                    .withId_ProductoItem(890L)
-                    .withCodigoItem("mate.0923")
-                    .withIVAneto(1092)
-                    .withImporte(6292)
-                    .build();
+        factura.setTransportista(transportista);        
+        if (renglones == null) {
+            RenglonFactura renglon1 = new RenglonFacturaBuilder().build();
+            RenglonFactura renglon2 = new RenglonFacturaBuilder()
+                                            .withCantidad(4)
+                                            .withId_ProductoItem(890L)
+                                            .withCodigoItem("mate.0923")
+                                            .withIVAneto(1092)
+                                            .withImporte(6292)
+                                            .build();
             List<RenglonFactura> renglonesFactura = new ArrayList<>();
-            renglonesFactura.add(rf1);
-            renglonesFactura.add(rf2);
+            renglonesFactura.add(renglon1);
+            renglonesFactura.add(renglon2);
             this.renglones = renglonesFactura;
             factura.setRenglones(renglones);
         } else {
             factura.setRenglones(renglones);
         }
+        factura.setPagos(pagos);
         factura.setProveedor(proveedor);
         factura.setSubTotal(subTotal);
         factura.setRecargo_porcentaje(recargo_porcentaje);

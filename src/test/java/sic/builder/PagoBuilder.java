@@ -8,7 +8,7 @@ import sic.modelo.Pago;
 
 public class PagoBuilder {
 
-    private Long id_Pago = 1L;   
+    private Long id_Pago = 0L;
     private long nroPago = 1L;
     private FormaDePago formaDePago = new FormaDePagoBuilder().build();
     private Factura factura = new FacturaVentaBuilder().build();

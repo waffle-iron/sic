@@ -4,15 +4,14 @@ import sic.modelo.Empresa;
 import sic.modelo.Localidad;
 import sic.modelo.Transportista;
 
-
 public class TransportistaBuilder {
 
     private long id_Transportista = 0L;
-    private String nombre = "Correo Oca";
+    private String nombre = "Correo OCA";
     private String direccion = "Ruta 12";
     private Localidad localidad = new LocalidadBuilder().build();
-    private String web = "oca@oca.com.ar";
-    private String telefono = "3795402356";
+    private String web = "pedidos@oca.com.ar";
+    private String telefono = "379 5402356";
     private Empresa empresa = new EmpresaBuilder().build();;
     private boolean eliminado = false;
     
@@ -59,11 +58,4 @@ public class TransportistaBuilder {
         this.eliminado = eliminado;
         return this;
     }
-    
-    
-    @Override
-    public String toString() {
-        return nombre;
-    }
-
 }

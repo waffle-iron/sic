@@ -8,7 +8,7 @@ import sic.modelo.Usuario;
 
 public class GastoBuilder {
 
-    private long id_Gasto = 34L;
+    private long id_Gasto = 0L;
     private long nroGasto = 34;
     private Date fecha = new Date();
     private String concepto = "Gasto Factura de Luz - Builder";

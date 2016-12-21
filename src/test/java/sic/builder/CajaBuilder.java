@@ -8,7 +8,7 @@ import sic.modelo.Usuario;
 
 public class CajaBuilder {
 
-    private long id_Caja = 22L;
+    private long id_Caja = 0L;
     private int nroCaja = 22;
     private Date fechaApertura = new Date();
     private Date fechaCorteInforme = new Date();
@@ -24,7 +24,9 @@ public class CajaBuilder {
     private Empresa empresa = new EmpresaBuilder().build();
 
     public Caja build() {
-        return new Caja(id_Caja, nroCaja, fechaApertura, fechaCorteInforme, fechaCierre, empresa, usuarioAbreCaja, usuarioCierraCaja, observacion, estado, saldoInicial, saldoFinal, saldoReal, eliminada);
+        return new Caja(id_Caja, nroCaja, fechaApertura, fechaCorteInforme, fechaCierre, empresa,
+                usuarioAbreCaja, usuarioCierraCaja, observacion, estado,
+                saldoInicial, saldoFinal, saldoReal, eliminada);
     }
 
     public CajaBuilder withIdCaja(long idCaja) {

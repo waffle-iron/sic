@@ -22,8 +22,8 @@ public class FacturaVentaBuilder {
     private Date fechaVencimiento = new Date();    
     private Pedido pedido =  null;
     private Transportista transportista = new TransportistaBuilder().build();
-    private List<RenglonFactura> renglones = new ArrayList<>();
-    private List<Pago> pagos = new ArrayList<>();
+    private List<RenglonFactura> renglones;
+    private List<Pago> pagos;
     private Cliente cliente = new ClienteBuilder().build();
     private Usuario usuario = new UsuarioBuilder().build();
     private double subTotal = 7885;
@@ -50,24 +50,25 @@ public class FacturaVentaBuilder {
         factura.setNumFactura(numFactura);
         factura.setFechaVencimiento(fechaVencimiento);
         factura.setPedido(pedido);
-        factura.setTransportista(transportista);
-        //Renglones
-        if (this.renglones.isEmpty()) {
-            RenglonFactura rf1 = new RenglonFacturaBuilder().build();
-            RenglonFactura rf2 = new RenglonFacturaBuilder().withCantidad(4)
-                    .withId_ProductoItem(890L)
-                    .withCodigoItem("mate.0923")
-                    .withIVAneto(1092)
-                    .withImporte(6292)
-                    .build();
+        factura.setTransportista(transportista);        
+        if (renglones == null) {
+            RenglonFactura renglon1 = new RenglonFacturaBuilder().build();
+            RenglonFactura renglon2 = new RenglonFacturaBuilder()
+                                            .withCantidad(4)
+                                            .withId_ProductoItem(890L)
+                                            .withCodigoItem("mate.0923")
+                                            .withIVAneto(1092)
+                                            .withImporte(6292)
+                                            .build();
             List<RenglonFactura> renglonesFactura = new ArrayList<>();
-            renglonesFactura.add(rf1);
-            renglonesFactura.add(rf2);
+            renglonesFactura.add(renglon1);
+            renglonesFactura.add(renglon2);
             this.renglones = renglonesFactura;
             factura.setRenglones(renglones);
         } else {
             factura.setRenglones(renglones);
         }
+        factura.setPagos(pagos);
         factura.setCliente(cliente);
         factura.setUsuario(usuario);
         factura.setSubTotal(subTotal);
