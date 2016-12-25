@@ -374,7 +374,7 @@ public class FacturaController {
                                                  .buscaSoloPagadas(soloPagas)
                                                  .cantRegistros(0)
                                                  .build();
-        return facturaService.calcularTotalFacturadoVenta(facturaService.buscarFacturaVenta(criteria));
+        return facturaService.calcularTotalFacturadoVenta(criteria);
     }
     
     @GetMapping("/facturas/total-facturado-compra/criteria")
@@ -417,7 +417,7 @@ public class FacturaController {
                                                  .buscaSoloPagadas(soloPagas)
                                                  .cantRegistros(0)
                                                  .build();
-        return facturaService.calcularTotalFacturadoCompra(facturaService.buscarFacturaCompra(criteria));
+        return facturaService.calcularTotalFacturadoCompra(criteria);
     }
     
     @GetMapping("/facturas/total-iva-venta/criteria")
@@ -473,7 +473,7 @@ public class FacturaController {
                                                  .buscaSoloPagadas(soloPagas)
                                                  .cantRegistros(0)
                                                  .build();
-        return facturaService.calcularIVA_Venta(facturaService.buscarFacturaVenta(criteria));
+        return facturaService.calcularIVA_Venta(criteria);
     }
     
     @GetMapping("/facturas/total-iva-compra/criteria")
@@ -516,7 +516,7 @@ public class FacturaController {
                                                  .buscaSoloPagadas(soloPagas)
                                                  .cantRegistros(0)
                                                  .build();
-        return facturaService.calcularIVA_Compra(facturaService.buscarFacturaCompra(criteria));
+        return facturaService.calcularIVA_Compra(criteria);
     }
     
     @GetMapping("/facturas/ganancia-total/criteria")
@@ -572,7 +572,7 @@ public class FacturaController {
                                                  .buscaSoloPagadas(soloPagas)
                                                  .cantRegistros(0)
                                                  .build();
-        return facturaService.calcularGananciaTotal(facturaService.buscarFacturaVenta(criteria));
+        return facturaService.calcularGananciaTotal(criteria);
     }
     
     @GetMapping("/facturas/iva-neto")

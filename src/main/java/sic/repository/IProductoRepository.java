@@ -18,6 +18,8 @@ public interface IProductoRepository {
     Producto getProductoPorDescripcion(String descripcion, Empresa empresa);
 
     Producto getProductoPorId(long id_Producto);
+    
+    Double getValorMercaderia(BusquedaProductoCriteria criteria);
 
     Producto guardar(Producto producto);
     

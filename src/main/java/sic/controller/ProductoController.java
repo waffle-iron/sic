@@ -61,6 +61,42 @@ public class ProductoController {
         return productoService.getProductoPorCodigo(codigo, empresaService.getEmpresaPorId(idEmpresa));
     }
     
+    @GetMapping("/productos/costo-mercaderia/criteria")
+    @ResponseStatus(HttpStatus.OK)
+    public Double getValorMercaderia(@RequestParam long idEmpresa,
+                                          @RequestParam(required = false) String codigo,
+                                          @RequestParam(required = false) String descripcion,
+                                          @RequestParam(required = false) Long idRubro,
+                                          @RequestParam(required = false) Long idProveedor,                                          
+                                          @RequestParam(required = false) Integer cantidadRegistros,
+                                          @RequestParam(required = false) boolean soloFantantes) {
+        Rubro rubro = null;
+        if (idRubro != null) {
+            rubro = rubroService.getRubroPorId(idRubro);
+        }
+        Proveedor proveedor = null;
+        if (idProveedor != null) {
+            proveedor = proveedorService.getProveedorPorId(idProveedor);
+        }
+        if (cantidadRegistros == null) {
+            cantidadRegistros = 0;
+        }
+        BusquedaProductoCriteria criteria = BusquedaProductoCriteria.builder()
+                                            .buscarPorCodigo((codigo!=null))
+                                            .codigo(codigo)
+                                            .buscarPorDescripcion(descripcion!=null)
+                                            .descripcion(descripcion)
+                                            .buscarPorRubro(rubro!=null)
+                                            .rubro(rubro)
+                                            .buscarPorProveedor(proveedor!=null)
+                                            .proveedor(proveedor)
+                                            .empresa(empresaService.getEmpresaPorId(idEmpresa))
+                                            .cantRegistros(cantidadRegistros)
+                                            .listarSoloFaltantes(soloFantantes)
+                                            .build();
+        return productoService.getValorMercaderia(criteria);
+    }
+    
     @GetMapping("/productos/busqueda/criteria") 
     @ResponseStatus(HttpStatus.OK)
     public List<Producto> buscarProductos(@RequestParam long idEmpresa,

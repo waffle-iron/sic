@@ -645,51 +645,28 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public double calcularTotalFacturadoVenta(List<FacturaVenta> facturas) {
-        double resultado = 0;
-        resultado = facturas.stream()
-                            .map((facturaVenta) -> facturaVenta.getTotal())
-                            .reduce(resultado, (accumulator, _item) -> accumulator + _item);
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+    public double calcularTotalFacturadoVenta(BusquedaFacturaVentaCriteria criteria) {
+        return Utilidades.truncarDecimal(facturaRepository.calcularTotalFacturadoVenta(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
-    public double calcularTotalFacturadoCompra(List<FacturaCompra> facturas) {
-        double resultado = 0;
-        resultado = facturas.stream()
-                            .map((FacturaCompra) -> FacturaCompra.getTotal())
-                            .reduce(resultado, (accumulator, _item) -> accumulator + _item);
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+    public double calcularTotalFacturadoCompra(BusquedaFacturaCompraCriteria criteria) {
+        return Utilidades.truncarDecimal(facturaRepository.calcularTotalFacturadoCompra(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
-    public double calcularIVA_Venta(List<FacturaVenta> facturas) {
-        double resultado = 0;
-        resultado = facturas.stream()
-                            .map((facturaVenta) -> (facturaVenta.getIva_105_neto() + facturaVenta.getIva_21_neto()))
-                            .reduce(resultado, (accumulator, _item) -> accumulator + _item);
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+    public double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria) {
+        return Utilidades.truncarDecimal(facturaRepository.calcularIVA_Venta(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
-    public double calcularIVA_Compra(List<FacturaCompra> facturas) {
-        double resultado = 0;
-        resultado = facturas.stream()
-                            .map((facturaCompra) -> (facturaCompra.getIva_105_neto() + facturaCompra.getIva_21_neto()))
-                            .reduce(resultado, (accumulator, _item) -> accumulator + _item);
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+    public double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria) {
+        return Utilidades.truncarDecimal(facturaRepository.calcularIVA_Compra(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
-    public double calcularGananciaTotal(List<FacturaVenta> facturas) {
-        double resultado = 0;
-        for (FacturaVenta facturaVenta : facturas) {
-            List<RenglonFactura> renglones = this.getRenglonesDeLaFactura(facturaVenta.getId_Factura());
-            for (RenglonFactura renglon : renglones) {
-                resultado += renglon.getGanancia_neto() * renglon.getCantidad();
-            }
-        }
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+    public double calcularGananciaTotal(BusquedaFacturaVentaCriteria criteria) {
+        return Utilidades.truncarDecimal(facturaRepository.calcularGananciaTotal(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override

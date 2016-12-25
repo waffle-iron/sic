@@ -22,6 +22,16 @@ public interface IFacturaRepository {
     List<Factura> getFacturasDelPedido(Long idPedido);
     
     long getMayorNumFacturaSegunTipo(String tipoDeFactura, long serie);
+    
+    double calcularTotalFacturadoVenta(BusquedaFacturaVentaCriteria criteria);
+    
+    double calcularTotalFacturadoCompra(BusquedaFacturaCompraCriteria criteria);
+    
+    double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria);
+    
+    double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria);
+    
+    double calcularGananciaTotal(BusquedaFacturaVentaCriteria criteria);
 
     Factura guardar(Factura factura);    
 }

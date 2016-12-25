@@ -39,6 +39,8 @@ public interface IProductoService {
     Producto getProductoPorDescripcion(String descripcion, Empresa empresa);
 
     Producto getProductoPorId(long id_Producto);
+    
+    Double getValorMercaderia(BusquedaProductoCriteria criteria);
   
     byte[] getReporteListaDePreciosPorEmpresa(List<Producto> productos, long idEmpresa);
 
