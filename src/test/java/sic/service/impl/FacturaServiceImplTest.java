@@ -11,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import sic.builder.ClienteBuilder;
 import sic.builder.EmpresaBuilder;
@@ -30,23 +29,23 @@ import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Usuario;
-import sic.repository.IFacturaRepository;
 import sic.modelo.Movimiento;
-import sic.service.IFacturaService;
-import sic.service.IProductoService;
+import sic.repository.jpa.FacturaRepositoryJPAImpl;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FacturaServiceImplTest {    
     
-    private IFacturaService facturaService;
-    private IFacturaRepository facturaRepository;
-    private IProductoService productoService;
+    @Mock
+    private FacturaRepositoryJPAImpl facturaRepository;
+    private ProductoServiceImpl productoService = Mockito.mock(ProductoServiceImpl.class);
     
+    @InjectMocks
+    private FacturaServiceImpl facturaService;
+
     @Before
     public void before() {
-        productoService = Mockito.mock(ProductoServiceImpl.class);
-        facturaRepository = Mockito.mock(IFacturaRepository.class);
-        when(facturaRepository.getMayorNumFacturaSegunTipo("", (long) 1)).thenReturn((long) 1);
-        facturaService = new FacturaServiceImpl(facturaRepository, productoService, null, null, null);
+    when(facturaRepository.getMayorNumFacturaSegunTipo("", (long) 1)).thenReturn((long) 1);
+    facturaService = new FacturaServiceImpl(facturaRepository, productoService, null, null, null);
     }
 
     @Test

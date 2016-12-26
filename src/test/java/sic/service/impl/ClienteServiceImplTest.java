@@ -45,11 +45,13 @@ public class ClienteServiceImplTest {
     public void shouldValidarOperacionWhenEmailInvalido() {
         thrown.expect(BusinessServiceException.class);
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_cliente_email_invalido"));
-        clienteServiceImpl.validarOperacion(TipoDeOperacion.ELIMINACION, new ClienteBuilder().withEmail("@@.com").build());
+        clienteServiceImpl.validarOperacion(TipoDeOperacion.ELIMINACION, new ClienteBuilder().withEmail("@@.com").build());        
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenCondicionIVAesNull() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_cliente_vacio_condicionIVA"));
         clienteServiceImpl.validarOperacion(TipoDeOperacion.ELIMINACION, new ClienteBuilder()
                 .withEmail("soporte@gmail.com")
                 .withRazonSocial("Ferreteria Julian")
@@ -57,8 +59,10 @@ public class ClienteServiceImplTest {
                 .build());
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenLocalidadEsNull() {        
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_cliente_vacio_localidad"));
         clienteServiceImpl.validarOperacion(TipoDeOperacion.ELIMINACION, new ClienteBuilder()
                 .withEmail("soporte@gmail.com")
                 .withRazonSocial("Ferreteria Julian")
@@ -67,8 +71,10 @@ public class ClienteServiceImplTest {
                 .build());
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenEmpresaEsNull() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_cliente_vacio_empresa"));
         Cliente cliente = new ClienteBuilder()
                 .withEmail("soporte@gmail.com")
                 .withRazonSocial("Ferreteria Julian")
@@ -79,8 +85,10 @@ public class ClienteServiceImplTest {
         clienteServiceImpl.validarOperacion(TipoDeOperacion.ELIMINACION, cliente);
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenIdFiscalDuplicadoEnAlta() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_cliente_duplicado_idFiscal"));
         Cliente cliente = new ClienteBuilder().build();
         Cliente clienteDuplicado = new ClienteBuilder().build();
         when(clienteRepositoryJPAImpl.getClientePorId_Fiscal(cliente.getId_Fiscal(), cliente.getEmpresa()))
@@ -88,8 +96,10 @@ public class ClienteServiceImplTest {
         clienteServiceImpl.validarOperacion(TipoDeOperacion.ALTA, clienteDuplicado);
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenIdFiscalDuplicadoEnActualizacion() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_cliente_duplicado_idFiscal"));
         Cliente cliente = new ClienteBuilder()
                 .withId_Cliente(7L)
                 .withRazonSocial("Merceria los dos botones")
@@ -105,8 +115,10 @@ public class ClienteServiceImplTest {
         clienteServiceImpl.validarOperacion(TipoDeOperacion.ACTUALIZACION, clienteDuplicado);
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenRazonSocialDuplicadaEnAlta() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_cliente_duplicado_razonSocial"));
         Cliente cliente = new ClienteBuilder()
                 .withEmail("soporte@gmail.com")
                 .withRazonSocial("Ferreteria Julian")
@@ -130,8 +142,10 @@ public class ClienteServiceImplTest {
         clienteServiceImpl.validarOperacion(TipoDeOperacion.ALTA, clienteDuplicado);
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenRazonSocialDuplicadaEnActualizacion() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_cliente_duplicado_razonSocial"));
         Cliente cliente = new ClienteBuilder()
                 .withId_Cliente(2L)
                 .withRazonSocial("Ferreteria Julian")

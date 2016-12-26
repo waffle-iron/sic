@@ -1,14 +1,15 @@
 package sic.service.impl;
 
+import java.util.ResourceBundle;
 import org.junit.Test;
-import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+import sic.builder.MedidaBuilder;
 import sic.modelo.Empresa;
 import sic.modelo.Medida;
 import sic.repository.IMedidaRepository;
@@ -21,35 +22,38 @@ public class MedidaServiceImplTest {
     @InjectMocks
     private MedidaServiceImpl medidaService;
     private Empresa empresa;
-    private Medida medida;
-    private Medida medidaParaTest;
         
     @Mock
     private IMedidaRepository medidaRepository;
+    private Medida medida = new MedidaBuilder().build();
+    private Medida medidaParaTest = new MedidaBuilder().build();
+    
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        medida = Mockito.mock(Medida.class);
-    }
-
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenNombreVacio() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_vacio_nombre"));
         when(medidaRepository.getMedidaPorNombre("", empresa)).thenReturn(medidaParaTest);
         medida.setNombre("");
         medidaService.validarOperacion(TipoDeOperacion.ALTA, medida);
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenNombreDuplicadoAlta() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_duplicada_nombre"));
         when(medidaRepository.getMedidaPorNombre("unidad", empresa)).thenReturn(medidaParaTest);
         medida.setNombre("unidad");
         medida.setEmpresa(empresa);
         medidaService.validarOperacion(TipoDeOperacion.ALTA, medida);
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenNombreDuplicadoActualizacion() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_duplicada_nombre"));
         when(medidaRepository.getMedidaPorNombre("metro", empresa)).thenReturn(medidaParaTest);
         medida.setNombre("metro");
         medida.setEmpresa(empresa);

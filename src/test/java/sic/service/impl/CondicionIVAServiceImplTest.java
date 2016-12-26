@@ -1,13 +1,15 @@
 package sic.service.impl;
 
-import org.junit.Before;
+import java.util.ResourceBundle;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
+import sic.builder.CondicionIVABuilder;
 import sic.modelo.CondicionIVA;
 import sic.repository.ICondicionIVARepository;
 import sic.service.BusinessServiceException;
@@ -16,31 +18,29 @@ import sic.modelo.TipoDeOperacion;
 @RunWith(MockitoJUnitRunner.class)
 public class CondicionIVAServiceImplTest {
 
-    private CondicionIVA condicionIVA;
-    private CondicionIVA condicionIVADuplicada;
-
     @Mock
     private ICondicionIVARepository condicionIVARepository;
     
     @InjectMocks
     private CondicionDeIVAServiceImpl condicionDeIVAServiceImpl;
+    private CondicionIVA condicionIVA = new CondicionIVABuilder().build();
+    private CondicionIVA condicionIVADuplicada = new CondicionIVABuilder().build();
+   
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        condicionIVA = new CondicionIVA();
-        condicionIVADuplicada = new CondicionIVA();
-    }
-
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenDuplicadoAlta() {
-        condicionIVA.setNombre("discrimina IVA");
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_condicionIVA_nombre_duplicado"));
         when(condicionDeIVAServiceImpl.getCondicionIVAPorNombre(condicionIVA.getNombre())).thenReturn(condicionIVA);
         condicionDeIVAServiceImpl.validarOperacion(TipoDeOperacion.ALTA, condicionIVA);
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenDuplicadoActualizacion() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_condicionIVA_nombre_duplicado"));
         condicionIVA.setNombre("discrimina IVA");
         condicionIVA.setId_CondicionIVA(Long.MIN_VALUE);
         condicionIVADuplicada.setNombre("discimina IVA");

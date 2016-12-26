@@ -1,11 +1,16 @@
 package sic.service.impl;
 
+import java.util.ResourceBundle;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.runners.MockitoJUnitRunner;
+import sic.builder.ProvinciaBuilder;
 import sic.modelo.Localidad;
 import sic.modelo.Provincia;
 import sic.repository.ILocalidadRepository;
@@ -18,10 +23,17 @@ public class LocalidadServiceImplTest {
 
     @InjectMocks
     private LocalidadServiceImpl localidadService;
+   
+    @Mock
     private Provincia provincia;
+    
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenNombreVacio() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_localidad_vacio_nombre"));
         Localidad localidad = new Localidad();
         localidad.setNombre("");
         ILocalidadRepository localidadRepository = new LocalidadRepositoryJPAImpl();
@@ -29,8 +41,10 @@ public class LocalidadServiceImplTest {
         localidadService.validarOperacion(TipoDeOperacion.ALTA, localidad);
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenProvinciaNull() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_localidad_provincia_vacio"));
         Localidad localidad = new Localidad();
         localidad.setNombre("Capital");
         ILocalidadRepository localidadRepository = new LocalidadRepositoryJPAImpl();
@@ -38,8 +52,11 @@ public class LocalidadServiceImplTest {
         localidadService.validarOperacion(TipoDeOperacion.ALTA, localidad);
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenNombreDuplicadoAlta() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_localidad_duplicado_nombre"));
+        provincia = new ProvinciaBuilder().build();
         Localidad localidad = new Localidad();
         localidad.setNombre("Capital");
         localidad.setProvincia(provincia);
@@ -49,8 +66,11 @@ public class LocalidadServiceImplTest {
         localidadService.validarOperacion(TipoDeOperacion.ALTA, localidad);
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenNombreDuplicadoActualizacion() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_localidad_duplicado_nombre"));
+        provincia = new ProvinciaBuilder().build();
         Localidad localidad = new Localidad();
         localidad.setNombre("Capital");
         localidad.setProvincia(provincia);
