@@ -25,13 +25,14 @@ public class PedidoBuilder {
     private List<Factura> facturas;
     private List<RenglonPedido> renglones;
     private double totalEstimado = 544.5;
-    private double totalActual;
+    private double totalActual = 544.5;
     private EstadoPedido estado = EstadoPedido.ABIERTO;
 
     public Pedido build() {
         if (renglones == null) {
             RenglonPedido renglon1 = new RenglonPedidoBuilder().build();
-            RenglonPedido renglon2 = new RenglonPedidoBuilder().withCantidad(1)
+            RenglonPedido renglon2 = new RenglonPedidoBuilder()
+                                            .withCantidad(1)
                                             .withIdRenglonPedido(90L)
                                             .withProducto(new ProductoBuilder().withId_Producto(77L)
                                             .withDescripcion("Pack 6 Vasos")

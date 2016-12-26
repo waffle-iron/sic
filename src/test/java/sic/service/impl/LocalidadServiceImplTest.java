@@ -20,7 +20,6 @@ public class LocalidadServiceImplTest {
     private LocalidadServiceImpl localidadService;
     private Provincia provincia;
 
-
     @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenNombreVacio() {
         Localidad localidad = new Localidad();

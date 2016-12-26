@@ -1,7 +1,10 @@
 package sic.service.impl;
 
+import java.util.ResourceBundle;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import static org.mockito.Mockito.when;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -24,46 +27,51 @@ public class ClienteServiceImplTest {
     
     @InjectMocks
     private ClienteServiceImpl clienteServiceImpl;
+    
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void shouldSetClientePredeterminado() {
-        Cliente resultadoEsperado = (new ClienteBuilder()).build();
+        Cliente resultadoEsperado = new ClienteBuilder().build();
         clienteServiceImpl.setClientePredeterminado(resultadoEsperado);
         when(clienteRepositoryJPAImpl.getClientePredeterminado((new EmpresaBuilder()).build()))
-                .thenReturn((new ClienteBuilder()).build());    
+                                     .thenReturn((new ClienteBuilder()).build());
         Cliente resultadoObtenido = clienteServiceImpl.getClientePredeterminado((new EmpresaBuilder()).build());
         assertEquals(resultadoEsperado, resultadoObtenido);
     }
-
-    @Test(expected = BusinessServiceException.class)
-    public void shouldValidarOperacionWhenEmailInvalido() {        
+    
+    @Test
+    public void shouldValidarOperacionWhenEmailInvalido() {
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_cliente_email_invalido"));
         clienteServiceImpl.validarOperacion(TipoDeOperacion.ELIMINACION, new ClienteBuilder().withEmail("@@.com").build());
     }
 
     @Test(expected = BusinessServiceException.class)
-    public void shouldValidarOperacionWhenCondicionIVAesNull() {        
+    public void shouldValidarOperacionWhenCondicionIVAesNull() {
         clienteServiceImpl.validarOperacion(TipoDeOperacion.ELIMINACION, new ClienteBuilder()
-                .withEmail("emailValido@email.com")
-                .withRazonSocial("razon Social")
+                .withEmail("soporte@gmail.com")
+                .withRazonSocial("Ferreteria Julian")
                 .withCondicionIVA(null)
                 .build());
     }
 
     @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenLocalidadEsNull() {        
-        clienteServiceImpl.validarOperacion(TipoDeOperacion.ELIMINACION, (new ClienteBuilder())
-                .withEmail("emailValido@email.com")
-                .withRazonSocial("razon Social")
+        clienteServiceImpl.validarOperacion(TipoDeOperacion.ELIMINACION, new ClienteBuilder()
+                .withEmail("soporte@gmail.com")
+                .withRazonSocial("Ferreteria Julian")
                 .withLocalidad(null)
-                .withCondicionIVA((new CondicionIVABuilder()).build())
+                .withCondicionIVA(new CondicionIVABuilder().build())
                 .build());
     }
 
     @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenEmpresaEsNull() {
-        Cliente cliente = (new ClienteBuilder())
-                .withEmail("emailValido@email.com")
-                .withRazonSocial("razon Social")
+        Cliente cliente = new ClienteBuilder()
+                .withEmail("soporte@gmail.com")
+                .withRazonSocial("Ferreteria Julian")
                 .withCondicionIVA(new CondicionIVABuilder().build())
                 .withLocalidad(new LocalidadBuilder().build())
                 .withEmpresa(null)
@@ -74,7 +82,7 @@ public class ClienteServiceImplTest {
     @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenIdFiscalDuplicadoEnAlta() {
         Cliente cliente = new ClienteBuilder().build();
-        Cliente clienteDuplicado = (new ClienteBuilder()).build();
+        Cliente clienteDuplicado = new ClienteBuilder().build();
         when(clienteRepositoryJPAImpl.getClientePorId_Fiscal(cliente.getId_Fiscal(), cliente.getEmpresa()))
                 .thenReturn(cliente);        
         clienteServiceImpl.validarOperacion(TipoDeOperacion.ALTA, clienteDuplicado);
@@ -100,8 +108,8 @@ public class ClienteServiceImplTest {
     @Test(expected = BusinessServiceException.class)
     public void shouldValidarOperacionWhenRazonSocialDuplicadaEnAlta() {
         Cliente cliente = new ClienteBuilder()
-                .withEmail("emailValido@email.com")
-                .withRazonSocial("razon social")
+                .withEmail("soporte@gmail.com")
+                .withRazonSocial("Ferreteria Julian")
                 .withCondicionIVA(new CondicionIVABuilder().build())
                 .withLocalidad(new LocalidadBuilder().build())
                 .withEmpresa(new EmpresaBuilder().build())
@@ -109,8 +117,8 @@ public class ClienteServiceImplTest {
                 .withId_Cliente(Long.MIN_VALUE)
                 .build();
         Cliente clienteDuplicado = new ClienteBuilder()
-                .withEmail("emailValido@email.com")
-                .withRazonSocial("razon social")
+                .withEmail("soporte@gmail.com")
+                .withRazonSocial("Ferreteria Julian")
                 .withCondicionIVA(new CondicionIVABuilder().build())
                 .withLocalidad(new LocalidadBuilder().build())
                 .withEmpresa(new EmpresaBuilder().build())
@@ -126,11 +134,11 @@ public class ClienteServiceImplTest {
     public void shouldValidarOperacionWhenRazonSocialDuplicadaEnActualizacion() {
         Cliente cliente = new ClienteBuilder()
                 .withId_Cliente(2L)
-                .withRazonSocial("razon social")
+                .withRazonSocial("Ferreteria Julian")
                 .build();
         Cliente clienteDuplicado = new ClienteBuilder()
                 .withId_Cliente(4L)
-                .withRazonSocial("razon social")
+                .withRazonSocial("Ferreteria Julian")
                 .build();
         when(clienteRepositoryJPAImpl.getClientePorRazonSocial(cliente.getRazonSocial(), cliente.getEmpresa()))
                 .thenReturn(cliente);        

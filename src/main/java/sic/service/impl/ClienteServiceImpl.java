@@ -94,7 +94,7 @@ public class ClienteServiceImpl implements IClienteService {
     @Override
     public void validarOperacion(TipoDeOperacion operacion, Cliente cliente) {
         //Entrada de Datos
-        if (cliente.getEmail() != "") {
+        if (!"".equals(cliente.getEmail())) {
             if (!Validator.esEmailValido(cliente.getEmail())) {
                 throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_cliente_email_invalido"));

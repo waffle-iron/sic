@@ -9,7 +9,6 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
-import sic.builder.EmpresaBuilder;
 import sic.modelo.Empresa;
 import sic.modelo.Medida;
 import sic.repository.IMedidaRepository;
@@ -27,7 +26,6 @@ public class MedidaServiceImplTest {
         
     @Mock
     private IMedidaRepository medidaRepository;
-
 
     @Before
     public void setUp() {
