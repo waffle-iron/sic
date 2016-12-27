@@ -10,8 +10,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "provincia")
@@ -29,6 +31,8 @@ import lombok.EqualsAndHashCode;
                     + "ORDER BY p.nombre ASC")
 })
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of = {"nombre"})
 public class Provincia implements Serializable {
 
@@ -43,7 +47,7 @@ public class Provincia implements Serializable {
     @JoinColumn(name = "id_Pais", referencedColumnName = "id_Pais")
     private Pais pais;
     
-    private boolean eliminada = false;
+    private boolean eliminada;
 
     @Override
     public String toString() {

@@ -10,8 +10,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "formadepago")
@@ -32,6 +34,8 @@ import lombok.EqualsAndHashCode;
                     + "WHERE f.predeterminado = true and f.empresa = :empresa and f.eliminada = false")
 })
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of = {"nombre", "empresa"})
 public class FormaDePago implements Serializable {
 

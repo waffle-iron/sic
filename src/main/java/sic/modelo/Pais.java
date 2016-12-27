@@ -8,8 +8,10 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "pais")
@@ -26,6 +28,8 @@ import lombok.EqualsAndHashCode;
                     + "ORDER BY p.nombre ASC")
 })
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of = {"nombre"})
 public class Pais implements Serializable {
 
@@ -36,7 +40,7 @@ public class Pais implements Serializable {
     @Column(nullable = false)
     private String nombre;
     
-    private boolean eliminado = false;
+    private boolean eliminado;
 
     @Override
     public String toString() {

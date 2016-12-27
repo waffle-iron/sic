@@ -1,49 +1,54 @@
 package sic.service.impl;
 
-import org.junit.Before;
+import java.util.ResourceBundle;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.junit4.SpringRunner;
+import sic.builder.CondicionIVABuilder;
 import sic.modelo.CondicionIVA;
 import sic.repository.ICondicionIVARepository;
-import sic.service.ICondicionIVAService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 
+@RunWith(SpringRunner.class)
 public class CondicionIVAServiceImplTest {
-
-    private CondicionIVA condicionIVA;
-    private CondicionIVA condicionIVADuplicada;
-    private ICondicionIVAService condicionIVAService;
 
     @Mock
     private ICondicionIVARepository condicionIVARepository;
+    
+    @InjectMocks
+    private CondicionDeIVAServiceImpl condicionDeIVAServiceImpl;      
+   
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        condicionIVA = new CondicionIVA();
-        condicionIVADuplicada = new CondicionIVA();
-    }
-
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenDuplicadoAlta() {
-        condicionIVA.setNombre("discrimina IVA");
-        when(condicionIVARepository.getCondicionIVAPorNombre(condicionIVA.getNombre())).thenReturn(condicionIVA);
-        condicionIVAService = new CondicionDeIVAServiceImpl(condicionIVARepository);
-        condicionIVAService.validarOperacion(TipoDeOperacion.ALTA, condicionIVA);
+        CondicionIVA condicionIVA = new CondicionIVABuilder().build();
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_condicionIVA_nombre_duplicado"));
+        when(condicionDeIVAServiceImpl.getCondicionIVAPorNombre(condicionIVA.getNombre())).thenReturn(condicionIVA);
+        condicionDeIVAServiceImpl.validarOperacion(TipoDeOperacion.ALTA, condicionIVA);
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenDuplicadoActualizacion() {
-        condicionIVA.setNombre("discrimina IVA");
-        condicionIVA.setId_CondicionIVA(Long.MIN_VALUE);
-        condicionIVADuplicada.setNombre("discimina IVA");
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_condicionIVA_nombre_duplicado"));
+        CondicionIVA condicionIVA = new CondicionIVABuilder()
+                .withId_CondicionIVA(Long.MIN_VALUE)
+                .withNombre("Responsable Inscripto")
+                .build();        
+        CondicionIVA condicionIVADuplicada = new CondicionIVABuilder().build();
         condicionIVADuplicada.setId_CondicionIVA(Long.MAX_VALUE);
-        when(condicionIVARepository.getCondicionIVAPorNombre(condicionIVADuplicada.getNombre())).thenReturn(condicionIVA);
-        condicionIVAService = new CondicionDeIVAServiceImpl(condicionIVARepository);
-        condicionIVAService.validarOperacion(TipoDeOperacion.ACTUALIZACION, condicionIVADuplicada);
+        condicionIVADuplicada.setNombre("Responsable Inscripto");        
+        when(condicionDeIVAServiceImpl.getCondicionIVAPorNombre(condicionIVADuplicada.getNombre())).thenReturn(condicionIVA);
+        condicionDeIVAServiceImpl.validarOperacion(TipoDeOperacion.ACTUALIZACION, condicionIVADuplicada);
     }
 
 }

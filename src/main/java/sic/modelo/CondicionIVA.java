@@ -8,8 +8,10 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "condicioniva")
@@ -26,6 +28,8 @@ import lombok.EqualsAndHashCode;
                     + "WHERE c.nombre LIKE :nombre AND c.eliminada = false")
 })
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of = {"nombre"})
 public class CondicionIVA implements Serializable {
 
