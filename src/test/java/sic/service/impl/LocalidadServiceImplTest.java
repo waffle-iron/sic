@@ -6,10 +6,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import sic.builder.ProvinciaBuilder;
 import sic.modelo.Localidad;
 import sic.modelo.Provincia;
@@ -18,14 +17,11 @@ import sic.repository.jpa.LocalidadRepositoryJPAImpl;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 public class LocalidadServiceImplTest {
 
     @InjectMocks
-    private LocalidadServiceImpl localidadService;
-   
-    @Mock
-    private Provincia provincia;
+    private LocalidadServiceImpl localidadService;   
     
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -56,7 +52,7 @@ public class LocalidadServiceImplTest {
     public void shouldValidarOperacionWhenNombreDuplicadoAlta() {
         thrown.expect(BusinessServiceException.class);
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_localidad_duplicado_nombre"));
-        provincia = new ProvinciaBuilder().build();
+        Provincia provincia = new ProvinciaBuilder().build();
         Localidad localidad = new Localidad();
         localidad.setNombre("Capital");
         localidad.setProvincia(provincia);
@@ -70,7 +66,7 @@ public class LocalidadServiceImplTest {
     public void shouldValidarOperacionWhenNombreDuplicadoActualizacion() {
         thrown.expect(BusinessServiceException.class);
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_localidad_duplicado_nombre"));
-        provincia = new ProvinciaBuilder().build();
+        Provincia provincia = new ProvinciaBuilder().build();
         Localidad localidad = new Localidad();
         localidad.setNombre("Capital");
         localidad.setProvincia(provincia);

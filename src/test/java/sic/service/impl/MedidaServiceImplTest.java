@@ -8,25 +8,21 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import sic.builder.MedidaBuilder;
-import sic.modelo.Empresa;
 import sic.modelo.Medida;
 import sic.repository.IMedidaRepository;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 public class MedidaServiceImplTest {
 
-    @InjectMocks
-    private MedidaServiceImpl medidaService;
-    private Empresa empresa;
-        
     @Mock
     private IMedidaRepository medidaRepository;
-    private Medida medida = new MedidaBuilder().build();
-    private Medida medidaParaTest = new MedidaBuilder().build();
+    
+    @InjectMocks
+    private MedidaServiceImpl medidaService;
     
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -35,7 +31,9 @@ public class MedidaServiceImplTest {
     public void shouldValidarOperacionWhenNombreVacio() {
         thrown.expect(BusinessServiceException.class);
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_vacio_nombre"));
-        when(medidaRepository.getMedidaPorNombre("", empresa)).thenReturn(medidaParaTest);
+        Medida medidaParaTest = new MedidaBuilder().build();
+        Medida medida = new MedidaBuilder().build();
+        when(medidaRepository.getMedidaPorNombre("", medida.getEmpresa())).thenReturn(medidaParaTest);
         medida.setNombre("");
         medidaService.validarOperacion(TipoDeOperacion.ALTA, medida);
     }
@@ -44,9 +42,10 @@ public class MedidaServiceImplTest {
     public void shouldValidarOperacionWhenNombreDuplicadoAlta() {
         thrown.expect(BusinessServiceException.class);
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_duplicada_nombre"));
-        when(medidaRepository.getMedidaPorNombre("unidad", empresa)).thenReturn(medidaParaTest);
-        medida.setNombre("unidad");
-        medida.setEmpresa(empresa);
+        Medida medidaParaTest = new MedidaBuilder().build();
+        Medida medida = new MedidaBuilder().build();
+        when(medidaRepository.getMedidaPorNombre("Unidad", medida.getEmpresa())).thenReturn(medidaParaTest);
+        medida.setNombre("Unidad");        
         medidaService.validarOperacion(TipoDeOperacion.ALTA, medida);
     }
 
@@ -54,15 +53,16 @@ public class MedidaServiceImplTest {
     public void shouldValidarOperacionWhenNombreDuplicadoActualizacion() {
         thrown.expect(BusinessServiceException.class);
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_duplicada_nombre"));
-        when(medidaRepository.getMedidaPorNombre("metro", empresa)).thenReturn(medidaParaTest);
-        medida.setNombre("metro");
-        medida.setEmpresa(empresa);
-        medida.setId_Medida((long) 1);
-        when(medidaService.getMedidaPorNombre("metro", empresa)).thenReturn(medida);
+        Medida medidaParaTest = new MedidaBuilder().build();
+        Medida medida = new MedidaBuilder().build();
+        when(medidaRepository.getMedidaPorNombre("Metro", medida.getEmpresa())).thenReturn(medidaParaTest);
+        medida.setId_Medida(1L);
+        medida.setNombre("Metro");                
+        when(medidaService.getMedidaPorNombre("Metro", medida.getEmpresa())).thenReturn(medida);
         Medida medidaDuplicada = new Medida();
-        medidaDuplicada.setNombre("metro");
-        medidaDuplicada.setEmpresa(empresa);
-        medidaDuplicada.setId_Medida((long) 2);
+        medidaDuplicada.setId_Medida(2L);
+        medidaDuplicada.setNombre("Metro");
+        medidaDuplicada.setEmpresa(medida.getEmpresa());        
         medidaService.validarOperacion(TipoDeOperacion.ACTUALIZACION, medidaDuplicada);
     }
 

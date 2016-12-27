@@ -5,13 +5,12 @@ import java.util.Date;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import sic.builder.ClienteBuilder;
 import sic.builder.EmpresaBuilder;
 import sic.builder.FacturaVentaBuilder;
@@ -32,21 +31,17 @@ import sic.modelo.Usuario;
 import sic.modelo.Movimiento;
 import sic.repository.jpa.FacturaRepositoryJPAImpl;
 
-@RunWith(MockitoJUnitRunner.class)
-public class FacturaServiceImplTest {    
+@RunWith(SpringRunner.class)
+public class FacturaServiceImplTest {
     
     @Mock
-    private FacturaRepositoryJPAImpl facturaRepository;
-    private ProductoServiceImpl productoService = Mockito.mock(ProductoServiceImpl.class);
+    private FacturaRepositoryJPAImpl facturaRepository;    
+    
+    @Mock
+    private ProductoServiceImpl productoService;
     
     @InjectMocks
     private FacturaServiceImpl facturaService;
-
-    @Before
-    public void before() {
-    when(facturaRepository.getMayorNumFacturaSegunTipo("", (long) 1)).thenReturn((long) 1);
-    facturaService = new FacturaServiceImpl(facturaRepository, productoService, null, null, null);
-    }
 
     @Test
     public void shouldGetTipoFacturaCompraWhenEmpresaYProveedorDiscriminanIVA() {
@@ -197,6 +192,7 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldDividirFactura() {
+        when(facturaRepository.getMayorNumFacturaSegunTipo("", (long) 1)).thenReturn((long) 1);
         RenglonFactura renglon1 = Mockito.mock(RenglonFactura.class);
         RenglonFactura renglon2 = Mockito.mock(RenglonFactura.class);
         Producto producto = Mockito.mock(Producto.class);

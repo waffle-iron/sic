@@ -8,29 +8,28 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import sic.builder.CondicionIVABuilder;
 import sic.modelo.CondicionIVA;
 import sic.repository.ICondicionIVARepository;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 public class CondicionIVAServiceImplTest {
 
     @Mock
     private ICondicionIVARepository condicionIVARepository;
     
     @InjectMocks
-    private CondicionDeIVAServiceImpl condicionDeIVAServiceImpl;
-    private CondicionIVA condicionIVA = new CondicionIVABuilder().build();
-    private CondicionIVA condicionIVADuplicada = new CondicionIVABuilder().build();
+    private CondicionDeIVAServiceImpl condicionDeIVAServiceImpl;      
    
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void shouldValidarOperacionWhenDuplicadoAlta() {
+        CondicionIVA condicionIVA = new CondicionIVABuilder().build();
         thrown.expect(BusinessServiceException.class);
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_condicionIVA_nombre_duplicado"));
         when(condicionDeIVAServiceImpl.getCondicionIVAPorNombre(condicionIVA.getNombre())).thenReturn(condicionIVA);
@@ -41,10 +40,13 @@ public class CondicionIVAServiceImplTest {
     public void shouldValidarOperacionWhenDuplicadoActualizacion() {
         thrown.expect(BusinessServiceException.class);
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_condicionIVA_nombre_duplicado"));
-        condicionIVA.setNombre("discrimina IVA");
-        condicionIVA.setId_CondicionIVA(Long.MIN_VALUE);
-        condicionIVADuplicada.setNombre("discimina IVA");
+        CondicionIVA condicionIVA = new CondicionIVABuilder()
+                .withId_CondicionIVA(Long.MIN_VALUE)
+                .withNombre("Responsable Inscripto")
+                .build();        
+        CondicionIVA condicionIVADuplicada = new CondicionIVABuilder().build();
         condicionIVADuplicada.setId_CondicionIVA(Long.MAX_VALUE);
+        condicionIVADuplicada.setNombre("Responsable Inscripto");        
         when(condicionDeIVAServiceImpl.getCondicionIVAPorNombre(condicionIVADuplicada.getNombre())).thenReturn(condicionIVA);
         condicionDeIVAServiceImpl.validarOperacion(TipoDeOperacion.ACTUALIZACION, condicionIVADuplicada);
     }

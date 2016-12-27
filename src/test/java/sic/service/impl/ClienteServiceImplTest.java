@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.test.context.junit4.SpringRunner;
 import sic.builder.ClienteBuilder;
 import sic.builder.CondicionIVABuilder;
 import sic.builder.EmpresaBuilder;
@@ -19,7 +19,7 @@ import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.repository.jpa.ClienteRepositoryJPAImpl;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 public class ClienteServiceImplTest {
 
     @Mock
