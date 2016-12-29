@@ -166,6 +166,16 @@ public class ProductoController {
                                       @RequestParam double impInternoPorcentaje) {
         return productoService.calcularPrecioLista(pvp, ivaPorcentaje, impInternoPorcentaje);
     }
+    
+    @GetMapping("/productos/ganancia-segun-precio-lista")
+    public double calcularGananciaEnBaseAlPrecioDeLista(@RequestParam double precioDeLista, 
+                                                        @RequestParam double precioDeListaAnterior, 
+                                                        @RequestParam double pvp, 
+                                                        @RequestParam double ivaPorcentaje, 
+                                                        @RequestParam double impInternoPorcentaje,
+                                                        @RequestParam double precioCosto) {
+        return productoService.calcularGananciaEnBaseAlPrecioDeLista(precioDeLista, precioDeListaAnterior, pvp, ivaPorcentaje, impInternoPorcentaje, precioCosto);
+    }
 
     @GetMapping("/productos/reporte/criteria")
     public ResponseEntity<byte[]> getReporteListaDePrecios(@RequestParam(value = "idEmpresa") long idEmpresa,

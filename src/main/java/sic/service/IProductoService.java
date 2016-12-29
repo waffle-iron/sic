@@ -31,6 +31,8 @@ public interface IProductoService {
     double calcularPVP(double precioCosto, double ganancia_porcentaje);
 
     double calcularPrecioLista(double PVP, double iva_porcentaje, double impInterno_porcentaje);
+    
+    double calcularGananciaEnBaseAlPrecioDeLista(double precioDeLista, double precioDeListaAnterior, double pvp, double ivaPorcentaje, double impInternoPorcentaje, double precioCosto);
 
     void eliminarMultiplesProductos(long[] idProducto);
 

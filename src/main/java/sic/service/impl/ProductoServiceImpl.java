@@ -365,7 +365,7 @@ public class ProductoServiceImpl implements IProductoService {
         double resultado = (pvp * iva_porcentaje) / 100;
         return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
-
+    
     @Override
     public double calcularImpInterno_Neto(double pvp, double impInterno_porcentaje) {
         double resultado = (pvp * impInterno_porcentaje) / 100;
@@ -378,6 +378,19 @@ public class ProductoServiceImpl implements IProductoService {
         double resultImpInterno = PVP * (impInterno_porcentaje / 100);
         double PVPConImpuestos = PVP + resulIVA + resultImpInterno;
         return Utilidades.truncarDecimal(PVPConImpuestos, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+    }
+    
+    @Override
+    public double calcularGananciaEnBaseAlPrecioDeLista(double precioDeListaNuevo, double precioDeListaAnterior, double pvp, double ivaPorcentaje, double impInternoPorcentaje, double precioCosto) {
+        double gananciaNueva = precioDeListaNuevo;
+        double porcentajeIncremento = precioDeListaNuevo / precioDeListaAnterior;
+        //Se quita el impuesto interno
+        gananciaNueva = gananciaNueva - (( pvp * (impInternoPorcentaje / 100)) * porcentajeIncremento);
+        //Se quita el iva
+        gananciaNueva = gananciaNueva - ((pvp * (ivaPorcentaje / 100)) * porcentajeIncremento);
+        //Se calcula su valor en porcentaje.
+        gananciaNueva = ((gananciaNueva - precioCosto) * 100) / precioCosto;
+        return Utilidades.truncarDecimal(gananciaNueva, CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
