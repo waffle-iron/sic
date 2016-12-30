@@ -40,7 +40,7 @@ public interface IProductoService {
 
     Producto getProductoPorId(long id_Producto);
     
-    Double getValorMercaderia(BusquedaProductoCriteria criteria);
+    double calcularValorStock(BusquedaProductoCriteria criteria);
   
     byte[] getReporteListaDePreciosPorEmpresa(List<Producto> productos, long idEmpresa);
 

@@ -19,7 +19,7 @@ public interface IProductoRepository {
 
     Producto getProductoPorId(long id_Producto);
     
-    Double getValorMercaderia(BusquedaProductoCriteria criteria);
+    double calcularValorStock(BusquedaProductoCriteria criteria);
 
     Producto guardar(Producto producto);
     

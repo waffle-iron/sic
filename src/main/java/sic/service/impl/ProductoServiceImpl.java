@@ -334,7 +334,7 @@ public class ProductoServiceImpl implements IProductoService {
     }
     
     @Override
-    public Double getValorMercaderia(BusquedaProductoCriteria criteria) {
+    public double calcularValorStock(BusquedaProductoCriteria criteria) {
         //Empresa
         if (criteria.getEmpresa() == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
@@ -350,7 +350,7 @@ public class ProductoServiceImpl implements IProductoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_producto_vacio_proveedor"));
         }        
-        return productoRepository.getValorMercaderia(criteria);
+        return productoRepository.calcularValorStock(criteria);
     }
 
     @Override

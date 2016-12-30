@@ -61,15 +61,15 @@ public class ProductoController {
         return productoService.getProductoPorCodigo(codigo, empresaService.getEmpresaPorId(idEmpresa));
     }
     
-    @GetMapping("/productos/costo-mercaderia/criteria")
+    @GetMapping("/productos/valor-stock/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public Double getValorMercaderia(@RequestParam long idEmpresa,
-                                          @RequestParam(required = false) String codigo,
-                                          @RequestParam(required = false) String descripcion,
-                                          @RequestParam(required = false) Long idRubro,
-                                          @RequestParam(required = false) Long idProveedor,                                          
-                                          @RequestParam(required = false) Integer cantidadRegistros,
-                                          @RequestParam(required = false) boolean soloFantantes) {
+    public double calcularValorStock(@RequestParam long idEmpresa,
+                                     @RequestParam(required = false) String codigo,
+                                     @RequestParam(required = false) String descripcion,
+                                     @RequestParam(required = false) Long idRubro,
+                                     @RequestParam(required = false) Long idProveedor,                                          
+                                     @RequestParam(required = false) Integer cantidadRegistros,
+                                     @RequestParam(required = false) boolean soloFantantes) {
         Rubro rubro = null;
         if (idRubro != null) {
             rubro = rubroService.getRubroPorId(idRubro);
@@ -94,7 +94,7 @@ public class ProductoController {
                                             .cantRegistros(cantidadRegistros)
                                             .listarSoloFaltantes(soloFantantes)
                                             .build();
-        return productoService.getValorMercaderia(criteria);
+        return productoService.calcularValorStock(criteria);
     }
     
     @GetMapping("/productos/busqueda/criteria") 

@@ -109,7 +109,7 @@ public class ProductoRepositoryJPAImpl implements IProductoRepository {
     }
     
     @Override
-    public Double getValorMercaderia(BusquedaProductoCriteria criteria) {
+    public double calcularValorStock(BusquedaProductoCriteria criteria) {
         String query = "SELECT SUM(p.cantidad * p.precioCosto) FROM Producto p WHERE p.empresa = :empresa AND p.eliminado = false";
         //Codigo y Descripcion
         if (criteria.isBuscarPorCodigo() == true && criteria.isBuscarPorDescripcion() == true) {
@@ -158,12 +158,7 @@ public class ProductoRepositoryJPAImpl implements IProductoRepository {
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        Double totalCostoMercaderia = typedQuery.getSingleResult();
-        if (totalCostoMercaderia == null) {
-            return null;
-        } else {
-            return totalCostoMercaderia;
-        }
+        return (typedQuery.getSingleResult() == null) ? 0.0 : typedQuery.getSingleResult();
     }
 
     @Override

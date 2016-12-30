@@ -89,8 +89,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        List<FacturaCompra> facturasCompra = typedQuery.getResultList();
-        return facturasCompra;
+        return typedQuery.getResultList();        
     }
 
     @Override
@@ -136,8 +135,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        List<FacturaVenta> facturasVenta = typedQuery.getResultList();
-        return facturasVenta;
+        return typedQuery.getResultList();        
     }
 
     @Override
@@ -196,8 +194,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        Double totalFacturado = typedQuery.getSingleResult();
-        return totalFacturado;
+        return (typedQuery.getSingleResult() == null) ? 0.0 : typedQuery.getSingleResult();
     }
     
     @Override
@@ -231,8 +228,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        Double totalFacturadoCompra = typedQuery.getSingleResult();
-        return totalFacturadoCompra;
+        return (typedQuery.getSingleResult() == null) ? 0.0 : typedQuery.getSingleResult();
     }
     
     @Override
@@ -278,8 +274,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        Double totalIVA = typedQuery.getSingleResult();
-        return totalIVA;        
+        return (typedQuery.getSingleResult() == null) ? 0.0 : typedQuery.getSingleResult();
     }
     
     @Override
@@ -313,8 +308,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        Double totalFacturadoCompra = typedQuery.getSingleResult();
-        return totalFacturadoCompra;
+        return (typedQuery.getSingleResult() == null) ? 0.0 : typedQuery.getSingleResult();
     }
     
     @Override
@@ -360,8 +354,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.getCantRegistros() != 0) {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
-        Double totalIVA = typedQuery.getSingleResult();
-        return totalIVA;
+        return (typedQuery.getSingleResult() == null) ? 0.0 : typedQuery.getSingleResult();
     }
 
     @Override
