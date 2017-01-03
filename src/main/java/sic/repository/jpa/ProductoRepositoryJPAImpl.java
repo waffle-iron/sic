@@ -110,7 +110,9 @@ public class ProductoRepositoryJPAImpl implements IProductoRepository {
     
     @Override
     public double calcularValorStock(BusquedaProductoCriteria criteria) {
-        String query = "SELECT SUM(p.cantidad * p.precioCosto) FROM Producto p WHERE p.empresa = :empresa AND p.eliminado = false";
+        String query = "SELECT SUM(p.cantidad * p.precioCosto) FROM Producto p WHERE p.empresa = :empresa "
+                + "AND p.eliminado = false "
+                + "AND p.ilimitado = false";
         //Codigo y Descripcion
         if (criteria.isBuscarPorCodigo() == true && criteria.isBuscarPorDescripcion() == true) {
             query += " AND (p.codigo LIKE '%" + criteria.getCodigo() + "%' OR (";
