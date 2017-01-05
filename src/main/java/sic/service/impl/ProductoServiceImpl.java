@@ -332,6 +332,26 @@ public class ProductoServiceImpl implements IProductoService {
     public Producto getProductoPorDescripcion(String descripcion, Empresa empresa) {
         return productoRepository.getProductoPorDescripcion(descripcion, empresa);
     }
+    
+    @Override
+    public double calcularValorStock(BusquedaProductoCriteria criteria) {
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        //Rubro
+        if (criteria.isBuscarPorRubro() == true && criteria.getRubro() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_producto_vacio_rubro"));
+        }
+        //Proveedor
+        if (criteria.isBuscarPorProveedor() == true && criteria.getProveedor() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_producto_vacio_proveedor"));
+        }        
+        return productoRepository.calcularValorStock(criteria);
+    }
 
     @Override
     public boolean existeStockDisponible(long idProducto, double cantidad) {

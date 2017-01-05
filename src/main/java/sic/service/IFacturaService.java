@@ -74,15 +74,15 @@ public interface IFacturaService {
 
     double calcularTotal(double subTotal, double descuento_neto, double recargo_neto, double iva105_neto, double iva21_neto, double impInterno_neto);
 
-    double calcularTotalFacturadoVenta(List<FacturaVenta> facturas);
+    double calcularTotalFacturadoVenta(BusquedaFacturaVentaCriteria criteria);
 
-    double calcularTotalFacturadoCompra(List<FacturaCompra> facturas);
+    double calcularTotalFacturadoCompra(BusquedaFacturaCompraCriteria criteria);
 
-    double calcularIVA_Venta(List<FacturaVenta> facturas);
+    double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria);
 
-    double calcularIVA_Compra(List<FacturaCompra> facturas);
+    double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria);
 
-    double calcularGananciaTotal(List<FacturaVenta> facturas);
+    double calcularGananciaTotal(BusquedaFacturaVentaCriteria criteria);
 
     double calcularIVA_neto(Movimiento movimiento, Producto producto, double descuento_neto);
 
