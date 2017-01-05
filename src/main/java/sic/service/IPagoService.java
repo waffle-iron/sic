@@ -20,10 +20,6 @@ public interface IPagoService {
 
     List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
     
-    void pagarMultiplesFacturasVenta(List<FacturaVenta> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora);
-    
-    void pagarMultiplesFacturasCompra(List<FacturaCompra> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora);
-    
     double calcularTotalAdeudadoFacturasVenta(List<FacturaVenta> facturasVenta);
     
     double calcularTotalAdeudadoFacturasCompra(List<FacturaCompra> facturasCompra);

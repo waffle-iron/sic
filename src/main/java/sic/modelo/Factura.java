@@ -109,5 +109,41 @@ public abstract class Factura implements Serializable {
     private Empresa empresa;
 
     private boolean eliminada;
-   
+
+    public Factura() {}
+        
+    public Factura(long id_Factura, Date fecha, char tipoFactura, long numSerie,
+            long numFactura, Date fechaVencimiento, Pedido pedido, Transportista transportista,
+            List<RenglonFactura> renglones, List<Pago> pagos, double subTotal,
+            double recargo_porcentaje, double recargo_neto, double descuento_porcentaje,
+            double descuento_neto, double subTotal_neto, double iva_105_neto, double iva_21_neto,
+            double impuestoInterno_neto, double total, String observaciones, boolean pagada,
+            Empresa empresa, boolean eliminada) {
+        this.id_Factura = id_Factura;
+        this.fecha = fecha;
+        this.tipoFactura = tipoFactura;
+        this.numSerie = numSerie;
+        this.numFactura = numFactura;
+        this.fechaVencimiento = fechaVencimiento;
+        this.pedido = pedido;
+        this.transportista = transportista;
+        this.renglones = renglones;
+        this.pagos = pagos;
+        this.subTotal = subTotal;
+        this.recargo_porcentaje = recargo_porcentaje;
+        this.recargo_neto = recargo_neto;
+        this.descuento_porcentaje = descuento_porcentaje;
+        this.descuento_neto = descuento_neto;
+        this.subTotal_neto = subTotal_neto;
+        this.iva_105_neto = iva_105_neto;
+        this.iva_21_neto = iva_21_neto;
+        this.impuestoInterno_neto = impuestoInterno_neto;
+        this.total = total;
+        this.observaciones = observaciones;
+        this.pagada = pagada;
+        this.empresa = empresa;
+        this.eliminada = eliminada;
+    }
+
+
 }

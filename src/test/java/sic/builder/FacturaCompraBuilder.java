@@ -40,15 +40,6 @@ public class FacturaCompraBuilder {
     private boolean eliminada = false;
     
     public FacturaCompra build() {
-        FacturaCompra factura = new FacturaCompra(proveedor);
-        factura.setId_Factura(id_Factura);
-        factura.setFecha(fecha);
-        factura.setTipoFactura(tipoFactura);
-        factura.setNumSerie(numSerie);
-        factura.setNumFactura(numFactura);
-        factura.setFechaVencimiento(fechaVencimiento);
-        factura.setPedido(pedido);
-        factura.setTransportista(transportista);        
         if (renglones == null) {
             RenglonFactura renglon1 = new RenglonFacturaBuilder().build();
             RenglonFactura renglon2 = new RenglonFacturaBuilder()
@@ -62,26 +53,12 @@ public class FacturaCompraBuilder {
             renglonesFactura.add(renglon1);
             renglonesFactura.add(renglon2);
             this.renglones = renglonesFactura;
-            factura.setRenglones(renglones);
-        } else {
-            factura.setRenglones(renglones);
         }
-        factura.setPagos(pagos);
-        factura.setProveedor(proveedor);
-        factura.setSubTotal(subTotal);
-        factura.setRecargo_porcentaje(recargo_porcentaje);
-        factura.setRecargo_neto(recargo_neto);
-        factura.setDescuento_porcentaje(descuento_porcentaje);
-        factura.setDescuento_neto(descuento_neto);
-        factura.setSubTotal_neto(subTotal_neto);
-        factura.setIva_105_neto(iva_105_neto);
-        factura.setIva_21_neto(iva_21_neto);
-        factura.setImpuestoInterno_neto(impuestoInterno_neto);
-        factura.setTotal(total);
-        factura.setObservaciones(observaciones);
-        factura.setPagada(pagada);
-        factura.setEmpresa(empresa);
-        factura.setEliminada(eliminada);
+        FacturaCompra factura = new FacturaCompra(id_Factura, fecha, tipoFactura, 
+                numSerie, numFactura, fechaVencimiento, pedido, transportista, renglones, 
+                pagos, subTotal, recargo_porcentaje, recargo_neto, descuento_porcentaje, descuento_neto, 
+                subTotal_neto, iva_105_neto, iva_21_neto, impuestoInterno_neto, total, observaciones, 
+                pagada, empresa, eliminada, proveedor);
         return factura;
     }
     

@@ -133,9 +133,16 @@ public class ProductoController {
     
     @GetMapping("/productos/ganancia-porcentaje")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularGanancia_Porcentaje(@RequestParam double precioCosto, 
-                                              @RequestParam double pvp){
-        return productoService.calcularGanancia_Porcentaje(precioCosto, pvp);
+    public double calcularGanancia_Porcentaje(@RequestParam(required = false) Double precioDeLista, 
+                                              @RequestParam(required = false) Double precioDeListaAnterior, 
+                                              @RequestParam double pvp, 
+                                              @RequestParam(required = false) Double ivaPorcentaje, 
+                                              @RequestParam(required = false) Double impInternoPorcentaje,
+                                              @RequestParam double precioCosto,
+                                              @RequestParam(required = false) boolean ascendente){
+        return productoService.calcularGanancia_Porcentaje(precioDeLista, precioDeListaAnterior,
+                                                           pvp, ivaPorcentaje, impInternoPorcentaje, 
+                                                           precioCosto, ascendente);
     }
     
     @GetMapping("/productos/iva-neto")
@@ -165,16 +172,6 @@ public class ProductoController {
                                       @RequestParam double ivaPorcentaje, 
                                       @RequestParam double impInternoPorcentaje) {
         return productoService.calcularPrecioLista(pvp, ivaPorcentaje, impInternoPorcentaje);
-    }
-    
-    @GetMapping("/productos/ganancia-segun-precio-lista")
-    public double calcularGananciaEnBaseAlPrecioDeLista(@RequestParam double precioDeLista, 
-                                                        @RequestParam double precioDeListaAnterior, 
-                                                        @RequestParam double pvp, 
-                                                        @RequestParam double ivaPorcentaje, 
-                                                        @RequestParam double impInternoPorcentaje,
-                                                        @RequestParam double precioCosto) {
-        return productoService.calcularGananciaEnBaseAlPrecioDeLista(precioDeLista, precioDeListaAnterior, pvp, ivaPorcentaje, impInternoPorcentaje, precioCosto);
     }
 
     @GetMapping("/productos/reporte/criteria")

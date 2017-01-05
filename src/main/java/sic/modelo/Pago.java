@@ -15,10 +15,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "pago")
@@ -44,8 +42,6 @@ import lombok.NoArgsConstructor;
                 + "ORDER BY p.fecha ASC")
 })
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @EqualsAndHashCode(of = {"nroPago", "empresa"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pago", scope = Pago.class)
 public class Pago implements Serializable {
@@ -79,5 +75,20 @@ public class Pago implements Serializable {
     private Empresa empresa;
 
     private boolean eliminado;
+        
+    public Pago() {}
+
+    public Pago(Long id_Pago, long nroPago, FormaDePago formaDePago, Factura factura,
+            double monto, Date fecha, String nota, Empresa empresa, boolean eliminado) {
+        this.id_Pago = id_Pago;
+        this.nroPago = nroPago;
+        this.formaDePago = formaDePago;
+        this.factura = factura;
+        this.monto = monto;
+        this.fecha = fecha;
+        this.nota = nota;
+        this.empresa = empresa;
+        this.eliminado = eliminado;
+    }
 
 }

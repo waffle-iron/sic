@@ -18,7 +18,7 @@ public class ProductoServiceImplTest {
         double precioCosto = 12.34;
         double pvp = 23.45;
         double resultadoEsperado = 90.03;
-        double resultadoObtenido = Utilidades.truncarDecimal(productoService.calcularGanancia_Porcentaje(precioCosto, pvp), 2);
+        double resultadoObtenido = Utilidades.truncarDecimal(productoService.calcularGanancia_Porcentaje(0.0 ,0.0, 0.0, 0.0,precioCosto, pvp, false), 2);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
     
@@ -77,7 +77,7 @@ public class ProductoServiceImplTest {
         double precioDeListaAnterior = 124.00546;
         double precioDeListaNuevo = 125;
         double resultadoEsperado = 20.98;
-        double resultadoObtenido = Utilidades.truncarDecimal(productoService.calcularGananciaEnBaseAlPrecioDeLista(precioDeListaNuevo,
+        double resultadoObtenido = Utilidades.truncarDecimal(productoService.calcularGananciaPorcentajeSegunPrecioDeLista(precioDeListaNuevo,
                 precioDeListaAnterior, pvp, ivaPorcentaje, ImpInternoPorcentaje, precioDeCosto), 2);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }

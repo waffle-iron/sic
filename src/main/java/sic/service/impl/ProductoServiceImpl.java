@@ -339,12 +339,25 @@ public class ProductoServiceImpl implements IProductoService {
     }
   
     @Override
-    public double calcularGanancia_Porcentaje(double precioCosto, double PVP) {
+    public double calcularGanancia_Porcentaje(Double precioDeListaNuevo, 
+            Double precioDeListaAnterior, double pvp, Double ivaPorcentaje, 
+            Double impInternoPorcentaje, double precioCosto, boolean ascendente) {
         //evita la division por cero
         if (precioCosto == 0) {
             return 0;
         }
-        double resultado = ((PVP - precioCosto) / precioCosto) * 100;
+        double resultado = 0;
+        if (ascendente == false) {
+            resultado = ((pvp - precioCosto) / precioCosto) * 100;
+        } else if (precioDeListaAnterior == 0 || precioCosto == 0) {
+            return 0;
+        } else {
+            resultado = precioDeListaNuevo;
+            double porcentajeIncremento = precioDeListaNuevo / precioDeListaAnterior;
+            resultado = resultado - ((pvp * (impInternoPorcentaje / 100)) * porcentajeIncremento);
+            resultado = resultado - ((pvp * (ivaPorcentaje / 100)) * porcentajeIncremento);
+            resultado = ((resultado - precioCosto) * 100) / precioCosto;
+        }
         return resultado;
     }
 
@@ -381,14 +394,13 @@ public class ProductoServiceImpl implements IProductoService {
     }
     
     @Override
-    public double calcularGananciaEnBaseAlPrecioDeLista(double precioDeListaNuevo, double precioDeListaAnterior, double pvp, double ivaPorcentaje, double impInternoPorcentaje, double precioCosto) {
+    public double calcularGananciaPorcentajeSegunPrecioDeLista(double precioDeListaNuevo, 
+            double precioDeListaAnterior, double pvp, double ivaPorcentaje, 
+            double impInternoPorcentaje, double precioCosto) {
         double gananciaNueva = precioDeListaNuevo;
         double porcentajeIncremento = precioDeListaNuevo / precioDeListaAnterior;
-        //Se quita el impuesto interno
         gananciaNueva = gananciaNueva - (( pvp * (impInternoPorcentaje / 100)) * porcentajeIncremento);
-        //Se quita el iva
         gananciaNueva = gananciaNueva - ((pvp * (ivaPorcentaje / 100)) * porcentajeIncremento);
-        //Se calcula su valor en porcentaje.
         gananciaNueva = ((gananciaNueva - precioCosto) * 100) / precioCosto;
         return gananciaNueva;
     }
