@@ -646,26 +646,181 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     public double calcularTotalFacturadoVenta(BusquedaFacturaVentaCriteria criteria) {
+        //Empresa
+        if(criteria.getEmpresa() == null ) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        //Fecha de Factura        
+        if (criteria.isBuscaPorFecha() == true && (criteria.getFechaDesde() == null || criteria.getFechaHasta() == null)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_fechas_busqueda_invalidas"));
+        }
+        if (criteria.isBuscaPorFecha() == true) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(criteria.getFechaDesde());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            criteria.setFechaDesde(cal.getTime());
+            cal.setTime(criteria.getFechaHasta());
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            criteria.setFechaHasta(cal.getTime());
+        }
+        //Cliente
+        if (criteria.isBuscaCliente() == true && criteria.getCliente() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_cliente_vacio"));
+        }
+        //Usuario
+        if (criteria.isBuscaUsuario() == true && criteria.getUsuario() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_usuario_vacio"));
+        }
         return Utilidades.truncarDecimal(facturaRepository.calcularTotalFacturadoVenta(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularTotalFacturadoCompra(BusquedaFacturaCompraCriteria criteria) {
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        //Fecha de Factura        
+        if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_fechas_busqueda_invalidas"));
+        }
+        if (criteria.isBuscaPorFecha() == true) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(criteria.getFechaDesde());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            criteria.setFechaDesde(cal.getTime());
+            cal.setTime(criteria.getFechaHasta());
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            criteria.setFechaHasta(cal.getTime());
+        }
+        //Proveedor
+        if (criteria.isBuscaPorProveedor() == true && criteria.getProveedor() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_proveedor_vacio"));
+        }
         return Utilidades.truncarDecimal(facturaRepository.calcularTotalFacturadoCompra(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria) {
+        //Empresa
+        if(criteria.getEmpresa() == null ) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        //Fecha de Factura        
+        if (criteria.isBuscaPorFecha() == true && (criteria.getFechaDesde() == null || criteria.getFechaHasta() == null)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_fechas_busqueda_invalidas"));
+        }
+        if (criteria.isBuscaPorFecha() == true) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(criteria.getFechaDesde());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            criteria.setFechaDesde(cal.getTime());
+            cal.setTime(criteria.getFechaHasta());
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            criteria.setFechaHasta(cal.getTime());
+        }
+        //Cliente
+        if (criteria.isBuscaCliente() == true && criteria.getCliente() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_cliente_vacio"));
+        }
+        //Usuario
+        if (criteria.isBuscaUsuario() == true && criteria.getUsuario() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_usuario_vacio"));
+        }
         return Utilidades.truncarDecimal(facturaRepository.calcularIVA_Venta(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria) {
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        //Fecha de Factura        
+        if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_fechas_busqueda_invalidas"));
+        }
+        if (criteria.isBuscaPorFecha() == true) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(criteria.getFechaDesde());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            criteria.setFechaDesde(cal.getTime());
+            cal.setTime(criteria.getFechaHasta());
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            criteria.setFechaHasta(cal.getTime());
+        }
+        //Proveedor
+        if (criteria.isBuscaPorProveedor() == true && criteria.getProveedor() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_proveedor_vacio"));
+        }
         return Utilidades.truncarDecimal(facturaRepository.calcularIVA_Compra(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 
     @Override
     public double calcularGananciaTotal(BusquedaFacturaVentaCriteria criteria) {
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        //Fecha de Factura        
+        if (criteria.isBuscaPorFecha() == true && (criteria.getFechaDesde() == null || criteria.getFechaHasta() == null)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_fechas_busqueda_invalidas"));
+        }
+        if (criteria.isBuscaPorFecha() == true) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(criteria.getFechaDesde());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            criteria.setFechaDesde(cal.getTime());
+            cal.setTime(criteria.getFechaHasta());
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            criteria.setFechaHasta(cal.getTime());
+        }
+        //Cliente
+        if (criteria.isBuscaCliente() == true && criteria.getCliente() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_cliente_vacio"));
+        }
+        //Usuario
+        if (criteria.isBuscaUsuario() == true && criteria.getUsuario() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_usuario_vacio"));
+        }
         return Utilidades.truncarDecimal(facturaRepository.calcularGananciaTotal(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
     }
 

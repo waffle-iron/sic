@@ -372,22 +372,22 @@ public class FacturaServiceImplTest {
 //        assertEquals(resultadoEsperado, resultadoObtenido, 0);
 //    }
 
-    @Test
-    public void shouldCalcularTotalFacturadoCompra() {
-        List<FacturaCompra> facturasDeCompra = new ArrayList<>();
-        FacturaCompra factura1 = new FacturaCompra();
-        factura1.setTotal(1024.759);
-        FacturaCompra factura2 = new FacturaCompra();
-        factura2.setTotal(3424.089);
-        FacturaCompra factura3 = new FacturaCompra();
-        factura3.setTotal(21124.504);
-        facturasDeCompra.add(factura1);
-        facturasDeCompra.add(factura2);
-        facturasDeCompra.add(factura3);
-        double resultadoEsperado = 25573.35;
-        double resultadoObtenido = facturaService.calcularTotalFacturadoCompra(facturasDeCompra);
-        assertEquals(resultadoEsperado, resultadoObtenido, 0);
-    }
+//    @Test
+//    public void shouldCalcularTotalFacturadoCompra() {
+//        List<FacturaCompra> facturasDeCompra = new ArrayList<>();
+//        FacturaCompra factura1 = new FacturaCompra();
+//        factura1.setTotal(1024.759);
+//        FacturaCompra factura2 = new FacturaCompra();
+//        factura2.setTotal(3424.089);
+//        FacturaCompra factura3 = new FacturaCompra();
+//        factura3.setTotal(21124.504);
+//        facturasDeCompra.add(factura1);
+//        facturasDeCompra.add(factura2);
+//        facturasDeCompra.add(factura3);
+//        double resultadoEsperado = 25573.35;
+//        double resultadoObtenido = facturaService.calcularTotalFacturadoCompra(facturasDeCompra);
+//        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+//    }
 //
 //    @Test
 //    public void shouldCalcularIvaVenta() {
@@ -412,25 +412,25 @@ public class FacturaServiceImplTest {
 //        assertEquals(resultadoEsperado, resultadoObtenido, 0);
 //    }
 
-    @Test
-    public void shouldCalcularIvaCompra() {
-        List<FacturaCompra> facturasDeCompra = new ArrayList<>();
-        FacturaCompra factura1 = new FacturaCompra();
-        factura1.setIva_105_neto(0);
-        factura1.setIva_21_neto(35);
-        FacturaCompra factura2 = new FacturaCompra();
-        factura2.setIva_105_neto(0);
-        factura2.setIva_21_neto(30);
-        FacturaCompra factura3 = new FacturaCompra();
-        factura3.setIva_105_neto(25);
-        factura3.setIva_21_neto(0);
-        facturasDeCompra.add(factura1);
-        facturasDeCompra.add(factura2);
-        facturasDeCompra.add(factura3);
-        double resultadoEsperado = 90;
-        double resultadoObtenido = facturaService.calcularIVA_Compra(facturasDeCompra);
-        assertEquals(resultadoEsperado, resultadoObtenido, 0);
-    }
+//    @Test
+//    public void shouldCalcularIvaCompra() {
+//        List<FacturaCompra> facturasDeCompra = new ArrayList<>();
+//        FacturaCompra factura1 = new FacturaCompra();
+//        factura1.setIva_105_neto(0);
+//        factura1.setIva_21_neto(35);
+//        FacturaCompra factura2 = new FacturaCompra();
+//        factura2.setIva_105_neto(0);
+//        factura2.setIva_21_neto(30);
+//        FacturaCompra factura3 = new FacturaCompra();
+//        factura3.setIva_105_neto(25);
+//        factura3.setIva_21_neto(0);
+//        facturasDeCompra.add(factura1);
+//        facturasDeCompra.add(factura2);
+//        facturasDeCompra.add(factura3);
+//        double resultadoEsperado = 90;
+//        double resultadoObtenido = facturaService.calcularIVA_Compra(facturasDeCompra);
+//        assertEquals(resultadoEsperado, resultadoObtenido, 0);
+//    }
 
     @Test
     public void shouldCalcularImporte() {
