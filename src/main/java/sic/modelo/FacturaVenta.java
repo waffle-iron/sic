@@ -7,8 +7,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "facturaventa")
@@ -23,6 +25,8 @@ import lombok.EqualsAndHashCode;
             + "GROUP BY renglones.descripcionItem ORDER BY sum(renglones.cantidad) DESC")
 })
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class FacturaVenta extends Factura implements Serializable {
 

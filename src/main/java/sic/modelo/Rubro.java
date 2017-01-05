@@ -10,8 +10,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "rubro")
@@ -29,6 +31,8 @@ import lombok.EqualsAndHashCode;
                     + "ORDER BY r.nombre ASC")
 })
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(of = {"nombre", "empresa"})
 public class Rubro implements Serializable {
 

@@ -7,8 +7,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "facturacompra")
@@ -18,6 +20,8 @@ import lombok.EqualsAndHashCode;
                     + "WHERE f.tipoFactura= :tipo AND f.numSerie= :serie AND f.numFactura= :num")
 })
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class FacturaCompra extends Factura implements Serializable {
 

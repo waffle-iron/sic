@@ -22,8 +22,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity
@@ -40,6 +42,8 @@ import lombok.ToString;
                     + "WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa AND p.eliminado = false")
 })
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @ToString(exclude = {"facturas", "renglones"})
 @EqualsAndHashCode(of = {"nroPedido", "empresa"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pedido", scope = Pedido.class)

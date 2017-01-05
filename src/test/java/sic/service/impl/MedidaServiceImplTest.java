@@ -1,67 +1,68 @@
 package sic.service.impl;
 
+import java.util.ResourceBundle;
 import org.junit.Test;
-import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
-import sic.modelo.Empresa;
+import org.springframework.test.context.junit4.SpringRunner;
+import sic.builder.MedidaBuilder;
 import sic.modelo.Medida;
 import sic.repository.IMedidaRepository;
-import sic.repository.jpa.MedidaRepositoryJPAImpl;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 
+@RunWith(SpringRunner.class)
 public class MedidaServiceImplTest {
-
-    private MedidaServiceImpl medidaService;
-    private Empresa empresa;
-    private Medida medida;
-
-    @Mock
-    private Medida medidaParaTest;
 
     @Mock
     private IMedidaRepository medidaRepository;
+    
+    @InjectMocks
+    private MedidaServiceImpl medidaService;
+    
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-    @Before
-    public void setUp() {
-        empresa = Empresa.builder().build();
-        medida = new Medida();
-        MockitoAnnotations.initMocks(this);
-        medidaRepository = Mockito.mock(MedidaRepositoryJPAImpl.class);
-    }
-
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenNombreVacio() {
-        when(medidaRepository.getMedidaPorNombre("", empresa)).thenReturn(medidaParaTest);
-        medidaService = new MedidaServiceImpl(medidaRepository);
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_vacio_nombre"));
+        Medida medidaParaTest = new MedidaBuilder().build();
+        Medida medida = new MedidaBuilder().build();
+        when(medidaRepository.getMedidaPorNombre("", medida.getEmpresa())).thenReturn(medidaParaTest);
         medida.setNombre("");
         medidaService.validarOperacion(TipoDeOperacion.ALTA, medida);
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenNombreDuplicadoAlta() {
-        when(medidaRepository.getMedidaPorNombre("unidad", empresa)).thenReturn(medidaParaTest);
-        medidaService = new MedidaServiceImpl(medidaRepository);
-        medida.setNombre("unidad");
-        medida.setEmpresa(empresa);
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_duplicada_nombre"));
+        Medida medidaParaTest = new MedidaBuilder().build();
+        Medida medida = new MedidaBuilder().build();
+        when(medidaRepository.getMedidaPorNombre("Unidad", medida.getEmpresa())).thenReturn(medidaParaTest);
+        medida.setNombre("Unidad");        
         medidaService.validarOperacion(TipoDeOperacion.ALTA, medida);
     }
 
-    @Test(expected = BusinessServiceException.class)
+    @Test
     public void shouldValidarOperacionWhenNombreDuplicadoActualizacion() {
-        when(medidaRepository.getMedidaPorNombre("metro", empresa)).thenReturn(medidaParaTest);
-        medidaService = new MedidaServiceImpl(medidaRepository);
-        medida.setNombre("metro");
-        medida.setEmpresa(empresa);
-        medida.setId_Medida((long) 1);
-        when(medidaService.getMedidaPorNombre("metro", empresa)).thenReturn(medida);
+        thrown.expect(BusinessServiceException.class);
+        thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_duplicada_nombre"));
+        Medida medidaParaTest = new MedidaBuilder().build();
+        Medida medida = new MedidaBuilder().build();
+        when(medidaRepository.getMedidaPorNombre("Metro", medida.getEmpresa())).thenReturn(medidaParaTest);
+        medida.setId_Medida(1L);
+        medida.setNombre("Metro");                
+        when(medidaService.getMedidaPorNombre("Metro", medida.getEmpresa())).thenReturn(medida);
         Medida medidaDuplicada = new Medida();
-        medidaDuplicada.setNombre("metro");
-        medidaDuplicada.setEmpresa(empresa);
-        medidaDuplicada.setId_Medida((long) 2);
+        medidaDuplicada.setId_Medida(2L);
+        medidaDuplicada.setNombre("Metro");
+        medidaDuplicada.setEmpresa(medida.getEmpresa());        
         medidaService.validarOperacion(TipoDeOperacion.ACTUALIZACION, medidaDuplicada);
     }
 

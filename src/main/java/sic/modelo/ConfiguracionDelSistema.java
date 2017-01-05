@@ -9,7 +9,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "configuraciondelsistema")
@@ -22,6 +24,8 @@ import lombok.Data;
                     + "WHERE cds.empresa = :empresa")
 })
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ConfiguracionDelSistema implements Serializable {
 
     @Id
