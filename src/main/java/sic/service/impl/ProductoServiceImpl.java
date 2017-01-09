@@ -42,8 +42,7 @@ public class ProductoServiceImpl implements IProductoService {
 
     private final IProductoRepository productoRepository;
     private final IEmpresaService empresaService;    
-    private static final Logger LOGGER = Logger.getLogger(ProductoServiceImpl.class.getPackage().getName());
-    private static final int CANTIDAD_DECIMALES_TRUNCAMIENTO = 2;
+    private static final Logger LOGGER = Logger.getLogger(ProductoServiceImpl.class.getPackage().getName());    
 
     @Autowired
     public ProductoServiceImpl(IProductoRepository productoRepository, IEmpresaService empresaService) {
@@ -359,37 +358,50 @@ public class ProductoServiceImpl implements IProductoService {
     }
   
     @Override
-    public double calcularGanancia_Porcentaje(double precioCosto, double PVP) {
+    public double calcularGanancia_Porcentaje(Double precioDeListaNuevo, 
+            Double precioDeListaAnterior, double pvp, Double ivaPorcentaje, 
+            Double impInternoPorcentaje, double precioCosto, boolean ascendente) {
         //evita la division por cero
         if (precioCosto == 0) {
             return 0;
         }
-        double resultado = ((PVP - precioCosto) / precioCosto) * 100;
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        double resultado;
+        if (ascendente == false) {
+            resultado = ((pvp - precioCosto) / precioCosto) * 100;
+        } else if (precioDeListaAnterior == 0 || precioCosto == 0) {
+            return 0;
+        } else {
+            resultado = precioDeListaNuevo;
+            double porcentajeIncremento = precioDeListaNuevo / precioDeListaAnterior;
+            resultado = resultado - ((pvp * (impInternoPorcentaje / 100)) * porcentajeIncremento);
+            resultado = resultado - ((pvp * (ivaPorcentaje / 100)) * porcentajeIncremento);
+            resultado = ((resultado - precioCosto) * 100) / precioCosto;
+        }
+        return resultado;
     }
 
     @Override
     public double calcularGanancia_Neto(double precioCosto, double ganancia_porcentaje) {
         double resultado = (precioCosto * ganancia_porcentaje) / 100;
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
 
     @Override
     public double calcularPVP(double precioCosto, double ganancia_porcentaje) {
         double resultado = (precioCosto * (ganancia_porcentaje / 100)) + precioCosto;
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
 
     @Override
     public double calcularIVA_Neto(double pvp, double iva_porcentaje) {
         double resultado = (pvp * iva_porcentaje) / 100;
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
-
+    
     @Override
     public double calcularImpInterno_Neto(double pvp, double impInterno_porcentaje) {
         double resultado = (pvp * impInterno_porcentaje) / 100;
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
 
     @Override
@@ -397,7 +409,7 @@ public class ProductoServiceImpl implements IProductoService {
         double resulIVA = PVP * (iva_porcentaje / 100);
         double resultImpInterno = PVP * (impInterno_porcentaje / 100);
         double PVPConImpuestos = PVP + resulIVA + resultImpInterno;
-        return Utilidades.truncarDecimal(PVPConImpuestos, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return PVPConImpuestos;
     }
 
     @Override

@@ -22,7 +22,9 @@ public interface IProductoService {
 
     boolean existeStockDisponible(long idProducto, double cantidad);
 
-    double calcularGanancia_Porcentaje(double precioCosto, double PVP);
+    double calcularGanancia_Porcentaje(Double precioDeListaNuevo, 
+            Double precioDeListaAnterior, double pvp, Double ivaPorcentaje, 
+            Double impInternoPorcentaje, double precioCosto, boolean descendente);
 
     double calcularIVA_Neto(double precioCosto, double iva_porcentaje);
 
@@ -30,7 +32,7 @@ public interface IProductoService {
 
     double calcularPVP(double precioCosto, double ganancia_porcentaje);
 
-    double calcularPrecioLista(double PVP, double iva_porcentaje, double impInterno_porcentaje);
+    double calcularPrecioLista(double PVP, double iva_porcentaje, double impInterno_porcentaje);    
 
     void eliminarMultiplesProductos(long[] idProducto);
 

@@ -69,9 +69,11 @@ public class ProveedorServiceImpl implements IProveedorService {
 
     private void validarOperacion(TipoDeOperacion operacion, Proveedor proveedor) {
         //Entrada de Datos
-        if (!Validator.esEmailValido(proveedor.getEmail())) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_proveedor_email_invalido"));
+        if (!"".equals(proveedor.getEmail())) {
+            if (!Validator.esEmailValido(proveedor.getEmail())) {
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_proveedor_email_invalido"));
+            }
         }
         //Requeridos
         if (Validator.esVacio(proveedor.getRazonSocial())) {

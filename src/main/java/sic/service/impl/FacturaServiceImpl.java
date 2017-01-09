@@ -557,7 +557,7 @@ public class FacturaServiceImpl implements IFacturaService {
         for (double importe : importes) {
             resultado += importe;
         }
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
 
     @Override
@@ -566,7 +566,7 @@ public class FacturaServiceImpl implements IFacturaService {
         if (descuento_porcentaje != 0) {
             resultado = (subtotal * descuento_porcentaje) / 100;
         }
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
 
     @Override
@@ -575,12 +575,12 @@ public class FacturaServiceImpl implements IFacturaService {
         if (recargo_porcentaje != 0) {
             resultado = (subtotal * recargo_porcentaje) / 100;
         }
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
 
     @Override
     public double calcularSubTotal_neto(double subtotal, double recargo_neto, double descuento_neto) {
-        return Utilidades.truncarDecimal((subtotal + recargo_neto - descuento_neto), CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return (subtotal + recargo_neto - descuento_neto);
     }
 
     @Override
@@ -606,7 +606,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 resultado += iva_neto;
             }
         }
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
 
     @Override
@@ -632,7 +632,7 @@ public class FacturaServiceImpl implements IFacturaService {
                 }
             }
         }
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
 
     @Override
@@ -641,7 +641,7 @@ public class FacturaServiceImpl implements IFacturaService {
 
         double resultado;
         resultado = (subTotal + recargo_neto - descuento_neto) + iva105_neto + iva21_neto + impInterno_neto;
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
 
     @Override
@@ -679,7 +679,7 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
         }
-        return Utilidades.truncarDecimal(facturaRepository.calcularTotalFacturadoVenta(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return facturaRepository.calcularTotalFacturadoVenta(criteria);
     }
 
     @Override
@@ -712,7 +712,7 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_proveedor_vacio"));
         }
-        return Utilidades.truncarDecimal(facturaRepository.calcularTotalFacturadoCompra(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return facturaRepository.calcularTotalFacturadoCompra(criteria);
     }
 
     @Override
@@ -750,7 +750,7 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
         }
-        return Utilidades.truncarDecimal(facturaRepository.calcularIVA_Venta(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return facturaRepository.calcularIVA_Venta(criteria);
     }
 
     @Override
@@ -783,7 +783,7 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_proveedor_vacio"));
         }
-        return Utilidades.truncarDecimal(facturaRepository.calcularIVA_Compra(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return facturaRepository.calcularIVA_Compra(criteria);
     }
 
     @Override
@@ -821,7 +821,7 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
         }
-        return Utilidades.truncarDecimal(facturaRepository.calcularGananciaTotal(criteria), CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return facturaRepository.calcularGananciaTotal(criteria);
     }
 
     @Override
@@ -833,7 +833,7 @@ public class FacturaServiceImpl implements IFacturaService {
         if (movimiento == Movimiento.VENTA) {
             resultado = ((producto.getPrecioVentaPublico() - descuento_neto) * producto.getIva_porcentaje()) / 100;
         }
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
 
     @Override
@@ -845,7 +845,7 @@ public class FacturaServiceImpl implements IFacturaService {
         if (movimiento == Movimiento.VENTA) {
             resultado = ((producto.getPrecioVentaPublico() - descuento_neto) * producto.getImpuestoInterno_porcentaje()) / 100;
         }
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
 
     @Override
@@ -876,7 +876,7 @@ public class FacturaServiceImpl implements IFacturaService {
         if (movimiento == Movimiento.PEDIDO) {
             resultado = producto.getPrecioLista();
         }
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
 
     @Override
@@ -896,7 +896,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public double calcularImporte(double cantidad, double precioUnitario, double descuento_neto) {
         double resultado = (precioUnitario - descuento_neto) * cantidad;
-        return Utilidades.truncarDecimal(resultado, CANTIDAD_DECIMALES_TRUNCAMIENTO);
+        return resultado;
     }
 
     @Override
