@@ -42,8 +42,7 @@ public class ProductoServiceImpl implements IProductoService {
 
     private final IProductoRepository productoRepository;
     private final IEmpresaService empresaService;    
-    private static final Logger LOGGER = Logger.getLogger(ProductoServiceImpl.class.getPackage().getName());
-    private static final int CANTIDAD_DECIMALES_TRUNCAMIENTO = 2;
+    private static final Logger LOGGER = Logger.getLogger(ProductoServiceImpl.class.getPackage().getName());    
 
     @Autowired
     public ProductoServiceImpl(IProductoRepository productoRepository, IEmpresaService empresaService) {
@@ -391,18 +390,6 @@ public class ProductoServiceImpl implements IProductoService {
         double resultImpInterno = PVP * (impInterno_porcentaje / 100);
         double PVPConImpuestos = PVP + resulIVA + resultImpInterno;
         return PVPConImpuestos;
-    }
-    
-    @Override
-    public double calcularGananciaPorcentajeSegunPrecioDeLista(double precioDeListaNuevo, 
-            double precioDeListaAnterior, double pvp, double ivaPorcentaje, 
-            double impInternoPorcentaje, double precioCosto) {
-        double gananciaNueva = precioDeListaNuevo;
-        double porcentajeIncremento = precioDeListaNuevo / precioDeListaAnterior;
-        gananciaNueva = gananciaNueva - (( pvp * (impInternoPorcentaje / 100)) * porcentajeIncremento);
-        gananciaNueva = gananciaNueva - ((pvp * (ivaPorcentaje / 100)) * porcentajeIncremento);
-        gananciaNueva = ((gananciaNueva - precioCosto) * 100) / precioCosto;
-        return gananciaNueva;
     }
 
     @Override

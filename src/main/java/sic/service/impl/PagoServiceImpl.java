@@ -122,7 +122,7 @@ public class PagoServiceImpl implements IPagoService {
     @Override
     @Transactional
     public void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
-        if ( monto <= this.calcularTotalAdeudadoFacturas(facturas)) {
+        if (monto <= this.calcularTotalAdeudadoFacturas(facturas)) {
             List<Factura> facturasOrdenadas = facturaService.ordenarFacturasPorFechaAsc(facturas);
             for (Factura factura : facturasOrdenadas) {
                 if (monto > 0.0) {

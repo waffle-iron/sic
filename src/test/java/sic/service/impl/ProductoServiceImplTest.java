@@ -65,20 +65,5 @@ public class ProductoServiceImplTest {
         double resultadoEsperado = 32.330799999999996;
         double resultadoObtenido = productoService.calcularPrecioLista(pvp, ivaPorcentaje, impuestoInternoPorcentaje);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
-    }
-    
-    @Test
-    public void shouldCalcularGananciaEnBaseAlPrecioDeLista() {
-        double precioDeCosto = 78.87;
-        double ivaPorcentaje = 21;
-        double pvp = 94.664;
-        double ImpInternoPorcentaje = 10;
-        double precioDeListaAnterior = 124.00546;
-        double precioDeListaNuevo = 125;
-        double resultadoEsperado = 20.982379265780374;
-        double resultadoObtenido = productoService.calcularGananciaPorcentajeSegunPrecioDeLista(precioDeListaNuevo,
-                precioDeListaAnterior, pvp, ivaPorcentaje, ImpInternoPorcentaje, precioDeCosto);
-        assertEquals(resultadoEsperado, resultadoObtenido, 0);
-    }
-    
+    }    
 }
