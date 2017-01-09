@@ -373,7 +373,7 @@ public class FacturaServiceImplTest {
         double resultadoObtenido = facturaService.calcularTotal(350.451, 10.753, 25.159, 1.451, 84.525, 10.050);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
-
+  
     @Test
     public void shouldCalcularTotalFacturadoVenta() {
         List<FacturaVenta> facturasDeVenta = new ArrayList<>();
@@ -461,36 +461,6 @@ public class FacturaServiceImplTest {
         double precioUnitario = 10;
         double descuento = 1;
         double resultadoObtenido = facturaService.calcularImporte(cantidad, precioUnitario, descuento);
-        assertEquals(resultadoEsperado, resultadoObtenido, 0);
-    }
-
-    @Test
-    public void shouldCalcularGananciaTotal() {
-        List<RenglonFactura> renglones = new ArrayList<>();
-        RenglonFactura renglon1 = new RenglonFacturaBuilder()
-                                .build();
-        RenglonFactura renglon2 = new RenglonFacturaBuilder()
-                                .withId_ProductoItem(2L)
-                                .withCodigoItem("term.tara.01.r")
-                                .withGananciaNeto(70)
-                                .withCantidad(2)
-                                .build();
-        renglones.add(renglon1);
-        renglones.add(renglon2);
-        List<FacturaVenta> facturas = new ArrayList<>();
-        FacturaVenta factura1 = new FacturaVentaBuilder()
-                                .withId_Factura(1L)
-                                .build();
-        FacturaVenta factura2 = new FacturaVentaBuilder()
-                                .withId_Factura(2L)
-                                .withRenglones(renglones)
-                                .build();
-        facturas.add(factura1);
-        facturas.add(factura2);
-        when(facturaRepository.getFacturaPorId(1L)).thenReturn(factura1);
-        when(facturaRepository.getFacturaPorId(2L)).thenReturn(factura2);
-        double resultadoEsperado = 1940;
-        double resultadoObtenido = facturaService.calcularGananciaTotal(facturas);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 

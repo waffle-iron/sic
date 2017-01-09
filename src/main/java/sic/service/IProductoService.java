@@ -41,6 +41,8 @@ public interface IProductoService {
     Producto getProductoPorDescripcion(String descripcion, Empresa empresa);
 
     Producto getProductoPorId(long id_Producto);
+    
+    double calcularValorStock(BusquedaProductoCriteria criteria);
   
     byte[] getReporteListaDePreciosPorEmpresa(List<Producto> productos, long idEmpresa);
 

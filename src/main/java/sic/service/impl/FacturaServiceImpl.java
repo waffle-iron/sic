@@ -645,51 +645,183 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public double calcularTotalFacturadoVenta(List<FacturaVenta> facturas) {
-        double resultado = 0;
-        resultado = facturas.stream()
-                            .map((facturaVenta) -> facturaVenta.getTotal())
-                            .reduce(resultado, (accumulator, _item) -> accumulator + _item);
-        return resultado;
-    }
-
-    @Override
-    public double calcularTotalFacturadoCompra(List<FacturaCompra> facturas) {
-        double resultado = 0;
-        resultado = facturas.stream()
-                            .map((FacturaCompra) -> FacturaCompra.getTotal())
-                            .reduce(resultado, (accumulator, _item) -> accumulator + _item);
-        return resultado;
-    }
-
-    @Override
-    public double calcularIVA_Venta(List<FacturaVenta> facturas) {
-        double resultado = 0;
-        resultado = facturas.stream()
-                            .map((facturaVenta) -> (facturaVenta.getIva_105_neto() + facturaVenta.getIva_21_neto()))
-                            .reduce(resultado, (accumulator, _item) -> accumulator + _item);
-        return resultado;
-    }
-
-    @Override
-    public double calcularIVA_Compra(List<FacturaCompra> facturas) {
-        double resultado = 0;
-        resultado = facturas.stream()
-                            .map((facturaCompra) -> (facturaCompra.getIva_105_neto() + facturaCompra.getIva_21_neto()))
-                            .reduce(resultado, (accumulator, _item) -> accumulator + _item);
-        return resultado;
-    }
-
-    @Override
-    public double calcularGananciaTotal(List<FacturaVenta> facturas) {
-        double resultado = 0;
-        for (FacturaVenta facturaVenta : facturas) {
-            List<RenglonFactura> renglones = this.getRenglonesDeLaFactura(facturaVenta.getId_Factura());
-            for (RenglonFactura renglon : renglones) {
-                resultado += renglon.getGanancia_neto() * renglon.getCantidad();
-            }
+    public double calcularTotalFacturadoVenta(BusquedaFacturaVentaCriteria criteria) {
+        //Empresa
+        if(criteria.getEmpresa() == null ) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
         }
-        return resultado;
+        //Fecha de Factura        
+        if (criteria.isBuscaPorFecha() == true && (criteria.getFechaDesde() == null || criteria.getFechaHasta() == null)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_fechas_busqueda_invalidas"));
+        }
+        if (criteria.isBuscaPorFecha() == true) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(criteria.getFechaDesde());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            criteria.setFechaDesde(cal.getTime());
+            cal.setTime(criteria.getFechaHasta());
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            criteria.setFechaHasta(cal.getTime());
+        }
+        //Cliente
+        if (criteria.isBuscaCliente() == true && criteria.getCliente() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_cliente_vacio"));
+        }
+        //Usuario
+        if (criteria.isBuscaUsuario() == true && criteria.getUsuario() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_usuario_vacio"));
+        }
+        return facturaRepository.calcularTotalFacturadoVenta(criteria);
+    }
+
+    @Override
+    public double calcularTotalFacturadoCompra(BusquedaFacturaCompraCriteria criteria) {
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        //Fecha de Factura        
+        if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_fechas_busqueda_invalidas"));
+        }
+        if (criteria.isBuscaPorFecha() == true) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(criteria.getFechaDesde());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            criteria.setFechaDesde(cal.getTime());
+            cal.setTime(criteria.getFechaHasta());
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            criteria.setFechaHasta(cal.getTime());
+        }
+        //Proveedor
+        if (criteria.isBuscaPorProveedor() == true && criteria.getProveedor() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_proveedor_vacio"));
+        }
+        return facturaRepository.calcularTotalFacturadoCompra(criteria);
+    }
+
+    @Override
+    public double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria) {
+        //Empresa
+        if(criteria.getEmpresa() == null ) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        //Fecha de Factura        
+        if (criteria.isBuscaPorFecha() == true && (criteria.getFechaDesde() == null || criteria.getFechaHasta() == null)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_fechas_busqueda_invalidas"));
+        }
+        if (criteria.isBuscaPorFecha() == true) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(criteria.getFechaDesde());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            criteria.setFechaDesde(cal.getTime());
+            cal.setTime(criteria.getFechaHasta());
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            criteria.setFechaHasta(cal.getTime());
+        }
+        //Cliente
+        if (criteria.isBuscaCliente() == true && criteria.getCliente() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_cliente_vacio"));
+        }
+        //Usuario
+        if (criteria.isBuscaUsuario() == true && criteria.getUsuario() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_usuario_vacio"));
+        }
+        return facturaRepository.calcularIVA_Venta(criteria);
+    }
+
+    @Override
+    public double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria) {
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        //Fecha de Factura        
+        if (criteria.isBuscaPorFecha() == true & (criteria.getFechaDesde() == null | criteria.getFechaHasta() == null)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_fechas_busqueda_invalidas"));
+        }
+        if (criteria.isBuscaPorFecha() == true) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(criteria.getFechaDesde());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            criteria.setFechaDesde(cal.getTime());
+            cal.setTime(criteria.getFechaHasta());
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            criteria.setFechaHasta(cal.getTime());
+        }
+        //Proveedor
+        if (criteria.isBuscaPorProveedor() == true && criteria.getProveedor() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_proveedor_vacio"));
+        }
+        return facturaRepository.calcularIVA_Compra(criteria);
+    }
+
+    @Override
+    public double calcularGananciaTotal(BusquedaFacturaVentaCriteria criteria) {
+        //Empresa
+        if (criteria.getEmpresa() == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_empresa_no_existente"));
+        }
+        //Fecha de Factura        
+        if (criteria.isBuscaPorFecha() == true && (criteria.getFechaDesde() == null || criteria.getFechaHasta() == null)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_fechas_busqueda_invalidas"));
+        }
+        if (criteria.isBuscaPorFecha() == true) {
+            Calendar cal = new GregorianCalendar();
+            cal.setTime(criteria.getFechaDesde());
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            criteria.setFechaDesde(cal.getTime());
+            cal.setTime(criteria.getFechaHasta());
+            cal.set(Calendar.HOUR_OF_DAY, 23);
+            cal.set(Calendar.MINUTE, 59);
+            cal.set(Calendar.SECOND, 59);
+            criteria.setFechaHasta(cal.getTime());
+        }
+        //Cliente
+        if (criteria.isBuscaCliente() == true && criteria.getCliente() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_cliente_vacio"));
+        }
+        //Usuario
+        if (criteria.isBuscaUsuario() == true && criteria.getUsuario() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_usuario_vacio"));
+        }
+        return facturaRepository.calcularGananciaTotal(criteria);
     }
 
     @Override
