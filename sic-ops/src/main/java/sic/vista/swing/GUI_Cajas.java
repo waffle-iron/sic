@@ -413,14 +413,12 @@ public class GUI_Cajas extends JInternalFrame {
         ftxt_TotalFinal.setEditable(false);
         ftxt_TotalFinal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
         ftxt_TotalFinal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        ftxt_TotalFinal.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
         lbl_TotalCierre.setText("Total Real:");
 
         ftxt_TotalCierre.setEditable(false);
         ftxt_TotalCierre.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
         ftxt_TotalCierre.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        ftxt_TotalCierre.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
         javax.swing.GroupLayout pnl_CajasLayout = new javax.swing.GroupLayout(pnl_Cajas);
         pnl_Cajas.setLayout(pnl_CajasLayout);
@@ -454,7 +452,7 @@ public class GUI_Cajas extends JInternalFrame {
         pnl_CajasLayout.setVerticalGroup(
             pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_CajasLayout.createSequentialGroup()
-                .addComponent(sp_TablaCajas, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                .addComponent(sp_TablaCajas, javax.swing.GroupLayout.DEFAULT_SIZE, 204, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(pnl_CajasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)

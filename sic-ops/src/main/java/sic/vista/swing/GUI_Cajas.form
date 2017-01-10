@@ -232,7 +232,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <Component id="sp_TablaCajas" pref="198" max="32767" attributes="0"/>
+                  <Component id="sp_TablaCajas" pref="204" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="103" groupAlignment="3" attributes="0">
@@ -327,9 +327,6 @@
               <Format format="$##,###,##0.00" subtype="-1" type="0"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Ubuntu" size="15" style="1"/>
-            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="lbl_TotalCierre">
@@ -344,9 +341,6 @@
               <Format format="$##,###,##0.00" subtype="-1" type="0"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Ubuntu" size="15" style="1"/>
-            </Property>
           </Properties>
         </Component>
       </SubComponents>
