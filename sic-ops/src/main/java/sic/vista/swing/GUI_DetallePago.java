@@ -12,7 +12,8 @@ import javax.swing.JOptionPane;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import sic.RestClient;
@@ -25,7 +26,7 @@ import sic.util.Utilidades;
 public class GUI_DetallePago extends JDialog {
 
     private final Factura facturaRelacionada;
-    private static final Logger LOGGER = Logger.getLogger(GUI_DetallePago.class.getPackage().getName());
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     public GUI_DetallePago(Factura factura) {
         this.initComponents();

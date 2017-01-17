@@ -10,7 +10,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import sic.RestClient;
@@ -29,7 +30,7 @@ public class GUI_DetalleEmpresa extends JDialog {
     private byte[] logo = null;
     private Empresa empresaModificar;
     private final TipoDeOperacion operacion;
-    private static final Logger LOGGER = Logger.getLogger(GUI_DetalleEmpresa.class.getPackage().getName());
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     public GUI_DetalleEmpresa() {
         this.initComponents();

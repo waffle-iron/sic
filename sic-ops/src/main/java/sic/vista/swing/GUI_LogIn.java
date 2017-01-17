@@ -6,7 +6,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import sic.RestClient;
@@ -14,9 +15,9 @@ import sic.modelo.Credencial;
 import sic.modelo.Usuario;
 import sic.modelo.UsuarioActivo;
 
-public class GUI_LogIn extends JFrame {
+public class GUI_LogIn extends JFrame {    
     
-    private static final Logger LOGGER = Logger.getLogger(GUI_LogIn.class.getPackage().getName());
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     
     public GUI_LogIn() {
         this.initComponents();                
@@ -218,7 +219,7 @@ public class GUI_LogIn extends JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         this.setTitle("S.I.C. " + ResourceBundle.getBundle("Mensajes").getString("version"));
-        this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);        
     }//GEN-LAST:event_formWindowOpened
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

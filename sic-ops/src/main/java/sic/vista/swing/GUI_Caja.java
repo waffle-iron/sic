@@ -18,7 +18,8 @@ import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import sic.RestClient;
@@ -43,7 +44,7 @@ public class GUI_Caja extends JDialog {
     private ModeloTabla modeloTablaResumen;
     private List<Object> listaMovimientos = new ArrayList<>();
     private Caja caja;
-    private static final Logger LOGGER = Logger.getLogger(GUI_Caja.class.getPackage().getName());
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     public GUI_Caja(Frame parent, boolean modal) {
         super(parent, modal);

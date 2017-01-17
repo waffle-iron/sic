@@ -13,7 +13,8 @@ import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import sic.RestClient;
@@ -31,7 +32,7 @@ public class GUI_PagoMultiplesFacturas extends JDialog {
     private final Movimiento movimiento;
     private final ModeloTabla modeloTablaFacturas = new ModeloTabla();
     private double montoTotal = 0.0;
-    private static final Logger LOGGER = Logger.getLogger(GUI_PagoMultiplesFacturas.class.getPackage().getName());
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     public GUI_PagoMultiplesFacturas(JInternalFrame parent, boolean modal, List<Factura> facturas, Movimiento movimiento) {                
         this.setModal(modal);
