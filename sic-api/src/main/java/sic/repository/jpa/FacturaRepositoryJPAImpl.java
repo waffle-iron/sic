@@ -232,8 +232,9 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     }
     
     @Override
-    public double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria) {
-        String query = "SELECT SUM(f.iva_105_neto + f.iva_21_neto) FROM FacturaVenta f WHERE f.empresa = :empresa AND f.eliminada = false";
+    public double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, Character[] tipoFacturasDiscriminadas) {
+        String query = "SELECT SUM(r.iva_neto * r.cantidad) FROM FacturaVenta f LEFT JOIN f.renglones r "
+                + "WHERE f.empresa = :empresa AND f.eliminada = false";
         //Fecha
         if (criteria.isBuscaPorFecha() == true) {
             FormatterFechaHora formateadorFecha = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_INTERNACIONAL);
@@ -247,6 +248,14 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.isBuscaPorTipoFactura() == true) {
             query += " AND f.tipoFactura = '" + criteria.getTipoFactura() + "'";
         }
+        for (int i = 0; i < tipoFacturasDiscriminadas.length; i++) {
+            if (i == 0) {
+                query += " AND ( f.tipoFactura = '" + tipoFacturasDiscriminadas[i] + "'";
+            } else {
+                query += " OR f.tipoFactura = '" + tipoFacturasDiscriminadas[i] + "'";
+            }
+        }
+            query += " )";
         //Usuario
         if (criteria.isBuscaUsuario() == true) {
             query += " AND f.usuario = " + criteria.getUsuario().getId_Usuario();
@@ -278,7 +287,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     }
     
     @Override
-    public double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria) {
+    public double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria, Character[] tipoFacturasDiscriminadas) {
         String query = "SELECT SUM(f.iva_105_neto + f.iva_21_neto) FROM FacturaCompra f WHERE f.empresa = :empresa AND f.eliminada = false";
         //Fecha Factura
         if (criteria.isBuscaPorFecha() == true) {
@@ -289,6 +298,15 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.isBuscaPorProveedor() == true) {
             query += " AND f.proveedor = " + criteria.getProveedor().getId_Proveedor();
         }
+        
+        for (int i = 0; i < tipoFacturasDiscriminadas.length; i++) {
+            if (i == 0) {
+                query += " AND ( f.tipoFactura = '" + tipoFacturasDiscriminadas[i] + "'";
+            } else {
+                query += " OR f.tipoFactura = '" + tipoFacturasDiscriminadas[i] + "'";
+            }
+        }
+            query += " )";
         //Nro de Factura
         if (criteria.isBuscaPorNumeroFactura() == true) {
             query += " AND f.numSerie = " + criteria.getNumSerie() + " AND f.numFactura = " + criteria.getNumFactura();

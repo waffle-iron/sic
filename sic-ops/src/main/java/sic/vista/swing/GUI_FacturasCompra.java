@@ -240,12 +240,13 @@ public class GUI_FacturasCompra extends JInternalFrame {
 
     private void calcularResultados(String criteria) {
         try {
-            if (!facturas.isEmpty()) {
-                String totalFacturadoCompra = "/facturas/total-facturado-compra/criteria?";
-                String calcularIVA_Compra = "/facturas/total-iva-compra/criteria?";
-                txt_ResultGastoTotal.setValue(RestClient.getRestTemplate().getForObject(totalFacturadoCompra + criteria, double.class));
-                txt_ResultTotalIVACompra.setValue(RestClient.getRestTemplate().getForObject(calcularIVA_Compra + criteria, double.class));
-            }
+            String totalFacturadoCompra = "/facturas/total-facturado-compra/criteria?";
+            String calcularIVA_Compra = "/facturas/total-iva-compra/criteria?";
+            txt_ResultGastoTotal.setValue(RestClient.getRestTemplate().getForObject(totalFacturadoCompra
+                    + criteria, double.class));
+            txt_ResultTotalIVACompra.setValue(RestClient.getRestTemplate().getForObject(calcularIVA_Compra
+                    + criteria
+                    + "&tipoFacturasDiscriminadas=A", double.class));
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ResourceAccessException ex) {

@@ -1,6 +1,7 @@
 package sic.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -432,7 +433,8 @@ public class FacturaController {
                                    @RequestParam(value = "idUsuario", required = false) Long idUsuario,
                                    @RequestParam(value = "nroPedido", required = false) Long nroPedido,
                                    @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
-                                   @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
+                                   @RequestParam(value = "soloPagas", required = false) Boolean soloPagas,
+                                   @RequestParam Character[] tipoFacturasDiscriminadas) {
         Calendar fechaDesde = Calendar.getInstance();
         Calendar fechaHasta = Calendar.getInstance();
         if ((desde != null) && (hasta != null)) {
@@ -473,7 +475,7 @@ public class FacturaController {
                 .buscaSoloPagadas(soloPagas)
                 .cantRegistros(0)
                 .build();
-        return facturaService.calcularIVA_Venta(criteria);
+        return facturaService.calcularIVA_Venta(criteria, tipoFacturasDiscriminadas);
     }
     
     @GetMapping("/facturas/total-iva-compra/criteria")
@@ -485,7 +487,8 @@ public class FacturaController {
                                          @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
                                          @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
                                          @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
-                                         @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
+                                         @RequestParam(value = "soloPagas", required = false) Boolean soloPagas,
+                                         @RequestParam Character[] tipoFacturasDiscriminadas) {
         Calendar fechaDesde = Calendar.getInstance();
         Calendar fechaHasta = Calendar.getInstance();
         if ((desde != null) && (hasta != null)) {
@@ -516,7 +519,7 @@ public class FacturaController {
                                                  .buscaSoloPagadas(soloPagas)
                                                  .cantRegistros(0)
                                                  .build();
-        return facturaService.calcularIVA_Compra(criteria);
+        return facturaService.calcularIVA_Compra(criteria, tipoFacturasDiscriminadas);
     }
     
     @GetMapping("/facturas/ganancia-total/criteria")

@@ -152,7 +152,8 @@ public class GUI_FacturasVenta extends JInternalFrame {
                     .getForObject("/facturas/ganancia-total/criteria?" + uriCriteria,
                             double.class));
             txt_ResultTotalIVAVenta.setValue(RestClient.getRestTemplate()
-                    .getForObject("/facturas/total-iva-venta/criteria?" + uriCriteria,
+                    .getForObject("/facturas/total-iva-venta/criteria?" + uriCriteria
+                            + "&tipoFacturasDiscriminadas=A,B",
                             double.class));
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
