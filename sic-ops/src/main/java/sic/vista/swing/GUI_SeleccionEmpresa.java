@@ -1,10 +1,10 @@
 package sic.vista.swing;
 
+import java.awt.Window;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import sic.RestClient;
 import sic.modelo.Empresa;
@@ -15,14 +15,11 @@ public class GUI_SeleccionEmpresa extends JDialog {
     private Empresa empresaSeleccionada;
     private List<Empresa> empresas;    
 
-    public GUI_SeleccionEmpresa(JDialog parent, boolean modal) {
-        super(parent, modal);
+    public GUI_SeleccionEmpresa(Window parent, boolean modal, List<Empresa> empresas) {
+        super(parent);      
         this.setIU();
-    }
-
-    public GUI_SeleccionEmpresa(JFrame parent, boolean modal) {
-        super(parent, modal);      
-        this.setIU();
+        this.setModal(modal);
+        this.empresas = empresas;
     }     
 
     private void setIU() {
@@ -37,7 +34,9 @@ public class GUI_SeleccionEmpresa extends JDialog {
     }
 
     private void cargarComboBoxEmpresas() {
-        empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
+        if (empresas == null) {
+            empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
+        } 
         cmb_Empresas.removeAllItems();
         empresas.stream().forEach((e) -> {
             cmb_Empresas.addItem(e);

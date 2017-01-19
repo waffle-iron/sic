@@ -179,7 +179,7 @@ public class GUI_PuntoDeVenta extends JDialog {
     }
 
     private void llamarGUI_SeleccionEmpresa() {
-        GUI_SeleccionEmpresa gui_SeleccionEmpresa = new GUI_SeleccionEmpresa(this, true);
+        GUI_SeleccionEmpresa gui_SeleccionEmpresa = new GUI_SeleccionEmpresa(this, true, null);
         gui_SeleccionEmpresa.setVisible(true);
         if (EmpresaActiva.getInstance().getEmpresa() == null) {
             System.exit(0);
