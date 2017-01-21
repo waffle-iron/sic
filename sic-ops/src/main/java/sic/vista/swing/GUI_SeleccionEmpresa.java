@@ -13,13 +13,15 @@ import sic.modelo.EmpresaActiva;
 public class GUI_SeleccionEmpresa extends JDialog {
 
     private Empresa empresaSeleccionada;
-    private List<Empresa> empresas;    
+    private List<Empresa> empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));;    
 
-    public GUI_SeleccionEmpresa(Window parent, boolean modal, List<Empresa> empresas) {
-        super(parent);      
+    public GUI_SeleccionEmpresa(Window parent, boolean modal) {
+        super(parent);
         this.setIU();
         this.setModal(modal);
-        this.empresas = empresas;
+        if (empresas.size() == 1) {
+            EmpresaActiva.getInstance().setEmpresa(empresas.get(0));
+        }
     }     
 
     private void setIU() {
@@ -34,13 +36,14 @@ public class GUI_SeleccionEmpresa extends JDialog {
     }
 
     private void cargarComboBoxEmpresas() {
-        if (empresas == null) {
-            empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
-        } 
         cmb_Empresas.removeAllItems();
         empresas.stream().forEach((e) -> {
             cmb_Empresas.addItem(e);
         });
+    }
+    
+    public int getCantidadEmpresas() {
+        return empresas.size();
     }
 
     @SuppressWarnings("unchecked")

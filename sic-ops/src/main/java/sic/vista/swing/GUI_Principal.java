@@ -41,10 +41,14 @@ public class GUI_Principal extends JFrame {
         return dp_Escritorio;
     }
 
-    private void llamarGUI_SeleccionEmpresa(List<Empresa> empresas) {
-        GUI_SeleccionEmpresa gui_seleccionEmpresa = new GUI_SeleccionEmpresa(this, true, empresas);
-        gui_seleccionEmpresa.setLocationRelativeTo(this);
-        gui_seleccionEmpresa.setVisible(true);
+    private void llamarGUI_SeleccionEmpresa() {
+        GUI_SeleccionEmpresa gui_seleccionEmpresa = new GUI_SeleccionEmpresa(this, true);
+        if (gui_seleccionEmpresa.getCantidadEmpresas() > 1) {
+            gui_seleccionEmpresa.setLocationRelativeTo(this);
+            gui_seleccionEmpresa.setVisible(true);
+        } else if (gui_seleccionEmpresa.getCantidadEmpresas() == 1) {
+            gui_seleccionEmpresa.dispose();
+        }
         Empresa empresa = EmpresaActiva.getInstance().getEmpresa();
         if (empresa == null) {
             lbl_EmpresaActiva.setText("Empresa: (sin empresa)");
@@ -334,7 +338,7 @@ public class GUI_Principal extends JFrame {
         gui_Empresas.setLocationRelativeTo(this);
         gui_Empresas.setVisible(true);
         Utilidades.cerrarTodasVentanas(dp_Escritorio);
-        this.llamarGUI_SeleccionEmpresa(null);
+        this.llamarGUI_SeleccionEmpresa();
     }//GEN-LAST:event_mnuItm_EmpresasActionPerformed
 
     private void mnuItm_CambiarUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_CambiarUserActionPerformed
@@ -347,13 +351,7 @@ public class GUI_Principal extends JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         lbl_UsuarioActivo.setText("Usuario: " + UsuarioActivo.getInstance().getUsuario().getNombre());
         try {
-            List<Empresa> empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
-            if (empresas.size() > 1) {
-                this.llamarGUI_SeleccionEmpresa(empresas);
-            } else if (empresas.size() == 1) {
-                EmpresaActiva.getInstance().setEmpresa(empresas.get(0));
-                lbl_EmpresaActiva.setText("Empresa: " + EmpresaActiva.getInstance().getEmpresa().getNombre());
-            }
+            this.llamarGUI_SeleccionEmpresa();
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ResourceAccessException ex) {
@@ -478,7 +476,7 @@ public class GUI_Principal extends JFrame {
 
     private void mnuItm_CambiarEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_CambiarEmpresaActionPerformed
         Utilidades.cerrarTodasVentanas(dp_Escritorio);
-        this.llamarGUI_SeleccionEmpresa(null);
+        this.llamarGUI_SeleccionEmpresa();
     }//GEN-LAST:event_mnuItm_CambiarEmpresaActionPerformed
 
     private void mnuItm_FormasDePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_FormasDePagoActionPerformed
