@@ -716,7 +716,7 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, Character[] tipoFacturasDiscriminadas) {
+    public double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, char[] tiposFacturas) {
         //Empresa
         if(criteria.getEmpresa() == null ) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
@@ -750,7 +750,7 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
         }
-        return facturaRepository.calcularIVA_Venta(criteria, tipoFacturasDiscriminadas);
+        return facturaRepository.calcularIVA_Venta(criteria, tiposFacturas);
     }
 
     @Override

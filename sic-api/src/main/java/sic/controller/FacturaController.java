@@ -1,7 +1,6 @@
 package sic.controller;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -96,14 +95,14 @@ public class FacturaController {
     
     @GetMapping("/facturas/compra/busqueda/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public List<FacturaCompra> buscarFacturaCompra(@RequestParam(value = "idEmpresa") Long idEmpresa,
-                                                   @RequestParam(value = "desde", required = false) Long desde,
-                                                   @RequestParam(value = "hasta", required = false) Long hasta,
-                                                   @RequestParam(value = "idProveedor", required = false) Long idProveedor,
-                                                   @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
-                                                   @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
-                                                   @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
-                                                   @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
+    public List<FacturaCompra> buscarFacturaCompra(@RequestParam Long idEmpresa,
+                                                   @RequestParam(required = false) Long desde,
+                                                   @RequestParam(required = false) Long hasta,
+                                                   @RequestParam(required = false) Long idProveedor,
+                                                   @RequestParam(required = false) Integer nroSerie,
+                                                   @RequestParam(required = false) Integer nroFactura,
+                                                   @RequestParam(required = false) Boolean soloImpagas,
+                                                   @RequestParam(required = false) Boolean soloPagas) {
         Calendar fechaDesde = Calendar.getInstance();
         Calendar fechaHasta = Calendar.getInstance();
         if ((desde != null) && (hasta != null)) {
@@ -139,17 +138,17 @@ public class FacturaController {
     
     @GetMapping("/facturas/venta/busqueda/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public List<FacturaVenta> buscarFacturaVenta(@RequestParam(value = "idEmpresa") Long idEmpresa,
-                                                 @RequestParam(value = "desde", required = false) Long desde,
-                                                 @RequestParam(value = "hasta", required = false) Long hasta,
-                                                 @RequestParam(value = "idCliente", required = false) Long idCliente,
-                                                 @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
-                                                 @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
-                                                 @RequestParam(value = "tipoFactura", required = false) Character tipoFactura,
-                                                 @RequestParam(value = "idUsuario", required = false) Long idUsuario,
-                                                 @RequestParam(value = "nroPedido", required = false) Long nroPedido,
-                                                 @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
-                                                 @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
+    public List<FacturaVenta> buscarFacturaVenta(@RequestParam Long idEmpresa,
+                                                 @RequestParam(required = false) Long desde,
+                                                 @RequestParam(required = false) Long hasta,
+                                                 @RequestParam(required = false) Long idCliente,
+                                                 @RequestParam(required = false) Integer nroSerie,
+                                                 @RequestParam(required = false) Integer nroFactura,
+                                                 @RequestParam(required = false) Character tipoFactura,
+                                                 @RequestParam(required = false) Long idUsuario,
+                                                 @RequestParam(required = false) Long nroPedido,
+                                                 @RequestParam(required = false) Boolean soloImpagas,
+                                                 @RequestParam(required = false) Boolean soloPagas) {
         Calendar fechaDesde = Calendar.getInstance();
         Calendar fechaHasta = Calendar.getInstance();
         if ((desde != null) && (hasta != null)) {
@@ -323,17 +322,17 @@ public class FacturaController {
     
     @GetMapping("/facturas/total-facturado-venta/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalFacturadoVenta(@RequestParam(value = "idEmpresa") Long idEmpresa,
-                                              @RequestParam(value = "desde", required = false) Long desde,
-                                              @RequestParam(value = "hasta", required = false) Long hasta,
-                                              @RequestParam(value = "idCliente", required = false) Long idCliente,
-                                              @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
-                                              @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
-                                              @RequestParam(value = "tipoFactura", required = false) Character tipoFactura,
-                                              @RequestParam(value = "idUsuario", required = false) Long idUsuario,
-                                              @RequestParam(value = "nroPedido", required = false) Long nroPedido,
-                                              @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
-                                              @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
+    public double calcularTotalFacturadoVenta(@RequestParam Long idEmpresa,
+                                              @RequestParam(required = false) Long desde,
+                                              @RequestParam(required = false) Long hasta,
+                                              @RequestParam(required = false) Long idCliente,
+                                              @RequestParam(required = false) Integer nroSerie,
+                                              @RequestParam(required = false) Integer nroFactura,
+                                              @RequestParam(required = false) Character tipoFactura,
+                                              @RequestParam(required = false) Long idUsuario,
+                                              @RequestParam(required = false) Long nroPedido,
+                                              @RequestParam(required = false) Boolean soloImpagas,
+                                              @RequestParam(required = false) Boolean soloPagas) {
 
         Calendar fechaDesde = Calendar.getInstance();
         Calendar fechaHasta = Calendar.getInstance();
@@ -380,14 +379,14 @@ public class FacturaController {
     
     @GetMapping("/facturas/total-facturado-compra/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalFacturadoCompra(@RequestParam(value = "idEmpresa") Long idEmpresa,
-                                               @RequestParam(value = "desde", required = false) Long desde,
-                                               @RequestParam(value = "hasta", required = false) Long hasta,
-                                               @RequestParam(value = "idProveedor", required = false) Long idProveedor,
-                                               @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
-                                               @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
-                                               @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
-                                               @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
+    public double calcularTotalFacturadoCompra(@RequestParam Long idEmpresa,
+                                               @RequestParam(required = false) Long desde,
+                                               @RequestParam(required = false) Long hasta,
+                                               @RequestParam(required = false) Long idProveedor,
+                                               @RequestParam(required = false) Integer nroSerie,
+                                               @RequestParam(required = false) Integer nroFactura,
+                                               @RequestParam(required = false) Boolean soloImpagas,
+                                               @RequestParam(required = false) Boolean soloPagas) {
         Calendar fechaDesde = Calendar.getInstance();
         Calendar fechaHasta = Calendar.getInstance();
         if ((desde != null) && (hasta != null)) {
@@ -423,18 +422,18 @@ public class FacturaController {
     
     @GetMapping("/facturas/total-iva-venta/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularIvaVenta(@RequestParam(value = "idEmpresa") Long idEmpresa,
-                                   @RequestParam(value = "desde", required = false) Long desde,
-                                   @RequestParam(value = "hasta", required = false) Long hasta,
-                                   @RequestParam(value = "idCliente", required = false) Long idCliente,
-                                   @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
-                                   @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
-                                   @RequestParam(value = "tipoFactura", required = false) Character tipoFactura,
-                                   @RequestParam(value = "idUsuario", required = false) Long idUsuario,
-                                   @RequestParam(value = "nroPedido", required = false) Long nroPedido,
-                                   @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
-                                   @RequestParam(value = "soloPagas", required = false) Boolean soloPagas,
-                                   @RequestParam Character[] tipoFacturasDiscriminadas) {
+    public double calcularIvaVenta(@RequestParam Long idEmpresa,
+                                   @RequestParam(required = false) Long desde,
+                                   @RequestParam(required = false) Long hasta,
+                                   @RequestParam(required = false) Long idCliente,
+                                   @RequestParam(required = false) Integer nroSerie,
+                                   @RequestParam(required = false) Integer nroFactura,
+                                   @RequestParam(required = false) Character tipoFactura,
+                                   @RequestParam(required = false) Long idUsuario,
+                                   @RequestParam(required = false) Long nroPedido,
+                                   @RequestParam(required = false) Boolean soloImpagas,
+                                   @RequestParam(required = false) Boolean soloPagas,
+                                   @RequestParam char[] tiposFacturas) {
         Calendar fechaDesde = Calendar.getInstance();
         Calendar fechaHasta = Calendar.getInstance();
         if ((desde != null) && (hasta != null)) {
@@ -475,20 +474,20 @@ public class FacturaController {
                 .buscaSoloPagadas(soloPagas)
                 .cantRegistros(0)
                 .build();
-        return facturaService.calcularIVA_Venta(criteria, tipoFacturasDiscriminadas);
+        return facturaService.calcularIVA_Venta(criteria, tiposFacturas);
     }
     
     @GetMapping("/facturas/total-iva-compra/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalIvaCompra(@RequestParam(value = "idEmpresa") Long idEmpresa,
-                                         @RequestParam(value = "desde", required = false) Long desde,
-                                         @RequestParam(value = "hasta", required = false) Long hasta,
-                                         @RequestParam(value = "idProveedor", required = false) Long idProveedor,
-                                         @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
-                                         @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
-                                         @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
-                                         @RequestParam(value = "soloPagas", required = false) Boolean soloPagas,
-                                         @RequestParam Character[] tipoFacturasDiscriminadas) {
+    public double calcularTotalIvaCompra(@RequestParam Long idEmpresa,
+                                         @RequestParam Character[] tipoFacturasDiscriminadas,
+                                         @RequestParam(required = false) Long desde,
+                                         @RequestParam(required = false) Long hasta,
+                                         @RequestParam(required = false) Long idProveedor,
+                                         @RequestParam(required = false) Integer nroSerie,
+                                         @RequestParam(required = false) Integer nroFactura,
+                                         @RequestParam(required = false) Boolean soloImpagas,
+                                         @RequestParam(required = false) Boolean soloPagas) {
         Calendar fechaDesde = Calendar.getInstance();
         Calendar fechaHasta = Calendar.getInstance();
         if ((desde != null) && (hasta != null)) {
@@ -524,17 +523,17 @@ public class FacturaController {
     
     @GetMapping("/facturas/ganancia-total/criteria")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularGananciaTotal(@RequestParam(value = "idEmpresa") Long idEmpresa,
-                                        @RequestParam(value = "desde", required = false) Long desde,
-                                        @RequestParam(value = "hasta", required = false) Long hasta,
-                                        @RequestParam(value = "idCliente", required = false) Long idCliente,
-                                        @RequestParam(value = "nroSerie", required = false) Integer nroSerie,
-                                        @RequestParam(value = "nroFactura", required = false) Integer nroFactura,
-                                        @RequestParam(value = "tipoFactura", required = false) Character tipoFactura,
-                                        @RequestParam(value = "idUsuario", required = false) Long idUsuario,
-                                        @RequestParam(value = "nroPedido", required = false) Long nroPedido,
-                                        @RequestParam(value = "soloImpagas", required = false) Boolean soloImpagas,
-                                        @RequestParam(value = "soloPagas", required = false) Boolean soloPagas) {
+    public double calcularGananciaTotal(@RequestParam Long idEmpresa,
+                                        @RequestParam(required = false) Long desde,
+                                        @RequestParam(required = false) Long hasta,
+                                        @RequestParam(required = false) Long idCliente,
+                                        @RequestParam(required = false) Integer nroSerie,
+                                        @RequestParam(required = false) Integer nroFactura,
+                                        @RequestParam(required = false) Character tipoFactura,
+                                        @RequestParam(required = false) Long idUsuario,
+                                        @RequestParam(required = false) Long nroPedido,
+                                        @RequestParam(required = false) Boolean soloImpagas,
+                                        @RequestParam(required = false) Boolean soloPagas) {
         Calendar fechaDesde = Calendar.getInstance();
         Calendar fechaHasta = Calendar.getInstance();
         if ((desde != null) && (hasta != null)) {

@@ -232,7 +232,7 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
     }
     
     @Override
-    public double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, Character[] tipoFacturasDiscriminadas) {
+    public double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, char[] tiposFacturas) {
         String query = "SELECT SUM(r.iva_neto * r.cantidad) FROM FacturaVenta f LEFT JOIN f.renglones r "
                 + "WHERE f.empresa = :empresa AND f.eliminada = false";
         //Fecha
@@ -248,14 +248,14 @@ public class FacturaRepositoryJPAImpl implements IFacturaRepository {
         if (criteria.isBuscaPorTipoFactura() == true) {
             query += " AND f.tipoFactura = '" + criteria.getTipoFactura() + "'";
         }
-        for (int i = 0; i < tipoFacturasDiscriminadas.length; i++) {
+        for (int i = 0; i < tiposFacturas.length; i++) {
             if (i == 0) {
-                query += " AND ( f.tipoFactura = '" + tipoFacturasDiscriminadas[i] + "'";
+                query += " AND ( f.tipoFactura = '" + tiposFacturas[i] + "'";
             } else {
-                query += " OR f.tipoFactura = '" + tipoFacturasDiscriminadas[i] + "'";
+                query += " OR f.tipoFactura = '" + tiposFacturas[i] + "'";
             }
         }
-            query += " )";
+        query += " )";
         //Usuario
         if (criteria.isBuscaUsuario() == true) {
             query += " AND f.usuario = " + criteria.getUsuario().getId_Usuario();
