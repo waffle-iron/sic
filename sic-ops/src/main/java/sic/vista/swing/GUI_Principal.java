@@ -2,8 +2,6 @@ package sic.vista.swing;
 
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
@@ -350,16 +348,7 @@ public class GUI_Principal extends JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         lbl_UsuarioActivo.setText("Usuario: " + UsuarioActivo.getInstance().getUsuario().getNombre());
-        try {
-            this.llamarGUI_SeleccionEmpresa();
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        this.llamarGUI_SeleccionEmpresa();
     }//GEN-LAST:event_formWindowOpened
 
     private void mnuItm_UsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_UsuariosActionPerformed

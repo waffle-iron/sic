@@ -3,9 +3,14 @@ package sic.vista.swing;
 import java.awt.Window;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientResponseException;
 import sic.RestClient;
 import sic.modelo.Empresa;
 import sic.modelo.EmpresaActiva;
@@ -13,12 +18,23 @@ import sic.modelo.EmpresaActiva;
 public class GUI_SeleccionEmpresa extends JDialog {
 
     private Empresa empresaSeleccionada;
-    private List<Empresa> empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));;    
+    private List<Empresa> empresas;
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     public GUI_SeleccionEmpresa(Window parent, boolean modal) {
         super(parent);
         this.setIU();
         this.setModal(modal);
+        try {
+            empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
+        } catch (RestClientResponseException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ResourceAccessException ex) {
+            LOGGER.error(ex.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
         if (empresas.size() == 1) {
             EmpresaActiva.getInstance().setEmpresa(empresas.get(0));
         }
