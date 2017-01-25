@@ -167,17 +167,6 @@ public class GUI_PuntoDeVenta extends JDialog {
         return this.modificarPedido;
     }
 
-    private void prepararComponentes() {
-        txt_Subtotal.setValue(new Double("0.0"));
-        txt_Recargo_porcentaje.setValue(new Double("0.0"));
-        txt_Recargo_neto.setValue(new Double("0.0"));
-        txt_SubTotalNeto.setValue(new Double("0.0"));
-        txt_IVA105_neto.setValue(new Double("0.0"));
-        txt_IVA21_neto.setValue(new Double("0.0"));
-        txt_ImpInterno_neto.setValue(new Double("0.0"));
-        txt_Total.setValue(new Double("0.0"));
-    }
-
     private void llamarGUI_SeleccionEmpresa() {
         GUI_SeleccionEmpresa gui_SeleccionEmpresa = new GUI_SeleccionEmpresa(this, true);
         gui_SeleccionEmpresa.setVisible(true);
@@ -842,11 +831,11 @@ public class GUI_PuntoDeVenta extends JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("S.I.C. Punto de Venta");
         addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
+            }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
             }
         });
 
@@ -1090,8 +1079,9 @@ public class GUI_PuntoDeVenta extends JDialog {
 
         txt_Subtotal.setEditable(false);
         txt_Subtotal.setForeground(new java.awt.Color(29, 156, 37));
-        txt_Subtotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_Subtotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_Subtotal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_Subtotal.setText("0");
         txt_Subtotal.setFocusable(false);
         txt_Subtotal.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
 
@@ -1100,8 +1090,9 @@ public class GUI_PuntoDeVenta extends JDialog {
 
         txt_IVA21_neto.setEditable(false);
         txt_IVA21_neto.setForeground(new java.awt.Color(29, 156, 37));
-        txt_IVA21_neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_IVA21_neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_IVA21_neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_IVA21_neto.setText("0");
         txt_IVA21_neto.setFocusable(false);
         txt_IVA21_neto.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
 
@@ -1110,14 +1101,16 @@ public class GUI_PuntoDeVenta extends JDialog {
 
         txt_Total.setEditable(false);
         txt_Total.setForeground(new java.awt.Color(29, 156, 37));
-        txt_Total.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_Total.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_Total.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_Total.setText("0");
         txt_Total.setFocusable(false);
         txt_Total.setFont(new java.awt.Font("DejaVu Sans", 1, 36)); // NOI18N
 
         txt_Recargo_porcentaje.setForeground(new java.awt.Color(29, 156, 37));
-        txt_Recargo_porcentaje.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
+        txt_Recargo_porcentaje.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
         txt_Recargo_porcentaje.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_Recargo_porcentaje.setText("0");
         txt_Recargo_porcentaje.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
         txt_Recargo_porcentaje.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -1140,8 +1133,9 @@ public class GUI_PuntoDeVenta extends JDialog {
 
         txt_Recargo_neto.setEditable(false);
         txt_Recargo_neto.setForeground(new java.awt.Color(29, 156, 37));
-        txt_Recargo_neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_Recargo_neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_Recargo_neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_Recargo_neto.setText("0");
         txt_Recargo_neto.setFocusable(false);
         txt_Recargo_neto.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
 
@@ -1150,8 +1144,9 @@ public class GUI_PuntoDeVenta extends JDialog {
 
         txt_ImpInterno_neto.setEditable(false);
         txt_ImpInterno_neto.setForeground(new java.awt.Color(29, 156, 37));
-        txt_ImpInterno_neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_ImpInterno_neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_ImpInterno_neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_ImpInterno_neto.setText("0");
         txt_ImpInterno_neto.setFocusable(false);
         txt_ImpInterno_neto.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
 
@@ -1160,8 +1155,9 @@ public class GUI_PuntoDeVenta extends JDialog {
 
         txt_SubTotalNeto.setEditable(false);
         txt_SubTotalNeto.setForeground(new java.awt.Color(29, 156, 37));
-        txt_SubTotalNeto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_SubTotalNeto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_SubTotalNeto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_SubTotalNeto.setText("0");
         txt_SubTotalNeto.setFocusable(false);
         txt_SubTotalNeto.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
 
@@ -1169,8 +1165,9 @@ public class GUI_PuntoDeVenta extends JDialog {
 
         txt_IVA105_neto.setEditable(false);
         txt_IVA105_neto.setForeground(new java.awt.Color(29, 156, 37));
-        txt_IVA105_neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_IVA105_neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_IVA105_neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_IVA105_neto.setText("0");
         txt_IVA105_neto.setFocusable(false);
         txt_IVA105_neto.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
 
@@ -1441,8 +1438,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                     .getForObject("/configuraciones-del-sistema/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                             ConfiguracionDelSistema.class);
             cantidadMaximaRenglones = cds.getCantidadMaximaDeRenglonesEnFactura();
-            this.setColumnas();
-            this.prepararComponentes();
+            this.setColumnas();            
             if (!UsuarioActivo.getInstance().getUsuario().isPermisosAdministrador()) {
                 this.llamarGUI_SeleccionEmpresa();
             } else {

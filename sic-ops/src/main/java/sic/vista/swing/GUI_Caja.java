@@ -557,8 +557,9 @@ public class GUI_Caja extends JDialog {
         });
 
         ftxt_Detalle.setEditable(false);
-        ftxt_Detalle.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        ftxt_Detalle.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         ftxt_Detalle.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        ftxt_Detalle.setText("0");
         ftxt_Detalle.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
         lbl_FormaDePago.setText("Forma de Pago:");
@@ -637,8 +638,9 @@ public class GUI_Caja extends JDialog {
         tbl_Resumen.getAccessibleContext().setAccessibleParent(sp_Tabla);
 
         ftxt_TotalGeneral.setEditable(false);
-        ftxt_TotalGeneral.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        ftxt_TotalGeneral.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         ftxt_TotalGeneral.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        ftxt_TotalGeneral.setText("0");
         ftxt_TotalGeneral.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
         lbl_Total.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
@@ -648,8 +650,9 @@ public class GUI_Caja extends JDialog {
         lbl_totalCaja.setText("Total que afecta Caja:");
 
         ftxt_saldoCaja.setEditable(false);
-        ftxt_saldoCaja.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        ftxt_saldoCaja.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         ftxt_saldoCaja.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        ftxt_saldoCaja.setText("0");
         ftxt_saldoCaja.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
         javax.swing.GroupLayout pnl_ResumenLayout = new javax.swing.GroupLayout(pnl_Resumen);

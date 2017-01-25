@@ -136,13 +136,6 @@ public class GUI_CerrarVenta extends JDialog {
         }
     }
 
-    private Factura guardarFactura(Factura facturaVenta) {
-        return Arrays.asList(RestClient.getRestTemplate()
-                .postForObject("/facturas?" 
-                               + "&idPedido=" + gui_puntoDeVenta.getPedido().getId_Pedido(),
-                               facturaVenta, FacturaVenta[].class)).get(0);
-    }
-
     private void calcularVuelto() {
         try {
             txt_AbonaCon.commitEdit();
@@ -351,8 +344,8 @@ public class GUI_CerrarVenta extends JDialog {
             }
         });
 
-        txt_MontoPago1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        txt_MontoPago1.setText("0.00");
+        txt_MontoPago1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
+        txt_MontoPago1.setText("0");
         txt_MontoPago1.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         txt_MontoPago1.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -367,8 +360,8 @@ public class GUI_CerrarVenta extends JDialog {
             }
         });
 
-        txt_MontoPago2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        txt_MontoPago2.setText("0.00");
+        txt_MontoPago2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
+        txt_MontoPago2.setText("0");
         txt_MontoPago2.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         txt_MontoPago2.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -383,8 +376,8 @@ public class GUI_CerrarVenta extends JDialog {
             }
         });
 
-        txt_MontoPago3.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        txt_MontoPago3.setText("0.00");
+        txt_MontoPago3.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
+        txt_MontoPago3.setText("0");
         txt_MontoPago3.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         txt_MontoPago3.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -399,14 +392,14 @@ public class GUI_CerrarVenta extends JDialog {
         lbl_TotalAPagar.setEditable(false);
         lbl_TotalAPagar.setForeground(new java.awt.Color(29, 156, 37));
         lbl_TotalAPagar.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
-        lbl_TotalAPagar.setText("0.00");
+        lbl_TotalAPagar.setText("0");
         lbl_TotalAPagar.setFocusable(false);
         lbl_TotalAPagar.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
 
         lbl_Total1.setText("Abona con:");
 
-        txt_AbonaCon.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.00"))));
-        txt_AbonaCon.setText("0.00");
+        txt_AbonaCon.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
+        txt_AbonaCon.setText("0");
         txt_AbonaCon.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         txt_AbonaCon.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -424,7 +417,7 @@ public class GUI_CerrarVenta extends JDialog {
         lbl_Vuelto.setEditable(false);
         lbl_Vuelto.setForeground(new java.awt.Color(29, 156, 37));
         lbl_Vuelto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
-        lbl_Vuelto.setText("0.00");
+        lbl_Vuelto.setText("0");
         lbl_Vuelto.setFocusable(false);
         lbl_Vuelto.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
 
