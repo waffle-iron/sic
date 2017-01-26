@@ -25,20 +25,7 @@ public class GUI_SeleccionEmpresa extends JDialog {
         super(parent);
         this.setIU();
         this.setModal(modal);
-        try {
-            empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
-        if (empresas.size() == 1) {
-            EmpresaActiva.getInstance().setEmpresa(empresas.get(0));
-        }
-    }     
+    }
 
     private void setIU() {
         this.initComponents();
@@ -52,12 +39,25 @@ public class GUI_SeleccionEmpresa extends JDialog {
     }
 
     private void cargarComboBoxEmpresas() {
+        try {
+            empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
+        } catch (RestClientResponseException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ResourceAccessException ex) {
+            LOGGER.error(ex.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        if (empresas.size() == 1) {
+            EmpresaActiva.getInstance().setEmpresa(empresas.get(0));
+        }
         cmb_Empresas.removeAllItems();
         empresas.stream().forEach((e) -> {
             cmb_Empresas.addItem(e);
         });
     }
-    
+
     public int getCantidadEmpresas() {
         return empresas.size();
     }
@@ -161,7 +161,7 @@ public class GUI_SeleccionEmpresa extends JDialog {
     }//GEN-LAST:event_cmb_EmpresasKeyPressed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-            this.cargarComboBoxEmpresas();
+        this.cargarComboBoxEmpresas();
     }//GEN-LAST:event_formWindowOpened
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Aceptar;
