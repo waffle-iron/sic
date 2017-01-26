@@ -39,20 +39,7 @@ public class Validator {
         } else {
             return true;
         }
-    }
-
-    public static boolean esLongitudNumericaValida(String cadena, double longitudValida) {
-        if (cadena == null | cadena.equals("")) {
-            return true;
-        }
-
-        cadena = cadena.replace(",", "");
-        if (Double.parseDouble(cadena) > longitudValida) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+    }    
 
     public static boolean esEmailValido(String cadena) {
         if (!cadena.equals("")) {

@@ -602,15 +602,15 @@ public class GUI_CerrarVenta extends JDialog {
         } else {
             double totalPagos = 0.0;
             if (chk_FormaDePago1.isSelected() && chk_FormaDePago1.isEnabled()) {
-                totalPagos += Double.parseDouble((txt_MontoPago1.getText()).replaceAll(",", ""));
+                  totalPagos += Double.parseDouble(txt_MontoPago1.getValue().toString());
             }
-            if (chk_FormaDePago2.isSelected() && chk_FormaDePago2.isEnabled()) {
-                totalPagos += Double.parseDouble((txt_MontoPago2.getText()).replaceAll(",", ""));
+            if (chk_FormaDePago2.isSelected() && chk_FormaDePago2.isEnabled()) {                
+                totalPagos += Double.parseDouble(txt_MontoPago2.getValue().toString());
             }
             if (chk_FormaDePago3.isSelected() && chk_FormaDePago3.isEnabled()) {
-                totalPagos += Double.parseDouble((txt_MontoPago3.getText()).replaceAll(",", ""));
+                totalPagos += Double.parseDouble(txt_MontoPago3.getValue().toString());
             }
-            double totalAPagar = Double.parseDouble((lbl_TotalAPagar.getText().substring(1)).replaceAll(",", ""));
+            double totalAPagar = Double.parseDouble(lbl_TotalAPagar.getValue().toString());
             if (totalPagos < totalAPagar) {
                 int reply = JOptionPane.showConfirmDialog(this,
                         ResourceBundle.getBundle("Mensajes").getString("mensaje_montos_insuficientes"),

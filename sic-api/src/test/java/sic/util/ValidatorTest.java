@@ -32,15 +32,6 @@ public class ValidatorTest {
     }
 
     @Test
-    public void shouldEsLongitudNumericaValidaWhenNoValida() {
-        String cadena = "111.11111";
-        double longitudValida = 0.0;
-        boolean expResult = false;
-        boolean result = Validator.esLongitudNumericaValida(cadena, longitudValida);
-        assertEquals(expResult, result);
-    }
-
-    @Test
     public void shouldEsEmailValidoWhenNoLoEs() {
         String cadena = "No es un mail Valido";
         boolean expResult = false;
