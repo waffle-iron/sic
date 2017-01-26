@@ -1,8 +1,6 @@
 package sic.service.impl;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.group.GroupBy;
-import com.querydsl.jpa.impl.JPAQuery;
 import sic.modelo.BusquedaProductoCriteria;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -13,9 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.persistence.EntityManager;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -35,7 +31,6 @@ import sic.modelo.Proveedor;
 import sic.modelo.QProducto;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Rubro;
-import sic.repository.IProductoRepository;
 import sic.service.IEmpresaService;
 import sic.service.IProductoService;
 import sic.service.BusinessServiceException;
@@ -43,19 +38,17 @@ import sic.service.ServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
+import sic.repository.ProductoRepository;
 
 @Service
 public class ProductoServiceImpl implements IProductoService {
 
-    private final IProductoRepository productoRepository;
+    private final ProductoRepository productoRepository;
     private final IEmpresaService empresaService;
     private static final Logger LOGGER = Logger.getLogger(ProductoServiceImpl.class.getPackage().getName());
-    
-    @PersistenceContext
-    private EntityManager em;
 
     @Autowired
-    public ProductoServiceImpl(IProductoRepository productoRepository, IEmpresaService empresaService) {
+    public ProductoServiceImpl(ProductoRepository productoRepository, IEmpresaService empresaService) {
         this.productoRepository = productoRepository;
         this.empresaService = empresaService;
     }
@@ -357,7 +350,7 @@ public class ProductoServiceImpl implements IProductoService {
         if (codigo.isEmpty() == true || empresa == null) {
             return null;
         } else {
-            return productoRepository.findByDescripcionAndEmpresaAndEliminado(codigo, empresa, false);
+            return productoRepository.findByCodigoAndEmpresaAndEliminado(codigo, empresa, false);
         }
     }
 
@@ -368,59 +361,7 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     public double calcularValorStock(BusquedaProductoCriteria criteria) {
-        //Empresa
-        if (criteria.getEmpresa() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_empresa_no_existente"));
-        }
-        //Rubro
-        if (criteria.isBuscarPorRubro() == true && criteria.getRubro() == null) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_producto_vacio_rubro"));
-        }
-        //Proveedor
-        if (criteria.isBuscarPorProveedor() == true && criteria.getProveedor() == null) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_producto_vacio_proveedor"));
-        }
-        QProducto qproducto = QProducto.producto;
-        BooleanBuilder builder = new BooleanBuilder();
-        
-        JPAQuery query = new JPAQuery(em);   
-//        Object results = query.from(qproducto).f.transform(
-//                        GroupBy.groupBy(qproducto.codigo).as(GroupBy.max(qproducto.cantidad)));
-        
-        
-//        jpaQuery.from(qproducto).transform(GroupBy.groupBy(qproducto.precioCosto).as(GroupBy.sum(qproducto.precioCosto)));
-//        productoRepository.findOne(jpaQuery);
-////
-//        
-//        NumberExpression total = qproducto.cantidad.multiply(qproducto.precioCosto);
-//        builder.and(total.sum().as("resultado"));
-        builder.and(qproducto.empresa.eq(criteria.getEmpresa()).and(qproducto.eliminado.eq(false)));
-        if(criteria.isBuscarPorCodigo() == true && criteria.isBuscarPorDescripcion() == true) {
-            builder.and(qproducto.codigo.like(criteria.getCodigo()).and(qproducto.descripcion.containsIgnoreCase(criteria.getDescripcion()))); // dividir la descripcion
-        } else { 
-            if(criteria.isBuscarPorCodigo() == true) {
-                builder.and(qproducto.codigo.like(criteria.getCodigo()));
-            }
-            if(criteria.isBuscarPorDescripcion() == true) {
-                builder.and(qproducto.descripcion.containsIgnoreCase(criteria.getDescripcion()));
-            }
-        }
-        if (criteria.isBuscarPorRubro() == true) {
-            builder.and(qproducto.rubro.eq(criteria.getRubro()));
-        }
-        if (criteria.isBuscarPorProveedor()) {
-            builder.and(qproducto.proveedor.eq(criteria.getProveedor()));
-        }
-        if (criteria.isListarSoloFaltantes() == true) {
-            builder.and(qproducto.cantidad.loe(qproducto.cantMinima)).and(qproducto.ilimitado.eq(false));
-        }
-        List<Producto> list = new ArrayList<>();
-        builder.getValue();
-//        productoRepository.findAll(builder).iterator().forEachRemaining(list::add);
-        return 0.0;
+        return productoRepository.calcularValorStock(criteria);
     }
 
     @Override
