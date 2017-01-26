@@ -311,7 +311,7 @@ public class GUI_Caja extends JDialog {
                 this.ftxt_TotalGeneral.setValue(Math.floor(totalGeneral * 100) / 100);
                 //Guarda el monto final del último calculo en la caja
                 RestClient.getRestTemplate().put("/cajas", this.caja);
-                if (this.caja.getSaldoFinal() < 0) {
+                if (totalGeneral < 0) {
                     ftxt_TotalGeneral.setBackground(Color.PINK);
                 }
                 if (totalGeneral > 0) {
