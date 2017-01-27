@@ -42,7 +42,12 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
 
     @Override
     public FormaDePago getFormaDePagoPredeterminada(Empresa empresa) {
-        return formaDePagoRepository.getFormaDePagoPredeterminado(empresa);
+        FormaDePago formaDePago = formaDePagoRepository.getFormaDePagoPredeterminado(empresa);
+        if (formaDePago == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_formaDePago_sin_predeterminada"));
+        }
+        return formaDePago;
     }
 
     @Override
@@ -74,11 +79,6 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
         if (formaDePagoRepository.getFormaDePagoPorNombreYEmpresa(formaDePago.getNombre(), formaDePago.getEmpresa().getId_Empresa()) != null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_formaDePago_duplicado_nombre"));
-        }
-        //Predeterminado 
-        if(formaDePago.isPredeterminado() == this.getFormaDePagoPredeterminada(formaDePago.getEmpresa()).isPredeterminado()) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_formaDePago_predeterminada_existente"));
         }
     }
 
