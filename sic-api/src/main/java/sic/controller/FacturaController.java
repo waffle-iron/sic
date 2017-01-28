@@ -432,8 +432,7 @@ public class FacturaController {
                                    @RequestParam(required = false) Long idUsuario,
                                    @RequestParam(required = false) Long nroPedido,
                                    @RequestParam(required = false) Boolean soloImpagas,
-                                   @RequestParam(required = false) Boolean soloPagas,
-                                   @RequestParam char[] tiposFacturas) {
+                                   @RequestParam(required = false) Boolean soloPagas) {
         Calendar fechaDesde = Calendar.getInstance();
         Calendar fechaHasta = Calendar.getInstance();
         if ((desde != null) && (hasta != null)) {
@@ -474,13 +473,12 @@ public class FacturaController {
                 .buscaSoloPagadas(soloPagas)
                 .cantRegistros(0)
                 .build();
-        return facturaService.calcularIVA_Venta(criteria, tiposFacturas);
+        return facturaService.calcularIVA_Venta(criteria);
     }
     
     @GetMapping("/facturas/total-iva-compra/criteria")
     @ResponseStatus(HttpStatus.OK)
     public double calcularTotalIvaCompra(@RequestParam Long idEmpresa,
-                                         @RequestParam Character[] tipoFacturasDiscriminadas,
                                          @RequestParam(required = false) Long desde,
                                          @RequestParam(required = false) Long hasta,
                                          @RequestParam(required = false) Long idProveedor,
@@ -518,7 +516,7 @@ public class FacturaController {
                                                  .buscaSoloPagadas(soloPagas)
                                                  .cantRegistros(0)
                                                  .build();
-        return facturaService.calcularIVA_Compra(criteria, tipoFacturasDiscriminadas);
+        return facturaService.calcularIVA_Compra(criteria);
     }
     
     @GetMapping("/facturas/ganancia-total/criteria")

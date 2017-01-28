@@ -243,8 +243,7 @@ public class GUI_FacturasCompra extends JInternalFrame {
             txt_ResultGastoTotal.setValue(RestClient.getRestTemplate().getForObject("/facturas/total-facturado-compra/criteria?"
                     + criteria, double.class));
             txt_ResultTotalIVACompra.setValue(RestClient.getRestTemplate().getForObject("/facturas/total-iva-compra/criteria?"
-                    + criteria
-                    + "&tipoFacturasDiscriminadas=A", double.class));
+                    + criteria, double.class));
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ResourceAccessException ex) {

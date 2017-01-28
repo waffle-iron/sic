@@ -27,9 +27,9 @@ public interface IFacturaRepository {
     
     double calcularTotalFacturadoCompra(BusquedaFacturaCompraCriteria criteria);
     
-    double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, char[] tiposFacturas);
+    double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, char[] tiposComprobantesDiscriminados);
     
-    double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria, Character[] tipoFacturasDiscriminadas);
+    double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria, char[] tipoFacturasDiscriminadas);
     
     double calcularGananciaTotal(BusquedaFacturaVentaCriteria criteria);
 

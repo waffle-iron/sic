@@ -54,7 +54,8 @@ public class FacturaServiceImpl implements IFacturaService {
     private final IPedidoService pedidoService;
     private final IPagoService pagoService;
     private static final Logger LOGGER = Logger.getLogger(FacturaServiceImpl.class.getPackage().getName());
-    private static final int CANTIDAD_DECIMALES_TRUNCAMIENTO = 2;
+    private static final char FACTURA_A = 'A';
+    private static final char FACTURA_B = 'B';
 
     @Autowired
     @Lazy
@@ -716,7 +717,7 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, char[] tiposFacturas) {
+    public double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria) {
         //Empresa
         if(criteria.getEmpresa() == null ) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
@@ -750,11 +751,12 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
         }
-        return facturaRepository.calcularIVA_Venta(criteria, tiposFacturas);
+        char[] tiposComprobantesDiscriminados = {FACTURA_A, FACTURA_B};
+        return facturaRepository.calcularIVA_Venta(criteria, tiposComprobantesDiscriminados);
     }
 
     @Override
-    public double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria, Character[] tipoFacturasDiscriminadas) {
+    public double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria) {
         //Empresa
         if (criteria.getEmpresa() == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
@@ -783,7 +785,8 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_proveedor_vacio"));
         }
-        return facturaRepository.calcularIVA_Compra(criteria, tipoFacturasDiscriminadas);
+        char[] tiposComprobantesDiscriminados = {FACTURA_A, FACTURA_B};
+        return facturaRepository.calcularIVA_Compra(criteria, tiposComprobantesDiscriminados);
     }
 
     @Override

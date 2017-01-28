@@ -78,9 +78,9 @@ public interface IFacturaService {
 
     double calcularTotalFacturadoCompra(BusquedaFacturaCompraCriteria criteria);
 
-    double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, char[] tiposFacturas);
+    double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria);
 
-    double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria, Character[] tipoFacturasDiscriminadas);
+    double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria);
 
     double calcularGananciaTotal(BusquedaFacturaVentaCriteria criteria);
 
