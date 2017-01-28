@@ -65,9 +65,6 @@ public class GUI_Empresas extends JDialog {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
             }
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
         });
 
         panelPrincipal.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
@@ -218,16 +215,6 @@ public class GUI_Empresas extends JDialog {
         this.cargarListEmpresas();
     }//GEN-LAST:event_formWindowOpened
 
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        this.cargarListEmpresas();
-        if (empresas.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_empresa_sinEmpresas"),                    
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        } else {
-            this.dispose();
-        }
-    }//GEN-LAST:event_formWindowClosing
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_EliminarEmpresa;
     private javax.swing.JButton btn_ModificarEmpresa;
