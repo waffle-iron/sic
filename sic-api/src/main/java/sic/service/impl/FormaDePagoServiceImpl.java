@@ -80,6 +80,16 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_formaDePago_duplicado_nombre"));
         }
+        //Predeterminado
+        FormaDePago predeterminada = null;
+        try {
+            predeterminada = this.getFormaDePagoPredeterminada(formaDePago.getEmpresa());
+        } catch (EntityNotFoundException ex) {
+        }
+        if (formaDePago.isPredeterminado() && (predeterminada != null)) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_formaDePago_predeterminada_existente"));
+        }
     }
 
     @Override
