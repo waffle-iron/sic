@@ -1,5 +1,6 @@
 package sic.service.impl;
 
+import com.querydsl.core.BooleanBuilder;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +16,7 @@ import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaPedidoCriteria;
@@ -23,32 +25,33 @@ import sic.modelo.Factura;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
 import sic.modelo.RenglonPedido;
-import sic.repository.IPedidoRepository;
 import sic.modelo.EstadoPedido;
 import sic.modelo.Movimiento;
+import sic.modelo.QPedido;
 import sic.service.IFacturaService;
 import sic.service.IPedidoService;
 import sic.service.BusinessServiceException;
 import sic.service.ServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Utilidades;
+import sic.repository.PedidoRepository;
 
 @Service
 public class PedidoServiceImpl implements IPedidoService {
 
-    private final IPedidoRepository pedidoRepository;
+    private final PedidoRepository pedidoRepository;
     private final IFacturaService facturaService;    
     private static final Logger LOGGER = Logger.getLogger(PedidoServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public PedidoServiceImpl(IFacturaService facturaService, IPedidoRepository pedidoRepository) {
+    public PedidoServiceImpl(IFacturaService facturaService, PedidoRepository pedidoRepository) {
         this.facturaService = facturaService;
         this.pedidoRepository = pedidoRepository;        
     }
 
     @Override
     public Pedido getPedidoPorId(Long idPedido) {
-        Pedido pedido = this.pedidoRepository.getPedidoPorId(idPedido);
+        Pedido pedido = this.pedidoRepository.findOne(idPedido);
         if (pedido == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_no_existente"));
@@ -82,15 +85,15 @@ public class PedidoServiceImpl implements IPedidoService {
                     .getString("mensaja_estado_no_valido"));
         }
         if (operacion == TipoDeOperacion.ALTA) {
-            //Duplicados       
-            if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) != null) {
+        //Duplicados       
+            if (pedidoRepository.findByNroPedidoAndEmpresaAndEliminado(pedido.getNroPedido(), pedido.getEmpresa(), false) != null) {
                 throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_pedido_duplicado"));
             }
         }
         if (operacion == TipoDeOperacion.ACTUALIZACION) {
-            //Duplicados       
-            if (pedidoRepository.getPedidoPorNro(pedido.getNroPedido(), pedido.getEmpresa().getId_Empresa()) == null) {
+        //Duplicados       
+            if (pedidoRepository.findByNroPedidoAndEmpresaAndEliminado(pedido.getNroPedido(), pedido.getEmpresa(), false) == null) {
                 throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_pedido_no_existente"));
             }
@@ -134,7 +137,7 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     public long calcularNumeroPedido(Empresa empresa) {
-        return 1 + pedidoRepository.buscarMayorNroPedido(empresa.getId_Empresa());
+        return 1 + pedidoRepository.findTopByEmpresaAndEliminadoOrderByNroPedidoDesc(empresa, false).getNroPedido();
     }
 
     @Override
@@ -152,9 +155,9 @@ public class PedidoServiceImpl implements IPedidoService {
     @Override
     @Transactional
     public Pedido guardar(Pedido pedido) {
-        this.validarPedido(TipoDeOperacion.ALTA , pedido);
         pedido.setNroPedido(this.calcularNumeroPedido(pedido.getEmpresa()));
-        pedido = pedidoRepository.guardar(pedido);
+        this.validarPedido(TipoDeOperacion.ALTA , pedido);
+        pedido = pedidoRepository.save(pedido);
         LOGGER.warn("El Pedido " + pedido + " se guardó correctamente.");
         return pedido;
     }
@@ -194,7 +197,23 @@ public class PedidoServiceImpl implements IPedidoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_vacio_nombre"));
         }
-        List<Pedido> pedidos = pedidoRepository.buscarPedidosPorCriteria(criteria);
+        QPedido qpedido = QPedido.pedido;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qpedido.empresa.eq(criteria.getEmpresa()).and(qpedido.eliminado.eq(false)));       
+        if(criteria.isBuscaPorFecha() == true) {
+            builder.and(qpedido.fecha.between(criteria.getFechaDesde(), criteria.getFechaHasta()));
+        }
+        if (criteria.isBuscaCliente() == true) {
+            builder.and(qpedido.cliente.eq(criteria.getCliente()));
+        }
+        if (criteria.isBuscaUsuario() == true) {
+            builder.and(qpedido.usuario.eq(criteria.getUsuario()));
+        }
+        if (criteria.isBuscaPorNroPedido() == true) {
+            builder.and(qpedido.nroPedido.eq(criteria.getNroPedido()));
+        }
+        List<Pedido> pedidos = new ArrayList<>();
+        pedidoRepository.findAll(builder, new Sort(Sort.Direction.DESC, "fecha")).iterator().forEachRemaining(pedidos::add);
         return this.calcularTotalActualDePedidos(pedidos);
     }
 
@@ -202,12 +221,7 @@ public class PedidoServiceImpl implements IPedidoService {
     @Transactional
     public void actualizar(Pedido pedido) {
         this.validarPedido(TipoDeOperacion.ACTUALIZACION , pedido);
-        pedidoRepository.actualizar(pedido);
-    }
-
-    @Override
-    public Pedido getPedidoPorNumeroYEmpresa(long nroPedido, long idEmpresa) {
-        return pedidoRepository.getPedidoPorNro(nroPedido, idEmpresa);
+        pedidoRepository.save(pedido);
     }
 
     @Override
@@ -220,7 +234,7 @@ public class PedidoServiceImpl implements IPedidoService {
         }
         if (pedido.getEstado() == EstadoPedido.ABIERTO) {
             pedido.setEliminado(true);
-            pedidoRepository.actualizar(pedido);
+            pedidoRepository.save(pedido);
         }
         return pedido.isEliminado();
     }

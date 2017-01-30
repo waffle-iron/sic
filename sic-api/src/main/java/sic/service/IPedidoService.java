@@ -27,8 +27,6 @@ public interface IPedidoService {
 
     List<Factura> getFacturasDelPedido(long id);
 
-    Pedido getPedidoPorNumeroYEmpresa(long nroPedido, long idEmpresa);
-
     HashMap<Long, RenglonFactura> getRenglonesFacturadosDelPedido(long nroPedido);
 
     List<RenglonPedido> getRenglonesDelPedido(Long idPedido);

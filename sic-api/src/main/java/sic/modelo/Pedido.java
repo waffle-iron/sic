@@ -28,17 +28,6 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "pedido")
-@NamedQueries({
-    @NamedQuery(name = "Pedido.buscarMayorNroPedido",
-            query = "SELECT MAX(p.nroPedido) FROM Pedido p "
-                    + "WHERE p.empresa.id_Empresa = :idEmpresa AND p.eliminado = false"),
-    @NamedQuery(name = "Pedido.buscarPorId",
-            query = "SELECT p FROM Pedido p "
-                    + "WHERE p.id_Pedido = :id AND p.eliminado = false"),
-    @NamedQuery(name = "Pedido.buscarPorNumero",
-            query = "SELECT p FROM Pedido p "
-                    + "WHERE p.nroPedido = :nroPedido AND p.empresa.id_Empresa = :idEmpresa AND p.eliminado = false")
-})
 @Data
 @ToString(exclude = {"facturas", "renglones"})
 @EqualsAndHashCode(of = {"nroPedido", "empresa"})
