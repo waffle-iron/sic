@@ -1,5 +1,6 @@
 package sic.service.impl;
 
+import com.querydsl.core.BooleanBuilder;
 import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import java.io.InputStream;
@@ -19,6 +20,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Cliente;
@@ -32,23 +34,27 @@ import sic.modelo.Pedido;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
-import sic.repository.IFacturaRepository;
 import sic.service.IConfiguracionDelSistemaService;
 import sic.service.IFacturaService;
 import sic.service.IPagoService;
 import sic.service.IPedidoService;
 import sic.service.IProductoService;
 import sic.modelo.Movimiento;
+import sic.modelo.QFacturaCompra;
+import sic.modelo.QFacturaVenta;
 import sic.service.BusinessServiceException;
 import sic.service.ServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
+import sic.repository.FacturaRepository;
+import sic.repository.FacturaVentaRepository;
 
 @Service
 public class FacturaServiceImpl implements IFacturaService {
 
-    private final IFacturaRepository facturaRepository;
+    private final FacturaRepository facturaRepository;
+    private final FacturaVentaRepository facturaVentaRepository;
     private final IProductoService productoService;
     private final IConfiguracionDelSistemaService configuracionDelSistemaService;
     private final IPedidoService pedidoService;
@@ -58,13 +64,14 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Autowired
     @Lazy
-    public FacturaServiceImpl(IFacturaRepository facturaRepository,
+    public FacturaServiceImpl(FacturaRepository facturaRepository,
+            FacturaVentaRepository facturaVentaRepository,
             IProductoService productoService,
             IConfiguracionDelSistemaService configuracionDelSistemaService,
             IPedidoService pedidoService,
             IPagoService pagoService) {
-
         this.facturaRepository = facturaRepository;
+        this.facturaVentaRepository = facturaVentaRepository;
         this.productoService = productoService;
         this.configuracionDelSistemaService = configuracionDelSistemaService;
         this.pedidoService = pedidoService;
@@ -73,12 +80,12 @@ public class FacturaServiceImpl implements IFacturaService {
     
     @Override
     public Factura getFacturaPorId(Long id_Factura) {
-        return facturaRepository.getFacturaPorId(id_Factura);
+        return (Factura)facturaRepository.findOne(id_Factura);
     }
 
     @Override
     public List<Factura> getFacturasDelPedido(Long idPedido) {
-        return facturaRepository.getFacturasDelPedido(idPedido);
+        return facturaRepository.findAllByPedidoAndEliminada(pedidoService.getPedidoPorId(idPedido), false);
     }
     
     @Override
@@ -182,12 +189,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public List<RenglonFactura> getRenglonesDeLaFactura(Long id_Factura) {
         return this.getFacturaPorId(id_Factura).getRenglones();
-    }
-
-    @Override
-    public Factura getFacturaPorTipoSerieNum(char tipo, long serie, long num, long idEmpresa) {
-        return facturaRepository.getFacturaPorTipoSerieNum(tipo, serie, num, idEmpresa);
-    }    
+    }  
 
     @Override
     public String getTipoFactura(Factura factura) {
@@ -254,7 +256,29 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_proveedor_vacio"));
         }
-        return facturaRepository.buscarFacturasCompra(criteria);
+        QFacturaCompra qfactura = QFacturaCompra.facturaCompra;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qfactura.empresa.eq(criteria.getEmpresa()).and(qfactura.eliminada.eq(false)));  
+        if(criteria.isBuscaPorFecha() == true) {
+            builder.and(qfactura.fecha.between(criteria.getFechaDesde(), criteria.getFechaHasta()));
+        }
+        if (criteria.isBuscaPorProveedor() == true) {
+            builder.and(qfactura.proveedor.eq(criteria.getProveedor()));
+        }
+        if (criteria.isBuscaPorNumeroFactura() == true) {
+            builder.and(qfactura.numFactura.eq(criteria.getNumFactura()));
+        }
+        if (criteria.isBuscarSoloInpagas() == true) {
+            builder.and(qfactura.pagada.eq(false));
+        }
+        if (criteria.isBuscaSoloPagadas() == true) {
+            builder.and(qfactura.pagada.eq(true));
+        }
+        List<FacturaCompra> facturas = new ArrayList<>();
+        facturaRepository.findAll(builder, new Sort(Sort.Direction.DESC, "fecha")).iterator().forEachRemaining((fc) -> {
+            facturas.add((FacturaCompra)fc);
+        });
+        return facturas;
     }
 
     @Override
@@ -292,7 +316,38 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
         }
-        return facturaRepository.buscarFacturasVenta(criteria);
+        QFacturaVenta qfactura = QFacturaVenta.facturaVenta;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qfactura.empresa.eq(criteria.getEmpresa()).and(qfactura.eliminada.eq(false)));  
+        if(criteria.isBuscaPorFecha() == true) {
+            builder.and(qfactura.fecha.between(criteria.getFechaDesde(), criteria.getFechaHasta()));
+        }
+        if (criteria.isBuscaCliente() == true) {
+            builder.and(qfactura.cliente.eq(criteria.getCliente()));
+        }
+        if (criteria.isBuscaPorTipoFactura() == true) {
+            builder.and(qfactura.tipoFactura.eq(criteria.getTipoFactura()));
+        }
+        if (criteria.isBuscaUsuario() == true) {
+            builder.and(qfactura.usuario.eq(criteria.getUsuario()));
+        }
+        if (criteria.isBuscaPorNumeroFactura() == true) {
+            builder.and(qfactura.numFactura.eq(criteria.getNumFactura()));
+        }
+        if (criteria.isBuscarPorPedido()) {
+            builder.and(qfactura.pedido.eq(pedidoService.getPedidoPorNumeroYEmpresa(criteria.getNroPedido(), criteria.getEmpresa())));
+        }
+        if (criteria.isBuscaSoloImpagas() == true) {
+            builder.and(qfactura.pagada.eq(false));
+        }
+        if (criteria.isBuscaSoloPagadas() == true) {
+            builder.and(qfactura.pagada.eq(true));
+        }
+        List<FacturaVenta> facturas = new ArrayList<>();
+        facturaRepository.findAll(builder, new Sort(Sort.Direction.DESC, "fecha")).iterator().forEachRemaining((fc) -> {
+            facturas.add((FacturaVenta)fc);
+        });
+        return facturas;
     }
 
     private Factura procesarFactura(Factura factura) {
@@ -348,7 +403,7 @@ public class FacturaServiceImpl implements IFacturaService {
         } else {
             facturasProcesadas = new ArrayList<>();
             for (Factura f : facturas) {
-                Factura facturaGuardada = facturaRepository.guardar(f);
+                Factura facturaGuardada = (Factura)facturaRepository.save(f);
                 this.actualizarFacturaEstadoPagada(facturaGuardada);
                 facturasProcesadas.add(facturaGuardada);
                 LOGGER.warn("La Factura " + facturaGuardada + " se guardó correctamente.");
@@ -360,7 +415,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     @Transactional
     public void actualizar(Factura factura) {
-        facturaRepository.actualizar(factura);
+        facturaRepository.save(factura);
     }
 
     @Override
@@ -881,7 +936,7 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Override
     public long calcularNumeroFactura(String tipoDeFactura, long serie) {
-        return 1 + facturaRepository.getMayorNumFacturaSegunTipo(tipoDeFactura, serie);
+        return 1 + facturaRepository.findTopByTipoFacturaAndNumSerieOrderByNumFactura(tipoDeFactura, serie).getNumFactura();
     }
 
     @Override

@@ -11,8 +11,7 @@ import sic.repository.ProductoRepository;
 public class ProductoRepositoryImpl implements ProductoRepositoryCustom {
     
     @Autowired
-    private ProductoRepository productoRepository;
-    
+    private ProductoRepository productoRepository;    
     
     @PersistenceContext
     private EntityManager em;

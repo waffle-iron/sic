@@ -59,6 +59,16 @@ public class PedidoServiceImpl implements IPedidoService {
         return pedido;
     }
     
+    @Override
+    public Pedido getPedidoPorNumeroYEmpresa(Long nroPedido, Empresa empresa) {
+        Pedido pedido = this.pedidoRepository.findByNroPedidoAndEmpresaAndEliminado(nroPedido, empresa, false);
+        if (pedido == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_pedido_no_existente"));
+        }
+        return pedido;
+    }
+    
     private void validarPedido(TipoDeOperacion operacion, Pedido pedido) {
         //Entrada de Datos
         //Requeridos

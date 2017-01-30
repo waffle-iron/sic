@@ -27,8 +27,6 @@ public interface IFacturaService {
     char[] getTiposFacturaSegunEmpresa(Empresa empresa);
 
     List<RenglonFactura> getRenglonesDeLaFactura(Long id_Factura);
-    
-    Factura getFacturaPorTipoSerieNum(char tipo, long serie, long num, long idEmpresa);
 
     String getTipoFactura(Factura factura);
 

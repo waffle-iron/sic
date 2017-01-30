@@ -19,7 +19,7 @@ public class BusquedaFacturaCompraCriteria {
     private Proveedor proveedor;
     private boolean buscaPorNumeroFactura;
     private int numSerie;
-    private int numFactura;
+    private long numFactura;
     private boolean buscarSoloInpagas;
     private boolean buscaSoloPagadas;
     private Empresa empresa;

@@ -12,6 +12,8 @@ import sic.modelo.RenglonPedido;
 public interface IPedidoService {
 
     Pedido getPedidoPorId(Long id);
+    
+    Pedido getPedidoPorNumeroYEmpresa(Long nroPedido, Empresa empresa);
             
     void actualizar(Pedido pedido);
 
