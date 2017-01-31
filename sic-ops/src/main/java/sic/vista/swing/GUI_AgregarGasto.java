@@ -61,14 +61,14 @@ public class GUI_AgregarGasto extends JDialog {
             }
         });
 
-        lbl_FormaDePago.setText("Forma De Pago:");
+        lbl_FormaDePago.setText("Forma de Pago:");
 
         lbl_Concepto.setText("Concepto:");
 
         lbl_Monto.setText("Monto:");
 
-        ftxt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
-        ftxt_Monto.setText("0.00");
+        ftxt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
+        ftxt_Monto.setText("0");
         ftxt_Monto.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 ftxt_MontoFocusGained(evt);
