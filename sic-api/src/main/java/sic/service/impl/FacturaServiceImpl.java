@@ -293,7 +293,7 @@ public class FacturaServiceImpl implements IFacturaService {
         factura.setEliminada(false);
         if (factura instanceof FacturaVenta) {
             factura.setNumSerie(1); //Serie de la factura hardcodeada a 1
-            factura.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(factura), factura.getNumSerie()));
+            factura.setNumFactura(this.calcularNumeroFactura(factura.getTipoFactura(), factura.getNumSerie()));
         }
         this.validarFactura(factura);
         this.procesarPagos(factura);     
@@ -874,7 +874,7 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public long calcularNumeroFactura(String tipoDeFactura, long serie) {
+    public long calcularNumeroFactura(char tipoDeFactura, long serie) {
         return 1 + facturaRepository.findTopByTipoFacturaAndNumSerieOrderByNumFactura(tipoDeFactura, serie).getNumFactura();
     }
 
@@ -1006,7 +1006,7 @@ public class FacturaServiceImpl implements IFacturaService {
         facturaSinIVA.setFecha(facturaADividir.getFecha());
         facturaSinIVA.setTipoFactura('X');
         facturaSinIVA.setNumSerie(facturaADividir.getNumSerie());
-        facturaSinIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaSinIVA), facturaSinIVA.getNumSerie()));
+        facturaSinIVA.setNumFactura(this.calcularNumeroFactura(facturaSinIVA.getTipoFactura(), facturaSinIVA.getNumSerie()));
         facturaSinIVA.setFechaVencimiento(facturaADividir.getFechaVencimiento());
         facturaSinIVA.setTransportista(facturaADividir.getTransportista());
         facturaSinIVA.setRenglones(listRenglonesSinIVA);
@@ -1046,7 +1046,7 @@ public class FacturaServiceImpl implements IFacturaService {
         facturaConIVA.setFecha(facturaADividir.getFecha());
         facturaConIVA.setTipoFactura(facturaADividir.getTipoFactura());
         facturaConIVA.setNumSerie(facturaADividir.getNumSerie());
-        facturaConIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaConIVA), facturaConIVA.getNumSerie()));
+        facturaConIVA.setNumFactura(this.calcularNumeroFactura(facturaConIVA.getTipoFactura(), facturaConIVA.getNumSerie()));
         facturaConIVA.setFechaVencimiento(facturaADividir.getFechaVencimiento());
         facturaConIVA.setTransportista(facturaADividir.getTransportista());
         facturaConIVA.setRenglones(listRenglonesConIVA);
