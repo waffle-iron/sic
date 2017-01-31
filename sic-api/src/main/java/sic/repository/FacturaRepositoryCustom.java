@@ -1,7 +1,10 @@
 package sic.repository;
 
+import java.util.List;
 import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;
+import sic.modelo.FacturaCompra;
+import sic.modelo.FacturaVenta;
 
 public interface FacturaRepositoryCustom {
     
@@ -14,5 +17,9 @@ public interface FacturaRepositoryCustom {
     double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria);
     
     double calcularGananciaTotal(BusquedaFacturaVentaCriteria criteria); 
+    
+    List<FacturaVenta> buscarFacturasVenta(BusquedaFacturaVentaCriteria criteria);
+    
+    List<FacturaCompra> buscarFacturasCompra(BusquedaFacturaCompraCriteria criteria);
     
 }
