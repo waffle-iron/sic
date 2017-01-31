@@ -167,17 +167,11 @@ public class GUI_PuntoDeVenta extends JDialog {
         return this.modificarPedido;
     }
 
-    private void llamarGUI_SeleccionEmpresa() {
-        GUI_SeleccionEmpresa gui_SeleccionEmpresa = new GUI_SeleccionEmpresa(this, true);
+    private void llamarGUI_SeleccionEmpresa(List<Empresa> empresas) {
+        GUI_SeleccionEmpresa gui_SeleccionEmpresa = new GUI_SeleccionEmpresa(this, empresas);
+        gui_SeleccionEmpresa.setLocationRelativeTo(this);
         gui_SeleccionEmpresa.setVisible(true);
-        if (EmpresaActiva.getInstance().getEmpresa() == null) {
-            System.exit(0);
-        } else {
-            empresa = EmpresaActiva.getInstance().getEmpresa();
-            this.setTitle("S.I.C. Punto de Venta "
-                    + ResourceBundle.getBundle("Mensajes").getString("version")
-                    + " - " + empresa.getNombre());
-        }
+        gui_SeleccionEmpresa.dispose();
     }
 
     private void cargarEstadoDeLosChkEnTabla(JTable tbl_Resultado, EstadoRenglon[] estadosDeLosRenglones) {
@@ -195,14 +189,8 @@ public class GUI_PuntoDeVenta extends JDialog {
                 .getForObject("/clientes/predeterminado/empresas/"
                         + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                         Cliente.class);
-        if (clientePredeterminado == null) {
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_cliente_sin_predeterminado"), "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        } else {
-            this.cargarCliente(clientePredeterminado);
-            return true;
-        }
+        this.cargarCliente(clientePredeterminado);
+        return true;
     }
 
     private boolean existeFormaDePagoPredeterminada() {
@@ -210,13 +198,7 @@ public class GUI_PuntoDeVenta extends JDialog {
                 .getForObject("/formas-de-pago/predeterminada/empresas/"
                         + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                         FormaDePago.class);
-        if (formaDePago == null) {
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_formaDePago_sin_predeterminada"), "Error", JOptionPane.ERROR_MESSAGE);
-            return false;
-        } else {
-            return true;
-        }
+        return true;
     }
 
     private boolean existeTransportistaCargado() {
@@ -1434,19 +1416,26 @@ public class GUI_PuntoDeVenta extends JDialog {
         try {
             this.setSize(1050, 645);
             this.setLocationRelativeTo(null);
+            this.setColumnas();            
+            if (!UsuarioActivo.getInstance().getUsuario().isPermisosAdministrador()) {
+                List<Empresa> empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
+                if (empresas.isEmpty() || empresas.size() > 1) {
+                    this.llamarGUI_SeleccionEmpresa(empresas);
+                } else {
+                    EmpresaActiva.getInstance().setEmpresa(empresas.get(0));
+                }
+            } 
+            empresa = EmpresaActiva.getInstance().getEmpresa();
+            this.setTitle("S.I.C. Punto de Venta "
+                    + ResourceBundle.getBundle("Mensajes").getString("version")
+                    + " - " + empresa.getNombre());
             ConfiguracionDelSistema cds = RestClient.getRestTemplate()
                     .getForObject("/configuraciones-del-sistema/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                             ConfiguracionDelSistema.class);
             cantidadMaximaRenglones = cds.getCantidadMaximaDeRenglonesEnFactura();
-            this.setColumnas();            
-            if (!UsuarioActivo.getInstance().getUsuario().isPermisosAdministrador()) {
-                this.llamarGUI_SeleccionEmpresa();
-            } else {
-                empresa = EmpresaActiva.getInstance().getEmpresa();
-            }
             //verifica que exista un Cliente predeterminado, una Forma de Pago y un Transportista
             if (this.existeClientePredeterminado() && this.existeFormaDePagoPredeterminada() && this.existeTransportistaCargado()) {
-                this.cargarTiposDeComprobantesDisponibles();
+            this.cargarTiposDeComprobantesDisponibles();
             } else {
                 this.dispose();
             }
@@ -1461,6 +1450,7 @@ public class GUI_PuntoDeVenta extends JDialog {
             }
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
         } catch (ResourceAccessException ex) {
             LOGGER.error(ex.getMessage());
             JOptionPane.showMessageDialog(this,

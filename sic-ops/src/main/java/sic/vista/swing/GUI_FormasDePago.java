@@ -76,18 +76,9 @@ public class GUI_FormasDePago extends JDialog {
     }
 
     private void getFormasDePagos() {
-        try {
-            formasDePago = new ArrayList(Arrays.asList(RestClient.getRestTemplate().getForObject("/formas-de-pago/empresas/"
-                    + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
-                    FormaDePago[].class)));
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        formasDePago = new ArrayList(Arrays.asList(RestClient.getRestTemplate().getForObject("/formas-de-pago/empresas/"
+                + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
+                FormaDePago[].class)));
     }
 
     private void agregarFormaDePago() {
@@ -169,11 +160,8 @@ public class GUI_FormasDePago extends JDialog {
     }
 
     private void verificarExistenciaPredeterminado() {
-        if (RestClient.getRestTemplate().getForObject("/formas-de-pago/predeterminada/empresas/"
-                + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(), FormaDePago.class) == null) {
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes")
-                            .getString("mensaje_no_existe_forma_de_pago_predeterminada"), "Aviso", JOptionPane.WARNING_MESSAGE);
-        }
+        RestClient.getRestTemplate().getForObject("/formas-de-pago/predeterminada/empresas/"
+                + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(), FormaDePago.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -192,7 +180,7 @@ public class GUI_FormasDePago extends JDialog {
         btn_SetPredeterminado = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Formas de Pago");
+        setTitle("Administrar Formas de Pago");
         setResizable(false);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
@@ -327,10 +315,19 @@ public class GUI_FormasDePago extends JDialog {
     }//GEN-LAST:event_btn_SetPredeterminadoActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        try {
             this.setColumnas();
             this.getFormasDePagos();
             this.cargarResultadosAlTable();
             this.verificarExistenciaPredeterminado();
+        } catch (RestClientResponseException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ResourceAccessException ex) {
+            LOGGER.error(ex.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_formWindowOpened
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Agregar;

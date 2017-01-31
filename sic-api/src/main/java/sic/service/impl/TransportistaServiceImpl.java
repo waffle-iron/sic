@@ -39,7 +39,12 @@ public class TransportistaServiceImpl implements ITransportistaService {
 
     @Override
     public List<Transportista> getTransportistas(Empresa empresa) {
-        return transportistaRepository.getTransportistas(empresa);
+        List<Transportista> transportista =  transportistaRepository.getTransportistas(empresa);
+        if (transportista == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_transportista_ninguno_cargado"));
+        }
+        return transportista;
     }
 
     @Override

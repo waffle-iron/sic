@@ -2,6 +2,8 @@ package sic.vista.swing;
 
 import java.awt.Dimension;
 import java.beans.PropertyVetoException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 import javax.swing.JDesktopPane;
@@ -38,28 +40,38 @@ public class GUI_Principal extends JFrame {
     public JDesktopPane getDesktopPane() {
         return dp_Escritorio;
     }
+    
+    private void cerrarCaja(Empresa empresa) {
+        try {
+            String uri = "/cajas/empresas/" + empresa.getId_Empresa() + "/cerrar-anterior";
+            RestClient.getRestTemplate().put(uri, Caja.class);
+        } catch (RestClientResponseException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ResourceAccessException ex) {
+            LOGGER.error(ex.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
     private void llamarGUI_SeleccionEmpresa() {
-        GUI_SeleccionEmpresa gui_seleccionEmpresa = new GUI_SeleccionEmpresa(this, true);
-        gui_seleccionEmpresa.setLocationRelativeTo(this);
-        gui_seleccionEmpresa.setVisible(true);
+        List<Empresa> empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
+        if (empresas.isEmpty() || empresas.size() > 1) {
+            GUI_SeleccionEmpresa gui_seleccionEmpresa = new GUI_SeleccionEmpresa(this, empresas);
+            gui_seleccionEmpresa.setLocationRelativeTo(this);
+            gui_seleccionEmpresa.setVisible(true);
+            gui_seleccionEmpresa.dispose();
+        } else {
+            EmpresaActiva.getInstance().setEmpresa(empresas.get(0));
+        }
         Empresa empresa = EmpresaActiva.getInstance().getEmpresa();
         if (empresa == null) {
             lbl_EmpresaActiva.setText("Empresa: (sin empresa)");
         } else {
-            try {
-                String uri = "/cajas/empresas/" + empresa.getId_Empresa() + "/cerrar-anterior";
-                RestClient.getRestTemplate().put(uri, Caja.class);
-            } catch (RestClientResponseException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (ResourceAccessException ex) {
-                LOGGER.error(ex.getMessage());
-                JOptionPane.showMessageDialog(this,
-                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            this.cerrarCaja(empresa);
             lbl_EmpresaActiva.setText("Empresa: " + empresa.getNombre());
-        }       
+        }     
     }
 
     @SuppressWarnings("unchecked")
@@ -343,8 +355,12 @@ public class GUI_Principal extends JFrame {
     }//GEN-LAST:event_mnuItm_CambiarUserActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        lbl_UsuarioActivo.setText("Usuario: " + UsuarioActivo.getInstance().getUsuario().getNombre());
+        lbl_UsuarioActivo.setText("Usuario: " + UsuarioActivo.getInstance().getUsuario().getNombre());       
         this.llamarGUI_SeleccionEmpresa();
+        Empresa empresa = EmpresaActiva.getInstance().getEmpresa();
+        if (empresa != null) {
+            this.cerrarCaja(empresa);
+        }
     }//GEN-LAST:event_formWindowOpened
 
     private void mnuItm_UsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_UsuariosActionPerformed
@@ -461,7 +477,11 @@ public class GUI_Principal extends JFrame {
 
     private void mnuItm_CambiarEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_CambiarEmpresaActionPerformed
         Utilidades.cerrarTodasVentanas(dp_Escritorio);
-        this.llamarGUI_SeleccionEmpresa();
+        List<Empresa> empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
+        GUI_SeleccionEmpresa gui_seleccionEmpresa = new GUI_SeleccionEmpresa(this, empresas);
+        gui_seleccionEmpresa.setLocationRelativeTo(this);
+        gui_seleccionEmpresa.setVisible(true);
+        gui_seleccionEmpresa.dispose();
     }//GEN-LAST:event_mnuItm_CambiarEmpresaActionPerformed
 
     private void mnuItm_FormasDePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_FormasDePagoActionPerformed

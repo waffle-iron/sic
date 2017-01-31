@@ -1,29 +1,25 @@
 package sic.vista.swing;
 
-import java.util.Arrays;
+import java.awt.Window;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import sic.RestClient;
 import sic.modelo.Empresa;
 import sic.modelo.EmpresaActiva;
+import sic.modelo.UsuarioActivo;
 
 public class GUI_SeleccionEmpresa extends JDialog {
 
     private Empresa empresaSeleccionada;
-    private List<Empresa> empresas;    
+    private List<Empresa> empresas;
 
-    public GUI_SeleccionEmpresa(JDialog parent, boolean modal) {
-        super(parent, modal);
+    public GUI_SeleccionEmpresa(Window parent, List<Empresa> empresas) {
+        super(parent);
         this.setIU();
+        this.setModal(true);
+        this.empresas = empresas;
     }
-
-    public GUI_SeleccionEmpresa(JFrame parent, boolean modal) {
-        super(parent, modal);      
-        this.setIU();
-    }     
 
     private void setIU() {
         this.initComponents();
@@ -37,7 +33,12 @@ public class GUI_SeleccionEmpresa extends JDialog {
     }
 
     private void cargarComboBoxEmpresas() {
-        empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
+        if (empresas.isEmpty() && UsuarioActivo.getInstance().getUsuario().isPermisosAdministrador()) {
+            GUI_Empresas gui_Empresas = new GUI_Empresas();
+            gui_Empresas.setModal(true);
+            gui_Empresas.setLocationRelativeTo(this);
+            gui_Empresas.setVisible(true);
+        }
         cmb_Empresas.removeAllItems();
         empresas.stream().forEach((e) -> {
             cmb_Empresas.addItem(e);
@@ -143,7 +144,7 @@ public class GUI_SeleccionEmpresa extends JDialog {
     }//GEN-LAST:event_cmb_EmpresasKeyPressed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-            this.cargarComboBoxEmpresas();
+        this.cargarComboBoxEmpresas();
     }//GEN-LAST:event_formWindowOpened
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Aceptar;
