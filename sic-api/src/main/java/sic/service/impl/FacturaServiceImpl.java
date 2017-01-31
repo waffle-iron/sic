@@ -751,8 +751,8 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
         }
-        char[] tiposComprobantesDiscriminados = {FACTURA_A, FACTURA_B};
-        return facturaRepository.calcularIVA_Venta(criteria, tiposComprobantesDiscriminados);
+        char[] tipoFactura = {FACTURA_A, FACTURA_B};
+        return facturaRepository.calcularIVA_Venta(criteria, tipoFactura);
     }
 
     @Override
@@ -785,8 +785,8 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_proveedor_vacio"));
         }
-        char[] tiposComprobantesDiscriminados = {FACTURA_A, FACTURA_B};
-        return facturaRepository.calcularIVA_Compra(criteria, tiposComprobantesDiscriminados);
+        char[] tipoFactura = {FACTURA_A};
+        return facturaRepository.calcularIVA_Compra(criteria, tipoFactura);
     }
 
     @Override
