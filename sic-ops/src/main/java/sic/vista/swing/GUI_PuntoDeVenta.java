@@ -1416,8 +1416,7 @@ public class GUI_PuntoDeVenta extends JDialog {
         try {
             this.setSize(1050, 645);
             this.setLocationRelativeTo(null);
-            this.setColumnas();
-            this.prepararComponentes();
+            this.setColumnas();            
             if (!UsuarioActivo.getInstance().getUsuario().isPermisosAdministrador()) {
                 List<Empresa> empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
                 if (empresas.isEmpty() || empresas.size() > 1) {
