@@ -42,7 +42,7 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
 
     @Override
     public FormaDePago getFormaDePagoPredeterminada(Empresa empresa) {
-        FormaDePago formaDePago = formaDePagoRepository.getFormaDePagoPredeterminado(empresa);
+        FormaDePago formaDePago = formaDePagoRepository.getFormaDePagoPredeterminada(empresa);
         if (formaDePago == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_formaDePago_sin_predeterminada"));
@@ -55,7 +55,7 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
     public void setFormaDePagoPredeterminada(FormaDePago formaDePago) {
         //antes de setear como predeterminado, busca si ya existe
         //otro como predeterminado y cambia su estado.
-        FormaDePago formaPredeterminadaAnterior = formaDePagoRepository.getFormaDePagoPredeterminado(formaDePago.getEmpresa());
+        FormaDePago formaPredeterminadaAnterior = formaDePagoRepository.getFormaDePagoPredeterminada(formaDePago.getEmpresa());
         if (formaPredeterminadaAnterior != null) {
             formaPredeterminadaAnterior.setPredeterminado(false);
             formaDePagoRepository.actualizar(formaPredeterminadaAnterior);
@@ -81,12 +81,7 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
                     .getString("mensaje_formaDePago_duplicado_nombre"));
         }
         //Predeterminado
-        FormaDePago predeterminada = null;
-        try {
-            predeterminada = this.getFormaDePagoPredeterminada(formaDePago.getEmpresa());
-        } catch (EntityNotFoundException ex) {
-        }
-        if (formaDePago.isPredeterminado() && (predeterminada != null)) {
+        if (formaDePago.isPredeterminado() && (formaDePagoRepository.getFormaDePagoPredeterminada(formaDePago.getEmpresa()) != null)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_formaDePago_predeterminada_existente"));
         }
