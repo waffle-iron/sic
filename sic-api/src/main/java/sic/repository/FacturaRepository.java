@@ -1,7 +1,9 @@
 package sic.repository;
 
 import java.util.List;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import sic.modelo.Empresa;
 import sic.modelo.Factura;
 import sic.modelo.Pedido;
@@ -12,6 +14,7 @@ public interface FacturaRepository extends PagingAndSortingRepository<Factura, L
 
     List<Factura> findAllByPedidoAndEliminada(Pedido pedido, boolean eliminada);
 
-    Factura findTopByTipoFacturaAndNumSerieOrderByNumFactura(char tipoDeFactura, long numSerie);
+    @Query("SELECT max(fv.numFactura) FROM FacturaVenta fv WHERE fv.tipoFactura = :tipoDeFactura AND fv.numSerie = :numSerie AND fv.empresa.id_Empresa = :idEmpresa")
+    Long buscarMayorNumFacturaSegunTipo(@Param("tipoDeFactura") char tipoDeFactura, @Param("numSerie") long numSerie, @Param("idEmpresa") long idEmpresa);
 
 }

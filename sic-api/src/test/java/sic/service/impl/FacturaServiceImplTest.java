@@ -190,12 +190,12 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldDividirFactura() {
-        when(facturaRepository.findTopByTipoFacturaAndNumSerieOrderByNumFactura('X', (long) 0)).thenReturn(new FacturaVentaBuilder().withNumFactura(0).build());
-        when(facturaRepository.findTopByTipoFacturaAndNumSerieOrderByNumFactura('A', (long) 0)).thenReturn(new FacturaVentaBuilder().withNumFactura(1).build());
+        when(facturaRepository.buscarMayorNumFacturaSegunTipo('X', 1L, new EmpresaBuilder().build().getId_Empresa())).thenReturn(1L);
+        when(facturaRepository.buscarMayorNumFacturaSegunTipo('A', 1L, new EmpresaBuilder().build().getId_Empresa())).thenReturn(1L);
         RenglonFactura renglon1 = Mockito.mock(RenglonFactura.class);
         RenglonFactura renglon2 = Mockito.mock(RenglonFactura.class);
         Producto producto = Mockito.mock(Producto.class);
-        when(producto.getId_Producto()).thenReturn((long) 1);
+        when(producto.getId_Producto()).thenReturn(1L);
         when(producto.getCodigo()).thenReturn("1");
         when(producto.getDescripcion()).thenReturn("producto test");
         Medida medida = Mockito.mock(Medida.class);
@@ -204,9 +204,9 @@ public class FacturaServiceImplTest {
         when(producto.getIva_porcentaje()).thenReturn(21.00);
         when(producto.getImpuestoInterno_porcentaje()).thenReturn(0.0);
         when(producto.getPrecioLista()).thenReturn(1.0);
-        when(productoService.getProductoPorId((long) 1)).thenReturn(producto);
-        when(renglon1.getId_ProductoItem()).thenReturn((long) 1);
-        when(renglon2.getId_ProductoItem()).thenReturn((long) 1);
+        when(productoService.getProductoPorId(1L)).thenReturn(producto);
+        when(renglon1.getId_ProductoItem()).thenReturn(1L);
+        when(renglon2.getId_ProductoItem()).thenReturn(1L);
         when(renglon1.getCantidad()).thenReturn(4.00);
         when(renglon2.getCantidad()).thenReturn(7.00);
         List<RenglonFactura> renglones = new ArrayList<>();

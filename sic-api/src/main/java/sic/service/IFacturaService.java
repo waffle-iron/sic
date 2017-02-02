@@ -86,7 +86,7 @@ public interface IFacturaService {
 
     double calcularPrecioUnitario(Movimiento movimiento, String tipoDeFactura, Producto producto);
 
-    long calcularNumeroFactura(char tipoDeFactura, long serie);
+    long calcularNumeroFactura(char tipoDeFactura, long serie, long idEmpresa);
 
     double calcularVuelto(double importeAPagar, double importeAbonado);
 
