@@ -164,7 +164,7 @@ public class ProductoServiceImpl implements IProductoService {
             builder.or(this.buildPredicadoDescripcion(criteria.getDescripcion(), qproducto));
         } else {
             if (criteria.isBuscarPorCodigo() == true) {
-                builder.and(qproducto.codigo.like(criteria.getCodigo()));
+                builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo()));
             }
             if (criteria.isBuscarPorDescripcion() == true) {
                 builder.and(this.buildPredicadoDescripcion(criteria.getDescripcion(), qproducto));
@@ -187,8 +187,8 @@ public class ProductoServiceImpl implements IProductoService {
     private BooleanBuilder buildPredicadoDescripcion(String descripcion, QProducto qproducto) {
         String[] terminos = descripcion.split(" ");
         BooleanBuilder descripcionProducto = new BooleanBuilder();
-        for (int i = 0; i < terminos.length; i++) {
-            descripcionProducto.and(qproducto.descripcion.containsIgnoreCase(terminos[i]));
+        for (String termino : terminos) {
+            descripcionProducto.and(qproducto.descripcion.containsIgnoreCase(termino));
         }
         return descripcionProducto;
     }
