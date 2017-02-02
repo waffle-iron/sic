@@ -95,20 +95,19 @@ public class PedidoServiceImpl implements IPedidoService {
                     .getString("mensaja_estado_no_valido"));
         }
         if (operacion == TipoDeOperacion.ALTA) {
-        //Duplicados       
+            //Duplicados       
             if (pedidoRepository.findByNroPedidoAndEmpresaAndEliminado(pedido.getNroPedido(), pedido.getEmpresa(), false) != null) {
                 throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_pedido_duplicado"));
             }
         }
         if (operacion == TipoDeOperacion.ACTUALIZACION) {
-        //Duplicados       
+            //Duplicados       
             if (pedidoRepository.findByNroPedidoAndEmpresaAndEliminado(pedido.getNroPedido(), pedido.getEmpresa(), false) == null) {
                 throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_pedido_no_existente"));
             }
-        }
-        
+        }        
     }
 
     private List<Pedido> calcularTotalActualDePedidos(List<Pedido> pedidos) {

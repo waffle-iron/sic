@@ -3,15 +3,10 @@ package sic.repository.jpa;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import org.springframework.beans.factory.annotation.Autowired;
 import sic.modelo.BusquedaProductoCriteria;
 import sic.repository.ProductoRepositoryCustom;
-import sic.repository.ProductoRepository;
 
 public class ProductoRepositoryImpl implements ProductoRepositoryCustom {
-    
-    @Autowired
-    private ProductoRepository productoRepository;    
     
     @PersistenceContext
     private EntityManager em;
@@ -19,8 +14,7 @@ public class ProductoRepositoryImpl implements ProductoRepositoryCustom {
     @Override
     public double calcularValorStock(BusquedaProductoCriteria criteria) {
         String query = "SELECT SUM(p.cantidad * p.precioCosto) FROM Producto p WHERE p.empresa = :empresa "
-                + "AND p.eliminado = false "
-                + "AND p.ilimitado = false";
+                + "AND p.eliminado = false AND p.ilimitado = false";
         //Codigo y Descripcion
         if (criteria.isBuscarPorCodigo() == true && criteria.isBuscarPorDescripcion() == true) {
             query += " AND (p.codigo LIKE '%" + criteria.getCodigo() + "%' OR (";
@@ -69,7 +63,6 @@ public class ProductoRepositoryImpl implements ProductoRepositoryCustom {
             typedQuery.setMaxResults(criteria.getCantRegistros());
         }
         return (typedQuery.getSingleResult() == null) ? 0.0 : typedQuery.getSingleResult();
-
     }
     
 }

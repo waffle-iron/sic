@@ -158,14 +158,15 @@ public class ProductoServiceImpl implements IProductoService {
         }
         QProducto qproducto = QProducto.producto;
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(qproducto.empresa.eq(criteria.getEmpresa()).and(qproducto.eliminado.eq(false)));       
-        if(criteria.isBuscarPorCodigo() == true && criteria.isBuscarPorDescripcion() == true) {
-            builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo()).and(qproducto.descripcion.containsIgnoreCase(criteria.getDescripcion())));
-        } else { 
-            if(criteria.isBuscarPorCodigo() == true) {
+        builder.and(qproducto.empresa.eq(criteria.getEmpresa()).and(qproducto.eliminado.eq(false)));
+        if (criteria.isBuscarPorCodigo() == true && criteria.isBuscarPorDescripcion() == true) {
+            builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo())
+                    .and(qproducto.descripcion.containsIgnoreCase(criteria.getDescripcion())));
+        } else {
+            if (criteria.isBuscarPorCodigo() == true) {
                 builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo()));
             }
-            if(criteria.isBuscarPorDescripcion() == true) {
+            if (criteria.isBuscarPorDescripcion() == true) {
                 builder.and(qproducto.descripcion.containsIgnoreCase(criteria.getDescripcion()));
             }
         }

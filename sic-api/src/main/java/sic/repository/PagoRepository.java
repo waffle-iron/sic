@@ -9,10 +9,10 @@ import sic.modelo.FormaDePago;
 import sic.modelo.Pago;
 
 public interface PagoRepository extends PagingAndSortingRepository<Pago, Long> {
-    
-      List<Pago> findByFactura(Factura factura);
-      
-      List<Pago> findByFechaBetweenAndEmpresaAndFormaDePagoAndEliminado(Date desde, Date hasta, Empresa empresa, FormaDePago formaDePago, boolean eliminado);
 
-      Pago findTopByEmpresaOrderByNroPagoDesc(Empresa empresa);
+    List<Pago> findByFactura(Factura factura);
+
+    List<Pago> findByFechaBetweenAndEmpresaAndFormaDePagoAndEliminado(Date desde, Date hasta, Empresa empresa, FormaDePago formaDePago, boolean eliminado);
+
+    Pago findTopByEmpresaOrderByNroPagoDesc(Empresa empresa);
 }

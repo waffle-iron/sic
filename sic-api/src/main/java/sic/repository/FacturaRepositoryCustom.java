@@ -7,19 +7,19 @@ import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 
 public interface FacturaRepositoryCustom {
-    
-    double calcularTotalFacturadoVenta(BusquedaFacturaVentaCriteria criteria); 
-    
+
+    double calcularTotalFacturadoVenta(BusquedaFacturaVentaCriteria criteria);
+
     double calcularTotalFacturadoCompra(BusquedaFacturaCompraCriteria criteria);
-    
+
     double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria);
-    
+
     double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria);
-    
-    double calcularGananciaTotal(BusquedaFacturaVentaCriteria criteria); 
-    
+
+    double calcularGananciaTotal(BusquedaFacturaVentaCriteria criteria);
+
     List<FacturaVenta> buscarFacturasVenta(BusquedaFacturaVentaCriteria criteria);
-    
+
     List<FacturaCompra> buscarFacturasCompra(BusquedaFacturaCompraCriteria criteria);
-    
+
 }

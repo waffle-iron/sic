@@ -72,7 +72,7 @@ public class FacturaServiceImpl implements IFacturaService {
     
     @Override
     public Factura getFacturaPorId(Long id_Factura) {
-        return (Factura)facturaRepository.findOne(id_Factura);
+        return facturaRepository.findOne(id_Factura);
     }
 
     @Override
@@ -342,7 +342,7 @@ public class FacturaServiceImpl implements IFacturaService {
         } else {
             facturasProcesadas = new ArrayList<>();
             for (Factura f : facturas) {
-                Factura facturaGuardada = (Factura)facturaRepository.save(f);
+                Factura facturaGuardada = facturaRepository.save(f);
                 this.actualizarFacturaEstadoPagada(facturaGuardada);
                 facturasProcesadas.add(facturaGuardada);
                 LOGGER.warn("La Factura " + facturaGuardada + " se guardó correctamente.");
