@@ -412,13 +412,13 @@ public class GUI_Cajas extends JInternalFrame {
         lbl_TotalFinal.setText("Total Sistema:");
 
         ftxt_TotalFinal.setEditable(false);
-        ftxt_TotalFinal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        ftxt_TotalFinal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         ftxt_TotalFinal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
 
         lbl_TotalCierre.setText("Total Real:");
 
         ftxt_TotalCierre.setEditable(false);
-        ftxt_TotalCierre.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        ftxt_TotalCierre.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         ftxt_TotalCierre.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
 
         javax.swing.GroupLayout pnl_CajasLayout = new javax.swing.GroupLayout(pnl_Cajas);

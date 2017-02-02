@@ -54,7 +54,8 @@ public class FacturaServiceImpl implements IFacturaService {
     private final IPedidoService pedidoService;
     private final IPagoService pagoService;
     private static final Logger LOGGER = Logger.getLogger(FacturaServiceImpl.class.getPackage().getName());
-    private static final int CANTIDAD_DECIMALES_TRUNCAMIENTO = 2;
+    private static final char FACTURA_A = 'A';
+    private static final char FACTURA_B = 'B';
 
     @Autowired
     @Lazy
@@ -744,7 +745,8 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
         }
-        return facturaRepository.calcularIVA_Venta(criteria);
+        char[] tipoFactura = {FACTURA_A, FACTURA_B};
+        return facturaRepository.calcularIVA_Venta(criteria, tipoFactura);
     }
 
     @Override
@@ -777,7 +779,8 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_proveedor_vacio"));
         }
-        return facturaRepository.calcularIVA_Compra(criteria);
+        char[] tipoFactura = {FACTURA_A};
+        return facturaRepository.calcularIVA_Compra(criteria, tipoFactura);
     }
 
     @Override

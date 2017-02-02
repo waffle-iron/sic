@@ -11,11 +11,11 @@ public interface FacturaRepositoryCustom {
     double calcularTotalFacturadoVenta(BusquedaFacturaVentaCriteria criteria);
 
     double calcularTotalFacturadoCompra(BusquedaFacturaCompraCriteria criteria);
-
-    double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria);
-
-    double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria);
-
+    
+    double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, char[] tipoFactura);
+    
+    double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria, char[] tipoFactura);
+    
     double calcularGananciaTotal(BusquedaFacturaVentaCriteria criteria);
 
     List<FacturaVenta> buscarFacturasVenta(BusquedaFacturaVentaCriteria criteria);

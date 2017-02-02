@@ -240,12 +240,10 @@ public class GUI_FacturasCompra extends JInternalFrame {
 
     private void calcularResultados(String criteria) {
         try {
-            if (!facturas.isEmpty()) {
-                String totalFacturadoCompra = "/facturas/total-facturado-compra/criteria?";
-                String calcularIVA_Compra = "/facturas/total-iva-compra/criteria?";
-                txt_ResultGastoTotal.setValue(RestClient.getRestTemplate().getForObject(totalFacturadoCompra + criteria, double.class));
-                txt_ResultTotalIVACompra.setValue(RestClient.getRestTemplate().getForObject(calcularIVA_Compra + criteria, double.class));
-            }
+            txt_ResultGastoTotal.setValue(RestClient.getRestTemplate().getForObject("/facturas/total-facturado-compra/criteria?"
+                    + criteria, double.class));
+            txt_ResultTotalIVACompra.setValue(RestClient.getRestTemplate().getForObject("/facturas/total-iva-compra/criteria?"
+                    + criteria, double.class));
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ResourceAccessException ex) {
@@ -572,14 +570,12 @@ public class GUI_FacturasCompra extends JInternalFrame {
         lbl_TotalIVACompra.setText("Total IVA Compra:");
 
         txt_ResultTotalIVACompra.setEditable(false);
-        txt_ResultTotalIVACompra.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_ResultTotalIVACompra.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_ResultTotalIVACompra.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txt_ResultTotalIVACompra.setText("$0.0");
 
         txt_ResultGastoTotal.setEditable(false);
-        txt_ResultGastoTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_ResultGastoTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_ResultGastoTotal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txt_ResultGastoTotal.setText("$0.0");
 
         lbl_TotalFacturado.setText("Total Facturado:");
 

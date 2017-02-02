@@ -773,20 +773,23 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         lbl_Total.setText("TOTAL");
 
         txt_SubTotal.setEditable(false);
-        txt_SubTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_SubTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_SubTotal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_SubTotal.setText("0");
         txt_SubTotal.setFocusable(false);
         txt_SubTotal.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
 
         txt_ImpInterno_Neto.setEditable(false);
-        txt_ImpInterno_Neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_ImpInterno_Neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_ImpInterno_Neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_ImpInterno_Neto.setText("0");
         txt_ImpInterno_Neto.setFocusable(false);
         txt_ImpInterno_Neto.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
 
         txt_Total.setEditable(false);
-        txt_Total.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_Total.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_Total.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_Total.setText("0");
         txt_Total.setFocusable(false);
         txt_Total.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
 
@@ -795,15 +798,16 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         lbl_IVA_105.setText("I.V.A.");
 
         txt_IVA_105.setEditable(false);
-        txt_IVA_105.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_IVA_105.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_IVA_105.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_IVA_105.setText("0");
         txt_IVA_105.setFocusable(false);
         txt_IVA_105.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
 
         lbl_Descuento.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbl_Descuento.setText("Descuento (%)");
 
-        txt_Descuento_Porcentaje.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
+        txt_Descuento_Porcentaje.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
         txt_Descuento_Porcentaje.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txt_Descuento_Porcentaje.setText("0");
         txt_Descuento_Porcentaje.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
@@ -819,16 +823,18 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         });
 
         txt_Descuento_Neto.setEditable(false);
-        txt_Descuento_Neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_Descuento_Neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_Descuento_Neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_Descuento_Neto.setText("0");
         txt_Descuento_Neto.setFocusable(false);
         txt_Descuento_Neto.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
 
         lbl_SubTotalNeto.setText("SubTotal Neto");
 
         txt_SubTotal_Neto.setEditable(false);
-        txt_SubTotal_Neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_SubTotal_Neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_SubTotal_Neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_SubTotal_Neto.setText("0");
         txt_SubTotal_Neto.setFocusable(false);
         txt_SubTotal_Neto.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
 
@@ -839,8 +845,9 @@ public class GUI_DetalleFacturaCompra extends JDialog {
         lbl_21.setText("21 %");
 
         txt_IVA_21.setEditable(false);
-        txt_IVA_21.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_IVA_21.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_IVA_21.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_IVA_21.setText("0");
         txt_IVA_21.setFocusable(false);
         txt_IVA_21.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
 
@@ -855,7 +862,7 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                     .addComponent(txt_SubTotal))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbl_Descuento, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+                    .addComponent(lbl_Descuento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txt_Descuento_Neto, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txt_Descuento_Porcentaje))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -985,12 +992,6 @@ public class GUI_DetalleFacturaCompra extends JDialog {
                     .addComponent(dc_FechaFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
                     .addComponent(dc_FechaVencimiento, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelDatosComprobanteIzquierdoLayout.createSequentialGroup()
-                .addContainerGap(28, Short.MAX_VALUE)
-                .addComponent(lbl_FechaVto)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(dc_FechaVencimiento, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
         );
         panelDatosComprobanteIzquierdoLayout.setVerticalGroup(
             panelDatosComprobanteIzquierdoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

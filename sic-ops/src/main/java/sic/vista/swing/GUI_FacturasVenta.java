@@ -509,19 +509,16 @@ public class GUI_FacturasVenta extends JInternalFrame {
         lbl_TotalIVAVenta.setText("Total IVA Venta:");
 
         txt_ResultTotalFacturado.setEditable(false);
-        txt_ResultTotalFacturado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_ResultTotalFacturado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_ResultTotalFacturado.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txt_ResultTotalFacturado.setText("$0.0");
 
         txt_ResultGananciaTotal.setEditable(false);
-        txt_ResultGananciaTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_ResultGananciaTotal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_ResultGananciaTotal.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txt_ResultGananciaTotal.setText("$0.0");
 
         txt_ResultTotalIVAVenta.setEditable(false);
-        txt_ResultTotalIVAVenta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_ResultTotalIVAVenta.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_ResultTotalIVAVenta.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txt_ResultTotalIVAVenta.setText("$0.0");
 
         javax.swing.GroupLayout panelNumerosLayout = new javax.swing.GroupLayout(panelNumeros);
         panelNumeros.setLayout(panelNumerosLayout);

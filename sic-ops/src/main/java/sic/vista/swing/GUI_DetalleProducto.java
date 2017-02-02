@@ -255,8 +255,9 @@ public class GUI_DetalleProducto extends JDialog {
         lbl_ImpuestoInterno.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_ImpuestoInterno.setText("Impuesto Interno (%):");
 
-        txt_PrecioCosto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
+        txt_PrecioCosto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
         txt_PrecioCosto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_PrecioCosto.setText("0");
         txt_PrecioCosto.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_PrecioCostoFocusGained(evt);
@@ -271,8 +272,9 @@ public class GUI_DetalleProducto extends JDialog {
             }
         });
 
-        txt_Ganancia_Porcentaje.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
+        txt_Ganancia_Porcentaje.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
         txt_Ganancia_Porcentaje.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_Ganancia_Porcentaje.setText("0");
         txt_Ganancia_Porcentaje.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_Ganancia_PorcentajeFocusGained(evt);
@@ -287,8 +289,9 @@ public class GUI_DetalleProducto extends JDialog {
             }
         });
 
-        txt_PrecioLista.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
+        txt_PrecioLista.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
         txt_PrecioLista.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_PrecioLista.setText("0");
         txt_PrecioLista.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_PrecioListaFocusGained(evt);
@@ -303,8 +306,9 @@ public class GUI_DetalleProducto extends JDialog {
             }
         });
 
-        txt_ImpuestoInterno_Porcentaje.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
+        txt_ImpuestoInterno_Porcentaje.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
         txt_ImpuestoInterno_Porcentaje.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_ImpuestoInterno_Porcentaje.setText("0");
         txt_ImpuestoInterno_Porcentaje.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_ImpuestoInterno_PorcentajeFocusGained(evt);
@@ -323,25 +327,29 @@ public class GUI_DetalleProducto extends JDialog {
         lbl_IVA.setText("I.V.A. (%):");
 
         txt_IVA_Neto.setEditable(false);
-        txt_IVA_Neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_IVA_Neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_IVA_Neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_IVA_Neto.setText("0");
         txt_IVA_Neto.setFocusable(false);
 
         txt_Ganancia_Neto.setEditable(false);
-        txt_Ganancia_Neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_Ganancia_Neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_Ganancia_Neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_Ganancia_Neto.setText("0");
         txt_Ganancia_Neto.setFocusable(false);
 
         txt_ImpuestoInterno_Neto.setEditable(false);
-        txt_ImpuestoInterno_Neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_ImpuestoInterno_Neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_ImpuestoInterno_Neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_ImpuestoInterno_Neto.setText("0");
         txt_ImpuestoInterno_Neto.setFocusable(false);
 
         lbl_PVP.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_PVP.setText("Precio Venta Público:");
 
-        txt_PVP.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
+        txt_PVP.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
         txt_PVP.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_PVP.setText("0");
         txt_PVP.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_PVPFocusGained(evt);
@@ -444,14 +452,16 @@ public class GUI_DetalleProducto extends JDialog {
         lbl_Cantidad.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Cantidad.setText("* Cantidad:");
 
-        txt_Cantidad.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
+        txt_Cantidad.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
+        txt_Cantidad.setText("0");
         txt_Cantidad.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_CantidadFocusGained(evt);
             }
         });
 
-        txt_CantMinima.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
+        txt_CantMinima.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
+        txt_CantMinima.setText("0");
         txt_CantMinima.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_CantMinimaFocusGained(evt);

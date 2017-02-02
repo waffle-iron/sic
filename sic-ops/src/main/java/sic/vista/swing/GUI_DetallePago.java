@@ -130,7 +130,8 @@ public class GUI_DetallePago extends JDialog {
         lbl_Monto.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Monto.setText("* Monto:");
 
-        txt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("##,###,##0.00"))));
+        txt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
+        txt_Monto.setText("0");
         txt_Monto.setToolTipText("");
         txt_Monto.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {

@@ -618,9 +618,8 @@ public class GUI_Productos extends JInternalFrame {
         });
 
         txt_ValorStock.setEditable(false);
-        txt_ValorStock.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("$##,###,##0.00"))));
+        txt_ValorStock.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_ValorStock.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txt_ValorStock.setText("$0.0");
 
         lbl_ValorStock.setText("Valor del Stock:");
 

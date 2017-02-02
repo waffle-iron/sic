@@ -208,17 +208,17 @@ public class GUI_Pagos extends JDialog {
         lbl_Saldo.setText("Saldo a Pagar:");
 
         txt_TotalAdeudado.setEditable(false);
-        txt_TotalAdeudado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("¤#,##0.00"))));
+        txt_TotalAdeudado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_TotalAdeudado.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txt_TotalAdeudado.setFocusable(false);
 
         txt_TotalPagado.setEditable(false);
-        txt_TotalPagado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("¤#,##0.00"))));
+        txt_TotalPagado.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_TotalPagado.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txt_TotalPagado.setFocusable(false);
 
         txt_SaldoAPagar.setEditable(false);
-        txt_SaldoAPagar.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("¤#,##0.00"))));
+        txt_SaldoAPagar.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         txt_SaldoAPagar.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txt_SaldoAPagar.setFocusable(false);
 

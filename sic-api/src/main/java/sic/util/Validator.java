@@ -41,19 +41,6 @@ public class Validator {
         }
     }
 
-    public static boolean esLongitudNumericaValida(String cadena, double longitudValida) {
-        if (cadena == null | cadena.equals("")) {
-            return true;
-        }
-
-        cadena = cadena.replace(",", "");
-        if (Double.parseDouble(cadena) > longitudValida) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     public static boolean esEmailValido(String cadena) {
         return ((Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$")).matcher(cadena)).matches();
