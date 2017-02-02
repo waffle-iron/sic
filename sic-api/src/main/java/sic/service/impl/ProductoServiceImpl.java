@@ -1,6 +1,7 @@
 package sic.service.impl;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import sic.modelo.BusquedaProductoCriteria;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -160,14 +161,24 @@ public class ProductoServiceImpl implements IProductoService {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qproducto.empresa.eq(criteria.getEmpresa()).and(qproducto.eliminado.eq(false)));
         if (criteria.isBuscarPorCodigo() == true && criteria.isBuscarPorDescripcion() == true) {
-            builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo())
-                    .or(qproducto.descripcion.containsIgnoreCase(criteria.getDescripcion())));
+            builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo()));
+            String[] terminos = criteria.getDescripcion().split(" ");
+            BooleanBuilder descripcionProducto = new BooleanBuilder();
+            for (int i = 0; i < terminos.length; i++) {
+                descripcionProducto.and(qproducto.descripcion.containsIgnoreCase(terminos[i]));
+            }
+            builder.or(descripcionProducto);
         } else {
             if (criteria.isBuscarPorCodigo() == true) {
                 builder.and(qproducto.codigo.like(criteria.getCodigo()));
             }
             if (criteria.isBuscarPorDescripcion() == true) {
-                builder.and(qproducto.descripcion.containsIgnoreCase(criteria.getDescripcion()));
+                String[] terminos = criteria.getDescripcion().split(" ");
+                BooleanBuilder descripcionProducto = new BooleanBuilder();
+                for (int i = 0; i < terminos.length; i++) {
+                    descripcionProducto.and(qproducto.descripcion.containsIgnoreCase(terminos[i]));
+                }
+                builder.or(descripcionProducto);
             }
         }
         if (criteria.isBuscarPorRubro() == true) {
