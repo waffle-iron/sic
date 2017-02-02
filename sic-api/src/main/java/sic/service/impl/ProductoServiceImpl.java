@@ -1,7 +1,6 @@
 package sic.service.impl;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import sic.modelo.BusquedaProductoCriteria;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -162,23 +161,13 @@ public class ProductoServiceImpl implements IProductoService {
         builder.and(qproducto.empresa.eq(criteria.getEmpresa()).and(qproducto.eliminado.eq(false)));
         if (criteria.isBuscarPorCodigo() == true && criteria.isBuscarPorDescripcion() == true) {
             builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo()));
-            String[] terminos = criteria.getDescripcion().split(" ");
-            BooleanBuilder descripcionProducto = new BooleanBuilder();
-            for (int i = 0; i < terminos.length; i++) {
-                descripcionProducto.and(qproducto.descripcion.containsIgnoreCase(terminos[i]));
-            }
-            builder.or(descripcionProducto);
+            builder.or(this.buildPredicadoDescripcion(criteria.getDescripcion(), qproducto));
         } else {
             if (criteria.isBuscarPorCodigo() == true) {
                 builder.and(qproducto.codigo.like(criteria.getCodigo()));
             }
             if (criteria.isBuscarPorDescripcion() == true) {
-                String[] terminos = criteria.getDescripcion().split(" ");
-                BooleanBuilder descripcionProducto = new BooleanBuilder();
-                for (int i = 0; i < terminos.length; i++) {
-                    descripcionProducto.and(qproducto.descripcion.containsIgnoreCase(terminos[i]));
-                }
-                builder.or(descripcionProducto);
+                builder.and(this.buildPredicadoDescripcion(criteria.getDescripcion(), qproducto));
             }
         }
         if (criteria.isBuscarPorRubro() == true) {
@@ -193,6 +182,15 @@ public class ProductoServiceImpl implements IProductoService {
         List<Producto> list = new ArrayList<>();
         productoRepository.findAll(builder, new Sort(Sort.Direction.ASC, "descripcion")).iterator().forEachRemaining(list::add);
         return list;
+    }
+
+    private BooleanBuilder buildPredicadoDescripcion(String descripcion, QProducto qproducto) {
+        String[] terminos = descripcion.split(" ");
+        BooleanBuilder descripcionProducto = new BooleanBuilder();
+        for (int i = 0; i < terminos.length; i++) {
+            descripcionProducto.and(qproducto.descripcion.containsIgnoreCase(terminos[i]));
+        }
+        return descripcionProducto;
     }
 
     @Override
