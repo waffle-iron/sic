@@ -237,13 +237,13 @@ public class CajaServiceImpl implements ICajaService {
             List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(idEmpresa,
                     formaDePago.getId_FormaDePago(), caja.getFechaApertura(), caja.getFechaCorteInforme());
             for (Pago pago : pagos) {
-                totalPorCorteFormaDePago += facturaService.getTotalPagado(pago.getFactura());
+                totalPorCorteFormaDePago += pago.getMonto();
             }
             for (Gasto gasto : gastos) {
-                totalPorCorteFormaDePago -= ((Gasto) gasto).getMonto();
+                totalPorCorteFormaDePago -= gasto.getMonto();
             }
-            if (totalPorCorteFormaDePago > 0) {
-                dataSource.add(formaDePago.getNombre() + "-" + totalPorCorteFormaDePago);
+            if (totalPorCorteFormaDePago != 0) {
+                dataSource.add(formaDePago.getNombre() + "-" + FormatterNumero.formatConRedondeo(totalPorCorteFormaDePago));
             }
             totalPorCorte += totalPorCorteFormaDePago;
         }
