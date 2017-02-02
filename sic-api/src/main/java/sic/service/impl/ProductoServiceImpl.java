@@ -161,10 +161,10 @@ public class ProductoServiceImpl implements IProductoService {
         builder.and(qproducto.empresa.eq(criteria.getEmpresa()).and(qproducto.eliminado.eq(false)));
         if (criteria.isBuscarPorCodigo() == true && criteria.isBuscarPorDescripcion() == true) {
             builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo())
-                    .and(qproducto.descripcion.containsIgnoreCase(criteria.getDescripcion())));
+                    .or(qproducto.descripcion.containsIgnoreCase(criteria.getDescripcion())));
         } else {
             if (criteria.isBuscarPorCodigo() == true) {
-                builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo()));
+                builder.and(qproducto.codigo.like(criteria.getCodigo()));
             }
             if (criteria.isBuscarPorDescripcion() == true) {
                 builder.and(qproducto.descripcion.containsIgnoreCase(criteria.getDescripcion()));

@@ -118,9 +118,9 @@ public class ProductoController {
             cantidadRegistros = 0;
         }
         BusquedaProductoCriteria criteria = BusquedaProductoCriteria.builder()
-                                            .buscarPorCodigo((codigo!=null))
+                                            .buscarPorCodigo((codigo!=null && !codigo.isEmpty()))
                                             .codigo(codigo)
-                                            .buscarPorDescripcion(descripcion!=null)
+                                            .buscarPorDescripcion(descripcion!=null && !descripcion.isEmpty())
                                             .descripcion(descripcion)
                                             .buscarPorRubro(rubro!=null)
                                             .rubro(rubro)
