@@ -1,6 +1,7 @@
 package sic.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -10,14 +11,22 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.springframework.test.context.junit4.SpringRunner;
+import sic.builder.ClienteBuilder;
+import sic.builder.EmpresaBuilder;
+import sic.builder.FacturaVentaBuilder;
 import sic.builder.ProductoBuilder;
+import sic.builder.TransportistaBuilder;
 import sic.modelo.Cliente;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Empresa;
+import sic.modelo.Factura;
+import sic.modelo.FacturaVenta;
+import sic.modelo.Medida;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Movimiento;
+import sic.modelo.Usuario;
 import sic.repository.FacturaRepository;
 
 @RunWith(SpringRunner.class)
@@ -179,52 +188,53 @@ public class FacturaServiceImplTest {
         assertArrayEquals(expResult, result);
     }
 
-//    @Test
-//    public void shouldDividirFactura() {
-//        when(facturaRepository.findTopByTipoFacturaAndNumSerieOrderByNumFactura("", (long) 1)).thenReturn(new FacturaVentaBuilder().withNumFactura(1).build());
-//        RenglonFactura renglon1 = Mockito.mock(RenglonFactura.class);
-//        RenglonFactura renglon2 = Mockito.mock(RenglonFactura.class);
-//        Producto producto = Mockito.mock(Producto.class);
-//        when(producto.getId_Producto()).thenReturn((long) 1);
-//        when(producto.getCodigo()).thenReturn("1");
-//        when(producto.getDescripcion()).thenReturn("producto test");
-//        Medida medida = Mockito.mock(Medida.class);
-//        when(producto.getMedida()).thenReturn(medida);
-//        when(producto.getPrecioVentaPublico()).thenReturn(1.0);
-//        when(producto.getIva_porcentaje()).thenReturn(21.00);
-//        when(producto.getImpuestoInterno_porcentaje()).thenReturn(0.0);
-//        when(producto.getPrecioLista()).thenReturn(1.0);
-//        when(productoService.getProductoPorId((long) 1)).thenReturn(producto);
-//        when(renglon1.getId_ProductoItem()).thenReturn((long) 1);
-//        when(renglon2.getId_ProductoItem()).thenReturn((long) 1);
-//        when(renglon1.getCantidad()).thenReturn(4.00);
-//        when(renglon2.getCantidad()).thenReturn(7.00);
-//        List<RenglonFactura> renglones = new ArrayList<>();
-//        renglones.add(renglon1);
-//        renglones.add(renglon2);
-//        FacturaVenta factura = new FacturaVenta();
-//        factura.setRenglones(renglones);
-//        factura.setFecha(new Date());
-//        factura.setTransportista(new TransportistaBuilder().build());
-//        factura.setEmpresa(new EmpresaBuilder().build());
-//        factura.setCliente(new ClienteBuilder().build());
-//        Usuario usuario = new Usuario();
-//        usuario.setNombre("Marian Jhons  help");
-//        factura.setUsuario(usuario);
-//        factura.setTipoFactura('A');
-//        int[] indices = {0, 1};
-//        int cantidadDeFacturasEsperadas = 2;
-//        List<Factura> result = facturaService.dividirFactura(factura, indices);
-//        double cantidadRenglon1PrimeraFactura = result.get(0).getRenglones().get(0).getCantidad();
-//        double cantidadRenglon2PrimeraFactura = result.get(0).getRenglones().get(1).getCantidad();
-//        double cantidadRenglon1SegundaFactura = result.get(1).getRenglones().get(0).getCantidad();
-//        double cantidadRenglon2SegundaFactura = result.get(1).getRenglones().get(1).getCantidad();
-//        assertEquals(cantidadDeFacturasEsperadas, result.size());
-//        assertEquals(2, cantidadRenglon1SegundaFactura, 0); 
-//        assertEquals(4, cantidadRenglon2SegundaFactura, 0); 
-//        assertEquals(2, cantidadRenglon1PrimeraFactura, 0);
-//        assertEquals(3, cantidadRenglon2PrimeraFactura, 0);
-//    }
+    @Test
+    public void shouldDividirFactura() {
+        when(facturaRepository.findTopByTipoFacturaAndNumSerieOrderByNumFactura('X', (long) 0)).thenReturn(new FacturaVentaBuilder().withNumFactura(0).build());
+        when(facturaRepository.findTopByTipoFacturaAndNumSerieOrderByNumFactura('A', (long) 0)).thenReturn(new FacturaVentaBuilder().withNumFactura(1).build());
+        RenglonFactura renglon1 = Mockito.mock(RenglonFactura.class);
+        RenglonFactura renglon2 = Mockito.mock(RenglonFactura.class);
+        Producto producto = Mockito.mock(Producto.class);
+        when(producto.getId_Producto()).thenReturn((long) 1);
+        when(producto.getCodigo()).thenReturn("1");
+        when(producto.getDescripcion()).thenReturn("producto test");
+        Medida medida = Mockito.mock(Medida.class);
+        when(producto.getMedida()).thenReturn(medida);
+        when(producto.getPrecioVentaPublico()).thenReturn(1.0);
+        when(producto.getIva_porcentaje()).thenReturn(21.00);
+        when(producto.getImpuestoInterno_porcentaje()).thenReturn(0.0);
+        when(producto.getPrecioLista()).thenReturn(1.0);
+        when(productoService.getProductoPorId((long) 1)).thenReturn(producto);
+        when(renglon1.getId_ProductoItem()).thenReturn((long) 1);
+        when(renglon2.getId_ProductoItem()).thenReturn((long) 1);
+        when(renglon1.getCantidad()).thenReturn(4.00);
+        when(renglon2.getCantidad()).thenReturn(7.00);
+        List<RenglonFactura> renglones = new ArrayList<>();
+        renglones.add(renglon1);
+        renglones.add(renglon2);
+        FacturaVenta factura = new FacturaVenta();
+        factura.setRenglones(renglones);
+        factura.setFecha(new Date());
+        factura.setTransportista(new TransportistaBuilder().build());
+        factura.setEmpresa(new EmpresaBuilder().build());
+        factura.setCliente(new ClienteBuilder().build());
+        Usuario usuario = new Usuario();
+        usuario.setNombre("Marian Jhons  help");
+        factura.setUsuario(usuario);
+        factura.setTipoFactura('A');
+        int[] indices = {0, 1};
+        int cantidadDeFacturasEsperadas = 2;
+        List<Factura> result = facturaService.dividirFactura(factura, indices);
+        double cantidadRenglon1PrimeraFactura = result.get(0).getRenglones().get(0).getCantidad();
+        double cantidadRenglon2PrimeraFactura = result.get(0).getRenglones().get(1).getCantidad();
+        double cantidadRenglon1SegundaFactura = result.get(1).getRenglones().get(0).getCantidad();
+        double cantidadRenglon2SegundaFactura = result.get(1).getRenglones().get(1).getCantidad();
+        assertEquals(cantidadDeFacturasEsperadas, result.size());
+        assertEquals(2, cantidadRenglon1SegundaFactura, 0); 
+        assertEquals(4, cantidadRenglon2SegundaFactura, 0); 
+        assertEquals(2, cantidadRenglon1PrimeraFactura, 0);
+        assertEquals(3, cantidadRenglon2PrimeraFactura, 0);
+    }
 
     //Calculos
     @Test
