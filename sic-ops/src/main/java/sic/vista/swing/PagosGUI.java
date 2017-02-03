@@ -140,14 +140,14 @@ public class PagosGUI extends JDialog {
 
     
     private void actualizarSaldos() {
-        txt_TotalAdeudado.setValue(Utilidades.truncarDecimal(facturaRelacionada.getTotal(), 2));
+        txt_TotalAdeudado.setValue(facturaRelacionada.getTotal());
         try {
-            txt_TotalPagado.setValue(Utilidades.truncarDecimal(RestClient.getRestTemplate()
+            txt_TotalPagado.setValue(RestClient.getRestTemplate()
                     .getForObject("/pagos/facturas/" + facturaRelacionada.getId_Factura() + "/total-pagado",
-                    double.class), 2));
-            txt_SaldoAPagar.setValue(Utilidades.truncarDecimal(RestClient.getRestTemplate()
+                    double.class));
+            txt_SaldoAPagar.setValue(RestClient.getRestTemplate()
                     .getForObject("/pagos/facturas/" + facturaRelacionada.getId_Factura() + "/saldo",
-                    double.class), 2));
+                    double.class));
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ResourceAccessException ex) {
