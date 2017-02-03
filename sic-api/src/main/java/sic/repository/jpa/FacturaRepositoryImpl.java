@@ -215,7 +215,6 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         if (criteria.isBuscaPorTipoFactura() == true) {
             query += " AND f.tipoFactura = '" + criteria.getTipoFactura() + "'";
         }
-        query += " )";
         //Usuario
         if (criteria.isBuscaUsuario() == true) {
             query += " AND f.usuario = " + criteria.getUsuario().getId_Usuario();
