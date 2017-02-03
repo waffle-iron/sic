@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.security.MessageDigest;
@@ -135,4 +136,12 @@ public class Utilidades {
             return (new BigDecimal(String.valueOf(valor)).setScale(cantidadDecimales, BigDecimal.ROUND_CEILING)).doubleValue();
         }
     }
+    
+    public static double round(double value, int places) {
+        if (places < 0) {
+            throw new IllegalArgumentException();
+        }
+        return new BigDecimal(value).setScale(places, RoundingMode.HALF_UP).doubleValue();
+    }
+
 }

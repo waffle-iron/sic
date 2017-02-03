@@ -18,6 +18,7 @@ import sic.repository.IPagoRepository;
 import sic.service.IFacturaService;
 import sic.service.IPagoService;
 import sic.service.BusinessServiceException;
+import sic.util.Utilidades;
 
 @Service
 public class PagoServiceImpl implements IPagoService {
@@ -179,10 +180,10 @@ public class PagoServiceImpl implements IPagoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_pagada"));
         }
-        if ((Math.ceil(pago.getMonto()* 100) / 100) > (Math.ceil(this.getSaldoAPagar(pago.getFactura())* 100) / 100)) {  
+        if (Utilidades.round(pago.getMonto(), 2) > Utilidades.round(this.getSaldoAPagar(pago.getFactura()), 2)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_mayorADeuda_monto"));
         }
-    }  
+    }
 
 }
