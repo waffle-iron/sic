@@ -21,12 +21,12 @@ import sic.modelo.EmpresaActiva;
 import sic.modelo.Factura;
 import sic.modelo.FormaDePago;
 import sic.modelo.Pago;
-import sic.util.Utilidades;
 
 public class DetallePagoGUI extends JDialog {
 
     private final Factura facturaRelacionada;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private double monto;
 
     public DetallePagoGUI(Factura factura) {
         this.initComponents();
@@ -64,8 +64,8 @@ public class DetallePagoGUI extends JDialog {
             fechaYHora.set(Calendar.HOUR_OF_DAY, (int) spinner_Hora.getValue());
             fechaYHora.set(Calendar.MINUTE, (int) spinner_Minutos.getValue());
             pago.setFecha(fechaYHora.getTime());
-            txt_Monto.commitEdit();
-            pago.setMonto(Double.parseDouble(txt_Monto.getValue().toString()));
+//            txt_Monto.commitEdit();
+            pago.setMonto(monto);
             pago.setNota(txt_Nota.getText().trim());
             pago.setFormaDePago((FormaDePago) cmb_FormaDePago.getSelectedItem());
             pago.setNota(txt_Nota.getText().trim());
@@ -80,9 +80,10 @@ public class DetallePagoGUI extends JDialog {
             JOptionPane.showMessageDialog(this,
                     ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                     "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ParseException ex) {
-            LOGGER.error(ex.getMessage());
-        }
+        } 
+//        catch (ParseException ex) {
+//            LOGGER.error(ex.getMessage());
+//        }
     }
 
     private void setModelSpinner() {
@@ -239,9 +240,10 @@ public class DetallePagoGUI extends JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         dc_Fecha.setDate(new Date());
-        txt_Monto.setValue(Utilidades.truncarDecimal(RestClient.getRestTemplate()
+        monto = RestClient.getRestTemplate()
                 .getForObject("/pagos/facturas/" + facturaRelacionada.getId_Factura() + "/saldo",
-                double.class), 2));
+                double.class);
+        txt_Monto.setValue(monto);
         this.cargarFormasDePago();
     }//GEN-LAST:event_formWindowOpened
 
