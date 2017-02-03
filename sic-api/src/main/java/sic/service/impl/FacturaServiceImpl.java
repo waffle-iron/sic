@@ -453,8 +453,9 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     @Transactional
     public Factura actualizarFacturaEstadoPagada(Factura factura) {
-        double totalFactura = Math.floor(factura.getTotal() * 100) / 100;  // Se deja el redondeo por aquellas facturas que poseen pagos 
-        if (this.getTotalPagado(factura) >= totalFactura) {                // parciales antes del cambio en la vista DetallePagoGUI.
+        double totalFactura = Math.floor(factura.getTotal() * 100) / 100;
+        double totalPagado = Math.floor(this.getTotalPagado(factura) * 100) / 100;
+        if (totalPagado >= totalFactura) {               
             factura.setPagada(true);
         } else {
             factura.setPagada(false);

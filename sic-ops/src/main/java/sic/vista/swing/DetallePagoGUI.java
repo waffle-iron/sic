@@ -64,8 +64,7 @@ public class DetallePagoGUI extends JDialog {
             fechaYHora.set(Calendar.HOUR_OF_DAY, (int) spinner_Hora.getValue());
             fechaYHora.set(Calendar.MINUTE, (int) spinner_Minutos.getValue());
             pago.setFecha(fechaYHora.getTime());
-//            txt_Monto.commitEdit();
-            pago.setMonto(monto);
+            pago.setMonto(Double.parseDouble(txt_Monto.getValue().toString()));
             pago.setNota(txt_Nota.getText().trim());
             pago.setFormaDePago((FormaDePago) cmb_FormaDePago.getSelectedItem());
             pago.setNota(txt_Nota.getText().trim());
@@ -80,10 +79,7 @@ public class DetallePagoGUI extends JDialog {
             JOptionPane.showMessageDialog(this,
                     ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                     "Error", JOptionPane.ERROR_MESSAGE);
-        } 
-//        catch (ParseException ex) {
-//            LOGGER.error(ex.getMessage());
-//        }
+        }
     }
 
     private void setModelSpinner() {
