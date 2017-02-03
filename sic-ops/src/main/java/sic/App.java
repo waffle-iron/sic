@@ -1,7 +1,7 @@
 package sic;
 
 import org.springframework.boot.SpringApplication;
-import sic.vista.swing.GUI_LogIn;
+import sic.vista.swing.LoginGUI;
 
 public class App {
 
@@ -9,7 +9,7 @@ public class App {
         SpringApplication app = new SpringApplication(App.class);
         app.setHeadless(false);
         app.run(args);
-        GUI_LogIn gui_LogIn = new GUI_LogIn();
+        LoginGUI gui_LogIn = new LoginGUI();
         gui_LogIn.setVisible(true);
     }
 }

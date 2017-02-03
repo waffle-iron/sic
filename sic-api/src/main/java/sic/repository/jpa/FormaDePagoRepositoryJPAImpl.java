@@ -36,7 +36,7 @@ public class FormaDePagoRepositoryJPAImpl implements IFormaDePagoRepository {
     }
 
     @Override
-    public FormaDePago getFormaDePagoPredeterminado(Empresa empresa) {
+    public FormaDePago getFormaDePagoPredeterminada(Empresa empresa) {
         TypedQuery<FormaDePago> typedQuery = em.createNamedQuery("FormaDePago.buscarPredeterminada", FormaDePago.class);
         typedQuery.setParameter("empresa", empresa);
         List<FormaDePago> formasDePago = typedQuery.getResultList();

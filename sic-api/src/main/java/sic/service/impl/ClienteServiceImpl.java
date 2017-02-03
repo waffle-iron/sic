@@ -58,8 +58,13 @@ public class ClienteServiceImpl implements IClienteService {
     }
 
     @Override
-    public Cliente getClientePredeterminado(Empresa empresa) {        
-        return clienteRepository.getClientePredeterminado(empresa);                   
+    public Cliente getClientePredeterminado(Empresa empresa) {   
+        Cliente cliente = clienteRepository.getClientePredeterminado(empresa); 
+        if (cliente == null) {
+            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_cliente_sin_predeterminado"));
+        }
+        return cliente;                   
     }
 
     /**
