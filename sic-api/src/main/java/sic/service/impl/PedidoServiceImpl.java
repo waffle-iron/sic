@@ -146,7 +146,12 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     public long calcularNumeroPedido(Empresa empresa) {
-        return 1 + pedidoRepository.findTopByEmpresaAndEliminadoOrderByNroPedidoDesc(empresa, false).getNroPedido();
+        Pedido pedido = pedidoRepository.findTopByEmpresaAndEliminadoOrderByNroPedidoDesc(empresa, false);
+        if (pedido == null) {
+            return 1; // No existe ningun Pedido anterior
+        } else {
+            return 1 + pedido.getNroPedido();
+        }
     }
 
     @Override

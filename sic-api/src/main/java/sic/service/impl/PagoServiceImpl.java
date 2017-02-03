@@ -77,7 +77,12 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     public long getSiguienteNroPago(Long idEmpresa) {
-        return 1 + pagoRepository.findTopByEmpresaOrderByNroPagoDesc(empresaService.getEmpresaPorId(idEmpresa)).getNroPago();
+        Pago pago = pagoRepository.findTopByEmpresaOrderByNroPagoDesc(empresaService.getEmpresaPorId(idEmpresa));
+        if (pago == null) {
+            return 1; // No existe ningun Pago anterior
+        } else {
+            return 1 + pago.getNroPago();
+        }
     }
     
     @Override
