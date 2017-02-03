@@ -179,7 +179,7 @@ public class PagoServiceImpl implements IPagoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_pagada"));
         }
-        if (pago.getMonto() > this.getSaldoAPagar(pago.getFactura())) {
+        if ((Math.ceil(pago.getMonto()* 100) / 100) > (Math.ceil(this.getSaldoAPagar(pago.getFactura())* 100) / 100)) {  
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_mayorADeuda_monto"));
         }
