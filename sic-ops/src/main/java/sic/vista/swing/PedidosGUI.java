@@ -327,7 +327,7 @@ public class PedidosGUI extends JInternalFrame {
     }
 
     private void cargarRenglonesDelPedidoSeleccionadoEnTabla(KeyEvent evt) {
-        int row = tbl_Pedidos.getSelectedRow();
+        int row = Utilidades.getSelectedRowModelIndice(tbl_Pedidos);
         if (evt != null) {
             if ((evt.getKeyCode() == KeyEvent.VK_UP) && row > 0) {
                 row--;

@@ -1,6 +1,5 @@
 package sic.vista.swing;
 
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,7 +25,6 @@ public class DetallePagoGUI extends JDialog {
 
     private final Factura facturaRelacionada;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-    private double monto;
 
     public DetallePagoGUI(Factura factura) {
         this.initComponents();
@@ -61,9 +59,11 @@ public class DetallePagoGUI extends JDialog {
         try {
             Pago pago = new Pago();
             Calendar fechaYHora = dc_Fecha.getCalendar();
-            fechaYHora.set(Calendar.HOUR_OF_DAY, (int) spinner_Hora.getValue());
-            fechaYHora.set(Calendar.MINUTE, (int) spinner_Minutos.getValue());
-            pago.setFecha(fechaYHora.getTime());
+            if (fechaYHora != null) {
+                fechaYHora.set(Calendar.HOUR_OF_DAY, (int) spinner_Hora.getValue());
+                fechaYHora.set(Calendar.MINUTE, (int) spinner_Minutos.getValue());
+                pago.setFecha(fechaYHora.getTime());
+            }
             pago.setMonto(Double.parseDouble(txt_Monto.getValue().toString()));
             pago.setNota(txt_Nota.getText().trim());
             pago.setFormaDePago((FormaDePago) cmb_FormaDePago.getSelectedItem());
@@ -236,10 +236,9 @@ public class DetallePagoGUI extends JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         dc_Fecha.setDate(new Date());
-        monto = RestClient.getRestTemplate()
+        txt_Monto.setValue(RestClient.getRestTemplate()
                 .getForObject("/pagos/facturas/" + facturaRelacionada.getId_Factura() + "/saldo",
-                double.class);
-        txt_Monto.setValue(monto);
+                double.class));
         this.cargarFormasDePago();
     }//GEN-LAST:event_formWindowOpened
 
