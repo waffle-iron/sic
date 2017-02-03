@@ -209,7 +209,7 @@ public class PedidoServiceImpl implements IPedidoService {
         QPedido qpedido = QPedido.pedido;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qpedido.empresa.eq(criteria.getEmpresa()).and(qpedido.eliminado.eq(false)));       
-        if(criteria.isBuscaPorFecha() == true) {
+        if (criteria.isBuscaPorFecha() == true) {
             builder.and(qpedido.fecha.between(criteria.getFechaDesde(), criteria.getFechaHasta()));
         }
         if (criteria.isBuscaCliente() == true) {

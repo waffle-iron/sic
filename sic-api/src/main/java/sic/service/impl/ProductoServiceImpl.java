@@ -160,8 +160,8 @@ public class ProductoServiceImpl implements IProductoService {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qproducto.empresa.eq(criteria.getEmpresa()).and(qproducto.eliminado.eq(false)));
         if (criteria.isBuscarPorCodigo() == true && criteria.isBuscarPorDescripcion() == true) {
-            builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo()));
-            builder.or(this.buildPredicadoDescripcion(criteria.getDescripcion(), qproducto));
+            builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo())
+                    .or(this.buildPredicadoDescripcion(criteria.getDescripcion(), qproducto)));            
         } else {
             if (criteria.isBuscarPorCodigo() == true) {
                 builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo()));

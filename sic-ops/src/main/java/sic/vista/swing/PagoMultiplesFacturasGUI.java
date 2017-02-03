@@ -154,7 +154,7 @@ public class PagoMultiplesFacturasGUI extends JDialog {
         lbl_Monto.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Monto.setText("* Monto:");
 
-        ftxt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        ftxt_Monto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
         ftxt_Monto.setText("0");
         ftxt_Monto.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {

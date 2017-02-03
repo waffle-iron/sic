@@ -294,7 +294,8 @@ public class FacturaServiceImpl implements IFacturaService {
         factura.setEliminada(false);
         if (factura instanceof FacturaVenta) {
             factura.setNumSerie(1); //Serie de la factura hardcodeada a 1
-            factura.setNumFactura(this.calcularNumeroFactura(factura.getTipoFactura(), factura.getNumSerie(), factura.getEmpresa().getId_Empresa()));
+            factura.setNumFactura(this.calcularNumeroFactura(factura.getTipoFactura(),
+                    factura.getNumSerie(), factura.getEmpresa().getId_Empresa()));
         }
         this.validarFactura(factura);
         this.procesarPagos(factura);     

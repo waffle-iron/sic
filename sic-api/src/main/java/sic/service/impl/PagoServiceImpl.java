@@ -54,7 +54,7 @@ public class PagoServiceImpl implements IPagoService {
     
     @Override
     public List<Pago> getPagosDeLaFactura(long idFactura) {
-        return this.pagoRepository.findByFactura(facturaService.getFacturaPorId(idFactura));
+        return this.pagoRepository.findByFacturaAndEliminado(facturaService.getFacturaPorId(idFactura), false);
     }
 
     @Override
