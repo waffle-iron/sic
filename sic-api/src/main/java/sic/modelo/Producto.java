@@ -8,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,25 +18,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "producto")
-@NamedQueries({
-    @NamedQuery(name = "Producto.buscarPorId",
-            query = "SELECT p FROM Producto p "
-                    + "WHERE p.eliminado = false AND p.id_Producto = :id"),
-    @NamedQuery(name = "Producto.buscarPorDescripcion",
-            query = "SELECT p FROM Producto p "
-                    + "WHERE p.descripcion = :descripcion AND p.empresa = :empresa AND p.eliminado = false"),
-    @NamedQuery(name = "Producto.buscarPorCodigo",
-            query = "SELECT p FROM Producto p "
-                    + "WHERE p.codigo = :codigo AND p.empresa = :empresa AND p.eliminado = false"),
-    @NamedQuery(name = "Producto.buscarPorRubro",
-            query = "SELECT p FROM Producto p "
-                    + "WHERE p.rubro = :rubro AND p.empresa = :empresa AND p.eliminado = false "
-                    + "ORDER BY p.descripcion ASC"),
-    @NamedQuery(name = "Producto.buscarPorProveedor",
-            query = "SELECT p FROM Producto p "
-                    + "WHERE p.proveedor = :proveedor AND p.empresa = :empresa AND p.eliminado = false "
-                    + "ORDER BY p.descripcion ASC")
-})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

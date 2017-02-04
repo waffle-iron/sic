@@ -15,27 +15,25 @@ import sic.builder.ClienteBuilder;
 import sic.builder.EmpresaBuilder;
 import sic.builder.FacturaVentaBuilder;
 import sic.builder.ProductoBuilder;
-import sic.builder.RenglonFacturaBuilder;
 import sic.builder.TransportistaBuilder;
 import sic.modelo.Cliente;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Empresa;
 import sic.modelo.Factura;
-import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Medida;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
-import sic.modelo.Usuario;
 import sic.modelo.Movimiento;
-import sic.repository.jpa.FacturaRepositoryJPAImpl;
+import sic.modelo.Usuario;
+import sic.repository.FacturaRepository;
 
 @RunWith(SpringRunner.class)
 public class FacturaServiceImplTest {
     
     @Mock
-    private FacturaRepositoryJPAImpl facturaRepository;    
+    private FacturaRepository facturaRepository;    
     
     @Mock
     private ProductoServiceImpl productoService;
@@ -192,11 +190,12 @@ public class FacturaServiceImplTest {
 
     @Test
     public void shouldDividirFactura() {
-        when(facturaRepository.getMayorNumFacturaSegunTipo("", (long) 1)).thenReturn((long) 1);
+        when(facturaRepository.buscarMayorNumFacturaSegunTipo('X', 1L, new EmpresaBuilder().build().getId_Empresa())).thenReturn(1L);
+        when(facturaRepository.buscarMayorNumFacturaSegunTipo('A', 1L, new EmpresaBuilder().build().getId_Empresa())).thenReturn(1L);
         RenglonFactura renglon1 = Mockito.mock(RenglonFactura.class);
         RenglonFactura renglon2 = Mockito.mock(RenglonFactura.class);
         Producto producto = Mockito.mock(Producto.class);
-        when(producto.getId_Producto()).thenReturn((long) 1);
+        when(producto.getId_Producto()).thenReturn(1L);
         when(producto.getCodigo()).thenReturn("1");
         when(producto.getDescripcion()).thenReturn("producto test");
         Medida medida = Mockito.mock(Medida.class);
@@ -205,9 +204,9 @@ public class FacturaServiceImplTest {
         when(producto.getIva_porcentaje()).thenReturn(21.00);
         when(producto.getImpuestoInterno_porcentaje()).thenReturn(0.0);
         when(producto.getPrecioLista()).thenReturn(1.0);
-        when(productoService.getProductoPorId((long) 1)).thenReturn(producto);
-        when(renglon1.getId_ProductoItem()).thenReturn((long) 1);
-        when(renglon2.getId_ProductoItem()).thenReturn((long) 1);
+        when(productoService.getProductoPorId(1L)).thenReturn(producto);
+        when(renglon1.getId_ProductoItem()).thenReturn(1L);
+        when(renglon2.getId_ProductoItem()).thenReturn(1L);
         when(renglon1.getCantidad()).thenReturn(4.00);
         when(renglon2.getCantidad()).thenReturn(7.00);
         List<RenglonFactura> renglones = new ArrayList<>();

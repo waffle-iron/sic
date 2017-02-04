@@ -597,7 +597,7 @@ public class CerrarVentaGUI extends JDialog {
     }//GEN-LAST:event_formWindowOpened
 
     private void btn_FinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_FinalizarActionPerformed
-        if (!lbl_Dividido.getText().isEmpty()) {
+        if (dividir) {
             this.finalizarVenta();
         } else {
             double totalPagos = 0.0;
