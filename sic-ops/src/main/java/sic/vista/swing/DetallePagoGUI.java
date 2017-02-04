@@ -1,6 +1,5 @@
 package sic.vista.swing;
 
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,7 +20,6 @@ import sic.modelo.EmpresaActiva;
 import sic.modelo.Factura;
 import sic.modelo.FormaDePago;
 import sic.modelo.Pago;
-import sic.util.Utilidades;
 
 public class DetallePagoGUI extends JDialog {
 
@@ -61,10 +59,11 @@ public class DetallePagoGUI extends JDialog {
         try {
             Pago pago = new Pago();
             Calendar fechaYHora = dc_Fecha.getCalendar();
-            fechaYHora.set(Calendar.HOUR_OF_DAY, (int) spinner_Hora.getValue());
-            fechaYHora.set(Calendar.MINUTE, (int) spinner_Minutos.getValue());
-            pago.setFecha(fechaYHora.getTime());
-            txt_Monto.commitEdit();
+            if (fechaYHora != null) {
+                fechaYHora.set(Calendar.HOUR_OF_DAY, (int) spinner_Hora.getValue());
+                fechaYHora.set(Calendar.MINUTE, (int) spinner_Minutos.getValue());
+                pago.setFecha(fechaYHora.getTime());
+            }
             pago.setMonto(Double.parseDouble(txt_Monto.getValue().toString()));
             pago.setNota(txt_Nota.getText().trim());
             pago.setFormaDePago((FormaDePago) cmb_FormaDePago.getSelectedItem());
@@ -80,8 +79,6 @@ public class DetallePagoGUI extends JDialog {
             JOptionPane.showMessageDialog(this,
                     ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                     "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ParseException ex) {
-            LOGGER.error(ex.getMessage());
         }
     }
 
@@ -239,9 +236,9 @@ public class DetallePagoGUI extends JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         dc_Fecha.setDate(new Date());
-        txt_Monto.setValue(Utilidades.truncarDecimal(RestClient.getRestTemplate()
+        txt_Monto.setValue(RestClient.getRestTemplate()
                 .getForObject("/pagos/facturas/" + facturaRelacionada.getId_Factura() + "/saldo",
-                double.class), 2));
+                double.class));
         this.cargarFormasDePago();
     }//GEN-LAST:event_formWindowOpened
 

@@ -214,11 +214,4 @@ public class Utilidades {
         }
     }
     
-    public static double truncarDecimal(double valor, int cantidadDecimales) {
-        if (valor > 0) {
-            return (new BigDecimal(String.valueOf(valor)).setScale(cantidadDecimales, BigDecimal.ROUND_FLOOR)).doubleValue();
-        } else {
-            return (new BigDecimal(String.valueOf(valor)).setScale(cantidadDecimales, BigDecimal.ROUND_CEILING)).doubleValue();
-        }
-    }
 }

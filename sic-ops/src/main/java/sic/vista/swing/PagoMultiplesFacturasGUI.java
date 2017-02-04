@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -34,8 +35,8 @@ public class PagoMultiplesFacturasGUI extends JDialog {
     private double montoTotal = 0.0;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    public PagoMultiplesFacturasGUI(JInternalFrame parent, boolean modal, List<Factura> facturas, Movimiento movimiento) {                
-        this.setModal(modal);
+    public PagoMultiplesFacturasGUI(JInternalFrame parent, List<Factura> facturas, Movimiento movimiento) {                
+        this.setIcon();        
         this.movimiento = movimiento;           
         dc_Fecha = new JDateChooser();
         dc_Fecha.setDate(new Date());        
@@ -43,6 +44,11 @@ public class PagoMultiplesFacturasGUI extends JDialog {
         this.initComponents();        
     }
 
+    private void setIcon() {
+        ImageIcon iconoVentana = new ImageIcon(PagoMultiplesFacturasGUI.class.getResource("/sic/icons/Stamp_16x16.png"));
+        this.setIconImage(iconoVentana.getImage());
+    }
+    
     private void setColumnasTabla() {
         tbl_InformacionFacturas.setAutoCreateRowSorter(true);
         String[] encabezados = new String[5];
@@ -348,7 +354,7 @@ public class PagoMultiplesFacturasGUI extends JDialog {
     }//GEN-LAST:event_lbl_AceptarActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        try {          
+        try {            
             tbl_InformacionFacturas.setModel(modeloTablaFacturas);
             if (movimiento == Movimiento.VENTA) {
                 this.setTitle("Pago Multiple - Cliente: " + ((FacturaVenta) facturas.get(0)).getCliente().getRazonSocial());

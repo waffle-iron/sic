@@ -20,6 +20,7 @@ import sic.service.BusinessServiceException;
 import sic.repository.PagoRepository;
 import sic.service.IEmpresaService;
 import sic.service.IFormaDePagoService;
+import sic.util.Utilidades;
 
 @Service
 public class PagoServiceImpl implements IPagoService {
@@ -193,10 +194,10 @@ public class PagoServiceImpl implements IPagoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_pagada"));
         }
-        if (pago.getMonto() > this.getSaldoAPagar(pago.getFactura())) {
+        if (Utilidades.round(pago.getMonto(), 2) > Utilidades.round(this.getSaldoAPagar(pago.getFactura()), 2)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_mayorADeuda_monto"));
         }
-    }  
+    }
 
 }

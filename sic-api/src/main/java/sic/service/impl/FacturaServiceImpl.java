@@ -448,8 +448,9 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     @Transactional
     public Factura actualizarFacturaEstadoPagada(Factura factura) {
-        double totalFactura = Math.floor(factura.getTotal() * 100) / 100;
-        if (this.getTotalPagado(factura) >= totalFactura) {
+        double totalFactura = Utilidades.round(factura.getTotal(), 2);
+        double totalPagado = Utilidades.round(this.getTotalPagado(factura), 2);
+        if (totalPagado >= totalFactura) {               
             factura.setPagada(true);
         } else {
             factura.setPagada(false);
