@@ -55,9 +55,8 @@ public class PuntoDeVentaGUI extends JDialog {
     private double total;
 
     public PuntoDeVentaGUI() {
-        this.initComponents();
-        ImageIcon iconoVentana = new ImageIcon(PuntoDeVentaGUI.class.getResource("/sic/icons/SIC_24_square.png"));
-        this.setIconImage(iconoVentana.getImage());
+        this.initComponents();        
+        this.setIcon();
         ImageIcon iconoNoMarcado = new ImageIcon(getClass().getResource("/sic/icons/chkNoMarcado_16x16.png"));
         this.tbtn_marcarDesmarcar.setIcon(iconoNoMarcado);
 
@@ -86,7 +85,7 @@ public class PuntoDeVentaGUI extends JDialog {
         dc_fechaVencimiento.addKeyListener(keyHandler);
         btn_nuevoProducto.addKeyListener(keyHandler);
     }
-
+    
     public void cargarPedidoParaFacturar() {
         try {
             this.empresa = pedido.getEmpresa();
@@ -167,6 +166,11 @@ public class PuntoDeVentaGUI extends JDialog {
         return this.modificarPedido;
     }
 
+    private void setIcon() {
+        ImageIcon iconoVentana = new ImageIcon(PuntoDeVentaGUI.class.getResource("/sic/icons/SIC_24_square.png"));
+        this.setIconImage(iconoVentana.getImage());
+    }
+    
     private void llamarGUI_SeleccionEmpresa(List<Empresa> empresas) {
         SeleccionEmpresaGUI gui_SeleccionEmpresa = new SeleccionEmpresaGUI(this, empresas);
         gui_SeleccionEmpresa.setLocationRelativeTo(this);
@@ -1413,7 +1417,7 @@ public class PuntoDeVentaGUI extends JDialog {
     }//GEN-LAST:event_btn_NuevoClienteActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        try {
+        try {            
             this.setSize(1050, 645);
             this.setLocationRelativeTo(null);
             this.setColumnas();            

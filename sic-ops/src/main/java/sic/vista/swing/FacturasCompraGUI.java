@@ -728,7 +728,8 @@ public class FacturasCompraGUI extends JInternalFrame {
                                 + "&movimiento=" + Movimiento.COMPRA;
                     boolean esValido = RestClient.getRestTemplate().getForObject(uri, boolean.class);
                     if (esValido) {
-                        PagoMultiplesFacturasGUI gui_pagoMultiplesFacturas = new PagoMultiplesFacturasGUI(this, true, facturasCompra, Movimiento.COMPRA);
+                        PagoMultiplesFacturasGUI gui_pagoMultiplesFacturas = new PagoMultiplesFacturasGUI(this, facturasCompra, Movimiento.COMPRA);
+                        gui_pagoMultiplesFacturas.setModal(true);
                         gui_pagoMultiplesFacturas.setLocationRelativeTo(this);
                         gui_pagoMultiplesFacturas.setVisible(true);
                         this.buscar();

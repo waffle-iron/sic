@@ -1039,9 +1039,10 @@ public class FacturasVentaGUI extends JInternalFrame {
                             + "&movimiento=" + Movimiento.VENTA;
                     boolean esValido = RestClient.getRestTemplate().getForObject(uri, boolean.class);
                     if (esValido) {
-                        PagoMultiplesFacturasGUI nuevoPagoMultiple = new PagoMultiplesFacturasGUI(this, true, facturasVenta, Movimiento.VENTA);
-                        nuevoPagoMultiple.setLocationRelativeTo(this);
-                        nuevoPagoMultiple.setVisible(true);
+                        PagoMultiplesFacturasGUI gui_PagoMultiples = new PagoMultiplesFacturasGUI(this, facturasVenta, Movimiento.VENTA);
+                        gui_PagoMultiples.setModal(true);
+                        gui_PagoMultiples.setLocationRelativeTo(this);
+                        gui_PagoMultiples.setVisible(true);
                         this.buscar();
                     }
                 }
