@@ -10,8 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,27 +18,6 @@ import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "pago")
-@NamedQueries({
-    @NamedQuery(name = "Pago.buscarPorId",
-            query = "SELECT p FROM Pago p "
-                + "WHERE p.eliminado = false AND p.id_Pago= :id"),
-    @NamedQuery(name = "Pago.buscarPorNroYEmpresa",
-            query = "SELECT p FROM Pago p "
-                + "WHERE p.eliminado = false AND p.nroPago= :nroPago "
-                + "AND p.empresa.id_Empresa = :idEmpresa"),
-    @NamedQuery(name = "Pago.buscarPagosEntreFechasYFormaDePago",
-            query = "SELECT p FROM Pago p "
-                + "WHERE p.empresa.id_Empresa = :id_Empresa "
-                + "AND p.formaDePago.id_FormaDePago = :id_FormaDePago "
-                + "AND p.eliminado = false AND p.fecha BETWEEN :desde AND :hasta"),
-    @NamedQuery(name = "Pago.buscarMayorNroPago",
-            query = "SELECT MAX(p.nroPago) FROM Pago p "
-                + "WHERE p.empresa.id_Empresa = :idEmpresa"),
-    @NamedQuery(name = "Pago.buscarPorFactura",
-            query = "SELECT p FROM Pago p "
-                + "WHERE p.factura.id_Factura = :idFactura AND p.eliminado = false "
-                + "ORDER BY p.fecha ASC")
-})
 @Data
 @EqualsAndHashCode(of = {"nroPago", "empresa"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Pago", scope = Pago.class)

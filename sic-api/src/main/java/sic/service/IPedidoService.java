@@ -12,6 +12,8 @@ import sic.modelo.RenglonPedido;
 public interface IPedidoService {
 
     Pedido getPedidoPorId(Long id);
+    
+    Pedido getPedidoPorNumeroYEmpresa(Long nroPedido, Empresa empresa);
             
     void actualizar(Pedido pedido);
 
@@ -26,8 +28,6 @@ public interface IPedidoService {
     boolean eliminar(long idPedido);
 
     List<Factura> getFacturasDelPedido(long id);
-
-    Pedido getPedidoPorNumeroYEmpresa(long nroPedido, long idEmpresa);
 
     HashMap<Long, RenglonFactura> getRenglonesFacturadosDelPedido(long nroPedido);
 

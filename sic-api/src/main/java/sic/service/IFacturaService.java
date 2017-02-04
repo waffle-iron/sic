@@ -27,8 +27,6 @@ public interface IFacturaService {
     char[] getTiposFacturaSegunEmpresa(Empresa empresa);
 
     List<RenglonFactura> getRenglonesDeLaFactura(Long id_Factura);
-    
-    Factura getFacturaPorTipoSerieNum(char tipo, long serie, long num, long idEmpresa);
 
     String getTipoFactura(Factura factura);
 
@@ -88,7 +86,7 @@ public interface IFacturaService {
 
     double calcularPrecioUnitario(Movimiento movimiento, String tipoDeFactura, Producto producto);
 
-    long calcularNumeroFactura(String tipoDeFactura, long serie);
+    long calcularNumeroFactura(char tipoDeFactura, long serie, long idEmpresa);
 
     double calcularVuelto(double importeAPagar, double importeAbonado);
 

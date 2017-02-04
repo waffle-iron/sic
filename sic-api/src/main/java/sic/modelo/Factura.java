@@ -19,8 +19,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -30,18 +28,6 @@ import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "factura")
-@NamedQueries({
-    @NamedQuery(name = "Factura.buscarPorTipoSerieNum",
-            query = "SELECT f FROM Factura f "
-                    + "WHERE f.tipoFactura = :tipo AND f.numSerie = :serie AND f.numFactura = :num "
-                    + "AND f.empresa.id_Empresa = :idEmpresa AND f.eliminada = false"),
-    @NamedQuery(name = "Factura.buscarPorId",
-            query = "SELECT f FROM Factura f "
-                    + "WHERE f.eliminada = false AND f.id_Factura = :id"),
-    @NamedQuery(name = "Factura.relacionadasConPedido",
-            query = "SELECT f FROM Factura f "
-                    + "WHERE f.eliminada = false AND f.pedido.id_Pedido = :id")
-})
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @EqualsAndHashCode(of = {"fecha", "tipoFactura", "numSerie", "numFactura", "empresa"})

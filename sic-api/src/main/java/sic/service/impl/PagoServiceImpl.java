@@ -14,30 +14,37 @@ import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Pago;
-import sic.repository.IPagoRepository;
 import sic.service.IFacturaService;
 import sic.service.IPagoService;
 import sic.service.BusinessServiceException;
-import sic.util.Utilidades;
+import sic.repository.PagoRepository;
+import sic.service.IEmpresaService;
+import sic.service.IFormaDePagoService;
 
 @Service
 public class PagoServiceImpl implements IPagoService {
 
-    private final IPagoRepository pagoRepository;
+    private final PagoRepository pagoRepository;
     private final IFacturaService facturaService;
+    private final IEmpresaService empresaService;
+    private final IFormaDePagoService formaDePagoService;
     private static final Logger LOGGER = Logger.getLogger(PagoServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public PagoServiceImpl(IPagoRepository pagoRepository,
+    public PagoServiceImpl(PagoRepository pagoRepository,
+            IEmpresaService empresaService,
+            IFormaDePagoService formaDePagoService,
             IFacturaService facturaService) {
 
+        this.empresaService = empresaService;
+        this.formaDePagoService = formaDePagoService;
         this.pagoRepository = pagoRepository;
         this.facturaService = facturaService;
     }
 
     @Override
     public Pago getPagoPorId(long idPago) {
-        Pago pago = this.pagoRepository.getPagoPorId(idPago);
+        Pago pago = this.pagoRepository.findOne(idPago);
         if (pago == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_inexistente_eliminado"));
@@ -47,7 +54,7 @@ public class PagoServiceImpl implements IPagoService {
     
     @Override
     public List<Pago> getPagosDeLaFactura(long idFactura) {
-        return this.pagoRepository.getPagosDeLaFactura(idFactura);
+        return this.pagoRepository.findByFacturaAndEliminado(facturaService.getFacturaPorId(idFactura), false);
     }
 
     @Override
@@ -64,12 +71,18 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
-        return pagoRepository.getPagosEntreFechasYFormaDePago(id_Empresa, id_FormaDePago, desde, hasta);
+        return pagoRepository.findByFechaBetweenAndEmpresaAndFormaDePagoAndEliminado(desde, hasta, 
+                empresaService.getEmpresaPorId(id_Empresa), formaDePagoService.getFormasDePagoPorId(id_FormaDePago), false);
     }
 
     @Override
     public long getSiguienteNroPago(Long idEmpresa) {
-        return 1 + pagoRepository.getMayorNroPago(idEmpresa);
+        Pago pago = pagoRepository.findTopByEmpresaOrderByNroPagoDesc(empresaService.getEmpresaPorId(idEmpresa));
+        if (pago == null) {
+            return 1; // No existe ningun Pago anterior
+        } else {
+            return 1 + pago.getNroPago();
+        }
     }
     
     @Override
@@ -77,7 +90,7 @@ public class PagoServiceImpl implements IPagoService {
     public Pago guardar(Pago pago) {
         this.validarOperacion(pago);
         pago.setNroPago(this.getSiguienteNroPago(pago.getEmpresa().getId_Empresa()));
-        pago = pagoRepository.guardar(pago);
+        pago = pagoRepository.save(pago);
         facturaService.actualizarFacturaEstadoPagada(pago.getFactura());
         LOGGER.warn("El Pago " + pago + " se guardó correctamente.");
         return pago;
@@ -92,7 +105,7 @@ public class PagoServiceImpl implements IPagoService {
                     .getString("mensaje_pago_inexistente_eliminado"));
         }
         pago.setEliminado(true);
-        pagoRepository.actualizar(pago);
+        pagoRepository.save(pago);
         facturaService.actualizarFacturaEstadoPagada(pago.getFactura());
         LOGGER.warn("El Pago " + pago + " se eliminó correctamente.");
     }

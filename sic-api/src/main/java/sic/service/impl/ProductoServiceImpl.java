@@ -1,5 +1,6 @@
 package sic.service.impl;
 
+import com.querydsl.core.BooleanBuilder;
 import sic.modelo.BusquedaProductoCriteria;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Empresa;
@@ -26,9 +28,9 @@ import sic.modelo.FacturaVenta;
 import sic.modelo.Medida;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
+import sic.modelo.QProducto;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Rubro;
-import sic.repository.IProductoRepository;
 import sic.service.IEmpresaService;
 import sic.service.IProductoService;
 import sic.service.BusinessServiceException;
@@ -36,16 +38,17 @@ import sic.service.ServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
+import sic.repository.ProductoRepository;
 
 @Service
 public class ProductoServiceImpl implements IProductoService {
 
-    private final IProductoRepository productoRepository;
-    private final IEmpresaService empresaService;    
-    private static final Logger LOGGER = Logger.getLogger(ProductoServiceImpl.class.getPackage().getName());    
+    private final ProductoRepository productoRepository;
+    private final IEmpresaService empresaService;
+    private static final Logger LOGGER = Logger.getLogger(ProductoServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public ProductoServiceImpl(IProductoRepository productoRepository, IEmpresaService empresaService) {
+    public ProductoServiceImpl(ProductoRepository productoRepository, IEmpresaService empresaService) {
         this.productoRepository = productoRepository;
         this.empresaService = empresaService;
     }
@@ -152,8 +155,42 @@ public class ProductoServiceImpl implements IProductoService {
         if (criteria.isBuscarPorProveedor() == true && criteria.getProveedor() == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_producto_vacio_proveedor"));
-        }        
-        return productoRepository.buscarProductos(criteria);
+        }
+        QProducto qproducto = QProducto.producto;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qproducto.empresa.eq(criteria.getEmpresa()).and(qproducto.eliminado.eq(false)));
+        if (criteria.isBuscarPorCodigo() == true && criteria.isBuscarPorDescripcion() == true) {
+            builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo())
+                    .or(this.buildPredicadoDescripcion(criteria.getDescripcion(), qproducto)));            
+        } else {
+            if (criteria.isBuscarPorCodigo() == true) {
+                builder.and(qproducto.codigo.containsIgnoreCase(criteria.getCodigo()));
+            }
+            if (criteria.isBuscarPorDescripcion() == true) {
+                builder.and(this.buildPredicadoDescripcion(criteria.getDescripcion(), qproducto));
+            }
+        }
+        if (criteria.isBuscarPorRubro() == true) {
+            builder.and(qproducto.rubro.eq(criteria.getRubro()));
+        }
+        if (criteria.isBuscarPorProveedor()) {
+            builder.and(qproducto.proveedor.eq(criteria.getProveedor()));
+        }
+        if (criteria.isListarSoloFaltantes() == true) {
+            builder.and(qproducto.cantidad.loe(qproducto.cantMinima)).and(qproducto.ilimitado.eq(false));
+        }
+        List<Producto> list = new ArrayList<>();
+        productoRepository.findAll(builder, new Sort(Sort.Direction.ASC, "descripcion")).iterator().forEachRemaining(list::add);
+        return list;
+    }
+
+    private BooleanBuilder buildPredicadoDescripcion(String descripcion, QProducto qproducto) {
+        String[] terminos = descripcion.split(" ");
+        BooleanBuilder descripcionProducto = new BooleanBuilder();
+        for (String termino : terminos) {
+            descripcionProducto.and(qproducto.descripcion.containsIgnoreCase(termino));
+        }
+        return descripcionProducto;
     }
 
     @Override
@@ -163,7 +200,7 @@ public class ProductoServiceImpl implements IProductoService {
             producto.setCodigo("");
         }
         this.validarOperacion(TipoDeOperacion.ALTA, producto);
-        producto = productoRepository.guardar(producto);
+        producto = productoRepository.save(producto);
         LOGGER.warn("El Producto " + producto + " se guardó correctamente.");
         return producto;
     }
@@ -172,18 +209,18 @@ public class ProductoServiceImpl implements IProductoService {
     @Transactional
     public void actualizar(Producto producto) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, producto);
-        productoRepository.actualizar(producto);
+        productoRepository.save(producto);
     }
 
     @Override
     public void actualizarStock(Factura factura, TipoDeOperacion operacion) {
         for (RenglonFactura renglon : factura.getRenglones()) {
-            Producto producto = productoRepository.getProductoPorId(renglon.getId_ProductoItem());
+            Producto producto = productoRepository.findOne(renglon.getId_ProductoItem());
             if (producto == null) {
                 LOGGER.warn("Se intenta actualizar el stock de un producto eliminado.");
             }
             if (producto != null && producto.isIlimitado() == false) {
-                
+
                 if (factura instanceof FacturaVenta) {
                     if (operacion == TipoDeOperacion.ALTA) {
                         producto.setCantidad(producto.getCantidad() - renglon.getCantidad());
@@ -205,7 +242,7 @@ public class ProductoServiceImpl implements IProductoService {
                         producto.setCantidad(result);
                     }
                 }
-                productoRepository.actualizar(producto);
+                productoRepository.save(producto);
             }
         }
     }
@@ -215,7 +252,7 @@ public class ProductoServiceImpl implements IProductoService {
     public void eliminarMultiplesProductos(long[] idProducto) {
         if (Validator.tieneDuplicados(idProducto)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                        .getString("mensaje_error_ids_duplicados"));
+                    .getString("mensaje_error_ids_duplicados"));
         }
         List<Producto> productos = new ArrayList<>();
         for (Long i : idProducto) {
@@ -227,34 +264,34 @@ public class ProductoServiceImpl implements IProductoService {
             producto.setEliminado(true);
             productos.add(producto);
         }
-        productoRepository.actualizarMultiplesProductos(productos);
+        productoRepository.save(productos);
     }
 
     @Override
     @Transactional
     public List<Producto> modificarMultiplesProductos(long[] idProducto,
-                                                      boolean checkPrecios,            
-                                                      Double gananciaNeto,
-                                                      Double gananciaPorcentaje,
-                                                      Double impuestoInternoNeto,
-                                                      Double impuestoInternoPorcentaje,
-                                                      Double IVANeto,
-                                                      Double IVAPorcentaje,
-                                                      Double precioCosto,
-                                                      Double precioLista,
-                                                      Double precioVentaPublico,                                                                     
-                                                      boolean checkMedida, Medida medida,
-                                                      boolean checkRubro, Rubro rubro,
-                                                      boolean checkProveedor, Proveedor proveedor) {
-        
+            boolean checkPrecios,
+            Double gananciaNeto,
+            Double gananciaPorcentaje,
+            Double impuestoInternoNeto,
+            Double impuestoInternoPorcentaje,
+            Double IVANeto,
+            Double IVAPorcentaje,
+            Double precioCosto,
+            Double precioLista,
+            Double precioVentaPublico,
+            boolean checkMedida, Medida medida,
+            boolean checkRubro, Rubro rubro,
+            boolean checkProveedor, Proveedor proveedor) {
+
         if (Validator.tieneDuplicados(idProducto)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                        .getString("mensaje_error_ids_duplicados"));
+                    .getString("mensaje_error_ids_duplicados"));
         }
         List<Producto> productos = new ArrayList<>();
         for (long i : idProducto) {
             productos.add(this.getProductoPorId(i));
-        }        
+        }
         //Requeridos
         if (checkMedida == true && medida == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
@@ -268,7 +305,7 @@ public class ProductoServiceImpl implements IProductoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_producto_vacio_proveedor"));
         }
-        if (checkPrecios == true) {                       
+        if (checkPrecios == true) {
             productos.forEach((producto) -> {
                 producto.setPrecioCosto(precioCosto);
                 producto.setGanancia_porcentaje(gananciaPorcentaje);
@@ -304,13 +341,13 @@ public class ProductoServiceImpl implements IProductoService {
                 producto.setFechaUltimaModificacion(fechaHoraActual);
             });
         }
-        productoRepository.actualizarMultiplesProductos(productos);
+        productoRepository.save(productos);
         return productos;
     }
 
     @Override
     public Producto getProductoPorId(long idProducto) {
-        Producto producto = productoRepository.getProductoPorId(idProducto);
+        Producto producto = productoRepository.findOne(idProducto);
         if (producto == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_producto_no_existente"));
@@ -323,32 +360,17 @@ public class ProductoServiceImpl implements IProductoService {
         if (codigo.isEmpty() == true || empresa == null) {
             return null;
         } else {
-            return productoRepository.getProductoPorCodigo(codigo, empresa);
+            return productoRepository.findByCodigoAndEmpresaAndEliminado(codigo, empresa, false);
         }
     }
 
     @Override
     public Producto getProductoPorDescripcion(String descripcion, Empresa empresa) {
-        return productoRepository.getProductoPorDescripcion(descripcion, empresa);
+        return productoRepository.findByDescripcionAndEmpresaAndEliminado(descripcion, empresa, false);
     }
-    
+
     @Override
     public double calcularValorStock(BusquedaProductoCriteria criteria) {
-        //Empresa
-        if (criteria.getEmpresa() == null) {
-            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_empresa_no_existente"));
-        }
-        //Rubro
-        if (criteria.isBuscarPorRubro() == true && criteria.getRubro() == null) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_producto_vacio_rubro"));
-        }
-        //Proveedor
-        if (criteria.isBuscarPorProveedor() == true && criteria.getProveedor() == null) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_producto_vacio_proveedor"));
-        }        
         return productoRepository.calcularValorStock(criteria);
     }
 
@@ -356,10 +378,10 @@ public class ProductoServiceImpl implements IProductoService {
     public boolean existeStockDisponible(long idProducto, double cantidad) {
         return (this.getProductoPorId(idProducto).getCantidad() >= cantidad) || this.getProductoPorId(idProducto).isIlimitado();
     }
-  
+
     @Override
-    public double calcularGanancia_Porcentaje(Double precioDeListaNuevo, 
-            Double precioDeListaAnterior, double pvp, Double ivaPorcentaje, 
+    public double calcularGanancia_Porcentaje(Double precioDeListaNuevo,
+            Double precioDeListaAnterior, double pvp, Double ivaPorcentaje,
             Double impInternoPorcentaje, double precioCosto, boolean ascendente) {
         //evita la division por cero
         if (precioCosto == 0) {
@@ -397,7 +419,7 @@ public class ProductoServiceImpl implements IProductoService {
         double resultado = (pvp * iva_porcentaje) / 100;
         return resultado;
     }
-    
+
     @Override
     public double calcularImpInterno_Neto(double pvp, double impInterno_porcentaje) {
         double resultado = (pvp * impInterno_porcentaje) / 100;
@@ -419,11 +441,11 @@ public class ProductoServiceImpl implements IProductoService {
         Map params = new HashMap();
         params.put("empresa", empresaService.getEmpresaPorId(idEmpresa));
         params.put("logo", Utilidades.convertirByteArrayIntoImage(empresaService.getEmpresaPorId(idEmpresa).getLogo()));
-        JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(productos);               
+        JRBeanCollectionDataSource ds = new JRBeanCollectionDataSource(productos);
         try {
             return JasperExportManager.exportReportToPdf(JasperFillManager.fillReport(isFileReport, params, ds));
         } catch (JRException ex) {
-             throw new ServiceException(ResourceBundle.getBundle("Mensajes")
+            throw new ServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_error_reporte"), ex);
         }
     }

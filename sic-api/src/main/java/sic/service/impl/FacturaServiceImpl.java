@@ -32,7 +32,6 @@ import sic.modelo.Pedido;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
-import sic.repository.IFacturaRepository;
 import sic.service.IConfiguracionDelSistemaService;
 import sic.service.IFacturaService;
 import sic.service.IPagoService;
@@ -44,11 +43,12 @@ import sic.service.ServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
+import sic.repository.FacturaRepository;
 
 @Service
 public class FacturaServiceImpl implements IFacturaService {
 
-    private final IFacturaRepository facturaRepository;
+    private final FacturaRepository facturaRepository;
     private final IProductoService productoService;
     private final IConfiguracionDelSistemaService configuracionDelSistemaService;
     private final IPedidoService pedidoService;
@@ -59,12 +59,11 @@ public class FacturaServiceImpl implements IFacturaService {
 
     @Autowired
     @Lazy
-    public FacturaServiceImpl(IFacturaRepository facturaRepository,
+    public FacturaServiceImpl(FacturaRepository facturaRepository,
             IProductoService productoService,
             IConfiguracionDelSistemaService configuracionDelSistemaService,
             IPedidoService pedidoService,
             IPagoService pagoService) {
-
         this.facturaRepository = facturaRepository;
         this.productoService = productoService;
         this.configuracionDelSistemaService = configuracionDelSistemaService;
@@ -74,12 +73,12 @@ public class FacturaServiceImpl implements IFacturaService {
     
     @Override
     public Factura getFacturaPorId(Long id_Factura) {
-        return facturaRepository.getFacturaPorId(id_Factura);
+        return facturaRepository.findOne(id_Factura);
     }
 
     @Override
     public List<Factura> getFacturasDelPedido(Long idPedido) {
-        return facturaRepository.getFacturasDelPedido(idPedido);
+        return facturaRepository.findAllByPedidoAndEliminada(pedidoService.getPedidoPorId(idPedido), false);
     }
     
     @Override
@@ -183,12 +182,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     public List<RenglonFactura> getRenglonesDeLaFactura(Long id_Factura) {
         return this.getFacturaPorId(id_Factura).getRenglones();
-    }
-
-    @Override
-    public Factura getFacturaPorTipoSerieNum(char tipo, long serie, long num, long idEmpresa) {
-        return facturaRepository.getFacturaPorTipoSerieNum(tipo, serie, num, idEmpresa);
-    }    
+    }  
 
     @Override
     public String getTipoFactura(Factura factura) {
@@ -300,7 +294,8 @@ public class FacturaServiceImpl implements IFacturaService {
         factura.setEliminada(false);
         if (factura instanceof FacturaVenta) {
             factura.setNumSerie(1); //Serie de la factura hardcodeada a 1
-            factura.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(factura), factura.getNumSerie()));
+            factura.setNumFactura(this.calcularNumeroFactura(factura.getTipoFactura(),
+                    factura.getNumSerie(), factura.getEmpresa().getId_Empresa()));
         }
         this.validarFactura(factura);
         this.procesarPagos(factura);     
@@ -349,7 +344,7 @@ public class FacturaServiceImpl implements IFacturaService {
         } else {
             facturasProcesadas = new ArrayList<>();
             for (Factura f : facturas) {
-                Factura facturaGuardada = facturaRepository.guardar(f);
+                Factura facturaGuardada = facturaRepository.save(f);
                 this.actualizarFacturaEstadoPagada(facturaGuardada);
                 facturasProcesadas.add(facturaGuardada);
                 LOGGER.warn("La Factura " + facturaGuardada + " se guardó correctamente.");
@@ -361,7 +356,7 @@ public class FacturaServiceImpl implements IFacturaService {
     @Override
     @Transactional
     public void actualizar(Factura factura) {
-        facturaRepository.actualizar(factura);
+        facturaRepository.save(factura);
     }
 
     @Override
@@ -884,8 +879,13 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public long calcularNumeroFactura(String tipoDeFactura, long serie) {
-        return 1 + facturaRepository.getMayorNumFacturaSegunTipo(tipoDeFactura, serie);
+    public long calcularNumeroFactura(char tipoDeFactura, long serie, long idEmpresa) {
+        Long numeroFactura = facturaRepository.buscarMayorNumFacturaSegunTipo(tipoDeFactura, serie, idEmpresa);
+        if (numeroFactura == null) {
+            return 1; // No existe ninguna Factura anterior
+        } else {
+            return 1 + numeroFactura;
+        }
     }
 
     @Override
@@ -1015,8 +1015,6 @@ public class FacturaServiceImpl implements IFacturaService {
         List<RenglonFactura> listRenglonesSinIVA = new ArrayList<>(facturaSinIVA.getRenglones());
         facturaSinIVA.setFecha(facturaADividir.getFecha());
         facturaSinIVA.setTipoFactura('X');
-        facturaSinIVA.setNumSerie(facturaADividir.getNumSerie());
-        facturaSinIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaSinIVA), facturaSinIVA.getNumSerie()));
         facturaSinIVA.setFechaVencimiento(facturaADividir.getFechaVencimiento());
         facturaSinIVA.setTransportista(facturaADividir.getTransportista());
         facturaSinIVA.setRenglones(listRenglonesSinIVA);
@@ -1055,8 +1053,6 @@ public class FacturaServiceImpl implements IFacturaService {
         List<RenglonFactura> listRenglonesConIVA = new ArrayList<>(facturaConIVA.getRenglones());
         facturaConIVA.setFecha(facturaADividir.getFecha());
         facturaConIVA.setTipoFactura(facturaADividir.getTipoFactura());
-        facturaConIVA.setNumSerie(facturaADividir.getNumSerie());
-        facturaConIVA.setNumFactura(this.calcularNumeroFactura(this.getTipoFactura(facturaConIVA), facturaConIVA.getNumSerie()));
         facturaConIVA.setFechaVencimiento(facturaADividir.getFechaVencimiento());
         facturaConIVA.setTransportista(facturaADividir.getTransportista());
         facturaConIVA.setRenglones(listRenglonesConIVA);
