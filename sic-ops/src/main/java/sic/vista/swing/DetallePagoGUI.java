@@ -62,6 +62,7 @@ public class DetallePagoGUI extends JDialog {
             if (fechaYHora != null) {
                 fechaYHora.set(Calendar.HOUR_OF_DAY, (int) spinner_Hora.getValue());
                 fechaYHora.set(Calendar.MINUTE, (int) spinner_Minutos.getValue());
+                fechaYHora.set(Calendar.SECOND, 59);
                 pago.setFecha(fechaYHora.getTime());
             }
             pago.setMonto(Double.parseDouble(txt_Monto.getValue().toString()));

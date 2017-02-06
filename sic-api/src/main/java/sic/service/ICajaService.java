@@ -4,10 +4,8 @@ import java.util.Date;
 import java.util.List;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
-import sic.modelo.Empresa;
 import sic.modelo.Gasto;
 import sic.modelo.Pago;
-import sic.modelo.Usuario;
 
 public interface ICajaService {
 

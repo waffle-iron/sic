@@ -31,7 +31,6 @@ import sic.repository.ICajaRepository;
 import sic.modelo.EstadoCaja;
 import sic.service.BusinessServiceException;
 import sic.service.IEmpresaService;
-import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IGastoService;
 import sic.service.IPagoService;
@@ -50,7 +49,6 @@ public class CajaServiceImpl implements ICajaService {
     private final IPagoService pagoService;
     private final IGastoService gastoService;
     private final IEmpresaService empresaService;
-    private final IFacturaService facturaService;
     private final IUsuarioService usuarioService;
     private final FormatterFechaHora formatoHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_HORA_INTERNACIONAL);
     private static final Logger LOGGER = Logger.getLogger(CajaServiceImpl.class.getPackage().getName());
@@ -59,14 +57,12 @@ public class CajaServiceImpl implements ICajaService {
     @Autowired
     public CajaServiceImpl(ICajaRepository cajaRepository, IFormaDePagoService formaDePagoService,
                            IPagoService pagoService, IGastoService gastoService,
-                           IEmpresaService empresaService, IFacturaService facturaService,
-                           IUsuarioService usuarioService) {
+                           IEmpresaService empresaService, IUsuarioService usuarioService) {
         this.cajaRepository = cajaRepository;
         this.formaDePagoService = formaDePagoService;
         this.pagoService = pagoService;
         this.gastoService = gastoService;
         this.empresaService = empresaService;
-        this.facturaService = facturaService;
         this.usuarioService = usuarioService;
     }
 

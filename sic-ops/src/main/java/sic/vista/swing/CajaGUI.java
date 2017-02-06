@@ -39,29 +39,16 @@ import sic.util.Utilidades;
 
 public class CajaGUI extends JDialog {
 
-    private final FormatterFechaHora formatter = new FormatterFechaHora(FormatterFechaHora.FORMATO_HORA_INTERNACIONAL);
+    private final FormatterFechaHora formatter = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_HISPANO);
     private ModeloTabla modeloTablaBalance;
     private ModeloTabla modeloTablaResumen;
-    private List<Object> listaMovimientos = new ArrayList<>();
+    private final List<Object> listaMovimientos = new ArrayList<>();
     private Caja caja;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     public CajaGUI(Frame parent, boolean modal) {
         super(parent, modal);
         this.initComponents();
-        try {
-            caja = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
-                    + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
-                    Caja.class);
-            this.setTituloVentana();
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     public CajaGUI(Frame parent, boolean modal, Caja caja) {
@@ -193,6 +180,7 @@ public class CajaGUI extends JDialog {
                     tipoFactura = "Venta";
                 }
                 fila[1] = "Pago por: Factura " + tipoFactura
+                        + " \"" + ((Pago) movimiento).getFactura().getTipoFactura() + "\""
                         + " Nº " + ((Pago) movimiento).getFactura().getNumSerie()
                         + " - " + ((Pago) movimiento).getFactura().getNumFactura();
             }
@@ -761,6 +749,19 @@ public class CajaGUI extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        try {
+            caja = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
+                    + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
+                    Caja.class);
+            this.setTituloVentana();
+        } catch (RestClientResponseException ex) {
+            JOptionPane.showMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ResourceAccessException ex) {
+            LOGGER.error(ex.getMessage());
+            JOptionPane.showMessageDialog(getParent(),
+                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
         this.limpiarYCargarTablas();
     }//GEN-LAST:event_formWindowOpened
 
