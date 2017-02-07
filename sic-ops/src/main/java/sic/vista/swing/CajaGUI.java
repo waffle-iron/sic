@@ -2,7 +2,6 @@ package sic.vista.swing;
 
 import java.awt.Color;
 import java.awt.Desktop;
-import java.awt.Frame;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,26 +45,13 @@ public class CajaGUI extends JDialog {
     private Caja caja;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    public CajaGUI(Frame parent, boolean modal) {
-        super(parent, modal);
-        this.initComponents();
-    }
-
-    public CajaGUI(Frame parent, boolean modal, Caja caja) {
-        super(parent, modal);
-        this.initComponents();
-        this.setIcon();
-        this.caja = caja;
-        this.setTituloVentana();
-    }
-
     public CajaGUI(Caja caja) {
         this.initComponents();
         this.setIcon();
         this.caja = caja;
         this.setTituloVentana();
     }
-    
+
     private void setIcon() {
         ImageIcon iconoVentana = new ImageIcon(CajaGUI.class.getResource("/sic/icons/Caja_16x16.png"));
         this.setIconImage(iconoVentana.getImage());
@@ -96,7 +82,7 @@ public class CajaGUI extends JDialog {
                         + "&hasta=" + hasta.getTime();
                 List<Pago> pagos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
                         .getForObject(criteriaPagos,
-                        Pago[].class)));
+                                Pago[].class)));
                 this.listaMovimientos.addAll(pagos);
                 String criteriaGastos = "/gastos/busqueda?"
                         + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
@@ -105,7 +91,7 @@ public class CajaGUI extends JDialog {
                         + "&hasta=" + hasta.getTime();
                 List<Gasto> gastos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
                         .getForObject(criteriaGastos,
-                        Gasto[].class)));
+                                Gasto[].class)));
                 this.listaMovimientos.addAll(gastos);
                 this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
             } catch (RestClientResponseException ex) {
@@ -244,10 +230,10 @@ public class CajaGUI extends JDialog {
                     if (this.caja.getEstado() == EstadoCaja.CERRADA) {
                         hasta = this.caja.getFechaCierre();
                     }
-                    List<Pago> pagosPorFormaDePago = this.getPagosPorFechaYFormaDePago(formaDePago.getId_FormaDePago(), 
-                        this.caja.getFechaApertura().getTime(), hasta.getTime());
+                    List<Pago> pagosPorFormaDePago = this.getPagosPorFechaYFormaDePago(formaDePago.getId_FormaDePago(),
+                            this.caja.getFechaApertura().getTime(), hasta.getTime());
                     List<Gasto> gastosPorFormaDePago = this.getGastosPorFechaYFormaDePago(formaDePago.getId_FormaDePago(),
-                        this.caja.getFechaApertura().getTime(), hasta.getTime()); 
+                            this.caja.getFechaApertura().getTime(), hasta.getTime());
                     if (pagosPorFormaDePago.size() > 0 || gastosPorFormaDePago.size() > 0) {
                         Object[] fila = new Object[3];
                         fila[0] = formaDePago.getNombre();
@@ -265,24 +251,24 @@ public class CajaGUI extends JDialog {
 
                         String uriGastos = "/cajas/total-gastos?idGasto=";
                         indice = 0;
-                        long[] idsGastos = new long[gastosPorFormaDePago.size()]; 
+                        long[] idsGastos = new long[gastosPorFormaDePago.size()];
                         for (Gasto gasto : gastosPorFormaDePago) {
                             idsGastos[indice] = gasto.getId_Gasto();
                             indice++;
-                        }              
+                        }
                         double totalPagos = 0;
                         if (!pagosPorFormaDePago.isEmpty()) {
                             totalPagos += RestClient.getRestTemplate()
-                                .getForObject(uriPagos 
-                                + Arrays.toString(idsPagos).substring(1, Arrays.toString(idsPagos).length() -1),
-                                double.class);
+                                    .getForObject(uriPagos
+                                            + Arrays.toString(idsPagos).substring(1, Arrays.toString(idsPagos).length() - 1),
+                                            double.class);
                         }
                         double totalGastos = 0;
                         if (!gastosPorFormaDePago.isEmpty()) {
                             totalGastos = RestClient.getRestTemplate()
-                                .getForObject(uriGastos
-                                + Arrays.toString(idsGastos).substring(1, Arrays.toString(idsGastos).length() -1),
-                                double.class);
+                                    .getForObject(uriGastos
+                                            + Arrays.toString(idsGastos).substring(1, Arrays.toString(idsGastos).length() - 1),
+                                            double.class);
                         }
                         double totalParcial = totalPagos - totalGastos;
                         fila[1] = formaDePago.isAfectaCaja();
@@ -341,8 +327,8 @@ public class CajaGUI extends JDialog {
     private void cargarFormasDePago() {
         try {
             List<FormaDePago> formasDePago = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                .getForObject("/formas-de-pago/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
-                FormaDePago[].class)));
+                    .getForObject("/formas-de-pago/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
+                            FormaDePago[].class)));
             if (cmb_FormasDePago.getItemCount() != formasDePago.size()) {
                 cmb_FormasDePago.removeAllItems();
                 formasDePago.stream().forEach((f) -> {
@@ -371,12 +357,12 @@ public class CajaGUI extends JDialog {
         if (Desktop.isDesktopSupported()) {
             try {
                 byte[] reporte = RestClient.getRestTemplate()
-                    .getForObject("/cajas/" + this.caja.getId_Caja() + "/empresas/"
-                    + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/reporte",
-                    byte[].class);
+                        .getForObject("/cajas/" + this.caja.getId_Caja() + "/empresas/"
+                                + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/reporte",
+                                byte[].class);
                 File f = new File("Caja.pdf");
-                Files.write(f.toPath(), reporte);                
-                Desktop.getDesktop().open(f);                
+                Files.write(f.toPath(), reporte);
+                Desktop.getDesktop().open(f);
             } catch (IOException ex) {
                 LOGGER.error(ex.getMessage());
                 JOptionPane.showMessageDialog(this,
@@ -409,10 +395,10 @@ public class CajaGUI extends JDialog {
         if (Desktop.isDesktopSupported()) {
             try {
                 byte[] reporte = RestClient.getRestTemplate()
-                    .getForObject("/facturas/" + ((Pago) movimientoDeTabla).getFactura().getId_Factura() + "/reporte",
-                    byte[].class);                
+                        .getForObject("/facturas/" + ((Pago) movimientoDeTabla).getFactura().getId_Factura() + "/reporte",
+                                byte[].class);
                 File f = new File("Factura.pdf");
-                Files.write(f.toPath(), reporte);                
+                Files.write(f.toPath(), reporte);
                 Desktop.getDesktop().open(f);
             } catch (IOException ex) {
                 LOGGER.error(ex.getMessage());
@@ -439,7 +425,7 @@ public class CajaGUI extends JDialog {
         try {
             factura.setPagos(Arrays.asList(RestClient.getRestTemplate()
                     .getForObject("/pagos/facturas/" + factura.getId_Factura(),
-                    Pago[].class)));
+                            Pago[].class)));
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ResourceAccessException ex) {
@@ -456,8 +442,8 @@ public class CajaGUI extends JDialog {
 
     private List<FormaDePago> getFormasDePago() {
         return new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-            .getForObject("/formas-de-pago/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
-            FormaDePago[].class)));
+                .getForObject("/formas-de-pago/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
+                        FormaDePago[].class)));
     }
 
     private List<Pago> getPagosPorFechaYFormaDePago(long idFormaDePago, long fechaDesde, long fechaHasta) {
@@ -479,7 +465,7 @@ public class CajaGUI extends JDialog {
         return new ArrayList(Arrays.asList(RestClient.getRestTemplate()
                 .getForObject(criteriaGastos, Gasto[].class)));
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -836,7 +822,7 @@ public class CajaGUI extends JDialog {
     }//GEN-LAST:event_cmb_FormasDePagoActionPerformed
 
     private void btn_ImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ImprimirActionPerformed
-            this.lanzarReporteCaja();
+        this.lanzarReporteCaja();
     }//GEN-LAST:event_btn_ImprimirActionPerformed
 
     private void btn_EliminarGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarGastoActionPerformed
@@ -887,5 +873,5 @@ public class CajaGUI extends JDialog {
     javax.swing.JTable tbl_Balance;
     private javax.swing.JTable tbl_Resumen;
     // End of variables declaration//GEN-END:variables
-       
+
 }
