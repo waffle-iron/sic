@@ -40,7 +40,6 @@ public class ProductosGUI extends JInternalFrame {
 
     private void cargarRubros() {
         try {
-            Rubro rubroSeleccionado = (Rubro) cmb_Rubro.getSelectedItem();
             List<Rubro> rubros = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
                 .getForObject("/rubros/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                 Rubro[].class)));
@@ -48,8 +47,8 @@ public class ProductosGUI extends JInternalFrame {
             rubros.stream().forEach((r) -> {
                 cmb_Rubro.addItem(r);
             });
-            if (rubroSeleccionado != null && rubros.contains(rubroSeleccionado)) {
-                cmb_Rubro.setSelectedItem(rubroSeleccionado);
+            if (cmb_Rubro.getSelectedItem() != null && rubros.contains((Rubro)cmb_Rubro.getSelectedItem())) {
+                cmb_Rubro.setSelectedItem(cmb_Rubro.getSelectedItem());
             }
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -63,7 +62,6 @@ public class ProductosGUI extends JInternalFrame {
 
     private void cargarProveedores() {
         try {
-            Proveedor proveedorSeleccionado = (Proveedor) cmb_Proveedor.getSelectedItem();
             List<Proveedor> proveedores = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
                 .getForObject("/proveedores/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                 Proveedor[].class)));
@@ -71,8 +69,8 @@ public class ProductosGUI extends JInternalFrame {
             proveedores.stream().forEach((p) -> {
                 cmb_Proveedor.addItem(p);
             });
-            if (proveedorSeleccionado != null && proveedores.contains(proveedorSeleccionado)) {
-                cmb_Proveedor.setSelectedItem(proveedorSeleccionado);
+            if (cmb_Proveedor.getSelectedItem() != null && proveedores.contains((Proveedor)cmb_Proveedor.getSelectedItem())) {
+                cmb_Proveedor.setSelectedItem(cmb_Proveedor.getSelectedItem());
             }
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -691,9 +689,12 @@ public class ProductosGUI extends JInternalFrame {
 
     private void chk_ProveedorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_ProveedorItemStateChanged
         if (chk_Proveedor.isSelected() == true) {
+            this.cargarProveedores();
             cmb_Proveedor.setEnabled(true);
             cmb_Proveedor.requestFocus();
         } else {
+            cmb_Proveedor.removeAllItems();
+            cmb_Proveedor.addItem("Seleccione un Proveedor...");
             cmb_Proveedor.setEnabled(false);
         }
     }//GEN-LAST:event_chk_ProveedorItemStateChanged
@@ -717,8 +718,6 @@ public class ProductosGUI extends JInternalFrame {
         gui_DetalleProducto.setLocationRelativeTo(this);
         gui_DetalleProducto.setVisible(true);
         try {
-            this.cargarProveedores();
-            this.cargarRubros();
             this.buscar();
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -775,8 +774,6 @@ public class ProductosGUI extends JInternalFrame {
                 gui_DetalleProducto.setVisible(true);
             }
             try {
-                this.cargarProveedores();
-                this.cargarRubros();
                 this.buscar();
             } catch (RestClientResponseException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -800,17 +797,20 @@ public class ProductosGUI extends JInternalFrame {
 
     private void chk_RubroItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_RubroItemStateChanged
         if (chk_Rubro.isSelected() == true) {
+            this.cargarRubros();
             cmb_Rubro.setEnabled(true);
             cmb_Rubro.requestFocus();
         } else {
+            cmb_Rubro.removeAllItems();
+            cmb_Rubro.addItem("Selecciones un Rubro...");
             cmb_Rubro.setEnabled(false);
         }
     }//GEN-LAST:event_chk_RubroItemStateChanged
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
-        try {            
-            this.cargarRubros();
-            this.cargarProveedores();
+        try { 
+            cmb_Proveedor.addItem("Seleccione un Proveedor...");
+            cmb_Rubro.addItem("Seleccione un Rubro...");
             this.setColumnas();
             this.setMaximum(true);
         } catch (PropertyVetoException ex) {

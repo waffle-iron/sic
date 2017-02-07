@@ -41,13 +41,6 @@ public class PedidosGUI extends JInternalFrame {
         initComponents();
         this.setSize(850, 600);
         this.limpiarJTables();
-        cmb_Cliente.addItem("Seleccione un Cliente...");
-        cmb_Vendedor.addItem("Seleccione un Vendedor...");
-        txt_NumeroPedido.setEnabled(false);
-        dc_FechaDesde.setEnabled(false);
-        dc_FechaHasta.setEnabled(false);
-        cmb_Cliente.setEnabled(false);
-        cmb_Vendedor.setEnabled(false);
     }
 
     public void buscar() {
@@ -854,6 +847,13 @@ public class PedidosGUI extends JInternalFrame {
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
         try {
+            cmb_Cliente.addItem("Seleccione un Cliente...");
+            cmb_Vendedor.addItem("Seleccione un Vendedor...");
+            txt_NumeroPedido.setEnabled(false);
+            dc_FechaDesde.setEnabled(false);
+            dc_FechaHasta.setEnabled(false);
+            cmb_Cliente.setEnabled(false);
+            cmb_Vendedor.setEnabled(false);
             this.setMaximum(true);
             dc_FechaDesde.setDate(new Date());
             dc_FechaHasta.setDate(new Date());

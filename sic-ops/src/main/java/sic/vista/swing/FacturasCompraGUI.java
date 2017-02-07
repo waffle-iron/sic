@@ -657,7 +657,6 @@ public class FacturasCompraGUI extends JInternalFrame {
                 gui_DetalleFacturaCompra.setModal(true);
                 gui_DetalleFacturaCompra.setLocationRelativeTo(this);
                 gui_DetalleFacturaCompra.setVisible(true);
-                this.cargarProveedores();
                 this.buscar();
             } else {
                 String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_sin_proveedor");
@@ -749,9 +748,9 @@ public class FacturasCompraGUI extends JInternalFrame {
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
         try {
             this.setSize(940, 600);
-            this.cargarProveedores();
             this.setColumnas();
             this.setMaximum(true);
+            cmb_Proveedor.addItem("Seleccione un Proveedor...");
             dc_FechaDesde.setDate(new Date());
             dc_FechaHasta.setDate(new Date());
             rb_soloImpagas.setSelected(true);
@@ -777,9 +776,12 @@ public class FacturasCompraGUI extends JInternalFrame {
 
     private void chk_ProveedorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_ProveedorItemStateChanged
         if (chk_Proveedor.isSelected() == true) {
+            this.cargarProveedores();
             cmb_Proveedor.setEnabled(true);
             cmb_Proveedor.requestFocus();
         } else {
+            cmb_Proveedor.removeAllItems();
+            cmb_Proveedor.addItem("Seleccione un Proveedor...");
             cmb_Proveedor.setEnabled(false);
         }
     }//GEN-LAST:event_chk_ProveedorItemStateChanged
