@@ -749,18 +749,20 @@ public class CajaGUI extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        try {
-            caja = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
-                    + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
-                    Caja.class);
-            this.setTituloVentana();
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(getParent(),
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+        if (caja == null) {
+            try {
+                caja = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
+                        + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
+                        Caja.class);
+                this.setTituloVentana();
+            } catch (RestClientResponseException ex) {
+                JOptionPane.showMessageDialog(getParent(), ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ResourceAccessException ex) {
+                LOGGER.error(ex.getMessage());
+                JOptionPane.showMessageDialog(getParent(),
+                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
         this.limpiarYCargarTablas();
     }//GEN-LAST:event_formWindowOpened
