@@ -35,6 +35,14 @@ public class ConfiguracionDelSistema implements Serializable {
     private boolean usarFacturaVentaPreImpresa;
 
     private int cantidadMaximaDeRenglonesEnFactura;
+    
+    private boolean facturaElectronicaHabilitada;
+    
+    private String pathCertificadoAfip;
+    
+    private String firmanteCertificadoAfip;
+    
+    private String passwordCertificadoAfip;
 
     @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")

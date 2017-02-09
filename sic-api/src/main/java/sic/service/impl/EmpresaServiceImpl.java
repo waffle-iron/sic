@@ -108,8 +108,9 @@ public class EmpresaServiceImpl implements IEmpresaService {
 
     private void crearConfiguracionDelSistema(Empresa empresa) {
         ConfiguracionDelSistema cds = new ConfiguracionDelSistema();
-        cds.setCantidadMaximaDeRenglonesEnFactura(28);
         cds.setUsarFacturaVentaPreImpresa(false);
+        cds.setCantidadMaximaDeRenglonesEnFactura(28);
+        cds.setFacturaElectronicaHabilitada(false);
         cds.setEmpresa(getEmpresaPorNombre(empresa.getNombre()));
         configuracionDelSistemaRepository.guardar(cds);
     }
@@ -117,9 +118,9 @@ public class EmpresaServiceImpl implements IEmpresaService {
     @Override
     @Transactional
     public Empresa guardar(Empresa empresa) {
-        validarOperacion(TipoDeOperacion.ALTA, empresa);
+        this.validarOperacion(TipoDeOperacion.ALTA, empresa);
         empresa = empresaRepository.guardar(empresa);
-        crearConfiguracionDelSistema(empresa);
+        this.crearConfiguracionDelSistema(empresa);
         LOGGER.warn("La Empresa " + empresa + " se guardó correctamente." );
         return empresa;
     }
@@ -127,7 +128,7 @@ public class EmpresaServiceImpl implements IEmpresaService {
     @Override
     @Transactional
     public void actualizar(Empresa empresa) {
-        validarOperacion(TipoDeOperacion.ACTUALIZACION, empresa);
+        this.validarOperacion(TipoDeOperacion.ACTUALIZACION, empresa);
         empresaRepository.actualizar(empresa);
     }
 
