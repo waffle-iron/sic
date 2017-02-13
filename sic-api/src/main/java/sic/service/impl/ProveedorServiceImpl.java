@@ -1,35 +1,39 @@
 package sic.service.impl;
 
+import com.querydsl.core.BooleanBuilder;
+import java.util.ArrayList;
 import sic.modelo.BusquedaProveedorCriteria;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Empresa;
 import sic.modelo.Proveedor;
-import sic.repository.IProveedorRepository;
+import sic.modelo.QProveedor;
 import sic.service.IProveedorService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
+import sic.repository.ProveedorRepository;
 
 @Service
 public class ProveedorServiceImpl implements IProveedorService {
 
-    private final IProveedorRepository proveedorRepository;
+    private final ProveedorRepository proveedorRepository;
     private static final Logger LOGGER = Logger.getLogger(ProveedorServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public ProveedorServiceImpl(IProveedorRepository proveedorRepository) {
+    public ProveedorServiceImpl(ProveedorRepository proveedorRepository) {
         this.proveedorRepository = proveedorRepository;
     }
 
     @Override
     public Proveedor getProveedorPorId(Long idProvedor){
-        Proveedor proveedor = proveedorRepository.getProveedorPorId(idProvedor);
+        Proveedor proveedor = proveedorRepository.findOne(idProvedor);
         if (proveedor == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_proveedor_no_existente"));
@@ -39,7 +43,7 @@ public class ProveedorServiceImpl implements IProveedorService {
     
     @Override
     public List<Proveedor> getProveedores(Empresa empresa) {
-        return proveedorRepository.getProveedores(empresa);
+        return proveedorRepository.findAllByAndEmpresaAndEliminadoOrderByRazonSocialAsc(empresa, false);
     }
 
     @Override
@@ -49,22 +53,60 @@ public class ProveedorServiceImpl implements IProveedorService {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_empresa_no_existente"));
         }
-        return proveedorRepository.buscarProveedores(criteria);
+        QProveedor qproveedor = QProveedor.proveedor;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qproveedor.empresa.eq(criteria.getEmpresa()).and(qproveedor.eliminado.eq(false)));
+         //Razon Social
+        if (criteria.isBuscaPorRazonSocial() == true) {
+            builder.and(this.buildPredicadoRazonSocial(criteria.getRazonSocial(), qproveedor));
+        }
+        //Id_Fiscal
+        if (criteria.isBuscaPorId_Fiscal() == true) {
+            builder.and(qproveedor.idFiscal.eq(criteria.getId_Fiscal()));
+        }
+        //Codigo
+        if (criteria.isBuscaPorCodigo() == true) {
+            builder.and(qproveedor.codigo.eq(criteria.getCodigo()));
+        }
+        //Localidad
+        if (criteria.isBuscaPorLocalidad() == true) {
+            builder.and(qproveedor.localidad.eq(criteria.getLocalidad()));
+        }
+        //Provincia
+        if (criteria.isBuscaPorProvincia() == true) {
+            builder.and(qproveedor.localidad.provincia.eq(criteria.getProvincia()));
+        }
+        //Pais
+        if (criteria.isBuscaPorPais() == true) {
+            builder.and(qproveedor.localidad.provincia.pais.eq(criteria.getPais()));
+        }
+        List<Proveedor> list = new ArrayList<>();
+        proveedorRepository.findAll(builder, new Sort(Sort.Direction.ASC, "razonSocial")).iterator().forEachRemaining(list::add);
+        return list;
+    }
+    
+    private BooleanBuilder buildPredicadoRazonSocial(String razonSocial, QProveedor qproveedor) {
+        String[] terminos = razonSocial.split(" ");
+        BooleanBuilder predicadoRazonSocial = new BooleanBuilder();
+        for (String termino : terminos) {
+            predicadoRazonSocial.and(qproveedor.razonSocial.containsIgnoreCase(termino));
+        }
+        return predicadoRazonSocial;
     }
 
     @Override
     public Proveedor getProveedorPorCodigo(String codigo, Empresa empresa) {
-        return proveedorRepository.getProveedorPorCodigo(codigo, empresa);
+        return proveedorRepository.findByCodigoAndEmpresaAndEliminado(codigo, empresa, false);
     }
 
     @Override
-    public Proveedor getProveedorPorId_Fiscal(String id_Fiscal, Empresa empresa) {
-        return proveedorRepository.getProveedorPorId_Fiscal(id_Fiscal, empresa);
+    public Proveedor getProveedorPorId_Fiscal(String idFiscal, Empresa empresa) {
+        return proveedorRepository.findByIdFiscalAndEmpresaAndEliminado(idFiscal, empresa, false);
     }
 
     @Override
     public Proveedor getProveedorPorRazonSocial(String razonSocial, Empresa empresa) {
-        return proveedorRepository.getProveedorPorRazonSocial(razonSocial, empresa);
+        return proveedorRepository.findByRazonSocialAndEmpresaAndEliminado(razonSocial, empresa, false);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Proveedor proveedor) {
@@ -110,8 +152,8 @@ public class ProveedorServiceImpl implements IProveedorService {
             }
         }
         //ID Fiscal
-        if (!proveedor.getId_Fiscal().equals("")) {
-            Proveedor proveedorDuplicado = this.getProveedorPorId_Fiscal(proveedor.getId_Fiscal(), proveedor.getEmpresa());
+        if (!proveedor.getIdFiscal().equals("")) {
+            Proveedor proveedorDuplicado = this.getProveedorPorId_Fiscal(proveedor.getIdFiscal(), proveedor.getEmpresa());
             if (operacion.equals(TipoDeOperacion.ACTUALIZACION)
                     && proveedorDuplicado != null
                     && proveedorDuplicado.getId_Proveedor() != proveedor.getId_Proveedor()) {
@@ -120,7 +162,7 @@ public class ProveedorServiceImpl implements IProveedorService {
             }
             if (operacion.equals(TipoDeOperacion.ALTA)
                     && proveedorDuplicado != null
-                    && !proveedor.getId_Fiscal().equals("")) {
+                    && !proveedor.getIdFiscal().equals("")) {
                 throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_proveedor_duplicado_idFiscal"));
             }
@@ -145,8 +187,11 @@ public class ProveedorServiceImpl implements IProveedorService {
         if(proveedor.getCodigo() == null) {
             proveedor.setCodigo("");
         }
+        if(proveedor.getIdFiscal() == null) {
+            proveedor.setIdFiscal("");
+        }
         this.validarOperacion(TipoDeOperacion.ALTA, proveedor);
-        proveedor = proveedorRepository.guardar(proveedor);
+        proveedor = proveedorRepository.save(proveedor);
         LOGGER.warn("El Proveedor " + proveedor + " se guardó correctamente.");
         return proveedor;
     }
@@ -155,7 +200,7 @@ public class ProveedorServiceImpl implements IProveedorService {
     @Transactional
     public void actualizar(Proveedor proveedor) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, proveedor);
-        proveedorRepository.actualizar(proveedor);
+        proveedorRepository.save(proveedor);
     }
 
     @Override
@@ -167,6 +212,6 @@ public class ProveedorServiceImpl implements IProveedorService {
                     .getString("mensaje_proveedor_no_existente"));
         }
         proveedor.setEliminado(true);
-        proveedorRepository.actualizar(proveedor);
+        proveedorRepository.save(proveedor);
     }
 }

@@ -9,26 +9,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Empresa;
 import sic.modelo.Medida;
-import sic.repository.IMedidaRepository;
 import sic.service.IMedidaService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
+import sic.repository.MedidaRepository;
 
 @Service
 public class MedidaServiceImpl implements IMedidaService {
 
-    private final IMedidaRepository medidaRepository;
+    private final MedidaRepository medidaRepository;
     private static final Logger LOGGER = Logger.getLogger(MedidaServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public MedidaServiceImpl(IMedidaRepository medidaRepository) {
+    public MedidaServiceImpl(MedidaRepository medidaRepository) {
         this.medidaRepository = medidaRepository;
     }
 
     @Override
     public Medida getMedidaPorId(Long idMedida) {
-        Medida medida = medidaRepository.getMedidaPorId(idMedida);
+        Medida medida = medidaRepository.findOne(idMedida);
         if (medida == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_medida_no_existente"));
@@ -38,12 +38,12 @@ public class MedidaServiceImpl implements IMedidaService {
     
     @Override
     public List<Medida> getUnidadMedidas(Empresa empresa) {
-        return medidaRepository.getUnidadMedidas(empresa);
+        return medidaRepository.findAllByAndEmpresaAndEliminada(empresa, false);
     }
 
     @Override
     public Medida getMedidaPorNombre(String nombre, Empresa empresa) {
-        return medidaRepository.getMedidaPorNombre(nombre, empresa);
+        return medidaRepository.findByNombreAndEmpresaAndEliminada(nombre, empresa, false);
     }
 
     @Override
@@ -72,14 +72,14 @@ public class MedidaServiceImpl implements IMedidaService {
     @Transactional
     public void actualizar(Medida medida) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, medida);
-        medidaRepository.actualizar(medida);
+        medidaRepository.save(medida);
     }
 
     @Override
     @Transactional
     public Medida guardar(Medida medida) {
         this.validarOperacion(TipoDeOperacion.ALTA, medida);
-        medida = medidaRepository.guardar(medida);
+        medida = medidaRepository.save(medida);
         LOGGER.warn("La Medida " + medida + " se guardó correctamente." );
         return medida;
     }
@@ -93,6 +93,6 @@ public class MedidaServiceImpl implements IMedidaService {
                     .getString("mensaje_medida_no_existente"));
         }
         medida.setEliminada(true);
-        medidaRepository.actualizar(medida);
+        medidaRepository.save(medida);
     }
 }

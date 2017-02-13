@@ -10,21 +10,21 @@ import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
 import sic.repository.IConfiguracionDelSistemaRepository;
-import sic.repository.IEmpresaRepository;
 import sic.service.IEmpresaService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
+import sic.repository.EmpresaRepository;
 
 @Service
 public class EmpresaServiceImpl implements IEmpresaService {
 
-    private final IEmpresaRepository empresaRepository;
+    private final EmpresaRepository empresaRepository;
     private final IConfiguracionDelSistemaRepository configuracionDelSistemaRepository;    
     private static final Logger LOGGER = Logger.getLogger(EmpresaServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public EmpresaServiceImpl(IEmpresaRepository empresaRepository,
+    public EmpresaServiceImpl(EmpresaRepository empresaRepository,
             IConfiguracionDelSistemaRepository configuracionDelSistemaRepository) {
 
         this.empresaRepository = empresaRepository;
@@ -33,7 +33,7 @@ public class EmpresaServiceImpl implements IEmpresaService {
     
     @Override
     public Empresa getEmpresaPorId(Long idEmpresa){
-        Empresa empresa = empresaRepository.getEmpresaPorId(idEmpresa);
+        Empresa empresa = empresaRepository.findOne(idEmpresa);
         if (empresa == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_empresa_no_existente"));
@@ -43,17 +43,17 @@ public class EmpresaServiceImpl implements IEmpresaService {
 
     @Override
     public List<Empresa> getEmpresas() {
-        return empresaRepository.getEmpresas();
+        return empresaRepository.findAllByAndEliminadaOrderByNombreAsc(false);
     }
 
     @Override
     public Empresa getEmpresaPorNombre(String nombre) {
-        return empresaRepository.getEmpresaPorNombre(nombre);
+        return empresaRepository.findByNombreLikeAndEliminadaOrderByNombreAsc(nombre, false);
     }
 
     @Override
     public Empresa getEmpresaPorCUIP(long cuip) {
-        return empresaRepository.getEmpresaPorCUIP(cuip);
+        return empresaRepository.findByCuipAndEliminada(cuip, false);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Empresa empresa) {
@@ -118,7 +118,7 @@ public class EmpresaServiceImpl implements IEmpresaService {
     @Transactional
     public Empresa guardar(Empresa empresa) {
         validarOperacion(TipoDeOperacion.ALTA, empresa);
-        empresa = empresaRepository.guardar(empresa);
+        empresa = empresaRepository.save(empresa);
         crearConfiguracionDelSistema(empresa);
         LOGGER.warn("La Empresa " + empresa + " se guardó correctamente." );
         return empresa;
@@ -128,7 +128,7 @@ public class EmpresaServiceImpl implements IEmpresaService {
     @Transactional
     public void actualizar(Empresa empresa) {
         validarOperacion(TipoDeOperacion.ACTUALIZACION, empresa);
-        empresaRepository.actualizar(empresa);
+        empresaRepository.save(empresa);
     }
 
     @Override
@@ -140,6 +140,6 @@ public class EmpresaServiceImpl implements IEmpresaService {
                     .getString("mensaje_empresa_no_existente"));
         }
         empresa.setEliminada(true);
-        empresaRepository.actualizar(empresa);
+        empresaRepository.save(empresa);
     }
 }

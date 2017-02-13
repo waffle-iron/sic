@@ -9,26 +9,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Localidad;
 import sic.modelo.Provincia;
-import sic.repository.ILocalidadRepository;
 import sic.service.ILocalidadService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
+import sic.repository.LocalidadRepository;
 
 @Service
 public class LocalidadServiceImpl implements ILocalidadService {
 
-    private final ILocalidadRepository localidadRepository;
+    private final LocalidadRepository localidadRepository;
     private static final Logger LOGGER = Logger.getLogger(LocalidadServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public LocalidadServiceImpl(ILocalidadRepository localidadRepository) {
+    public LocalidadServiceImpl(LocalidadRepository localidadRepository) {
         this.localidadRepository = localidadRepository;
     }
 
     @Override
     public Localidad getLocalidadPorId(Long idLocalidad) {
-        Localidad localidad = localidadRepository.getLocalidadPorId(idLocalidad);
+        Localidad localidad = localidadRepository.findOne(idLocalidad);
         if (localidad == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_localidad_no_existente"));
@@ -38,7 +38,7 @@ public class LocalidadServiceImpl implements ILocalidadService {
     
     @Override
     public List<Localidad> getLocalidadesDeLaProvincia(Provincia provincia) {
-        return localidadRepository.getLocalidadesDeLaProvincia(provincia);
+        return localidadRepository.findAllByAndProvinciaAndEliminada(provincia, false);
     }
 
     @Override
@@ -46,12 +46,12 @@ public class LocalidadServiceImpl implements ILocalidadService {
     public void eliminar(Long  idLocalidad) {
         Localidad localidad = this.getLocalidadPorId(idLocalidad);
         localidad.setEliminada(true);
-        localidadRepository.actualizar(localidad);
+        localidadRepository.save(localidad);
     }
 
     @Override
     public Localidad getLocalidadPorNombre(String nombre, Provincia provincia) {
-        return localidadRepository.getLocalidadPorNombre(nombre, provincia);
+        return localidadRepository.findByNombreAndProvinciaAndEliminadaOrderByNombreAsc(nombre, provincia, false);
     }
 
     @Override
@@ -84,14 +84,14 @@ public class LocalidadServiceImpl implements ILocalidadService {
     @Transactional
     public void actualizar(Localidad localidad) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, localidad);
-        localidadRepository.actualizar(localidad);
+        localidadRepository.save(localidad);
     }
 
     @Override
     @Transactional
     public Localidad guardar(Localidad localidad) {
         this.validarOperacion(TipoDeOperacion.ALTA, localidad);
-        localidad = localidadRepository.guardar(localidad);
+        localidad = localidadRepository.save(localidad);
         LOGGER.warn("La Localidad " + localidad + " se guardó correctamente." );
         return localidad;
     }

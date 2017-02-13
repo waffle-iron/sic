@@ -8,45 +8,45 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.CondicionIVA;
-import sic.repository.ICondicionIVARepository;
 import sic.service.ICondicionIVAService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
+import sic.repository.CondicionIVARepository;
 
 @Service
 public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
 
-    private final ICondicionIVARepository condicionIVARepository;    
+    private final CondicionIVARepository condicionIVARepository;    
     private static final Logger LOGGER = Logger.getLogger(CondicionDeIVAServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public CondicionDeIVAServiceImpl(ICondicionIVARepository condicionIVARepository) {        
+    public CondicionDeIVAServiceImpl(CondicionIVARepository condicionIVARepository) {        
         this.condicionIVARepository = condicionIVARepository;        
     }
     
     @Override
     public CondicionIVA getCondicionIVAPorId(long idCondicionIVA) {        
-        return condicionIVARepository.getCondicionIVAPorId(idCondicionIVA);
+        return condicionIVARepository.findOne(idCondicionIVA);
     }
 
     @Override
     public List<CondicionIVA> getCondicionesIVA() {        
-        return condicionIVARepository.getCondicionesIVA();        
+        return condicionIVARepository.findAllByAndEliminadaOrderByNombreAsc(false);        
     }
 
     @Override
     @Transactional
     public void actualizar(CondicionIVA condicionIVA) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, condicionIVA);        
-        condicionIVARepository.actualizar(condicionIVA);       
+        condicionIVARepository.save(condicionIVA);       
     }
 
     @Override
     @Transactional
     public CondicionIVA guardar(CondicionIVA condicionIVA) {
         this.validarOperacion(TipoDeOperacion.ALTA, condicionIVA);        
-        condicionIVA = condicionIVARepository.guardar(condicionIVA);       
+        condicionIVA = condicionIVARepository.save(condicionIVA);       
         LOGGER.warn("La Condicion IVA " + condicionIVA + " se guardó correctamente." );
         return condicionIVA;
     }
@@ -60,12 +60,12 @@ public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
                     .getString("mensaje_CondicionIVA_no_existente"));
         }
         condicionIVA.setEliminada(true);        
-        condicionIVARepository.actualizar(condicionIVA);
+        condicionIVARepository.save(condicionIVA);
     }
 
     @Override
     public CondicionIVA getCondicionIVAPorNombre(String nombre) {        
-        return condicionIVARepository.getCondicionIVAPorNombre(nombre);        
+        return condicionIVARepository.findByNombreLikeAndEliminada(nombre, false);        
     }
 
     @Override

@@ -8,26 +8,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Pais;
-import sic.repository.IPaisRepository;
 import sic.service.IPaisService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
+import sic.repository.PaisRepository;
 
 @Service
 public class PaisServiceImpl implements IPaisService {
 
-    private final IPaisRepository paisRepository;
+    private final PaisRepository paisRepository;
     private static final Logger LOGGER = Logger.getLogger(PaisServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public PaisServiceImpl(IPaisRepository paisRepository) {
+    public PaisServiceImpl(PaisRepository paisRepository) {
         this.paisRepository = paisRepository;
     }
     
     @Override
     public Pais getPaisPorId(Long idPais) {
-        Pais pais = paisRepository.getPaisPorId(idPais);
+        Pais pais = paisRepository.findOne(idPais);
         if (pais == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaja_pais_no_existente"));
@@ -37,12 +37,12 @@ public class PaisServiceImpl implements IPaisService {
 
     @Override
     public List<Pais> getPaises() {
-        return paisRepository.getPaises();
+        return paisRepository.findAllByAndEliminadoOrderByNombreAsc(false);
     }
 
     @Override
     public Pais getPaisPorNombre(String nombre) {
-        return paisRepository.getPaisPorNombre(nombre);
+        return paisRepository.findByNombreLikeAndEliminadoOrderByNombreAsc(nombre, false);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Pais pais) {
@@ -75,21 +75,21 @@ public class PaisServiceImpl implements IPaisService {
                     .getString("mensaja_pais_no_existente"));
         }
         pais.setEliminado(true);
-        paisRepository.actualizar(pais);
+        paisRepository.save(pais);
     }
 
     @Override
     @Transactional
     public void actualizar(Pais pais) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, pais);
-        paisRepository.actualizar(pais);
+        paisRepository.save(pais);
     }
 
     @Override
     @Transactional
     public Pais guardar(Pais pais) {
         this.validarOperacion(TipoDeOperacion.ALTA, pais);
-        pais = paisRepository.guardar(pais);
+        pais = paisRepository.save(pais);
         LOGGER.warn("El Pais " + pais + " se guardó correctamente.");
         return pais;
     }

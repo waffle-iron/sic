@@ -7,8 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,19 +15,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "rubro")
-@NamedQueries({
-    @NamedQuery(name = "Rubro.buscarPorId",
-            query = "SELECT r FROM Rubro r "
-                    + "WHERE r.eliminado = false AND r.id_Rubro = :id"),
-    @NamedQuery(name = "Rubro.buscarTodos",
-            query = "SELECT r FROM Rubro r "
-                    + "WHERE r.eliminado = false AND r.empresa = :empresa "
-                    + "ORDER BY r.nombre ASC"),
-    @NamedQuery(name = "Rubro.buscarPorNombre",
-            query = "SELECT r FROM Rubro r "
-                    + "WHERE r.eliminado = false AND r.nombre LIKE :nombre AND r.empresa = :empresa "
-                    + "ORDER BY r.nombre ASC")
-})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

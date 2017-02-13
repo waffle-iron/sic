@@ -6,8 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,25 +14,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "usuario")
-@NamedQueries({
-    @NamedQuery(name = "Usuario.buscarPorId",
-            query = "SELECT u FROM Usuario u "
-                    + "WHERE u.eliminado = false AND u.id_Usuario= :id"),
-    @NamedQuery(name = "Usuario.buscarTodos",
-            query = "SELECT u FROM Usuario u "
-                    + "WHERE u.eliminado = false "
-                    + "ORDER BY u.nombre ASC"),
-    @NamedQuery(name = "Usuario.buscarPorNombre",
-            query = "SELECT u FROM Usuario u "
-                    + "WHERE u.eliminado = false AND u.nombre = :nombre"),
-    @NamedQuery(name = "Usuario.buscarUsuariosAdministradores",
-            query = "SELECT u FROM Usuario u "
-                    + "WHERE u.eliminado = false AND u.permisosAdministrador = true "
-                    + "ORDER BY u.nombre ASC"),
-    @NamedQuery(name = "Usuario.buscarPorNombreContrasenia",
-            query = "SELECT u FROM Usuario u "
-                    + "WHERE u.eliminado = false AND u.nombre = :nombre AND u.password = :password")
-})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

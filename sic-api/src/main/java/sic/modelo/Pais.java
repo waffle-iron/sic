@@ -15,18 +15,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "pais")
-@NamedQueries({
-    @NamedQuery(name = "Pais.buscarPorId",
-            query = "SELECT p FROM Pais p "
-                    + "WHERE p.eliminado = false AND p.id_Pais= :id"),
-    @NamedQuery(name = "Pais.buscarTodos",
-            query = "SELECT p FROM Pais p "
-                    + "WHERE p.eliminado = false ORDER BY p.nombre ASC"),
-    @NamedQuery(name = "Pais.buscarPorNombre",
-            query = "SELECT p FROM Pais p "
-                    + "WHERE p.eliminado = false AND p.nombre LIKE :nombre "
-                    + "ORDER BY p.nombre ASC")
-})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

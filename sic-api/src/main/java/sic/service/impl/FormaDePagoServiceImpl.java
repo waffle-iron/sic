@@ -9,30 +9,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Empresa;
 import sic.modelo.FormaDePago;
-import sic.repository.IFormaDePagoRepository;
 import sic.service.IFormaDePagoService;
 import sic.service.BusinessServiceException;
 import sic.util.Validator;
+import sic.repository.FormaDePagoRepository;
 
 @Service
 public class FormaDePagoServiceImpl implements IFormaDePagoService {
 
-    private final IFormaDePagoRepository formaDePagoRepository;
+    private final FormaDePagoRepository formaDePagoRepository;
     private static final Logger LOGGER = Logger.getLogger(FormaDePagoServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public FormaDePagoServiceImpl(IFormaDePagoRepository formaDePagoRepository) {
+    public FormaDePagoServiceImpl(FormaDePagoRepository formaDePagoRepository) {
         this.formaDePagoRepository = formaDePagoRepository;
     }
 
     @Override
     public List<FormaDePago> getFormasDePago(Empresa empresa) {
-        return formaDePagoRepository.getFormasDePago(empresa);
+        return formaDePagoRepository.findAllByAndEmpresaAndEliminada(empresa, false);
     }
 
     @Override
     public FormaDePago getFormasDePagoPorId(long idFormaDePago) {
-        FormaDePago formaDePago = formaDePagoRepository.getFormaDePagoPorId(idFormaDePago);
+        FormaDePago formaDePago = formaDePagoRepository.findOne(idFormaDePago);
         if (formaDePago == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_formaDePago_no_existente"));
@@ -42,7 +42,7 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
 
     @Override
     public FormaDePago getFormaDePagoPredeterminada(Empresa empresa) {
-        FormaDePago formaDePago = formaDePagoRepository.getFormaDePagoPredeterminada(empresa);
+        FormaDePago formaDePago = formaDePagoRepository.findByAndEmpresaAndPredeterminadoAndEliminada(empresa, true, false);
         if (formaDePago == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_formaDePago_sin_predeterminada"));
@@ -55,13 +55,13 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
     public void setFormaDePagoPredeterminada(FormaDePago formaDePago) {
         //antes de setear como predeterminado, busca si ya existe
         //otro como predeterminado y cambia su estado.
-        FormaDePago formaPredeterminadaAnterior = formaDePagoRepository.getFormaDePagoPredeterminada(formaDePago.getEmpresa());
+        FormaDePago formaPredeterminadaAnterior = formaDePagoRepository.findByAndEmpresaAndPredeterminadoAndEliminada(formaDePago.getEmpresa(), true, false);
         if (formaPredeterminadaAnterior != null) {
             formaPredeterminadaAnterior.setPredeterminado(false);
-            formaDePagoRepository.actualizar(formaPredeterminadaAnterior);
+            formaDePagoRepository.save(formaPredeterminadaAnterior);
         }
         formaDePago.setPredeterminado(true);
-        formaDePagoRepository.actualizar(formaDePago);
+        formaDePagoRepository.save(formaDePago);
     }
 
     private void validarOperacion(FormaDePago formaDePago) {
@@ -76,12 +76,12 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
         }
         //Duplicados
         //Nombre
-        if (formaDePagoRepository.getFormaDePagoPorNombreYEmpresa(formaDePago.getNombre(), formaDePago.getEmpresa().getId_Empresa()) != null) {
+        if (formaDePagoRepository.findByNombreAndEmpresaAndEliminada(formaDePago.getNombre(), formaDePago.getEmpresa(), false) != null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_formaDePago_duplicado_nombre"));
         }
         //Predeterminado
-        if (formaDePago.isPredeterminado() && (formaDePagoRepository.getFormaDePagoPredeterminada(formaDePago.getEmpresa()) != null)) {
+        if (formaDePago.isPredeterminado() && (formaDePagoRepository.findByAndEmpresaAndPredeterminadoAndEliminada(formaDePago.getEmpresa(), true, false) != null)) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_formaDePago_predeterminada_existente"));
         }
@@ -91,7 +91,7 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
     @Transactional
     public FormaDePago guardar(FormaDePago formaDePago) {
         this.validarOperacion(formaDePago);
-        formaDePago = formaDePagoRepository.guardar(formaDePago);
+        formaDePago = formaDePagoRepository.save(formaDePago);
         LOGGER.warn("La Forma de Pago " + formaDePago + " se guardó correctamente." );
         return formaDePago;
     }
@@ -105,13 +105,7 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
                     .getString("mensaje_formaDePago_no_existente"));
         }
         formaDePago.setEliminada(true);
-        formaDePagoRepository.actualizar(formaDePago);
-    }
-    
-    @Override
-    @Transactional
-    public FormaDePago getFormaDePagoPorNombreYEmpresa(String nombre, Long idEmpresa) {
-        return formaDePagoRepository.getFormaDePagoPorNombreYEmpresa(nombre, idEmpresa);
+        formaDePagoRepository.save(formaDePago);
     }
     
 }

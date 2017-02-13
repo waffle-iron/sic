@@ -9,26 +9,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
-import sic.repository.IProvinciaRepository;
 import sic.service.IProvinciaService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
+import sic.repository.ProvinciaRepository;
 
 @Service
 public class ProvinciaServiceImpl implements IProvinciaService {
 
-    private final IProvinciaRepository provinciaRepository;
+    private final ProvinciaRepository provinciaRepository;
     private static final Logger LOGGER = Logger.getLogger(ProvinciaServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public ProvinciaServiceImpl(IProvinciaRepository provinciaRepository) {
+    public ProvinciaServiceImpl(ProvinciaRepository provinciaRepository) {
         this.provinciaRepository = provinciaRepository;
     }
     
     @Override
     public Provincia getProvinciaPorId(Long idProvincia) {
-        Provincia provincia = provinciaRepository.getProvinciaPorId(idProvincia);
+        Provincia provincia = provinciaRepository.findOne(idProvincia);
         if (provincia == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_provincia_no_existente"));
@@ -38,12 +38,12 @@ public class ProvinciaServiceImpl implements IProvinciaService {
 
     @Override
     public List<Provincia> getProvinciasDelPais(Pais pais) {
-        return provinciaRepository.getProvinciasDelPais(pais);
+        return provinciaRepository.findAllByAndPaisAndEliminada(pais, false);
     }
 
     @Override
     public Provincia getProvinciaPorNombre(String nombre, Pais pais) {
-        return provinciaRepository.getProvinciaPorNombre(nombre, pais);
+        return provinciaRepository.findByNombreAndPaisAndEliminadaOrderByNombreAsc(nombre, pais, false);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Provincia provincia) {
@@ -80,21 +80,21 @@ public class ProvinciaServiceImpl implements IProvinciaService {
                     .getString("mensaje_provincia_no_existente"));
         }
         provincia.setEliminada(true);
-        provinciaRepository.actualizar(provincia);
+        provinciaRepository.save(provincia);
     }
 
     @Override
     @Transactional
     public void actualizar(Provincia provincia) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, provincia);
-        provinciaRepository.actualizar(provincia);
+        provinciaRepository.save(provincia);
     }
 
     @Override
     @Transactional
     public Provincia guardar(Provincia provincia) {
         this.validarOperacion(TipoDeOperacion.ALTA, provincia);
-        provincia = provinciaRepository.guardar(provincia);
+        provincia = provinciaRepository.save(provincia);
         LOGGER.warn("La Provincia " + provincia + " se guardó correctamente.");
         return provincia;
     }
