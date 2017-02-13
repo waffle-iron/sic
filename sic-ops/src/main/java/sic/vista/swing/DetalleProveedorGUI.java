@@ -49,7 +49,7 @@ public class DetalleProveedorGUI extends JDialog {
     private void cargarProveedorParaModificar() {
         txt_Codigo.setText(proveedorModificar.getCodigo());
         txt_RazonSocial.setText(proveedorModificar.getRazonSocial());
-        txt_Id_Fiscal.setText(String.valueOf(proveedorModificar.getId_Fiscal()));
+        txt_Id_Fiscal.setText(String.valueOf(proveedorModificar.getIdFiscal()));
         cmb_CondicionIVA.setSelectedItem(proveedorModificar.getCondicionIVA());
         txt_Direccion.setText(proveedorModificar.getDireccion());
         cmb_Pais.setSelectedItem(proveedorModificar.getLocalidad().getProvincia().getPais());
@@ -543,7 +543,7 @@ public class DetalleProveedorGUI extends JDialog {
                 Proveedor proveedor = new Proveedor();
                 proveedor.setCodigo(txt_Codigo.getText().trim());
                 proveedor.setRazonSocial(txt_RazonSocial.getText().trim());
-                proveedor.setId_Fiscal(txt_Id_Fiscal.getText().trim());
+                proveedor.setIdFiscal(txt_Id_Fiscal.getText().trim());
                 proveedor.setCondicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem());
                 proveedor.setDireccion(txt_Direccion.getText().trim());
                 proveedor.setLocalidad((Localidad) cmb_Localidad.getSelectedItem());
@@ -566,7 +566,7 @@ public class DetalleProveedorGUI extends JDialog {
             if (operacion == TipoDeOperacion.ACTUALIZACION) {
                 proveedorModificar.setCodigo(txt_Codigo.getText().trim());
                 proveedorModificar.setRazonSocial(txt_RazonSocial.getText().trim());
-                proveedorModificar.setId_Fiscal(txt_Id_Fiscal.getText().trim());
+                proveedorModificar.setIdFiscal(txt_Id_Fiscal.getText().trim());
                 proveedorModificar.setCondicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem());
                 proveedorModificar.setDireccion(txt_Direccion.getText().trim());
                 proveedorModificar.setLocalidad((Localidad) cmb_Localidad.getSelectedItem());

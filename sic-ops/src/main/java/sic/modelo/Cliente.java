@@ -14,7 +14,7 @@ public class Cliente implements Serializable {
     private String nombreFantasia;
     private String direccion;
     private CondicionIVA condicionIVA;
-    private String id_Fiscal;
+    private String idFiscal;
     private String email;
     private String telPrimario;
     private String telSecundario;

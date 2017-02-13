@@ -222,7 +222,7 @@ public class PuntoDeVentaGUI extends JDialog {
         txt_NombreCliente.setText(cliente.getRazonSocial());
         txt_DomicilioCliente.setText(cliente.getDireccion());
         txt_CondicionIVACliente.setText(cliente.getCondicionIVA().toString());
-        txt_IDFiscalCliente.setText(cliente.getId_Fiscal());
+        txt_IDFiscalCliente.setText(cliente.getIdFiscal());
     }
 
     private void setColumnas() {
