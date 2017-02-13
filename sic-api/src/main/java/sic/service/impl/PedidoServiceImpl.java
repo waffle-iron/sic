@@ -1,9 +1,12 @@
 package sic.service.impl;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.DateExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +38,7 @@ import sic.service.ServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.repository.PedidoRepository;
+import sic.util.FormatterFechaHora;
 
 @Service
 public class PedidoServiceImpl implements IPedidoService {
@@ -215,7 +219,10 @@ public class PedidoServiceImpl implements IPedidoService {
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qpedido.empresa.eq(criteria.getEmpresa()).and(qpedido.eliminado.eq(false)));       
         if (criteria.isBuscaPorFecha() == true) {
-            builder.and(qpedido.fecha.between(criteria.getFechaDesde(), criteria.getFechaHasta()));
+            FormatterFechaHora formateadorFecha = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_INTERNACIONAL);
+            DateExpression<Date> fDesde = Expressions.dateTemplate(Date.class, "convert({0}, datetime)", formateadorFecha.format(criteria.getFechaDesde()));
+            DateExpression<Date> fHasta = Expressions.dateTemplate(Date.class, "convert({0}, datetime)", formateadorFecha.format(criteria.getFechaHasta()));            
+            builder.and(qpedido.fecha.between(fDesde, fHasta));
         }
         if (criteria.isBuscaCliente() == true) {
             builder.and(qpedido.cliente.eq(criteria.getCliente()));
