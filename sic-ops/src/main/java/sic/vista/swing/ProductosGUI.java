@@ -286,13 +286,13 @@ public class ProductosGUI extends JInternalFrame {
                 }
                 productos = new ArrayList(Arrays.asList(RestClient.getRestTemplate().getForObject(criteriaBusqueda, Producto[].class)));
                 txt_ValorStock.setValue(RestClient.getRestTemplate().getForObject(criteriaCosto, Double.class));
+                cargarResultadosAlTable();
+                cambiarEstadoEnabled(true);
                 return productos;
             }
 
             @Override
             protected void done() {
-                cargarResultadosAlTable();
-                cambiarEstadoEnabled(true);
                 pg_progreso.setIndeterminate(false);
                 try {
                     if (get().isEmpty()) {
@@ -689,8 +689,8 @@ public class ProductosGUI extends JInternalFrame {
 
     private void chk_ProveedorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_ProveedorItemStateChanged
         if (chk_Proveedor.isSelected() == true) {
-            this.cargarProveedores();
             cmb_Proveedor.setEnabled(true);
+            this.cargarProveedores();
             cmb_Proveedor.requestFocus();
         } else {
             cmb_Proveedor.removeAllItems();
@@ -796,8 +796,8 @@ public class ProductosGUI extends JInternalFrame {
 
     private void chk_RubroItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_RubroItemStateChanged
         if (chk_Rubro.isSelected() == true) {
-            this.cargarRubros();
             cmb_Rubro.setEnabled(true);
+            this.cargarRubros();
             cmb_Rubro.requestFocus();
         } else {
             cmb_Rubro.removeAllItems();
@@ -807,8 +807,6 @@ public class ProductosGUI extends JInternalFrame {
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
         try { 
-            cmb_Proveedor.addItem("Seleccione un Proveedor...");
-            cmb_Rubro.addItem("Seleccione un Rubro...");
             this.setColumnas();
             this.setMaximum(true);
         } catch (PropertyVetoException ex) {

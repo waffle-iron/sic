@@ -562,7 +562,7 @@ public class CajasGUI extends JInternalFrame {
             } else if (cajaAbierta.getEstado() == EstadoCaja.CERRADA) {
                 this.abrirCaja();
             } else {
-                JOptionPane.showMessageDialog(this, "Ya existe una caja abierta.\nDebe cerrarla primero para poder abrir una nueva."
+                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_anterior_abierta")
                                                , "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (RestClientResponseException ex) {

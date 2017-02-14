@@ -977,8 +977,8 @@ public class FacturasVentaGUI extends JInternalFrame {
 
     private void chk_TipoFacturaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_TipoFacturaItemStateChanged
         if (chk_TipoFactura.isSelected() == true) {
-            this.cargarTiposDeFactura();
             cmb_TipoFactura.setEnabled(true);
+            this.cargarTiposDeFactura();
             cmb_TipoFactura.requestFocus();
         } else {
             cmb_TipoFactura.setEnabled(false);
