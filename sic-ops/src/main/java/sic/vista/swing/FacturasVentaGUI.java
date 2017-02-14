@@ -307,56 +307,54 @@ public class FacturasVentaGUI extends JInternalFrame {
     }
 
     private void cargarClientes() {
-        try {
-            if (chk_Cliente.isSelected() == true) {
-                cmb_Cliente.setEnabled(true);
-                cmb_Cliente.removeAllItems();
+        if (chk_Cliente.isSelected() == true) {
+            cmb_Cliente.setEnabled(true);
+            cmb_Cliente.removeAllItems();
+            try {
                 List<Cliente> clientes = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
                         .getForObject("/clientes/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                                 Cliente[].class)));
                 clientes.stream().forEach((c) -> {
                     cmb_Cliente.addItem(c);
                 });
-                cmb_Cliente.requestFocus();
-            } else {
-                cmb_Cliente.removeAllItems();
-                cmb_Cliente.addItem("Seleccione un Cliente...");
-                cmb_Cliente.setEnabled(false);
+            } catch (RestClientResponseException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ResourceAccessException ex) {
+                LOGGER.error(ex.getMessage());
+                JOptionPane.showMessageDialog(this,
+                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
+            cmb_Cliente.requestFocus();
+        } else {
+            cmb_Cliente.removeAllItems();
+            cmb_Cliente.setEnabled(false);
+        }  
     }
 
     private void cargarUsuarios() {
-        try {
-            if (chk_Usuario.isSelected() == true) {
-                cmb_Usuario.setEnabled(true);
-                cmb_Usuario.removeAllItems();
+        if (chk_Usuario.isSelected() == true) {
+            cmb_Usuario.setEnabled(true);
+            cmb_Usuario.removeAllItems();
+            try {
                 List<Usuario> usuarios = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
                         .getForObject("/usuarios",
                                 Usuario[].class)));
                 usuarios.stream().forEach((u) -> {
                     cmb_Usuario.addItem(u);
                 });
-                cmb_Usuario.requestFocus();
-            } else {
-                cmb_Usuario.removeAllItems();
-                cmb_Usuario.addItem("Seleccione un Usuario...");
-                cmb_Usuario.setEnabled(false);
+            } catch (RestClientResponseException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ResourceAccessException ex) {
+                LOGGER.error(ex.getMessage());
+                JOptionPane.showMessageDialog(this,
+                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            cmb_Usuario.requestFocus();
+        } else {
+            cmb_Usuario.removeAllItems();
+            cmb_Usuario.setEnabled(false);
         }
     }
 
@@ -365,7 +363,6 @@ public class FacturasVentaGUI extends JInternalFrame {
             char[] tiposFactura = RestClient.getRestTemplate()
                 .getForObject("/facturas/tipos/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                 char[].class);
-            cmb_TipoFactura.removeAllItems();
             for (int i = 0; tiposFactura.length > i; i++) {
                 cmb_TipoFactura.addItem(tiposFactura[i]);
             }
@@ -961,10 +958,7 @@ public class FacturasVentaGUI extends JInternalFrame {
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
         try {
-            cmb_Cliente.addItem("Seleccione un Cliente...");
-            cmb_Usuario.addItem("Seleccione un Usuario...");
             this.setSize(940, 600);
-            this.cargarTiposDeFactura();
             this.setColumnas();
             this.setMaximum(true);
             dc_FechaDesde.setDate(new Date());
@@ -983,10 +977,12 @@ public class FacturasVentaGUI extends JInternalFrame {
 
     private void chk_TipoFacturaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_TipoFacturaItemStateChanged
         if (chk_TipoFactura.isSelected() == true) {
+            this.cargarTiposDeFactura();
             cmb_TipoFactura.setEnabled(true);
             cmb_TipoFactura.requestFocus();
         } else {
             cmb_TipoFactura.setEnabled(false);
+            cmb_TipoFactura.removeAllItems();
         }
     }//GEN-LAST:event_chk_TipoFacturaItemStateChanged
 

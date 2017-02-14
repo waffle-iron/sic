@@ -750,7 +750,6 @@ public class FacturasCompraGUI extends JInternalFrame {
             this.setSize(940, 600);
             this.setColumnas();
             this.setMaximum(true);
-            cmb_Proveedor.addItem("Seleccione un Proveedor...");
             dc_FechaDesde.setDate(new Date());
             dc_FechaHasta.setDate(new Date());
             rb_soloImpagas.setSelected(true);
@@ -776,12 +775,11 @@ public class FacturasCompraGUI extends JInternalFrame {
 
     private void chk_ProveedorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_ProveedorItemStateChanged
         if (chk_Proveedor.isSelected() == true) {
-            this.cargarProveedores();
             cmb_Proveedor.setEnabled(true);
+            this.cargarProveedores();
             cmb_Proveedor.requestFocus();
         } else {
             cmb_Proveedor.removeAllItems();
-            cmb_Proveedor.addItem("Seleccione un Proveedor...");
             cmb_Proveedor.setEnabled(false);
         }
     }//GEN-LAST:event_chk_ProveedorItemStateChanged

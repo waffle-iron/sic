@@ -694,7 +694,6 @@ public class ProductosGUI extends JInternalFrame {
             cmb_Proveedor.requestFocus();
         } else {
             cmb_Proveedor.removeAllItems();
-            cmb_Proveedor.addItem("Seleccione un Proveedor...");
             cmb_Proveedor.setEnabled(false);
         }
     }//GEN-LAST:event_chk_ProveedorItemStateChanged
@@ -802,7 +801,6 @@ public class ProductosGUI extends JInternalFrame {
             cmb_Rubro.requestFocus();
         } else {
             cmb_Rubro.removeAllItems();
-            cmb_Rubro.addItem("Selecciones un Rubro...");
             cmb_Rubro.setEnabled(false);
         }
     }//GEN-LAST:event_chk_RubroItemStateChanged
