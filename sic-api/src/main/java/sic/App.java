@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import sic.modelo.AfipWSAACredencial;
 import sic.service.impl.AfipServiceImpl;
 import sic.service.impl.AfipWebServiceSOAPClient;
 
@@ -50,7 +51,8 @@ public class App extends WebMvcConfigurerAdapter {
     @Bean
     public CommandLineRunner lookup(AfipServiceImpl afipServiceImpl) {
         return args -> {
-            afipServiceImpl.getToken();
+            AfipWSAACredencial afipCredencial = afipServiceImpl.getAfipWSAACredencial();
+            
         };
     }
 }

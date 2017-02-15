@@ -1,7 +1,12 @@
 package sic.service;
 
+import sic.modelo.AfipWSAACredencial;
+import sic.modelo.FacturaVenta;
+
 public interface IAfipService {
 
-    void getToken();
+    AfipWSAACredencial getAfipWSAACredencial();
+    
+    void autorizarFacturaVenta(AfipWSAACredencial afipCredencial, FacturaVenta factura);
     
 }
