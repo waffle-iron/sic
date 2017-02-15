@@ -41,13 +41,6 @@ public class PedidosGUI extends JInternalFrame {
         initComponents();
         this.setSize(850, 600);
         this.limpiarJTables();
-        cmb_Cliente.addItem("Seleccione un Cliente...");
-        cmb_Vendedor.addItem("Seleccione un Vendedor...");
-        txt_NumeroPedido.setEnabled(false);
-        dc_FechaDesde.setEnabled(false);
-        dc_FechaHasta.setEnabled(false);
-        cmb_Cliente.setEnabled(false);
-        cmb_Vendedor.setEnabled(false);
     }
 
     public void buscar() {
@@ -73,12 +66,12 @@ public class PedidosGUI extends JInternalFrame {
                 }
                 pedidos = new ArrayList(Arrays.asList(RestClient.getRestTemplate().getForObject(URI, Pedido[].class)));
                 cambiarEstadoEnabled(true);
+                cargarResultadosAlTable();
                 return pedidos;
             }
 
             @Override
             protected void done() {
-                cargarResultadosAlTable();
                 pb_Filtro.setIndeterminate(false);
                 try {
                     if (get().isEmpty()) {
@@ -748,7 +741,6 @@ public class PedidosGUI extends JInternalFrame {
             cmb_Cliente.requestFocus();
         } else {
             cmb_Cliente.removeAllItems();
-            cmb_Cliente.addItem("Seleccione un Cliente...");
             cmb_Cliente.setEnabled(false);
         }
     }//GEN-LAST:event_chk_ClienteItemStateChanged
@@ -760,7 +752,6 @@ public class PedidosGUI extends JInternalFrame {
             cmb_Vendedor.requestFocus();
         } else {
             cmb_Vendedor.removeAllItems();
-            cmb_Vendedor.addItem("Seleccione un Vendedor...");
             cmb_Vendedor.setEnabled(false);
         }
     }//GEN-LAST:event_chk_VendedorItemStateChanged
@@ -854,6 +845,11 @@ public class PedidosGUI extends JInternalFrame {
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
         try {
+            txt_NumeroPedido.setEnabled(false);
+            dc_FechaDesde.setEnabled(false);
+            dc_FechaHasta.setEnabled(false);
+            cmb_Cliente.setEnabled(false);
+            cmb_Vendedor.setEnabled(false);
             this.setMaximum(true);
             dc_FechaDesde.setDate(new Date());
             dc_FechaHasta.setDate(new Date());

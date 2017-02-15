@@ -36,7 +36,6 @@ public class CajasGUI extends JInternalFrame {
         initComponents();        
         this.setColumnasCaja();
         usuarioParaMostrar = new Usuario();
-        usuarioParaMostrar.setNombre("Seleccione un Usuario....");
         cmb_Usuarios.addItem(usuarioParaMostrar);
         cmb_Usuarios.setEnabled(false);
     }
@@ -107,13 +106,13 @@ public class CajasGUI extends JInternalFrame {
                 }
                 criteria += "&idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa();
                 cajas = new ArrayList(Arrays.asList(RestClient.getRestTemplate().getForObject(criteria, Caja[].class)));
+                cargarResultadosAlTable();
+                cambiarEstadoEnabled(true);
                 return cajas;
             }
 
             @Override
             protected void done() {
-                cargarResultadosAlTable();
-                cambiarEstadoEnabled(true);
                 pb_barra.setIndeterminate(false);
                 try {                    
                     if (get().isEmpty()) {
@@ -121,7 +120,6 @@ public class CajasGUI extends JInternalFrame {
                                 ResourceBundle.getBundle("Mensajes").getString("mensaje_busqueda_sin_resultados"),
                                 "Aviso", JOptionPane.INFORMATION_MESSAGE);
                     }
-                    habilitarAperturaDeCaja();
                 } catch (InterruptedException ex) {
                     String msjError = "La tarea que se estaba realizando fue interrumpida. Intente nuevamente.";
                     LOGGER.error(msjError + " - " + ex.getMessage());
@@ -199,24 +197,6 @@ public class CajasGUI extends JInternalFrame {
         modeloTablaCajas = new ModeloTabla();
         tbl_Cajas.setModel(modeloTablaCajas);
         this.setColumnasCaja();
-    }
-
-    private void habilitarAperturaDeCaja() {
-        boolean cajaAbierta = true;
-        Caja caja = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
-                + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
-                Caja.class);
-        if (caja != null) {
-            if (caja.getEstado() == EstadoCaja.CERRADA) {
-                String fechaCaja = (new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(caja.getFechaApertura());
-                if (fechaCaja.equals((new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(new Date()))) {
-                    cajaAbierta = false;
-                }
-            } else {
-                cajaAbierta = false;
-            }
-        }
-        btn_AbrirCaja.setEnabled(cajaAbierta);        
     }
 
     private void abrirCaja() {
@@ -581,6 +561,9 @@ public class CajasGUI extends JInternalFrame {
                 this.abrirCaja();
             } else if (cajaAbierta.getEstado() == EstadoCaja.CERRADA) {
                 this.abrirCaja();
+            } else {
+                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_caja_anterior_abierta"), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -595,7 +578,6 @@ public class CajasGUI extends JInternalFrame {
     private void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_internalFrameOpened
         try {
             this.setSize(850, 600);
-            this.habilitarAperturaDeCaja();
             this.setMaximum(true);
             dc_FechaDesde.setDate(new Date());
             dc_FechaHasta.setDate(new Date());
@@ -603,15 +585,6 @@ public class CajasGUI extends JInternalFrame {
             String mensaje = "Se produjo un error al intentar maximizar la ventana.";
             LOGGER.error(mensaje + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
-            this.dispose();
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            this.dispose();
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         }
     }//GEN-LAST:event_internalFrameOpened
