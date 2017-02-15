@@ -562,8 +562,8 @@ public class CajasGUI extends JInternalFrame {
             } else if (cajaAbierta.getEstado() == EstadoCaja.CERRADA) {
                 this.abrirCaja();
             } else {
-                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_anterior_abierta")
-                                               , "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_caja_anterior_abierta"), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
