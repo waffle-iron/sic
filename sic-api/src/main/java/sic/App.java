@@ -1,5 +1,7 @@
 package sic;
 
+import afip.wsfe.wsdl.FEAuthRequest;
+import afip.wsfe.wsdl.FECAESolicitar;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +10,8 @@ import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import sic.modelo.AfipWSAACredencial;
+import sic.modelo.Empresa;
+import sic.modelo.FacturaVenta;
 import sic.service.impl.AfipServiceImpl;
 import sic.service.impl.AfipWebServiceSOAPClient;
 
@@ -51,8 +55,22 @@ public class App extends WebMvcConfigurerAdapter {
     @Bean
     public CommandLineRunner lookup(AfipServiceImpl afipServiceImpl) {
         return args -> {
-            AfipWSAACredencial afipCredencial = afipServiceImpl.getAfipWSAACredencial();
+            AfipWSAACredencial afipCredencial = afipServiceImpl.getAfipWSAACredencial();            
+            FEAuthRequest feAuthRequest = new FEAuthRequest();            
+            feAuthRequest.setCuit(this.construirFacturaDePrueba().getEmpresa().getCuip());
+            feAuthRequest.setSign(afipCredencial.getSign());
+            feAuthRequest.setToken(afipCredencial.getToken());
+            FECAESolicitar fecaeSolicitud = new FECAESolicitar();
+            fecaeSolicitud.setAuth(feAuthRequest);
             
         };
+    }
+    
+    private FacturaVenta construirFacturaDePrueba() {
+        FacturaVenta factura = new FacturaVenta();
+        Empresa empresa = new Empresa();
+        empresa.setCuip(30712391215L);
+        factura.setEmpresa(empresa);
+        return factura;
     }
 }
