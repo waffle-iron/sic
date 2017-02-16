@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"razonSocial", "id_Fiscal", "empresa"})
+@EqualsAndHashCode(of = {"razonSocial", "idFiscal", "empresa"})
 public class Cliente implements Serializable {
 
     @Id
