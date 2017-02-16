@@ -55,8 +55,8 @@ public class ClienteBuilder {
         return this;
     }
     
-    public ClienteBuilder withId_Fiscal(String id_Fiscal) {
-        this.idFiscal = id_Fiscal;
+    public ClienteBuilder withIdFiscal(String idFiscal) {
+        this.idFiscal = idFiscal;
         return this;
     }
     
