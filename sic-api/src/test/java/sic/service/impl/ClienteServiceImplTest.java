@@ -103,12 +103,12 @@ public class ClienteServiceImplTest {
         Cliente cliente = new ClienteBuilder()
                 .withId_Cliente(7L)
                 .withRazonSocial("Merceria los dos botones")
-                .withId_Fiscal("23111111119")
+                .withIdFiscal("23111111119")
                 .build();
         Cliente clienteDuplicado = new ClienteBuilder()
                 .withId_Cliente(2L)
                 .withRazonSocial("Merceria los dos botones")
-                .withId_Fiscal("23111111119")
+                .withIdFiscal("23111111119")
                 .build();
         when(clienteRepository.findByIdFiscalAndEmpresaAndEliminado(cliente.getIdFiscal(), cliente.getEmpresa(), false))
                 .thenReturn(cliente);        
@@ -125,7 +125,7 @@ public class ClienteServiceImplTest {
                 .withCondicionIVA(new CondicionIVABuilder().build())
                 .withLocalidad(new LocalidadBuilder().build())
                 .withEmpresa(new EmpresaBuilder().build())
-                .withId_Fiscal("23111111119")
+                .withIdFiscal("23111111119")
                 .withId_Cliente(Long.MIN_VALUE)
                 .build();
         Cliente clienteDuplicado = new ClienteBuilder()
@@ -134,7 +134,7 @@ public class ClienteServiceImplTest {
                 .withCondicionIVA(new CondicionIVABuilder().build())
                 .withLocalidad(new LocalidadBuilder().build())
                 .withEmpresa(new EmpresaBuilder().build())
-                .withId_Fiscal("23111111119")
+                .withIdFiscal("23111111119")
                 .withId_Cliente(Long.MIN_VALUE)
                 .build();
         when(clienteRepository.findByRazonSocialAndEmpresaAndEliminado(cliente.getRazonSocial(), cliente.getEmpresa(), false))

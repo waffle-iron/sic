@@ -52,8 +52,8 @@ public class ProveedorBuilder {
         return this;
     }
     
-    public ProveedorBuilder withId_Fiscal(String id_Fiscal) {
-        this.idFiscal = id_Fiscal;
+    public ProveedorBuilder withIdFiscal(String idFiscal) {
+        this.idFiscal = idFiscal;
         return this;
     }
     
