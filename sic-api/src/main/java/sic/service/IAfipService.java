@@ -5,7 +5,7 @@ import sic.modelo.FacturaVenta;
 
 public interface IAfipService {
 
-    AfipWSAACredencial getAfipWSAACredencial();
+    AfipWSAACredencial getAfipWSAACredencial(String afipNombreServicio);
     
     void autorizarFacturaVenta(AfipWSAACredencial afipCredencial, FacturaVenta factura);
     

@@ -1,6 +1,7 @@
 package sic;
 
 import afip.wsfe.wsdl.FEAuthRequest;
+import afip.wsfe.wsdl.FECAERequest;
 import afip.wsfe.wsdl.FECAESolicitar;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -55,14 +56,20 @@ public class App extends WebMvcConfigurerAdapter {
     @Bean
     public CommandLineRunner lookup(AfipServiceImpl afipServiceImpl) {
         return args -> {
-            AfipWSAACredencial afipCredencial = afipServiceImpl.getAfipWSAACredencial();            
+            AfipWSAACredencial afipCredencial = afipServiceImpl.getAfipWSAACredencial("wsfe");      
+            //auth
             FEAuthRequest feAuthRequest = new FEAuthRequest();            
             feAuthRequest.setCuit(this.construirFacturaDePrueba().getEmpresa().getCuip());
             feAuthRequest.setSign(afipCredencial.getSign());
             feAuthRequest.setToken(afipCredencial.getToken());
+            //FECAE req
+            FECAERequest fecaeRequest = new FECAERequest();
+            
+            //--------
             FECAESolicitar fecaeSolicitud = new FECAESolicitar();
             fecaeSolicitud.setAuth(feAuthRequest);
-            
+            fecaeSolicitud.setFeCAEReq(fecaeRequest);            
+            afipServiceImpl.autorizarFacturaVenta(afipCredencial, this.construirFacturaDePrueba());
         };
     }
     

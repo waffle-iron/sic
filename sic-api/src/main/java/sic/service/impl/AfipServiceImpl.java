@@ -22,7 +22,7 @@ public class AfipServiceImpl implements IAfipService {
 
     private final AfipWebServiceSOAPClient afipWebServiceSOAPClient;
     private final IConfiguracionDelSistemaService configuracionDelSistemaService;
-    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());    
 
     @Autowired
     public AfipServiceImpl(AfipWebServiceSOAPClient afipWebServiceSOAPClient, IConfiguracionDelSistemaService configuracionDelSistemaService) {
@@ -31,14 +31,13 @@ public class AfipServiceImpl implements IAfipService {
     }
 
     @Override
-    public AfipWSAACredencial getAfipWSAACredencial() {
+    public AfipWSAACredencial getAfipWSAACredencial(String afipNombreServicio) {
         AfipWSAACredencial afipCred = new AfipWSAACredencial();
-        String service = "wsfe";        
         String p12file = configuracionDelSistemaService.getConfiguracionDelSistemaPorId(1).getPathCertificadoAfip();
         String p12signer = configuracionDelSistemaService.getConfiguracionDelSistemaPorId(1).getFirmanteCertificadoAfip();
         String p12pass = configuracionDelSistemaService.getConfiguracionDelSistemaPorId(1).getPasswordCertificadoAfip();
         Long ticketTime = 3600000L; //siempre devuelve por 12hs
-        byte[] loginTicketRequest_xml_cms = afipWebServiceSOAPClient.crearCMS(p12file, p12pass, p12signer, service, ticketTime);
+        byte[] loginTicketRequest_xml_cms = afipWebServiceSOAPClient.crearCMS(p12file, p12pass, p12signer, afipNombreServicio, ticketTime);
         LoginCms loginCms = new LoginCms();
         loginCms.setIn0(Base64.getEncoder().encodeToString(loginTicketRequest_xml_cms));
         String loginTicketResponse = afipWebServiceSOAPClient.loginCMS(loginCms);
