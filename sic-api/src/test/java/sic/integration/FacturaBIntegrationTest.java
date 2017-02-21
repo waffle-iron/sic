@@ -1,32 +1,23 @@
 package sic.integration;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.json.JsonTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import  org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.json.JacksonTester;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.client.ClientHttpRequestExecution;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import sic.builder.ClienteBuilder;
 import sic.builder.CondicionIVABuilder;
 import sic.builder.EmpresaBuilder;
-import sic.builder.FacturaVentaBuilder;
 import sic.builder.FormaDePagoBuilder;
 import sic.builder.LocalidadBuilder;
 import sic.builder.MedidaBuilder;
@@ -35,12 +26,10 @@ import sic.builder.ProveedorBuilder;
 import sic.builder.RubroBuilder;
 import sic.builder.TransportistaBuilder;
 import sic.builder.UsuarioBuilder;
-import sic.controller.FacturaController;
 import sic.modelo.Cliente;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Credencial;
 import sic.modelo.Empresa;
-import sic.modelo.Factura;
 import sic.modelo.FormaDePago;
 import sic.modelo.Localidad;
 import sic.modelo.Medida;
@@ -53,61 +42,51 @@ import sic.modelo.RenglonFactura;
 import sic.modelo.Rubro;
 import sic.modelo.Transportista;
 import sic.modelo.Usuario;
-import sic.service.IUsuarioService;
+import sic.modelo.dto.FacturaVentaDTO;
+import sic.repository.UsuarioRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-//@JsonTest
-//@WebMvcTest(FacturaController.class)
 public class FacturaBIntegrationTest {
     
     @Autowired
-    private IUsuarioService usuarioService;
+    private UsuarioRepository usuarioRepository;
     
     @Autowired
     private TestRestTemplate restTemplate;
     
-//    @Autowired
-//    private MockMvc mvc;
-//    
-////    @Autowired
-//    private JacksonTester<Factura> json;
-    
-    private HttpHeaders headers = new HttpHeaders();
-    
+    private String token;
+       
     @Before
     public void setup() {
-        Usuario user = new UsuarioBuilder().build();
-        usuarioService.guardar(user);
-
-        Credencial cred = new Credencial("Daenerys Targaryen", "LaQueNoArde");
-        String token = this.restTemplate.postForObject("/api/v1/login", cred, String.class);
-        headers.set("Authorization", "Bearer " + token);
-        
+        String md5Test = "098f6bcd4621d373cade4e832627b4f6";
+        usuarioRepository.save(new UsuarioBuilder().withNombre("test").withPassword(md5Test).build());
+        List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
+        interceptors.add((ClientHttpRequestInterceptor) (HttpRequest request, byte[] body, ClientHttpRequestExecution execution) -> {
+            request.getHeaders().set("Authorization", "Bearer " + token);
+            return execution.execute(request, body);
+        });
+        restTemplate.getRestTemplate().setInterceptors(interceptors);      
     }
     
     @Test
     public void test() {
+        //Token
+        this.token = restTemplate.postForEntity("/api/v1/login", new Credencial("test", "test"), String.class).getBody();
         //Ubicacion
         Localidad localidad = new LocalidadBuilder().build();
-        HttpEntity<Pais> payLoadPais = new HttpEntity<>(localidad.getProvincia().getPais(), headers);
         //Pais
-        localidad.getProvincia().setPais(restTemplate.exchange("/api/v1/paises", HttpMethod.POST, payLoadPais, Pais.class).getBody());
+        localidad.getProvincia().setPais(restTemplate.postForObject("/api/v1/paises", localidad.getProvincia().getPais(), Pais.class));
         //Provincia
-        HttpEntity<Provincia> payLoadProvincia = new HttpEntity<>(localidad.getProvincia(), headers);
-        localidad.setProvincia(restTemplate.exchange("/api/v1/provincias", HttpMethod.POST, payLoadProvincia, Provincia.class).getBody());
-        //Localidad
-        HttpEntity<Localidad> payLoadLocalidad = new HttpEntity<>(localidad, headers);
+        localidad.setProvincia(restTemplate.postForObject("/api/v1/provincias", localidad.getProvincia(), Provincia.class));
         //condicion-iva
         CondicionIVA condicionIVA = new CondicionIVABuilder().build();
-        HttpEntity<CondicionIVA> payLoadCondicionIVA = new HttpEntity<>(condicionIVA, headers);
         //Empresa           
         Empresa empresa = new EmpresaBuilder()
-                        .withLocalidad(restTemplate.exchange("/api/v1/localidades", HttpMethod.POST, payLoadLocalidad, Localidad.class).getBody())
-                        .withCondicionIVA(restTemplate.exchange("/api/v1/condiciones-iva", HttpMethod.POST, payLoadCondicionIVA, CondicionIVA.class).getBody())
+                        .withLocalidad(restTemplate.postForObject("/api/v1/localidades", localidad, Localidad.class))
+                        .withCondicionIVA(restTemplate.postForObject("/api/v1/condiciones-iva", condicionIVA, CondicionIVA.class))
                         .build();
-        HttpEntity<Empresa> payLoadEmpresa = new HttpEntity<>(empresa, headers);
-        empresa = restTemplate.exchange("/api/v1/empresas", HttpMethod.POST, payLoadEmpresa, Empresa.class).getBody();
+        empresa = restTemplate.postForObject("/api/v1/empresas", empresa, Empresa.class);
         //FormaDePago
         FormaDePago formaDePago = new FormaDePagoBuilder()
                                 .withAfectaCaja(false)
@@ -115,8 +94,7 @@ public class FacturaBIntegrationTest {
                                 .withPredeterminado(true)
                                 .withNombre("Efectivo")
                                 .build();
-        HttpEntity<FormaDePago> payLoadFormaDePago = new HttpEntity<>(formaDePago, headers);
-        restTemplate.exchange("/api/v1/formas-de-pago", HttpMethod.POST, payLoadFormaDePago, FormaDePago.class);
+        restTemplate.postForObject("/api/v1/formas-de-pago", formaDePago, FormaDePago.class);
         //Cliente
         Cliente cliente = new ClienteBuilder()
                           .withEmpresa(empresa)
@@ -124,31 +102,26 @@ public class FacturaBIntegrationTest {
                           .withLocalidad(empresa.getLocalidad())
                           .withPredeterminado(true)
                           .build();
-        HttpEntity<Cliente> payLoadCliente = new HttpEntity<>(cliente, headers);
-        cliente = restTemplate.exchange("/api/v1/clientes", HttpMethod.POST, payLoadCliente, Cliente.class).getBody();
+        cliente = restTemplate.postForObject("/api/v1/clientes", cliente, Cliente.class);
         //Transportista
         Transportista transportista = new TransportistaBuilder()
                                     .withEmpresa(empresa)
                                     .withLocalidad(empresa.getLocalidad())
                                     .build();
-        HttpEntity<Transportista> payLoadTransportista = new HttpEntity<>(transportista, headers);
-        transportista = restTemplate.exchange("/api/v1/transportistas", HttpMethod.POST, payLoadTransportista, Transportista.class).getBody();
+        transportista = restTemplate.postForObject("/api/v1/transportistas", transportista, Transportista.class);
         //Medida
         Medida medida = new MedidaBuilder().withEmpresa(empresa).build();
-        HttpEntity<Medida> payLoadMedida = new HttpEntity<>(medida, headers);
-        medida = restTemplate.exchange("/api/v1/medidas", HttpMethod.POST, payLoadMedida, Medida.class).getBody();
+        medida = restTemplate.postForObject("/api/v1/medidas", medida, Medida.class);
         //Proveedor
         Proveedor proveedor = new ProveedorBuilder().withEmpresa(empresa)
                             .withLocalidad(empresa.getLocalidad())
                             .withCondicionIVA(empresa.getCondicionIVA())
                             .build();
-        HttpEntity<Proveedor> payLoadProveedor = new HttpEntity<>(proveedor, headers);
-        proveedor = restTemplate.exchange("/api/v1/proveedores", HttpMethod.POST, payLoadProveedor, Proveedor.class).getBody();
+        proveedor = restTemplate.postForObject("/api/v1/proveedores", proveedor, Proveedor.class);
         //Rubro
         Rubro rubro = new RubroBuilder().withEmpresa(empresa).build();
-        HttpEntity<Rubro> payLoadRubro = new HttpEntity<>(rubro, headers);
-        rubro = restTemplate.exchange("/api/v1/rubros", HttpMethod.POST, payLoadRubro, Rubro.class).getBody();
-        
+        rubro = restTemplate.postForObject("/api/v1/rubros", rubro, Rubro.class);
+        //Productos
         Producto productoUno = (new ProductoBuilder())
                             .withCodigo("1")
                             .withDescripcion("uno")
@@ -171,63 +144,47 @@ public class FacturaBIntegrationTest {
                             .withRubro(rubro)
                             .build();
         
-        HttpEntity<Producto> payLoadProducto1 = new HttpEntity<>(productoUno, headers);
-        productoUno = restTemplate.exchange("/api/v1/productos", HttpMethod.POST, payLoadProducto1, Producto.class).getBody();
-        HttpEntity<Producto> payLoadProducto2 = new HttpEntity<>(productoDos, headers);
-        productoDos = restTemplate.exchange("/api/v1/productos", HttpMethod.POST, payLoadProducto2, Producto.class).getBody();
+        productoUno = restTemplate.postForObject("/api/v1/productos", productoUno, Producto.class);
+        productoDos = restTemplate.postForObject("/api/v1/productos", productoDos, Producto.class);
         
         assertEquals(10, productoUno.getCantidad(), 0);
         assertEquals(6, productoDos.getCantidad(), 0);
-        
-        HttpEntity<Void> token = new HttpEntity<>(headers);
-                
-        RenglonFactura renglonUno = restTemplate.exchange("/api/v1/facturas/renglon?"
+                       
+        RenglonFactura renglonUno = restTemplate.getForObject("/api/v1/facturas/renglon?"
                             + "idProducto=" + productoUno.getId_Producto()
                             + "&tipoComprobante=" + 'B'
                             + "&movimiento=" + Movimiento.VENTA
                             + "&cantidad=" + 5
-                            + "&descuentoPorcentaje=" + 0, HttpMethod.GET, token,
-                            RenglonFactura.class).getBody();
+                            + "&descuentoPorcentaje=" + 0, 
+                            RenglonFactura.class);
         
 
-        RenglonFactura renglonDos = restTemplate.exchange("/api/v1/facturas/renglon?"
+        RenglonFactura renglonDos = restTemplate.getForObject("/api/v1/facturas/renglon?"
                             + "idProducto=" + productoDos.getId_Producto()
                             + "&tipoComprobante=" + 'B'
                             + "&movimiento=" + Movimiento.VENTA
                             + "&cantidad=" + 2
-                            + "&descuentoPorcentaje=" + 0, HttpMethod.GET, token,
-                            RenglonFactura.class).getBody();
+                            + "&descuentoPorcentaje=" + 0,
+                            RenglonFactura.class);
         
         List<RenglonFactura> renglones = new ArrayList<>();
         renglones.add(renglonUno);
         renglones.add(renglonDos);
         
-        Factura facturaB = new FacturaVentaBuilder()
-                                .withTipoFactura('B')
-                                .withCliente(cliente)
-                                .withEmpresa(empresa)
-                                .withTransportista(transportista)
-                                .withUsuario(restTemplate.exchange("/api/v1/usuarios/1", HttpMethod.GET, token, Usuario.class).getBody())
-                               // .withRenglones(renglones)
-                                .build();
-        facturaB.setRenglones(renglones);
+        FacturaVentaDTO facturaVentaB = new FacturaVentaDTO();
+        facturaVentaB.setTipoFactura('B');
+        facturaVentaB.setCliente(cliente);
+        facturaVentaB.setEmpresa(empresa);
+        facturaVentaB.setTransportista(transportista);
+        facturaVentaB.setUsuario(restTemplate.getForObject("/api/v1/usuarios/1", Usuario.class));
+        facturaVentaB.setRenglones(renglones);
+        facturaVentaB.setFecha(new Date());
         
-        HttpEntity<Factura> payLoadFacturaVenta = new HttpEntity<>(facturaB, headers);
+        restTemplate.postForObject("/api/v1/facturas", facturaVentaB, FacturaVentaDTO[].class);
+        restTemplate.getForObject("/api/v1/facturas/1", FacturaVentaDTO.class);
         
-//        try {
-//            mvc.perform(MockMvcRequestBuilders.get("/validation-success")
-//                    .contentType(MediaType.APPLICATION_JSON)
-//                    .header("Authorization", headers.containsValue("Authorization"))
-//                    .content(this.json.write(facturaB).getJson().getBytes()));
-//        } catch (IOException ex) {
-//            Logger.getLogger(FacturaBIntegrationTest.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (Exception ex) {
-//            Logger.getLogger(FacturaBIntegrationTest.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-        
-        Factura[] factura = restTemplate.exchange("/api/v1/facturas", HttpMethod.POST, payLoadFacturaVenta, Factura[].class).getBody();
-        factura = restTemplate.exchange("/api/v1/facturas/1", HttpMethod.GET, token, Factura[].class).getBody();
-
+        assertEquals(5, restTemplate.getForObject("/api/v1/productos/1", Producto.class).getCantidad(), 0);
+        assertEquals(4, restTemplate.getForObject("/api/v1/productos/2", Producto.class).getCantidad(), 0);
     }
     
 }
