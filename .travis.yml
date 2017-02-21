@@ -1,4 +1,5 @@
 language: java
 jdk: oraclejdk8
 env:
-- SIC_JWT_KEY=S1C
+  global:
+    - SIC_JWT_KEY=S1C
