@@ -9,23 +9,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
-import sic.repository.IConfiguracionDelSistemaRepository;
 import sic.service.IEmpresaService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
 import sic.repository.EmpresaRepository;
+import sic.repository.ConfiguracionDelSistemaRepository;
 
 @Service
 public class EmpresaServiceImpl implements IEmpresaService {
 
     private final EmpresaRepository empresaRepository;
-    private final IConfiguracionDelSistemaRepository configuracionDelSistemaRepository;    
+    private final ConfiguracionDelSistemaRepository configuracionDelSistemaRepository;    
     private static final Logger LOGGER = Logger.getLogger(EmpresaServiceImpl.class.getPackage().getName());
 
     @Autowired
     public EmpresaServiceImpl(EmpresaRepository empresaRepository,
-            IConfiguracionDelSistemaRepository configuracionDelSistemaRepository) {
+            ConfiguracionDelSistemaRepository configuracionDelSistemaRepository) {
 
         this.empresaRepository = empresaRepository;
         this.configuracionDelSistemaRepository = configuracionDelSistemaRepository;
@@ -111,7 +111,7 @@ public class EmpresaServiceImpl implements IEmpresaService {
         cds.setCantidadMaximaDeRenglonesEnFactura(28);
         cds.setUsarFacturaVentaPreImpresa(false);
         cds.setEmpresa(getEmpresaPorNombre(empresa.getNombre()));
-        configuracionDelSistemaRepository.guardar(cds);
+        configuracionDelSistemaRepository.save(cds);
     }
 
     @Override

@@ -18,8 +18,6 @@ public interface IGastoService {
     
     Gasto getGastosPorNroYEmpreas(Long nroPago, Long id_Empresa);
 
-    long getUltimoNumeroDeCaja(long id_Empresa);
-
     Gasto guardar(Gasto gasto);
 
     void validarGasto(Gasto gasto);

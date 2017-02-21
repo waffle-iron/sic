@@ -1,5 +1,8 @@
 package sic.service.impl;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.DateExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import java.io.InputStream;
 import java.util.ArrayList;
 import sic.service.ICajaService;
@@ -17,6 +20,7 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaCajaCriteria;
@@ -27,8 +31,8 @@ import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Gasto;
 import sic.modelo.Pago;
-import sic.repository.ICajaRepository;
 import sic.modelo.EstadoCaja;
+import sic.modelo.QCaja;
 import sic.service.BusinessServiceException;
 import sic.service.IEmpresaService;
 import sic.service.IFormaDePagoService;
@@ -40,11 +44,12 @@ import sic.util.FormatterFechaHora;
 import sic.util.FormatterNumero;
 import sic.util.Utilidades;
 import sic.util.Validator;
+import sic.repository.CajaRepository;
 
 @Service
 public class CajaServiceImpl implements ICajaService {
 
-    private final ICajaRepository cajaRepository;
+    private final CajaRepository cajaRepository;
     private final IFormaDePagoService formaDePagoService;
     private final IPagoService pagoService;
     private final IGastoService gastoService;
@@ -55,7 +60,7 @@ public class CajaServiceImpl implements ICajaService {
     private static final int CANTIDAD_DECIMALES_TRUNCAMIENTO = 2;
 
     @Autowired
-    public CajaServiceImpl(ICajaRepository cajaRepository, IFormaDePagoService formaDePagoService,
+    public CajaServiceImpl(CajaRepository cajaRepository, IFormaDePagoService formaDePagoService,
                            IPagoService pagoService, IGastoService gastoService,
                            IEmpresaService empresaService, IUsuarioService usuarioService) {
         this.cajaRepository = cajaRepository;
@@ -93,7 +98,7 @@ public class CajaServiceImpl implements ICajaService {
                     .getString("mensaje_fecha_apertura_no_valida"));
         }
         //Duplicados        
-        if (cajaRepository.getCajaPorIdYEmpresa(caja.getId_Caja(), caja.getEmpresa().getId_Empresa()) != null) {
+        if (cajaRepository.findOne(caja.getId_Caja()) != null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_duplicada"));
         }        
@@ -105,7 +110,7 @@ public class CajaServiceImpl implements ICajaService {
         caja.setFechaApertura(new Date());
         this.validarCaja(caja);
         caja.setNroCaja(this.getUltimoNumeroDeCaja(caja.getEmpresa().getId_Empresa()) + 1);        
-        caja = cajaRepository.guardar(caja);
+        caja = cajaRepository.save(caja);
         LOGGER.warn("La Caja " + caja + " se guardó correctamente." );
         return caja;
     }
@@ -113,7 +118,7 @@ public class CajaServiceImpl implements ICajaService {
     @Override
     @Transactional
     public void actualizar(Caja caja) {        
-        cajaRepository.actualizar(caja);
+        cajaRepository.save(caja);
     }
     
     @Override
@@ -130,32 +135,27 @@ public class CajaServiceImpl implements ICajaService {
 
     @Override
     public Caja getUltimaCaja(long id_Empresa) {        
-        return cajaRepository.getUltimaCaja(id_Empresa);        
+        return cajaRepository.findTopByEmpresaAndEliminadaOrderByFechaAperturaDesc(empresaService.getEmpresaPorId(id_Empresa), false);        
     }
     
     @Override
     public Caja getCajaPorId(Long id) {
-        Caja caja = cajaRepository.getCajaPorId(id);
+        Caja caja = cajaRepository.findOne(id);
         if (caja == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_no_existente"));
         }
         return caja;
     }
-
-    @Override
-    public Caja getCajaPorIdYEmpresa(long id_Caja, long id_Empresa) {        
-        return cajaRepository.getCajaPorIdYEmpresa(id_Caja, id_Empresa);        
-    }
     
     @Override
-    public Caja getCajaPorNroYEmpresa(int nroCaja, long id_Empresa) {        
-        return cajaRepository.getCajaPorNroYEmpresa(nroCaja, id_Empresa);        
+    public Caja getCajaPorNroYEmpresa(int nroCaja, long idEmpresa) {        
+        return cajaRepository.findByNroCajaAndEmpresaAndEliminada(nroCaja, empresaService.getEmpresaPorId(idEmpresa), false);        
     }
 
     @Override
-    public int getUltimoNumeroDeCaja(long id_Empresa) {
-        return cajaRepository.getUltimoNumeroDeCaja(id_Empresa);        
+    public int getUltimoNumeroDeCaja(long idEmpresa) {
+        return this.getUltimaCaja(idEmpresa).getNroCaja();        
     }
  
     @Override
@@ -182,8 +182,8 @@ public class CajaServiceImpl implements ICajaService {
     }
 
     @Override
-    public List<Caja> getCajas(long id_Empresa, Date desde, Date hasta) {        
-        return cajaRepository.getCajas(id_Empresa, desde, hasta);        
+    public List<Caja> getCajas(long idEmpresa, Date desde, Date hasta) {        
+        return cajaRepository.findAllByFechaAperturaBetweenAndEmpresaAndEliminada(desde, hasta, empresaService.getEmpresaPorId(idEmpresa), false);        
     }
 
     @Override
@@ -215,8 +215,21 @@ public class CajaServiceImpl implements ICajaService {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_empresa_no_existente"));
         }
-        
-        return cajaRepository.getCajasCriteria(criteria);        
+        QCaja qcaja = QCaja.caja;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qcaja.empresa.eq(criteria.getEmpresa()).and(qcaja.eliminada.eq(false)));
+        if (criteria.isBuscaPorUsuario() == true) {
+            builder.and(qcaja.usuarioCierraCaja.eq(criteria.getUsuario()));
+        }
+        if (criteria.isBuscaPorFecha() == true) {
+            FormatterFechaHora formateadorFecha = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_INTERNACIONAL);
+            DateExpression<Date> fDesde = Expressions.dateTemplate(Date.class, "convert({0}, datetime)", formateadorFecha.format(criteria.getFechaDesde()));
+            DateExpression<Date> fHasta = Expressions.dateTemplate(Date.class, "convert({0}, datetime)", formateadorFecha.format(criteria.getFechaHasta()));
+            builder.and(qcaja.fechaApertura.between(fDesde, fHasta));
+        }
+        List<Caja> cajas = new ArrayList<>();
+        cajaRepository.findAll(builder, new Sort(Sort.Direction.DESC, "fechaApertura")).iterator().forEachRemaining(cajas::add);
+        return cajas;        
     }
 
     @Override
