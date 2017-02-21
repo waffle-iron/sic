@@ -22,7 +22,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestClientResponseException;
 import org.apache.commons.io.IOUtils;
-import org.springframework.boot.context.embedded.LocalServerPort;
 import sic.builder.ClienteBuilder;
 import sic.builder.CondicionIVABuilder;
 import sic.builder.EmpresaBuilder;
@@ -64,10 +63,7 @@ public class FacturaBIntegrationTest {
     private TestRestTemplate restTemplate;
 
     private String token;
-    
-    @LocalServerPort
-    private int port;
-
+   
     @Before
     public void setup() {
         String md5Test = "098f6bcd4621d373cade4e832627b4f6";
@@ -100,7 +96,7 @@ public class FacturaBIntegrationTest {
     @Test
     public void test() {
         //Token
-        this.token = restTemplate.postForEntity("http://localhost:"+port+"/api/v1/login", new Credencial("test", "test"), String.class).getBody();
+        this.token = restTemplate.postForEntity("/api/v1/login", new Credencial("test", "test"), String.class).getBody();
         //Ubicacion
         Localidad localidad = new LocalidadBuilder().build();
         //Pais
