@@ -31,6 +31,11 @@ public class AuthController {
     }
     
     private String generarToken() {
+        
+        System.out.println("Secretekey para JWT");
+        System.out.println(secretkey);
+        
+        
         //24hs desde la fecha actual para expiration
         Date today = new Date();
         Calendar c = Calendar.getInstance();

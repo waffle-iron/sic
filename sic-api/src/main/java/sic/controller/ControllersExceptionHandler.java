@@ -21,8 +21,7 @@ public class ControllersExceptionHandler {
         String mensaje = ex.getMessage() + "\n(Transaction ID: " + new Date().getTime() + ")";
         
         System.out.println("Mas logging");
-        System.out.println(ex.getStackTrace());
-        ex.printStackTrace();
+        System.out.println(Arrays.toString(ex.getStackTrace()));        
         
         if (ex.getCause() != null) {                        
             LOGGER.error(mensaje + " " + ex.getCause().getMessage() + "\n" + Arrays.toString(ex.getStackTrace()));
