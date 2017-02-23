@@ -6,7 +6,7 @@ import sic.modelo.CondicionIVA;
 
 public interface CondicionIVARepository extends PagingAndSortingRepository<CondicionIVA, Long>{
 
-      CondicionIVA findByNombreLikeAndEliminada(String nombre, boolean eliminada);
+      CondicionIVA findByNombreIsAndEliminada(String nombre, boolean eliminada);
 
       List<CondicionIVA> findAllByAndEliminadaOrderByNombreAsc(boolean eliminada);
     

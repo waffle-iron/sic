@@ -65,7 +65,7 @@ public class CondicionDeIVAServiceImpl implements ICondicionIVAService {
 
     @Override
     public CondicionIVA getCondicionIVAPorNombre(String nombre) {        
-        return condicionIVARepository.findByNombreLikeAndEliminada(nombre, false);        
+        return condicionIVARepository.findByNombreIsAndEliminada(nombre, false);        
     }
 
     @Override

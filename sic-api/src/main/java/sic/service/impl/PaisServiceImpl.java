@@ -42,7 +42,7 @@ public class PaisServiceImpl implements IPaisService {
 
     @Override
     public Pais getPaisPorNombre(String nombre) {
-        return paisRepository.findByNombreLikeAndEliminadoOrderByNombreAsc(nombre, false);
+        return paisRepository.findByNombreIsAndEliminadoOrderByNombreAsc(nombre, false);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Pais pais) {

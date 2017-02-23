@@ -46,12 +46,6 @@ public class ClienteServiceImpl implements IClienteService {
     }
 
     @Override
-    public List<Cliente> getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(String criteria, Empresa empresa) {        
-        return clienteRepository.findByRazonSocialContainingIgnoreCaseAndNombreFantasiaContainingIgnoreCaseAndIdFiscalContainingIgnoreCaseAndEmpresaAndEliminado
-        (criteria, criteria, criteria, empresa, false);  
-    }
-
-    @Override
     public Cliente getClientePorRazonSocial(String razonSocial, Empresa empresa) {        
         return clienteRepository.findByRazonSocialAndEmpresaAndEliminado(razonSocial, empresa, false);                   
     }

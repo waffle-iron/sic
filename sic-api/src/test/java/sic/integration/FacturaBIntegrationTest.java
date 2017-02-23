@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestClientResponseException;
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import sic.builder.ClienteBuilder;
 import sic.builder.CondicionIVABuilder;
 import sic.builder.EmpresaBuilder;
@@ -37,6 +38,8 @@ import sic.modelo.Cliente;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Credencial;
 import sic.modelo.Empresa;
+import sic.modelo.Factura;
+import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Localidad;
 import sic.modelo.Medida;
@@ -63,6 +66,8 @@ public class FacturaBIntegrationTest {
     private TestRestTemplate restTemplate;
 
     private String token;
+    
+    private String apiPrefix = "/api/v1";
    
     @Before
     public void setup() {
@@ -96,21 +101,21 @@ public class FacturaBIntegrationTest {
     @Test
     public void test() {
         //Token
-        this.token = restTemplate.postForEntity("/api/v1/login", new Credencial("test", "test"), String.class).getBody();
+        this.token = restTemplate.postForEntity(apiPrefix + "/login", new Credencial("test", "test"), String.class).getBody();
         //Ubicacion
         Localidad localidad = new LocalidadBuilder().build();
         //Pais
-        localidad.getProvincia().setPais(restTemplate.postForObject("/api/v1/paises", localidad.getProvincia().getPais(), Pais.class));
+        localidad.getProvincia().setPais(restTemplate.postForObject(apiPrefix + "/paises", localidad.getProvincia().getPais(), Pais.class));
         //Provincia
-        localidad.setProvincia(restTemplate.postForObject("/api/v1/provincias", localidad.getProvincia(), Provincia.class));
+        localidad.setProvincia(restTemplate.postForObject(apiPrefix + "/provincias", localidad.getProvincia(), Provincia.class));
         //condicion-iva
         CondicionIVA condicionIVA = new CondicionIVABuilder().build();
         //Empresa           
         Empresa empresa = new EmpresaBuilder()
-                .withLocalidad(restTemplate.postForObject("/api/v1/localidades", localidad, Localidad.class))
-                .withCondicionIVA(restTemplate.postForObject("/api/v1/condiciones-iva", condicionIVA, CondicionIVA.class))
+                .withLocalidad(restTemplate.postForObject(apiPrefix + "/localidades", localidad, Localidad.class))
+                .withCondicionIVA(restTemplate.postForObject(apiPrefix + "/condiciones-iva", condicionIVA, CondicionIVA.class))
                 .build();
-        empresa = restTemplate.postForObject("/api/v1/empresas", empresa, Empresa.class);
+        empresa = restTemplate.postForObject(apiPrefix + "/empresas", empresa, Empresa.class);
         //FormaDePago
         FormaDePago formaDePago = new FormaDePagoBuilder()
                 .withAfectaCaja(false)
@@ -118,7 +123,7 @@ public class FacturaBIntegrationTest {
                 .withPredeterminado(true)
                 .withNombre("Efectivo")
                 .build();
-        restTemplate.postForObject("/api/v1/formas-de-pago", formaDePago, FormaDePago.class);
+        restTemplate.postForObject(apiPrefix + "/formas-de-pago", formaDePago, FormaDePago.class);
         //Cliente
         Cliente cliente = new ClienteBuilder()
                 .withEmpresa(empresa)
@@ -126,25 +131,25 @@ public class FacturaBIntegrationTest {
                 .withLocalidad(empresa.getLocalidad())
                 .withPredeterminado(true)
                 .build();
-        cliente = restTemplate.postForObject("/api/v1/clientes", cliente, Cliente.class);
+        cliente = restTemplate.postForObject(apiPrefix + "/clientes", cliente, Cliente.class);
         //Transportista
         Transportista transportista = new TransportistaBuilder()
                 .withEmpresa(empresa)
                 .withLocalidad(empresa.getLocalidad())
                 .build();
-        transportista = restTemplate.postForObject("/api/v1/transportistas", transportista, Transportista.class);
+        transportista = restTemplate.postForObject(apiPrefix + "/transportistas", transportista, Transportista.class);
         //Medida
         Medida medida = new MedidaBuilder().withEmpresa(empresa).build();
-        medida = restTemplate.postForObject("/api/v1/medidas", medida, Medida.class);
+        medida = restTemplate.postForObject(apiPrefix + "/medidas", medida, Medida.class);
         //Proveedor
         Proveedor proveedor = new ProveedorBuilder().withEmpresa(empresa)
                 .withLocalidad(empresa.getLocalidad())
                 .withCondicionIVA(empresa.getCondicionIVA())
                 .build();
-        proveedor = restTemplate.postForObject("/api/v1/proveedores", proveedor, Proveedor.class);
+        proveedor = restTemplate.postForObject(apiPrefix + "/proveedores", proveedor, Proveedor.class);
         //Rubro
         Rubro rubro = new RubroBuilder().withEmpresa(empresa).build();
-        rubro = restTemplate.postForObject("/api/v1/rubros", rubro, Rubro.class);
+        rubro = restTemplate.postForObject(apiPrefix + "/rubros", rubro, Rubro.class);
         //Productos
         Producto productoUno = (new ProductoBuilder())
                 .withCodigo("1")
@@ -167,14 +172,11 @@ public class FacturaBIntegrationTest {
                 .withProveedor(proveedor)
                 .withRubro(rubro)
                 .build();
-
-        productoUno = restTemplate.postForObject("/api/v1/productos", productoUno, Producto.class);
-        productoDos = restTemplate.postForObject("/api/v1/productos", productoDos, Producto.class);
-
+        productoUno = restTemplate.postForObject(apiPrefix + "/productos", productoUno, Producto.class);
+        productoDos = restTemplate.postForObject(apiPrefix + "/productos", productoDos, Producto.class);
         assertEquals(10, productoUno.getCantidad(), 0);
         assertEquals(6, productoDos.getCantidad(), 0);
-
-        RenglonFactura renglonUno = restTemplate.getForObject("/api/v1/facturas/renglon?"
+        RenglonFactura renglonUno = restTemplate.getForObject(apiPrefix + "/facturas/renglon?"
                 + "idProducto=" + productoUno.getId_Producto()
                 + "&tipoComprobante=" + 'B'
                 + "&movimiento=" + Movimiento.VENTA
@@ -182,32 +184,38 @@ public class FacturaBIntegrationTest {
                 + "&descuentoPorcentaje=" + 0,
                 RenglonFactura.class);
 
-        RenglonFactura renglonDos = restTemplate.getForObject("/api/v1/facturas/renglon?"
+        RenglonFactura renglonDos = restTemplate.getForObject(apiPrefix + "/facturas/renglon?"
                 + "idProducto=" + productoDos.getId_Producto()
                 + "&tipoComprobante=" + 'B'
                 + "&movimiento=" + Movimiento.VENTA
                 + "&cantidad=" + 2
                 + "&descuentoPorcentaje=" + 0,
                 RenglonFactura.class);
-
         List<RenglonFactura> renglones = new ArrayList<>();
         renglones.add(renglonUno);
         renglones.add(renglonDos);
-
         FacturaVentaDTO facturaVentaB = new FacturaVentaDTO();
         facturaVentaB.setTipoFactura('B');
         facturaVentaB.setCliente(cliente);
         facturaVentaB.setEmpresa(empresa);
         facturaVentaB.setTransportista(transportista);
-        facturaVentaB.setUsuario(restTemplate.getForObject("/api/v1/usuarios/1", Usuario.class));
+        facturaVentaB.setUsuario(restTemplate.getForObject(apiPrefix + "/usuarios/1", Usuario.class));
         facturaVentaB.setRenglones(renglones);
         facturaVentaB.setFecha(new Date());
-
-        restTemplate.postForObject("/api/v1/facturas", facturaVentaB, FacturaVentaDTO[].class);
-        restTemplate.getForObject("/api/v1/facturas/1", FacturaVentaDTO.class);
-
-        assertEquals(5, restTemplate.getForObject("/api/v1/productos/1", Producto.class).getCantidad(), 0);
-        assertEquals(4, restTemplate.getForObject("/api/v1/productos/2", Producto.class).getCantidad(), 0);
+        restTemplate.postForObject(apiPrefix + "/facturas", facturaVentaB, Factura[].class);
+        FacturaVenta[] facturasRecuperadas = restTemplate.getForObject(apiPrefix + "/facturas/venta/busqueda/criteria?idEmpresa=1&tipoFactura=B&nroSerie=1&nroFactura=1", FacturaVenta[].class);
+        if (facturasRecuperadas.length != 1) {
+            Assert.fail("No deberia existir mas de una factura");
+        } 
+        RenglonFactura[] renglonesDeFacturaRecuperada = restTemplate.getForObject(apiPrefix + "/facturas/" + facturasRecuperadas[0].getId_Factura() + "/renglones", RenglonFactura[].class);
+        long[] idsProductos = new long[renglonesDeFacturaRecuperada.length];
+        int indice = 0;
+        for(RenglonFactura renglon : renglonesDeFacturaRecuperada) {
+            idsProductos[indice] = renglon.getId_ProductoItem();
+            indice++;
+        }
+        assertEquals(5, restTemplate.getForObject(apiPrefix + "/productos/" + idsProductos[0], Producto.class).getCantidad(), 0);
+        assertEquals(4, restTemplate.getForObject(apiPrefix + "/productos/" + idsProductos[1], Producto.class).getCantidad(), 0);
     }
 
 }

@@ -8,7 +8,7 @@ public interface EmpresaRepository extends PagingAndSortingRepository<Empresa, L
     
       Empresa findByCuipAndEliminada(long cuip, boolean eliminada);
 
-      Empresa findByNombreLikeAndEliminadaOrderByNombreAsc(String nombre, boolean eliminada);
+      Empresa findByNombreIsAndEliminadaOrderByNombreAsc(String nombre, boolean eliminada);
 
       List<Empresa> findAllByAndEliminadaOrderByNombreAsc(boolean eliminada); 
     

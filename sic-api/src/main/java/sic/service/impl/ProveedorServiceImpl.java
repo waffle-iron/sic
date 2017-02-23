@@ -62,7 +62,7 @@ public class ProveedorServiceImpl implements IProveedorService {
         }
         //Id_Fiscal
         if (criteria.isBuscaPorId_Fiscal() == true) {
-            builder.and(qproveedor.idFiscal.eq(criteria.getId_Fiscal()));
+            builder.and(qproveedor.idFiscal.eq(criteria.getIdFiscal()));
         }
         //Codigo
         if (criteria.isBuscaPorCodigo() == true) {

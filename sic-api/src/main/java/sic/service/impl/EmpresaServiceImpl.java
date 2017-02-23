@@ -48,7 +48,7 @@ public class EmpresaServiceImpl implements IEmpresaService {
 
     @Override
     public Empresa getEmpresaPorNombre(String nombre) {
-        return empresaRepository.findByNombreLikeAndEliminadaOrderByNombreAsc(nombre, false);
+        return empresaRepository.findByNombreIsAndEliminadaOrderByNombreAsc(nombre, false);
     }
 
     @Override

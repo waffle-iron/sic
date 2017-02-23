@@ -6,7 +6,7 @@ import sic.modelo.Pais;
 
 public interface PaisRepository extends PagingAndSortingRepository<Pais, Long> {
     
-      Pais findByNombreLikeAndEliminadoOrderByNombreAsc(String nombre, boolean eliminado);
+      Pais findByNombreIsAndEliminadoOrderByNombreAsc(String nombre, boolean eliminado);
 
       List<Pais> findAllByAndEliminadoOrderByNombreAsc(boolean eliminado);
     
