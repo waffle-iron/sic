@@ -1,4 +1,4 @@
-package sic.repository.jpa;
+package sic.repository.custom;
 
 import java.util.List;
 import javax.persistence.EntityManager;
