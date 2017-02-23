@@ -17,7 +17,5 @@ public interface IFormaDePagoService {
     FormaDePago guardar(FormaDePago formaDePago);
 
     void setFormaDePagoPredeterminada(FormaDePago formaDePago);
-
-    FormaDePago getFormaDePagoPorNombreYEmpresa(String nombre, Long idEmpresa);
     
 }

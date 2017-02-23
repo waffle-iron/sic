@@ -152,7 +152,7 @@ public class BuscarClientesGUI extends JDialog {
         this.limpiarJTable();
         clientes.stream().map((cliente) -> {
             Object[] fila = new Object[13];
-            fila[0] = cliente.getId_Fiscal();
+            fila[0] = cliente.getIdFiscal();
             fila[1] = cliente.getRazonSocial();
             fila[2] = cliente.getNombreFantasia();
             fila[3] = cliente.getDireccion();

@@ -9,26 +9,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Empresa;
 import sic.modelo.Rubro;
-import sic.repository.IRubroRepository;
 import sic.service.IRubroService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
+import sic.repository.RubroRepository;
 
 @Service
 public class RubroServiceImpl implements IRubroService {
 
-    private final IRubroRepository rubroRepository;
+    private final RubroRepository rubroRepository;
     private static final Logger LOGGER = Logger.getLogger(RubroServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public RubroServiceImpl(IRubroRepository rubroRepository) {
+    public RubroServiceImpl(RubroRepository rubroRepository) {
         this.rubroRepository = rubroRepository;
     }
     
     @Override
     public Rubro getRubroPorId(Long idRubro){
-        Rubro rubro = rubroRepository.getRubroPorId(idRubro);
+        Rubro rubro = rubroRepository.findOne(idRubro);
         if (rubro == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_rubro_no_existente"));
@@ -38,12 +38,12 @@ public class RubroServiceImpl implements IRubroService {
 
     @Override
     public List<Rubro> getRubros(Empresa empresa) {
-        return rubroRepository.getRubros(empresa);
+        return rubroRepository.findAllByAndEmpresaAndEliminado(empresa, false);
     }
 
     @Override
     public Rubro getRubroPorNombre(String nombre, Empresa empresa) {
-        return rubroRepository.getRubroPorNombre(nombre, empresa);
+        return rubroRepository.findByNombreAndEmpresaAndEliminado(nombre, empresa, false);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Rubro rubro) {
@@ -71,14 +71,14 @@ public class RubroServiceImpl implements IRubroService {
     @Transactional
     public void actualizar(Rubro rubro) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, rubro);
-        rubroRepository.actualizar(rubro);
+        rubroRepository.save(rubro);
     }
 
     @Override
     @Transactional
     public Rubro guardar(Rubro rubro) {
         this.validarOperacion(TipoDeOperacion.ALTA, rubro);
-        rubro = rubroRepository.guardar(rubro);
+        rubro = rubroRepository.save(rubro);
         LOGGER.warn("El Rubro " + rubro + " se guardó correctamente.");
         return rubro;
     }
@@ -92,6 +92,6 @@ public class RubroServiceImpl implements IRubroService {
                     .getString("mensaje_pedido_no_existente"));
         }
         rubro.setEliminado(true);
-        rubroRepository.actualizar(rubro);
+        rubroRepository.save(rubro);
     }
 }

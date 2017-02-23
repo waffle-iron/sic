@@ -8,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -21,35 +19,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "gasto")
-@NamedQueries({
-    @NamedQuery(name = "Gasto.getGastoPorId",
-            query = "SELECT g FROM Gasto g "
-                    + "WHERE g.id_Gasto = :id_Gasto"),
-    @NamedQuery(name = "Gasto.getGastoSinArqueoPorFormaDePago",
-            query = "SELECT g FROM Gasto g "
-                    + "WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa "
-                    + "AND g.formaDePago.id_FormaDePago = :id_FormaDePago"),
-    @NamedQuery(name = "Gasto.getGastosSinArqueoPorFormaDePagoYFecha",
-            query = "SELECT g FROM Gasto g "
-                    + "WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa "
-                    + "AND g.formaDePago.id_FormaDePago = :id_FormaDePago "
-                    + "AND g.fecha BETWEEN :desde AND :hasta"),
-    @NamedQuery(name = "Gasto.getGastosSinArqueoPorFecha",
-            query = "SELECT g FROM Gasto g "
-                    + "WHERE g.eliminado = false AND g.empresa.id_Empresa = :id_Empresa "
-                    + "AND g.fecha BETWEEN :desde AND :hasta"),
-    @NamedQuery(name = "Gasto.getGastoPorIdYEmpresa",
-            query = "SELECT g FROM Gasto g "
-                    + "WHERE g.id_Gasto = :id_Gasto AND g.empresa.id_Empresa = :id_Empresa "
-                    + "ORDER BY g.fecha ASC"),
-    @NamedQuery(name = "Gasto.getGastoPorNroYEmpresa",
-            query = "SELECT g FROM Gasto g "
-                    + "WHERE g.nroGasto = :nroGasto AND g.empresa.id_Empresa = :id_Empresa "
-                    + "ORDER BY g.fecha ASC"),
-    @NamedQuery(name = "Gasto.getUltimoNumeroDeGasto",
-            query = "SELECT max(g.nroGasto) FROM Gasto g "
-                    + "WHERE g.empresa.id_Empresa = :id_Empresa")
-})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

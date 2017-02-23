@@ -13,7 +13,7 @@ public class Proveedor implements Serializable {
     private String razonSocial;
     private String direccion;
     private CondicionIVA condicionIVA;
-    private String id_Fiscal;
+    private String idFiscal;
     private String telPrimario;
     private String telSecundario;
     private String contacto;

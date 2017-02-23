@@ -10,23 +10,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Gasto;
-import sic.repository.IGastoRepository;
 import sic.service.BusinessServiceException;
+import sic.repository.GastoRepository;
+import sic.service.IEmpresaService;
+import sic.service.IFormaDePagoService;
 
 @Service
 public class GastoServiceImpl implements IGastoService {
 
-    private final IGastoRepository gastoRepository;
+    private final GastoRepository gastoRepository;
+    private final IEmpresaService empresaService;
+    private final IFormaDePagoService formaDePagoService;
     private static final Logger LOGGER = Logger.getLogger(GastoServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public GastoServiceImpl(IGastoRepository gastoRepository) {
+    public GastoServiceImpl(GastoRepository gastoRepository, IEmpresaService empresaService, 
+                            IFormaDePagoService formaDePagoService) {
         this.gastoRepository = gastoRepository;
+        this.empresaService = empresaService;
+        this.formaDePagoService = formaDePagoService;
     }
     
     @Override
     public Gasto getGastoPorId(Long idGasto) {
-        Gasto gasto = gastoRepository.getGastoPorId(idGasto);
+        Gasto gasto = gastoRepository.findOne(idGasto);
         if (gasto == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_gasto_no_existente"));
@@ -51,7 +58,7 @@ public class GastoServiceImpl implements IGastoService {
                     .getString("mensaje_gasto_usuario_vacio"));
         }
         //Duplicados
-        if (gastoRepository.getGastoPorIdYEmpresa(gasto.getId_Gasto(), gasto.getEmpresa().getId_Empresa()) != null) {
+        if (gastoRepository.findOne(gasto.getId_Gasto()) != null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_gasto_duplicada"));
         }
@@ -62,30 +69,31 @@ public class GastoServiceImpl implements IGastoService {
     public Gasto guardar(Gasto gasto) {
         this.validarGasto(gasto);
         gasto.setNroGasto(this.getUltimoNumeroDeGasto(gasto.getEmpresa().getId_Empresa()) + 1);
-        gasto = gastoRepository.guardar(gasto);
+        gasto = gastoRepository.save(gasto);
         LOGGER.warn("El Gasto " + gasto + " se guardó correctamente." );
         return gasto;
     }
 
     @Override
     public List<Gasto> getGastosPorFecha(Long idEmpresa, Date desde, Date hasta) {
-        return gastoRepository.getGastosPorFecha(idEmpresa, desde, hasta);
+        return gastoRepository.findAllByFechaBetweenAndEmpresaAndEliminado(desde, hasta, empresaService.getEmpresaPorId(idEmpresa), false);
     }
 
     @Override
-    public Gasto getGastosPorNroYEmpreas(Long nroPago, Long id_Empresa) {
-        return gastoRepository.getGastoPorNroYEmpresa(nroPago, id_Empresa);
+    public Gasto getGastosPorNroYEmpreas(Long nroPago, Long idEmpresa) {
+        return gastoRepository.findByNroGastoAndEmpresaAndEliminado(nroPago, empresaService.getEmpresaPorId(idEmpresa), false);
     }
 
     @Override
     public List<Gasto> getGastosPorFechaYFormaDePago(Long idEmpresa, Long idFormaDePago, Date desde, Date hasta) {
-        return gastoRepository.getGastosPorFechaYFormaDePago(idEmpresa, idFormaDePago, desde, hasta);
+        return gastoRepository.findAllByFechaBetweenAndEmpresaAndFormaDePagoAndEliminado(desde, hasta, empresaService.getEmpresaPorId(idEmpresa), 
+                formaDePagoService.getFormasDePagoPorId(idFormaDePago), false);
     }
 
     @Override
     @Transactional
     public void actualizar(Gasto gasto) {
-        gastoRepository.actualizar(gasto);
+        gastoRepository.save(gasto);
     }
     
     @Override
@@ -93,17 +101,12 @@ public class GastoServiceImpl implements IGastoService {
     public void eliminar(long idGasto) {
         Gasto gastoParaEliminar = this.getGastoPorId(idGasto);
         gastoParaEliminar.setEliminado(true);
-        gastoRepository.actualizar(gastoParaEliminar);
+        gastoRepository.save(gastoParaEliminar);
     }
-
-    @Override
-    public long getUltimoNumeroDeCaja(long idEmpresa) {
-        return gastoRepository.getUltimoNumeroDeGasto(idEmpresa);
-    }
-
+    
     @Override
     public long getUltimoNumeroDeGasto(long idEmpresa) {
-        return gastoRepository.getUltimoNumeroDeGasto(idEmpresa);
+        return gastoRepository.findTopByEmpresaAndEliminadoOrderByNroGastoDesc(empresaService.getEmpresaPorId(idEmpresa), false).getNroGasto();
     }
 
 }

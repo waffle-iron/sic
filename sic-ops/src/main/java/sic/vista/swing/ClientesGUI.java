@@ -161,7 +161,7 @@ public class ClientesGUI extends JInternalFrame {
         clientes.stream().map((cliente) -> {
             Object[] fila = new Object[14];
             fila[0] = cliente.isPredeterminado();
-            fila[1] = cliente.getId_Fiscal();
+            fila[1] = cliente.getIdFiscal();
             fila[2] = cliente.getRazonSocial();
             fila[3] = cliente.getNombreFantasia();            
             fila[4] = cliente.getDireccion();

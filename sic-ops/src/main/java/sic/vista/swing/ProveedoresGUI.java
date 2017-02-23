@@ -170,7 +170,7 @@ public class ProveedoresGUI extends JInternalFrame {
             fila[1] = proveedor.getRazonSocial();
             fila[2] = proveedor.getDireccion();
             fila[3] = proveedor.getCondicionIVA().getNombre();
-            fila[4] = proveedor.getId_Fiscal();
+            fila[4] = proveedor.getIdFiscal();
             fila[5] = proveedor.getTelPrimario();
             fila[6] = proveedor.getTelSecundario();
             fila[7] = proveedor.getContacto();

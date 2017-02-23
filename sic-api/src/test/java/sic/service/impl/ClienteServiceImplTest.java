@@ -17,13 +17,13 @@ import sic.builder.LocalidadBuilder;
 import sic.modelo.Cliente;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
-import sic.repository.jpa.ClienteRepositoryJPAImpl;
+import sic.repository.ClienteRepository;
 
 @RunWith(SpringRunner.class)
 public class ClienteServiceImplTest {
 
     @Mock
-    private ClienteRepositoryJPAImpl clienteRepositoryJPAImpl;
+    private ClienteRepository clienteRepository;
     
     @InjectMocks
     private ClienteServiceImpl clienteServiceImpl;
@@ -35,7 +35,7 @@ public class ClienteServiceImplTest {
     public void shouldSetClientePredeterminado() {
         Cliente resultadoEsperado = new ClienteBuilder().build();
         clienteServiceImpl.setClientePredeterminado(resultadoEsperado);
-        when(clienteRepositoryJPAImpl.getClientePredeterminado((new EmpresaBuilder()).build()))
+        when(clienteRepository.findByAndEmpresaAndPredeterminadoAndEliminado((new EmpresaBuilder()).build(), true, false))
                                      .thenReturn((new ClienteBuilder()).build());
         Cliente resultadoObtenido = clienteServiceImpl.getClientePredeterminado((new EmpresaBuilder()).build());
         assertEquals(resultadoEsperado, resultadoObtenido);
@@ -91,7 +91,7 @@ public class ClienteServiceImplTest {
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_cliente_duplicado_idFiscal"));
         Cliente cliente = new ClienteBuilder().build();
         Cliente clienteDuplicado = new ClienteBuilder().build();
-        when(clienteRepositoryJPAImpl.getClientePorId_Fiscal(cliente.getId_Fiscal(), cliente.getEmpresa()))
+        when(clienteRepository.findByIdFiscalAndEmpresaAndEliminado(cliente.getIdFiscal(), cliente.getEmpresa(), false))
                 .thenReturn(cliente);        
         clienteServiceImpl.validarOperacion(TipoDeOperacion.ALTA, clienteDuplicado);
     }
@@ -103,14 +103,14 @@ public class ClienteServiceImplTest {
         Cliente cliente = new ClienteBuilder()
                 .withId_Cliente(7L)
                 .withRazonSocial("Merceria los dos botones")
-                .withId_Fiscal("23111111119")
+                .withIdFiscal("23111111119")
                 .build();
         Cliente clienteDuplicado = new ClienteBuilder()
                 .withId_Cliente(2L)
                 .withRazonSocial("Merceria los dos botones")
-                .withId_Fiscal("23111111119")
+                .withIdFiscal("23111111119")
                 .build();
-        when(clienteRepositoryJPAImpl.getClientePorId_Fiscal(cliente.getId_Fiscal(), cliente.getEmpresa()))
+        when(clienteRepository.findByIdFiscalAndEmpresaAndEliminado(cliente.getIdFiscal(), cliente.getEmpresa(), false))
                 .thenReturn(cliente);        
         clienteServiceImpl.validarOperacion(TipoDeOperacion.ACTUALIZACION, clienteDuplicado);
     }
@@ -125,7 +125,7 @@ public class ClienteServiceImplTest {
                 .withCondicionIVA(new CondicionIVABuilder().build())
                 .withLocalidad(new LocalidadBuilder().build())
                 .withEmpresa(new EmpresaBuilder().build())
-                .withId_Fiscal("23111111119")
+                .withIdFiscal("23111111119")
                 .withId_Cliente(Long.MIN_VALUE)
                 .build();
         Cliente clienteDuplicado = new ClienteBuilder()
@@ -134,10 +134,10 @@ public class ClienteServiceImplTest {
                 .withCondicionIVA(new CondicionIVABuilder().build())
                 .withLocalidad(new LocalidadBuilder().build())
                 .withEmpresa(new EmpresaBuilder().build())
-                .withId_Fiscal("23111111119")
+                .withIdFiscal("23111111119")
                 .withId_Cliente(Long.MIN_VALUE)
                 .build();
-        when(clienteRepositoryJPAImpl.getClientePorRazonSocial(cliente.getRazonSocial(), cliente.getEmpresa()))
+        when(clienteRepository.findByRazonSocialAndEmpresaAndEliminado(cliente.getRazonSocial(), cliente.getEmpresa(), false))
                 .thenReturn(cliente);        
         clienteServiceImpl.validarOperacion(TipoDeOperacion.ALTA, clienteDuplicado);
     }
@@ -154,7 +154,7 @@ public class ClienteServiceImplTest {
                 .withId_Cliente(4L)
                 .withRazonSocial("Ferreteria Julian")
                 .build();
-        when(clienteRepositoryJPAImpl.getClientePorRazonSocial(cliente.getRazonSocial(), cliente.getEmpresa()))
+        when(clienteRepository.findByRazonSocialAndEmpresaAndEliminado(cliente.getRazonSocial(), cliente.getEmpresa(), false))
                 .thenReturn(cliente);        
         clienteServiceImpl.validarOperacion(TipoDeOperacion.ACTUALIZACION, clienteDuplicado);
     }

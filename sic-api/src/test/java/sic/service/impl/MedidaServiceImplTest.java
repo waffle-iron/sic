@@ -11,15 +11,15 @@ import static org.mockito.Mockito.when;
 import org.springframework.test.context.junit4.SpringRunner;
 import sic.builder.MedidaBuilder;
 import sic.modelo.Medida;
-import sic.repository.IMedidaRepository;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
+import sic.repository.MedidaRepository;
 
 @RunWith(SpringRunner.class)
 public class MedidaServiceImplTest {
 
     @Mock
-    private IMedidaRepository medidaRepository;
+    private MedidaRepository medidaRepository;
     
     @InjectMocks
     private MedidaServiceImpl medidaService;
@@ -33,7 +33,7 @@ public class MedidaServiceImplTest {
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_vacio_nombre"));
         Medida medidaParaTest = new MedidaBuilder().build();
         Medida medida = new MedidaBuilder().build();
-        when(medidaRepository.getMedidaPorNombre("", medida.getEmpresa())).thenReturn(medidaParaTest);
+        when(medidaRepository.findByNombreAndEmpresaAndEliminada("", medida.getEmpresa(), false)).thenReturn(medidaParaTest);
         medida.setNombre("");
         medidaService.validarOperacion(TipoDeOperacion.ALTA, medida);
     }
@@ -44,7 +44,7 @@ public class MedidaServiceImplTest {
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_duplicada_nombre"));
         Medida medidaParaTest = new MedidaBuilder().build();
         Medida medida = new MedidaBuilder().build();
-        when(medidaRepository.getMedidaPorNombre("Unidad", medida.getEmpresa())).thenReturn(medidaParaTest);
+        when(medidaRepository.findByNombreAndEmpresaAndEliminada("Unidad", medida.getEmpresa(), false)).thenReturn(medidaParaTest);
         medida.setNombre("Unidad");        
         medidaService.validarOperacion(TipoDeOperacion.ALTA, medida);
     }
@@ -55,7 +55,7 @@ public class MedidaServiceImplTest {
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_medida_duplicada_nombre"));
         Medida medidaParaTest = new MedidaBuilder().build();
         Medida medida = new MedidaBuilder().build();
-        when(medidaRepository.getMedidaPorNombre("Metro", medida.getEmpresa())).thenReturn(medidaParaTest);
+        when(medidaRepository.findByNombreAndEmpresaAndEliminada("Metro", medida.getEmpresa(), false)).thenReturn(medidaParaTest);
         medida.setId_Medida(1L);
         medida.setNombre("Metro");                
         when(medidaService.getMedidaPorNombre("Metro", medida.getEmpresa())).thenReturn(medida);

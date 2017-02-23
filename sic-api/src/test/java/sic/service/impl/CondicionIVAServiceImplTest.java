@@ -11,15 +11,15 @@ import static org.mockito.Mockito.when;
 import org.springframework.test.context.junit4.SpringRunner;
 import sic.builder.CondicionIVABuilder;
 import sic.modelo.CondicionIVA;
-import sic.repository.ICondicionIVARepository;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
+import sic.repository.CondicionIVARepository;
 
 @RunWith(SpringRunner.class)
 public class CondicionIVAServiceImplTest {
 
     @Mock
-    private ICondicionIVARepository condicionIVARepository;
+    private CondicionIVARepository condicionIVARepository;
     
     @InjectMocks
     private CondicionDeIVAServiceImpl condicionDeIVAServiceImpl;      

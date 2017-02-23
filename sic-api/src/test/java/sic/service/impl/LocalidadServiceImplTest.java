@@ -6,22 +6,24 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mockito;
+import org.mockito.Mock;
 import static org.mockito.Mockito.when;
 import org.springframework.test.context.junit4.SpringRunner;
 import sic.builder.ProvinciaBuilder;
 import sic.modelo.Localidad;
 import sic.modelo.Provincia;
-import sic.repository.ILocalidadRepository;
-import sic.repository.jpa.LocalidadRepositoryJPAImpl;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
+import sic.repository.LocalidadRepository;
 
 @RunWith(SpringRunner.class)
 public class LocalidadServiceImplTest {
 
     @InjectMocks
     private LocalidadServiceImpl localidadService;   
+    
+    @Mock
+    private LocalidadRepository localidadRepository;
     
     @Rule
     public ExpectedException thrown = ExpectedException.none();
@@ -32,7 +34,6 @@ public class LocalidadServiceImplTest {
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_localidad_vacio_nombre"));
         Localidad localidad = new Localidad();
         localidad.setNombre("");
-        ILocalidadRepository localidadRepository = new LocalidadRepositoryJPAImpl();
         localidadService = new LocalidadServiceImpl(localidadRepository);
         localidadService.validarOperacion(TipoDeOperacion.ALTA, localidad);
     }
@@ -43,7 +44,6 @@ public class LocalidadServiceImplTest {
         thrown.expectMessage(ResourceBundle.getBundle("Mensajes").getString("mensaje_localidad_provincia_vacio"));
         Localidad localidad = new Localidad();
         localidad.setNombre("Capital");
-        ILocalidadRepository localidadRepository = new LocalidadRepositoryJPAImpl();
         localidadService = new LocalidadServiceImpl(localidadRepository);
         localidadService.validarOperacion(TipoDeOperacion.ALTA, localidad);
     }
@@ -56,8 +56,7 @@ public class LocalidadServiceImplTest {
         Localidad localidad = new Localidad();
         localidad.setNombre("Capital");
         localidad.setProvincia(provincia);
-        ILocalidadRepository localidadRepository = Mockito.mock(LocalidadRepositoryJPAImpl.class);
-        when(localidadRepository.getLocalidadPorNombre("Capital", provincia)).thenReturn(localidad);
+        when(localidadRepository.findByNombreAndProvinciaAndEliminadaOrderByNombreAsc("Capital", provincia, false)).thenReturn(localidad);
         localidadService = new LocalidadServiceImpl(localidadRepository);
         localidadService.validarOperacion(TipoDeOperacion.ALTA, localidad);
     }
@@ -71,8 +70,7 @@ public class LocalidadServiceImplTest {
         localidad.setNombre("Capital");
         localidad.setProvincia(provincia);
         localidad.setId_Localidad(Long.MIN_VALUE);
-        ILocalidadRepository localidadRepository = Mockito.mock(LocalidadRepositoryJPAImpl.class);
-        when(localidadRepository.getLocalidadPorNombre("Capital", provincia)).thenReturn(localidad);
+        when(localidadRepository.findByNombreAndProvinciaAndEliminadaOrderByNombreAsc("Capital", provincia, false)).thenReturn(localidad);
         Localidad localidadDuplicada = new Localidad();
         localidadDuplicada.setNombre("Capital");
         localidadDuplicada.setProvincia(provincia);

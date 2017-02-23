@@ -8,27 +8,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Usuario;
-import sic.repository.IUsuarioRepository;
 import sic.service.IUsuarioService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Utilidades;
 import sic.util.Validator;
+import sic.repository.UsuarioRepository;
 
 @Service
 public class UsuarioServiceImpl implements IUsuarioService {
 
-    private final IUsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
     private static final Logger LOGGER = Logger.getLogger(UsuarioServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public UsuarioServiceImpl(IUsuarioRepository usuarioRepository) {
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
 
     @Override
     public Usuario getUsuarioPorId(Long idUsuario) {
-        Usuario usuario = usuarioRepository.getUsuarioPorId(idUsuario);
+        Usuario usuario = usuarioRepository.findOne(idUsuario);
         if (usuario == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_no_existente"));
@@ -38,7 +38,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     
     @Override
     public Usuario getUsuarioPorNombre(String nombre) {
-        Usuario usuario = usuarioRepository.getUsuarioPorNombre(nombre);
+        Usuario usuario = usuarioRepository.findByNombreAndEliminado(nombre, false);
 //        if (usuario == null) {
 //            throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
 //                    .getString("mensaje_usuario_no_existente"));
@@ -48,17 +48,17 @@ public class UsuarioServiceImpl implements IUsuarioService {
     
     @Override
     public List<Usuario> getUsuarios() {
-        return usuarioRepository.getUsuarios();
+        return usuarioRepository.findAllByAndEliminadoOrderByNombreAsc(false);
     }    
 
     @Override
     public List<Usuario> getUsuariosAdministradores() {
-        return usuarioRepository.getUsuariosAdministradores();
+        return usuarioRepository.findAllByAndPermisosAdministradorAndEliminadoOrderByNombreAsc(true, false);
     }
 
     @Override
     public Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia) {
-        Usuario usuario = usuarioRepository.getUsuarioPorNombreContrasenia(nombre, contrasenia);
+        Usuario usuario = usuarioRepository.findByNombreAndPasswordAndEliminado(nombre, contrasenia, false);
         if (usuario == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_no_existente"));
@@ -107,7 +107,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public void actualizar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, usuario);
         usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
-        usuarioRepository.actualizar(usuario);
+        usuarioRepository.save(usuario);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public Usuario guardar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ALTA, usuario);
         usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
-        usuario = usuarioRepository.guardar(usuario);
+        usuario = usuarioRepository.save(usuario);
         LOGGER.warn("El Usuario " + usuario + " se guardó correctamente.");
         return usuario;
     }
@@ -130,7 +130,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
         }
         this.validarOperacion(TipoDeOperacion.ELIMINACION, usuario);
         usuario.setEliminado(true);
-        usuarioRepository.actualizar(usuario);
+        usuarioRepository.save(usuario);
     }
    
 }
