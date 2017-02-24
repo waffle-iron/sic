@@ -21,6 +21,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaCajaCriteria;
@@ -325,4 +326,11 @@ public class CajaServiceImpl implements ICajaService {
         return cajaACerrar;
     }
 
+    
+    
+    // Eliminar este metodo de ejemplo
+    @Scheduled(cron = "59 59 23 * * *") // Todos los dias a las 23:59:59
+    public void ejemplo() {
+        LOGGER.error("Arrivederci Roma");
+    }
 }
