@@ -28,7 +28,7 @@ public class ProvinciaServiceImpl implements IProvinciaService {
     
     @Override
     public Provincia getProvinciaPorId(Long idProvincia) {
-        Provincia provincia = provinciaRepository.findOne(idProvincia);
+        Provincia provincia = provinciaRepository.findOne(idProvincia, false);
         if (provincia == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_provincia_no_existente"));

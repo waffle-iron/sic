@@ -28,7 +28,7 @@ public class RubroServiceImpl implements IRubroService {
     
     @Override
     public Rubro getRubroPorId(Long idRubro){
-        Rubro rubro = rubroRepository.findOne(idRubro);
+        Rubro rubro = rubroRepository.findOne(idRubro, false);
         if (rubro == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_rubro_no_existente"));

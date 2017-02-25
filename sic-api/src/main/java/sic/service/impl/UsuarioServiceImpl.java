@@ -28,7 +28,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Override
     public Usuario getUsuarioPorId(Long idUsuario) {
-        Usuario usuario = usuarioRepository.findOne(idUsuario);
+        Usuario usuario = usuarioRepository.findOne(idUsuario, false);
         if (usuario == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_no_existente"));

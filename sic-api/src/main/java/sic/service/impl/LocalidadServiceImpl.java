@@ -28,7 +28,7 @@ public class LocalidadServiceImpl implements ILocalidadService {
 
     @Override
     public Localidad getLocalidadPorId(Long idLocalidad) {
-        Localidad localidad = localidadRepository.findOne(idLocalidad);
+        Localidad localidad = localidadRepository.findOne(idLocalidad, false);
         if (localidad == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_localidad_no_existente"));

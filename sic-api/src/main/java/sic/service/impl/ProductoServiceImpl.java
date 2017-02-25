@@ -215,7 +215,7 @@ public class ProductoServiceImpl implements IProductoService {
     @Override
     public void actualizarStock(Factura factura, TipoDeOperacion operacion) {
         for (RenglonFactura renglon : factura.getRenglones()) {
-            Producto producto = productoRepository.findOne(renglon.getId_ProductoItem());
+            Producto producto = productoRepository.findOne(renglon.getId_ProductoItem(), false);
             if (producto == null) {
                 LOGGER.warn("Se intenta actualizar el stock de un producto eliminado.");
             }
@@ -347,7 +347,7 @@ public class ProductoServiceImpl implements IProductoService {
 
     @Override
     public Producto getProductoPorId(long idProducto) {
-        Producto producto = productoRepository.findOne(idProducto);
+        Producto producto = productoRepository.findOne(idProducto, false);
         if (producto == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_producto_no_existente"));

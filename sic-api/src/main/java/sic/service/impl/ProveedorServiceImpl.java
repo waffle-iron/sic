@@ -33,7 +33,7 @@ public class ProveedorServiceImpl implements IProveedorService {
 
     @Override
     public Proveedor getProveedorPorId(Long idProvedor){
-        Proveedor proveedor = proveedorRepository.findOne(idProvedor);
+        Proveedor proveedor = proveedorRepository.findOne(idProvedor, false);
         if (proveedor == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_proveedor_no_existente"));

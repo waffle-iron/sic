@@ -73,7 +73,12 @@ public class FacturaServiceImpl implements IFacturaService {
     
     @Override
     public Factura getFacturaPorId(Long id_Factura) {
-        return facturaRepository.findOne(id_Factura);
+        Factura f = facturaRepository.findOne(id_Factura, false);
+        if(f == null){
+        throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_eliminada"));
+        }
+        return f;
     }
 
     @Override

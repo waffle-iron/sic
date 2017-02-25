@@ -32,7 +32,7 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
 
     @Override
     public FormaDePago getFormasDePagoPorId(long idFormaDePago) {
-        FormaDePago formaDePago = formaDePagoRepository.findOne(idFormaDePago);
+        FormaDePago formaDePago = formaDePagoRepository.findOne(idFormaDePago, false);
         if (formaDePago == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_formaDePago_no_existente"));

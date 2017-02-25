@@ -140,7 +140,7 @@ public class CajaServiceImpl implements ICajaService {
     
     @Override
     public Caja getCajaPorId(Long id) {
-        Caja caja = cajaRepository.findOne(id);
+        Caja caja = cajaRepository.findOne(id, false);
         if (caja == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_no_existente"));

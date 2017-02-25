@@ -32,7 +32,7 @@ public class ClienteServiceImpl implements IClienteService {
 
     @Override
     public Cliente getClientePorId(Long idCliente) {    
-        Cliente cliente = clienteRepository.findOne(idCliente);
+        Cliente cliente = clienteRepository.findOne(idCliente, false);
         if (cliente == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_cliente_no_existente"));

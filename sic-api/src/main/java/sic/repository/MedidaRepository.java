@@ -1,11 +1,16 @@
 package sic.repository;
 
 import java.util.List;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import sic.modelo.Empresa;
 import sic.modelo.Medida;
 
 public interface MedidaRepository extends PagingAndSortingRepository<Medida, Long> {
+    
+      @Query("SELECT m FROM Medida m WHERE m.id_Medida = :idMedida AND m.eliminada = :eliminada")
+      Medida findOne(@Param("idMedida") long idMedida, @Param("eliminada") boolean eliminada);
     
       Medida findByNombreAndEmpresaAndEliminada(String medida, Empresa empresa, boolean eliminada);
       
