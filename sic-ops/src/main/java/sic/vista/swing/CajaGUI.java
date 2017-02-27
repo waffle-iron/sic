@@ -57,50 +57,55 @@ public class CajaGUI extends JDialog {
         this.setIconImage(iconoVentana.getImage());
     }
 
-    private void cargarDatosBalance() {
-        lbl_aviso.setText("Cerrada");
-        lbl_aviso.setForeground(Color.RED);
-        this.btn_AgregarGasto.setEnabled(false);
-        this.btn_EliminarGasto.setEnabled(false);
-        if (this.caja != null) {
-            if (this.caja.getEstado() == EstadoCaja.ABIERTA) {
-                lbl_aviso.setText("Abierta");
-                lbl_aviso.setForeground(Color.GREEN);
-                this.btn_AgregarGasto.setEnabled(true);
-                this.btn_EliminarGasto.setEnabled(true);
-            }
-            this.listaMovimientos.clear();
-            Date hasta = new Date();
-            if (this.caja.getEstado() == EstadoCaja.CERRADA) {
-                hasta = this.caja.getFechaCierre();
-            }
-            try {
-                String criteriaPagos = "/pagos/busqueda?"
-                        + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
-                        + "&idFormaDePago=" + ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago()
-                        + "&desde=" + this.caja.getFechaApertura().getTime()
-                        + "&hasta=" + hasta.getTime();
-                List<Pago> pagos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                        .getForObject(criteriaPagos,
-                                Pago[].class)));
-                this.listaMovimientos.addAll(pagos);
-                String criteriaGastos = "/gastos/busqueda?"
-                        + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
-                        + "&idFormaDePago=" + ((FormaDePago) cmb_FormasDePago.getSelectedItem()).getId_FormaDePago()
-                        + "&desde=" + this.caja.getFechaApertura().getTime()
-                        + "&hasta=" + hasta.getTime();
-                List<Gasto> gastos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                        .getForObject(criteriaGastos,
-                                Gasto[].class)));
-                this.listaMovimientos.addAll(gastos);
-                this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
-            } catch (RestClientResponseException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (ResourceAccessException ex) {
-                LOGGER.error(ex.getMessage());
-                JOptionPane.showMessageDialog(this,
-                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                        "Error", JOptionPane.ERROR_MESSAGE);
+    private void cargarDatosBalance(java.awt.event.KeyEvent evt) {
+        int row = Utilidades.getSelectedRowModelIndice(tbl_Resumen);
+        if (row != 0) {
+            FormaDePago fdp = (FormaDePago) tbl_Resumen.getModel().getValueAt(row, 0);
+            lbl_nombreFormaDePago.setText(fdp.getNombre());
+            lbl_aviso.setText("Cerrada");
+            lbl_aviso.setForeground(Color.RED);
+            this.btn_AgregarGasto.setEnabled(false);
+            this.btn_EliminarGasto.setEnabled(false);
+            if (this.caja != null) {
+                if (this.caja.getEstado() == EstadoCaja.ABIERTA) {
+                    lbl_aviso.setText("Abierta");
+                    lbl_aviso.setForeground(Color.GREEN);
+                    this.btn_AgregarGasto.setEnabled(true);
+                    this.btn_EliminarGasto.setEnabled(true);
+                }
+                this.listaMovimientos.clear();
+                Date hasta = new Date();
+                if (this.caja.getEstado() == EstadoCaja.CERRADA) {
+                    hasta = this.caja.getFechaCierre();
+                }
+                try {
+                    String criteriaPagos = "/pagos/busqueda?"
+                            + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
+                            + "&idFormaDePago=" + fdp.getId_FormaDePago()
+                            + "&desde=" + this.caja.getFechaApertura().getTime()
+                            + "&hasta=" + hasta.getTime();
+                    List<Pago> pagos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
+                            .getForObject(criteriaPagos,
+                                    Pago[].class)));
+                    this.listaMovimientos.addAll(pagos);
+                    String criteriaGastos = "/gastos/busqueda?"
+                            + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
+                            + "&idFormaDePago=" + fdp.getId_FormaDePago()
+                            + "&desde=" + this.caja.getFechaApertura().getTime()
+                            + "&hasta=" + hasta.getTime();
+                    List<Gasto> gastos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
+                            .getForObject(criteriaGastos,
+                                    Gasto[].class)));
+                    this.listaMovimientos.addAll(gastos);
+                    this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
+                } catch (RestClientResponseException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (ResourceAccessException ex) {
+                    LOGGER.error(ex.getMessage());
+                    JOptionPane.showMessageDialog(this,
+                            ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }
@@ -202,7 +207,7 @@ public class CajaGUI extends JDialog {
 
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaResumen.getColumnCount()];
-        tipos[0] = String.class;
+        tipos[0] = FormaDePago.class;
         tipos[1] = Boolean.class;
         tipos[2] = Double.class;
         modeloTablaResumen.setClaseColumnas(tipos);
@@ -219,7 +224,9 @@ public class CajaGUI extends JDialog {
         if (this.caja != null) {
             double totalGeneral = this.caja.getSaldoInicial();
             Object[] saldoInicial = new Object[3];
-            saldoInicial[0] = "Saldo Apertura";
+            FormaDePago saldoApertura = new FormaDePago();
+            saldoApertura.setNombre("Saldo Apertura");
+            saldoInicial[0] = saldoApertura;
             saldoInicial[1] = true;
             saldoInicial[2] = totalGeneral;
             double totalCaja = this.caja.getSaldoInicial();
@@ -236,7 +243,7 @@ public class CajaGUI extends JDialog {
                             this.caja.getFechaApertura().getTime(), hasta.getTime());
                     if (pagosPorFormaDePago.size() > 0 || gastosPorFormaDePago.size() > 0) {
                         Object[] fila = new Object[3];
-                        fila[0] = formaDePago.getNombre();
+                        fila[0] = formaDePago;
                         this.listaMovimientos.clear();
                         this.listaMovimientos.addAll(pagosPorFormaDePago);
                         this.listaMovimientos.addAll(gastosPorFormaDePago);
@@ -325,26 +332,26 @@ public class CajaGUI extends JDialog {
     }
 
     private void cargarFormasDePago() {
-        try {
-            List<FormaDePago> formasDePago = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                    .getForObject("/formas-de-pago/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
-                            FormaDePago[].class)));
-            if (cmb_FormasDePago.getItemCount() != formasDePago.size()) {
-                cmb_FormasDePago.removeAllItems();
-                formasDePago.stream().forEach((f) -> {
-                    cmb_FormasDePago.addItem(f);
-                });
-            }
-            this.limpiarTablaBalance();
-            this.cargarDatosBalance();
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
+//        try {
+//            List<FormaDePago> formasDePago = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
+//                    .getForObject("/formas-de-pago/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
+//                            FormaDePago[].class)));
+//            if (cmb_FormasDePago.getItemCount() != formasDePago.size()) {
+//                cmb_FormasDePago.removeAllItems();
+//                formasDePago.stream().forEach((f) -> {
+//                    cmb_FormasDePago.addItem(f);
+//                });
+//            }
+//            this.limpiarTablaBalance();
+//            this.cargarDatosBalance();
+//        } catch (RestClientResponseException ex) {
+//            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//        } catch (ResourceAccessException ex) {
+//            LOGGER.error(ex.getMessage());
+//            JOptionPane.showMessageDialog(this,
+//                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+//                    "Error", JOptionPane.ERROR_MESSAGE);
+//        }
     }
 
     private void limpiarYCargarTablas() {
@@ -474,12 +481,10 @@ public class CajaGUI extends JDialog {
         sp_Tabla = new javax.swing.JScrollPane();
         tbl_Balance = new javax.swing.JTable();
         btn_VerDetalle = new javax.swing.JButton();
-        lbl_total = new javax.swing.JLabel();
         btn_AgregarGasto = new javax.swing.JButton();
-        ftxt_Detalle = new javax.swing.JFormattedTextField();
         lbl_FormaDePago = new javax.swing.JLabel();
-        cmb_FormasDePago = new javax.swing.JComboBox<>();
         btn_EliminarGasto = new javax.swing.JButton();
+        lbl_nombreFormaDePago = new javax.swing.JLabel();
         pnl_Resumen = new javax.swing.JPanel();
         sp_TablaResumen = new javax.swing.JScrollPane();
         tbl_Resumen = new javax.swing.JTable();
@@ -519,8 +524,6 @@ public class CajaGUI extends JDialog {
             }
         });
 
-        lbl_total.setText("Total:");
-
         btn_AgregarGasto.setForeground(java.awt.Color.blue);
         btn_AgregarGasto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CoinsAdd_16x16.png"))); // NOI18N
         btn_AgregarGasto.setText("Agregar Gasto");
@@ -530,19 +533,7 @@ public class CajaGUI extends JDialog {
             }
         });
 
-        ftxt_Detalle.setEditable(false);
-        ftxt_Detalle.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
-        ftxt_Detalle.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        ftxt_Detalle.setText("0");
-        ftxt_Detalle.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
-
         lbl_FormaDePago.setText("Forma de Pago:");
-
-        cmb_FormasDePago.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmb_FormasDePagoActionPerformed(evt);
-            }
-        });
 
         btn_EliminarGasto.setForeground(java.awt.Color.blue);
         btn_EliminarGasto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CoinsDel_16x16.png"))); // NOI18N
@@ -559,21 +550,19 @@ public class CajaGUI extends JDialog {
             pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(sp_Tabla)
             .addGroup(pnl_TablaLayout.createSequentialGroup()
-                .addComponent(btn_VerDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(btn_AgregarGasto)
-                .addGap(0, 0, 0)
-                .addComponent(btn_EliminarGasto)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
-                .addComponent(lbl_total)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(pnl_TablaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lbl_FormaDePago)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnl_TablaLayout.createSequentialGroup()
+                        .addComponent(btn_VerDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_AgregarGasto)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_EliminarGasto))
+                    .addGroup(pnl_TablaLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(lbl_FormaDePago)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbl_nombreFormaDePago, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(156, 369, Short.MAX_VALUE))
         );
 
         pnl_TablaLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AgregarGasto, btn_EliminarGasto, btn_VerDetalle});
@@ -582,21 +571,21 @@ public class CajaGUI extends JDialog {
             pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_TablaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbl_FormaDePago)
-                    .addComponent(cmb_FormasDePago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lbl_FormaDePago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_nombreFormaDePago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_VerDetalle)
                     .addComponent(btn_AgregarGasto)
-                    .addComponent(btn_EliminarGasto)
-                    .addComponent(lbl_total)
-                    .addComponent(ftxt_Detalle, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(btn_EliminarGasto)))
         );
 
         pnl_TablaLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_AgregarGasto, btn_EliminarGasto, btn_VerDetalle});
+
+        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lbl_FormaDePago, lbl_nombreFormaDePago});
 
         pnl_Resumen.setBorder(javax.swing.BorderFactory.createTitledBorder("Resumen General"));
 
@@ -608,6 +597,11 @@ public class CajaGUI extends JDialog {
 
             }
         ));
+        tbl_Resumen.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbl_ResumenMouseClicked(evt);
+            }
+        });
         sp_TablaResumen.setViewportView(tbl_Resumen);
         tbl_Resumen.getAccessibleContext().setAccessibleParent(sp_Tabla);
 
@@ -652,7 +646,7 @@ public class CajaGUI extends JDialog {
         pnl_ResumenLayout.setVerticalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
-                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 175, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_totalCaja)
@@ -816,11 +810,6 @@ public class CajaGUI extends JDialog {
         this.cargarFormasDePago();
     }//GEN-LAST:event_btn_AgregarGastoActionPerformed
 
-    private void cmb_FormasDePagoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmb_FormasDePagoActionPerformed
-        this.limpiarTablaBalance();
-        this.cargarDatosBalance();
-    }//GEN-LAST:event_cmb_FormasDePagoActionPerformed
-
     private void btn_ImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ImprimirActionPerformed
         this.lanzarReporteCaja();
     }//GEN-LAST:event_btn_ImprimirActionPerformed
@@ -850,21 +839,23 @@ public class CajaGUI extends JDialog {
         }
     }//GEN-LAST:event_btn_EliminarGastoActionPerformed
 
+    private void tbl_ResumenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_ResumenMouseClicked
+        this.cargarDatosBalance(null);
+    }//GEN-LAST:event_tbl_ResumenMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AgregarGasto;
     private javax.swing.JButton btn_CerrarCaja;
     private javax.swing.JButton btn_EliminarGasto;
     private javax.swing.JButton btn_Imprimir;
     private javax.swing.JButton btn_VerDetalle;
-    private javax.swing.JComboBox<FormaDePago> cmb_FormasDePago;
-    private javax.swing.JFormattedTextField ftxt_Detalle;
     private javax.swing.JFormattedTextField ftxt_TotalGeneral;
     private javax.swing.JFormattedTextField ftxt_saldoCaja;
     private javax.swing.JLabel lbl_FormaDePago;
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_aviso;
     private javax.swing.JLabel lbl_estado;
-    private javax.swing.JLabel lbl_total;
+    private javax.swing.JLabel lbl_nombreFormaDePago;
     private javax.swing.JLabel lbl_totalCaja;
     private javax.swing.JPanel pnl_Resumen;
     private javax.swing.JPanel pnl_Tabla;
