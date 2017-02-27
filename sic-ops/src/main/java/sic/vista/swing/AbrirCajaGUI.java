@@ -164,8 +164,6 @@ public class AbrirCajaGUI extends JDialog {
                     .postForObject("/cajas",
                     this.construirCaja(((Number) ftxt_Monto.getValue()).doubleValue()),
                     Caja.class));
-            abrirCaja.setModal(true);
-            abrirCaja.setLocationRelativeTo(this);
             abrirCaja.setVisible(true);
             this.dispose();
         } catch (RestClientResponseException ex) {

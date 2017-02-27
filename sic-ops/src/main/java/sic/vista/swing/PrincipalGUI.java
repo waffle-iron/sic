@@ -563,8 +563,6 @@ public class PrincipalGUI extends JFrame {
                 if (caja != null) {
                     if (caja.getEstado() == EstadoCaja.ABIERTA) {
                         CajaGUI cajaAbierta = new CajaGUI(caja);
-                        cajaAbierta.setModal(true);
-                        cajaAbierta.setLocationRelativeTo(this);
                         cajaAbierta.setVisible(true);
                     }
                 }

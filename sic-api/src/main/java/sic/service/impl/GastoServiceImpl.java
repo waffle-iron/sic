@@ -49,6 +49,10 @@ public class GastoServiceImpl implements IGastoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_gasto_fecha_vacia"));
         }
+//        if (gasto.getFecha().before(this.cajaService.getUltimaCaja(gasto.getEmpresa().getId_Empresa()).getFechaCierre())) {
+//            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+//                    .getString("mensaje_gasto_fecha_anterior_caja"));
+//        }
         if (gasto.getEmpresa() == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_gasto_empresa_vacia"));

@@ -495,13 +495,23 @@ public class CajasGUI extends JInternalFrame {
 
     private void btn_verDetalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_verDetalleActionPerformed
         if (tbl_Cajas.getSelectedRow() != -1) {
-            int indiceDelModel = Utilidades.getSelectedRowModelIndice(tbl_Cajas);
-            CajaGUI caja = new CajaGUI(this.cajas.get(indiceDelModel));
-            caja.setLocationRelativeTo(this);
-            caja.setModal(true);
-            caja.setVisible(true);
-            this.limpiarResultados();
-            this.buscar();
+            JInternalFrame caja = Utilidades.estaEnDesktop(getDesktopPane(), CajaGUI.class);
+            if (caja == null) {
+                int indiceDelModel = Utilidades.getSelectedRowModelIndice(tbl_Cajas);
+                caja = new CajaGUI(this.cajas.get(indiceDelModel));
+                caja.setLocation(getDesktopPane().getWidth() / 2 - caja.getWidth() / 2,
+                        getDesktopPane().getHeight() / 2 - caja.getHeight() / 2);
+                getDesktopPane().add(caja);
+                caja.setVisible(true);
+            }
+            try {
+                caja.setSelected(true);
+
+            } catch (PropertyVetoException ex) {
+                String msjError = "No se pudo seleccionar la ventana requerida.";
+                LOGGER.error(msjError + " - " + ex.getMessage());
+                JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btn_verDetalleActionPerformed
 
