@@ -152,8 +152,9 @@ public class Utilidades {
         }
 
         int selectedRowIndice = table.getSelectedRow();
-        selectedRowIndice = table.convertRowIndexToModel(selectedRowIndice);
-
+        if (selectedRowIndice != -1) {
+            selectedRowIndice = table.convertRowIndexToModel(selectedRowIndice);
+        }
         return selectedRowIndice;
     }
 

@@ -2,15 +2,17 @@ package sic.vista.swing;
 
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Frame;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.RowSorter;
@@ -53,44 +55,52 @@ public class CajaGUI extends JInternalFrame {
 
     private void cargarDatosBalance(java.awt.event.KeyEvent evt) {
         int row = Utilidades.getSelectedRowModelIndice(tbl_Resumen);
-        if (row != 0) {
-            FormaDePago fdp = (FormaDePago) tbl_Resumen.getModel().getValueAt(row, 0);
-            lbl_nombreFormaDePago.setText(fdp.getNombre());
-            this.btn_AgregarGasto.setEnabled(false);
-            this.btn_EliminarGasto.setEnabled(false);
-            if (this.caja != null) {
-                this.listaMovimientos.clear();
-                Date hasta = new Date();
-                if (this.caja.getEstado() == EstadoCaja.CERRADA) {
-                    hasta = this.caja.getFechaCierre();
+        if (row != -1) {
+            if (evt != null) {
+                if ((evt.getKeyCode() == KeyEvent.VK_UP) && row > 0) {
+                    row--;
                 }
-                try {
-                    String criteriaPagos = "/pagos/busqueda?"
-                            + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
-                            + "&idFormaDePago=" + fdp.getId_FormaDePago()
-                            + "&desde=" + this.caja.getFechaApertura().getTime()
-                            + "&hasta=" + hasta.getTime();
-                    List<Pago> pagos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                            .getForObject(criteriaPagos,
-                                    Pago[].class)));
-                    this.listaMovimientos.addAll(pagos);
-                    String criteriaGastos = "/gastos/busqueda?"
-                            + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
-                            + "&idFormaDePago=" + fdp.getId_FormaDePago()
-                            + "&desde=" + this.caja.getFechaApertura().getTime()
-                            + "&hasta=" + hasta.getTime();
-                    List<Gasto> gastos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                            .getForObject(criteriaGastos,
-                                    Gasto[].class)));
-                    this.listaMovimientos.addAll(gastos);
-                    this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
-                } catch (RestClientResponseException ex) {
-                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                } catch (ResourceAccessException ex) {
-                    LOGGER.error(ex.getMessage());
-                    JOptionPane.showMessageDialog(this,
-                            ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                if ((evt.getKeyCode() == KeyEvent.VK_DOWN) && (row + 1) < tbl_Resumen.getRowCount()) {
+                    row++;
+                }
+            }
+            if (row != 0) {
+                FormaDePago fdp = (FormaDePago) tbl_Resumen.getModel().getValueAt(row, 0);
+                lbl_nombreFormaDePago.setText(fdp.getNombre());
+                if (this.caja != null) {
+                    this.listaMovimientos.clear();
+                    Date hasta = new Date();
+                    if (this.caja.getEstado() == EstadoCaja.CERRADA) {
+                        hasta = this.caja.getFechaCierre();
+                    }
+                    try {
+                        String criteriaPagos = "/pagos/busqueda?"
+                                + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
+                                + "&idFormaDePago=" + fdp.getId_FormaDePago()
+                                + "&desde=" + this.caja.getFechaApertura().getTime()
+                                + "&hasta=" + hasta.getTime();
+                        List<Pago> pagos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
+                                .getForObject(criteriaPagos,
+                                        Pago[].class)));
+                        this.listaMovimientos.addAll(pagos);
+                        String criteriaGastos = "/gastos/busqueda?"
+                                + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
+                                + "&idFormaDePago=" + fdp.getId_FormaDePago()
+                                + "&desde=" + this.caja.getFechaApertura().getTime()
+                                + "&hasta=" + hasta.getTime();
+                        List<Gasto> gastos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
+                                .getForObject(criteriaGastos,
+                                        Gasto[].class)));
+                        this.listaMovimientos.addAll(gastos);
+                        this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
+                    } catch (RestClientResponseException ex) {
+                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    } catch (ResourceAccessException ex) {
+                        LOGGER.error(ex.getMessage());
+                        JOptionPane.showMessageDialog(this,
+                                ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         }
@@ -305,6 +315,8 @@ public class CajaGUI extends JInternalFrame {
     private void limpiarYCargarTablas() {
         this.limpiarTablaResumen();
         this.cargarTablaResumenGeneral();
+        this.limpiarTablaBalance();
+        this.cargarDatosBalance(null);
     }
 
     private void lanzarReporteCaja() {
@@ -444,6 +456,9 @@ public class CajaGUI extends JInternalFrame {
         ftxt_saldoCaja = new javax.swing.JFormattedTextField();
         ftxt_TotalGeneral = new javax.swing.JFormattedTextField();
 
+        setClosable(true);
+        setMaximizable(true);
+        setResizable(true);
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Caja_16x16.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
             public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
@@ -537,6 +552,11 @@ public class CajaGUI extends JInternalFrame {
         tbl_Resumen.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tbl_ResumenMouseClicked(evt);
+            }
+        });
+        tbl_Resumen.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                tbl_ResumenKeyPressed(evt);
             }
         });
         sp_TablaResumen.setViewportView(tbl_Resumen);
@@ -685,7 +705,7 @@ public class CajaGUI extends JInternalFrame {
             if (caja.getEstado() == EstadoCaja.ABIERTA) {
                 try {
                     String monto = JOptionPane.showInputDialog(this,
-                            "Saldo del Sistema: " + caja.getSaldoFinal()
+                            "Saldo del Sistema: " + new DecimalFormat("#.##").format(caja.getSaldoFinal())
                             + "\nSaldo Real:", "Cerrar Caja", JOptionPane.QUESTION_MESSAGE);
                     if (monto != null) {
                         RestClient.getRestTemplate().put("/cajas/" + caja.getId_Caja() + "/cierre?"
@@ -734,10 +754,13 @@ public class CajaGUI extends JInternalFrame {
 
     private void btn_AgregarGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AgregarGastoActionPerformed
         if (this.caja.getEstado().equals(EstadoCaja.ABIERTA)) {
-            AgregarGastoGUI agregarGasto = new AgregarGastoGUI(this, true);
+            Frame f = JOptionPane.getFrameForComponent(this);
+            AgregarGastoGUI agregarGasto = new AgregarGastoGUI();
             agregarGasto.setLocationRelativeTo(null);
+            agregarGasto.setEnabled(true);
             agregarGasto.setVisible(true);
         }
+        this.limpiarYCargarTablas();
     }//GEN-LAST:event_btn_AgregarGastoActionPerformed
 
     private void btn_ImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ImprimirActionPerformed
@@ -774,7 +797,7 @@ public class CajaGUI extends JInternalFrame {
     }//GEN-LAST:event_tbl_ResumenMouseClicked
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
-         if (caja == null) {
+        if (caja == null) {
             try {
                 caja = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
                         + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
@@ -798,6 +821,12 @@ public class CajaGUI extends JInternalFrame {
         this.limpiarYCargarTablas();
     }//GEN-LAST:event_formInternalFrameOpened
 
+    private void tbl_ResumenKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbl_ResumenKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_UP || evt.getKeyCode() == KeyEvent.VK_DOWN) {
+            this.cargarDatosBalance(evt);
+        }
+    }//GEN-LAST:event_tbl_ResumenKeyPressed
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AgregarGasto;
     private javax.swing.JButton btn_CerrarCaja;

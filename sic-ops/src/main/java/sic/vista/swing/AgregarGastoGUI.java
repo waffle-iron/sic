@@ -21,7 +21,8 @@ public class AgregarGastoGUI extends JDialog {
     
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-    public AgregarGastoGUI(JInternalFrame parent, boolean modal) {
+    public AgregarGastoGUI() {
+        this.setModal(true);
         initComponents();
     }
 
