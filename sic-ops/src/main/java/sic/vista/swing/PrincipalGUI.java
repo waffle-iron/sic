@@ -40,20 +40,6 @@ public class PrincipalGUI extends JFrame {
     public JDesktopPane getDesktopPane() {
         return dp_Escritorio;
     }
-    
-    private void cerrarCaja(Empresa empresa) {
-        try {
-            String uri = "/cajas/empresas/" + empresa.getId_Empresa() + "/cerrar-anterior";
-            RestClient.getRestTemplate().put(uri, Caja.class);
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
 
     private void llamarGUI_SeleccionEmpresa() {
         List<Empresa> empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
@@ -69,7 +55,6 @@ public class PrincipalGUI extends JFrame {
         if (empresa == null) {
             lbl_EmpresaActiva.setText("Empresa: (sin empresa)");
         } else {
-            this.cerrarCaja(empresa);
             lbl_EmpresaActiva.setText("Empresa: " + empresa.getNombre());
         }     
     }
@@ -356,11 +341,7 @@ public class PrincipalGUI extends JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         lbl_UsuarioActivo.setText("Usuario: " + UsuarioActivo.getInstance().getUsuario().getNombre());       
-        this.llamarGUI_SeleccionEmpresa();
-        Empresa empresa = EmpresaActiva.getInstance().getEmpresa();
-        if (empresa != null) {
-            this.cerrarCaja(empresa);
-        }
+        this.llamarGUI_SeleccionEmpresa();        
     }//GEN-LAST:event_formWindowOpened
 
     private void mnuItm_UsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_UsuariosActionPerformed
