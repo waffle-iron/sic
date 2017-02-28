@@ -278,7 +278,7 @@ public class FacturaBIntegrationTest {
             idsProductos[indice] = renglon.getId_ProductoItem();
             indice++;
         }
-        //restTemplate.getForObject(apiPrefix + "/facturas/"+ facturasRecuperadas[0].getId_Factura() + "/reporte", byte[].class);
+        restTemplate.getForObject(apiPrefix + "/facturas/"+ facturasRecuperadas[0].getId_Factura() + "/reporte", byte[].class);        
         assertEquals(5, restTemplate.getForObject(apiPrefix + "/productos/" + idsProductos[0], Producto.class).getCantidad(), 0);
         assertEquals(4, restTemplate.getForObject(apiPrefix + "/productos/" + idsProductos[1], Producto.class).getCantidad(), 0);
     }

@@ -307,9 +307,9 @@ public class CajaServiceImpl implements ICajaService {
         this.actualizar(cajaACerrar);
         return cajaACerrar;
     }
-
+    
+    @PostConstruct                      // Ejecutar al iniciar el contexto
     @Scheduled(cron = "59 59 23 * * *") // Todos los dias a las 23:59:59
-    @PostConstruct
     public void cerrarCajas() {
         List<Empresa> empresas = this.empresaService.getEmpresas();
         for (Empresa empresa : empresas) {

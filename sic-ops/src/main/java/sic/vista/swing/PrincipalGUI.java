@@ -341,8 +341,7 @@ public class PrincipalGUI extends JFrame {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         lbl_UsuarioActivo.setText("Usuario: " + UsuarioActivo.getInstance().getUsuario().getNombre());       
-        this.llamarGUI_SeleccionEmpresa();
-        Empresa empresa = EmpresaActiva.getInstance().getEmpresa();
+        this.llamarGUI_SeleccionEmpresa();        
     }//GEN-LAST:event_formWindowOpened
 
     private void mnuItm_UsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_UsuariosActionPerformed
