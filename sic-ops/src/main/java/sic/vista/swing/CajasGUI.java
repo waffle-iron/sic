@@ -203,6 +203,9 @@ public class CajasGUI extends JInternalFrame {
         AbrirCajaGUI abrirCaja = new AbrirCajaGUI(true);
         abrirCaja.setLocationRelativeTo(this);
         abrirCaja.setVisible(true);
+        this.abrirVentanaCaja(RestClient.getRestTemplate().getForObject("/cajas/empresas/"
+                    + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
+                    Caja.class));
         this.limpiarResultados();        
         this.buscar();        
     }
@@ -583,11 +586,6 @@ public class CajasGUI extends JInternalFrame {
             JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
         } 
-//        Caja ultimaCaja = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
-//                + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
-//                Caja.class);
-//        if(ultimaCaja.getEstado().equals(EstadoCaja.ABIERTA)) { 
-//        this.abrirVentanaCaja(ultimaCaja);}
     }//GEN-LAST:event_internalFrameOpened
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

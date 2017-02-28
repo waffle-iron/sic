@@ -2,8 +2,8 @@ package sic.vista.swing;
 
 import java.awt.Color;
 import java.awt.Desktop;
-import java.awt.Frame;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -48,7 +48,8 @@ public class CajaGUI extends JInternalFrame {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     public CajaGUI(Caja caja) {
-        this.initComponents();
+        initComponents();
+        this.setSize(850, 600);
         this.caja = caja;
         this.setTituloVentana();
     }
@@ -66,7 +67,6 @@ public class CajaGUI extends JInternalFrame {
             }
             if (row != 0) {
                 FormaDePago fdp = (FormaDePago) tbl_Resumen.getModel().getValueAt(row, 0);
-                lbl_nombreFormaDePago.setText(fdp.getNombre());
                 if (this.caja != null) {
                     this.listaMovimientos.clear();
                     Date hasta = new Date();
@@ -102,6 +102,8 @@ public class CajaGUI extends JInternalFrame {
                                 "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
+            } else {
+                this.limpiarTablaBalance();
             }
         }
     }
@@ -124,25 +126,24 @@ public class CajaGUI extends JInternalFrame {
 
         //nombres de columnas
         String[] encabezados = new String[3];
-        encabezados[0] = "Fecha";
-        encabezados[1] = "Concepto";
-        encabezados[2] = "Monto";
+        encabezados[0] = "Concepto";
+        encabezados[1] = "Fecha";
+        encabezados[2] = "Total";
         modeloTablaBalance.setColumnIdentifiers(encabezados);
         tbl_Balance.setModel(modeloTablaBalance);
 
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaBalance.getColumnCount()];
-        tipos[0] = Date.class;
-        tipos[1] = String.class;
+        tipos[0] = String.class;
+        tipos[1] = Date.class;
         tipos[2] = Double.class;
         modeloTablaBalance.setClaseColumnas(tipos);
         tbl_Balance.getTableHeader().setReorderingAllowed(false);
         tbl_Balance.getTableHeader().setResizingAllowed(true);
 
         //Tamanios de columnas
-        tbl_Balance.getColumnModel().getColumn(0).setPreferredWidth(15);
-        tbl_Balance.getColumnModel().getColumn(1).setPreferredWidth(200);
-        tbl_Balance.getColumnModel().getColumn(2).setPreferredWidth(15);
+        tbl_Balance.getColumnModel().getColumn(0).setPreferredWidth(200);
+        tbl_Balance.getColumnModel().getColumn(1).setPreferredWidth(5);
 
     }
 
@@ -151,13 +152,13 @@ public class CajaGUI extends JInternalFrame {
         movimientos.stream().map((movimiento) -> {
             Object[] fila = new Object[5];
             if (movimiento instanceof Gasto) {
-                fila[0] = ((Gasto) movimiento).getFecha();
-                fila[1] = "Gasto: " + ((Gasto) movimiento).getConcepto();
+                fila[0] = "Gasto: " + ((Gasto) movimiento).getConcepto();
+                fila[1] = ((Gasto) movimiento).getFecha();
                 fila[2] = -((Gasto) movimiento).getMonto();
             }
             if (movimiento instanceof Pago) {
                 String tipoFactura = "";
-                fila[0] = ((Pago) movimiento).getFecha();
+                fila[1] = ((Pago) movimiento).getFecha();
                 if ((((Pago) movimiento).getFactura() instanceof FacturaCompra)) {
                     fila[2] = -((Pago) movimiento).getMonto();
                     tipoFactura = "Compra";
@@ -166,7 +167,7 @@ public class CajaGUI extends JInternalFrame {
                     fila[2] = ((Pago) movimiento).getMonto();
                     tipoFactura = "Venta";
                 }
-                fila[1] = "Pago por: Factura " + tipoFactura
+                fila[0] = "Pago por: Factura " + tipoFactura
                         + " \"" + ((Pago) movimiento).getFactura().getTipoFactura() + "\""
                         + " Nº " + ((Pago) movimiento).getFactura().getNumSerie()
                         + " - " + ((Pago) movimiento).getFactura().getNumFactura();
@@ -196,7 +197,7 @@ public class CajaGUI extends JInternalFrame {
         String[] encabezados = new String[3];
         encabezados[0] = "Forma de Pago";
         encabezados[1] = "Afecta la Caja";
-        encabezados[2] = "Monto";
+        encabezados[2] = "Total";
         modeloTablaResumen.setColumnIdentifiers(encabezados);
         tbl_Resumen.setModel(modeloTablaResumen);
 
@@ -440,9 +441,7 @@ public class CajaGUI extends JInternalFrame {
         sp_Tabla = new javax.swing.JScrollPane();
         tbl_Balance = new javax.swing.JTable();
         btn_VerDetalle = new javax.swing.JButton();
-        lbl_FormaDePago = new javax.swing.JLabel();
         btn_EliminarGasto = new javax.swing.JButton();
-        lbl_nombreFormaDePago = new javax.swing.JLabel();
         pnl_Resumen = new javax.swing.JPanel();
         sp_TablaResumen = new javax.swing.JScrollPane();
         tbl_Resumen = new javax.swing.JTable();
@@ -491,8 +490,6 @@ public class CajaGUI extends JInternalFrame {
             }
         });
 
-        lbl_FormaDePago.setText("Forma de Pago:");
-
         btn_EliminarGasto.setForeground(java.awt.Color.blue);
         btn_EliminarGasto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CoinsDel_16x16.png"))); // NOI18N
         btn_EliminarGasto.setText("Eliminar Gasto");
@@ -506,29 +503,17 @@ public class CajaGUI extends JInternalFrame {
         pnl_Tabla.setLayout(pnl_TablaLayout);
         pnl_TablaLayout.setHorizontalGroup(
             pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp_Tabla)
+            .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE)
             .addGroup(pnl_TablaLayout.createSequentialGroup()
-                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(pnl_TablaLayout.createSequentialGroup()
-                        .addComponent(btn_VerDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(btn_EliminarGasto))
-                    .addGroup(pnl_TablaLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lbl_FormaDePago)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbl_nombreFormaDePago, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(213, 426, Short.MAX_VALUE))
+                .addComponent(btn_VerDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(btn_EliminarGasto))
         );
         pnl_TablaLayout.setVerticalGroup(
             pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_TablaLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbl_FormaDePago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_nombreFormaDePago, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_VerDetalle)
@@ -536,8 +521,6 @@ public class CajaGUI extends JInternalFrame {
         );
 
         pnl_TablaLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_EliminarGasto, btn_VerDetalle});
-
-        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lbl_FormaDePago, lbl_nombreFormaDePago});
 
         pnl_Resumen.setBorder(javax.swing.BorderFactory.createTitledBorder("Resumen General"));
 
@@ -549,6 +532,7 @@ public class CajaGUI extends JInternalFrame {
 
             }
         ));
+        tbl_Resumen.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         tbl_Resumen.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tbl_ResumenMouseClicked(evt);
@@ -566,13 +550,13 @@ public class CajaGUI extends JInternalFrame {
         pnl_Resumen.setLayout(pnl_ResumenLayout);
         pnl_ResumenLayout.setHorizontalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE)
+            .addComponent(sp_TablaResumen)
         );
         pnl_ResumenLayout.setVerticalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
-                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         lbl_estado.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
@@ -674,11 +658,10 @@ public class CajaGUI extends JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnl_Resumen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnl_Tabla, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnl_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lbl_totalCaja)
                             .addComponent(ftxt_saldoCaja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -686,12 +669,10 @@ public class CajaGUI extends JInternalFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(lbl_Total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(ftxt_TotalGeneral)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(31, 31, 31)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btn_CerrarCaja)
-                            .addComponent(btn_Imprimir)
-                            .addComponent(btn_AgregarGasto))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_CerrarCaja)
+                        .addComponent(btn_Imprimir)
+                        .addComponent(btn_AgregarGasto)))
                 .addContainerGap())
         );
 
@@ -728,7 +709,7 @@ public class CajaGUI extends JInternalFrame {
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Caja Cerrada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "La Caja ya se encuentra cerrada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }//GEN-LAST:event_btn_CerrarCajaActionPerformed
@@ -754,13 +735,12 @@ public class CajaGUI extends JInternalFrame {
 
     private void btn_AgregarGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AgregarGastoActionPerformed
         if (this.caja.getEstado().equals(EstadoCaja.ABIERTA)) {
-            Frame f = JOptionPane.getFrameForComponent(this);
             AgregarGastoGUI agregarGasto = new AgregarGastoGUI();
             agregarGasto.setLocationRelativeTo(null);
             agregarGasto.setEnabled(true);
             agregarGasto.setVisible(true);
+            this.limpiarYCargarTablas();
         }
-        this.limpiarYCargarTablas();
     }//GEN-LAST:event_btn_AgregarGastoActionPerformed
 
     private void btn_ImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ImprimirActionPerformed
@@ -770,7 +750,7 @@ public class CajaGUI extends JInternalFrame {
     private void btn_EliminarGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarGastoActionPerformed
         if (tbl_Balance.getSelectedRow() != -1) {
             Object movimientoDeTabla = this.listaMovimientos.get(Utilidades.getSelectedRowModelIndice(tbl_Balance));
-            if (movimientoDeTabla instanceof Gasto) {
+            if (movimientoDeTabla instanceof Gasto && this.caja.getEstado().equals(EstadoCaja.ABIERTA)) {
                 int confirmacionEliminacion = JOptionPane.showConfirmDialog(this,
                         "¿Esta seguro que desea eliminar el gasto seleccionado?",
                         "Eliminar", JOptionPane.YES_NO_OPTION);
@@ -819,6 +799,14 @@ public class CajaGUI extends JInternalFrame {
             lbl_aviso.setForeground(Color.RED);
         }
         this.limpiarYCargarTablas();
+        try {
+            this.setMaximum(true);
+        } catch (PropertyVetoException ex) {
+            String mensaje = "Se produjo un error al intentar maximizar la ventana.";
+            LOGGER.error(mensaje + " - " + ex.getMessage());
+            JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+            this.dispose();
+        }
     }//GEN-LAST:event_formInternalFrameOpened
 
     private void tbl_ResumenKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbl_ResumenKeyPressed
@@ -835,11 +823,9 @@ public class CajaGUI extends JInternalFrame {
     private javax.swing.JButton btn_VerDetalle;
     private javax.swing.JFormattedTextField ftxt_TotalGeneral;
     private javax.swing.JFormattedTextField ftxt_saldoCaja;
-    private javax.swing.JLabel lbl_FormaDePago;
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_aviso;
     private javax.swing.JLabel lbl_estado;
-    private javax.swing.JLabel lbl_nombreFormaDePago;
     private javax.swing.JLabel lbl_totalCaja;
     private javax.swing.JPanel pnl_Resumen;
     private javax.swing.JPanel pnl_Tabla;
