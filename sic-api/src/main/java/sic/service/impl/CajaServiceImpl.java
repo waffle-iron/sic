@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.DateExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import sic.service.ICajaService;
 import java.util.Calendar;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -293,26 +295,6 @@ public class CajaServiceImpl implements ICajaService {
                     .getString("mensaje_error_reporte"), ex);
         }
     }
-
-    @Override
-    @Transactional
-    public Caja cerrarCajaAnterior(long idEmpresa) {
-        Caja cajaCerrada = this.getUltimaCaja(idEmpresa);
-        if ((cajaCerrada != null) && (cajaCerrada.getEstado() == EstadoCaja.ABIERTA)) {
-            Calendar fechaAperturaMasUnDia = Calendar.getInstance();
-            fechaAperturaMasUnDia.setTime(cajaCerrada.getFechaApertura());
-            fechaAperturaMasUnDia.add(Calendar.DATE, 1);
-            if (fechaAperturaMasUnDia.get(Calendar.DATE) == Calendar.getInstance().get(Calendar.DATE)
-                    || fechaAperturaMasUnDia.before(Calendar.getInstance())) {
-                cajaCerrada.setFechaCierre(new Date());
-                cajaCerrada.setUsuarioCierraCaja(cajaCerrada.getUsuarioAbreCaja());
-                cajaCerrada.setEstado(EstadoCaja.CERRADA);
-                cajaCerrada.setSaldoReal(cajaCerrada.getSaldoFinal());
-                this.actualizar(cajaCerrada);
-            }
-        }
-        return cajaCerrada;
-    }
     
     @Override
     @Transactional
@@ -326,11 +308,25 @@ public class CajaServiceImpl implements ICajaService {
         return cajaACerrar;
     }
 
-    
-    
-    // Eliminar este metodo de ejemplo
     @Scheduled(cron = "59 59 23 * * *") // Todos los dias a las 23:59:59
-    public void ejemplo() {
-        LOGGER.error("Arrivederci Roma");
+    @PostConstruct
+    public void cerrarCajas() {
+        List<Empresa> empresas = this.empresaService.getEmpresas();
+        for (Empresa empresa : empresas) {
+            Caja ultimaCajaDeEmpresa = this.getUltimaCaja(empresa.getId_Empresa());
+            if ((ultimaCajaDeEmpresa != null) && (ultimaCajaDeEmpresa.getEstado() == EstadoCaja.ABIERTA)) {
+                LocalDate fechaActual = LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), LocalDate.now().getDayOfMonth());
+                Calendar fechaHoraCaja = new GregorianCalendar();
+                fechaHoraCaja.setTime(ultimaCajaDeEmpresa.getFechaApertura());
+                LocalDate fechaCaja = LocalDate.of(fechaHoraCaja.get(Calendar.YEAR), fechaHoraCaja.get(Calendar.MONTH) + 1, fechaHoraCaja.get(Calendar.DAY_OF_MONTH));
+                if (fechaCaja.compareTo(fechaActual) < 0) {
+                    ultimaCajaDeEmpresa.setFechaCierre(new Date());
+                    ultimaCajaDeEmpresa.setUsuarioCierraCaja(ultimaCajaDeEmpresa.getUsuarioAbreCaja());
+                    ultimaCajaDeEmpresa.setEstado(EstadoCaja.CERRADA);
+                    ultimaCajaDeEmpresa.setSaldoReal(ultimaCajaDeEmpresa.getSaldoFinal());
+                    this.actualizar(ultimaCajaDeEmpresa);
+                }
+            }
+        }
     }
 }

@@ -34,8 +34,6 @@ public interface ICajaService {
     void validarCaja(Caja caja);
 
     byte[] getReporteCaja(Caja caja, Long idEmpresa);
-
-    Caja cerrarCajaAnterior(long idEmpresa);
     
     Caja cerrarCaja(long idCaja, double monto, long idUsuario);
 
