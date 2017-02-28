@@ -709,7 +709,8 @@ public class CajaGUI extends JInternalFrame {
                             "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "La Caja ya se encuentra cerrada", "Aviso", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_cerrada"),
+                        "Aviso", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }//GEN-LAST:event_btn_CerrarCajaActionPerformed
@@ -740,7 +741,10 @@ public class CajaGUI extends JInternalFrame {
             agregarGasto.setEnabled(true);
             agregarGasto.setVisible(true);
             this.limpiarYCargarTablas();
-        }
+        } else if(this.caja.getEstado().equals(EstadoCaja.CERRADA)) {
+                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_cerrada"),
+                        "Aviso", JOptionPane.INFORMATION_MESSAGE);
+            }
     }//GEN-LAST:event_btn_AgregarGastoActionPerformed
 
     private void btn_ImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ImprimirActionPerformed
@@ -768,6 +772,9 @@ public class CajaGUI extends JInternalFrame {
                     }
                     this.limpiarYCargarTablas();
                 }
+            } else if(this.caja.getEstado().equals(EstadoCaja.CERRADA)) {
+                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_cerrada"),
+                        "Aviso", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }//GEN-LAST:event_btn_EliminarGastoActionPerformed
