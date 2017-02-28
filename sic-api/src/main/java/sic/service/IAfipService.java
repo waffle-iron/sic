@@ -7,6 +7,6 @@ public interface IAfipService {
 
     AfipWSAACredencial getAfipWSAACredencial(String afipNombreServicio);
     
-    void autorizarFacturaVenta(AfipWSAACredencial afipCredencial, FacturaVenta factura);
+    void autorizarFacturaVenta(FacturaVenta factura);
     
 }
