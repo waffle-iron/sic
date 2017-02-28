@@ -101,7 +101,7 @@ public class CajaServiceImpl implements ICajaService {
                     .getString("mensaje_fecha_apertura_no_valida"));
         }
         //Duplicados        
-        if (cajaRepository.findOne(caja.getId_Caja()) != null) {
+        if (cajaRepository.findById(caja.getId_Caja()) != null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_duplicada"));
         }        
