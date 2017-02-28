@@ -128,7 +128,7 @@ public class CajaGUI extends JInternalFrame {
         String[] encabezados = new String[3];
         encabezados[0] = "Concepto";
         encabezados[1] = "Fecha";
-        encabezados[2] = "Total";
+        encabezados[2] = "Monto";
         modeloTablaBalance.setColumnIdentifiers(encabezados);
         tbl_Balance.setModel(modeloTablaBalance);
 
@@ -144,6 +144,8 @@ public class CajaGUI extends JInternalFrame {
         //Tamanios de columnas
         tbl_Balance.getColumnModel().getColumn(0).setPreferredWidth(200);
         tbl_Balance.getColumnModel().getColumn(1).setPreferredWidth(5);
+        tbl_Balance.getColumnModel().getColumn(2).setCellRenderer(new ColoresNumerosTablaRenderer());
+        tbl_Balance.getColumnModel().getColumn(1).setCellRenderer(new FormatoFechasEnTablasRenderer());
 
     }
 
@@ -177,13 +179,11 @@ public class CajaGUI extends JInternalFrame {
             modeloTablaBalance.addRow(fila);
         });
         tbl_Balance.setModel(modeloTablaBalance);
-        tbl_Balance.getColumnModel().getColumn(2).setCellRenderer(new ColoresNumerosTablaRenderer());
-        tbl_Balance.getColumnModel().getColumn(0).setCellRenderer(new FormatoFechasEnTablasRenderer());
         //Ordena la tabla segun la Fecha
         TableRowSorter<TableModel> sorter = new TableRowSorter<>(tbl_Balance.getModel());
         tbl_Balance.setRowSorter(sorter);
         List<RowSorter.SortKey> sortKeys = new ArrayList<>();
-        int columnIndexToSort = 0;
+        int columnIndexToSort = 1;
         sortKeys.add(new RowSorter.SortKey(columnIndexToSort, SortOrder.DESCENDING));
         sorter.setSortKeys(sortKeys);
         sorter.sort();
@@ -512,8 +512,7 @@ public class CajaGUI extends JInternalFrame {
         pnl_TablaLayout.setVerticalGroup(
             pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_TablaLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
+                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_VerDetalle)
