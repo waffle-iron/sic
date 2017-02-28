@@ -63,7 +63,7 @@ public class GastoServiceImpl implements IGastoService {
         }
         if (gasto.getFecha().before(caja.getFechaApertura())) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mmensaje_gasto_fecha_no_valida"));
+                    .getString("mensaje_gasto_fecha_no_valida"));
         }
         if (gasto.getEmpresa() == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")

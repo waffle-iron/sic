@@ -55,8 +55,9 @@ public class CajaGUI extends JInternalFrame {
     }
 
     private void cargarDatosBalance(java.awt.event.KeyEvent evt) {
-        int row = Utilidades.getSelectedRowModelIndice(tbl_Resumen);
+        int row = tbl_Resumen.getSelectedRow();
         if (row != -1) {
+            row = Utilidades.getSelectedRowModelIndice(tbl_Resumen);
             if (evt != null) {
                 if ((evt.getKeyCode() == KeyEvent.VK_UP) && row > 0) {
                     row--;
