@@ -98,7 +98,7 @@ public class CajaServiceImpl implements ICajaService {
                     .getString("mensaje_fecha_apertura_no_valida"));
         }
         //Duplicados        
-        if (cajaRepository.findOne(caja.getId_Caja()) != null) {
+        if (cajaRepository.findById(caja.getId_Caja()) != null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_duplicada"));
         }        
@@ -140,7 +140,7 @@ public class CajaServiceImpl implements ICajaService {
     
     @Override
     public Caja getCajaPorId(Long id) {
-        Caja caja = cajaRepository.findOne(id, false);
+        Caja caja = cajaRepository.findOne(id);
         if (caja == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_no_existente"));

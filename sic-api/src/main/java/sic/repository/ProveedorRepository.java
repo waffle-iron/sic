@@ -10,8 +10,8 @@ import sic.modelo.Proveedor;
 
 public interface ProveedorRepository extends PagingAndSortingRepository<Proveedor, Long>, QueryDslPredicateExecutor<Proveedor> {
 
-      @Query("SELECT p FROM Proveedor p WHERE p.id_Proveedor = :idProveedor AND p.eliminado = :eliminado")   
-      Proveedor findOne(@Param("idProveedor") long idProveedor, @Param("eliminado") boolean eliminado);
+      @Query("SELECT p FROM Proveedor p WHERE p.id_Proveedor = :idProveedor AND p.eliminado = false")   
+      Proveedor findById(@Param("idProveedor") long idProveedor);
     
       Proveedor findByCodigoAndEmpresaAndEliminado(String codigo, Empresa empresa, boolean eliminado);
 

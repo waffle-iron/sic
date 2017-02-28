@@ -27,7 +27,7 @@ public class PaisServiceImpl implements IPaisService {
     
     @Override
     public Pais getPaisPorId(Long idPais) {
-        Pais pais = paisRepository.findOne(idPais, false);
+        Pais pais = paisRepository.findOne(idPais);
         if (pais == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaja_pais_no_existente"));

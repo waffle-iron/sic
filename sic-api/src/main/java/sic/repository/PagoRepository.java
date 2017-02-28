@@ -12,8 +12,8 @@ import sic.modelo.Pago;
 
 public interface PagoRepository extends PagingAndSortingRepository<Pago, Long> {
 
-    @Query("SELECT p FROM Pago p WHERE p.id_Pago = :idPago AND p.eliminado = :eliminado")
-    Pago findOne(@Param("idPago") long idPago, @Param("eliminado") boolean eliminado);
+    @Query("SELECT p FROM Pago p WHERE p.id_Pago = :idPago AND p.eliminado = false")
+    Pago findById(@Param("idPago") long idPago);
     
     List<Pago> findByFacturaAndEliminado(Factura factura, boolean eliminado);
 

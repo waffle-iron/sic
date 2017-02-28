@@ -45,7 +45,7 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     public Pago getPagoPorId(long idPago) {
-        Pago pago = this.pagoRepository.findOne(idPago, false);
+        Pago pago = this.pagoRepository.findOne(idPago);
         if (pago == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_inexistente_eliminado"));

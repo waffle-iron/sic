@@ -8,8 +8,8 @@ import sic.modelo.Empresa;
 
 public interface EmpresaRepository extends PagingAndSortingRepository<Empresa, Long>{
     
-      @Query("SELECT e FROM Empresa e WHERE e.id_Empresa = :idEmpresa AND e.eliminada = :eliminada")
-      Empresa findOne(@Param("idEmpresa") long idEmpresa, @Param("eliminada") boolean eliminada);
+      @Query("SELECT e FROM Empresa e WHERE e.id_Empresa = :idEmpresa AND e.eliminada = false")
+      Empresa findById(@Param("idEmpresa") long idEmpresa);
     
       Empresa findByCuipAndEliminada(long cuip, boolean eliminada);
 

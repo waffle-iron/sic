@@ -10,8 +10,8 @@ import sic.modelo.Empresa;
 
 public interface ClienteRepository extends PagingAndSortingRepository<Cliente, Long> , QueryDslPredicateExecutor<Cliente> {
     
-      @Query("SELECT c FROM Cliente c WHERE c.id_Cliente = :idCliente AND c.eliminado = :eliminado")
-      Cliente findOne(@Param("idCliente") long idCliente, @Param("eliminado") boolean eliminado);
+      @Query("SELECT c FROM Cliente c WHERE c.id_Cliente = :idCliente AND c.eliminado = false")
+      Cliente findById(@Param("idCliente") long idCliente);
 
       Cliente findByIdFiscalAndEmpresaAndEliminado(String idFiscal, Empresa empresa, boolean eliminado);
 

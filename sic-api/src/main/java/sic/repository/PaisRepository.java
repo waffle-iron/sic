@@ -8,8 +8,8 @@ import sic.modelo.Pais;
 
 public interface PaisRepository extends PagingAndSortingRepository<Pais, Long> {
     
-      @Query("SELECT p FROM Pais p WHERE p.id_Pais = :idPais AND p.eliminado = :eliminado")
-      Pais findOne(@Param("idPais") long idPais, @Param("eliminado") boolean eliminado);
+      @Query("SELECT p FROM Pais p WHERE p.id_Pais = :idPais AND p.eliminado = false")
+      Pais findById(@Param("idPais") long idPais);
     
       Pais findByNombreIsAndEliminadoOrderByNombreAsc(String nombre, boolean eliminado);
 

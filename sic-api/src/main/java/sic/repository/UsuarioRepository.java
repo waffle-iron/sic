@@ -8,8 +8,8 @@ import sic.modelo.Usuario;
 
 public interface UsuarioRepository extends PagingAndSortingRepository<Usuario, Long> {
 
-      @Query("SELECT u FROM Usuario u WHERE u.id_Usuario = :idUsuario AND u.eliminado = :eliminado") 
-      Usuario findOne(@Param("idUsuario") long idUsuario, @Param("eliminado") boolean eliminado);
+      @Query("SELECT u FROM Usuario u WHERE u.id_Usuario = :idUsuario AND u.eliminado = false") 
+      Usuario findById(@Param("idUsuario") long idUsuario);
     
       Usuario findByNombreAndEliminado(String nombre, boolean eliminado);
 

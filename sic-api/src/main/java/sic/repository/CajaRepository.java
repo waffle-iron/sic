@@ -11,8 +11,8 @@ import sic.modelo.Empresa;
 
 public interface CajaRepository extends PagingAndSortingRepository<Caja, Long>, QueryDslPredicateExecutor<Caja> {
    
-      @Query("SELECT c FROM Caja c WHERE c.id_Caja = :idCaja AND c.eliminada = :eliminada")
-      Caja findOne(@Param("idCaja") long idCaja, @Param("eliminada") boolean eliminada);
+      @Query("SELECT c FROM Caja c WHERE c.id_Caja = :idCaja AND c.eliminada = false")
+      Caja findById(@Param("idCaja") long idCaja);
       
       Caja findByNroCajaAndEmpresaAndEliminada(int nroCaja, Empresa empresa, boolean eliminada);
 

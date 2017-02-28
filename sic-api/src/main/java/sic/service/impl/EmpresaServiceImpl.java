@@ -33,7 +33,7 @@ public class EmpresaServiceImpl implements IEmpresaService {
     
     @Override
     public Empresa getEmpresaPorId(Long idEmpresa){
-        Empresa empresa = empresaRepository.findOne(idEmpresa, false);
+        Empresa empresa = empresaRepository.findOne(idEmpresa);
         if (empresa == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_empresa_no_existente"));

@@ -9,8 +9,8 @@ import sic.modelo.Medida;
 
 public interface MedidaRepository extends PagingAndSortingRepository<Medida, Long> {
     
-      @Query("SELECT m FROM Medida m WHERE m.id_Medida = :idMedida AND m.eliminada = :eliminada")
-      Medida findOne(@Param("idMedida") long idMedida, @Param("eliminada") boolean eliminada);
+      @Query("SELECT m FROM Medida m WHERE m.id_Medida = :idMedida AND m.eliminada = false")
+      Medida findById(@Param("idMedida") long idMedida);
     
       Medida findByNombreAndEmpresaAndEliminada(String medida, Empresa empresa, boolean eliminada);
       

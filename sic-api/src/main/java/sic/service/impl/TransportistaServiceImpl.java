@@ -34,7 +34,7 @@ public class TransportistaServiceImpl implements ITransportistaService {
     
     @Override
     public Transportista getTransportistaPorId(long idTransportista) {
-        Transportista transportista = transportistaRepository.findOne(idTransportista, false);
+        Transportista transportista = transportistaRepository.findOne(idTransportista);
         if (transportista == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_transportista_no_existente"));

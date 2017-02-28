@@ -9,8 +9,8 @@ import sic.modelo.FormaDePago;
 
 public interface FormaDePagoRepository extends PagingAndSortingRepository<FormaDePago, Long> {
     
-      @Query("SELECT fp FROM FormaDePago fp WHERE fp.id_FormaDePago = :idFormaDePago AND fp.eliminada = :eliminada")
-      FormaDePago findOne(@Param("idFormaDePago") long idFormaDePago, @Param("eliminada") boolean eliminada);
+      @Query("SELECT fp FROM FormaDePago fp WHERE fp.id_FormaDePago = :idFormaDePago AND fp.eliminada = false")
+      FormaDePago findById(@Param("idFormaDePago") long idFormaDePago);
     
       FormaDePago findByNombreAndEmpresaAndEliminada(String nombre, Empresa empresa, boolean eliminada);
 

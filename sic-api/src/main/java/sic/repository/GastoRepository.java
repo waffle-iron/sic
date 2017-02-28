@@ -11,8 +11,8 @@ import sic.modelo.Gasto;
 
 public interface GastoRepository extends PagingAndSortingRepository<Gasto, Long> {
 
-      @Query("SELECT g FROM Gasto g WHERE g.id_Gasto = :idGasto AND g.eliminado = :eliminado")
-      Gasto findOne(@Param("idGasto") long idGasto, @Param("eliminado") boolean eliminado);
+      @Query("SELECT g FROM Gasto g WHERE g.id_Gasto = :idGasto AND g.eliminado = false")
+      Gasto findById(@Param("idGasto") long idGasto);
       
       Gasto findByNroGastoAndEmpresaAndEliminado(Long nroPago, Empresa empresa, boolean eliminado);
 

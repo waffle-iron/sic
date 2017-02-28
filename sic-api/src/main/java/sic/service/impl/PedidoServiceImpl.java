@@ -55,7 +55,7 @@ public class PedidoServiceImpl implements IPedidoService {
 
     @Override
     public Pedido getPedidoPorId(Long idPedido) {
-        Pedido pedido = this.pedidoRepository.findOne(idPedido, false);
+        Pedido pedido = this.pedidoRepository.findOne(idPedido);
         if (pedido == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pedido_no_existente"));

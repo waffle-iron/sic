@@ -10,8 +10,8 @@ import sic.modelo.Transportista;
 
 public interface TransportistaRepository extends PagingAndSortingRepository<Transportista, Long>, QueryDslPredicateExecutor<Transportista> {
     
-      @Query("SELECT t FROM Transportista t WHERE t.id_Transportista = :idTransportista AND t.eliminado = :eliminado")
-      Transportista findOne(@Param("idTransportista") long idTransportista, @Param("eliminado") boolean eliminado);
+      @Query("SELECT t FROM Transportista t WHERE t.id_Transportista = :idTransportista AND t.eliminado = false")
+      Transportista findById(@Param("idTransportista") long idTransportista);
       
       Transportista findByNombreAndEmpresaAndEliminado(String nombre, Empresa empresa, boolean eliminado);
 
