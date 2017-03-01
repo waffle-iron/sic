@@ -10,6 +10,9 @@ import sic.modelo.Pedido;
 
 public interface FacturaRepository extends PagingAndSortingRepository<Factura, Long>, FacturaRepositoryCustom {
 
+    @Query("SELECT fv FROM FacturaVenta fv WHERE fv.id_Factura = :idFactura AND fv.eliminada = false")
+    Factura findById(@Param("idFactura") long idFactura);
+    
     Factura findByTipoFacturaAndNumSerieAndNumFacturaAndEmpresaAndEliminada(char tipo, long serie, long num, Empresa empresa, boolean eliminada);
 
     List<Factura> findAllByPedidoAndEliminada(Pedido pedido, boolean eliminada);

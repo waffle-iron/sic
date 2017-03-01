@@ -10,8 +10,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -23,31 +21,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "caja")
-@NamedQueries({
-    @NamedQuery(name = "Caja.getUltimaCaja",
-            query = "SELECT c FROM Caja c "
-                    + "WHERE c.empresa.id_Empresa = :id_Empresa AND c.eliminada = false "
-                    + "ORDER BY c.fechaApertura DESC"),
-    @NamedQuery(name = "Caja.buscarCajaPorIdYEmpresa",
-            query = "SELECT c FROM Caja c "
-                    + "WHERE c.id_Caja = :id_caja AND c.empresa.id_Empresa = :id_Empresa "
-                    + "ORDER BY c.fechaApertura ASC"),
-    @NamedQuery(name = "Caja.buscarCajaPorNumeroYEmpresa",
-            query = "SELECT c FROM Caja c "
-                    + "WHERE c.nroCaja = :nroCaja AND c.empresa.id_Empresa = :id_Empresa "
-                    + "ORDER BY c.fechaApertura ASC"),
-    @NamedQuery(name = "Caja.buscarCajaPorId",
-            query = "SELECT c FROM Caja c "
-                    + "WHERE c.id_Caja = :id"),
-    @NamedQuery(name = "Caja.getUltimoNumeroDeCaja",
-            query = "SELECT max(c.nroCaja) FROM Caja c "
-                    + "WHERE c.empresa.id_Empresa = :id_Empresa"),
-    @NamedQuery(name = "Caja.getCajas",
-            query = "SELECT c FROM Caja c "
-                    + "WHERE c.empresa.id_Empresa = :id_Empresa AND c.eliminada = false "
-                    + "AND c.fechaApertura BETWEEN :desde AND :hasta "
-                    + "ORDER BY c.fechaApertura DESC")
-})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

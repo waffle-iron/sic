@@ -12,7 +12,7 @@ public class ProveedorBuilder {
     private String razonSocial = "Chamaco S.R.L.";
     private String direccion = "La Rioja 2047";
     private CondicionIVA condicionIVA = new CondicionIVABuilder().build();
-    private String id_Fiscal = "23127895679";
+    private String idFiscal = "23127895679";
     private String telPrimario = "379 4356778";
     private String telSecundario = "379 4894514";
     private String contacto = "Raul Gamez";
@@ -23,7 +23,7 @@ public class ProveedorBuilder {
     private boolean eliminado = false;
     
     public Proveedor build() {
-        return new Proveedor(id_Proveedor, codigo, razonSocial, direccion, condicionIVA, id_Fiscal,
+        return new Proveedor(id_Proveedor, codigo, razonSocial, direccion, condicionIVA, idFiscal,
                 telPrimario, telSecundario, contacto, email, web, localidad, empresa, eliminado);
     }
     
@@ -52,8 +52,8 @@ public class ProveedorBuilder {
         return this;
     }
     
-    public ProveedorBuilder withId_Fiscal(String id_Fiscal) {
-        this.id_Fiscal = id_Fiscal;
+    public ProveedorBuilder withIdFiscal(String idFiscal) {
+        this.idFiscal = idFiscal;
         return this;
     }
     

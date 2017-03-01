@@ -36,7 +36,6 @@ public class CajasGUI extends JInternalFrame {
         initComponents();        
         this.setColumnasCaja();
         usuarioParaMostrar = new Usuario();
-        usuarioParaMostrar.setNombre("Seleccione un Usuario....");
         cmb_Usuarios.addItem(usuarioParaMostrar);
         cmb_Usuarios.setEnabled(false);
     }
@@ -107,13 +106,13 @@ public class CajasGUI extends JInternalFrame {
                 }
                 criteria += "&idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa();
                 cajas = new ArrayList(Arrays.asList(RestClient.getRestTemplate().getForObject(criteria, Caja[].class)));
+                cargarResultadosAlTable();
+                cambiarEstadoEnabled(true);
                 return cajas;
             }
 
             @Override
             protected void done() {
-                cargarResultadosAlTable();
-                cambiarEstadoEnabled(true);
                 pb_barra.setIndeterminate(false);
                 try {                    
                     if (get().isEmpty()) {
@@ -121,7 +120,6 @@ public class CajasGUI extends JInternalFrame {
                                 ResourceBundle.getBundle("Mensajes").getString("mensaje_busqueda_sin_resultados"),
                                 "Aviso", JOptionPane.INFORMATION_MESSAGE);
                     }
-                    habilitarAperturaDeCaja();
                 } catch (InterruptedException ex) {
                     String msjError = "La tarea que se estaba realizando fue interrumpida. Intente nuevamente.";
                     LOGGER.error(msjError + " - " + ex.getMessage());
@@ -201,28 +199,13 @@ public class CajasGUI extends JInternalFrame {
         this.setColumnasCaja();
     }
 
-    private void habilitarAperturaDeCaja() {
-        boolean cajaAbierta = true;
-        Caja caja = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
-                + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
-                Caja.class);
-        if (caja != null) {
-            if (caja.getEstado() == EstadoCaja.CERRADA) {
-                String fechaCaja = (new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(caja.getFechaApertura());
-                if (fechaCaja.equals((new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_HISPANO)).format(new Date()))) {
-                    cajaAbierta = false;
-                }
-            } else {
-                cajaAbierta = false;
-            }
-        }
-        btn_AbrirCaja.setEnabled(cajaAbierta);        
-    }
-
     private void abrirCaja() {
         AbrirCajaGUI abrirCaja = new AbrirCajaGUI(true);
         abrirCaja.setLocationRelativeTo(this);
         abrirCaja.setVisible(true);
+        this.abrirVentanaCaja(RestClient.getRestTemplate().getForObject("/cajas/empresas/"
+                    + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
+                    Caja.class));
         this.limpiarResultados();        
         this.buscar();        
     }
@@ -516,12 +499,8 @@ public class CajasGUI extends JInternalFrame {
     private void btn_verDetalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_verDetalleActionPerformed
         if (tbl_Cajas.getSelectedRow() != -1) {
             int indiceDelModel = Utilidades.getSelectedRowModelIndice(tbl_Cajas);
-            CajaGUI caja = new CajaGUI(this.cajas.get(indiceDelModel));
-            caja.setLocationRelativeTo(this);
-            caja.setModal(true);
-            caja.setVisible(true);
-            this.limpiarResultados();
-            this.buscar();
+            Caja caja = this.cajas.get(indiceDelModel);
+            this.abrirVentanaCaja(caja);
         }
     }//GEN-LAST:event_btn_verDetalleActionPerformed
 
@@ -581,6 +560,9 @@ public class CajasGUI extends JInternalFrame {
                 this.abrirCaja();
             } else if (cajaAbierta.getEstado() == EstadoCaja.CERRADA) {
                 this.abrirCaja();
+            } else {
+                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_caja_anterior_abierta"), "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -595,7 +577,6 @@ public class CajasGUI extends JInternalFrame {
     private void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_internalFrameOpened
         try {
             this.setSize(850, 600);
-            this.habilitarAperturaDeCaja();
             this.setMaximum(true);
             dc_FechaDesde.setDate(new Date());
             dc_FechaHasta.setDate(new Date());
@@ -604,16 +585,7 @@ public class CajasGUI extends JInternalFrame {
             LOGGER.error(mensaje + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            this.dispose();
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-            this.dispose();
-        }
+        } 
     }//GEN-LAST:event_internalFrameOpened
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -639,4 +611,23 @@ public class CajasGUI extends JInternalFrame {
     private javax.swing.JScrollPane sp_TablaCajas;
     private javax.swing.JTable tbl_Cajas;
     // End of variables declaration//GEN-END:variables
+
+    private void abrirVentanaCaja(Caja caja) {
+        JInternalFrame iFrameCaja = Utilidades.estaEnDesktop(getDesktopPane(), CajaGUI.class);
+        if (iFrameCaja != null) {
+            iFrameCaja.dispose();
+        }
+        iFrameCaja = new CajaGUI(caja);
+        iFrameCaja.setLocation(getDesktopPane().getWidth() / 2 - iFrameCaja.getWidth() / 2,
+                getDesktopPane().getHeight() / 2 - iFrameCaja.getHeight() / 2);
+        getDesktopPane().add(iFrameCaja);
+        iFrameCaja.setVisible(true);
+        try {
+            iFrameCaja.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            String msjError = "No se pudo seleccionar la ventana requerida.";
+            LOGGER.error(msjError + " - " + ex.getMessage());
+            JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }

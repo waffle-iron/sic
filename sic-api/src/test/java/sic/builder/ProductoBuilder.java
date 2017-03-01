@@ -9,7 +9,7 @@ import sic.modelo.Rubro;
 
 public class ProductoBuilder {
 
-    private long id_Producto = 0L;
+    private Long id_Producto = 0L;
     private String codigo = "ABC123";
     private String descripcion = "Cinta adhesiva doble faz 3M";
     private double cantidad = 10;
@@ -44,7 +44,7 @@ public class ProductoBuilder {
                 fechaAlta, fechaVencimiento, empresa, eliminado);
     }
     
-    public ProductoBuilder withId_Producto(long id_Producto) {
+    public ProductoBuilder withId_Producto(Long id_Producto) {
         this.id_Producto = id_Producto;
         return this;
     }

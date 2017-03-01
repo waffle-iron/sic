@@ -1,35 +1,40 @@
 package sic.service.impl;
 
+import com.querydsl.core.BooleanBuilder;
+import java.util.ArrayList;
 import sic.modelo.BusquedaTransportistaCriteria;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.Empresa;
+import sic.modelo.Producto;
+import sic.modelo.QTransportista;
 import sic.modelo.Transportista;
-import sic.repository.ITransportistaRepository;
 import sic.service.ITransportistaService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
+import sic.repository.TransportistaRepository;
 
 @Service
 public class TransportistaServiceImpl implements ITransportistaService {
 
-    private final ITransportistaRepository transportistaRepository;
+    private final TransportistaRepository transportistaRepository;
     private static final Logger LOGGER = Logger.getLogger(TransportistaServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public TransportistaServiceImpl(ITransportistaRepository transportistaRepository) {
+    public TransportistaServiceImpl(TransportistaRepository transportistaRepository) {
         this.transportistaRepository = transportistaRepository;
     }
     
     @Override
     public Transportista getTransportistaPorId(long idTransportista) {
-        Transportista transportista = transportistaRepository.getTransportistaPorId(idTransportista);
+        Transportista transportista = transportistaRepository.findOne(idTransportista);
         if (transportista == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_transportista_no_existente"));
@@ -39,7 +44,7 @@ public class TransportistaServiceImpl implements ITransportistaService {
 
     @Override
     public List<Transportista> getTransportistas(Empresa empresa) {
-        List<Transportista> transportista =  transportistaRepository.getTransportistas(empresa);
+        List<Transportista> transportista =  transportistaRepository.findAllByAndEmpresaAndEliminado(empresa, false);
         if (transportista == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_transportista_ninguno_cargado"));
@@ -54,12 +59,42 @@ public class TransportistaServiceImpl implements ITransportistaService {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_empresa_no_existente"));
         }
-        return transportistaRepository.busquedaPersonalizada(criteria);
+        QTransportista qtransportista = QTransportista.transportista;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qtransportista.empresa.eq(criteria.getEmpresa()).and(qtransportista.eliminado.eq(false)));
+        //Nombre
+        if (criteria.isBuscarPorNombre() == true) {
+            builder.and(this.buildPredicadoNombre(criteria.getNombre(), qtransportista));
+        }
+        //Localidad
+        if (criteria.isBuscarPorLocalidad() == true) {
+            builder.and(qtransportista.localidad.eq(criteria.getLocalidad()));
+        }
+        //Provincia
+        if (criteria.isBuscarPorProvincia() == true) {
+            builder.and(qtransportista.localidad.provincia.eq(criteria.getProvincia()));
+        }
+        //Pais
+        if (criteria.isBuscarPorPais() == true) {
+            builder.and(qtransportista.localidad.provincia.pais.eq(criteria.getPais()));
+        }
+        List<Transportista> list = new ArrayList<>();
+        transportistaRepository.findAll(builder, new Sort(Sort.Direction.ASC, "nombre")).iterator().forEachRemaining(list::add);
+        return list;
+    }
+    
+    private BooleanBuilder buildPredicadoNombre(String nombre, QTransportista qtransportista) {
+        String[] terminos = nombre.split(" ");
+        BooleanBuilder descripcionProducto = new BooleanBuilder();
+        for (String termino : terminos) {
+            descripcionProducto.and(qtransportista.nombre.containsIgnoreCase(termino));
+        }
+        return descripcionProducto;
     }
 
     @Override
     public Transportista getTransportistaPorNombre(String nombre, Empresa empresa) {
-        return transportistaRepository.getTransportistaPorNombre(nombre, empresa);
+        return transportistaRepository.findByNombreAndEmpresaAndEliminado(nombre, empresa, false);
     }
 
     private void validarOperacion(TipoDeOperacion operacion, Transportista transportista) {
@@ -95,7 +130,7 @@ public class TransportistaServiceImpl implements ITransportistaService {
     @Transactional
     public Transportista guardar(Transportista transportista) {
         this.validarOperacion(TipoDeOperacion.ALTA, transportista);
-        transportista = transportistaRepository.guardar(transportista);
+        transportista = transportistaRepository.save(transportista);
         LOGGER.warn("El Transportista " + transportista + " se guardó correctamente.");
         return transportista;
     }
@@ -104,7 +139,7 @@ public class TransportistaServiceImpl implements ITransportistaService {
     @Transactional
     public void actualizar(Transportista transportista) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, transportista);
-        transportistaRepository.actualizar(transportista);        
+        transportistaRepository.save(transportista);        
     }
 
     @Override
@@ -116,6 +151,6 @@ public class TransportistaServiceImpl implements ITransportistaService {
                     .getString("mensaje_transportista_no_existente"));
         }
         transportista.setEliminado(true);
-        transportistaRepository.actualizar(transportista);
+        transportistaRepository.save(transportista);
     }
 }

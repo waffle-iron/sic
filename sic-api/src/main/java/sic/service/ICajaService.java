@@ -18,8 +18,6 @@ public interface ICajaService {
     double calcularTotalPagos(List<Pago> movimientos);
     
     double calcularTotalGastos(List<Gasto> movimientos);
-
-    Caja getCajaPorIdYEmpresa(long id_Caja, long id_Empresa);
     
     Caja getCajaPorNroYEmpresa(int nroCaja, long id_Empresa);
 
@@ -36,8 +34,6 @@ public interface ICajaService {
     void validarCaja(Caja caja);
 
     byte[] getReporteCaja(Caja caja, Long idEmpresa);
-
-    Caja cerrarCajaAnterior(long idEmpresa);
     
     Caja cerrarCaja(long idCaja, double monto, long idUsuario);
 

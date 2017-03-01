@@ -48,7 +48,7 @@ public class DetalleClienteGUI extends JDialog {
     }
 
     private void cargarClienteParaModificar() {
-        txt_Id_Fiscal.setText(cliente.getId_Fiscal());
+        txt_Id_Fiscal.setText(cliente.getIdFiscal());
         txt_RazonSocial.setText(cliente.getRazonSocial());
         txt_NombreFantasia.setText(cliente.getNombreFantasia());
         cmb_CondicionIVA.setSelectedItem(cliente.getCondicionIVA());
@@ -549,7 +549,7 @@ public class DetalleClienteGUI extends JDialog {
         try {
             if (operacion == TipoDeOperacion.ALTA) {
                 cliente = new Cliente();
-                cliente.setId_Fiscal(txt_Id_Fiscal.getText().trim());
+                cliente.setIdFiscal(txt_Id_Fiscal.getText().trim());
                 cliente.setRazonSocial(txt_RazonSocial.getText().trim());
                 cliente.setNombreFantasia(txt_NombreFantasia.getText().trim());
                 cliente.setCondicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem());
@@ -572,7 +572,7 @@ public class DetalleClienteGUI extends JDialog {
             }
 
             if (operacion == TipoDeOperacion.ACTUALIZACION) {
-                cliente.setId_Fiscal(txt_Id_Fiscal.getText().trim());
+                cliente.setIdFiscal(txt_Id_Fiscal.getText().trim());
                 cliente.setRazonSocial(txt_RazonSocial.getText().trim());
                 cliente.setNombreFantasia(txt_NombreFantasia.getText().trim());
                 cliente.setCondicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem());

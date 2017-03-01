@@ -24,8 +24,6 @@ public interface IClienteService {
 
     List<Cliente> getClientes(Empresa empresa);
 
-    List<Cliente> getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(String criteria, Empresa empresa);
-
     Cliente guardar(Cliente cliente);
 
     void setClientePredeterminado(Cliente cliente);

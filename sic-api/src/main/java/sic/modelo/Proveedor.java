@@ -7,8 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,24 +15,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "proveedor")
-@NamedQueries({
-    @NamedQuery(name = "Proveedor.buscarPorId",
-            query = "SELECT p FROM Proveedor p "
-                    + "WHERE p.eliminado = false AND p.id_Proveedor = :id"),
-    @NamedQuery(name = "Proveedor.buscarTodos",
-            query = "SELECT p FROM Proveedor p "
-                    + "WHERE p.empresa = :empresa AND p.eliminado = false "
-                    + "ORDER BY p.razonSocial ASC"),
-    @NamedQuery(name = "Proveedor.buscarPorCodigo",
-            query = "SELECT p FROM Proveedor p "
-                    + "WHERE p.codigo = :codigo AND p.empresa = :empresa AND p.eliminado = false"),
-    @NamedQuery(name = "Proveedor.buscarPorRazonSocial",
-            query = "SELECT p FROM Proveedor p "
-                    + "WHERE p.razonSocial = :razonSocial AND p.empresa = :empresa AND p.eliminado = false"),
-    @NamedQuery(name = "Proveedor.buscarPorIdFiscal",
-            query = "SELECT p FROM Proveedor p "
-                    + "WHERE p.id_Fiscal = :idFiscal AND p.empresa = :empresa AND p.eliminado = false")
-})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -59,7 +39,7 @@ public class Proveedor implements Serializable {
     private CondicionIVA condicionIVA;
 
     @Column(nullable = false)
-    private String id_Fiscal;
+    private String idFiscal;
 
     @Column(nullable = false)
     private String telPrimario;

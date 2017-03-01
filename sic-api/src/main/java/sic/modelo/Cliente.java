@@ -8,8 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,35 +18,10 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "cliente")
-@NamedQueries({
-    @NamedQuery(name = "Cliente.buscarTodos",
-            query = "SELECT c FROM Cliente c "
-                    + "WHERE c.empresa = :empresa AND c.eliminado = false "
-                    + "ORDER BY c.razonSocial ASC"),
-    @NamedQuery(name = "Cliente.buscarPorId",
-            query = "SELECT c FROM Cliente c "
-                    + "WHERE c.id_Cliente = :id AND c.eliminado = false"),
-    @NamedQuery(name = "Cliente.buscarQueContengaRazonSocialNombreFantasiaIdFiscal",
-            query = "SELECT c FROM Cliente c "
-                    + "WHERE (c.razonSocial LIKE :criteria OR c.nombreFantasia "
-                    + "LIKE :criteria OR c.id_Fiscal LIKE :criteria) "
-                    + "AND c.empresa = :empresa AND c.eliminado = false "
-                    + "ORDER BY c.razonSocial ASC"),
-    @NamedQuery(name = "Cliente.buscarPorRazonSocial",
-            query = "SELECT c FROM Cliente c "
-                    + "WHERE c.razonSocial = :razonSocial AND c.empresa = :empresa AND c.eliminado = false "
-                    + "ORDER BY c.razonSocial ASC"),
-    @NamedQuery(name = "Cliente.buscarPorIdFiscal",
-            query = "SELECT c FROM Cliente c "
-                    + "WHERE c.id_Fiscal = :id_Fiscal AND c.eliminado = false AND c.empresa = :empresa"),
-    @NamedQuery(name = "Cliente.buscarPredeterminado",
-            query = "SELECT c FROM Cliente c "
-                    + "WHERE c.predeterminado = true AND c.eliminado = false AND c.empresa = :empresa")
-})
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(of = {"razonSocial", "id_Fiscal", "empresa"})
+@EqualsAndHashCode(of = {"razonSocial", "idFiscal", "empresa"})
 public class Cliente implements Serializable {
 
     @Id
@@ -68,7 +41,7 @@ public class Cliente implements Serializable {
     private CondicionIVA condicionIVA;
 
     @Column(nullable = false)
-    private String id_Fiscal;
+    private String idFiscal;
 
     @Column(nullable = false)
     private String email;

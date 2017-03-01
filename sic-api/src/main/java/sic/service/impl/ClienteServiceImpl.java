@@ -1,5 +1,7 @@
 package sic.service.impl;
 
+import com.querydsl.core.BooleanBuilder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.persistence.EntityNotFoundException;
@@ -10,26 +12,27 @@ import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaClienteCriteria;
 import sic.modelo.Cliente;
 import sic.modelo.Empresa;
-import sic.repository.IClienteRepository;
+import sic.modelo.QCliente;
 import sic.service.IClienteService;
 import sic.service.BusinessServiceException;
 import sic.modelo.TipoDeOperacion;
 import sic.util.Validator;
+import sic.repository.ClienteRepository;
 
 @Service
 public class ClienteServiceImpl implements IClienteService {
 
-    private final IClienteRepository clienteRepository;    
+    private final ClienteRepository clienteRepository;    
     private static final Logger LOGGER = Logger.getLogger(ClienteServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public ClienteServiceImpl(IClienteRepository clienteRepository) {
+    public ClienteServiceImpl(ClienteRepository clienteRepository) {
         this.clienteRepository = clienteRepository;
     }
 
     @Override
     public Cliente getClientePorId(Long idCliente) {    
-        Cliente cliente = clienteRepository.getClientePorId(idCliente);
+        Cliente cliente = clienteRepository.findOne(idCliente);
         if (cliente == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_cliente_no_existente"));
@@ -39,27 +42,22 @@ public class ClienteServiceImpl implements IClienteService {
 
     @Override
     public List<Cliente> getClientes(Empresa empresa) {        
-        return clienteRepository.getClientes(empresa);                   
-    }
-
-    @Override
-    public List<Cliente> getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(String criteria, Empresa empresa) {        
-        return clienteRepository.getClientesQueContengaRazonSocialNombreFantasiaIdFiscal(criteria, empresa);                   
+        return clienteRepository.findAllByAndEmpresaAndEliminado(empresa, false);                   
     }
 
     @Override
     public Cliente getClientePorRazonSocial(String razonSocial, Empresa empresa) {        
-        return clienteRepository.getClientePorRazonSocial(razonSocial, empresa);                   
+        return clienteRepository.findByRazonSocialAndEmpresaAndEliminado(razonSocial, empresa, false);                   
     }
 
     @Override
     public Cliente getClientePorIdFiscal(String idFiscal, Empresa empresa) {        
-        return clienteRepository.getClientePorId_Fiscal(idFiscal, empresa);               
+        return clienteRepository.findByIdFiscalAndEmpresaAndEliminado(idFiscal, empresa, false);               
     }
 
     @Override
     public Cliente getClientePredeterminado(Empresa empresa) {   
-        Cliente cliente = clienteRepository.getClientePredeterminado(empresa); 
+        Cliente cliente = clienteRepository.findByAndEmpresaAndPredeterminadoAndEliminado(empresa, true, false); 
         if (cliente == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_cliente_sin_predeterminado"));
@@ -77,13 +75,13 @@ public class ClienteServiceImpl implements IClienteService {
     @Override
     @Transactional
     public void setClientePredeterminado(Cliente cliente) {        
-        Cliente clientePredeterminadoAnterior = clienteRepository.getClientePredeterminado(cliente.getEmpresa());
+        Cliente clientePredeterminadoAnterior = clienteRepository.findByAndEmpresaAndPredeterminadoAndEliminado(cliente.getEmpresa(), true, false);
         if (clientePredeterminadoAnterior != null) {
             clientePredeterminadoAnterior.setPredeterminado(false);
-            clienteRepository.actualizar(clientePredeterminadoAnterior);
+            clienteRepository.save(clientePredeterminadoAnterior);
         }
         cliente.setPredeterminado(true);
-        clienteRepository.actualizar(cliente);        
+        clienteRepository.save(cliente);        
     }
 
     @Override
@@ -93,7 +91,47 @@ public class ClienteServiceImpl implements IClienteService {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_empresa_no_existente"));
         }
-        return clienteRepository.buscarClientes(criteria);
+        if (criteria.getRazonSocial() == null) {
+            criteria.setRazonSocial("");
+        }
+        QCliente qcliente = QCliente.cliente;
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qcliente.empresa.eq(criteria.getEmpresa()).and(qcliente.eliminado.eq(false)))
+               .and(this.buildPredicadoDescripcion(criteria.getRazonSocial(), qcliente, criteria.isBuscaPorRazonSocial(), criteria.isBuscaPorRazonSocial(), criteria.isBuscaPorRazonSocial()));
+        if (criteria.isBuscaPorLocalidad() == true) {
+            builder.and(qcliente.localidad.eq(criteria.getLocalidad()));
+        }
+        if (criteria.isBuscaPorProvincia() == true) {
+            builder.and(qcliente.localidad.provincia.eq(criteria.getProvincia()));
+        }
+        if (criteria.isBuscaPorPais() == true) {
+            builder.and(qcliente.localidad.provincia.pais.eq(criteria.getPais()));
+        }
+        List<Cliente> list = new ArrayList<>();
+        clienteRepository.findAll(builder).iterator().forEachRemaining(list::add);
+        return list;
+    }
+    
+    private BooleanBuilder buildPredicadoDescripcion(String stringRazonSocial, QCliente qcliente, boolean razonSocial, boolean nombreFantasia, boolean idFiscal) {
+        String[] terminos = stringRazonSocial.split(" ");
+        BooleanBuilder descripcionProducto = new BooleanBuilder();
+        if (razonSocial && nombreFantasia && idFiscal) {
+            for (String termino : terminos) {
+                descripcionProducto.or(qcliente.razonSocial.containsIgnoreCase(termino)
+                        .or(qcliente.nombreFantasia.containsIgnoreCase(termino))
+                        .or(qcliente.idFiscal.containsIgnoreCase(termino)));
+            }
+        } else if (razonSocial && nombreFantasia) {
+            for (String termino : terminos) {
+                descripcionProducto.or(qcliente.razonSocial.containsIgnoreCase(termino)
+                        .or(qcliente.nombreFantasia.containsIgnoreCase(termino)));
+            }
+        } else if (idFiscal) {
+            for (String termino : terminos) {
+                descripcionProducto.or(qcliente.idFiscal.containsIgnoreCase(termino));
+            }
+        }
+        return descripcionProducto;
     }
 
     @Override
@@ -124,8 +162,8 @@ public class ClienteServiceImpl implements IClienteService {
         }
         //Duplicados
         //ID Fiscal
-        if (!cliente.getId_Fiscal().equals("")) {
-            Cliente clienteDuplicado = this.getClientePorIdFiscal(cliente.getId_Fiscal(), cliente.getEmpresa());
+        if (!cliente.getIdFiscal().equals("")) {
+            Cliente clienteDuplicado = this.getClientePorIdFiscal(cliente.getIdFiscal(), cliente.getEmpresa());
             if (operacion.equals(TipoDeOperacion.ACTUALIZACION)
                     && clienteDuplicado != null
                     && clienteDuplicado.getId_Cliente() != cliente.getId_Cliente()) {
@@ -134,7 +172,7 @@ public class ClienteServiceImpl implements IClienteService {
             }
             if (operacion.equals(TipoDeOperacion.ALTA)
                     && clienteDuplicado != null
-                    && !cliente.getId_Fiscal().equals("")) {
+                    && !cliente.getIdFiscal().equals("")) {
                 throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                         .getString("mensaje_cliente_duplicado_idFiscal"));
             }
@@ -157,7 +195,7 @@ public class ClienteServiceImpl implements IClienteService {
     @Transactional
     public Cliente guardar(Cliente cliente) {        
         this.validarOperacion(TipoDeOperacion.ALTA, cliente);
-        cliente = clienteRepository.guardar(cliente);          
+        cliente = clienteRepository.save(cliente);          
         LOGGER.warn("El Cliente " + cliente + " se guardó correctamente." );
         return cliente;
     }
@@ -166,7 +204,7 @@ public class ClienteServiceImpl implements IClienteService {
     @Transactional
     public void actualizar(Cliente cliente) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, cliente);        
-        clienteRepository.actualizar(cliente);                   
+        clienteRepository.save(cliente);                   
     }
 
     @Override
@@ -178,6 +216,6 @@ public class ClienteServiceImpl implements IClienteService {
                     .getString("mensaje_cliente_no_existente"));
         }
         cliente.setEliminado(true);        
-        clienteRepository.actualizar(cliente);                   
+        clienteRepository.save(cliente);                   
     }
 }

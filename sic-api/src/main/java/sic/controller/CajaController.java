@@ -135,13 +135,7 @@ public class CajaController {
     public Caja getUltimaCaja(@PathVariable long idEmpresa) {
         return cajaService.getUltimaCaja(idEmpresa);
     }
-    
-    @PutMapping("/cajas/empresas/{idEmpresa}/cerrar-anterior")
-    @ResponseStatus(HttpStatus.OK)
-    public void cerrarCajaAnterior(@PathVariable long idEmpresa) {
-        cajaService.cerrarCajaAnterior(idEmpresa);
-    }
-    
+  
     @GetMapping("/cajas/{idCaja}/empresas/{idEmpresa}/reporte")
     public ResponseEntity<byte[]> getReporteCaja(@PathVariable long idCaja,
                                                  @PathVariable long idEmpresa) {

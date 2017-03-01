@@ -8,23 +8,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
-import sic.repository.IConfiguracionDelSistemaRepository;
 import sic.service.IConfiguracionDelSistemaService;
+import sic.repository.ConfiguracionDelSistemaRepository;
 
 @Service
 public class ConfiguracionDelSistemaServiceImpl implements IConfiguracionDelSistemaService {
 
-    private final IConfiguracionDelSistemaRepository configuracionRepository; 
+    private final ConfiguracionDelSistemaRepository configuracionRepository; 
     private static final Logger LOGGER = Logger.getLogger(ConfiguracionDelSistemaServiceImpl.class.getPackage().getName());
 
     @Autowired
-    public ConfiguracionDelSistemaServiceImpl(IConfiguracionDelSistemaRepository configuracionRepository) {
+    public ConfiguracionDelSistemaServiceImpl(ConfiguracionDelSistemaRepository configuracionRepository) {
         this.configuracionRepository = configuracionRepository;           
     }
 
     @Override
     public ConfiguracionDelSistema getConfiguracionDelSistemaPorId(long id_ConfiguracionDelSistema) {
-        ConfiguracionDelSistema cds = configuracionRepository.getConfiguracionDelSistemaPorId(id_ConfiguracionDelSistema); 
+        ConfiguracionDelSistema cds = configuracionRepository.findOne(id_ConfiguracionDelSistema); 
         if (cds == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_cds_no_existente"));
@@ -34,13 +34,13 @@ public class ConfiguracionDelSistemaServiceImpl implements IConfiguracionDelSist
 
     @Override
     public ConfiguracionDelSistema getConfiguracionDelSistemaPorEmpresa(Empresa empresa) {        
-        return configuracionRepository.getConfiguracionDelSistemaPorEmpresa(empresa);        
+        return configuracionRepository.findByEmpresa(empresa);        
     }
 
     @Override
     @Transactional
     public ConfiguracionDelSistema guardar(ConfiguracionDelSistema cds) {        
-        cds = configuracionRepository.guardar(cds);        
+        cds = configuracionRepository.save(cds);        
         LOGGER.warn("La Configuracion del Sistema " + cds + " se guardó correctamente." );
         return cds;
     }
@@ -48,6 +48,6 @@ public class ConfiguracionDelSistemaServiceImpl implements IConfiguracionDelSist
     @Override
     @Transactional
     public void actualizar(ConfiguracionDelSistema cds) {        
-        configuracionRepository.actualizar(cds);        
+        configuracionRepository.save(cds);        
     }
 }
