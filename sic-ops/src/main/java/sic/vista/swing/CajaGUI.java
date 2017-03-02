@@ -310,6 +310,7 @@ public class CajaGUI extends JInternalFrame {
                 JOptionPane.showMessageDialog(this,
                         ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                         "Error", JOptionPane.ERROR_MESSAGE);
+                this.dispose();
             }
         }
     }
@@ -735,16 +736,27 @@ public class CajaGUI extends JInternalFrame {
     }//GEN-LAST:event_btn_VerDetalleActionPerformed
 
     private void btn_AgregarGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AgregarGastoActionPerformed
-        if (this.caja.getEstado().equals(EstadoCaja.ABIERTA)) {
-            AgregarGastoGUI agregarGasto = new AgregarGastoGUI();
-            agregarGasto.setLocationRelativeTo(null);
-            agregarGasto.setEnabled(true);
-            agregarGasto.setVisible(true);
-            this.limpiarYCargarTablas();
-        } else if(this.caja.getEstado().equals(EstadoCaja.CERRADA)) {
+        try {
+            if (this.caja.getEstado().equals(EstadoCaja.ABIERTA)) {
+                List<FormaDePago> formasDePago = Arrays.asList(RestClient.getRestTemplate().getForObject("/formas-de-pago/empresas/"
+                        + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(), FormaDePago[].class));
+                AgregarGastoGUI agregarGasto = new AgregarGastoGUI(formasDePago);
+                agregarGasto.setLocationRelativeTo(null);
+                agregarGasto.setEnabled(true);
+                agregarGasto.setVisible(true);
+                this.limpiarYCargarTablas();
+            } else if (this.caja.getEstado().equals(EstadoCaja.CERRADA)) {
                 JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_cerrada"),
                         "Aviso", JOptionPane.INFORMATION_MESSAGE);
             }
+        } catch (RestClientResponseException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ResourceAccessException ex) {
+            LOGGER.error(ex.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btn_AgregarGastoActionPerformed
 
     private void btn_ImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ImprimirActionPerformed
@@ -762,6 +774,7 @@ public class CajaGUI extends JInternalFrame {
                     Gasto gasto = (Gasto) movimientoDeTabla;
                     try {
                         RestClient.getRestTemplate().delete("/gastos/" + gasto.getId_Gasto());
+                        this.limpiarYCargarTablas();
                     } catch (RestClientResponseException ex) {
                         JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     } catch (ResourceAccessException ex) {
@@ -770,7 +783,6 @@ public class CajaGUI extends JInternalFrame {
                                 ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                                 "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                    this.limpiarYCargarTablas();
                 }
             } else if(this.caja.getEstado().equals(EstadoCaja.CERRADA)) {
                 JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_cerrada"),
@@ -812,7 +824,6 @@ public class CajaGUI extends JInternalFrame {
             String mensaje = "Se produjo un error al intentar maximizar la ventana.";
             LOGGER.error(mensaje + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
-            this.dispose();
         }
     }//GEN-LAST:event_formInternalFrameOpened
 

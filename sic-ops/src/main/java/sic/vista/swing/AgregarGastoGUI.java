@@ -1,9 +1,9 @@
 package sic.vista.swing;
 
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.JDialog;
-import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
@@ -20,9 +20,11 @@ import sic.modelo.UsuarioActivo;
 public class AgregarGastoGUI extends JDialog {
     
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-
-    public AgregarGastoGUI() {
+    private final List<FormaDePago> formasDePago;
+    
+    public AgregarGastoGUI(List<FormaDePago> formasDePago) {
         this.setModal(true);
+        this.formasDePago = formasDePago;
         initComponents();
     }
 
@@ -165,18 +167,8 @@ public class AgregarGastoGUI extends JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         this.setModal(true);
-        try {
-            for (FormaDePago formaDePago : RestClient.getRestTemplate().getForObject("/formas-de-pago/empresas/"
-                    + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(), FormaDePago[].class)) {
-                cmb_FormaDePago.addItem(formaDePago);
-            }
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+        for (FormaDePago formaDePago : formasDePago) {
+            cmb_FormaDePago.addItem(formaDePago);
         }
     }//GEN-LAST:event_formWindowOpened
 

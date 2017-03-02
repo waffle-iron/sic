@@ -552,8 +552,9 @@ public class CajasGUI extends JInternalFrame {
     }//GEN-LAST:event_chk_UsuarioItemStateChanged
 
     private void btn_AbrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AbrirCajaActionPerformed
+        Caja cajaAbierta = null;
         try {
-            Caja cajaAbierta = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
+            cajaAbierta = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
                     + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
                     Caja.class);
             if (cajaAbierta == null) {
