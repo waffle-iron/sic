@@ -611,7 +611,7 @@ public class CerrarVentaGUI extends JDialog {
             if (chk_FormaDePago3.isSelected() && chk_FormaDePago3.isEnabled()) {
                 totalPagos += Double.parseDouble(txt_MontoPago3.getValue().toString());
             }
-            double totalAPagar = Utilidades.truncarDecimal(Double.parseDouble(lbl_TotalAPagar.getValue().toString()), 2);
+            double totalAPagar = Math.floor(Double.parseDouble(lbl_TotalAPagar.getValue().toString()) * 100) / 100; 
             if (totalPagos < totalAPagar) {
                 int reply = JOptionPane.showConfirmDialog(this,
                         ResourceBundle.getBundle("Mensajes").getString("mensaje_montos_insuficientes"),
