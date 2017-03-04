@@ -29,6 +29,7 @@ import sic.modelo.Pago;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Transportista;
 import sic.modelo.UsuarioActivo;
+import sic.util.Utilidades;
 
 public class CerrarVentaGUI extends JDialog {
 
@@ -610,7 +611,7 @@ public class CerrarVentaGUI extends JDialog {
             if (chk_FormaDePago3.isSelected() && chk_FormaDePago3.isEnabled()) {
                 totalPagos += Double.parseDouble(txt_MontoPago3.getValue().toString());
             }
-            double totalAPagar = Double.parseDouble(lbl_TotalAPagar.getValue().toString());
+            double totalAPagar = Utilidades.truncarDecimal(Double.parseDouble(lbl_TotalAPagar.getValue().toString()), 2);
             if (totalPagos < totalAPagar) {
                 int reply = JOptionPane.showConfirmDialog(this,
                         ResourceBundle.getBundle("Mensajes").getString("mensaje_montos_insuficientes"),
