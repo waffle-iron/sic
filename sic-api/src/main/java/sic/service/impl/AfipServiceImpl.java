@@ -22,6 +22,7 @@ import sic.modelo.AfipWSAACredencial;
 import sic.modelo.FacturaVenta;
 import sic.service.BusinessServiceException;
 import sic.service.IConfiguracionDelSistemaService;
+import sic.util.FormatterFechaHora;
 
 @Service
 public class AfipServiceImpl implements IAfipService {
@@ -29,6 +30,7 @@ public class AfipServiceImpl implements IAfipService {
     private final AfipWebServiceSOAPClient afipWebServiceSOAPClient;
     private final IConfiguracionDelSistemaService configuracionDelSistemaService;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());    
+    private final FormatterFechaHora formatterFechaHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_INTERNACIONAL);
 
     @Autowired
     public AfipServiceImpl(AfipWebServiceSOAPClient afipWebServiceSOAPClient, IConfiguracionDelSistemaService configuracionDelSistemaService) {
@@ -88,24 +90,36 @@ public class AfipServiceImpl implements IAfipService {
             case 'C':
                 cabecera.setCbteTipo(11);
                 break;
-        }        
+        }
         fecaeRequest.setFeCabReq(cabecera);
         ArrayOfFECAEDetRequest arrayDetalle = new ArrayOfFECAEDetRequest();
         FECAEDetRequest detalle = new FECAEDetRequest();
-        detalle.setConcepto(0); // Concepto del Comprobante. Valores permitidos: 1 Productos, 2 Servicios, 3 Productos y Servicios
-        detalle.setDocTipo(0); // ???
-        detalle.setDocNro(0); // ???
-        detalle.setCbteDesde(0); // ???
-        detalle.setCbteHasta(0); // ???
-        detalle.setCbteFch(""); // Fecha del comprobante (yyyymmdd)
-        detalle.setImpTotal(0); // Importe total del comprobante, Debe ser igual a Importe neto no gravado + Importe exento + Importe neto gravado + todos los campos de IVA al XX% + Importe de tributos
+        detalle.setCbteDesde(1); // numero de comprobante ???
+        detalle.setCbteHasta(1); // numero de comprobante ???
+        detalle.setConcepto(1); // Concepto del Comprobante. Valores permitidos: 1 Productos, 2 Servicios, 3 Productos y Servicios
+        switch (factura.getTipoFactura()) {
+            case 'A':
+                detalle.setDocTipo(80);
+                detalle.setDocNro(Long.valueOf(factura.getCliente().getIdFiscal()));
+                break;
+            case 'B':
+                detalle.setDocTipo(99);
+                detalle.setDocNro(0);
+                break;
+            case 'C':
+                detalle.setDocTipo(0);
+                detalle.setDocNro(0);
+                break;
+        }
+        detalle.setCbteFch(formatterFechaHora.format(factura.getFecha()).replace('/', ' ')); // Fecha del comprobante (yyyymmdd)
+        detalle.setImpTotal(factura.getTotal()); // Importe total del comprobante, Debe ser igual a Importe neto no gravado + Importe exento + Importe neto gravado + todos los campos de IVA al XX% + Importe de tributos
         detalle.setImpTotConc(0); // Importe neto no gravado. Debe ser menor o igual a Importe total y no puede ser menor a cero. No puede ser mayor al Importe total de la operación ni menor a cero (0). Para comprobantes tipo C debe ser igual a cero (0). Para comprobantes tipo Bienes Usados – Emisor Monotributista este campo corresponde al importe subtotal
-        detalle.setImpNeto(0); // Importe neto gravado. Debe ser menor o igual a Importe total y no puede ser menor a cero. Para comprobantes tipo C este campo corresponde al Importe del Sub Total
+        detalle.setImpNeto(factura.getSubTotal_neto()); // Importe neto gravado. Debe ser menor o igual a Importe total y no puede ser menor a cero. Para comprobantes tipo C este campo corresponde al Importe del Sub Total
         detalle.setImpOpEx(0); // Importe exento. Debe ser menor o igual a Importe total y no puede ser menor a cero. Para comprobantes tipo C debe ser igual a cero (0)
-        detalle.setImpIVA(0); // Suma de los importes del array de IVA. Para comprobantes tipo C debe ser igual a cero (0).
+        detalle.setImpIVA(factura.getIva_105_neto() + factura.getIva_21_neto()); // Suma de los importes del array de IVA. Para comprobantes tipo C debe ser igual a cero (0).
         detalle.setImpTrib(0); // Suma de los importes del array de tributos
-        detalle.setMonId(""); // Código de moneda del comprobante. Consultar método FEParamGetTiposMonedas para valores posibles
-        detalle.setMonCotiz(0); // Cotización de la moneda informada. Para PES, pesos argentinos la misma debe ser 1            
+        detalle.setMonId("PES"); // Código de moneda del comprobante. Consultar método FEParamGetTiposMonedas para valores posibles
+        detalle.setMonCotiz(1); // Cotización de la moneda informada. Para PES, pesos argentinos la misma debe ser 1            
         arrayDetalle.getFECAEDetRequest().add(detalle);
         fecaeRequest.setFeDetReq(arrayDetalle);
         return fecaeRequest;
