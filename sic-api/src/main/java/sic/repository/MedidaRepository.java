@@ -14,6 +14,6 @@ public interface MedidaRepository extends PagingAndSortingRepository<Medida, Lon
     
       Medida findByNombreAndEmpresaAndEliminada(String medida, Empresa empresa, boolean eliminada);
       
-      List<Medida> findAllByAndEmpresaAndEliminada(Empresa empresa, boolean eliminada);
+      List<Medida> findAllByAndEmpresaAndEliminadaOrderByNombreAsc(Empresa empresa, boolean eliminada);
     
 }
