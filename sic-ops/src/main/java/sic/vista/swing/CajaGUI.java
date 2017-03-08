@@ -501,12 +501,11 @@ public class CajaGUI extends JInternalFrame {
             }
         });
         sp_TablaResumen.setViewportView(tbl_Resumen);
-        tbl_Resumen.getAccessibleContext().setAccessibleParent(sp_Tabla);
 
         tbl_Balance.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         sp_Tabla.setViewportView(tbl_Balance);
 
-        lbl_movimientos.setText("Movimientos por Forma de Pago");
+        lbl_movimientos.setText("Movimientos por Forma de Pago (Seleccione una de la lista superior)");
 
         btn_VerDetalle.setForeground(java.awt.Color.blue);
         btn_VerDetalle.setText("Ver Detalle");
