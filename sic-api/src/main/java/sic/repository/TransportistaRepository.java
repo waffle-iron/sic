@@ -15,7 +15,7 @@ public interface TransportistaRepository extends PagingAndSortingRepository<Tran
       
       Transportista findByNombreAndEmpresaAndEliminado(String nombre, Empresa empresa, boolean eliminado);
 
-      List<Transportista> findAllByAndEmpresaAndEliminado(Empresa empresa, boolean eliminado);
+      List<Transportista> findAllByAndEmpresaAndEliminadoOrderByNombreAsc(Empresa empresa, boolean eliminado);
 
     
 }
