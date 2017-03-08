@@ -65,6 +65,12 @@ public class UsuarioServiceImpl implements IUsuarioService {
         }
         return usuario;
     }
+    
+    @Override
+    public Usuario getUsuarioPorToken(String token) {
+        Usuario usuario = usuarioRepository.findByToken(token);
+        return usuario;
+    }
 
     private void validarOperacion(TipoDeOperacion operacion, Usuario usuario) {
         //Requeridos
@@ -107,6 +113,13 @@ public class UsuarioServiceImpl implements IUsuarioService {
     public void actualizar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, usuario);
         usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
+        usuarioRepository.save(usuario);
+    }
+    
+    @Override
+    @Transactional
+    public void actualizarSinEncriptar(Usuario usuario) {
+        this.validarOperacion(TipoDeOperacion.ACTUALIZACION, usuario);
         usuarioRepository.save(usuario);
     }
 

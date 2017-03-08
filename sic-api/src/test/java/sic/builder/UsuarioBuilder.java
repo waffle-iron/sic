@@ -7,11 +7,12 @@ public class UsuarioBuilder {
     private long id_Usuario = 0L;
     private String nombre = "Daenerys Targaryen";
     private String password = "LaQueNoArde";
+    private String token = "moreInformation";
     private boolean permisosAdministrador = true;
     private boolean eliminado = false;
     
     public Usuario build() {
-        return new Usuario(id_Usuario, nombre, password, permisosAdministrador, eliminado);
+        return new Usuario(id_Usuario, nombre, password, token, permisosAdministrador, eliminado);
     }
     
     public UsuarioBuilder withId_Usuario(long idUsuario) {
@@ -26,6 +27,11 @@ public class UsuarioBuilder {
     
     public UsuarioBuilder withPassword(String password) {
         this.password = password;
+        return this;
+    }
+    
+    public UsuarioBuilder withToken(String token) {
+        this.token = token;
         return this;
     }
     

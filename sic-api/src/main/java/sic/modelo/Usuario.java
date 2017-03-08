@@ -30,6 +30,9 @@ public class Usuario implements Serializable {
     @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+    
+    @Column(nullable = false)
+    private String token;
 
     private boolean permisosAdministrador;
 

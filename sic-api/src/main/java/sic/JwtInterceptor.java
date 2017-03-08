@@ -9,11 +9,19 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import sic.controller.UnauthorizedException;
+import sic.modelo.Usuario;
+import sic.service.IUsuarioService;
 
 public class JwtInterceptor extends HandlerInterceptorAdapter {
     
     @Value("${SIC_JWT_KEY}")
     private String secretkey;
+    
+    private final IUsuarioService usuarioService;
+
+    JwtInterceptor(IUsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
     
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -23,6 +31,15 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                     .getString("mensaje_error_token_vacio_invalido"));
         }
         final String token = authHeader.substring(7); // The part after "Bearer "
+        Usuario usuario = usuarioService.getUsuarioPorToken(token);
+        if (null == usuario || null == token) {
+            throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_error_token_vacio_invalido"));
+        } else if (!token.equalsIgnoreCase(usuario.getToken())) {
+            throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_error_token_invalido"));
+        }
+        
         try {
             Claims claims = Jwts.parser()
                                 .setSigningKey(secretkey)

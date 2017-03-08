@@ -8,6 +8,8 @@ public interface IUsuarioService {
     Usuario getUsuarioPorId(Long idUsuario);
 
     void actualizar(Usuario usuario);
+    
+    void actualizarSinEncriptar(Usuario usuario);
 
     void eliminar(long idUsuario);
 
@@ -18,6 +20,8 @@ public interface IUsuarioService {
     List<Usuario> getUsuarios();
 
     List<Usuario> getUsuariosAdministradores();
+    
+    Usuario getUsuarioPorToken(String token);
 
     Usuario guardar(Usuario usuario);
     
