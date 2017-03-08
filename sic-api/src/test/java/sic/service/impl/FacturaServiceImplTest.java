@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 import org.springframework.test.context.junit4.SpringRunner;
 import sic.builder.ClienteBuilder;
 import sic.builder.EmpresaBuilder;
-import sic.builder.FacturaVentaBuilder;
 import sic.builder.ProductoBuilder;
 import sic.builder.TransportistaBuilder;
 import sic.modelo.Cliente;
@@ -26,6 +25,7 @@ import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Movimiento;
+import sic.modelo.TipoDeComprobante;
 import sic.modelo.Usuario;
 import sic.repository.FacturaRepository;
 
@@ -50,11 +50,11 @@ public class FacturaServiceImplTest {
         empresa.setCondicionIVA(condicionIVAqueDiscrimina);
         Proveedor proveedor = Mockito.mock(Proveedor.class);
         when(proveedor.getCondicionIVA()).thenReturn(condicionIVAqueDiscrimina);
-        String[] expResult = new String[3];
-        expResult[0] = "Factura A";
-        expResult[1] = "Factura B";
-        expResult[2] = "Factura X";
-        String[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
+        TipoDeComprobante[] expResult = new TipoDeComprobante[3];
+        expResult[0] = TipoDeComprobante.FACTURA_A;
+        expResult[1] = TipoDeComprobante.FACTURA_B;
+        expResult[2] = TipoDeComprobante.FACTURA_X;
+        TipoDeComprobante[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
 
@@ -68,10 +68,10 @@ public class FacturaServiceImplTest {
         when(condicionIVAqueNoDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.FALSE);
         when(empresa.getCondicionIVA()).thenReturn(condicionIVAqueDiscrimina);
         when(proveedor.getCondicionIVA()).thenReturn(condicionIVAqueNoDiscrimina);
-        String[] expResult = new String[2];
-        expResult[0] = "Factura C";
-        expResult[1] = "Factura X";
-        String[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
+        TipoDeComprobante[] expResult = new TipoDeComprobante[2];
+        expResult[0] = TipoDeComprobante.FACTURA_C;
+        expResult[1] = TipoDeComprobante.FACTURA_X;
+        TipoDeComprobante[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
 
@@ -85,11 +85,11 @@ public class FacturaServiceImplTest {
         when(condicionIVAqueNoDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.FALSE);
         when(empresa.getCondicionIVA()).thenReturn(condicionIVAqueNoDiscrimina);
         when(proveedor.getCondicionIVA()).thenReturn(condicionIVAqueDiscrimina);
-        String[] expResult = new String[2];
-        expResult[0] = "Factura B";
-        expResult[1] = "Factura X";
+        TipoDeComprobante[] expResult = new TipoDeComprobante[2];
+        expResult[0] = TipoDeComprobante.FACTURA_B;
+        expResult[1] = TipoDeComprobante.FACTURA_X;
         empresa.getCondicionIVA().isDiscriminaIVA();
-        String[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
+        TipoDeComprobante[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
 
@@ -101,11 +101,11 @@ public class FacturaServiceImplTest {
         when(condicionIVAqueNoDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.FALSE);
         when(empresa.getCondicionIVA()).thenReturn(condicionIVAqueNoDiscrimina);
         when(proveedor.getCondicionIVA()).thenReturn(condicionIVAqueNoDiscrimina);
-        String[] expResult = new String[2];
-        expResult[0] = "Factura C";
-        expResult[1] = "Factura X";
+        TipoDeComprobante[] expResult = new TipoDeComprobante[2];
+        expResult[0] = TipoDeComprobante.FACTURA_C;
+        expResult[1] = TipoDeComprobante.FACTURA_X;
         empresa.getCondicionIVA().isDiscriminaIVA();
-        String[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
+        TipoDeComprobante[] result = facturaService.getTipoFacturaCompra(empresa, proveedor);
         assertArrayEquals(expResult, result);
     }
 
@@ -117,8 +117,8 @@ public class FacturaServiceImplTest {
         when(condicionIVAqueDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.TRUE);
         when(empresa.getCondicionIVA()).thenReturn(condicionIVAqueDiscrimina);
         when(cliente.getCondicionIVA()).thenReturn(condicionIVAqueDiscrimina);
-        String[] expResult = {"Factura A", "Factura B", "Factura X", "Factura Y", "Pedido"};
-        String[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
+        TipoDeComprobante[] expResult = {TipoDeComprobante.FACTURA_A, TipoDeComprobante.FACTURA_B, TipoDeComprobante.FACTURA_X, TipoDeComprobante.FACTURA_Y, TipoDeComprobante.PEDIDO};
+        TipoDeComprobante[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
         assertArrayEquals(expResult, result);
     }
 
@@ -132,8 +132,8 @@ public class FacturaServiceImplTest {
         when(condicionIVAqueNoDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.FALSE);
         when(empresa.getCondicionIVA()).thenReturn(condicionIVAqueDiscrimina);
         when(cliente.getCondicionIVA()).thenReturn(condicionIVAqueNoDiscrimina);
-        String[] expResult = {"Factura B", "Factura X", "Factura Y", "Pedido"};
-        String[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
+        TipoDeComprobante[] expResult = {TipoDeComprobante.FACTURA_B, TipoDeComprobante.FACTURA_X, TipoDeComprobante.FACTURA_Y, TipoDeComprobante.PEDIDO};
+        TipoDeComprobante[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
         assertArrayEquals(expResult, result);
     }
 
@@ -147,8 +147,8 @@ public class FacturaServiceImplTest {
         when(condicionIVAqueNoDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.FALSE);
         when(empresa.getCondicionIVA()).thenReturn(condicionIVAqueNoDiscrimina);
         when(cliente.getCondicionIVA()).thenReturn(condicionIVAqueDiscrimina);
-        String[] expResult = {"Factura C", "Factura X", "Factura Y", "Pedido"};
-        String[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
+        TipoDeComprobante[] expResult = {TipoDeComprobante.FACTURA_C, TipoDeComprobante.FACTURA_X, TipoDeComprobante.FACTURA_Y, TipoDeComprobante.PEDIDO};
+        TipoDeComprobante[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
         assertArrayEquals(expResult, result);
     }
 
@@ -161,8 +161,8 @@ public class FacturaServiceImplTest {
         when(condicionIVAqueNoDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.FALSE);
         when(empresa.getCondicionIVA()).thenReturn(condicionIVAqueNoDiscrimina);
         when(cliente.getCondicionIVA()).thenReturn(condicionIVAqueNoDiscrimina);
-        String[] expResult = {"Factura C", "Factura X", "Factura Y", "Pedido"};
-        String[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
+        TipoDeComprobante[] expResult = {TipoDeComprobante.FACTURA_C, TipoDeComprobante.FACTURA_X, TipoDeComprobante.FACTURA_Y, TipoDeComprobante.PEDIDO};
+        TipoDeComprobante[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
         assertArrayEquals(expResult, result);
     }
 
@@ -172,8 +172,8 @@ public class FacturaServiceImplTest {
         CondicionIVA condicionIVAqueDiscrimina = Mockito.mock(CondicionIVA.class);
         when(condicionIVAqueDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.TRUE);
         when(empresa.getCondicionIVA()).thenReturn(condicionIVAqueDiscrimina);
-        char[] expResult = {'A', 'B', 'X', 'Y'};
-        char[] result = facturaService.getTiposFacturaSegunEmpresa(empresa);
+        TipoDeComprobante[] expResult = {TipoDeComprobante.FACTURA_A, TipoDeComprobante.FACTURA_B, TipoDeComprobante.FACTURA_X, TipoDeComprobante.FACTURA_Y};
+        TipoDeComprobante[] result = facturaService.getTiposFacturaSegunEmpresa(empresa);
         assertArrayEquals(expResult, result);
     }
 
@@ -183,15 +183,15 @@ public class FacturaServiceImplTest {
         CondicionIVA condicionIVAqueNoDiscrimina = Mockito.mock(CondicionIVA.class);
         when(condicionIVAqueNoDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.FALSE);
         when(empresa.getCondicionIVA()).thenReturn(condicionIVAqueNoDiscrimina);
-        char[] expResult = {'C', 'X', 'Y'};
-        char[] result = facturaService.getTiposFacturaSegunEmpresa(empresa);
+        TipoDeComprobante[] expResult = {TipoDeComprobante.FACTURA_C, TipoDeComprobante.FACTURA_X, TipoDeComprobante.FACTURA_Y};
+        TipoDeComprobante[] result = facturaService.getTiposFacturaSegunEmpresa(empresa);
         assertArrayEquals(expResult, result);
     }
 
     @Test
     public void shouldDividirFactura() {
-        when(facturaRepository.buscarMayorNumFacturaSegunTipo('X', 1L, new EmpresaBuilder().build().getId_Empresa())).thenReturn(1L);
-        when(facturaRepository.buscarMayorNumFacturaSegunTipo('A', 1L, new EmpresaBuilder().build().getId_Empresa())).thenReturn(1L);
+        when(facturaRepository.buscarMayorNumFacturaSegunTipo(TipoDeComprobante.FACTURA_X, 1L, new EmpresaBuilder().build().getId_Empresa())).thenReturn(1L);
+        when(facturaRepository.buscarMayorNumFacturaSegunTipo(TipoDeComprobante.FACTURA_A, 1L, new EmpresaBuilder().build().getId_Empresa())).thenReturn(1L);
         RenglonFactura renglon1 = Mockito.mock(RenglonFactura.class);
         RenglonFactura renglon2 = Mockito.mock(RenglonFactura.class);
         Producto producto = Mockito.mock(Producto.class);
@@ -221,7 +221,7 @@ public class FacturaServiceImplTest {
         Usuario usuario = new Usuario();
         usuario.setNombre("Marian Jhons  help");
         factura.setUsuario(usuario);
-        factura.setTipoFactura('A');
+        factura.setTipoComprobante(TipoDeComprobante.FACTURA_A);
         int[] indices = {0, 1};
         int cantidadDeFacturasEsperadas = 2;
         List<Factura> result = facturaService.dividirFactura(factura, indices);
@@ -306,7 +306,7 @@ public class FacturaServiceImplTest {
             ivaPorcentaje[i] = r.getIva_porcentaje();
             i++;
         }       
-        double resultadoObtenido = facturaService.calcularIva_neto("Factura A", 10.201, 25.09, importes, ivaPorcentaje, 21);
+        double resultadoObtenido = facturaService.calcularIva_neto(TipoDeComprobante.FACTURA_A, 10.201, 25.09, importes, ivaPorcentaje, 21);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -334,7 +334,7 @@ public class FacturaServiceImplTest {
             ivaPorcentaje[i] = r.getIva_porcentaje();
             i++;
         } 
-        double resultadoObtenido = facturaService.calcularIva_neto("Factura X", 10, 25, importes, ivaPorcentaje, 21);
+        double resultadoObtenido = facturaService.calcularIva_neto(TipoDeComprobante.FACTURA_X, 10, 25, importes, ivaPorcentaje, 21);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -362,7 +362,7 @@ public class FacturaServiceImplTest {
             indice++;
         }
         double resultadoEsperado = 3.3197328185647996;
-        double resultadoObtenido = facturaService.calcularImpInterno_neto("Factura A", 9.104, 22.008, importes, impuestoPorcentajes);
+        double resultadoObtenido = facturaService.calcularImpInterno_neto(TipoDeComprobante.FACTURA_A, 9.104, 22.008, importes, impuestoPorcentajes);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -495,7 +495,7 @@ public class FacturaServiceImplTest {
                             .withImpuestoInterno_neto(0.0)
                             .withIva_porcentaje(21).build();
         double resultadoEsperado = 121;
-        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, "Factura A", producto);
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, TipoDeComprobante.FACTURA_A, producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -507,7 +507,7 @@ public class FacturaServiceImplTest {
                             .withImpuestoInterno_neto(0.0)
                             .withIva_porcentaje(21).build(); 
         double resultadoEsperado = 121;
-        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, "Factura X", producto);
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, TipoDeComprobante.FACTURA_X, producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -519,7 +519,7 @@ public class FacturaServiceImplTest {
                             .withImpuestoInterno_neto(0.0)
                             .withIva_porcentaje(21).build(); 
         double resultadoEsperado = 100;
-        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, "Factura A", producto);
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, TipoDeComprobante.FACTURA_A, producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -531,7 +531,7 @@ public class FacturaServiceImplTest {
                             .withImpuestoInterno_neto(0.0)
                             .withIva_porcentaje(21).build(); 
         double resultadoEsperado = 100;
-        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, "Factura X", producto);
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, TipoDeComprobante.FACTURA_X, producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -543,7 +543,7 @@ public class FacturaServiceImplTest {
                             .withImpuestoInterno_neto(0.0)
                             .withIva_porcentaje(21).build(); 
         double resultadoEsperado = 121;
-        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, "Factura B", producto);
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, TipoDeComprobante.FACTURA_B, producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -555,7 +555,7 @@ public class FacturaServiceImplTest {
                             .withImpuestoInterno_neto(0.0)
                             .withIva_porcentaje(21).build();  
         double resultadoEsperado = 121;
-        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, "Factura C", producto);
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, TipoDeComprobante.FACTURA_C, producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -567,7 +567,7 @@ public class FacturaServiceImplTest {
                             .withImpuestoInterno_neto(0.0)
                             .withIva_porcentaje(21).build();
         double resultadoEsperado = 121;
-        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, "Factura Y", producto);
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.COMPRA, TipoDeComprobante.FACTURA_Y, producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -583,7 +583,7 @@ public class FacturaServiceImplTest {
                            .withIva_porcentaje(21)
                            .build();
         double resultadoEsperado = 242;
-        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, "Factura B", producto);
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, TipoDeComprobante.FACTURA_B, producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -599,7 +599,7 @@ public class FacturaServiceImplTest {
                            .withIva_porcentaje(21)
                            .build();  
         double resultadoEsperado = 242;
-        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, "Factura C", producto);
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, TipoDeComprobante.FACTURA_C, producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -615,7 +615,7 @@ public class FacturaServiceImplTest {
                            .withIva_porcentaje(21)
                            .build();  
         double resultadoEsperado = 221;
-        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, "Factura Y", producto);
+        double resultadoObtenido = facturaService.calcularPrecioUnitario(Movimiento.VENTA, TipoDeComprobante.FACTURA_Y, producto);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 }
