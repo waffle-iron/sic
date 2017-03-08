@@ -14,6 +14,6 @@ public interface RubroRepository extends PagingAndSortingRepository<Rubro, Long>
 
       Rubro findByNombreAndEmpresaAndEliminado(String nombre, Empresa empresa, boolean eliminado); 
 
-      List<Rubro> findAllByAndEmpresaAndEliminado(Empresa empresa, boolean eliminado);
+      List<Rubro> findAllByAndEmpresaAndEliminadoOrderByNombreAsc(Empresa empresa, boolean eliminado);
     
 }

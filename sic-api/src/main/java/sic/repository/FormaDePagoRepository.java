@@ -16,6 +16,6 @@ public interface FormaDePagoRepository extends PagingAndSortingRepository<FormaD
 
       FormaDePago findByAndEmpresaAndPredeterminadoAndEliminada(Empresa empresa, boolean predeterminado, boolean eliminada);
 
-      List<FormaDePago> findAllByAndEmpresaAndEliminada(Empresa empresa, boolean eliminada);
+      List<FormaDePago> findAllByAndEmpresaAndEliminadaOrderByNombreAsc(Empresa empresa, boolean eliminada);
   
 }

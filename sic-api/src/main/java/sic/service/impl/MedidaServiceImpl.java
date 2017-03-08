@@ -38,7 +38,7 @@ public class MedidaServiceImpl implements IMedidaService {
     
     @Override
     public List<Medida> getUnidadMedidas(Empresa empresa) {
-        return medidaRepository.findAllByAndEmpresaAndEliminada(empresa, false);
+        return medidaRepository.findAllByAndEmpresaAndEliminadaOrderByNombreAsc(empresa, false);
     }
 
     @Override

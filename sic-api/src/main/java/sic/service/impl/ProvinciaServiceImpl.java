@@ -38,7 +38,7 @@ public class ProvinciaServiceImpl implements IProvinciaService {
 
     @Override
     public List<Provincia> getProvinciasDelPais(Pais pais) {
-        return provinciaRepository.findAllByAndPaisAndEliminada(pais, false);
+        return provinciaRepository.findAllByAndPaisAndEliminadaOrderByNombreAsc(pais, false);
     }
 
     @Override
