@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import java.util.ResourceBundle;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import sic.controller.UnauthorizedException;
@@ -17,11 +18,8 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
     @Value("${SIC_JWT_KEY}")
     private String secretkey;
     
-    private final IUsuarioService usuarioService;
-
-    JwtInterceptor(IUsuarioService usuarioService) {
-        this.usuarioService = usuarioService;
-    }
+    @Autowired
+    private IUsuarioService usuarioService;
     
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -38,8 +36,7 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         } else if (!token.equalsIgnoreCase(usuario.getToken())) {
             throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_error_token_invalido"));
-        }
-        
+        }        
         try {
             Claims claims = Jwts.parser()
                                 .setSigningKey(secretkey)
