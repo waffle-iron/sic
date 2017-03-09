@@ -7,7 +7,7 @@ public class UsuarioBuilder {
     private long id_Usuario = 0L;
     private String nombre = "Daenerys Targaryen";
     private String password = "LaQueNoArde";
-    private String token = "moreInformation";
+    private String token = "yJhbGci1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJjZWNpbGlvIn0.MCfaorSC7Wdc8rSW7BJizasfzsm";
     private boolean permisosAdministrador = true;
     private boolean eliminado = false;
     

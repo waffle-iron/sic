@@ -1,5 +1,7 @@
 package sic.controller;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Calendar;
@@ -10,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +35,7 @@ public class AuthController {
         this.usuarioService = usuarioService;
     }
     
-    private String generarToken() {
+    private String generarToken(long idUsuario) {
         //24hs desde la fecha actual para expiration
         Date today = new Date();
         Calendar c = Calendar.getInstance();
@@ -43,6 +46,7 @@ public class AuthController {
                    .setIssuedAt(today)
                    .setExpiration(tomorrow)
                    .signWith(SignatureAlgorithm.HS512, secretkey)
+                   .claim("idUsuario", idUsuario)
                    .compact();
     }
     
@@ -56,13 +60,13 @@ public class AuthController {
             throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_logInInvalido"), ex);
         }
-        String token = this.generarToken();
+        String token = this.generarToken(usuario.getId_Usuario());
         usuario.setToken(token);
-        usuarioService.actualizarSinEncriptar(usuario);
+        usuarioService.actualizar(usuario);
         return token;
     }
     
-    @PostMapping("/logout")
+    @PutMapping("/logout")
     public void logout(HttpServletRequest request) {
         final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -70,9 +74,21 @@ public class AuthController {
                     .getString("mensaje_error_token_vacio_invalido"));
         }
         final String token = authHeader.substring(7); // The part after "Bearer "
-        Usuario usuario = usuarioService.getUsuarioPorToken(token);
+        Claims claims;
+        try {
+            claims = Jwts.parser()
+                                .setSigningKey(secretkey)
+                                .parseClaimsJws(token)
+                                .getBody();
+            request.setAttribute("claims", claims);
+        } catch (JwtException ex) {
+            throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_error_token_vacio_invalido"), ex);
+        }
+        long idUsuario = (int) claims.get("idUsuario");
+        Usuario usuario = usuarioService.getUsuarioPorId(idUsuario);
         usuario.setToken("");
-        usuarioService.actualizarSinEncriptar(usuario);
+        usuarioService.actualizar(usuario);
     }    
     
 }

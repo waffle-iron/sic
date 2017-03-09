@@ -29,16 +29,9 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                     .getString("mensaje_error_token_vacio_invalido"));
         }
         final String token = authHeader.substring(7); // The part after "Bearer "
-        Usuario usuario = usuarioService.getUsuarioPorToken(token);
-        if (null == usuario || null == token) {
-            throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_error_token_vacio_invalido"));
-        } else if (!token.equalsIgnoreCase(usuario.getToken())) {
-            throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_error_token_invalido"));
-        }        
+        Claims claims;
         try {
-            Claims claims = Jwts.parser()
+            claims = Jwts.parser()
                                 .setSigningKey(secretkey)
                                 .parseClaimsJws(token)
                                 .getBody();
@@ -47,6 +40,16 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
             throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_error_token_vacio_invalido"), ex);
         }
+        
+        long idUsuario = (int) claims.get("idUsuario");
+        Usuario usuario = usuarioService.getUsuarioPorId(idUsuario);
+        if (null == usuario || null == token) {
+            throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_error_token_vacio_invalido"));
+        } else if (!token.equalsIgnoreCase(usuario.getToken())) {
+            throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_error_token_invalido"));
+        }                
         return true;
     }
 }
