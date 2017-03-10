@@ -318,6 +318,7 @@ public class PrincipalGUI extends JFrame {
                 ResourceBundle.getBundle("Mensajes").getString("mensaje_confirmacion_salir_sistema"),
                 ResourceBundle.getBundle("Mensajes").getString("mensaje_salir"), JOptionPane.YES_NO_OPTION);
         if (respuesta == JOptionPane.YES_OPTION) {
+            RestClient.getRestTemplate().put("/logout", null);
             System.exit(0);
         }
     }//GEN-LAST:event_formWindowClosing
@@ -332,6 +333,7 @@ public class PrincipalGUI extends JFrame {
     }//GEN-LAST:event_mnuItm_EmpresasActionPerformed
 
     private void mnuItm_CambiarUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_CambiarUserActionPerformed
+        RestClient.getRestTemplate().put("/logout", null);
         UsuarioActivo.getInstance().setToken("");
         UsuarioActivo.getInstance().setUsuario(null);
         this.dispose();
