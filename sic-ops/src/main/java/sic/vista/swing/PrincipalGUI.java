@@ -318,7 +318,17 @@ public class PrincipalGUI extends JFrame {
                 ResourceBundle.getBundle("Mensajes").getString("mensaje_confirmacion_salir_sistema"),
                 ResourceBundle.getBundle("Mensajes").getString("mensaje_salir"), JOptionPane.YES_NO_OPTION);
         if (respuesta == JOptionPane.YES_OPTION) {
+            try {
             RestClient.getRestTemplate().put("/logout", null);
+            this.dispose();
+            } catch (RestClientResponseException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ResourceAccessException ex) {
+                LOGGER.error(ex.getMessage());
+                JOptionPane.showMessageDialog(this,
+                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
             System.exit(0);
         }
     }//GEN-LAST:event_formWindowClosing
@@ -333,9 +343,19 @@ public class PrincipalGUI extends JFrame {
     }//GEN-LAST:event_mnuItm_EmpresasActionPerformed
 
     private void mnuItm_CambiarUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_CambiarUserActionPerformed
-        RestClient.getRestTemplate().put("/logout", null);
         UsuarioActivo.getInstance().setToken("");
         UsuarioActivo.getInstance().setUsuario(null);
+        try {
+            RestClient.getRestTemplate().put("/logout", null);
+            this.dispose();
+        } catch (RestClientResponseException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ResourceAccessException ex) {
+            LOGGER.error(ex.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
         this.dispose();
         new LoginGUI().setVisible(true);
     }//GEN-LAST:event_mnuItm_CambiarUserActionPerformed
