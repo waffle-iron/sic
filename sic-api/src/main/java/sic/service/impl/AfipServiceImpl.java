@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sic.modelo.AfipWSAACredencial;
+import sic.modelo.Empresa;
 import sic.modelo.FacturaVenta;
 import sic.service.BusinessServiceException;
 import sic.service.IConfiguracionDelSistemaService;
@@ -39,11 +40,11 @@ public class AfipServiceImpl implements IAfipService {
     }
 
     @Override
-    public AfipWSAACredencial getAfipWSAACredencial(String afipNombreServicio) {
+    public AfipWSAACredencial getAfipWSAACredencial(String afipNombreServicio, Empresa empresa) {
         AfipWSAACredencial afipCred = new AfipWSAACredencial();
-        String p12file = configuracionDelSistemaService.getConfiguracionDelSistemaPorId(1).getPathCertificadoAfip();
-        String p12signer = configuracionDelSistemaService.getConfiguracionDelSistemaPorId(1).getFirmanteCertificadoAfip();
-        String p12pass = configuracionDelSistemaService.getConfiguracionDelSistemaPorId(1).getPasswordCertificadoAfip();
+        String p12file = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(empresa).getPathCertificadoAfip();
+        String p12signer = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(empresa).getFirmanteCertificadoAfip();
+        String p12pass = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(empresa).getPasswordCertificadoAfip();
         Long ticketTime = 3600000L; //siempre devuelve por 12hs
         byte[] loginTicketRequest_xml_cms = afipWebServiceSOAPClient.crearCMS(p12file, p12pass, p12signer, afipNombreServicio, ticketTime);
         LoginCms loginCms = new LoginCms();
@@ -63,7 +64,7 @@ public class AfipServiceImpl implements IAfipService {
 
     @Override
     public void autorizarFacturaVenta(FacturaVenta factura) {
-        AfipWSAACredencial afipCredencial = this.getAfipWSAACredencial("wsfe");        
+        AfipWSAACredencial afipCredencial = this.getAfipWSAACredencial("wsfe", factura.getEmpresa());        
         FEAuthRequest feAuthRequest = new FEAuthRequest();
         feAuthRequest.setCuit(factura.getEmpresa().getCuip());
         feAuthRequest.setSign(afipCredencial.getSign());

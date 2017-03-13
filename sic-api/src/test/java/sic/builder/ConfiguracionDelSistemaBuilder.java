@@ -9,9 +9,9 @@ public class ConfiguracionDelSistemaBuilder {
     private boolean usarFacturaVentaPreImpresa = true;
     private int cantidadMaximaDeRenglonesEnFactura = 28;
     private boolean facturaElectronicaHabilitada = false;    
-    private String pathCertificadoAfip = "";    
-    private String firmanteCertificadoAfip = "";    
-    private String passwordCertificadoAfip = "";
+    private String pathCertificadoAfip = "certs/MiEmpresaTesting.p12";
+    private String firmanteCertificadoAfip = "test";
+    private String passwordCertificadoAfip = "test123";
     private Empresa empresa = new EmpresaBuilder().build();
 
     public ConfiguracionDelSistema build() {
