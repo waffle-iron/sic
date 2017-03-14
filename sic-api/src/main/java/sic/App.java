@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @EnableScheduling
 public class App extends WebMvcConfigurerAdapter {
     
-    @Bean
+    @Bean    
     public JwtInterceptor jwtInterceptor() {
         return new JwtInterceptor();
     }
