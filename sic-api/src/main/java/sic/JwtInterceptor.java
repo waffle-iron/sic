@@ -32,15 +32,14 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         Claims claims;
         try {
             claims = Jwts.parser()
-                                .setSigningKey(secretkey)
-                                .parseClaimsJws(token)
-                                .getBody();
+                         .setSigningKey(secretkey)
+                         .parseClaimsJws(token)
+                         .getBody();
             request.setAttribute("claims", claims);
         } catch (JwtException ex) {
             throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_error_token_vacio_invalido"), ex);
-        }
-        
+        }        
         long idUsuario = (int) claims.get("idUsuario");
         Usuario usuario = usuarioService.getUsuarioPorId(idUsuario);
         if (null == usuario || null == token) {

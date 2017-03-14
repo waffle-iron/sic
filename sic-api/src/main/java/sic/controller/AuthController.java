@@ -77,9 +77,9 @@ public class AuthController {
         Claims claims;
         try {
             claims = Jwts.parser()
-                                .setSigningKey(secretkey)
-                                .parseClaimsJws(token)
-                                .getBody();
+                         .setSigningKey(secretkey)
+                         .parseClaimsJws(token)
+                         .getBody();
             request.setAttribute("claims", claims);
         } catch (JwtException ex) {
             throw new UnauthorizedException(ResourceBundle.getBundle("Mensajes")
@@ -89,6 +89,6 @@ public class AuthController {
         Usuario usuario = usuarioService.getUsuarioPorId(idUsuario);
         usuario.setToken("");
         usuarioService.actualizar(usuario);
-    }    
+    }
     
 }
