@@ -342,8 +342,6 @@ public class PrincipalGUI extends JFrame {
     }//GEN-LAST:event_mnuItm_EmpresasActionPerformed
 
     private void mnuItm_CambiarUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuItm_CambiarUserActionPerformed
-        UsuarioActivo.getInstance().setToken("");
-        UsuarioActivo.getInstance().setUsuario(null);
         try {
             RestClient.getRestTemplate().put("/logout", null);
             this.dispose();
@@ -355,6 +353,8 @@ public class PrincipalGUI extends JFrame {
                     ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+        UsuarioActivo.getInstance().setToken("");
+        UsuarioActivo.getInstance().setUsuario(null);
         this.dispose();
         new LoginGUI().setVisible(true);
     }//GEN-LAST:event_mnuItm_CambiarUserActionPerformed
