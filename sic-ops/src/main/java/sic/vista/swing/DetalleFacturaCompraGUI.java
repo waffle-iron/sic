@@ -24,6 +24,7 @@ import sic.modelo.Movimiento;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
+import sic.modelo.TipoDeComprobante;
 import sic.modelo.Transportista;
 import sic.util.RenderTabla;
 
@@ -32,7 +33,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
     private ModeloTabla modeloTablaRenglones = new ModeloTabla();
     private List<RenglonFactura> renglones = new ArrayList<>();
     private final FacturaCompra facturaParaMostrar;
-    private String tipoDeFactura;
+    private TipoDeComprobante tipoDeComprobante;
     private final boolean operacionAlta;
     private final HotKeysHandler keyHandler = new HotKeysHandler();
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
@@ -185,7 +186,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
         FacturaCompra facturaCompra = new FacturaCompra();
 //        facturaCompra.setId_Factura(0);
         facturaCompra.setFecha(dc_FechaFactura.getDate());
-        facturaCompra.setTipoFactura(tipoDeFactura.charAt(tipoDeFactura.length() - 1));
+        facturaCompra.setTipoComprobante(tipoDeComprobante);
         facturaCompra.setNumSerie(Long.parseLong(txt_SerieFactura.getValue().toString()));
         facturaCompra.setNumFactura(Long.parseLong(txt_NumeroFactura.getValue().toString()));
         facturaCompra.setFechaVencimiento(dc_FechaVencimiento.getDate());
@@ -301,7 +302,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
             
             //IVA 10,5% neto
             iva105_neto = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?" 
-                    + "tipoFactura=" + tipoDeFactura
+                    + "tipoDeComprobante=" + tipoDeComprobante
                     + "&descuentoPorcentaje=" + descuento_porcentaje
                     + "&recargoPorcentaje=0"
                     + "&ivaPorcentaje=10.5"
@@ -312,7 +313,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
 
             //IVA 21% neto
             iva21_neto = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?" 
-                    + "tipoFactura=" + tipoDeFactura
+                    + "tipoDeComprobante=" + tipoDeComprobante
                     + "&descuentoPorcentaje=" + descuento_porcentaje
                     + "&recargoPorcentaje=0"
                     + "&ivaPorcentaje=21.0"
@@ -323,7 +324,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
 
             //imp. Interno
             impInterno_neto = RestClient.getRestTemplate().getForObject("/facturas/impuesto-interno-neto?"
-                    + "tipoFactura=" + tipoDeFactura
+                    + "tipoDeComprobante=" + tipoDeComprobante
                     + "&descuentoPorcentaje=" + descuento_porcentaje
                     + "&recargoPorcentaje=0"
                     + "&importe=" + Arrays.toString(importe).substring(1, Arrays.toString(importe).length() - 1)
@@ -448,11 +449,11 @@ public class DetalleFacturaCompraGUI extends JDialog {
 
     private void cargarTiposDeFacturaDisponibles() {
         try {
-            String[] tiposFactura = RestClient.getRestTemplate()
+            TipoDeComprobante[] tiposFactura = RestClient.getRestTemplate()
                     .getForObject("/facturas/compra/tipos/empresas/"
                     + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
                     + "/proveedores/" + ((Proveedor) cmb_Proveedor.getSelectedItem()).getId_Proveedor(),
-                    String[].class);
+                    TipoDeComprobante[].class);
             cmb_TipoFactura.removeAllItems();
             for (int i = 0; tiposFactura.length > i; i++) {
                 cmb_TipoFactura.addItem(tiposFactura[i]);
@@ -479,7 +480,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
                         Producto.class);
                 RenglonFactura nuevoRenglon = RestClient.getRestTemplate().getForObject("/facturas/renglon?"
                         + "idProducto=" + producto.getId_Producto()
-                        + "&tipoComprobante=" + tipoDeFactura
+                        + "&tipoDeComprobante=" + tipoDeComprobante
                         + "&movimiento=COMPRA"
                         + "&cantidad=" + renglon.getCantidad()
                         + "&descuentoPorcentaje=" + renglon.getDescuento_porcentaje(),                        
@@ -1080,7 +1081,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
     private void btn_BuscarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarProductoActionPerformed
         BuscarProductosGUI gui_buscarProducto = new BuscarProductosGUI(
                 this, true, renglones, 
-                cmb_TipoFactura.getSelectedItem().toString(),
+                (TipoDeComprobante)cmb_TipoFactura.getSelectedItem(),
                 Movimiento.COMPRA);
         gui_buscarProducto.setVisible(true);
         this.cargarRenglonFactura(gui_buscarProducto);
@@ -1120,7 +1121,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
     private void cmb_TipoFacturaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_TipoFacturaItemStateChanged
         //para evitar que pase null cuando esta recargando el comboBox
         if (cmb_TipoFactura.getSelectedItem() != null) {
-            tipoDeFactura = cmb_TipoFactura.getSelectedItem().toString();
+            tipoDeComprobante = (TipoDeComprobante)cmb_TipoFactura.getSelectedItem();
             this.recargarRenglonesSegunTipoDeFactura();
         }
     }//GEN-LAST:event_cmb_TipoFacturaItemStateChanged

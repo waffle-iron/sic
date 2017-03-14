@@ -33,7 +33,7 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         }
         //Tipo de Factura
         if (criteria.isBuscaPorTipoComprobante() == true) {
-            query += " AND f.tipoComprobante = \"" + criteria.getTipoComprobante() + "\"";
+            query += " AND f.tipoComprobante = " + criteria.getTipoComprobante();
         }
         //Usuario
         if (criteria.isBuscaUsuario() == true) {
@@ -115,13 +115,13 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         }
         //Tipo de Factura
         if (criteria.isBuscaPorTipoComprobante() == true) {
-            query += " AND f.tipoFactura = " + criteria.getTipoComprobante();
+            query += " AND f.tipoComprobante = " + criteria.getTipoComprobante();
         }
         for (int i = 0; i < tipoComprobante.length; i++) {
             if (i == 0) {
-                query += " AND ( f.tipoFactura = \"" + tipoComprobante[i] + "\"";
+                query += " AND ( f.tipoComprobante = \'" + tipoComprobante[i] + "\'";
             } else {
-                query += " OR f.tipoFactura = \"" + tipoComprobante[i] + "\"";
+                query += " OR f.tipoComprobante = \'" + tipoComprobante[i] + "\'";
             }
         }
         query += " )";
@@ -171,9 +171,9 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         }
         for (int i = 0; i < tipoComprobante.length; i++) {
             if (i == 0) {
-                query += " AND ( f.tipoComprobante = \"" + tipoComprobante[i] + "\"";  
+                query += " AND ( f.tipoComprobante = " + tipoComprobante[i] ;  
             } else {
-                query += " OR f.tipoComprobante = \"" + tipoComprobante[i] + "\"";
+                query += " OR f.tipoComprobante = " + tipoComprobante[i] ;
             }
         }
         query += " )";
@@ -214,7 +214,7 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         }
         //Tipo de Factura
         if (criteria.isBuscaPorTipoComprobante() == true) {
-            query += " AND f.tipoComprobante = \"" + criteria.getTipoComprobante() + "\"";
+            query += " AND f.tipoComprobante = " + criteria.getTipoComprobante() ;
         }
         //Usuario
         if (criteria.isBuscaUsuario() == true) {
@@ -260,7 +260,7 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         }
         //Tipo de Factura
         if (criteria.isBuscaPorTipoComprobante()== true) {
-            query += " AND f.tipoComprobante = \"" + criteria.getTipoComprobante() + "\"";
+            query += " AND f.tipoComprobante = " + criteria.getTipoComprobante() ;
         }
         //Usuario
         if (criteria.isBuscaUsuario() == true) {

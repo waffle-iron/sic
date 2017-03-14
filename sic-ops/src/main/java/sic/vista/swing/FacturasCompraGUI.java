@@ -20,6 +20,7 @@ import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.Movimiento;
 import sic.modelo.Proveedor;
+import sic.modelo.TipoDeOperacion;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -60,7 +61,7 @@ public class FacturasCompraGUI extends JInternalFrame {
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaFacturas.getColumnCount()];
         tipos[0] = Date.class;
-        tipos[1] = String.class;
+        tipos[1] = TipoDeOperacion.class;
         tipos[2] = String.class;
         tipos[3] = Date.class;
         tipos[4] = String.class;
@@ -215,7 +216,7 @@ public class FacturasCompraGUI extends JInternalFrame {
         facturas.stream().map((factura) -> {
             Object[] fila = new Object[15];
             fila[0] = factura.getFecha();
-            fila[1] = String.valueOf(factura.getTipoFactura());
+            fila[1] = factura.getTipoComprobante();
             fila[2] = factura.getNumSerie() + " - " + factura.getNumFactura();
             fila[3] = factura.getFechaVencimiento();
             fila[4] = factura.getProveedor().getRazonSocial();

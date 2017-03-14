@@ -171,7 +171,7 @@ public class CajaGUI extends JInternalFrame {
                     tipoFactura = "Venta";
                 }
                 fila[0] = "Pago por: Factura " + tipoFactura
-                        + " \"" + ((Pago) movimiento).getFactura().getTipoFactura() + "\""
+                        + " \"" + ((Pago) movimiento).getFactura().getTipoComprobante().showPrettyFormat() + "\""
                         + " Nº " + ((Pago) movimiento).getFactura().getNumSerie()
                         + " - " + ((Pago) movimiento).getFactura().getNumFactura();
             }

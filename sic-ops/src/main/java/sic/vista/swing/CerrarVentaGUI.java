@@ -27,9 +27,9 @@ import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Pago;
 import sic.modelo.RenglonFactura;
+import sic.modelo.TipoDeComprobante;
 import sic.modelo.Transportista;
 import sic.modelo.UsuarioActivo;
-import sic.util.Utilidades;
 
 public class CerrarVentaGUI extends JDialog {
 
@@ -565,9 +565,9 @@ public class CerrarVentaGUI extends JDialog {
         txt_MontoPago1.setValue(gui_puntoDeVenta.getTotal());
         indicesParaDividir = new int[gui_puntoDeVenta.getModeloTabla().getRowCount()];
         if ((indicesParaDividir.length > 0) 
-                && (gui_puntoDeVenta.getTipoDeComprobante().equals("Factura A")
-                || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura B")
-                || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura C"))) {            
+                && (gui_puntoDeVenta.getTipoDeComprobante().equals(TipoDeComprobante.FACTURA_A)
+                || gui_puntoDeVenta.getTipoDeComprobante().equals(TipoDeComprobante.FACTURA_B)
+                || gui_puntoDeVenta.getTipoDeComprobante().equals(TipoDeComprobante.FACTURA_C))) {            
             int j = 0;
             boolean tieneRenglonesMarcados = false;
             for (int i = 0; i < gui_puntoDeVenta.getModeloTabla().getRowCount(); i++) {

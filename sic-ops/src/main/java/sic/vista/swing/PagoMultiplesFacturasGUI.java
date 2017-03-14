@@ -25,6 +25,7 @@ import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Movimiento;
+import sic.modelo.TipoDeComprobante;
 import sic.util.RenderTabla;
 
 public class PagoMultiplesFacturasGUI extends JDialog {
@@ -61,7 +62,7 @@ public class PagoMultiplesFacturasGUI extends JDialog {
         tbl_InformacionFacturas.setModel(modeloTablaFacturas);
         Class[] tipos = new Class[modeloTablaFacturas.getColumnCount()];
         tipos[0] = Date.class;
-        tipos[1] = String.class;
+        tipos[1] = TipoDeComprobante.class;
         tipos[2] = String.class;
         tipos[3] = Double.class;
         tipos[4] = Double.class;
@@ -81,7 +82,7 @@ public class PagoMultiplesFacturasGUI extends JDialog {
             facturas.stream().forEach((factura) -> {
                 Object[] fila = new Object[5];
                 fila[0] = factura.getFecha();
-                fila[1] = String.valueOf(factura.getTipoFactura());
+                fila[1] = factura.getTipoComprobante();
                 fila[2] = factura.getNumSerie() + " - " + factura.getNumFactura();
                 fila[3] = factura.getTotal();        
                 double saldoAPagar = RestClient.getRestTemplate()

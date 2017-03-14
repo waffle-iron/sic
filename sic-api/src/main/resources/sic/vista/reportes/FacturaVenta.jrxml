@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-02-28T18:39:18 -->
+<!-- 2017-03-13T21:08:51 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="FacturaVenta" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e47a212f-3954-4de9-aca2-5bd71a6098c5">
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
@@ -138,7 +138,7 @@
 					<printWhenExpression><![CDATA[!$P{preImpresa}]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression><![CDATA[$P{facturaVenta}.getTipoFactura() == 'X' ? "I.V.A. no incluido" : ""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{facturaVenta}.getTipoComprobante().toString().equals("FACTURA_X") ? "I.V.A. no incluido" : ""]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="0" y="160" width="279" height="15" uuid="0ac9e3dd-2252-49da-8d4a-ae5da578c748">
@@ -207,7 +207,9 @@
 				<textElement textAlignment="Center" rotation="None">
 					<font size="22" isBold="true" isStrikeThrough="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{facturaVenta}.getTipoFactura() == 'Y' ? "X" : $P{facturaVenta}.getTipoFactura()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{facturaVenta}.getTipoComprobante().toString() .equals("FACTURA_Y") ? "X" : $P{facturaVenta}.getTipoComprobante().toString().equals("FACTURA_A")? "A" : $P{facturaVenta}.getTipoComprobante().toString().equals("FACTURA_B")? "B" :
+$P{facturaVenta}.getTipoComprobante().toString().equals("FACTURA_C")? "C":
+$P{facturaVenta}.getTipoComprobante().toString().equals("FACTURA_X")? "X" : "?"]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

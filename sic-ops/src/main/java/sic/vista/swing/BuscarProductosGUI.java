@@ -22,12 +22,13 @@ import sic.modelo.EmpresaActiva;
 import sic.modelo.Movimiento;
 import sic.modelo.Producto;
 import sic.modelo.RenglonFactura;
+import sic.modelo.TipoDeComprobante;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
 public class BuscarProductosGUI extends JDialog {
 
-    private final String tipoComprobante;
+    private final TipoDeComprobante tipoComprobante;
     private ModeloTabla modeloTablaResultados = new ModeloTabla();
     private List<Producto> productos;
     private final List<RenglonFactura> renglonesFactura;
@@ -40,14 +41,14 @@ public class BuscarProductosGUI extends JDialog {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     
     public BuscarProductosGUI(JDialog parent, boolean modal, List<RenglonFactura> renglones,
-            String tipoComprobante, Movimiento movimiento) {
+            TipoDeComprobante tipoDeComprobante, Movimiento movimiento) {
         
         this.setModal(modal);
         this.initComponents();
         this.setIcon();
         renglonesFactura = renglones;
         tipoMovimiento = movimiento;
-        this.tipoComprobante = tipoComprobante;
+        this.tipoComprobante = tipoDeComprobante;
         this.setSize(parent.getWidth() - 100, parent.getHeight() - 200);
         this.setLocationRelativeTo(parent);
         this.setColumnas();
@@ -131,7 +132,7 @@ public class BuscarProductosGUI extends JDialog {
             try {
                 renglon = RestClient.getRestTemplate().getForObject("/facturas/renglon?"
                         + "idProducto=" + prodSeleccionado.getId_Producto()
-                        + "&tipoComprobante=" + this.tipoComprobante
+                        + "&tipoDeComprobante=" + this.tipoComprobante
                         + "&movimiento=" + tipoMovimiento
                         + "&cantidad=" + txt_Cantidad.getValue().toString()
                         + "&descuentoPorcentaje=" + txt_PorcentajeDescuento.getValue().toString(),
