@@ -1,5 +1,6 @@
 package sic.vista.swing;
 
+import java.awt.event.KeyEvent;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -64,9 +65,11 @@ public class AgregarGastoGUI extends JDialog {
             }
         });
 
-        lbl_FormaDePago.setText("Forma de Pago:");
+        lbl_FormaDePago.setForeground(java.awt.Color.red);
+        lbl_FormaDePago.setText("*Forma de Pago:");
 
-        lbl_Concepto.setText("Concepto:");
+        lbl_Concepto.setForeground(java.awt.Color.red);
+        lbl_Concepto.setText("*Concepto:");
 
         lbl_Monto.setText("Monto:");
 
@@ -75,6 +78,11 @@ public class AgregarGastoGUI extends JDialog {
         ftxt_Monto.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 ftxt_MontoFocusGained(evt);
+            }
+        });
+        ftxt_Monto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                ftxt_MontoKeyTyped(evt);
             }
         });
 
@@ -179,8 +187,9 @@ public class AgregarGastoGUI extends JDialog {
         if (ftxt_Concepto.getText() == null) {
             ftxt_Concepto.setText("");
         }
+        Gasto gasto = null;
         try {
-            RestClient.getRestTemplate().postForObject("/gastos", this.construirGasto(ftxt_Concepto.getText(),
+            gasto = RestClient.getRestTemplate().postForObject("/gastos", this.construirGasto(ftxt_Concepto.getText(),
                     Double.parseDouble(ftxt_Monto.getValue().toString()),
                     (FormaDePago) cmb_FormaDePago.getSelectedItem()), Gasto.class);
         } catch (RestClientResponseException ex) {
@@ -191,7 +200,9 @@ public class AgregarGastoGUI extends JDialog {
                     ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
-        this.dispose();
+        if (gasto != null) {
+            this.dispose();
+        }
     }//GEN-LAST:event_lbl_AceptarActionPerformed
 
     private void ftxt_MontoFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_ftxt_MontoFocusGained
@@ -199,6 +210,12 @@ public class AgregarGastoGUI extends JDialog {
             ftxt_Monto.selectAll();
         });
     }//GEN-LAST:event_ftxt_MontoFocusGained
+
+    private void ftxt_MontoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ftxt_MontoKeyTyped
+        if (evt.getKeyChar() == KeyEvent.VK_MINUS) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_ftxt_MontoKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<FormaDePago> cmb_FormaDePago;

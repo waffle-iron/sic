@@ -73,6 +73,14 @@ public class GastoServiceImpl implements IGastoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_gasto_usuario_vacio"));
         }
+        if (gasto.getMonto() <= 0) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_gasto_negativo_cero"));
+        }
+        if (gasto.getConcepto().isEmpty() || gasto.getConcepto() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_gasto_concepto_vacio"));
+        }
         //Duplicados
         if (gastoRepository.findOne(gasto.getId_Gasto()) != null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
