@@ -485,8 +485,8 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="txt_Recargo_neto" alignment="0" max="32767" attributes="0"/>
-                          <Component id="txt_Recargo_porcentaje" alignment="0" max="32767" attributes="1"/>
+                          <Component id="txt_Decuento_neto" alignment="0" max="32767" attributes="0"/>
+                          <Component id="txt_Decuento_porcentaje" alignment="0" max="32767" attributes="1"/>
                           <Component id="lbl_DescuentoRecargo" alignment="0" pref="100" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -557,11 +557,11 @@
                               </Group>
                           </Group>
                           <Group type="102" attributes="0">
-                              <Component id="txt_Recargo_porcentaje" linkSize="7" min="-2" max="-2" attributes="0"/>
+                              <Component id="txt_Decuento_porcentaje" linkSize="7" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
                                   <Component id="txt_Subtotal" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txt_Recargo_neto" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txt_Decuento_neto" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Component id="txt_Total" max="32767" attributes="0"/>
@@ -640,7 +640,7 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JFormattedTextField" name="txt_Recargo_porcentaje">
+            <Component class="javax.swing.JFormattedTextField" name="txt_Decuento_porcentaje">
               <Properties>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="25" green="9c" red="1d" type="rgb"/>
@@ -655,13 +655,13 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_Recargo_porcentajeFocusGained"/>
-                <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_Recargo_porcentajeFocusLost"/>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_Recargo_porcentajeActionPerformed"/>
-                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_Recargo_porcentajeKeyTyped"/>
+                <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_Decuento_porcentajeFocusGained"/>
+                <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_Decuento_porcentajeFocusLost"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txt_Decuento_porcentajeActionPerformed"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txt_Decuento_porcentajeKeyTyped"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JFormattedTextField" name="txt_Recargo_neto">
+            <Component class="javax.swing.JFormattedTextField" name="txt_Decuento_neto">
               <Properties>
                 <Property name="editable" type="boolean" value="false"/>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -681,7 +681,7 @@
             <Component class="javax.swing.JLabel" name="lbl_DescuentoRecargo">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="2"/>
-                <Property name="text" type="java.lang.String" value="Recargo (%)"/>
+                <Property name="text" type="java.lang.String" value="Descuento(%)"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JFormattedTextField" name="txt_ImpInterno_neto">

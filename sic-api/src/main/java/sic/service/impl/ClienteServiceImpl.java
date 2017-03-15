@@ -114,23 +114,23 @@ public class ClienteServiceImpl implements IClienteService {
     }
     
     private BooleanBuilder buildPredicadoDescripcion(String stringRazonSocial, QCliente qcliente, boolean razonSocial, boolean nombreFantasia, boolean idFiscal) {
-        String[] terminos = stringRazonSocial.split(" ");
+//        String[] terminos = stringRazonSocial.split(" ");
         BooleanBuilder descripcionProducto = new BooleanBuilder();
         if (razonSocial && nombreFantasia && idFiscal) {
-            for (String termino : terminos) {
-                descripcionProducto.or(qcliente.razonSocial.containsIgnoreCase(termino)
-                        .or(qcliente.nombreFantasia.containsIgnoreCase(termino))
-                        .or(qcliente.idFiscal.containsIgnoreCase(termino)));
-            }
+//            for (String termino : terminos) {
+                descripcionProducto.or(qcliente.razonSocial.containsIgnoreCase(stringRazonSocial)
+                        .or(qcliente.nombreFantasia.containsIgnoreCase(stringRazonSocial))
+                        .or(qcliente.idFiscal.containsIgnoreCase(stringRazonSocial)));
+//            }
         } else if (razonSocial && nombreFantasia) {
-            for (String termino : terminos) {
-                descripcionProducto.or(qcliente.razonSocial.containsIgnoreCase(termino)
-                        .or(qcliente.nombreFantasia.containsIgnoreCase(termino)));
-            }
+//            for (String termino : terminos) {
+                descripcionProducto.or(qcliente.razonSocial.containsIgnoreCase(stringRazonSocial)
+                        .or(qcliente.nombreFantasia.containsIgnoreCase(stringRazonSocial)));
+//            }
         } else if (idFiscal) {
-            for (String termino : terminos) {
-                descripcionProducto.or(qcliente.idFiscal.containsIgnoreCase(termino));
-            }
+//            for (String termino : terminos) {
+                descripcionProducto.or(qcliente.idFiscal.containsIgnoreCase(stringRazonSocial));
+//            }
         }
         return descripcionProducto;
     }
