@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-02-28T18:39:18 -->
+<!-- 2017-03-15T02:36:38 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="FacturaVenta" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e47a212f-3954-4de9-aca2-5bd71a6098c5">
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
@@ -18,6 +18,7 @@
 	<field name="precioUnitario" class="java.lang.Double"/>
 	<field name="descuento_porcentaje" class="java.lang.Double"/>
 	<field name="importe" class="java.lang.Double"/>
+	<field name="iva_porcentaje" class="java.lang.Double"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -313,7 +314,7 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="18" splitType="Stretch">
+		<band height="17" splitType="Stretch">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
@@ -327,7 +328,7 @@
 				<text><![CDATA[Código]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="75" y="0" width="275" height="15" uuid="01f242fd-85d5-4c4e-9b09-f1c09d95b55a">
+				<reportElement x="75" y="0" width="204" height="15" uuid="01f242fd-85d5-4c4e-9b09-f1c09d95b55a">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -338,7 +339,7 @@
 				<text><![CDATA[Descripción]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="350" y="0" width="57" height="15" uuid="e2f0a5f2-9774-4ad4-962c-8b064818b692">
+				<reportElement x="280" y="0" width="70" height="15" uuid="e2f0a5f2-9774-4ad4-962c-8b064818b692">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Left">
@@ -376,6 +377,15 @@
 			<line>
 				<reportElement x="1" y="16" width="552" height="1" uuid="9554feb6-2d03-455d-a9bb-071b6982915e"/>
 			</line>
+			<staticText>
+				<reportElement x="350" y="-1" width="57" height="15" uuid="92d2b330-c0cf-4e16-8082-bc3659e31754">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Left">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[IVA(%)]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
@@ -391,7 +401,7 @@
 				<textFieldExpression><![CDATA[$F{codigoItem}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="75" y="0" width="275" height="15" uuid="f2bfc27d-700e-40b7-a73b-6303c546d09a">
+				<reportElement x="75" y="0" width="204" height="15" uuid="f2bfc27d-700e-40b7-a73b-6303c546d09a">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -403,7 +413,7 @@
 				<textFieldExpression><![CDATA[$F{descripcionItem}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="350" y="0" width="57" height="15" uuid="5dc407ad-61c0-4c06-bc77-1ab3136f8e40">
+				<reportElement x="280" y="0" width="70" height="15" uuid="5dc407ad-61c0-4c06-bc77-1ab3136f8e40">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center">
@@ -437,6 +447,15 @@
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{importe}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="337" y="0" width="70" height="15" uuid="7a5d637a-a063-4bbe-a486-b313a3f62c77">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{iva_porcentaje}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
