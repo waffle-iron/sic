@@ -1,5 +1,8 @@
 package sic.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+import sic.modelo.Rol;
 import sic.modelo.Usuario;
 
 public class UsuarioBuilder {
@@ -8,11 +11,12 @@ public class UsuarioBuilder {
     private String nombre = "Daenerys Targaryen";
     private String password = "LaQueNoArde";
     private String token = "yJhbGci1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJjZWNpbGlvIn0.MCfaorSC7Wdc8rSW7BJizasfzsm";
+    private List<Rol> rol = new ArrayList<>();
     private boolean permisosAdministrador = true;
     private boolean eliminado = false;
     
     public Usuario build() {
-        return new Usuario(id_Usuario, nombre, password, token, permisosAdministrador, eliminado);
+        return new Usuario(id_Usuario, nombre, password, token, rol, permisosAdministrador, eliminado);
     }
     
     public UsuarioBuilder withId_Usuario(long idUsuario) {
@@ -32,6 +36,11 @@ public class UsuarioBuilder {
     
     public UsuarioBuilder withToken(String token) {
         this.token = token;
+        return this;
+    }
+    
+    public UsuarioBuilder withRol(ArrayList<Rol> rol) {
+        this.rol = rol;
         return this;
     }
     

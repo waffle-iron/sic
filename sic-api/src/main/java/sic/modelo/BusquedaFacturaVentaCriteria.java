@@ -21,6 +21,8 @@ public class BusquedaFacturaVentaCriteria {
     private char tipoFactura;
     private boolean buscaUsuario;
     private Usuario usuario;
+    private boolean buscaViajante;
+    private Usuario viajante;
     private boolean buscaPorNumeroFactura;
     private long numSerie;
     private long numFactura;

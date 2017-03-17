@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sic.modelo.Rol;
 import sic.modelo.Usuario;
 import sic.service.IUsuarioService;
 import sic.service.BusinessServiceException;
@@ -49,7 +50,12 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Override
     public List<Usuario> getUsuarios() {
         return usuarioRepository.findAllByAndEliminadoOrderByNombreAsc(false);
-    }    
+    }
+
+    @Override
+    public List<Usuario> getUsuariosPorRol(Rol rol) {
+        return usuarioRepository.findAllByAndEliminadoAndRolOrderByNombreAsc(false, rol);
+    }
 
     @Override
     public List<Usuario> getUsuariosAdministradores() {

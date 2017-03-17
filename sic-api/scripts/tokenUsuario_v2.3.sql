@@ -1,1 +1,2 @@
-ALTER TABLE `sic`.`usuario`ADD COLUMN `token` VARCHAR(255) NOT NULL AFTER `permisosAdministrador`;
+ALTER TABLE `sic`.`usuario` 
+ADD COLUMN `token` VARCHAR(255) NULL AFTER `permisosAdministrador`;

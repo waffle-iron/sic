@@ -1,6 +1,7 @@
 package sic.service;
 
 import java.util.List;
+import sic.modelo.Rol;
 import sic.modelo.Usuario;
 
 public interface IUsuarioService {
@@ -16,6 +17,8 @@ public interface IUsuarioService {
     Usuario getUsuarioPorNombreContrasenia(String nombre, String contrasenia);
 
     List<Usuario> getUsuarios();
+    
+    List<Usuario> getUsuariosPorRol(Rol rol);
 
     List<Usuario> getUsuariosAdministradores();
 

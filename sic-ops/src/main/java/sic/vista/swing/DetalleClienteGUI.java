@@ -19,7 +19,9 @@ import sic.modelo.EmpresaActiva;
 import sic.modelo.Localidad;
 import sic.modelo.Pais;
 import sic.modelo.Provincia;
+import sic.modelo.Rol;
 import sic.modelo.TipoDeOperacion;
+import sic.modelo.Usuario;
 
 public class DetalleClienteGUI extends JDialog {
 
@@ -56,6 +58,7 @@ public class DetalleClienteGUI extends JDialog {
         cmb_Pais.setSelectedItem(cliente.getLocalidad().getProvincia().getPais());
         cmb_Provincia.setSelectedItem(cliente.getLocalidad().getProvincia());
         cmb_Localidad.setSelectedItem(cliente.getLocalidad());
+        cmb_Viajante.setSelectedItem(cliente.getViajante());
         txt_TelPrimario.setText(cliente.getTelPrimario());
         txt_TelSecundario.setText(cliente.getTelSecundario());
         txt_Contacto.setText(cliente.getContacto());
@@ -74,6 +77,7 @@ public class DetalleClienteGUI extends JDialog {
         dc_FechaAlta.setDate(new Date());        
         this.cargarComboBoxCondicionesIVA();
         this.cargarComboBoxPaises();
+        this.cargarComboBoxViajantes();
     }
 
     private void cargarComboBoxCondicionesIVA() {
@@ -101,6 +105,26 @@ public class DetalleClienteGUI extends JDialog {
                     .getForObject("/paises", Pais[].class)));
             paises.stream().forEach((p) -> {
                 cmb_Pais.addItem(p);
+            });
+        } catch (RestClientResponseException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ResourceAccessException ex) {
+            LOGGER.error(ex.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void cargarComboBoxViajantes() {
+        cmb_Viajante.removeAllItems();
+        try {
+            List<Usuario> usuarios = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
+                                .getForObject("/usuarios/rol?"
+                                + "rol=" + Rol.VIAJANTE,
+                                Usuario[].class)));
+            usuarios.stream().forEach((u) -> {
+                cmb_Viajante.addItem(u);
             });
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -192,6 +216,9 @@ public class DetalleClienteGUI extends JDialog {
         lbl_NombreFantasia = new javax.swing.JLabel();
         txt_NombreFantasia = new javax.swing.JTextField();
         btn_Guardar = new javax.swing.JButton();
+        panel4 = new javax.swing.JPanel();
+        lbl_Viajante = new javax.swing.JLabel();
+        cmb_Viajante = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Nuevo Cliente");
@@ -465,6 +492,32 @@ public class DetalleClienteGUI extends JDialog {
             }
         });
 
+        panel4.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+
+        lbl_Viajante.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_Viajante.setText("Viajante:");
+
+        javax.swing.GroupLayout panel4Layout = new javax.swing.GroupLayout(panel4);
+        panel4.setLayout(panel4Layout);
+        panel4Layout.setHorizontalGroup(
+            panel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lbl_Viajante, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmb_Viajante, javax.swing.GroupLayout.PREFERRED_SIZE, 438, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panel4Layout.setVerticalGroup(
+            panel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel4Layout.createSequentialGroup()
+                .addGap(8, 8, 8)
+                .addGroup(panel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmb_Viajante, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_Viajante, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -472,10 +525,17 @@ public class DetalleClienteGUI extends JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panel2, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(7, 7, 7))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(panel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(panel2, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(7, 7, 7))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(panel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(panel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btn_Guardar)
@@ -488,6 +548,8 @@ public class DetalleClienteGUI extends JDialog {
                 .addComponent(panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(panel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -555,6 +617,7 @@ public class DetalleClienteGUI extends JDialog {
                 cliente.setCondicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem());
                 cliente.setDireccion(txt_Direccion.getText().trim());
                 cliente.setLocalidad((Localidad) cmb_Localidad.getSelectedItem());
+                cliente.setViajante((Usuario) cmb_Viajante.getSelectedItem());
                 cliente.setTelPrimario(txt_TelPrimario.getText().trim());
                 cliente.setTelSecundario(txt_TelSecundario.getText().trim());
                 cliente.setContacto(txt_Contacto.getText().trim());
@@ -578,6 +641,7 @@ public class DetalleClienteGUI extends JDialog {
                 cliente.setCondicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem());
                 cliente.setDireccion(txt_Direccion.getText().trim());
                 cliente.setLocalidad((Localidad) cmb_Localidad.getSelectedItem());
+                cliente.setViajante((Usuario) cmb_Viajante.getSelectedItem());
                 cliente.setTelPrimario(txt_TelPrimario.getText().trim());
                 cliente.setTelSecundario(txt_TelSecundario.getText().trim());
                 cliente.setContacto(txt_Contacto.getText().trim());
@@ -603,12 +667,14 @@ public class DetalleClienteGUI extends JDialog {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         this.cargarComboBoxCondicionesIVA();
         this.cargarComboBoxPaises();
+        this.cargarComboBoxViajantes();
         if (operacion == TipoDeOperacion.ACTUALIZACION) {
             this.cargarClienteParaModificar();
         } else {
             dc_FechaAlta.setDate(new Date());
         }
     }//GEN-LAST:event_formWindowOpened
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Guardar;
     private javax.swing.JButton btn_NuevaCondicionIVA;
@@ -619,6 +685,7 @@ public class DetalleClienteGUI extends JDialog {
     private javax.swing.JComboBox cmb_Localidad;
     private javax.swing.JComboBox cmb_Pais;
     private javax.swing.JComboBox cmb_Provincia;
+    private javax.swing.JComboBox cmb_Viajante;
     private com.toedter.calendar.JDateChooser dc_FechaAlta;
     private javax.swing.JLabel lbl_CondicionIVA;
     private javax.swing.JLabel lbl_Contacto;
@@ -633,9 +700,11 @@ public class DetalleClienteGUI extends JDialog {
     private javax.swing.JLabel lbl_RazonSocial;
     private javax.swing.JLabel lbl_TelPrimario;
     private javax.swing.JLabel lbl_TelSecundario;
+    private javax.swing.JLabel lbl_Viajante;
     private javax.swing.JPanel panel1;
     private javax.swing.JPanel panel2;
     private javax.swing.JPanel panel3;
+    private javax.swing.JPanel panel4;
     private javax.swing.JTextField txt_Contacto;
     private javax.swing.JTextField txt_Direccion;
     private javax.swing.JTextField txt_Email;

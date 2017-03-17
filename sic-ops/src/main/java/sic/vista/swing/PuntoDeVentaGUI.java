@@ -140,6 +140,7 @@ public class PuntoDeVentaGUI extends JDialog {
         factura.setObservaciones(this.txta_Observaciones.getText().trim());
         factura.setEmpresa(EmpresaActiva.getInstance().getEmpresa());        
         factura.setCliente(this.cliente);
+        factura.setViajante(this.cliente.getViajante());
         factura.setUsuario(UsuarioActivo.getInstance().getUsuario());        
         factura.setSubTotal(Double.parseDouble(txt_Subtotal.getValue().toString()));
         factura.setRecargo_porcentaje(Double.parseDouble(txt_Recargo_porcentaje.getValue().toString()));

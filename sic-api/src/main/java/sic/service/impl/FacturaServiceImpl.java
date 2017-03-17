@@ -292,6 +292,10 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
         }
+        if (criteria.isBuscaViajante() == true && criteria.getViajante() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_viajante_vacio"));
+        }
         return facturaRepository.buscarFacturasVenta(criteria);
     }
 

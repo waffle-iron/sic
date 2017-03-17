@@ -1,5 +1,7 @@
 package sic.vista.swing;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -9,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import sic.RestClient;
+import sic.modelo.Rol;
 import sic.modelo.Usuario;
 import sic.modelo.TipoDeOperacion;
 
@@ -41,6 +44,18 @@ public class DetalleUsuarioGUI extends JDialog {
     private void cargarUsuarioParaModificar() {
         txt_Usuario.setText(usuarioModificar.getNombre());        
         chk_Administrador.setSelected(usuarioModificar.isPermisosAdministrador());
+        List<Rol> roles = usuarioModificar.getRol();
+        for (Rol rol : roles) {
+            if (Rol.ADMINISTRADOR.equals(rol)) {
+                chk_Administrador.setSelected(true);
+            }
+            if (Rol.VENDEDOR.equals(rol)) {
+                chk_Vendedor.setSelected(true);
+            }
+            if (Rol.VIAJANTE.equals(rol)) {
+                chk_Viajante.setSelected(true);
+            }
+        }
     }
     
     @SuppressWarnings("unchecked")
@@ -57,6 +72,10 @@ public class DetalleUsuarioGUI extends JDialog {
         txt_RepetirContrasenia = new javax.swing.JPasswordField();
         lbl_Administrador = new javax.swing.JLabel();
         chk_Administrador = new javax.swing.JCheckBox();
+        lbl_Viajante = new javax.swing.JLabel();
+        chk_Viajante = new javax.swing.JCheckBox();
+        lbl_Vendedor = new javax.swing.JLabel();
+        chk_Vendedor = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -99,24 +118,45 @@ public class DetalleUsuarioGUI extends JDialog {
         chk_Administrador.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         chk_Administrador.setMargin(new java.awt.Insets(2, -2, 2, 2));
 
+        lbl_Viajante.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_Viajante.setText("Viajante:");
+
+        chk_Viajante.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        chk_Viajante.setMargin(new java.awt.Insets(2, -2, 2, 2));
+
+        lbl_Vendedor.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_Vendedor.setText("Vendedor:");
+
+        chk_Vendedor.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        chk_Vendedor.setMargin(new java.awt.Insets(2, -2, 2, 2));
+
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
         panelPrincipal.setLayout(panelPrincipalLayout);
         panelPrincipalLayout.setHorizontalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelPrincipalLayout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(lbl_Administrador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_RepetirContrasenia, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_Contrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_Usuario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lbl_Viajante, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelPrincipalLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(lbl_Vendedor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(lbl_Administrador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lbl_RepetirContrasenia, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lbl_Contrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lbl_Usuario, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_RepetirContrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
-                    .addComponent(txt_Contrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txt_Usuario)
-                    .addComponent(chk_Administrador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(chk_Viajante, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(panelPrincipalLayout.createSequentialGroup()
+                        .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txt_RepetirContrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
+                            .addComponent(txt_Contrasenia, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txt_Usuario)
+                            .addComponent(chk_Administrador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chk_Vendedor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())))
         );
         panelPrincipalLayout.setVerticalGroup(
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -137,6 +177,14 @@ public class DetalleUsuarioGUI extends JDialog {
                 .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(chk_Administrador)
                     .addComponent(lbl_Administrador))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(chk_Viajante)
+                    .addComponent(lbl_Viajante))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(chk_Vendedor)
+                    .addComponent(lbl_Vendedor))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -176,6 +224,17 @@ public class DetalleUsuarioGUI extends JDialog {
                     usuario.setNombre(txt_Usuario.getText().trim());
                     usuario.setPassword(new String(txt_Contrasenia.getPassword()));
                     usuario.setPermisosAdministrador(chk_Administrador.isSelected());
+                    List<Rol> roles = new ArrayList<>();
+                    if (chk_Administrador.isSelected()) {
+                        roles.add(Rol.ADMINISTRADOR);
+                    }
+                    if (chk_Vendedor.isSelected()) {
+                        roles.add(Rol.VENDEDOR);
+                    }
+                    if (chk_Viajante.isSelected()) {
+                        roles.add(Rol.VIAJANTE);
+                    }
+                    usuario.setRol(roles);
                     RestClient.getRestTemplate().postForObject("/usuarios", usuario, Usuario.class);                 
                     LOGGER.warn("El usuario " + usuario.getNombre() + " se creo correctamente.");
                     this.dispose();
@@ -193,6 +252,17 @@ public class DetalleUsuarioGUI extends JDialog {
                     usuarioModificado.setNombre(txt_Usuario.getText().trim());
                     usuarioModificado.setPassword(new String(txt_Contrasenia.getPassword()));
                     usuarioModificado.setPermisosAdministrador(chk_Administrador.isSelected());
+                    List<Rol> roles = new ArrayList<>();
+                    if (chk_Administrador.isSelected()) {
+                        roles.add(Rol.ADMINISTRADOR);
+                    }
+                    if (chk_Vendedor.isSelected()) {
+                        roles.add(Rol.VENDEDOR);
+                    }
+                    if (chk_Viajante.isSelected()) {
+                        roles.add(Rol.VIAJANTE);
+                    }
+                    usuarioModificado.setRol(roles);
                     RestClient.getRestTemplate().put("/usuarios", usuarioModificado);
                     LOGGER.warn("El usuario " + usuarioModificado.getNombre() + " se modifico correctamente.");
                     this.dispose();                    
@@ -222,10 +292,14 @@ public class DetalleUsuarioGUI extends JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_Guardar;
     private javax.swing.JCheckBox chk_Administrador;
+    private javax.swing.JCheckBox chk_Vendedor;
+    private javax.swing.JCheckBox chk_Viajante;
     private javax.swing.JLabel lbl_Administrador;
     private javax.swing.JLabel lbl_Contrasenia;
     private javax.swing.JLabel lbl_RepetirContrasenia;
     private javax.swing.JLabel lbl_Usuario;
+    private javax.swing.JLabel lbl_Vendedor;
+    private javax.swing.JLabel lbl_Viajante;
     private javax.swing.JPanel panelPrincipal;
     private javax.swing.JPasswordField txt_Contrasenia;
     private javax.swing.JPasswordField txt_RepetirContrasenia;

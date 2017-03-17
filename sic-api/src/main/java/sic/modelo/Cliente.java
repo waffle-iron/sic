@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -66,6 +67,14 @@ public class Cliente implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")
     private Empresa empresa;
+    
+    @ManyToOne
+    @JoinColumn(name = "id_Usuario_Viajante", referencedColumnName = "id_Usuario")
+    private Usuario viajante;
+    
+    @OneToOne
+    @JoinColumn(name = "id_Usuario_Credencial", referencedColumnName = "id_Usuario")
+    private Usuario credencial;
 
     private boolean eliminado;
 

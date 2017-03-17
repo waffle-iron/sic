@@ -22,6 +22,8 @@ public class Cliente implements Serializable {
     private String contacto;
     private Date fechaAlta;
     private Empresa empresa;
+    private Usuario viajante;
+    private Usuario credencial;
     private boolean eliminado;
     private boolean predeterminado;
 

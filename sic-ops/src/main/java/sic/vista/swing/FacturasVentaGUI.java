@@ -25,6 +25,7 @@ import sic.modelo.Factura;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Usuario;
 import sic.modelo.Movimiento;
+import sic.modelo.Rol;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -65,8 +66,11 @@ public class FacturasVentaGUI extends JInternalFrame {
         if (chk_TipoFactura.isSelected()) {
             uriCriteria += "&tipoFactura=" + cmb_TipoFactura.getSelectedItem().toString().charAt(0);
         }
-        if (chk_Usuario.isSelected()) {
-            uriCriteria += "&idUsuario=" + ((Usuario) cmb_Usuario.getSelectedItem()).getId_Usuario();
+        if (chk_Viajante.isSelected()) {
+            uriCriteria += "&idViajante=" + ((Usuario) cmb_Viajante.getSelectedItem()).getId_Usuario();
+        }
+        if (chk_Vendedor.isSelected()) {
+            uriCriteria += "&idUsuario=" + ((Usuario) cmb_Vendedor.getSelectedItem()).getId_Usuario();
         }
         if (chk_NumeroPedido.isSelected()) { 
             uriCriteria += "&nroPedido=" + Long.parseLong(txt_NumeroPedido.getText());
@@ -230,11 +234,17 @@ public class FacturasVentaGUI extends JInternalFrame {
         } else {
             cmb_Cliente.setEnabled(false);
         }
-        chk_Usuario.setEnabled(status);
-        if (status == true && chk_Usuario.isSelected() == true) {
-            cmb_Usuario.setEnabled(true);
+        chk_Viajante.setEnabled(status);
+        if (status == true && chk_Viajante.isSelected() == true) {
+            cmb_Viajante.setEnabled(true);
         } else {
-            cmb_Usuario.setEnabled(false);
+            cmb_Viajante.setEnabled(false);
+        }
+        chk_Vendedor.setEnabled(status);
+        if (status == true && chk_Vendedor.isSelected() == true) {
+            cmb_Vendedor.setEnabled(true);
+        } else {
+            cmb_Vendedor.setEnabled(false);
         }
         chk_NumFactura.setEnabled(status);
         if (status == true && chk_NumFactura.isSelected() == true) {
@@ -333,15 +343,16 @@ public class FacturasVentaGUI extends JInternalFrame {
     }
 
     private void cargarUsuarios() {
-        if (chk_Usuario.isSelected() == true) {
-            cmb_Usuario.setEnabled(true);
-            cmb_Usuario.removeAllItems();
+        if (chk_Vendedor.isSelected() == true) {
+            cmb_Vendedor.setEnabled(true);
+            cmb_Vendedor.removeAllItems();
             try {
                 List<Usuario> usuarios = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                        .getForObject("/usuarios",
+                                .getForObject("/usuarios/rol?"
+                                + "rol=" + Rol.VENDEDOR,
                                 Usuario[].class)));
                 usuarios.stream().forEach((u) -> {
-                    cmb_Usuario.addItem(u);
+                    cmb_Vendedor.addItem(u);
                 });
             } catch (RestClientResponseException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -351,10 +362,37 @@ public class FacturasVentaGUI extends JInternalFrame {
                         ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
-            cmb_Usuario.requestFocus();
+            cmb_Vendedor.requestFocus();
         } else {
-            cmb_Usuario.removeAllItems();
-            cmb_Usuario.setEnabled(false);
+            cmb_Vendedor.removeAllItems();
+            cmb_Vendedor.setEnabled(false);
+        }
+    }
+    
+    private void cargarUsuariosViajante() {
+        if (chk_Viajante.isSelected() == true) {
+            cmb_Viajante.setEnabled(true);
+            cmb_Viajante.removeAllItems();
+            try {
+                List<Usuario> usuarios = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
+                        .getForObject("/usuarios/rol?"
+                                + "rol=" + Rol.VIAJANTE,
+                                Usuario[].class)));
+                usuarios.stream().forEach((u) -> {
+                    cmb_Viajante.addItem(u);
+                });
+            } catch (RestClientResponseException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ResourceAccessException ex) {
+                LOGGER.error(ex.getMessage());
+                JOptionPane.showMessageDialog(this,
+                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+            cmb_Viajante.requestFocus();
+        } else {
+            cmb_Viajante.removeAllItems();
+            cmb_Viajante.setEnabled(false);
         }
     }
 
@@ -436,16 +474,14 @@ public class FacturasVentaGUI extends JInternalFrame {
         chk_Fecha = new javax.swing.JCheckBox();
         chk_Cliente = new javax.swing.JCheckBox();
         cmb_Cliente = new javax.swing.JComboBox();
-        chk_NumFactura = new javax.swing.JCheckBox();
         lbl_Hasta = new javax.swing.JLabel();
         lbl_Desde = new javax.swing.JLabel();
         dc_FechaDesde = new com.toedter.calendar.JDateChooser();
         dc_FechaHasta = new com.toedter.calendar.JDateChooser();
-        separador = new javax.swing.JLabel();
-        chk_Usuario = new javax.swing.JCheckBox();
-        cmb_Usuario = new javax.swing.JComboBox();
-        txt_SerieFactura = new javax.swing.JFormattedTextField();
-        txt_NroFactura = new javax.swing.JFormattedTextField();
+        chk_Viajante = new javax.swing.JCheckBox();
+        cmb_Viajante = new javax.swing.JComboBox();
+        chk_Vendedor = new javax.swing.JCheckBox();
+        cmb_Vendedor = new javax.swing.JComboBox();
         subPanelFiltros2 = new javax.swing.JPanel();
         btn_Buscar = new javax.swing.JButton();
         pb_Filtro = new javax.swing.JProgressBar();
@@ -457,6 +493,10 @@ public class FacturasVentaGUI extends JInternalFrame {
         rb_soloImpagas = new javax.swing.JRadioButton();
         rb_soloPagadas = new javax.swing.JRadioButton();
         cmb_TipoFactura = new javax.swing.JComboBox();
+        chk_NumFactura = new javax.swing.JCheckBox();
+        txt_SerieFactura = new javax.swing.JFormattedTextField();
+        separador = new javax.swing.JLabel();
+        txt_NroFactura = new javax.swing.JFormattedTextField();
 
         setClosable(true);
         setMaximizable(true);
@@ -604,7 +644,7 @@ public class FacturasVentaGUI extends JInternalFrame {
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -635,13 +675,6 @@ public class FacturasVentaGUI extends JInternalFrame {
 
         cmb_Cliente.setEnabled(false);
 
-        chk_NumFactura.setText("Nº de Factura:");
-        chk_NumFactura.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                chk_NumFacturaItemStateChanged(evt);
-            }
-        });
-
         lbl_Hasta.setText("Hasta:");
         lbl_Hasta.setEnabled(false);
 
@@ -654,35 +687,25 @@ public class FacturasVentaGUI extends JInternalFrame {
         dc_FechaHasta.setDateFormatString("dd/MM/yyyy");
         dc_FechaHasta.setEnabled(false);
 
-        separador.setFont(new java.awt.Font("DejaVu Sans", 0, 15)); // NOI18N
-        separador.setText("-");
-
-        chk_Usuario.setText("Usuario:");
-        chk_Usuario.addItemListener(new java.awt.event.ItemListener() {
+        chk_Viajante.setText("Viajante");
+        chk_Viajante.setToolTipText("");
+        chk_Viajante.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                chk_UsuarioItemStateChanged(evt);
+                chk_ViajanteItemStateChanged(evt);
             }
         });
 
-        cmb_Usuario.setEnabled(false);
+        cmb_Viajante.setEnabled(false);
 
-        txt_SerieFactura.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        txt_SerieFactura.setText("0");
-        txt_SerieFactura.setEnabled(false);
-        txt_SerieFactura.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txt_SerieFacturaKeyTyped(evt);
+        chk_Vendedor.setText("Vendedor:");
+        chk_Vendedor.setToolTipText("");
+        chk_Vendedor.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chk_VendedorItemStateChanged(evt);
             }
         });
 
-        txt_NroFactura.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
-        txt_NroFactura.setText("0");
-        txt_NroFactura.setEnabled(false);
-        txt_NroFactura.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txt_NroFacturaKeyTyped(evt);
-            }
-        });
+        cmb_Vendedor.setEnabled(false);
 
         javax.swing.GroupLayout subPanelFiltros1Layout = new javax.swing.GroupLayout(subPanelFiltros1);
         subPanelFiltros1.setLayout(subPanelFiltros1Layout);
@@ -691,19 +714,13 @@ public class FacturasVentaGUI extends JInternalFrame {
             .addGroup(subPanelFiltros1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(subPanelFiltros1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(chk_Usuario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(chk_Viajante, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(chk_Fecha, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(chk_Cliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(chk_NumFactura, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(chk_Vendedor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(12, 12, 12)
                 .addGroup(subPanelFiltros1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(subPanelFiltros1Layout.createSequentialGroup()
-                        .addComponent(txt_SerieFactura)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(separador)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txt_NroFactura))
-                    .addComponent(cmb_Usuario, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cmb_Viajante, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(subPanelFiltros1Layout.createSequentialGroup()
                         .addComponent(lbl_Desde)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -714,7 +731,8 @@ public class FacturasVentaGUI extends JInternalFrame {
                         .addComponent(dc_FechaHasta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(subPanelFiltros1Layout.createSequentialGroup()
                         .addComponent(cmb_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(cmb_Vendedor, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         subPanelFiltros1Layout.setVerticalGroup(
             subPanelFiltros1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -731,14 +749,12 @@ public class FacturasVentaGUI extends JInternalFrame {
                     .addComponent(cmb_Cliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(subPanelFiltros1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(chk_Usuario)
-                    .addComponent(cmb_Usuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(chk_Viajante)
+                    .addComponent(cmb_Viajante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(subPanelFiltros1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(txt_SerieFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(separador)
-                    .addComponent(txt_NroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chk_NumFactura)))
+                    .addComponent(chk_Vendedor)
+                    .addComponent(cmb_Vendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         javax.swing.GroupLayout subPanelFiltros2Layout = new javax.swing.GroupLayout(subPanelFiltros2);
@@ -749,7 +765,7 @@ public class FacturasVentaGUI extends JInternalFrame {
         );
         subPanelFiltros2Layout.setVerticalGroup(
             subPanelFiltros2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 128, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         btn_Buscar.setForeground(java.awt.Color.blue);
@@ -803,6 +819,34 @@ public class FacturasVentaGUI extends JInternalFrame {
 
         cmb_TipoFactura.setEnabled(false);
 
+        chk_NumFactura.setText("Nº de Factura:");
+        chk_NumFactura.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chk_NumFacturaItemStateChanged(evt);
+            }
+        });
+
+        txt_SerieFactura.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        txt_SerieFactura.setText("0");
+        txt_SerieFactura.setEnabled(false);
+        txt_SerieFactura.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_SerieFacturaKeyTyped(evt);
+            }
+        });
+
+        separador.setFont(new java.awt.Font("DejaVu Sans", 0, 15)); // NOI18N
+        separador.setText("-");
+
+        txt_NroFactura.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+        txt_NroFactura.setText("0");
+        txt_NroFactura.setEnabled(false);
+        txt_NroFactura.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_NroFacturaKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelFiltrosLayout = new javax.swing.GroupLayout(panelFiltros);
         panelFiltros.setLayout(panelFiltrosLayout);
         panelFiltrosLayout.setHorizontalGroup(
@@ -810,7 +854,23 @@ public class FacturasVentaGUI extends JInternalFrame {
             .addGroup(panelFiltrosLayout.createSequentialGroup()
                 .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelFiltrosLayout.createSequentialGroup()
-                        .addComponent(subPanelFiltros1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap()
+                        .addComponent(btn_Buscar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbl_cantResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 613, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panelFiltrosLayout.createSequentialGroup()
+                        .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(panelFiltrosLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(chk_NumFactura)
+                                .addGap(18, 18, 18)
+                                .addComponent(txt_SerieFactura)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(separador, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txt_NroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(subPanelFiltros1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(subPanelFiltros2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -818,23 +878,21 @@ public class FacturasVentaGUI extends JInternalFrame {
                             .addComponent(chk_TipoFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(chk_NumeroPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(chk_EstadoFactura))
-                        .addGap(12, 12, 12))
-                    .addGroup(panelFiltrosLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btn_Buscar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbl_cantResultados, javax.swing.GroupLayout.PREFERRED_SIZE, 613, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(19, 19, 19)))
+                        .addGap(12, 12, 12)))
                 .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_NumeroPedido)
-                    .addComponent(cmb_TipoFactura, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(panelFiltrosLayout.createSequentialGroup()
                         .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rb_soloPagadas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(rb_soloImpagas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addGap(12, 12, 12))
+                            .addComponent(txt_NumeroPedido)
+                            .addComponent(cmb_TipoFactura, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(panelFiltrosLayout.createSequentialGroup()
+                                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(rb_soloPagadas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(rb_soloImpagas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(12, 12, 12))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFiltrosLayout.createSequentialGroup()
+                        .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
 
         panelFiltrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {rb_soloImpagas, rb_soloPagadas});
@@ -862,10 +920,18 @@ public class FacturasVentaGUI extends JInternalFrame {
                         .addComponent(rb_soloPagadas)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_Buscar)
-                    .addComponent(pb_Filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_cantResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(txt_SerieFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chk_NumFactura)
+                    .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txt_NroFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(separador)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(lbl_cantResultados, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pb_Filtro, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                    .addComponent(btn_Buscar, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panelFiltrosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Buscar, pb_Filtro});
@@ -971,9 +1037,9 @@ public class FacturasVentaGUI extends JInternalFrame {
         }
     }//GEN-LAST:event_formInternalFrameOpened
 
-    private void chk_UsuarioItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_UsuarioItemStateChanged
-        this.cargarUsuarios();
-    }//GEN-LAST:event_chk_UsuarioItemStateChanged
+    private void chk_ViajanteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_ViajanteItemStateChanged
+        this.cargarUsuariosViajante();
+    }//GEN-LAST:event_chk_ViajanteItemStateChanged
 
     private void chk_TipoFacturaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_TipoFacturaItemStateChanged
         if (chk_TipoFactura.isSelected() == true) {
@@ -1068,6 +1134,10 @@ public class FacturasVentaGUI extends JInternalFrame {
         }
     }//GEN-LAST:event_btn_VerPagosActionPerformed
 
+    private void chk_VendedorItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_VendedorItemStateChanged
+        this.cargarUsuarios();
+    }//GEN-LAST:event_chk_VendedorItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bg_estadoFactura;
     private javax.swing.JButton btn_Buscar;
@@ -1081,10 +1151,12 @@ public class FacturasVentaGUI extends JInternalFrame {
     private javax.swing.JCheckBox chk_NumFactura;
     private javax.swing.JCheckBox chk_NumeroPedido;
     private javax.swing.JCheckBox chk_TipoFactura;
-    private javax.swing.JCheckBox chk_Usuario;
+    private javax.swing.JCheckBox chk_Vendedor;
+    private javax.swing.JCheckBox chk_Viajante;
     private javax.swing.JComboBox cmb_Cliente;
     private javax.swing.JComboBox cmb_TipoFactura;
-    private javax.swing.JComboBox cmb_Usuario;
+    private javax.swing.JComboBox cmb_Vendedor;
+    private javax.swing.JComboBox cmb_Viajante;
     private com.toedter.calendar.JDateChooser dc_FechaDesde;
     private com.toedter.calendar.JDateChooser dc_FechaHasta;
     private javax.swing.JLabel lbl_Desde;

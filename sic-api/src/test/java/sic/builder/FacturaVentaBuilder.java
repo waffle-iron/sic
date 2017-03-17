@@ -26,6 +26,7 @@ public class FacturaVentaBuilder {
     private List<Pago> pagos;
     private Cliente cliente = new ClienteBuilder().build();
     private Usuario usuario = new UsuarioBuilder().build();
+    private Usuario viajante = new UsuarioBuilder().build();
     private double subTotal = 6500;
     private double recargo_porcentaje = 0.0;
     private double recargo_neto = 0.0;
@@ -56,7 +57,7 @@ public class FacturaVentaBuilder {
             renglonesFactura.add(renglon2);
             this.renglones = renglonesFactura;
         }
-        FacturaVenta factura = new FacturaVenta(cliente, usuario, id_Factura, fecha,
+        FacturaVenta factura = new FacturaVenta(cliente, usuario, viajante, id_Factura, fecha,
                 tipoFactura, numSerie, numFactura, fechaVencimiento, pedido, transportista,
                 renglones, pagos, subTotal, recargo_porcentaje, recargo_neto, descuento_porcentaje, 
                 descuento_neto, subTotal_neto, iva_105_neto, iva_21_neto, impuestoInterno_neto, total, 
@@ -121,6 +122,11 @@ public class FacturaVentaBuilder {
 
     public FacturaVentaBuilder withUsuario(Usuario usuario) {
         this.usuario = usuario;
+        return this;
+    }
+    
+    public FacturaVentaBuilder withViajante(Usuario viajante) {
+        this.viajante = viajante;
         return this;
     }
 
