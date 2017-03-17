@@ -174,7 +174,7 @@ public class FacturaBIntegrationTest {
                 RenglonFactura.class);
         RenglonFactura renglonDos = restTemplate.getForObject(apiPrefix + "/facturas/renglon?"
                 + "idProducto=" + productoDos.getId_Producto()
-                + "&tipoDeComprobante=FACTURA_B" 
+                + "&tipoDeComprobante=" + TipoDeComprobante.FACTURA_B 
                 + "&movimiento=" + Movimiento.VENTA
                 + "&cantidad=" + 2
                 + "&descuentoPorcentaje=" + 0,
@@ -206,7 +206,7 @@ public class FacturaBIntegrationTest {
                     + "&descuentoNeto=0", double.class);
         assertEquals(1397.55, subTotal_neto, 0);
         double iva_105_neto = restTemplate.getRestTemplate().getForObject(apiPrefix +"/facturas/iva-neto?"
-                    + "&tipoDeComprobante=FACTURA_B" 
+                    + "&tipoDeComprobante=" + TipoDeComprobante.FACTURA_B 
                     + "&descuentoPorcentaje=0"
                     + "&recargoPorcentaje=" + 10
                     + "&ivaPorcentaje=10.5"
@@ -215,7 +215,7 @@ public class FacturaBIntegrationTest {
                     double.class);
         assertEquals(0, iva_105_neto, 0);
         double iva_21_neto = restTemplate.getRestTemplate().getForObject(apiPrefix +"/facturas/iva-neto?"
-                    + "&tipoDeComprobante=FACTURA_B" 
+                    + "&tipoDeComprobante=" + TipoDeComprobante.FACTURA_B 
                     + "&descuentoPorcentaje=0"
                     + "&recargoPorcentaje=" + 10
                     + "&ivaPorcentaje=21.0"
@@ -224,7 +224,7 @@ public class FacturaBIntegrationTest {
                     double.class);
         assertEquals(0, iva_21_neto, 0);
         double impInterno_neto = restTemplate.getRestTemplate().getForObject(apiPrefix +"/facturas/impuesto-interno-neto?"
-                    + "&tipoDeComprobante=FACTURA_B" 
+                    + "&tipoDeComprobante=" + TipoDeComprobante.FACTURA_B  
                     + "&descuentoPorcentaje=0"
                     + "&recargoPorcentaje=" + 10
                     + "&importe=" + Arrays.toString(importes).substring(1, Arrays.toString(importes).length() - 1)

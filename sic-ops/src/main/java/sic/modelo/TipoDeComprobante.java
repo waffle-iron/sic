@@ -6,26 +6,16 @@ package sic.modelo;
 
 public enum TipoDeComprobante {
     
-    FACTURA_A("Factura A"),
+    FACTURA_A,
     
-    FACTURA_B("Factura B"),
+    FACTURA_B,
     
-    FACTURA_C("Factura C"),
+    FACTURA_C,
     
-    FACTURA_X("Factura X"),
+    FACTURA_X,
     
-    FACTURA_Y("Factura Y"),
+    FACTURA_Y,
     
-    PEDIDO("Pedido");
-    
-    
-   String nombre;
-   TipoDeComprobante(String nombre) {
-      this.nombre = nombre;
-   }
-   
-   public String showPrettyFormat() {
-      return nombre;
-   } 
+    PEDIDO;
     
 }

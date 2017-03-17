@@ -171,9 +171,9 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         }
         for (int i = 0; i < tipoComprobante.length; i++) {
             if (i == 0) {
-                query += " AND ( f.tipoComprobante = " + tipoComprobante[i] ;  
+                query += " AND ( f.tipoComprobante = \'" + tipoComprobante[i] + "\'";  
             } else {
-                query += " OR f.tipoComprobante = " + tipoComprobante[i] ;
+                query += " OR f.tipoComprobante = \'" + tipoComprobante[i] + "\'";
             }
         }
         query += " )";

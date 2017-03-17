@@ -481,7 +481,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
                 RenglonFactura nuevoRenglon = RestClient.getRestTemplate().getForObject("/facturas/renglon?"
                         + "idProducto=" + producto.getId_Producto()
                         + "&tipoDeComprobante=" + tipoDeComprobante
-                        + "&movimiento=COMPRA"
+                        + "&movimiento=" + Movimiento.COMPRA
                         + "&cantidad=" + renglon.getCantidad()
                         + "&descuentoPorcentaje=" + renglon.getDescuento_porcentaje(),                        
                         RenglonFactura.class);
