@@ -560,9 +560,6 @@ public class PuntoDeVentaGUI extends JDialog {
             for (int i = 0; tiposFactura.length > i; i++) {
                 cmb_TipoComprobante.addItem(tiposFactura[i]);
             }
-            if (EmpresaActiva.getInstance().getEmpresa().getCondicionIVA().isDiscriminaIVA() && cliente.getCondicionIVA().isDiscriminaIVA()) {
-                cmb_TipoComprobante.removeItem("Factura B");
-            }
             if (this.pedido != null) {
                 if (this.pedido.getId_Pedido() == 0) {
                     cmb_TipoComprobante.removeAllItems();
