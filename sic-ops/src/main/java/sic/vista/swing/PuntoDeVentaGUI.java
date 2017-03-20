@@ -142,10 +142,8 @@ public class PuntoDeVentaGUI extends JDialog {
         factura.setCliente(this.cliente);
         factura.setUsuario(UsuarioActivo.getInstance().getUsuario());        
         factura.setSubTotal(Double.parseDouble(txt_Subtotal.getValue().toString()));
-        factura.setRecargo_porcentaje(Double.parseDouble(txt_Decuento_porcentaje.getValue().toString()));
-        factura.setRecargo_neto(Double.parseDouble(txt_Decuento_neto.getValue().toString()));
-        factura.setDescuento_porcentaje(0);
-        factura.setDescuento_neto(0);
+        factura.setDescuento_porcentaje(Double.parseDouble(txt_Decuento_porcentaje.getValue().toString()));
+        factura.setDescuento_neto(Double.parseDouble(txt_Decuento_neto.getValue().toString()));
         factura.setSubTotal_neto(Double.parseDouble(txt_SubTotalNeto.getValue().toString()));
         factura.setIva_105_neto(Double.parseDouble(txt_IVA105_neto.getValue().toString()));
         factura.setIva_21_neto(Double.parseDouble(txt_IVA21_neto.getValue().toString()));
@@ -460,8 +458,6 @@ public class PuntoDeVentaGUI extends JDialog {
 
     private void calcularResultados() {
         double subTotal;
-        //double recargo_porcentaje; Campos temporalmente sin uso
-        //double recargo_neto;
         double descuento_porcentaje;
         double descuento_neto;
         double subTotalNeto;

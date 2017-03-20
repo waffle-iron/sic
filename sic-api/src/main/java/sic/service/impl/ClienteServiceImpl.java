@@ -98,7 +98,8 @@ public class ClienteServiceImpl implements IClienteService {
         QCliente qcliente = QCliente.cliente;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qcliente.empresa.eq(criteria.getEmpresa()).and(qcliente.eliminado.eq(false)))
-               .and(this.buildPredicadoDescripcion(criteria.getRazonSocial(), qcliente, criteria.isBuscaPorRazonSocial(), criteria.isBuscaPorRazonSocial(), criteria.isBuscaPorRazonSocial()));
+               .and(this.buildPredicadoBusqueda(criteria.getRazonSocial(), criteria.getNombreFantasia(), criteria.getIdFiscal(), 
+                       qcliente, criteria.isBuscaPorRazonSocial(), criteria.isBuscaPorNombreFantasia(), criteria.isBuscaPorId_Fiscal()));
         if (criteria.isBuscaPorLocalidad() == true) {
             builder.and(qcliente.localidad.eq(criteria.getLocalidad()));
         }
@@ -113,24 +114,25 @@ public class ClienteServiceImpl implements IClienteService {
         return list;
     }
     
-    private BooleanBuilder buildPredicadoDescripcion(String stringRazonSocial, QCliente qcliente, boolean razonSocial, boolean nombreFantasia, boolean idFiscal) {
-//        String[] terminos = stringRazonSocial.split(" ");
+    private BooleanBuilder buildPredicadoBusqueda(String razonSocial, String nombreFantasia, String idFiscal, QCliente qcliente, boolean buscarPorRazonSocial, boolean buscarPorNombreFantasia, boolean buscarPorIdFiscal) {
         BooleanBuilder descripcionProducto = new BooleanBuilder();
-        if (razonSocial && nombreFantasia && idFiscal) {
-//            for (String termino : terminos) {
-                descripcionProducto.or(qcliente.razonSocial.containsIgnoreCase(stringRazonSocial)
-                        .or(qcliente.nombreFantasia.containsIgnoreCase(stringRazonSocial))
-                        .or(qcliente.idFiscal.containsIgnoreCase(stringRazonSocial)));
-//            }
-        } else if (razonSocial && nombreFantasia) {
-//            for (String termino : terminos) {
-                descripcionProducto.or(qcliente.razonSocial.containsIgnoreCase(stringRazonSocial)
-                        .or(qcliente.nombreFantasia.containsIgnoreCase(stringRazonSocial)));
-//            }
-        } else if (idFiscal) {
-//            for (String termino : terminos) {
-                descripcionProducto.or(qcliente.idFiscal.containsIgnoreCase(stringRazonSocial));
-//            }
+        if (buscarPorRazonSocial && buscarPorNombreFantasia && buscarPorIdFiscal && razonSocial.equals(nombreFantasia) && razonSocial.equals(idFiscal)) {
+            descripcionProducto.or(qcliente.razonSocial.containsIgnoreCase(razonSocial)
+                    .or(qcliente.nombreFantasia.containsIgnoreCase(nombreFantasia))
+                    .or(qcliente.idFiscal.containsIgnoreCase(idFiscal)));
+        } else if (buscarPorRazonSocial && buscarPorNombreFantasia && buscarPorIdFiscal && razonSocial.equals(nombreFantasia)) {
+            descripcionProducto.or(qcliente.razonSocial.containsIgnoreCase(razonSocial)
+                    .or(qcliente.nombreFantasia.containsIgnoreCase(nombreFantasia))
+                    .and(qcliente.idFiscal.containsIgnoreCase(idFiscal)));
+        } else if (buscarPorRazonSocial && buscarPorNombreFantasia && buscarPorIdFiscal) {
+            descripcionProducto.and(qcliente.razonSocial.containsIgnoreCase(razonSocial)
+                    .and(qcliente.nombreFantasia.containsIgnoreCase(nombreFantasia))
+                    .and(qcliente.idFiscal.containsIgnoreCase(idFiscal)));
+        } else if (buscarPorRazonSocial && buscarPorNombreFantasia) {
+            descripcionProducto.or(qcliente.razonSocial.containsIgnoreCase(razonSocial)
+                    .or(qcliente.nombreFantasia.containsIgnoreCase(nombreFantasia)));
+        } else if (buscarPorIdFiscal) {
+            descripcionProducto.or(qcliente.idFiscal.containsIgnoreCase(idFiscal));
         }
         return descripcionProducto;
     }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-02-28T18:39:18 -->
+<!-- 2017-03-20T08:56:33 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="FacturaVenta" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e47a212f-3954-4de9-aca2-5bd71a6098c5">
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
@@ -460,7 +460,7 @@
 				<textElement textAlignment="Left">
 					<font size="8" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Recargo (%)]]></text>
+				<text><![CDATA[Descuento (%)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Transparent" x="360" y="30" width="70" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="58dab7dd-4358-49e0-9370-59980720196a">
@@ -547,7 +547,7 @@
 					<font size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{facturaVenta}.getRecargo_neto()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{facturaVenta}.getDescuento_neto()]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00" isBlankWhenNull="false">
 				<reportElement mode="Transparent" x="430" y="15" width="37" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="dbdfa74b-b9de-471a-b990-79bee14bae31">
@@ -558,7 +558,7 @@
 					<font size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{facturaVenta}.getRecargo_porcentaje()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{facturaVenta}.getDescuento_porcentaje()]]></textFieldExpression>
 			</textField>
 			<textField pattern="¤ #,##0.00" isBlankWhenNull="false">
 				<reportElement mode="Transparent" x="467" y="30" width="88" height="15" forecolor="#000000" backcolor="#FFFFFF" uuid="c6a75d5b-c210-44c6-8e4a-c725bf20381e">
