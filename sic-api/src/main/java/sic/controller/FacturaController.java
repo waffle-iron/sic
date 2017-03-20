@@ -29,13 +29,13 @@ import sic.service.BusinessServiceException;
 import sic.service.IClienteService;
 import sic.service.IEmpresaService;
 import sic.service.IFacturaService;
-import sic.service.IPagoService;
 import sic.service.IPedidoService;
 import sic.service.IProveedorService;
 import sic.service.IUsuarioService;
 import sic.modelo.Movimiento;
 import sic.modelo.Proveedor;
 import sic.modelo.Usuario;
+import sic.service.IAfipService;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -47,18 +47,20 @@ public class FacturaController {
     private final IClienteService clienteService;
     private final IUsuarioService usuarioService;
     private final IPedidoService pedidoService;   
+    private final IAfipService afipService;
     
     @Autowired
     public FacturaController(IFacturaService facturaService, IEmpresaService empresaService,
                              IProveedorService proveedorService, IClienteService clienteService,
                              IUsuarioService usuarioService, IPedidoService pedidoService,
-                             IPagoService pagoService) {
+                             IAfipService afipService) {
         this.facturaService = facturaService;
         this.empresaService = empresaService;
         this.proveedorService = proveedorService;
         this.clienteService = clienteService;
         this.usuarioService = usuarioService;
         this.pedidoService = pedidoService;       
+        this.afipService = afipService;
     }
     
     @GetMapping("/facturas/{idFactura}")
@@ -77,7 +79,12 @@ public class FacturaController {
         } else {
             List<Factura> facturas = new ArrayList<>();
             facturas.add(factura);
-            return facturaService.guardar(facturas, idPedido);         
+            
+            facturas = facturaService.guardar(facturas, idPedido);
+            afipService.autorizarFacturaVenta((FacturaVenta) facturas.get(0));
+            return facturas;
+            
+            //return facturaService.guardar(facturas, idPedido);         
         }
     }   
     

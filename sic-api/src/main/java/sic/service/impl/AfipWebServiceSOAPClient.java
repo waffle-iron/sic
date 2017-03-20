@@ -2,6 +2,7 @@ package sic.service.impl;
 
 import afip.wsaa.wsdl.LoginCms;
 import afip.wsaa.wsdl.LoginCmsResponse;
+import afip.wsfe.wsdl.ArrayOfErr;
 import afip.wsfe.wsdl.FECAESolicitar;
 import afip.wsfe.wsdl.FECAESolicitarResponse;
 import org.slf4j.Logger;
@@ -35,7 +36,9 @@ import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.oxm.XmlMappingException;
+import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.client.WebServiceClientException;
+import org.springframework.ws.soap.SoapMessage;
 
 public class AfipWebServiceSOAPClient extends WebServiceGatewaySupport {
 
@@ -43,7 +46,8 @@ public class AfipWebServiceSOAPClient extends WebServiceGatewaySupport {
     private final String WSAA_PRODUCTION = "https://wsaa.afip.gov.ar/ws/services/LoginCms";
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     private final String WSFE_TESTING = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx";
-    private final String WSFE_PRODUCTION = "";
+    private final String WSFE_PRODUCTION = "https://servicios1.afip.gov.ar/wsfev1/service.asmx";
+    private final String SOAP_ACTION_FECAESolicitar = "http://ar.gov.afip.dif.FEV1/FECAESolicitar";
 
     public String loginCMS(LoginCms loginCMS) {
         try {
@@ -118,12 +122,17 @@ public class AfipWebServiceSOAPClient extends WebServiceGatewaySupport {
         return LoginTicketRequest_xml;
     }
 
-    public void FECAESolicitar(FECAESolicitar solicitud) {
+    public String FECAESolicitar(FECAESolicitar solicitud) {
         FECAESolicitarResponse response = (FECAESolicitarResponse) this.getWebServiceTemplate()
-                .marshalSendAndReceive(WSFE_TESTING, solicitud);
-        
-        response.getFECAESolicitarResult().getErrors().getErr().stream().forEach((err) -> {
-            System.out.println(err.getCode() + " - " + err.getMsg());
-        });
+                .marshalSendAndReceive(WSFE_TESTING, solicitud, (WebServiceMessage message) -> {
+                    ((SoapMessage) message).setSoapAction(SOAP_ACTION_FECAESolicitar);
+        });        
+        ArrayOfErr errores = response.getFECAESolicitarResult().getErrors();
+        if (errores != null) {
+            errores.getErr().stream().forEach((err) -> {
+                LOGGER.error(err.getCode() + " - " + err.getMsg());
+            });
+        }
+        return response.getFECAESolicitarResult().getFeDetResp().getFECAEDetResponse().get(0).getCAE();
     }
 }
