@@ -3,7 +3,6 @@ package sic.vista.swing;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -12,14 +11,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientResponseException;
 import sic.RestClient;
+import sic.modelo.Rol;
 import sic.modelo.UsuarioActivo;
 import sic.modelo.Usuario;
+import sic.util.RenderTabla;
+import sic.util.Utilidades;
 
 public class UsuariosGUI extends JDialog {
 
-    private final DefaultListModel modeloListUsuarios = new DefaultListModel();
     private Usuario usuarioSeleccionado;
-    private boolean mismoUsuarioActivo = false; 
+    private boolean mismoUsuarioActivo = false;
+    private ModeloTabla modeloTablaResultados = new ModeloTabla();
+    private List<Usuario> usuarios;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     public UsuariosGUI() {
@@ -36,6 +39,7 @@ public class UsuariosGUI extends JDialog {
         //Comprueba si el usuario es Administrador
         if (UsuarioActivo.getInstance().getUsuario().isPermisosAdministrador() == true) {
             this.cargarUsuarios();            
+            this.cargarRenglonesAlTable();
         } else {
             JOptionPane.showMessageDialog(this,
                     "No tiene privilegios de Administrador para poder acceder a esta seccion.",
@@ -45,12 +49,8 @@ public class UsuariosGUI extends JDialog {
     }
 
     private void cargarUsuarios() {
-        modeloListUsuarios.clear();
         try {
-            List<Usuario> usuarios = Arrays.asList(RestClient.getRestTemplate().getForObject("/usuarios", Usuario[].class));
-            usuarios.stream().forEach((u) -> {
-                modeloListUsuarios.addElement(u);
-            });
+            usuarios = Arrays.asList(RestClient.getRestTemplate().getForObject("/usuarios", Usuario[].class));
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ResourceAccessException ex) {
@@ -59,7 +59,78 @@ public class UsuariosGUI extends JDialog {
                     ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
-        lst_Usuarios.setModel(modeloListUsuarios);
+    }
+    
+    private void setColumnas() {
+        //sort
+        tbl_Resultado.setAutoCreateRowSorter(true);
+        
+        //nombres de columnas
+        String[] encabezados = new String[4];
+        encabezados[0] = "Usuarios";
+        encabezados[1] = "Administrador";
+        encabezados[2] = "Vendedor";
+        encabezados[3] = "Viajante";
+        modeloTablaResultados.setColumnIdentifiers(encabezados);
+        tbl_Resultado.setModel(modeloTablaResultados);
+
+        //tipo de dato columnas
+        Class[] tipos = new Class[modeloTablaResultados.getColumnCount()];
+        tipos[0] = String.class;
+        tipos[1] = Boolean.class;
+        tipos[2] = Boolean.class;
+        tipos[3] = Boolean.class;
+        modeloTablaResultados.setClaseColumnas(tipos);
+        tbl_Resultado.getTableHeader().setReorderingAllowed(false);
+        tbl_Resultado.getTableHeader().setResizingAllowed(true);
+
+        //render para los tipos de datos
+        tbl_Resultado.setDefaultRenderer(Double.class, new RenderTabla());
+
+        //tamanios de columnas
+        tbl_Resultado.getColumnModel().getColumn(0).setPreferredWidth(250);
+        tbl_Resultado.getColumnModel().getColumn(1).setPreferredWidth(250);
+        tbl_Resultado.getColumnModel().getColumn(2).setPreferredWidth(250);
+        tbl_Resultado.getColumnModel().getColumn(3).setPreferredWidth(250);
+    }
+    
+    private void cargarRenglonesAlTable() {
+        this.limpiarJTable();
+        usuarios.stream().map((usuario) -> {
+            Object[] fila = new Object[4];
+            fila[0] = usuario.getNombre();
+            List<Rol> roles = usuario.getRol();
+            for (Rol rol : roles) {
+                if (Rol.ADMINISTRADOR.equals(rol)) {
+                    fila[1] = true;
+                }
+                if (Rol.VENDEDOR.equals(rol)) {
+                    fila[2] = true;
+                }
+                if (Rol.VIAJANTE.equals(rol)) {
+                    fila[3] = true;
+                }
+            }
+            return fila;
+        }).forEach((fila) -> {
+            modeloTablaResultados.addRow(fila);
+        });
+        tbl_Resultado.setModel(modeloTablaResultados);
+    }
+    
+    private void limpiarJTable() {
+        modeloTablaResultados = new ModeloTabla();
+        tbl_Resultado.setModel(modeloTablaResultados);
+        this.setColumnas();
+    }
+    
+    private boolean existeUsuarioSeleccionado() {
+        if (tbl_Resultado.getSelectedRow() != -1 && tbl_Resultado.getSelectedRowCount() == 1) {
+            int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultado);
+            usuarioSeleccionado = usuarios.get(indexFilaSeleccionada);
+            return true;
+        }
+        return false;
     }
 
     @SuppressWarnings("unchecked")
@@ -67,11 +138,11 @@ public class UsuariosGUI extends JDialog {
     private void initComponents() {
 
         panelPrincipal = new javax.swing.JPanel();
-        sp_ListaMedidas = new javax.swing.JScrollPane();
-        lst_Usuarios = new javax.swing.JList();
         btn_Actualizar = new javax.swing.JButton();
         btn_Agregar = new javax.swing.JButton();
         btn_Eliminar = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbl_Resultado = new javax.swing.JTable();
         lbl_Usuarios = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -84,15 +155,6 @@ public class UsuariosGUI extends JDialog {
         });
 
         panelPrincipal.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
-
-        lst_Usuarios.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        lst_Usuarios.setVisibleRowCount(9);
-        lst_Usuarios.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                lst_UsuariosValueChanged(evt);
-            }
-        });
-        sp_ListaMedidas.setViewportView(lst_Usuarios);
 
         btn_Actualizar.setForeground(java.awt.Color.blue);
         btn_Actualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/EditGroup_16x16.png"))); // NOI18N
@@ -121,6 +183,19 @@ public class UsuariosGUI extends JDialog {
             }
         });
 
+        tbl_Resultado.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tbl_Resultado);
+
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
         panelPrincipal.setLayout(panelPrincipalLayout);
         panelPrincipalLayout.setHorizontalGroup(
@@ -128,15 +203,14 @@ public class UsuariosGUI extends JDialog {
             .addGroup(panelPrincipalLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(panelPrincipalLayout.createSequentialGroup()
                         .addComponent(btn_Agregar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
                         .addComponent(btn_Actualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, 0)
-                        .addComponent(btn_Eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(sp_ListaMedidas))
-                .addContainerGap())
+                        .addComponent(btn_Eliminar, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panelPrincipalLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Actualizar, btn_Agregar, btn_Eliminar});
@@ -145,13 +219,13 @@ public class UsuariosGUI extends JDialog {
             panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelPrincipalLayout.createSequentialGroup()
                 .addGap(11, 11, 11)
-                .addComponent(sp_ListaMedidas, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_Agregar)
                     .addComponent(btn_Actualizar)
                     .addComponent(btn_Eliminar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         panelPrincipalLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Actualizar, btn_Agregar, btn_Eliminar});
@@ -165,8 +239,10 @@ public class UsuariosGUI extends JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panelPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_Usuarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lbl_Usuarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(panelPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -183,36 +259,45 @@ public class UsuariosGUI extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarActionPerformed
-        try {
-            if (usuarioSeleccionado != null) {
-                //Si el usuario activo corresponde con el usuario seleccionado para modificar
-                int respuesta;
-                if (UsuarioActivo.getInstance().getUsuario().getNombre().equals(usuarioSeleccionado.getNombre())) {
-                    respuesta = JOptionPane.showConfirmDialog(this,
-                            ResourceBundle.getBundle("Mensajes").getString("mensaje_eliminar_usuario_propio"),
-                            "Eliminar", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-                } else {
-                    respuesta = JOptionPane.showConfirmDialog(this,
-                            ResourceBundle.getBundle("Mensajes").getString("mensaje_eliminar_usuario")
-                            + usuarioSeleccionado.getNombre() + "?",
-                            "Eliminar", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if (existeUsuarioSeleccionado()) {
+            try {
+                if (usuarioSeleccionado != null) {
+                    //Si el usuario activo corresponde con el usuario seleccionado para modificar
+                    int respuesta;
+                    if (UsuarioActivo.getInstance().getUsuario().getNombre().equals(usuarioSeleccionado.getNombre())) {
+                        respuesta = JOptionPane.showConfirmDialog(this,
+                                ResourceBundle.getBundle("Mensajes").getString("mensaje_eliminar_usuario_propio"),
+                                "Eliminar", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        respuesta = JOptionPane.showConfirmDialog(this,
+                                ResourceBundle.getBundle("Mensajes").getString("mensaje_eliminar_usuario")
+                                + usuarioSeleccionado.getNombre() + "?",
+                                "Eliminar", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    }
+
+                    if (respuesta == JOptionPane.YES_OPTION) {
+                        RestClient.getRestTemplate().delete("/usuarios/" + usuarioSeleccionado.getId_Usuario());
+                        LOGGER.warn("El usuario " + usuarioSeleccionado.getNombre() + " se elimino correctamente.");
+                        usuarioSeleccionado = null;
+                        this.cargarUsuarios();
+                        this.cargarRenglonesAlTable();
+                    }
                 }
 
-                if (respuesta == JOptionPane.YES_OPTION) {
-                    RestClient.getRestTemplate().delete("/usuarios/" + usuarioSeleccionado.getId_Usuario());
-                    LOGGER.warn("El usuario " + usuarioSeleccionado.getNombre() + " se elimino correctamente.");
-                    usuarioSeleccionado = null;
-                    this.cargarUsuarios();
-                }
+            } catch (RestClientResponseException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ResourceAccessException ex) {
+                LOGGER.error(ex.getMessage());
+                JOptionPane.showMessageDialog(this,
+                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
-
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+        } else if (tbl_Resultado.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_no_seleccionado"),
+                        "Aviso", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_mas_de_uno_seleccionado"),
+                        "Aviso", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btn_EliminarActionPerformed
 
@@ -222,35 +307,41 @@ public class UsuariosGUI extends JDialog {
         gui_DetalleUsuario.setLocationRelativeTo(this);
         gui_DetalleUsuario.setVisible(true);
         this.cargarUsuarios();
+        this.cargarRenglonesAlTable();
     }//GEN-LAST:event_btn_AgregarActionPerformed
 
     private void btn_ActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ActualizarActionPerformed
-        if (usuarioSeleccionado != null) {
-            //Si el usuario activo corresponde con el usuario seleccionado para modificar
-            int respuesta = JOptionPane.YES_OPTION;            
-            if (UsuarioActivo.getInstance().getUsuario().getNombre().equals(usuarioSeleccionado.getNombre())) {
-                mismoUsuarioActivo = true;
-                respuesta = JOptionPane.showConfirmDialog(this,
-                        ResourceBundle.getBundle("Mensajes").getString("mensaje_modificar_el_usuario_propio"),
-                        "Atención", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);                
-            }
-
-            if (respuesta == JOptionPane.YES_OPTION) {
-                DetalleUsuarioGUI gui_DetalleUsuario = new DetalleUsuarioGUI(usuarioSeleccionado);
-                gui_DetalleUsuario.setModal(true);
-                gui_DetalleUsuario.setLocationRelativeTo(this);
-                gui_DetalleUsuario.setVisible(true);                
-                if (mismoUsuarioActivo == true) {
-                    UsuarioActivo.getInstance().setUsuario(usuarioSeleccionado);
+        if (existeUsuarioSeleccionado()) {        
+            if (usuarioSeleccionado != null) {
+                //Si el usuario activo corresponde con el usuario seleccionado para modificar
+                int respuesta = JOptionPane.YES_OPTION;            
+                if (UsuarioActivo.getInstance().getUsuario().getNombre().equals(usuarioSeleccionado.getNombre())) {
+                    mismoUsuarioActivo = true;
+                    respuesta = JOptionPane.showConfirmDialog(this,
+                            ResourceBundle.getBundle("Mensajes").getString("mensaje_modificar_el_usuario_propio"),
+                            "Atención", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);                
                 }
-                this.cargarUsuarios();
+
+                if (respuesta == JOptionPane.YES_OPTION) {
+                    DetalleUsuarioGUI gui_DetalleUsuario = new DetalleUsuarioGUI(usuarioSeleccionado);
+                    gui_DetalleUsuario.setModal(true);
+                    gui_DetalleUsuario.setLocationRelativeTo(this);
+                    gui_DetalleUsuario.setVisible(true);                
+                    if (mismoUsuarioActivo == true) {
+                        UsuarioActivo.getInstance().setUsuario(usuarioSeleccionado);
+                    }
+                    this.cargarUsuarios();
+                    this.cargarRenglonesAlTable();
+                }
             }
+        } else if (tbl_Resultado.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_no_seleccionado"),
+                        "Aviso", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_mas_de_uno_seleccionado"),
+                        "Aviso", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btn_ActualizarActionPerformed
-
-    private void lst_UsuariosValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lst_UsuariosValueChanged
-        usuarioSeleccionado = (Usuario) lst_Usuarios.getSelectedValue();        
-    }//GEN-LAST:event_lst_UsuariosValueChanged
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         this.comprobarPrivilegiosUsuarioActivo();        
@@ -259,9 +350,9 @@ public class UsuariosGUI extends JDialog {
     private javax.swing.JButton btn_Actualizar;
     private javax.swing.JButton btn_Agregar;
     private javax.swing.JButton btn_Eliminar;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_Usuarios;
-    private javax.swing.JList lst_Usuarios;
     private javax.swing.JPanel panelPrincipal;
-    private javax.swing.JScrollPane sp_ListaMedidas;
+    private javax.swing.JTable tbl_Resultado;
     // End of variables declaration//GEN-END:variables
 }
