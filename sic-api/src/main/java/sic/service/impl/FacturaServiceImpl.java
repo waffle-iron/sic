@@ -128,12 +128,11 @@ public class FacturaServiceImpl implements IFacturaService {
         if (empresa.getCondicionIVA().isDiscriminaIVA()) {
             if (cliente.getCondicionIVA().isDiscriminaIVA()) {
                 //cuando la Empresa discrimina IVA y el Cliente tambien
-                String[] tiposPermitidos = new String[5];
+                String[] tiposPermitidos = new String[4];
                 tiposPermitidos[0] = "Factura A";
-                tiposPermitidos[1] = "Factura B";
-                tiposPermitidos[2] = "Factura X";
-                tiposPermitidos[3] = "Factura Y";
-                tiposPermitidos[4] = "Pedido";
+                tiposPermitidos[1] = "Factura X";
+                tiposPermitidos[2] = "Factura Y";
+                tiposPermitidos[3] = "Pedido";
                 return tiposPermitidos;
             } else {
                 //cuando la Empresa discrminina IVA y el Cliente NO
