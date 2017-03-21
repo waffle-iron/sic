@@ -132,7 +132,7 @@ public class BuscarProductosGUI extends JDialog {
             try {
                 renglon = RestClient.getRestTemplate().getForObject("/facturas/renglon?"
                         + "idProducto=" + prodSeleccionado.getId_Producto()
-                        + "&tipoDeComprobante=" + this.tipoComprobante
+                        + "&tipoDeComprobante=" + this.tipoComprobante.name()
                         + "&movimiento=" + tipoMovimiento
                         + "&cantidad=" + txt_Cantidad.getValue().toString()
                         + "&descuentoPorcentaje=" + txt_PorcentajeDescuento.getValue().toString(),
