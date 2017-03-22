@@ -1,8 +1,12 @@
 package sic.vista.swing;
 
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 import java.util.ResourceBundle;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +15,8 @@ import org.springframework.web.client.RestClientResponseException;
 import sic.RestClient;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.EmpresaActiva;
+import sic.util.FiltroImagenes;
+import sic.util.Utilidades;
 
 public class ConfiguracionDelSistemaGUI extends JDialog {
 
@@ -23,7 +29,8 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
     }
 
     private void setIcon() {
-        ImageIcon iconoVentana = new ImageIcon(ConfiguracionDelSistemaGUI.class.getResource("/sic/icons/Gears_16x16.png"));
+        ImageIcon iconoVentana = new ImageIcon(ConfiguracionDelSistemaGUI.class
+                .getResource("/sic/icons/Gears_16x16.png"));
         this.setIconImage(iconoVentana.getImage());
     }
 
@@ -34,7 +41,8 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
 
     private ConfiguracionDelSistema getConfiguracionDelSistema() {
         cdsModificar.setUsarFacturaVentaPreImpresa(chk_PreImpresas.isSelected());
-        cdsModificar.setCantidadMaximaDeRenglonesEnFactura(Integer.parseInt(txt_CantMaximaRenglones.getValue().toString()));
+        cdsModificar.setCantidadMaximaDeRenglonesEnFactura(
+                Integer.parseInt(txt_CantMaximaRenglones.getValue().toString()));
         return cdsModificar;
     }
 
@@ -48,6 +56,16 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
         chk_PreImpresas = new javax.swing.JCheckBox();
         lbl_CantMaxRenglones = new javax.swing.JLabel();
         txt_CantMaximaRenglones = new javax.swing.JFormattedTextField();
+        panelFE = new javax.swing.JPanel();
+        lbl_UsarFE = new javax.swing.JLabel();
+        chk_UsarFE = new javax.swing.JCheckBox();
+        lbl_Certificado = new javax.swing.JLabel();
+        btn_BuscarCertificado = new javax.swing.JButton();
+        lbl_Firmante = new javax.swing.JLabel();
+        txt_FirmanteCert = new javax.swing.JTextField();
+        lbl_Contrasenia = new javax.swing.JLabel();
+        txt_contraseniaCert = new javax.swing.JPasswordField();
+        lbl_certEstado = new javax.swing.JLabel();
         lbl_Leyenda = new javax.swing.JLabel();
         btn_Guardar = new javax.swing.JButton();
 
@@ -78,12 +96,12 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
             .addGroup(panelReportesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelReportesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbl_CantMaxRenglones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_CantMaxRenglones, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                     .addComponent(lbl_PreImpresas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(10, 10, 10)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelReportesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(chk_PreImpresas)
-                    .addComponent(txt_CantMaximaRenglones, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_CantMaximaRenglones, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelReportesLayout.setVerticalGroup(
@@ -101,27 +119,100 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        panelFE.setBorder(javax.swing.BorderFactory.createTitledBorder("Factura Electronica"));
+
+        lbl_UsarFE.setText("Usar AFIP Factura Electronica:");
+
+        lbl_Certificado.setText("Certificado Digital AFIP:");
+
+        btn_BuscarCertificado.setForeground(java.awt.Color.blue);
+        btn_BuscarCertificado.setText("Buscar");
+        btn_BuscarCertificado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_BuscarCertificadoActionPerformed(evt);
+            }
+        });
+
+        lbl_Firmante.setText("Firmante Certificado:");
+
+        lbl_Contrasenia.setText("Contraseña Certificado:");
+
+        lbl_certEstado.setForeground(java.awt.Color.red);
+        lbl_certEstado.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbl_certEstado.setText("No cargado");
+
+        javax.swing.GroupLayout panelFELayout = new javax.swing.GroupLayout(panelFE);
+        panelFE.setLayout(panelFELayout);
+        panelFELayout.setHorizontalGroup(
+            panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFELayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(lbl_UsarFE, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                    .addComponent(lbl_Certificado, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_Firmante, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_Contrasenia, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(txt_FirmanteCert, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(chk_UsarFE)
+                        .addGroup(panelFELayout.createSequentialGroup()
+                            .addComponent(btn_BuscarCertificado)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(lbl_certEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(txt_contraseniaCert))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panelFELayout.setVerticalGroup(
+            panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelFELayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(lbl_UsarFE)
+                    .addComponent(chk_UsarFE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(lbl_Certificado)
+                    .addComponent(btn_BuscarCertificado)
+                    .addComponent(lbl_certEstado))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(lbl_Firmante)
+                    .addComponent(txt_FirmanteCert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(lbl_Contrasenia)
+                    .addComponent(txt_contraseniaCert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout panelGeneralLayout = new javax.swing.GroupLayout(panelGeneral);
         panelGeneral.setLayout(panelGeneralLayout);
         panelGeneralLayout.setHorizontalGroup(
             panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelGeneralLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panelReportes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(panelReportes, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelFE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelGeneralLayout.setVerticalGroup(
             panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelGeneralLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(panelReportes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap()
+                .addComponent(panelReportes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(panelFE, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        lbl_Leyenda.setFont(new java.awt.Font("DejaVu Sans", 0, 15)); // NOI18N
+        lbl_Leyenda.setFont(new java.awt.Font("DejaVu Sans", 1, 15)); // NOI18N
         lbl_Leyenda.setText("La siguiente configuración se aplica a la empresa seleccionada:");
 
         btn_Guardar.setForeground(java.awt.Color.blue);
-        btn_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Save_16x16.png"))); // NOI18N
+        btn_Guardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Accept_16x16.png"))); // NOI18N
         btn_Guardar.setText("Guardar");
         btn_Guardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -136,14 +227,13 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lbl_Leyenda)
+                        .addGap(0, 29, Short.MAX_VALUE))
+                    .addComponent(panelGeneral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btn_Guardar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(panelGeneral, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(lbl_Leyenda, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(btn_Guardar)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -192,14 +282,52 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
         }
     }//GEN-LAST:event_btn_GuardarActionPerformed
 
+    private void btn_BuscarCertificadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarCertificadoActionPerformed
+        JFileChooser menuElegirLogo = new JFileChooser();
+        menuElegirLogo.setAcceptAllFileFilterUsed(false);
+        menuElegirLogo.addChoosableFileFilter(new FiltroImagenes());
+        try {
+            if (menuElegirLogo.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                if (Utilidades.esTamanioValido(menuElegirLogo.getSelectedFile(), 512000)) {
+                    File file = menuElegirLogo.getSelectedFile();
+                    //logo = Utilidades.convertirFileIntoByteArray(file);
+                    ImageIcon logoProvisional = new ImageIcon(menuElegirLogo.getSelectedFile().getAbsolutePath());
+                    ImageIcon logoRedimensionado = new ImageIcon(logoProvisional.getImage().getScaledInstance(114, 114, Image.SCALE_SMOOTH));
+                    //lbl_Logo.setIcon(logoRedimensionado);
+                    //lbl_Logo.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(this, "El tamaño del archivo seleccionado, supera el límite de 512kb.",
+                        "Error", JOptionPane.ERROR_MESSAGE);
+                    //logo = null;
+                }
+            } else {
+                //logo = null;
+            }
+        } catch (IOException ex) {
+            String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_error_IOException");
+            LOGGER.error(mensaje + " - " + ex.getMessage());
+            JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btn_BuscarCertificadoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_BuscarCertificado;
     private javax.swing.JButton btn_Guardar;
     private javax.swing.JCheckBox chk_PreImpresas;
+    private javax.swing.JCheckBox chk_UsarFE;
     private javax.swing.JLabel lbl_CantMaxRenglones;
+    private javax.swing.JLabel lbl_Certificado;
+    private javax.swing.JLabel lbl_Contrasenia;
+    private javax.swing.JLabel lbl_Firmante;
     private javax.swing.JLabel lbl_Leyenda;
     private javax.swing.JLabel lbl_PreImpresas;
+    private javax.swing.JLabel lbl_UsarFE;
+    private javax.swing.JLabel lbl_certEstado;
+    private javax.swing.JPanel panelFE;
     private javax.swing.JPanel panelGeneral;
     private javax.swing.JPanel panelReportes;
     private javax.swing.JFormattedTextField txt_CantMaximaRenglones;
+    private javax.swing.JTextField txt_FirmanteCert;
+    private javax.swing.JPasswordField txt_contraseniaCert;
     // End of variables declaration//GEN-END:variables
 }
