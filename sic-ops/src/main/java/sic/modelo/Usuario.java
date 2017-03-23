@@ -13,7 +13,7 @@ public class Usuario implements Serializable {
     private String nombre;
     private String password;
     private String token;
-    private List<Rol> rol;
+    private List<Rol> roles;
     private boolean permisosAdministrador;
     private boolean eliminado;
 

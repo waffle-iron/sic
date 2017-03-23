@@ -99,7 +99,7 @@ public class UsuariosGUI extends JDialog {
         usuarios.stream().map((usuario) -> {
             Object[] fila = new Object[4];
             fila[0] = usuario.getNombre();
-            List<Rol> roles = usuario.getRol();
+            List<Rol> roles = usuario.getRoles();
             for (Rol rol : roles) {
                 if (Rol.ADMINISTRADOR.equals(rol)) {
                     fila[1] = true;

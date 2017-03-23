@@ -18,7 +18,7 @@ public interface UsuarioRepository extends PagingAndSortingRepository<Usuario, L
 
       List<Usuario> findAllByAndEliminadoOrderByNombreAsc(boolean eliminado);
       
-      List<Usuario> findAllByAndEliminadoAndRolOrderByNombreAsc(boolean eliminado, Rol rol);
+      List<Usuario> findAllByAndEliminadoAndRolesOrderByNombreAsc(boolean eliminado, Rol rol);
 
       List<Usuario> findAllByAndPermisosAdministradorAndEliminadoOrderByNombreAsc(boolean permisosAdministrador, boolean eliminado);
     

@@ -45,7 +45,7 @@ public class Usuario implements Serializable {
         joinColumns = @JoinColumn(name = "id_Usuario"))
     @Enumerated(EnumType.STRING)
     @Column(name="nombre")
-    private List<Rol> rol;
+    private List<Rol> roles;
 
     private boolean permisosAdministrador;
 

@@ -54,7 +54,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Override
     public List<Usuario> getUsuariosPorRol(Rol rol) {
-        return usuarioRepository.findAllByAndEliminadoAndRolOrderByNombreAsc(false, rol);
+        return usuarioRepository.findAllByAndEliminadoAndRolesOrderByNombreAsc(false, rol);
     }
 
     @Override

@@ -44,7 +44,7 @@ public class DetalleUsuarioGUI extends JDialog {
     private void cargarUsuarioParaModificar() {
         txt_Usuario.setText(usuarioModificar.getNombre());        
         chk_Administrador.setSelected(usuarioModificar.isPermisosAdministrador());
-        List<Rol> roles = usuarioModificar.getRol();
+        List<Rol> roles = usuarioModificar.getRoles();
         for (Rol rol : roles) {
             if (Rol.ADMINISTRADOR.equals(rol)) {
                 chk_Administrador.setSelected(true);
@@ -234,7 +234,7 @@ public class DetalleUsuarioGUI extends JDialog {
                     if (chk_Viajante.isSelected()) {
                         roles.add(Rol.VIAJANTE);
                     }
-                    usuario.setRol(roles);
+                    usuario.setRoles(roles);
                     RestClient.getRestTemplate().postForObject("/usuarios", usuario, Usuario.class);                 
                     LOGGER.warn("El usuario " + usuario.getNombre() + " se creo correctamente.");
                     this.dispose();
@@ -262,7 +262,7 @@ public class DetalleUsuarioGUI extends JDialog {
                     if (chk_Viajante.isSelected()) {
                         roles.add(Rol.VIAJANTE);
                     }
-                    usuarioModificado.setRol(roles);
+                    usuarioModificado.setRoles(roles);
                     RestClient.getRestTemplate().put("/usuarios", usuarioModificado);
                     LOGGER.warn("El usuario " + usuarioModificado.getNombre() + " se modifico correctamente.");
                     this.dispose();                    

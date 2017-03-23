@@ -135,7 +135,7 @@ public class FacturaBIntegrationTest {
                 .withNombre("Fernando Aguirre")
                 .withPassword("fernando")
                 .withToken("yJhbGci1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJjZWNpbGlvIn0.MCfaorSC7Wdc8rSW7BJizasfzsb")
-                .withRol(new ArrayList<>())
+                .withRol(new ArrayList<>(Arrays.asList(Rol.VIAJANTE)))
                 .build();
         Cliente cliente = new ClienteBuilder()
                 .withEmpresa(empresa)
