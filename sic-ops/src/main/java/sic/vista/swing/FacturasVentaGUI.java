@@ -687,7 +687,7 @@ public class FacturasVentaGUI extends JInternalFrame {
         dc_FechaHasta.setDateFormatString("dd/MM/yyyy");
         dc_FechaHasta.setEnabled(false);
 
-        chk_Viajante.setText("Viajante");
+        chk_Viajante.setText("Viajante:");
         chk_Viajante.setToolTipText("");
         chk_Viajante.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {

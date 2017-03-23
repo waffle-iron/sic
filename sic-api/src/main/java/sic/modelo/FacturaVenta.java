@@ -23,14 +23,10 @@ public class FacturaVenta extends Factura implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_Usuario", referencedColumnName = "id_Usuario")
     private Usuario usuario;
-    
-    @ManyToOne
-    @JoinColumn(name = "id_Viajante", referencedColumnName = "id_Usuario")
-    private Usuario viajante;
 
     public FacturaVenta() {}
 
-    public FacturaVenta(Cliente cliente, Usuario usuario, Usuario viajante, long id_Factura, Date fecha,
+    public FacturaVenta(Cliente cliente, Usuario usuario, long id_Factura, Date fecha,
             char tipoFactura, long numSerie, long numFactura, Date fechaVencimiento,
             Pedido pedido, Transportista transportista, List<RenglonFactura> renglones,
             List<Pago> pagos, double subTotal, double recargo_porcentaje, double recargo_neto,
@@ -44,7 +40,6 @@ public class FacturaVenta extends Factura implements Serializable {
                 pagada, empresa, eliminada);
         this.cliente = cliente;
         this.usuario = usuario;
-        this.viajante = viajante;
     }
     
     

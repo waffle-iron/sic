@@ -38,6 +38,9 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         if (criteria.isBuscaUsuario() == true) {
             query += " AND f.usuario = " + criteria.getUsuario().getId_Usuario();
         }
+        if (criteria.isBuscaViajante() == true) {
+            query += " AND f.cliente.viajante = " + criteria.getViajante().getId_Usuario();
+        }
         //Nro de Factura
         if (criteria.isBuscaPorNumeroFactura() == true) {
             query += " AND f.numSerie = " + criteria.getNumSerie() + " AND f.numFactura = " + criteria.getNumFactura();
@@ -127,6 +130,9 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         //Usuario
         if (criteria.isBuscaUsuario() == true) {
             query += " AND f.usuario = " + criteria.getUsuario().getId_Usuario();
+        }
+        if (criteria.isBuscaViajante() == true) {
+            query += " AND f.cliente.viajante = " + criteria.getViajante().getId_Usuario();
         }
         //Nro de Factura
         if (criteria.isBuscaPorNumeroFactura() == true) {
@@ -219,6 +225,9 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         if (criteria.isBuscaUsuario() == true) {
             query += " AND f.usuario = " + criteria.getUsuario().getId_Usuario();
         }
+        if (criteria.isBuscaViajante() == true) {
+            query += " AND f.cliente.viajante = " + criteria.getViajante().getId_Usuario();
+        }
         //Nro de Factura
         if (criteria.isBuscaPorNumeroFactura() == true) {
             query += " AND f.numSerie = " + criteria.getNumSerie() + " AND f.numFactura = " + criteria.getNumFactura();
@@ -266,7 +275,7 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
             query += " AND f.usuario = " + criteria.getUsuario().getId_Usuario();
         }
         if (criteria.isBuscaViajante() == true) {
-            query += " AND f.viajante = " + criteria.getViajante().getId_Usuario();
+            query += " AND f.cliente.viajante = " + criteria.getViajante().getId_Usuario();
         }
         //Nro de Factura
         if (criteria.isBuscaPorNumeroFactura() == true) {

@@ -10,5 +10,4 @@ public class FacturaVenta extends Factura implements Serializable {
 
     private Cliente cliente;
     private Usuario usuario;
-    private Usuario viajante;
 }

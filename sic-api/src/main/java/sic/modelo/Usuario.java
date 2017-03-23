@@ -44,7 +44,7 @@ public class Usuario implements Serializable {
     @CollectionTable(name="rol",
         joinColumns = @JoinColumn(name = "id_Usuario"))
     @Enumerated(EnumType.STRING)
-    @Column(name="tipo")
+    @Column(name="nombre")
     private List<Rol> rol;
 
     private boolean permisosAdministrador;

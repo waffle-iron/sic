@@ -685,6 +685,10 @@ public class FacturaServiceImpl implements IFacturaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
         }
+        if (criteria.isBuscaViajante() == true && criteria.getViajante() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_viajante_vacio"));
+        }
         return facturaRepository.calcularTotalFacturadoVenta(criteria);
     }
 
@@ -755,6 +759,10 @@ public class FacturaServiceImpl implements IFacturaService {
         if (criteria.isBuscaUsuario() == true && criteria.getUsuario() == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
+        }
+        if (criteria.isBuscaViajante() == true && criteria.getViajante() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_viajante_vacio"));
         }
         char[] tipoFactura = {FACTURA_A, FACTURA_B};
         return facturaRepository.calcularIVA_Venta(criteria, tipoFactura);
@@ -828,6 +836,10 @@ public class FacturaServiceImpl implements IFacturaService {
         if (criteria.isBuscaUsuario() == true && criteria.getUsuario() == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_usuario_vacio"));
+        }
+        if (criteria.isBuscaViajante() == true && criteria.getViajante() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_factura_viajante_vacio"));
         }
         return facturaRepository.calcularGananciaTotal(criteria);
     }

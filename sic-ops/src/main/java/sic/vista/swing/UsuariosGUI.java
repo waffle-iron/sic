@@ -125,7 +125,7 @@ public class UsuariosGUI extends JDialog {
     }
     
     private boolean existeUsuarioSeleccionado() {
-        if (tbl_Resultado.getSelectedRow() != -1 && tbl_Resultado.getSelectedRowCount() == 1) {
+        if (tbl_Resultado.getSelectedRow() != -1) {
             int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultado);
             usuarioSeleccionado = usuarios.get(indexFilaSeleccionada);
             return true;
@@ -194,6 +194,7 @@ public class UsuariosGUI extends JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tbl_Resultado.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(tbl_Resultado);
 
         javax.swing.GroupLayout panelPrincipalLayout = new javax.swing.GroupLayout(panelPrincipal);
@@ -292,12 +293,6 @@ public class UsuariosGUI extends JDialog {
                         ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } else if (tbl_Resultado.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_no_seleccionado"),
-                        "Aviso", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_mas_de_uno_seleccionado"),
-                        "Aviso", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btn_EliminarActionPerformed
 
@@ -334,12 +329,6 @@ public class UsuariosGUI extends JDialog {
                     this.cargarRenglonesAlTable();
                 }
             }
-        } else if (tbl_Resultado.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_no_seleccionado"),
-                        "Aviso", JOptionPane.INFORMATION_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_usuario_mas_de_uno_seleccionado"),
-                        "Aviso", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btn_ActualizarActionPerformed
 
