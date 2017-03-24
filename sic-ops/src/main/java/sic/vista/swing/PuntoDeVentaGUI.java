@@ -144,10 +144,11 @@ public class PuntoDeVentaGUI extends JDialog {
         factura.setSubTotal(Double.parseDouble(txt_Subtotal.getValue().toString()));
         factura.setDescuento_porcentaje(Double.parseDouble(txt_Decuento_porcentaje.getValue().toString()));
         factura.setDescuento_neto(Double.parseDouble(txt_Decuento_neto.getValue().toString()));
+        factura.setRecargo_porcentaje(Double.parseDouble(txt_Recargo_porcentaje.getValue().toString()));
+        factura.setRecargo_neto(Double.parseDouble(txt_Recargo_neto.getValue().toString()));
         factura.setSubTotal_neto(Double.parseDouble(txt_SubTotalNeto.getValue().toString()));
         factura.setIva_105_neto(Double.parseDouble(txt_IVA105_neto.getValue().toString()));
         factura.setIva_21_neto(Double.parseDouble(txt_IVA21_neto.getValue().toString()));
-        factura.setImpuestoInterno_neto(Double.parseDouble(txt_ImpInterno_neto.getValue().toString()));
         factura.setTotal(Double.parseDouble(txt_Total.getValue().toString()));                                             
         return factura;
     }
@@ -200,7 +201,7 @@ public class PuntoDeVentaGUI extends JDialog {
                 .getForObject("/formas-de-pago/predeterminada/empresas/"
                         + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                         FormaDePago.class);
-        return true;
+        return formaDePago != null;
     }
 
     private boolean existeTransportistaCargado() {
@@ -361,6 +362,7 @@ public class PuntoDeVentaGUI extends JDialog {
         txt_CodigoProducto.setText("");
         txta_Observaciones.setText("");
         txt_Decuento_porcentaje.setValue(0.0);
+        txt_Recargo_porcentaje.setValue(0.0);
         this.calcularResultados();
         this.tbtn_marcarDesmarcar.setSelected(false);
     }
@@ -454,16 +456,25 @@ public class PuntoDeVentaGUI extends JDialog {
                 LOGGER.error(mensaje + " - " + ex.getMessage());
             }
         }
+         if (txt_Recargo_porcentaje.isEditValid()) {
+            try {
+                txt_Recargo_porcentaje.commitEdit();
+            } catch (ParseException ex) {
+                String mensaje = "Se produjo un error analizando los campos.";
+                LOGGER.error(mensaje + " - " + ex.getMessage());
+            }
+        }
     }
 
     private void calcularResultados() {
         double subTotal;
         double descuento_porcentaje;
         double descuento_neto;
+        double recargo_porcentaje;
+        double recargo_neto;
         double subTotalNeto;
         double iva_105_neto;
-        double iva_21_neto;
-        double impInterno_neto;
+        double iva_21_neto;        
         double total;
         this.validarComponentesDeResultados();
         //SubTotal  
@@ -483,25 +494,33 @@ public class PuntoDeVentaGUI extends JDialog {
                     double.class);
             txt_Subtotal.setValue(subTotal);
 
-            //Recargo
+            //Descuento
             descuento_porcentaje = Double.parseDouble(txt_Decuento_porcentaje.getValue().toString());
             descuento_neto = RestClient.getRestTemplate().getForObject("/facturas/descuento-neto?"
                     + "subTotal=" + subTotal
                     + "&descuentoPorcentaje=" + descuento_porcentaje , double.class);
             txt_Decuento_neto.setValue(descuento_neto);
+            
+            //Regarco
+            recargo_porcentaje = Double.parseDouble(txt_Recargo_porcentaje.getValue().toString());
+            recargo_neto = RestClient.getRestTemplate().getForObject("/facturas/recargo-neto?"
+                    + "subTotal=" + subTotal
+                    + "&recargoPorcentaje=" + recargo_porcentaje,
+                    double.class);
+            txt_Recargo_neto.setValue(recargo_neto);
 
             //SubTotal neto
             subTotalNeto = RestClient.getRestTemplate().getForObject("/facturas/subtotal-neto?"
                     + "subTotal=" + subTotal
                     + "&descuentoNeto=" + descuento_neto
-                    + "&recargoNeto=0", double.class);
+                    + "&recargoNeto=" + recargo_neto, double.class);
             txt_SubTotalNeto.setValue(subTotalNeto);
 
             //iva 10,5% neto
             iva_105_neto = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?"
                     + "tipoFactura=" + this.tipoDeFactura
                     + "&descuentoPorcentaje=" + descuento_porcentaje
-                    + "&recargoPorcentaje=0"
+                    + "&recargoPorcentaje=" + recargo_porcentaje
                     + "&ivaPorcentaje=10.5"
                     + "&importe=" + Arrays.toString(importes).substring(1, Arrays.toString(importes).length() - 1)
                     + "&ivaRenglones=" + Arrays.toString(ivaRenglones).substring(1, Arrays.toString(ivaRenglones).length() - 1),
@@ -512,31 +531,21 @@ public class PuntoDeVentaGUI extends JDialog {
             iva_21_neto = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?"
                     + "tipoFactura=" + this.tipoDeFactura
                     + "&descuentoPorcentaje=" + descuento_porcentaje
-                    + "&recargoPorcentaje=0"
+                    + "&recargoPorcentaje=" + recargo_porcentaje
                     + "&ivaPorcentaje=21.0"
                     + "&importe=" + Arrays.toString(importes).substring(1, Arrays.toString(importes).length() - 1)
                     + "&ivaRenglones=" + Arrays.toString(ivaRenglones).substring(1, Arrays.toString(ivaRenglones).length() - 1),
                     double.class);
             txt_IVA21_neto.setValue(iva_21_neto);
 
-            //Imp Interno neto
-            impInterno_neto = RestClient.getRestTemplate().getForObject("/facturas/impuesto-interno-neto?"
-                    + "tipoFactura=" + this.tipoDeFactura
-                    + "&descuentoPorcentaje=" + descuento_porcentaje
-                    + "&recargoPorcentaje=0"
-                    + "&importe=" + Arrays.toString(importes).substring(1, Arrays.toString(importes).length() - 1)
-                    + "&impuestoPorcentaje=" + Arrays.toString(impuestoPorcentajes).substring(1, Arrays.toString(impuestoPorcentajes).length() - 1),
-                    double.class);
-            txt_ImpInterno_neto.setValue(impInterno_neto);
-
             //total
             total = RestClient.getRestTemplate().getForObject("/facturas/total?"
                     + "subTotal=" + subTotal
                     + "&descuentoNeto=" + descuento_neto
-                    + "&recargoNeto=0" 
+                    + "&recargoNeto=" + recargo_neto
                     + "&iva105Neto=" + iva_105_neto
                     + "&iva21Neto=" + iva_21_neto
-                    + "&impuestoInternoNeto=" + impInterno_neto, double.class);
+                    + "&impuestoInternoNeto=0", double.class);
             txt_Total.setValue(total);
             this.total = total;
         } catch (RestClientResponseException ex) {
@@ -793,14 +802,15 @@ public class PuntoDeVentaGUI extends JDialog {
         txt_Decuento_porcentaje = new javax.swing.JFormattedTextField();
         txt_Decuento_neto = new javax.swing.JFormattedTextField();
         lbl_DescuentoRecargo = new javax.swing.JLabel();
-        txt_ImpInterno_neto = new javax.swing.JFormattedTextField();
-        lbl_ImpInterno = new javax.swing.JLabel();
         txt_SubTotalNeto = new javax.swing.JFormattedTextField();
         lbl_SubTotalNeto = new javax.swing.JLabel();
         txt_IVA105_neto = new javax.swing.JFormattedTextField();
         lbl_IVA105 = new javax.swing.JLabel();
         lbl_105 = new javax.swing.JLabel();
         lbl_21 = new javax.swing.JLabel();
+        lbl_recargoPorcentaje = new javax.swing.JLabel();
+        txt_Recargo_neto = new javax.swing.JFormattedTextField();
+        txt_Recargo_porcentaje = new javax.swing.JFormattedTextField();
         btn_Continuar = new javax.swing.JButton();
         panelEncabezado = new javax.swing.JPanel();
         lbl_fechaFactura = new javax.swing.JLabel();
@@ -1126,17 +1136,6 @@ public class PuntoDeVentaGUI extends JDialog {
         lbl_DescuentoRecargo.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbl_DescuentoRecargo.setText("Descuento(%)");
 
-        txt_ImpInterno_neto.setEditable(false);
-        txt_ImpInterno_neto.setForeground(new java.awt.Color(29, 156, 37));
-        txt_ImpInterno_neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
-        txt_ImpInterno_neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txt_ImpInterno_neto.setText("0");
-        txt_ImpInterno_neto.setFocusable(false);
-        txt_ImpInterno_neto.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
-
-        lbl_ImpInterno.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        lbl_ImpInterno.setText("Imp. Interno");
-
         txt_SubTotalNeto.setEditable(false);
         txt_SubTotalNeto.setForeground(new java.awt.Color(29, 156, 37));
         txt_SubTotalNeto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
@@ -1161,81 +1160,121 @@ public class PuntoDeVentaGUI extends JDialog {
 
         lbl_21.setText("21 %");
 
+        lbl_recargoPorcentaje.setText("Recargo(%)");
+
+        txt_Recargo_neto.setEditable(false);
+        txt_Recargo_neto.setForeground(new java.awt.Color(29, 156, 37));
+        txt_Recargo_neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
+        txt_Recargo_neto.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_Recargo_neto.setText("0");
+        txt_Recargo_neto.setFocusable(false);
+        txt_Recargo_neto.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
+
+        txt_Recargo_porcentaje.setForeground(new java.awt.Color(29, 156, 37));
+        txt_Recargo_porcentaje.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#,##0.##"))));
+        txt_Recargo_porcentaje.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txt_Recargo_porcentaje.setText("0");
+        txt_Recargo_porcentaje.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
+        txt_Recargo_porcentaje.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txt_Recargo_porcentajeFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txt_Recargo_porcentajeFocusLost(evt);
+            }
+        });
+        txt_Recargo_porcentaje.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txt_Recargo_porcentajeActionPerformed(evt);
+            }
+        });
+        txt_Recargo_porcentaje.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_Recargo_porcentajeKeyTyped(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelResultadosLayout = new javax.swing.GroupLayout(panelResultados);
         panelResultados.setLayout(panelResultadosLayout);
         panelResultadosLayout.setHorizontalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelResultadosLayout.createSequentialGroup()
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbl_SubTotal, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                    .addComponent(lbl_SubTotal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(txt_Subtotal))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txt_Decuento_neto)
                     .addComponent(txt_Decuento_porcentaje)
-                    .addComponent(lbl_DescuentoRecargo, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
+                    .addComponent(lbl_DescuentoRecargo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbl_recargoPorcentaje)
+                    .addComponent(txt_Recargo_neto)
+                    .addComponent(txt_Recargo_porcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txt_SubTotalNeto)
-                    .addComponent(lbl_SubTotalNeto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lbl_SubTotalNeto))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lbl_105, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                    .addComponent(lbl_105, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(lbl_IVA105, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txt_IVA105_neto))
+                    .addComponent(txt_IVA105_neto, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(panelResultadosLayout.createSequentialGroup()
-                        .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txt_IVA21_neto)
-                            .addComponent(lbl_IVA21, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txt_ImpInterno_neto)
-                            .addComponent(lbl_ImpInterno, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)))
-                    .addComponent(lbl_21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(txt_IVA21_neto)
+                    .addComponent(lbl_IVA21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lbl_21, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(129, 129, 129)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txt_Total)
-                    .addComponent(lbl_Total, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE)))
+                    .addComponent(lbl_Total, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)))
         );
+
+        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {txt_Decuento_neto, txt_Decuento_porcentaje, txt_IVA105_neto, txt_IVA21_neto, txt_Recargo_neto, txt_Recargo_porcentaje, txt_SubTotalNeto, txt_Subtotal});
+
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(panelResultadosLayout.createSequentialGroup()
-                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lbl_IVA21)
-                    .addComponent(lbl_ImpInterno))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbl_21, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txt_ImpInterno_neto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_IVA21_neto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addGroup(panelResultadosLayout.createSequentialGroup()
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_DescuentoRecargo)
                     .addComponent(lbl_SubTotal)
                     .addComponent(lbl_Total)
-                    .addComponent(lbl_SubTotalNeto)
-                    .addComponent(lbl_IVA105))
+                    .addComponent(lbl_recargoPorcentaje))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
-                        .addComponent(lbl_105, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txt_SubTotalNeto, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txt_IVA105_neto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(panelResultadosLayout.createSequentialGroup()
                         .addComponent(txt_Decuento_porcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txt_Subtotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txt_Decuento_neto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(txt_Total)))
+                    .addComponent(txt_Total)
+                    .addGroup(panelResultadosLayout.createSequentialGroup()
+                        .addComponent(txt_Recargo_porcentaje, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txt_Recargo_neto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+            .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(panelResultadosLayout.createSequentialGroup()
+                    .addComponent(lbl_IVA21)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(lbl_21, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(txt_IVA21_neto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panelResultadosLayout.createSequentialGroup()
+                    .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lbl_SubTotalNeto)
+                        .addComponent(lbl_IVA105))
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(lbl_105, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(txt_SubTotalNeto, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txt_IVA105_neto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
 
-        panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lbl_105, lbl_21, txt_Decuento_neto, txt_Decuento_porcentaje, txt_IVA105_neto, txt_IVA21_neto, txt_ImpInterno_neto, txt_SubTotalNeto, txt_Subtotal});
+        panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lbl_105, lbl_21, txt_Decuento_neto, txt_Decuento_porcentaje, txt_IVA105_neto, txt_IVA21_neto, txt_Recargo_neto, txt_Recargo_porcentaje, txt_SubTotalNeto, txt_Subtotal});
 
         btn_Continuar.setForeground(java.awt.Color.blue);
         btn_Continuar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/22x22_FlechaGO.png"))); // NOI18N
@@ -1350,16 +1389,16 @@ public class PuntoDeVentaGUI extends JDialog {
                 .addContainerGap()
                 .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(panelRenglones, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelEncabezado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panelCliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panelGeneralLayout.createSequentialGroup()
-                        .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(panelGeneralLayout.createSequentialGroup()
                                 .addComponent(panelObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(225, 225, 225)
                                 .addComponent(btn_Continuar))
                             .addComponent(panelResultados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 59, Short.MAX_VALUE))
-                    .addComponent(panelEncabezado, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panelCliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         panelGeneralLayout.setVerticalGroup(
@@ -1644,6 +1683,27 @@ public class PuntoDeVentaGUI extends JDialog {
         gui_DetalleProducto.setVisible(true);
     }//GEN-LAST:event_btn_nuevoProductoActionPerformed
 
+    private void txt_Recargo_porcentajeFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_Recargo_porcentajeFocusGained
+        SwingUtilities.invokeLater(() -> {
+            txt_Recargo_porcentaje.selectAll();
+        });
+    }//GEN-LAST:event_txt_Recargo_porcentajeFocusGained
+
+    private void txt_Recargo_porcentajeFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_Recargo_porcentajeFocusLost
+        this.calcularResultados();
+    }//GEN-LAST:event_txt_Recargo_porcentajeFocusLost
+
+    private void txt_Recargo_porcentajeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_Recargo_porcentajeActionPerformed
+        this.calcularResultados();
+    }//GEN-LAST:event_txt_Recargo_porcentajeActionPerformed
+
+    private void txt_Recargo_porcentajeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_Recargo_porcentajeKeyTyped
+        char c = evt.getKeyChar();
+        if ((c < '0' || c > '9') && (c != ',') && (c != '.') && (c != '-')) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_Recargo_porcentajeKeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AddComment;
     private javax.swing.JButton btn_BuscarCliente;
@@ -1665,7 +1725,6 @@ public class PuntoDeVentaGUI extends JDialog {
     private javax.swing.JLabel lbl_IDFiscalCliente;
     private javax.swing.JLabel lbl_IVA105;
     private javax.swing.JLabel lbl_IVA21;
-    private javax.swing.JLabel lbl_ImpInterno;
     private javax.swing.JLabel lbl_NombreCliente;
     private javax.swing.JLabel lbl_Observaciones;
     private javax.swing.JLabel lbl_SubTotal;
@@ -1674,6 +1733,7 @@ public class PuntoDeVentaGUI extends JDialog {
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_fechaDeVencimiento;
     private javax.swing.JLabel lbl_fechaFactura;
+    private javax.swing.JLabel lbl_recargoPorcentaje;
     private javax.swing.JPanel panelCliente;
     private javax.swing.JPanel panelEncabezado;
     private javax.swing.JPanel panelGeneral;
@@ -1691,8 +1751,9 @@ public class PuntoDeVentaGUI extends JDialog {
     private javax.swing.JTextField txt_IDFiscalCliente;
     private javax.swing.JFormattedTextField txt_IVA105_neto;
     private javax.swing.JFormattedTextField txt_IVA21_neto;
-    private javax.swing.JFormattedTextField txt_ImpInterno_neto;
     private javax.swing.JTextField txt_NombreCliente;
+    private javax.swing.JFormattedTextField txt_Recargo_neto;
+    private javax.swing.JFormattedTextField txt_Recargo_porcentaje;
     private javax.swing.JFormattedTextField txt_SubTotalNeto;
     private javax.swing.JFormattedTextField txt_Subtotal;
     private javax.swing.JFormattedTextField txt_Total;
