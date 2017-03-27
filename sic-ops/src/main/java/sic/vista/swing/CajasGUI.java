@@ -203,10 +203,13 @@ public class CajasGUI extends JInternalFrame {
         AbrirCajaGUI abrirCaja = new AbrirCajaGUI(true);
         abrirCaja.setLocationRelativeTo(this);
         abrirCaja.setVisible(true);
-        this.abrirVentanaCaja(RestClient.getRestTemplate().getForObject("/cajas/empresas/"
+        Caja ultimaCaja = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
                     + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
-                    Caja.class));
-        this.limpiarResultados();        
+                    Caja.class);
+        if (ultimaCaja.getEstado().equals(EstadoCaja.ABIERTA)) {
+            this.abrirVentanaCaja(ultimaCaja);
+        }
+        this.limpiarResultados();
         this.buscar();        
     }
 
