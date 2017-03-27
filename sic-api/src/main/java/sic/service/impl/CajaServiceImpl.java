@@ -92,11 +92,11 @@ public class CajaServiceImpl implements ICajaService {
         }
         //Una Caja por dia
         Caja ultimaCaja = this.getUltimaCaja(caja.getEmpresa().getId_Empresa());
-        if(ultimaCaja.getEstado() == EstadoCaja.ABIERTA) {
+        if(ultimaCaja != null && ultimaCaja.getEstado() == EstadoCaja.ABIERTA) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_anterior_abierta"));
         }
-        if (Validator.compararFechas(ultimaCaja.getFechaApertura(), caja.getFechaApertura()) <= 0) {
+        if (ultimaCaja != null && Validator.compararFechas(ultimaCaja.getFechaApertura(), caja.getFechaApertura()) <= 0) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_fecha_apertura_no_valida"));
         }
@@ -158,7 +158,12 @@ public class CajaServiceImpl implements ICajaService {
 
     @Override
     public int getUltimoNumeroDeCaja(long idEmpresa) {
-        return this.getUltimaCaja(idEmpresa).getNroCaja();        
+        Caja caja = this.getUltimaCaja(idEmpresa);
+        if (caja == null) {
+            return 0;
+        } else {
+            return caja.getNroCaja();
+        }     
     }
  
     @Override
@@ -298,18 +303,19 @@ public class CajaServiceImpl implements ICajaService {
     
     @Override
     @Transactional
-    public Caja cerrarCaja(long idCaja, double monto, long idUsuario) {
+    public Caja cerrarCaja(long idCaja, double monto, Long idUsuario) {
         Caja cajaACerrar = this.getCajaPorId(idCaja);
         cajaACerrar.setSaldoReal(monto);
         cajaACerrar.setFechaCierre(new Date());
-        cajaACerrar.setUsuarioCierraCaja(usuarioService.getUsuarioPorId(idUsuario));
+        if (idUsuario != null) {
+            cajaACerrar.setUsuarioCierraCaja(usuarioService.getUsuarioPorId(idUsuario));
+        }
         cajaACerrar.setEstado(EstadoCaja.CERRADA);
         this.actualizar(cajaACerrar);
         return cajaACerrar;
     }
     
-    @PostConstruct                      // Ejecutar al iniciar el contexto
-    @Scheduled(cron = "00 00 00 * * *") // Todos los dias a las 00:00:00
+    @Scheduled(cron = "00 59 01 * * *") // Todos los dias a las 00:00:00
     public void cerrarCajas() {
         List<Empresa> empresas = this.empresaService.getEmpresas();
         for (Empresa empresa : empresas) {
@@ -320,11 +326,7 @@ public class CajaServiceImpl implements ICajaService {
                 fechaHoraCaja.setTime(ultimaCajaDeEmpresa.getFechaApertura());
                 LocalDate fechaCaja = LocalDate.of(fechaHoraCaja.get(Calendar.YEAR), fechaHoraCaja.get(Calendar.MONTH) + 1, fechaHoraCaja.get(Calendar.DAY_OF_MONTH));
                 if (fechaCaja.compareTo(fechaActual) < 0) {
-                    ultimaCajaDeEmpresa.setFechaCierre(new Date());
-                    ultimaCajaDeEmpresa.setUsuarioCierraCaja(ultimaCajaDeEmpresa.getUsuarioAbreCaja());
-                    ultimaCajaDeEmpresa.setEstado(EstadoCaja.CERRADA);
-                    ultimaCajaDeEmpresa.setSaldoReal(ultimaCajaDeEmpresa.getSaldoFinal());
-                    this.actualizar(ultimaCajaDeEmpresa);
+                    this.cerrarCaja(ultimaCajaDeEmpresa.getId_Caja(), ultimaCajaDeEmpresa.getSaldoFinal(), null);
                 }
             }
         }
