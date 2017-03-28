@@ -38,7 +38,7 @@ public class RubroServiceImpl implements IRubroService {
 
     @Override
     public List<Rubro> getRubros(Empresa empresa) {
-        return rubroRepository.findAllByAndEmpresaAndEliminado(empresa, false);
+        return rubroRepository.findAllByAndEmpresaAndEliminadoOrderByNombreAsc(empresa, false);
     }
 
     @Override

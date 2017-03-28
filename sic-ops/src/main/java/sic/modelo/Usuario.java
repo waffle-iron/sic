@@ -11,6 +11,7 @@ public class Usuario implements Serializable {
     private long id_Usuario;
     private String nombre;
     private String password;
+    private String token;
     private boolean permisosAdministrador;
     private boolean eliminado;
 

@@ -14,6 +14,6 @@ public interface LocalidadRepository extends PagingAndSortingRepository<Localida
       
       Localidad findByNombreAndProvinciaAndEliminadaOrderByNombreAsc(String nombre, Provincia provincia, boolean eliminada);
       
-      List<Localidad> findAllByAndProvinciaAndEliminada(Provincia provincia, boolean eliminada);
+      List<Localidad> findAllByAndProvinciaAndEliminadaOrderByNombreAsc(Provincia provincia, boolean eliminada);
     
 }

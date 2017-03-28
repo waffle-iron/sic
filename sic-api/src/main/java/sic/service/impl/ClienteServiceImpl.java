@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaClienteCriteria;
@@ -42,7 +43,7 @@ public class ClienteServiceImpl implements IClienteService {
 
     @Override
     public List<Cliente> getClientes(Empresa empresa) {        
-        return clienteRepository.findAllByAndEmpresaAndEliminado(empresa, false);                   
+        return clienteRepository.findAllByAndEmpresaAndEliminadoOrderByRazonSocialAsc(empresa, false);                   
     }
 
     @Override
@@ -108,7 +109,7 @@ public class ClienteServiceImpl implements IClienteService {
             builder.and(qcliente.localidad.provincia.pais.eq(criteria.getPais()));
         }
         List<Cliente> list = new ArrayList<>();
-        clienteRepository.findAll(builder).iterator().forEachRemaining(list::add);
+        clienteRepository.findAll(builder,  new Sort(Sort.Direction.ASC, "razonSocial")).iterator().forEachRemaining(list::add);
         return list;
     }
     

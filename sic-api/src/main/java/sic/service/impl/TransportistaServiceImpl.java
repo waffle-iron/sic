@@ -44,7 +44,7 @@ public class TransportistaServiceImpl implements ITransportistaService {
 
     @Override
     public List<Transportista> getTransportistas(Empresa empresa) {
-        List<Transportista> transportista =  transportistaRepository.findAllByAndEmpresaAndEliminado(empresa, false);
+        List<Transportista> transportista =  transportistaRepository.findAllByAndEmpresaAndEliminadoOrderByNombreAsc(empresa, false);
         if (transportista == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_transportista_ninguno_cargado"));

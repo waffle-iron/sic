@@ -38,7 +38,7 @@ public class LocalidadServiceImpl implements ILocalidadService {
     
     @Override
     public List<Localidad> getLocalidadesDeLaProvincia(Provincia provincia) {
-        return localidadRepository.findAllByAndProvinciaAndEliminada(provincia, false);
+        return localidadRepository.findAllByAndProvinciaAndEliminadaOrderByNombreAsc(provincia, false);
     }
 
     @Override

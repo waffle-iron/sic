@@ -117,7 +117,7 @@ public class FacturaServiceImplTest {
         when(condicionIVAqueDiscrimina.isDiscriminaIVA()).thenReturn(Boolean.TRUE);
         when(empresa.getCondicionIVA()).thenReturn(condicionIVAqueDiscrimina);
         when(cliente.getCondicionIVA()).thenReturn(condicionIVAqueDiscrimina);
-        TipoDeComprobante[] expResult = {TipoDeComprobante.FACTURA_A, TipoDeComprobante.FACTURA_B, TipoDeComprobante.FACTURA_X, TipoDeComprobante.FACTURA_Y, TipoDeComprobante.PEDIDO};
+        TipoDeComprobante[] expResult = {TipoDeComprobante.FACTURA_A, TipoDeComprobante.FACTURA_X, TipoDeComprobante.FACTURA_Y, TipoDeComprobante.PEDIDO};
         TipoDeComprobante[] result = facturaService.getTipoFacturaVenta(empresa, cliente);
         assertArrayEquals(expResult, result);
     }

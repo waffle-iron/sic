@@ -182,7 +182,7 @@
         </Container>
         <Component class="javax.swing.JLabel" name="lbl_movimientos">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Movimientos por Forma de Pago"/>
+            <Property name="text" type="java.lang.String" value="Movimientos por Forma de Pago (Seleccione una de la lista superior)"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btn_VerDetalle">

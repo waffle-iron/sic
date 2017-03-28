@@ -106,7 +106,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Transactional
     public void actualizar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, usuario);
-        usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
+        Usuario usuarioDB = usuarioRepository.findOne(usuario.getId_Usuario());
+        if (!usuario.getPassword().equals(usuarioDB.getPassword())) {
+            usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
+        }
         usuarioRepository.save(usuario);
     }
 
