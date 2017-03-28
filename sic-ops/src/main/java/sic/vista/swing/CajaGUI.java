@@ -285,7 +285,7 @@ public class CajaGUI extends JInternalFrame {
                     }
                 }
                 this.ftxt_saldoCaja.setValue(totalCaja);
-                caja.setSaldoFinal(totalCaja);
+//                caja.setSaldoFinal(totalCaja);
                 this.ftxt_TotalGeneral.setValue(totalGeneral);
                 //Guarda el monto final del último calculo en la caja
                 RestClient.getRestTemplate().put("/cajas", this.caja);
