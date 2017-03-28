@@ -376,7 +376,7 @@ public class ClientesGUI extends JInternalFrame {
                         .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txt_RazonSocialNombreFantasia)
                             .addComponent(txt_Id_Fiscal)
-                            .addComponent(cmb_Localidad, 0, 235, Short.MAX_VALUE)
+                            .addComponent(cmb_Localidad, 0, 276, Short.MAX_VALUE)
                             .addComponent(cmb_Provincia, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cmb_Pais, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(panelFiltrosLayout.createSequentialGroup()

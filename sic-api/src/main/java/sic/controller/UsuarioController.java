@@ -46,7 +46,7 @@ public class UsuarioController {
         return usuarioService.getUsuarios();
     }
     
-    @GetMapping("/usuarios/rol")
+    @GetMapping("/usuarios/roles")
     @ResponseStatus(HttpStatus.OK)
     public List<Usuario> getUsuariosPorRol(@RequestParam Rol rol) {
         return usuarioService.getUsuariosPorRol(rol);
