@@ -26,7 +26,7 @@ public interface IPagoService {
     
     double calcularTotalAdeudadoFacturas(List<Factura> facturas);
             
-    void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora);
+    void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota);
     
     void validarOperacion(Pago pago);     
 

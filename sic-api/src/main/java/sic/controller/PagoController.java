@@ -94,18 +94,15 @@ public class PagoController {
     public void pagarMultiplesFacturas(@RequestParam long[] idFactura,
                                        @RequestParam double monto,
                                        @RequestParam long idFormaDePago,                                       
-                                       @RequestParam long fechaHora,
                                        @RequestParam(required = false) String nota) {
         if (nota == null) {
             nota = "";
         }
-        Calendar fechaYHora = Calendar.getInstance();
-        fechaYHora.setTimeInMillis(fechaHora);
         List<Factura> facturas = new ArrayList<>();
         for (long i : idFactura) {
             facturas.add(facturaService.getFacturaPorId(i));
         }
         pagoService.pagarMultiplesFacturas(facturas, monto,
-                formaDePagoService.getFormasDePagoPorId(idFormaDePago), nota, fechaYHora.getTime());
+                formaDePagoService.getFormasDePagoPorId(idFormaDePago), nota);
     }
 }
