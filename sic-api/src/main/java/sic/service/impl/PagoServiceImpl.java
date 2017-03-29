@@ -110,6 +110,20 @@ public class PagoServiceImpl implements IPagoService {
         facturaService.actualizarFacturaEstadoPagada(pago.getFactura());
         LOGGER.warn("El Pago " + pago + " se eliminó correctamente.");
     }
+    
+    @Override
+    public double calcularTotalPagos(List<Pago> pagos) {
+        double total = 0.0;
+        for (Pago pago : pagos) {
+            if (pago.getFactura() instanceof FacturaVenta) {
+                total += pago.getMonto();
+            }
+            if (pago.getFactura() instanceof FacturaCompra) {
+                total -= pago.getMonto();
+            }
+        }
+        return total;
+    }
 
     @Override
     public double calcularTotalAdeudadoFacturasVenta(List<FacturaVenta> facturasVenta) {

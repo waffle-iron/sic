@@ -82,26 +82,6 @@ public class CajaController {
         return cajaService.cerrarCaja(idCaja, monto, idUsuarioCierre);
     }
     
-    @GetMapping("/cajas/total-pagos")
-    @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalPagos(@RequestParam long[] idPago) {
-        List<Pago> pagos = new ArrayList<>();
-        for(long id : idPago) {
-            pagos.add(pagoService.getPagoPorId(id));
-        }
-        return cajaService.calcularTotalPagos(pagos);
-    }
-    
-    @GetMapping("/cajas/total-gastos")
-    @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalGastos(@RequestParam long[] idGasto) {
-        List<Gasto> gastos = new ArrayList<>();
-        for(long id : idGasto) {
-            gastos.add(gastoService.getGastoPorId(id));
-        }
-        return cajaService.calcularTotalGastos(gastos);
-    }
-    
     @GetMapping("/cajas/busqueda/criteria")
     @ResponseStatus(HttpStatus.OK)
     public List<Caja> getCajasCriteria(@RequestParam(value = "idEmpresa") long idEmpresa,

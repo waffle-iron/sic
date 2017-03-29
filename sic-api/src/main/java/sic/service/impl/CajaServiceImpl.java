@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -165,29 +164,6 @@ public class CajaServiceImpl implements ICajaService {
             return caja.getNroCaja();
         }
     }
- 
-    @Override
-    public double calcularTotalPagos(List<Pago> pagos) {
-        double total = 0.0;
-        for (Pago pago : pagos) {
-            if (pago.getFactura() instanceof FacturaVenta) {
-                total += pago.getMonto();
-            }
-            if (pago.getFactura() instanceof FacturaCompra) {
-                total -= pago.getMonto();
-            }
-        }
-        return total;
-    }
-    
-    @Override
-    public double calcularTotalGastos(List<Gasto> gastos) {
-        double total = 0.0;
-        for (Gasto gasto : gastos) {
-            total += gasto.getMonto();
-        }
-        return total;
-    }
 
     @Override
     public List<Caja> getCajas(long idEmpresa, Date desde, Date hasta) {        
@@ -276,7 +252,7 @@ public class CajaServiceImpl implements ICajaService {
                     caja.getFechaApertura(), fechaReporte);
             List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(idEmpresa, formaDePago.getId_FormaDePago(),
                     caja.getFechaApertura(), fechaReporte);
-            totalFormaDePago = this.calcularTotalPagos(pagos) - this.calcularTotalGastos(gastos);
+            totalFormaDePago = pagoService.calcularTotalPagos(pagos) - gastoService.calcularTotalGastos(gastos);
             if (totalFormaDePago > 0) {
                 if (formaDePago.isAfectaCaja()) {
                     dataSource.add(formaDePago.getNombre() + " (Afecta Caja)" + "-" + Utilidades.truncarDecimal(totalFormaDePago, CANTIDAD_DECIMALES_TRUNCAMIENTO));
@@ -344,4 +320,5 @@ public class CajaServiceImpl implements ICajaService {
         }
         return saldoFinal;
     }
+    
 }

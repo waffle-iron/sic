@@ -20,6 +20,8 @@ public interface IPagoService {
 
     List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
     
+    double calcularTotalPagos(List<Pago> pagos);
+    
     double calcularTotalAdeudadoFacturasVenta(List<FacturaVenta> facturasVenta);
     
     double calcularTotalAdeudadoFacturasCompra(List<FacturaCompra> facturasCompra);

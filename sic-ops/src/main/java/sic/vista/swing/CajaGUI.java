@@ -245,7 +245,7 @@ public class CajaGUI extends JInternalFrame {
                         this.listaMovimientos.addAll(pagosPorFormaDePago);
                         this.listaMovimientos.addAll(gastosPorFormaDePago);
 
-                        String uriPagos = "/cajas/total-pagos?idPago=";
+                        String uriPagos = "/pagos/total-pagos?idPago=";
                         long[] idsPagos = new long[pagosPorFormaDePago.size()];
                         int indice = 0;
                         for (Pago pago : pagosPorFormaDePago) {
@@ -253,7 +253,7 @@ public class CajaGUI extends JInternalFrame {
                             indice++;
                         }
 
-                        String uriGastos = "/cajas/total-gastos?idGasto=";
+                        String uriGastos = "/gastos/total-gastos?idGasto=";
                         indice = 0;
                         long[] idsGastos = new long[gastosPorFormaDePago.size()];
                         for (Gasto gasto : gastosPorFormaDePago) {

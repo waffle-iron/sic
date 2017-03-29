@@ -57,6 +57,16 @@ public class PagoController {
         pagoService.eliminar(idPago);
     }
     
+    @GetMapping("/pagos/total-pagos")
+    @ResponseStatus(HttpStatus.OK)
+    public double calcularTotalPagos(@RequestParam long[] idPago) {
+        List<Pago> pagos = new ArrayList<>();
+        for (long id : idPago) {
+            pagos.add(pagoService.getPagoPorId(id));
+        }
+        return pagoService.calcularTotalPagos(pagos);
+    }
+    
     @GetMapping("/pagos/facturas/{idFactura}")
     @ResponseStatus(HttpStatus.OK)
     public List<Pago> getPagosDeLaFactura(@PathVariable long idFactura) {
