@@ -302,7 +302,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
             
             //IVA 10,5% neto
             iva105_neto = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?" 
-                    + "tipoDeComprobante=" + tipoDeComprobante
+                    + "tipoDeComprobante=" + tipoDeComprobante.name()
                     + "&descuentoPorcentaje=" + descuento_porcentaje
                     + "&recargoPorcentaje=0"
                     + "&ivaPorcentaje=10.5"
@@ -313,7 +313,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
 
             //IVA 21% neto
             iva21_neto = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?" 
-                    + "tipoDeComprobante=" + tipoDeComprobante
+                    + "tipoDeComprobante=" + tipoDeComprobante.name()
                     + "&descuentoPorcentaje=" + descuento_porcentaje
                     + "&recargoPorcentaje=0"
                     + "&ivaPorcentaje=21.0"
@@ -324,7 +324,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
 
             //imp. Interno
             impInterno_neto = RestClient.getRestTemplate().getForObject("/facturas/impuesto-interno-neto?"
-                    + "tipoDeComprobante=" + tipoDeComprobante
+                    + "tipoDeComprobante=" + tipoDeComprobante.name()
                     + "&descuentoPorcentaje=" + descuento_porcentaje
                     + "&recargoPorcentaje=0"
                     + "&importe=" + Arrays.toString(importe).substring(1, Arrays.toString(importe).length() - 1)
@@ -408,7 +408,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
         try {
             cmb_TipoFactura.addItem(RestClient.getRestTemplate()
                     .getForObject("/facturas/" + facturaParaMostrar.getId_Factura() + "/tipo",
-                    String.class));
+                    TipoDeComprobante.class));
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ResourceAccessException ex) {
@@ -480,7 +480,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
                         Producto.class);
                 RenglonFactura nuevoRenglon = RestClient.getRestTemplate().getForObject("/facturas/renglon?"
                         + "idProducto=" + producto.getId_Producto()
-                        + "&tipoDeComprobante=" + tipoDeComprobante
+                        + "&tipoDeComprobante=" + tipoDeComprobante.name()
                         + "&movimiento=" + Movimiento.COMPRA
                         + "&cantidad=" + renglon.getCantidad()
                         + "&descuentoPorcentaje=" + renglon.getDescuento_porcentaje(),                        
@@ -1121,7 +1121,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
     private void cmb_TipoFacturaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_TipoFacturaItemStateChanged
         //para evitar que pase null cuando esta recargando el comboBox
         if (cmb_TipoFactura.getSelectedItem() != null) {
-            tipoDeComprobante = (TipoDeComprobante)cmb_TipoFactura.getSelectedItem();
+            this.tipoDeComprobante = (TipoDeComprobante)cmb_TipoFactura.getSelectedItem();
             this.recargarRenglonesSegunTipoDeFactura();
         }
     }//GEN-LAST:event_cmb_TipoFacturaItemStateChanged

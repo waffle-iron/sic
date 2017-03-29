@@ -33,7 +33,7 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         }
         //Tipo de Factura
         if (criteria.isBuscaPorTipoComprobante() == true) {
-            query += " AND f.tipoComprobante = " + criteria.getTipoComprobante();
+            query += " AND f.tipoComprobante = " + "\'" + criteria.getTipoComprobante() + "\'";
         }
         //Usuario
         if (criteria.isBuscaUsuario() == true) {
@@ -115,7 +115,7 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         }
         //Tipo de Factura
         if (criteria.isBuscaPorTipoComprobante() == true) {
-            query += " AND f.tipoComprobante = " + criteria.getTipoComprobante();
+            query += " AND f.tipoComprobante = " + "\'" + criteria.getTipoComprobante() + "\'";
         }
         for (int i = 0; i < tipoComprobante.length; i++) {
             if (i == 0) {
@@ -214,7 +214,7 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         }
         //Tipo de Factura
         if (criteria.isBuscaPorTipoComprobante() == true) {
-            query += " AND f.tipoComprobante = " + criteria.getTipoComprobante() ;
+            query += " AND f.tipoComprobante = " + "\'" + criteria.getTipoComprobante() + "\'";
         }
         //Usuario
         if (criteria.isBuscaUsuario() == true) {
@@ -260,7 +260,7 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         }
         //Tipo de Factura
         if (criteria.isBuscaPorTipoComprobante()== true) {
-            query += " AND f.tipoComprobante = " + criteria.getTipoComprobante() ;
+            query += " AND f.tipoComprobante = " + "\'" + criteria.getTipoComprobante() + "\'";
         }
         //Usuario
         if (criteria.isBuscaUsuario() == true) {

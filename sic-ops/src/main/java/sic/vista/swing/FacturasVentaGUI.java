@@ -64,7 +64,7 @@ public class FacturasVentaGUI extends JInternalFrame {
                     + "&nroSerie=" + Long.valueOf(txt_SerieFactura.getText());
         }
         if (chk_TipoFactura.isSelected()) {
-            uriCriteria += "&tipoDeComprobante=" + cmb_TipoFactura.getSelectedItem();
+            uriCriteria += "&tipoDeComprobante=" + ((TipoDeComprobante)cmb_TipoFactura.getSelectedItem()).name();
         }
         if (chk_Usuario.isSelected()) {
             uriCriteria += "&idUsuario=" + ((Usuario) cmb_Usuario.getSelectedItem()).getId_Usuario();
@@ -83,7 +83,7 @@ public class FacturasVentaGUI extends JInternalFrame {
         String[] encabezados = new String[16];
         encabezados[0] = "Fecha Factura";
         encabezados[1] = "Tipo";
-        encabezados[2] = "Nº";
+        encabezados[2] = "Nº Factura";
         encabezados[3] = "Fecha Vencimiento";
         encabezados[4] = "Cliente";
         encabezados[5] = "Usuario (Vendedor)";
