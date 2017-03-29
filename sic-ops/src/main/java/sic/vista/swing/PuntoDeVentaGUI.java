@@ -501,7 +501,7 @@ public class PuntoDeVentaGUI extends JDialog {
                     + "&descuentoPorcentaje=" + descuento_porcentaje , double.class);
             txt_Decuento_neto.setValue(descuento_neto);
             
-            //Regarco
+            //Regargo
             recargo_porcentaje = Double.parseDouble(txt_Recargo_porcentaje.getValue().toString());
             recargo_neto = RestClient.getRestTemplate().getForObject("/facturas/recargo-neto?"
                     + "subTotal=" + subTotal
