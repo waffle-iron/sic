@@ -25,6 +25,7 @@ import sic.modelo.Factura;
 import sic.modelo.FacturaVenta;
 import sic.modelo.Usuario;
 import sic.modelo.Movimiento;
+import sic.modelo.TipoDeComprobante;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -63,7 +64,7 @@ public class FacturasVentaGUI extends JInternalFrame {
                     + "&nroSerie=" + Long.valueOf(txt_SerieFactura.getText());
         }
         if (chk_TipoFactura.isSelected()) {
-            uriCriteria += "&tipoFactura=" + cmb_TipoFactura.getSelectedItem().toString().charAt(0);
+            uriCriteria += "&tipoDeComprobante=" + ((TipoDeComprobante)cmb_TipoFactura.getSelectedItem()).name();
         }
         if (chk_Usuario.isSelected()) {
             uriCriteria += "&idUsuario=" + ((Usuario) cmb_Usuario.getSelectedItem()).getId_Usuario();
@@ -85,7 +86,7 @@ public class FacturasVentaGUI extends JInternalFrame {
         encabezados[2] = "Nº Factura";
         encabezados[3] = "Fecha Vencimiento";
         encabezados[4] = "Cliente";
-        encabezados[5] = "Usuario (Vendedor)";
+        encabezados[5] = "Vendedor";
         encabezados[6] = "Transportista";
         encabezados[7] = "Pagada";
         encabezados[8] = "SubTotal";
@@ -102,7 +103,7 @@ public class FacturasVentaGUI extends JInternalFrame {
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaFacturas.getColumnCount()];
         tipos[0] = Date.class;
-        tipos[1] = String.class;
+        tipos[1] = TipoDeComprobante.class;
         tipos[2] = String.class;
         tipos[3] = Date.class;
         tipos[4] = String.class;
@@ -126,11 +127,11 @@ public class FacturasVentaGUI extends JInternalFrame {
 
         //Tamanios de columnas
         tbl_Resultados.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tbl_Resultados.getColumnModel().getColumn(1).setPreferredWidth(60);
-        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(130);
+        tbl_Resultados.getColumnModel().getColumn(1).setPreferredWidth(80);
+        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(100);
         tbl_Resultados.getColumnModel().getColumn(3).setPreferredWidth(130);
         tbl_Resultados.getColumnModel().getColumn(4).setPreferredWidth(190);
-        tbl_Resultados.getColumnModel().getColumn(5).setPreferredWidth(140);
+        tbl_Resultados.getColumnModel().getColumn(5).setPreferredWidth(150);
         tbl_Resultados.getColumnModel().getColumn(6).setPreferredWidth(200);
         tbl_Resultados.getColumnModel().getColumn(7).setPreferredWidth(80);
         tbl_Resultados.getColumnModel().getColumn(8).setPreferredWidth(120);
@@ -277,7 +278,7 @@ public class FacturasVentaGUI extends JInternalFrame {
         facturas.stream().map((factura) -> {
             Object[] fila = new Object[16];
             fila[0] = factura.getFecha();
-            fila[1] = String.valueOf(factura.getTipoFactura());
+            fila[1] = factura.getTipoComprobante();
             fila[2] = factura.getNumSerie() + " - " + factura.getNumFactura();
             fila[3] = factura.getFechaVencimiento();
             fila[4] = factura.getCliente().getRazonSocial();
@@ -360,11 +361,11 @@ public class FacturasVentaGUI extends JInternalFrame {
 
     private void cargarTiposDeFactura() {
         try {
-            char[] tiposFactura = RestClient.getRestTemplate()
+            TipoDeComprobante[] tiposDeComprobantes = RestClient.getRestTemplate()
                 .getForObject("/facturas/tipos/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
-                char[].class);
-            for (int i = 0; tiposFactura.length > i; i++) {
-                cmb_TipoFactura.addItem(tiposFactura[i]);
+                TipoDeComprobante[].class);
+            for (int i = 0; tiposDeComprobantes.length > i; i++) {
+                cmb_TipoFactura.addItem(tiposDeComprobantes[i]);
             }
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

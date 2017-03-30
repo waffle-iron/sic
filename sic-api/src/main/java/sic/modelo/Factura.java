@@ -13,6 +13,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -30,7 +32,7 @@ import lombok.EqualsAndHashCode;
 @Table(name = "factura")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
-@EqualsAndHashCode(of = {"fecha", "tipoFactura", "numSerie", "numFactura", "empresa"})
+@EqualsAndHashCode(of = {"fecha", "tipoComprobante", "numSerie", "numFactura", "empresa"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Factura", scope = Factura.class)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
@@ -48,7 +50,8 @@ public abstract class Factura implements Serializable {
     private Date fecha;
 
     @Column(nullable = false)
-    private char tipoFactura;
+    @Enumerated(EnumType.STRING)
+    private TipoDeComprobante tipoComprobante;
 
     private long numSerie;
 
@@ -98,7 +101,7 @@ public abstract class Factura implements Serializable {
 
     public Factura() {}
         
-    public Factura(long id_Factura, Date fecha, char tipoFactura, long numSerie,
+    public Factura(long id_Factura, Date fecha, TipoDeComprobante tipoComprobante, long numSerie,
             long numFactura, Date fechaVencimiento, Pedido pedido, Transportista transportista,
             List<RenglonFactura> renglones, List<Pago> pagos, double subTotal,
             double recargo_porcentaje, double recargo_neto, double descuento_porcentaje,
@@ -107,7 +110,7 @@ public abstract class Factura implements Serializable {
             Empresa empresa, boolean eliminada) {
         this.id_Factura = id_Factura;
         this.fecha = fecha;
-        this.tipoFactura = tipoFactura;
+        this.tipoComprobante = tipoComprobante;
         this.numSerie = numSerie;
         this.numFactura = numFactura;
         this.fechaVencimiento = fechaVencimiento;

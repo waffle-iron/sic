@@ -282,12 +282,14 @@ public class CajaServiceImpl implements ICajaService {
         cajaACerrar.setSaldoFinal(this.getSaldoFinalCaja(cajaACerrar));
         cajaACerrar.setSaldoReal(monto);
         cajaACerrar.setFechaCierre(new Date());
-        cajaACerrar.setUsuarioCierraCaja(usuarioService.getUsuarioPorId(idUsuario));
+        if (idUsuario != null) {
+            cajaACerrar.setUsuarioCierraCaja(usuarioService.getUsuarioPorId(idUsuario));
+        }
         cajaACerrar.setEstado(EstadoCaja.CERRADA);
         this.actualizar(cajaACerrar);
         return cajaACerrar;
-    }
-    
+    }    
+
     @Scheduled(cron = "00 00 00 * * *") // Todos los dias a las 00:00:00
     public void cerrarCajas() {
         List<Empresa> empresas = this.empresaService.getEmpresas();

@@ -36,6 +36,7 @@ import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Movimiento;
 import sic.modelo.Producto;
+import sic.modelo.TipoDeComprobante;
 import sic.modelo.Transportista;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
@@ -43,7 +44,7 @@ import sic.util.Utilidades;
 public class PuntoDeVentaGUI extends JDialog {
 
     private Empresa empresa;
-    private String tipoDeFactura;
+    private TipoDeComprobante tipoDeComprobante;
     private Cliente cliente;
     private List<RenglonFactura> renglones = new ArrayList<>();
     private ModeloTabla modeloTablaResultados = new ModeloTabla();
@@ -84,17 +85,17 @@ public class PuntoDeVentaGUI extends JDialog {
         dc_fechaFactura.addKeyListener(keyHandler);
         dc_fechaVencimiento.addKeyListener(keyHandler);
         btn_nuevoProducto.addKeyListener(keyHandler);
-    }
+    }   
     
     public void cargarPedidoParaFacturar() {
         try {
             this.empresa = pedido.getEmpresa();
             this.cargarCliente(pedido.getCliente());
-            this.cargarTiposDeComprobantesDisponibles();
-            this.tipoDeFactura = cmb_TipoComprobante.getSelectedItem().toString();
+            this.cargarTiposDeComprobantesDisponibles();            
+            this.tipoDeComprobante = (TipoDeComprobante) cmb_TipoComprobante.getSelectedItem();
             this.renglones = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
                     .getForObject("/facturas/renglones/pedidos/" + pedido.getId_Pedido()
-                            + "?tipoComprobante=" + this.tipoDeFactura,
+                            + "?tipoDeComprobante=" + this.tipoDeComprobante.name(),
                             RenglonFactura[].class)));
             EstadoRenglon[] marcaDeRenglonesDelPedido = new EstadoRenglon[renglones.size()];
             for (int i = 0; i < renglones.size(); i++) {
@@ -119,8 +120,8 @@ public class PuntoDeVentaGUI extends JDialog {
         return this.pedido;
     }
 
-    public String getTipoDeComprobante() {
-        return tipoDeFactura;
+    public TipoDeComprobante getTipoDeComprobante() {
+        return tipoDeComprobante;
     }
 
     public List<RenglonFactura> getRenglones() {
@@ -134,7 +135,7 @@ public class PuntoDeVentaGUI extends JDialog {
     public FacturaVenta construirFactura() {
         FacturaVenta factura = new FacturaVenta();
         factura.setFecha(this.dc_fechaFactura.getDate());
-        factura.setTipoFactura(this.tipoDeFactura.charAt(this.tipoDeFactura.length() - 1));
+        factura.setTipoComprobante(this.tipoDeComprobante);
         factura.setFechaVencimiento(this.dc_fechaVencimiento.getDate());        
         factura.setRenglones(this.getRenglones());
         factura.setObservaciones(this.txta_Observaciones.getText().trim());
@@ -202,7 +203,7 @@ public class PuntoDeVentaGUI extends JDialog {
                 .getForObject("/formas-de-pago/predeterminada/empresas/"
                         + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
                         FormaDePago.class);
-        return true;
+        return (formaDePago != null);
     }
 
     private boolean existeTransportistaCargado() {
@@ -277,7 +278,7 @@ public class PuntoDeVentaGUI extends JDialog {
                             .getForObject("/productos/" + renglon.getId_ProductoItem(), Producto.class);
                     renglones.set(i, RestClient.getRestTemplate().getForObject("/facturas/renglon?"
                             + "idProducto=" + producto.getId_Producto()
-                            + "&tipoComprobante=" + this.tipoDeFactura
+                            + "&tipoDeComprobante=" + this.tipoDeComprobante.name()
                             + "&movimiento=" + Movimiento.VENTA
                             + "&cantidad=" + (renglones.get(i).getCantidad() + renglon.getCantidad())
                             + "&descuentoPorcentaje=" + renglon.getDescuento_porcentaje(),
@@ -368,10 +369,10 @@ public class PuntoDeVentaGUI extends JDialog {
     }
 
     private void buscarProductoConVentanaAuxiliar() {
-        if (cantidadMaximaRenglones > renglones.size()) {
-            Movimiento movimiento = cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido") ? Movimiento.PEDIDO : Movimiento.VENTA;
+        if (cantidadMaximaRenglones > renglones.size()) {            
+            Movimiento movimiento = this.tipoDeComprobante.equals(TipoDeComprobante.PEDIDO) ? Movimiento.PEDIDO : Movimiento.VENTA;
             // revisar esto, es necesario para el movimiento como String y a su vez el movimiento?
-            BuscarProductosGUI GUI_buscarProductos = new BuscarProductosGUI(this, true, renglones, cmb_TipoComprobante.getSelectedItem().toString(), movimiento);
+            BuscarProductosGUI GUI_buscarProductos = new BuscarProductosGUI(this, true, renglones, this.tipoDeComprobante, movimiento);
             GUI_buscarProductos.setVisible(true);
             if (GUI_buscarProductos.debeCargarRenglon()) {
                 boolean renglonCargado = false;
@@ -417,7 +418,7 @@ public class PuntoDeVentaGUI extends JDialog {
                     + "/stock/disponibilidad?cantidad=1", boolean.class)) {
                 RenglonFactura renglon = RestClient.getRestTemplate().getForObject("/facturas/renglon?"
                         + "idProducto=" + producto.getId_Producto()
-                        + "&tipoComprobante=" + this.tipoDeFactura
+                        + "&tipoDeComprobante=" + this.tipoDeComprobante.name()
                         + "&movimiento=" + Movimiento.VENTA
                         + "&cantidad=1"
                         + "&descuentoPorcentaje=0.0",
@@ -500,8 +501,8 @@ public class PuntoDeVentaGUI extends JDialog {
             txt_SubTotalNeto.setValue(subTotalNeto);
 
             //iva 10,5% neto
-            iva_105_neto = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?"
-                    + "tipoFactura=" + this.tipoDeFactura
+            iva_105_neto = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?"                    
+                    + "tipoDeComprobante=" + this.tipoDeComprobante.name()
                     + "&descuentoPorcentaje=0"
                     + "&recargoPorcentaje=" + recargo_porcentaje
                     + "&ivaPorcentaje=10.5"
@@ -512,7 +513,7 @@ public class PuntoDeVentaGUI extends JDialog {
 
             //IVA 21% neto
             iva_21_neto = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?"
-                    + "tipoFactura=" + this.tipoDeFactura
+                    + "tipoDeComprobante=" + this.tipoDeComprobante.name()
                     + "&descuentoPorcentaje=0"
                     + "&recargoPorcentaje=" + recargo_porcentaje
                     + "&ivaPorcentaje=21.0"
@@ -523,7 +524,7 @@ public class PuntoDeVentaGUI extends JDialog {
 
             //Imp Interno neto
             impInterno_neto = RestClient.getRestTemplate().getForObject("/facturas/impuesto-interno-neto?"
-                    + "tipoFactura=" + this.tipoDeFactura
+                    + "tipoDeComprobante=" + this.tipoDeComprobante.name()
                     + "&descuentoPorcentaje=0"
                     + "&recargoPorcentaje=" + recargo_porcentaje
                     + "&importe=" + Arrays.toString(importes).substring(1, Arrays.toString(importes).length() - 1)
@@ -552,26 +553,12 @@ public class PuntoDeVentaGUI extends JDialog {
     }
 
     private void cargarTiposDeComprobantesDisponibles() {
+        TipoDeComprobante[] tiposDeComprobante =  new TipoDeComprobante[0]; 
         try {
             cmb_TipoComprobante.removeAllItems();
-            String[] tiposFactura = RestClient.getRestTemplate()
-                .getForObject("/facturas/venta/tipos/empresas/"+ EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
-                            + "/clientes/" + cliente.getId_Cliente(), String[].class);
-            for (int i = 0; tiposFactura.length > i; i++) {
-                cmb_TipoComprobante.addItem(tiposFactura[i]);
-            }
-            if (this.pedido != null) {
-                if (this.pedido.getId_Pedido() == 0) {
-                    cmb_TipoComprobante.removeAllItems();
-                    cmb_TipoComprobante.addItem("Pedido");
-                } else {
-                    cmb_TipoComprobante.removeItem("Pedido");
-                    if (this.modificandoPedido() == true) {
-                        cmb_TipoComprobante.removeAllItems();
-                        cmb_TipoComprobante.addItem("Pedido");
-                    }
-                }
-            }
+            tiposDeComprobante = RestClient.getRestTemplate()
+                    .getForObject("/facturas/venta/tipos/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
+                            + "/clientes/" + cliente.getId_Cliente(), TipoDeComprobante[].class);
         } catch (RestClientResponseException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ResourceAccessException ex) {
@@ -580,6 +567,21 @@ public class PuntoDeVentaGUI extends JDialog {
                     ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
+        for (int i = 0; tiposDeComprobante.length > i; i++) {
+            cmb_TipoComprobante.addItem(tiposDeComprobante[i]);
+        }
+        if (this.pedido != null) {
+            if (this.pedido.getId_Pedido() == 0) {
+                cmb_TipoComprobante.removeAllItems();
+                cmb_TipoComprobante.addItem("Pedido");
+            } else {
+                cmb_TipoComprobante.removeItem("Pedido");
+                if (this.modificandoPedido() == true) {
+                    cmb_TipoComprobante.removeAllItems();
+                    cmb_TipoComprobante.addItem("Pedido");
+                }
+            }
+        }        
     }
 
     private void recargarRenglonesSegunTipoDeFactura() {
@@ -591,8 +593,8 @@ public class PuntoDeVentaGUI extends JDialog {
                 Producto producto = RestClient.getRestTemplate()
                         .getForObject("/productos/" + renglonFactura.getId_ProductoItem(), Producto.class);
                 RenglonFactura renglon = RestClient.getRestTemplate().getForObject("/facturas/renglon?"
-                        + "idProducto=" + producto.getId_Producto()
-                        + "&tipoComprobante=" + this.tipoDeFactura
+                        + "idProducto=" + producto.getId_Producto()                        
+                        + "&tipoDeComprobante=" + this.tipoDeComprobante.name()
                         + "&movimiento=" + Movimiento.VENTA
                         + "&cantidad=" + renglonFactura.getCantidad()
                         + "&descuentoPorcentaje=" + renglonFactura.getDescuento_porcentaje(),
@@ -1448,7 +1450,7 @@ public class PuntoDeVentaGUI extends JDialog {
                 btn_NuevoCliente.setEnabled(false);
                 btn_BuscarCliente.setEnabled(false);
                 this.calcularResultados();
-                if (cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")) {
+                if (this.tipoDeComprobante.equals(TipoDeComprobante.PEDIDO)) {
                     txta_Observaciones.setText(this.pedido.getObservaciones());
                 }
             }
@@ -1469,10 +1471,10 @@ public class PuntoDeVentaGUI extends JDialog {
 
     private void cmb_TipoComprobanteItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmb_TipoComprobanteItemStateChanged
         //para evitar que pase null cuando esta recargando el comboBox
-        if (cmb_TipoComprobante.getSelectedItem() != null) {
-            this.tipoDeFactura = cmb_TipoComprobante.getSelectedItem().toString();
+        if (cmb_TipoComprobante.getSelectedItem() != null) {            
+            this.tipoDeComprobante = (TipoDeComprobante) cmb_TipoComprobante.getSelectedItem();
             this.recargarRenglonesSegunTipoDeFactura();
-            if (cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")) {
+            if (cmb_TipoComprobante.getSelectedItem().equals(TipoDeComprobante.PEDIDO)) {
                 this.txta_Observaciones.setText("Los precios se encuentran sujetos a modificaciones.");
             } else {
                 this.txta_Observaciones.setText("");
@@ -1515,7 +1517,7 @@ public class PuntoDeVentaGUI extends JDialog {
         } else {
             this.calcularResultados();
             try {
-                if (!cmb_TipoComprobante.getSelectedItem().toString().equals("Pedido")) {
+                if (!((TipoDeComprobante)cmb_TipoComprobante.getSelectedItem()).equals(TipoDeComprobante.PEDIDO)) {
                     List<RenglonFactura> productosFaltantes = new ArrayList();
                     for (RenglonFactura renglon : renglones) {
                         if (!RestClient.getRestTemplate().getForObject("/productos/" + renglon.getId_ProductoItem()
@@ -1546,8 +1548,8 @@ public class PuntoDeVentaGUI extends JDialog {
                                     + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
                                     + "&nroPedido=" + pedido.getNroPedido(), Pedido[].class));
                     if (pedidos.isEmpty()) {
-                        Pedido pedido = RestClient.getRestTemplate().postForObject("/pedidos", this.pedido, Pedido.class);
-                        this.lanzarReportePedido(pedido);
+                        Pedido p = RestClient.getRestTemplate().postForObject("/pedidos", this.pedido, Pedido.class);
+                        this.lanzarReportePedido(p);
                         this.limpiarYRecargarComponentes();
                     } else if ((this.pedido.getEstado() == EstadoPedido.ABIERTO || this.pedido.getEstado() == null) && this.modificarPedido == true) {
                         this.actualizarPedido(this.pedido);
