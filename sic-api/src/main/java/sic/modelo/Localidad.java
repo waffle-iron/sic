@@ -1,5 +1,6 @@
 package sic.modelo;
 
+import com.querydsl.core.annotations.QueryInit;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"nombre"})
 public class Localidad implements Serializable {
-
+    
     @Id
     @GeneratedValue
     private long id_Localidad;
@@ -33,6 +34,7 @@ public class Localidad implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "id_Provincia", referencedColumnName = "id_Provincia")
+    @QueryInit("pais")
     private Provincia provincia;
 
     private boolean eliminada;
