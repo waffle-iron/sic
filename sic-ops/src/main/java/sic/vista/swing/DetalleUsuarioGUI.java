@@ -14,6 +14,7 @@ import sic.RestClient;
 import sic.modelo.Rol;
 import sic.modelo.Usuario;
 import sic.modelo.TipoDeOperacion;
+import sic.modelo.UsuarioActivo;
 
 public class DetalleUsuarioGUI extends JDialog {
     
@@ -42,8 +43,7 @@ public class DetalleUsuarioGUI extends JDialog {
     }
     
     private void cargarUsuarioParaModificar() {
-        txt_Usuario.setText(usuarioModificar.getNombre());        
-        chk_Administrador.setSelected(usuarioModificar.isPermisosAdministrador());
+        txt_Usuario.setText(usuarioModificar.getNombre());
         List<Rol> roles = usuarioModificar.getRoles();
         for (Rol rol : roles) {
             if (Rol.ADMINISTRADOR.equals(rol)) {
@@ -211,70 +211,78 @@ public class DetalleUsuarioGUI extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_GuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_GuardarActionPerformed
-        try {
-            if (operacion == TipoDeOperacion.ALTA) {
-                if (new String(txt_Contrasenia.getPassword()).equals(new String(txt_RepetirContrasenia.getPassword()))) {
-                    Usuario usuario = new Usuario();
-                    usuario.setNombre(txt_Usuario.getText().trim());
-                    usuario.setPassword(new String(txt_Contrasenia.getPassword()));
-                    usuario.setPermisosAdministrador(chk_Administrador.isSelected());
-                    List<Rol> roles = new ArrayList<>();
-                    if (chk_Administrador.isSelected()) {
-                        roles.add(Rol.ADMINISTRADOR);
+        if (chk_Administrador.isSelected() || chk_Vendedor.isSelected() || chk_Viajante.isSelected()) {
+            try {
+                if (operacion == TipoDeOperacion.ALTA) {
+                    if (new String(txt_Contrasenia.getPassword()).equals(new String(txt_RepetirContrasenia.getPassword()))) {
+                        Usuario usuario = new Usuario();
+                        usuario.setNombre(txt_Usuario.getText().trim());
+                        usuario.setPassword(new String(txt_Contrasenia.getPassword()));
+                        List<Rol> roles = new ArrayList<>();
+                        if (chk_Administrador.isSelected()) {
+                            roles.add(Rol.ADMINISTRADOR);
+                        }
+                        if (chk_Vendedor.isSelected()) {
+                            roles.add(Rol.VENDEDOR);
+                        }
+                        if (chk_Viajante.isSelected()) {
+                            roles.add(Rol.VIAJANTE);
+                        }
+                        usuario.setRoles(roles);
+                        RestClient.getRestTemplate().postForObject("/usuarios", usuario, Usuario.class);                 
+                        LOGGER.warn("El usuario " + usuario.getNombre() + " se creo correctamente.");
+                        this.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(this, 
+                            "Las contraseñas introducidas deben ser las mismas.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                    if (chk_Vendedor.isSelected()) {
-                        roles.add(Rol.VENDEDOR);
-                    }
-                    if (chk_Viajante.isSelected()) {
-                        roles.add(Rol.VIAJANTE);
-                    }
-                    usuario.setRoles(roles);
-                    RestClient.getRestTemplate().postForObject("/usuarios", usuario, Usuario.class);                 
-                    LOGGER.warn("El usuario " + usuario.getNombre() + " se creo correctamente.");
-                    this.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(this, 
-                        "Las contraseñas introducidas deben ser las mismas.",
-                        "Error", JOptionPane.ERROR_MESSAGE);
                 }
-            }
 
-            if (operacion == TipoDeOperacion.ACTUALIZACION) {
-                if (new String(txt_Contrasenia.getPassword()).equals(new String(txt_RepetirContrasenia.getPassword()))) {
-                    Usuario usuarioModificado = new Usuario();
-                    usuarioModificado.setId_Usuario(usuarioModificar.getId_Usuario());
-                    usuarioModificado.setNombre(txt_Usuario.getText().trim());
-                    usuarioModificado.setPassword(new String(txt_Contrasenia.getPassword()));
-                    usuarioModificado.setPermisosAdministrador(chk_Administrador.isSelected());
-                    List<Rol> roles = new ArrayList<>();
-                    if (chk_Administrador.isSelected()) {
-                        roles.add(Rol.ADMINISTRADOR);
-                    }
-                    if (chk_Vendedor.isSelected()) {
-                        roles.add(Rol.VENDEDOR);
-                    }
-                    if (chk_Viajante.isSelected()) {
-                        roles.add(Rol.VIAJANTE);
-                    }
-                    usuarioModificado.setRoles(roles);
-                    RestClient.getRestTemplate().put("/usuarios", usuarioModificado);
-                    LOGGER.warn("El usuario " + usuarioModificado.getNombre() + " se modifico correctamente.");
-                    this.dispose();                    
-                } else {
-                    JOptionPane.showMessageDialog(this,
-                        "Las contraseñas introducidas deben ser las mismas.",
+                if (operacion == TipoDeOperacion.ACTUALIZACION) {
+                    if (new String(txt_Contrasenia.getPassword()).equals(new String(txt_RepetirContrasenia.getPassword()))) {
+                        Usuario usuarioModificado = new Usuario();
+                        usuarioModificado.setId_Usuario(usuarioModificar.getId_Usuario());
+                        usuarioModificado.setNombre(txt_Usuario.getText().trim());
+                        usuarioModificado.setPassword(new String(txt_Contrasenia.getPassword()));
+                        if (UsuarioActivo.getInstance().getUsuario().getNombre().equals(usuarioModificar.getNombre())) {
+                            usuarioModificado.setToken(usuarioModificar.getToken());
+                        }
+                        List<Rol> roles = new ArrayList<>();
+                        if (chk_Administrador.isSelected()) {
+                            roles.add(Rol.ADMINISTRADOR);
+                        }
+                        if (chk_Vendedor.isSelected()) {
+                            roles.add(Rol.VENDEDOR);
+                        }
+                        if (chk_Viajante.isSelected()) {
+                            roles.add(Rol.VIAJANTE);
+                        }
+                        usuarioModificado.setRoles(roles);
+                        RestClient.getRestTemplate().put("/usuarios", usuarioModificado);
+                        LOGGER.warn("El usuario " + usuarioModificado.getNombre() + " se modifico correctamente.");
+                        this.dispose();                    
+                    } else {
+                        JOptionPane.showMessageDialog(this,
+                            "Las contraseñas introducidas deben ser las mismas.",
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                    }                
+                }            
+
+            } catch (RestClientResponseException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ResourceAccessException ex) {
+                LOGGER.error(ex.getMessage());
+                JOptionPane.showMessageDialog(this,
+                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                         "Error", JOptionPane.ERROR_MESSAGE);
-                }                
-            }            
-
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
+            }
+        } else {
             JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+                ResourceBundle.getBundle("Mensajes").getString("mensaje_login_no_selecciono_rol"),
+                "Error", JOptionPane.ERROR_MESSAGE);
         }
+        
     }//GEN-LAST:event_btn_GuardarActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened

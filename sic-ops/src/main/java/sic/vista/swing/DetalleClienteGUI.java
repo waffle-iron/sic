@@ -118,6 +118,7 @@ public class DetalleClienteGUI extends JDialog {
     
     private void cargarComboBoxViajantes() {
         cmb_Viajante.removeAllItems();
+        cmb_Viajante.addItem(null);
         try {
             List<Usuario> usuarios = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
                                 .getForObject("/usuarios/roles?"
@@ -594,7 +595,9 @@ public class DetalleClienteGUI extends JDialog {
                 cliente.setCondicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem());
                 cliente.setDireccion(txt_Direccion.getText().trim());
                 cliente.setLocalidad((Localidad) cmb_Localidad.getSelectedItem());
-                cliente.setViajante((Usuario) cmb_Viajante.getSelectedItem());
+                if (cmb_Viajante.getSelectedItem() != null) {
+                    cliente.setViajante((Usuario) cmb_Viajante.getSelectedItem());
+                }
                 cliente.setTelPrimario(txt_TelPrimario.getText().trim());
                 cliente.setTelSecundario(txt_TelSecundario.getText().trim());
                 cliente.setContacto(txt_Contacto.getText().trim());
@@ -618,7 +621,11 @@ public class DetalleClienteGUI extends JDialog {
                 cliente.setCondicionIVA((CondicionIVA) cmb_CondicionIVA.getSelectedItem());
                 cliente.setDireccion(txt_Direccion.getText().trim());
                 cliente.setLocalidad((Localidad) cmb_Localidad.getSelectedItem());
-                cliente.setViajante((Usuario) cmb_Viajante.getSelectedItem());
+                if (cmb_Viajante.getSelectedItem() != null) {
+                    cliente.setViajante((Usuario) cmb_Viajante.getSelectedItem());
+                } else {
+                    cliente.setViajante(null);
+                }
                 cliente.setTelPrimario(txt_TelPrimario.getText().trim());
                 cliente.setTelSecundario(txt_TelSecundario.getText().trim());
                 cliente.setContacto(txt_Contacto.getText().trim());

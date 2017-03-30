@@ -13,11 +13,10 @@ public class UsuarioBuilder {
     private String password = "LaQueNoArde";
     private String token = "yJhbGci1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJjZWNpbGlvIn0.MCfaorSC7Wdc8rSW7BJizasfzsm";
     private List<Rol> roles = new ArrayList<>(Arrays.asList(Rol.ADMINISTRADOR));
-    private boolean permisosAdministrador = true;
     private boolean eliminado = false;
     
     public Usuario build() {
-        return new Usuario(id_Usuario, nombre, password, token, roles, permisosAdministrador, eliminado);
+        return new Usuario(id_Usuario, nombre, password, token, roles, eliminado);
     }
     
     public UsuarioBuilder withId_Usuario(long idUsuario) {
@@ -42,11 +41,6 @@ public class UsuarioBuilder {
     
     public UsuarioBuilder withRol(ArrayList<Rol> roles) {
         this.roles = roles;
-        return this;
-    }
-    
-    public UsuarioBuilder withPermisosAdministrador(boolean permisosAdministrador) {
-        this.permisosAdministrador = permisosAdministrador;
         return this;
     }
     

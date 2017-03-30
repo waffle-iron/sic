@@ -47,8 +47,6 @@ public class Usuario implements Serializable {
     @Column(name="nombre")
     private List<Rol> roles;
 
-    private boolean permisosAdministrador;
-
     private boolean eliminado;
 
     @Override

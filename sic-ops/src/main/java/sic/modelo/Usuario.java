@@ -14,7 +14,6 @@ public class Usuario implements Serializable {
     private String password;
     private String token;
     private List<Rol> roles;
-    private boolean permisosAdministrador;
     private boolean eliminado;
 
     @Override

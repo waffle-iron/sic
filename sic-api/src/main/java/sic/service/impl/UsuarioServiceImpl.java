@@ -59,7 +59,7 @@ public class UsuarioServiceImpl implements IUsuarioService {
 
     @Override
     public List<Usuario> getUsuariosAdministradores() {
-        return usuarioRepository.findAllByAndPermisosAdministradorAndEliminadoOrderByNombreAsc(true, false);
+        return usuarioRepository.findAllByAndRolesAndEliminadoOrderByNombreAsc(Rol.ADMINISTRADOR, false);
     }
 
     @Override
@@ -96,8 +96,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
             }
         }
         //Ultimo usuario administrador
-        if ((operacion == TipoDeOperacion.ACTUALIZACION && usuario.isPermisosAdministrador() == false)
-                || operacion == TipoDeOperacion.ELIMINACION && usuario.isPermisosAdministrador() == true) {
+        if ((operacion == TipoDeOperacion.ACTUALIZACION && usuario.getRoles().contains(Rol.ADMINISTRADOR) == false)
+                || operacion == TipoDeOperacion.ELIMINACION && usuario.getRoles().contains(Rol.ADMINISTRADOR) == true) {
             List<Usuario> adminitradores = this.getUsuariosAdministradores();
             if (adminitradores.size() == 1) {
                 if (adminitradores.get(0).getId_Usuario() == usuario.getId_Usuario()) {
