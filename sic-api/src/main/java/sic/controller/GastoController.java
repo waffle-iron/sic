@@ -63,7 +63,7 @@ public class GastoController {
                 fechaDesde.getTime(), fechaHasta.getTime());
     }
     
-    @GetMapping("/gastos/total-gastos")
+    @GetMapping("/gastos/total")
     @ResponseStatus(HttpStatus.OK)
     public double calcularTotalGastos(@RequestParam long[] idGasto) {
         List<Gasto> gastos = new ArrayList<>();

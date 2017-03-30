@@ -28,8 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
 import sic.modelo.Empresa;
-import sic.modelo.FacturaCompra;
-import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Gasto;
 import sic.modelo.Pago;
@@ -309,9 +307,9 @@ public class CajaServiceImpl implements ICajaService {
         }
     }
     
-    private Double getSaldoFinalCaja(Caja cajaACerrar) {
+    private double getSaldoFinalCaja(Caja cajaACerrar) {
         List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(cajaACerrar.getEmpresa());
-        Double saldoFinal = 0.0;
+        double saldoFinal = 0.0;
         for (FormaDePago fp : formasDePago) {
             List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(cajaACerrar.getEmpresa().getId_Empresa(), fp.getId_FormaDePago(), cajaACerrar.getFechaApertura(), new Date());
             List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(cajaACerrar.getEmpresa().getId_Empresa(), fp.getId_FormaDePago(), cajaACerrar.getFechaApertura(), new Date());
