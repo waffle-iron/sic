@@ -1,9 +1,7 @@
 package sic.vista.swing;
 
-import com.toedter.calendar.JDateChooser;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +10,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +34,7 @@ public class PagoMultiplesFacturasGUI extends JDialog {
 
     public PagoMultiplesFacturasGUI(JInternalFrame parent, List<Factura> facturas, Movimiento movimiento) {                
         this.setIcon();        
-        this.movimiento = movimiento;           
-        dc_Fecha = new JDateChooser();
-        dc_Fecha.setDate(new Date());        
+        this.movimiento = movimiento;                 
         this.facturas = this.ordenarFacturasPorFechaAsc(facturas);
         this.initComponents();        
     }
@@ -133,15 +128,11 @@ public class PagoMultiplesFacturasGUI extends JDialog {
         ftxt_Monto = new javax.swing.JFormattedTextField();
         lbl_Nota = new javax.swing.JLabel();
         ftxt_Nota = new javax.swing.JTextField();
-        lbl_Fecha = new javax.swing.JLabel();
-        dc_Fecha = new com.toedter.calendar.JDateChooser();
-        spinner_Hora = new javax.swing.JSpinner();
-        spinner_Minutos = new javax.swing.JSpinner();
         pnl_Botones = new javax.swing.JPanel();
-        lbl_Aceptar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbl_InformacionFacturas = new javax.swing.JTable();
         lbl_leyenda = new javax.swing.JLabel();
+        lbl_Aceptar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -171,32 +162,13 @@ public class PagoMultiplesFacturasGUI extends JDialog {
         lbl_Nota.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_Nota.setText("Nota:");
 
-        lbl_Fecha.setForeground(java.awt.Color.red);
-        lbl_Fecha.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lbl_Fecha.setText("* Fecha y Hora:");
-
-        dc_Fecha.setDate(new Date());
-        dc_Fecha.setDateFormatString("dd/MM/yyyy");
-
-        spinner_Hora.setModel(new SpinnerNumberModel(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 00, 23, 1));
-
-        spinner_Minutos.setModel(new SpinnerNumberModel(Calendar.getInstance().get(Calendar.MINUTE), 00, 59, 1));
-
         javax.swing.GroupLayout pnl_ParametrosLayout = new javax.swing.GroupLayout(pnl_Parametros);
         pnl_Parametros.setLayout(pnl_ParametrosLayout);
         pnl_ParametrosLayout.setHorizontalGroup(
             pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_ParametrosLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(pnl_ParametrosLayout.createSequentialGroup()
-                        .addComponent(lbl_Fecha)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dc_Fecha, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(spinner_Hora, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(spinner_Minutos, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_ParametrosLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnl_ParametrosLayout.createSequentialGroup()
                         .addComponent(lbl_Nota)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -209,25 +181,17 @@ public class PagoMultiplesFacturasGUI extends JDialog {
                         .addGroup(pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(ftxt_Monto, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(cmb_FormaDePago, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
-        pnl_ParametrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_Fecha, lbl_FormaDePago, lbl_Monto, lbl_Nota});
+        pnl_ParametrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {lbl_FormaDePago, lbl_Monto, lbl_Nota});
 
         pnl_ParametrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {cmb_FormaDePago, ftxt_Monto, ftxt_Nota});
-
-        pnl_ParametrosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {spinner_Hora, spinner_Minutos});
 
         pnl_ParametrosLayout.setVerticalGroup(
             pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ParametrosLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(dc_Fecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_Fecha)
-                    .addComponent(spinner_Hora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(spinner_Minutos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
                 .addGroup(pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_FormaDePago)
                     .addComponent(cmb_FormaDePago, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -239,33 +203,22 @@ public class PagoMultiplesFacturasGUI extends JDialog {
                 .addGroup(pnl_ParametrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lbl_Nota)
                     .addComponent(ftxt_Nota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(5, 5, 5))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pnl_ParametrosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {lbl_FormaDePago, lbl_Monto, lbl_Nota});
 
         pnl_ParametrosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {cmb_FormaDePago, ftxt_Monto, ftxt_Nota});
 
-        lbl_Aceptar.setForeground(java.awt.Color.blue);
-        lbl_Aceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Accept_16x16.png"))); // NOI18N
-        lbl_Aceptar.setText("Aceptar");
-        lbl_Aceptar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lbl_AceptarActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout pnl_BotonesLayout = new javax.swing.GroupLayout(pnl_Botones);
         pnl_Botones.setLayout(pnl_BotonesLayout);
         pnl_BotonesLayout.setHorizontalGroup(
             pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_BotonesLayout.createSequentialGroup()
-                .addGap(0, 304, Short.MAX_VALUE)
-                .addComponent(lbl_Aceptar))
+            .addGap(0, 409, Short.MAX_VALUE)
         );
         pnl_BotonesLayout.setVerticalGroup(
             pnl_BotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lbl_Aceptar)
+            .addGap(0, 32, Short.MAX_VALUE)
         );
 
         tbl_InformacionFacturas.setModel(new javax.swing.table.DefaultTableModel(
@@ -280,6 +233,15 @@ public class PagoMultiplesFacturasGUI extends JDialog {
 
         lbl_leyenda.setText("Facturas a pagar:");
 
+        lbl_Aceptar.setForeground(java.awt.Color.blue);
+        lbl_Aceptar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Accept_16x16.png"))); // NOI18N
+        lbl_Aceptar.setText("Aceptar");
+        lbl_Aceptar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lbl_AceptarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -287,15 +249,16 @@ public class PagoMultiplesFacturasGUI extends JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(pnl_Botones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(pnl_Parametros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbl_leyenda))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(pnl_Botones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lbl_Aceptar)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -304,11 +267,13 @@ public class PagoMultiplesFacturasGUI extends JDialog {
                 .addContainerGap()
                 .addComponent(lbl_leyenda)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnl_Parametros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnl_Botones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbl_Aceptar)
+                    .addComponent(pnl_Botones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -324,9 +289,6 @@ public class PagoMultiplesFacturasGUI extends JDialog {
                 if (ftxt_Monto.getValue() == null) {
                     ftxt_Monto.setText("0");
                 }
-                Calendar fechaYHora = dc_Fecha.getCalendar();
-                fechaYHora.set(Calendar.HOUR_OF_DAY, (int) spinner_Hora.getValue());
-                fechaYHora.set(Calendar.MINUTE, (int) spinner_Minutos.getValue());
                 double montoDelPago = Double.parseDouble(ftxt_Monto.getValue().toString());
                 int indice = 0;
                 long[] idsFacturas = new long[facturas.size()];
@@ -338,8 +300,7 @@ public class PagoMultiplesFacturasGUI extends JDialog {
                         + "idFactura=" + Arrays.toString(idsFacturas).substring(1, Arrays.toString(idsFacturas).length() - 1)
                         + "&monto=" + montoDelPago
                         + "&idFormaDePago=" + ((FormaDePago) cmb_FormaDePago.getSelectedItem()).getId_FormaDePago()
-                        + "&nota=" + ftxt_Nota.getText()
-                        + "&fechaHora=" + fechaYHora.getTimeInMillis(),
+                        + "&nota=" + ftxt_Nota.getText(),
                         null);
                 this.dispose();
             } catch (RestClientResponseException ex) {
@@ -383,20 +344,16 @@ public class PagoMultiplesFacturasGUI extends JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<FormaDePago> cmb_FormaDePago;
-    private com.toedter.calendar.JDateChooser dc_Fecha;
     private javax.swing.JFormattedTextField ftxt_Monto;
     private javax.swing.JTextField ftxt_Nota;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton lbl_Aceptar;
-    private javax.swing.JLabel lbl_Fecha;
     private javax.swing.JLabel lbl_FormaDePago;
     private javax.swing.JLabel lbl_Monto;
     private javax.swing.JLabel lbl_Nota;
     private javax.swing.JLabel lbl_leyenda;
     private javax.swing.JPanel pnl_Botones;
     private javax.swing.JPanel pnl_Parametros;
-    private javax.swing.JSpinner spinner_Hora;
-    private javax.swing.JSpinner spinner_Minutos;
     private javax.swing.JTable tbl_InformacionFacturas;
     // End of variables declaration//GEN-END:variables
   
