@@ -91,6 +91,15 @@ public class GastoServiceImpl implements IGastoService {
                     .getString("mensaje_gasto_duplicada"));
         }
     }
+    
+    @Override
+    public double calcularTotalGastos(List<Gasto> gastos) {
+        double total = 0.0;
+        for (Gasto gasto : gastos) {
+            total += gasto.getMonto();
+        }
+        return total;
+    }
 
     @Override
     @Transactional

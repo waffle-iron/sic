@@ -245,7 +245,7 @@ public class CajaGUI extends JInternalFrame {
                         this.listaMovimientos.addAll(pagosPorFormaDePago);
                         this.listaMovimientos.addAll(gastosPorFormaDePago);
 
-                        String uriPagos = "/cajas/total-pagos?idPago=";
+                        String uriPagos = "/pagos/total?idPago=";
                         long[] idsPagos = new long[pagosPorFormaDePago.size()];
                         int indice = 0;
                         for (Pago pago : pagosPorFormaDePago) {
@@ -253,7 +253,7 @@ public class CajaGUI extends JInternalFrame {
                             indice++;
                         }
 
-                        String uriGastos = "/cajas/total-gastos?idGasto=";
+                        String uriGastos = "/gastos/total?idGasto=";
                         indice = 0;
                         long[] idsGastos = new long[gastosPorFormaDePago.size()];
                         for (Gasto gasto : gastosPorFormaDePago) {
@@ -285,7 +285,6 @@ public class CajaGUI extends JInternalFrame {
                     }
                 }
                 this.ftxt_saldoCaja.setValue(totalCaja);
-                caja.setSaldoFinal(totalCaja);
                 this.ftxt_TotalGeneral.setValue(totalGeneral);
                 //Guarda el monto final del último calculo en la caja
                 RestClient.getRestTemplate().put("/cajas", this.caja);

@@ -4,8 +4,6 @@ import java.util.Date;
 import java.util.List;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
-import sic.modelo.Gasto;
-import sic.modelo.Pago;
 
 public interface ICajaService {
 
@@ -14,10 +12,6 @@ public interface ICajaService {
     void eliminar(Long idCaja);
     
     Caja getCajaPorId(Long id);
-  
-    double calcularTotalPagos(List<Pago> movimientos);
-    
-    double calcularTotalGastos(List<Gasto> movimientos);
     
     Caja getCajaPorNroYEmpresa(int nroCaja, long id_Empresa);
 

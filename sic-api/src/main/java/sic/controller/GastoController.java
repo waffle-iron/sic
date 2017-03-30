@@ -1,5 +1,6 @@
 package sic.controller;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,16 @@ public class GastoController {
         fechaHasta.setTimeInMillis(hasta);
         return gastoService.getGastosPorFechaYFormaDePago(idEmpresa, idFormaDePago,
                 fechaDesde.getTime(), fechaHasta.getTime());
+    }
+    
+    @GetMapping("/gastos/total")
+    @ResponseStatus(HttpStatus.OK)
+    public double calcularTotalGastos(@RequestParam long[] idGasto) {
+        List<Gasto> gastos = new ArrayList<>();
+        for (long id : idGasto) {
+            gastos.add(gastoService.getGastoPorId(id));
+        }
+        return gastoService.calcularTotalGastos(gastos);
     }
     
     @PostMapping("/gastos")
