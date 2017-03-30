@@ -1,6 +1,5 @@
 package sic.controller;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,32 +19,23 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
-import sic.modelo.Gasto;
-import sic.modelo.Pago;
 import sic.modelo.Usuario;
 import sic.service.ICajaService;
 import sic.service.IEmpresaService;
-import sic.service.IGastoService;
-import sic.service.IPagoService;
 import sic.service.IUsuarioService;
 
 @RestController
 @RequestMapping("/api/v1")
 public class CajaController {
     
-    private final ICajaService cajaService;
-    private final IPagoService pagoService;
-    private final IGastoService gastoService;
+    private final ICajaService cajaService;    
     private final IEmpresaService empresaService;
     private final IUsuarioService usuarioService;
     
     @Autowired
-    public CajaController(ICajaService cajaService, IPagoService pagoService,
-                          IGastoService gastoService, IEmpresaService empresaService,
+    public CajaController(ICajaService cajaService, IEmpresaService empresaService,
                           IUsuarioService usuarioService) {
-        this.cajaService = cajaService;
-        this.pagoService = pagoService;
-        this.gastoService = gastoService;
+        this.cajaService = cajaService;        
         this.empresaService = empresaService;
         this.usuarioService = usuarioService;
     }
@@ -80,26 +70,6 @@ public class CajaController {
                            @RequestParam double monto,
                            @RequestParam long idUsuarioCierre) {
         return cajaService.cerrarCaja(idCaja, monto, idUsuarioCierre);
-    }
-    
-    @GetMapping("/cajas/total-pagos")
-    @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalPagos(@RequestParam long[] idPago) {
-        List<Pago> pagos = new ArrayList<>();
-        for(long id : idPago) {
-            pagos.add(pagoService.getPagoPorId(id));
-        }
-        return cajaService.calcularTotalPagos(pagos);
-    }
-    
-    @GetMapping("/cajas/total-gastos")
-    @ResponseStatus(HttpStatus.OK)
-    public double calcularTotalGastos(@RequestParam long[] idGasto) {
-        List<Gasto> gastos = new ArrayList<>();
-        for(long id : idGasto) {
-            gastos.add(gastoService.getGastoPorId(id));
-        }
-        return cajaService.calcularTotalGastos(gastos);
     }
     
     @GetMapping("/cajas/busqueda/criteria")
