@@ -44,11 +44,11 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="panelGeneral" min="-2" max="-2" attributes="1"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="btn_Guardar" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -70,14 +70,14 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
                       <Component id="lbl_FormaDePago" alignment="0" max="32767" attributes="1"/>
+                      <Component id="lbl_Monto" alignment="0" max="32767" attributes="1"/>
                       <Component id="lbl_Nota" alignment="0" max="32767" attributes="1"/>
-                      <Component id="lbl_Monto" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="cmb_FormaDePago" alignment="0" pref="269" max="32767" attributes="0"/>
                       <Component id="txt_Monto" alignment="0" max="32767" attributes="2"/>
-                      <Component id="cmb_FormaDePago" alignment="0" pref="276" max="32767" attributes="0"/>
-                      <Component id="txt_Nota" max="32767" attributes="2"/>
+                      <Component id="txt_Nota" alignment="0" max="32767" attributes="2"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -85,20 +85,21 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="cmb_FormaDePago" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="lbl_FormaDePago" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="cmb_FormaDePago" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbl_FormaDePago" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="txt_Monto" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="lbl_Monto" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="txt_Monto" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbl_Monto" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="txt_Nota" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="lbl_Nota" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="lbl_Nota" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="txt_Nota" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -112,7 +113,7 @@
               <Color blue="0" green="0" id="red" palette="1" red="ff" type="palette"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="text" type="java.lang.String" value="* FormaDePago:"/>
+            <Property name="text" type="java.lang.String" value="* Forma de Pago:"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JFormattedTextField" name="txt_Monto">
@@ -133,7 +134,7 @@
               <Color blue="0" green="0" id="red" palette="1" red="ff" type="palette"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="4"/>
-            <Property name="text" type="java.lang.String" value="*Monto"/>
+            <Property name="text" type="java.lang.String" value="* Monto"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="txt_Nota">
@@ -150,9 +151,6 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lbl_Nota">
           <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="c0" green="c0" id="lightGray" palette="1" red="c0" type="palette"/>
-            </Property>
             <Property name="horizontalAlignment" type="int" value="4"/>
             <Property name="text" type="java.lang.String" value="Nota"/>
           </Properties>
