@@ -86,7 +86,7 @@ public class FacturasVentaGUI extends JInternalFrame {
         encabezados[2] = "Nº Factura";
         encabezados[3] = "Fecha Vencimiento";
         encabezados[4] = "Cliente";
-        encabezados[5] = "Usuario (Vendedor)";
+        encabezados[5] = "Vendedor";
         encabezados[6] = "Transportista";
         encabezados[7] = "Pagada";
         encabezados[8] = "SubTotal";
@@ -128,10 +128,10 @@ public class FacturasVentaGUI extends JInternalFrame {
         //Tamanios de columnas
         tbl_Resultados.getColumnModel().getColumn(0).setPreferredWidth(100);
         tbl_Resultados.getColumnModel().getColumn(1).setPreferredWidth(80);
-        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(130);
+        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(100);
         tbl_Resultados.getColumnModel().getColumn(3).setPreferredWidth(130);
         tbl_Resultados.getColumnModel().getColumn(4).setPreferredWidth(190);
-        tbl_Resultados.getColumnModel().getColumn(5).setPreferredWidth(140);
+        tbl_Resultados.getColumnModel().getColumn(5).setPreferredWidth(150);
         tbl_Resultados.getColumnModel().getColumn(6).setPreferredWidth(200);
         tbl_Resultados.getColumnModel().getColumn(7).setPreferredWidth(80);
         tbl_Resultados.getColumnModel().getColumn(8).setPreferredWidth(120);

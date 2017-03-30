@@ -85,7 +85,7 @@ public class FacturasCompraGUI extends JInternalFrame {
         //Tamanios de columnas
         tbl_Resultados.getColumnModel().getColumn(0).setPreferredWidth(100);
         tbl_Resultados.getColumnModel().getColumn(1).setPreferredWidth(80);
-        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(150);
+        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(100);
         tbl_Resultados.getColumnModel().getColumn(3).setPreferredWidth(130);
         tbl_Resultados.getColumnModel().getColumn(4).setPreferredWidth(200);
         tbl_Resultados.getColumnModel().getColumn(5).setPreferredWidth(200);
