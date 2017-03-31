@@ -178,19 +178,18 @@ public class CerrarVentaGUI extends JDialog {
     }
 
     private void finalizarVenta() {
-       FacturaVenta facturaVenta = gui_puntoDeVenta.construirFactura();
-       facturaVenta.setTransportista((Transportista) cmb_Transporte.getSelectedItem());
-       facturaVenta = this.agregarPagosAFactura(facturaVenta);        
+        FacturaVenta facturaVenta = gui_puntoDeVenta.construirFactura();
+        facturaVenta.setTransportista((Transportista) cmb_Transporte.getSelectedItem());
+        facturaVenta = this.agregarPagosAFactura(facturaVenta);
         try {
-            String idPedido = "/facturas?idPedido=";
+            String uri = "/facturas?idPedido=";
             if (gui_puntoDeVenta.getPedido() != null) {
-                idPedido += gui_puntoDeVenta.getPedido().getId_Pedido();
+                uri += gui_puntoDeVenta.getPedido().getId_Pedido();
             }
             if (dividir) {
-                String uri = "&indices="
-                        + Arrays.toString(indicesParaDividir).substring(1, Arrays.toString(indicesParaDividir).length() - 1);
+                String indices = "&indices=" + Arrays.toString(indicesParaDividir).substring(1, Arrays.toString(indicesParaDividir).length() - 1);
                 List<Factura> facturasDivididas = Arrays.asList(RestClient.getRestTemplate()
-                        .postForObject(idPedido + uri, facturaVenta, Factura[].class));
+                        .postForObject(uri + indices, facturaVenta, Factura[].class));
                 int indice = facturasDivididas.size();
                 for (int i = 0; i < indice; i++) {
                     facturasDivididas.get(i).setRenglones(Arrays.asList(RestClient.getRestTemplate()
@@ -209,8 +208,7 @@ public class CerrarVentaGUI extends JDialog {
                 }
             } else {
                 this.lanzarReporteFactura(Arrays.asList(RestClient.getRestTemplate()
-                                         .postForObject(idPedido,
-                                         facturaVenta, FacturaVenta[].class)).get(0), "Factura");
+                        .postForObject("/facturas", facturaVenta, FacturaVenta[].class)).get(0), "Factura");
                 exito = true;
             }
             if (gui_puntoDeVenta.getPedido() != null) {

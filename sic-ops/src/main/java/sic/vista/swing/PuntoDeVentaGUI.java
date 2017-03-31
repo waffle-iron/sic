@@ -1447,7 +1447,6 @@ public class PuntoDeVentaGUI extends JDialog {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {            
-            //this.setSize(1050, 645);
             this.setLocationRelativeTo(null);
             this.setColumnas();            
             if (!UsuarioActivo.getInstance().getUsuario().getRoles().contains(Rol.ADMINISTRADOR)) {
