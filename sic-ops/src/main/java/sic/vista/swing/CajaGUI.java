@@ -52,6 +52,7 @@ public class CajaGUI extends JInternalFrame {
         this.setSize(850, 600);
         this.caja = caja;
         this.setTituloVentana();
+        btn_Imprimir.setVisible(false); // Temporal hasta definir que hacer con el reporte
     }
 
     private void cargarDatosBalance(java.awt.event.KeyEvent evt) {
@@ -448,13 +449,13 @@ public class CajaGUI extends JInternalFrame {
         btn_EliminarGasto = new javax.swing.JButton();
         lbl_estado = new javax.swing.JLabel();
         lbl_aviso = new javax.swing.JLabel();
-        btn_Imprimir = new javax.swing.JButton();
         btn_CerrarCaja = new javax.swing.JButton();
         btn_AgregarGasto = new javax.swing.JButton();
         lbl_Total = new javax.swing.JLabel();
         lbl_totalCaja = new javax.swing.JLabel();
         ftxt_saldoCaja = new javax.swing.JFormattedTextField();
         ftxt_TotalGeneral = new javax.swing.JFormattedTextField();
+        btn_Imprimir = new javax.swing.JButton();
 
         setClosable(true);
         setMaximizable(true);
@@ -538,6 +539,9 @@ public class CajaGUI extends JInternalFrame {
                         .addComponent(btn_EliminarGasto)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
+
+        pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_EliminarGasto, btn_VerDetalle});
+
         pnl_ResumenLayout.setVerticalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
@@ -560,15 +564,6 @@ public class CajaGUI extends JInternalFrame {
 
         lbl_aviso.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         lbl_aviso.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-
-        btn_Imprimir.setForeground(java.awt.Color.blue);
-        btn_Imprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Printer_16x16.png"))); // NOI18N
-        btn_Imprimir.setText("Imprimir");
-        btn_Imprimir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_ImprimirActionPerformed(evt);
-            }
-        });
 
         btn_CerrarCaja.setForeground(java.awt.Color.blue);
         btn_CerrarCaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CerrarCaja_16x16.png"))); // NOI18N
@@ -606,6 +601,15 @@ public class CajaGUI extends JInternalFrame {
         ftxt_TotalGeneral.setText("0");
         ftxt_TotalGeneral.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
+        btn_Imprimir.setForeground(java.awt.Color.blue);
+        btn_Imprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Printer_16x16.png"))); // NOI18N
+        btn_Imprimir.setText("Imprimir");
+        btn_Imprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ImprimirActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -614,11 +618,11 @@ public class CajaGUI extends JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btn_Imprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
                         .addComponent(btn_AgregarGasto)
                         .addGap(0, 0, 0)
                         .addComponent(btn_CerrarCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_Imprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createSequentialGroup()
@@ -633,13 +637,14 @@ public class CajaGUI extends JInternalFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lbl_estado)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {ftxt_TotalGeneral, ftxt_saldoCaja});
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_CerrarCaja, btn_Imprimir});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AgregarGasto, btn_CerrarCaja, btn_Imprimir});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -656,11 +661,11 @@ public class CajaGUI extends JInternalFrame {
                     .addComponent(ftxt_saldoCaja, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(btn_Imprimir)
                     .addComponent(btn_AgregarGasto)
                     .addComponent(btn_CerrarCaja)
                     .addComponent(lbl_Total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ftxt_TotalGeneral))
+                    .addComponent(ftxt_TotalGeneral)
+                    .addComponent(btn_Imprimir))
                 .addContainerGap())
         );
 
