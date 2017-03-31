@@ -36,6 +36,7 @@ import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Movimiento;
 import sic.modelo.Producto;
+import sic.modelo.Rol;
 import sic.modelo.TipoDeComprobante;
 import sic.modelo.Transportista;
 import sic.util.RenderTabla;
@@ -62,7 +63,7 @@ public class PuntoDeVentaGUI extends JDialog {
         this.tbtn_marcarDesmarcar.setIcon(iconoNoMarcado);
 
         //aplica verificación de tipo de Usuario para deshabilitar componentes
-        if (!UsuarioActivo.getInstance().getUsuario().isPermisosAdministrador()) {
+        if (!UsuarioActivo.getInstance().getUsuario().getRoles().contains(Rol.ADMINISTRADOR)) {
             dc_fechaFactura.setEnabled(false);
             dc_fechaVencimiento.setEnabled(false);
             btn_nuevoProducto.setEnabled(false);
@@ -1449,7 +1450,7 @@ public class PuntoDeVentaGUI extends JDialog {
             //this.setSize(1050, 645);
             this.setLocationRelativeTo(null);
             this.setColumnas();            
-            if (!UsuarioActivo.getInstance().getUsuario().isPermisosAdministrador()) {
+            if (!UsuarioActivo.getInstance().getUsuario().getRoles().contains(Rol.ADMINISTRADOR)) {
                 List<Empresa> empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
                 if (empresas.isEmpty() || empresas.size() > 1) {
                     this.llamarGUI_SeleccionEmpresa(empresas);

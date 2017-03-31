@@ -74,7 +74,7 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="txt_RazonSocialNombreFantasia" max="32767" attributes="2"/>
                               <Component id="txt_Id_Fiscal" max="32767" attributes="2"/>
-                              <Component id="cmb_Localidad" pref="235" max="32767" attributes="2"/>
+                              <Component id="cmb_Localidad" pref="276" max="32767" attributes="2"/>
                               <Component id="cmb_Provincia" alignment="0" max="32767" attributes="2"/>
                               <Component id="cmb_Pais" alignment="0" max="32767" attributes="2"/>
                           </Group>

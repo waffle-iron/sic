@@ -101,21 +101,22 @@ public class ClientesGUI extends JInternalFrame {
         tbl_Resultados.setAutoCreateRowSorter(true);
 
         //nombres de columnas
-        String[] encabezados = new String[14];
+        String[] encabezados = new String[15];
         encabezados[0] = "Predeterminado";
         encabezados[1] = "ID Fiscal";
         encabezados[2] = "Razon Social";
-        encabezados[3] = "Nombre Fantasia";        
-        encabezados[4] = "Direccion";
-        encabezados[5] = "Condicion IVA";
-        encabezados[6] = "Tel. Primario";
-        encabezados[7] = "Tel. Secundario";
-        encabezados[8] = "Contacto";
-        encabezados[9] = "Email";
-        encabezados[10] = "Fecha Alta";
-        encabezados[11] = "Localidad";
-        encabezados[12] = "Provincia";
-        encabezados[13] = "Pais";
+        encabezados[3] = "Nombre Fantasia";
+        encabezados[4] = "Viajante";
+        encabezados[5] = "Direccion";
+        encabezados[6] = "Condicion IVA";
+        encabezados[7] = "Tel. Primario";
+        encabezados[8] = "Tel. Secundario";
+        encabezados[9] = "Contacto";
+        encabezados[10] = "Email";
+        encabezados[11] = "Fecha Alta";
+        encabezados[12] = "Localidad";
+        encabezados[13] = "Provincia";
+        encabezados[14] = "Pais";
         modeloTablaDeResultados.setColumnIdentifiers(encabezados);
         tbl_Resultados.setModel(modeloTablaDeResultados);
 
@@ -131,10 +132,11 @@ public class ClientesGUI extends JInternalFrame {
         tipos[7] = String.class;
         tipos[8] = String.class;
         tipos[9] = String.class;
-        tipos[10] = Date.class;
-        tipos[11] = String.class;
+        tipos[10] = String.class;
+        tipos[11] = Date.class;
         tipos[12] = String.class;
         tipos[13] = String.class;
+        tipos[14] = String.class;
         modeloTablaDeResultados.setClaseColumnas(tipos);
         tbl_Resultados.getTableHeader().setReorderingAllowed(false);
         tbl_Resultados.getTableHeader().setResizingAllowed(true);
@@ -146,34 +148,38 @@ public class ClientesGUI extends JInternalFrame {
         tbl_Resultados.getColumnModel().getColumn(3).setPreferredWidth(250);
         tbl_Resultados.getColumnModel().getColumn(4).setPreferredWidth(250);
         tbl_Resultados.getColumnModel().getColumn(5).setPreferredWidth(250);
-        tbl_Resultados.getColumnModel().getColumn(6).setPreferredWidth(150);
-        tbl_Resultados.getColumnModel().getColumn(7).setPreferredWidth(200);
+        tbl_Resultados.getColumnModel().getColumn(6).setPreferredWidth(250);
+        tbl_Resultados.getColumnModel().getColumn(7).setPreferredWidth(150);
         tbl_Resultados.getColumnModel().getColumn(8).setPreferredWidth(200);
-        tbl_Resultados.getColumnModel().getColumn(9).setPreferredWidth(250);
-        tbl_Resultados.getColumnModel().getColumn(10).setPreferredWidth(100);
-        tbl_Resultados.getColumnModel().getColumn(11).setPreferredWidth(200);
+        tbl_Resultados.getColumnModel().getColumn(9).setPreferredWidth(200);
+        tbl_Resultados.getColumnModel().getColumn(10).setPreferredWidth(250);
+        tbl_Resultados.getColumnModel().getColumn(11).setPreferredWidth(100);
         tbl_Resultados.getColumnModel().getColumn(12).setPreferredWidth(200);
         tbl_Resultados.getColumnModel().getColumn(13).setPreferredWidth(200);
+        tbl_Resultados.getColumnModel().getColumn(14).setPreferredWidth(200);
     }
 
     private void cargarResultadosAlTable() {
         this.limpiarJTable();
         clientes.stream().map((cliente) -> {
-            Object[] fila = new Object[14];
+            Object[] fila = new Object[15];
             fila[0] = cliente.isPredeterminado();
             fila[1] = cliente.getIdFiscal();
             fila[2] = cliente.getRazonSocial();
-            fila[3] = cliente.getNombreFantasia();            
-            fila[4] = cliente.getDireccion();
-            fila[5] = cliente.getCondicionIVA().getNombre();
-            fila[6] = cliente.getTelPrimario();
-            fila[7] = cliente.getTelSecundario();            
-            fila[8] = cliente.getContacto();
-            fila[9] = cliente.getEmail();
-            fila[10] = cliente.getFechaAlta();
-            fila[11] = cliente.getLocalidad().getNombre();
-            fila[12] = cliente.getLocalidad().getProvincia().getNombre();
-            fila[13] = cliente.getLocalidad().getProvincia().getPais().getNombre();
+            fila[3] = cliente.getNombreFantasia();
+            if (cliente.getViajante() != null) {
+                fila[4] = cliente.getViajante().getNombre();
+            }
+            fila[5] = cliente.getDireccion();
+            fila[6] = cliente.getCondicionIVA().getNombre();
+            fila[7] = cliente.getTelPrimario();
+            fila[8] = cliente.getTelSecundario();            
+            fila[9] = cliente.getContacto();
+            fila[10] = cliente.getEmail();
+            fila[11] = cliente.getFechaAlta();
+            fila[12] = cliente.getLocalidad().getNombre();
+            fila[13] = cliente.getLocalidad().getProvincia().getNombre();
+            fila[14] = cliente.getLocalidad().getProvincia().getPais().getNombre();
             return fila;
         }).forEach((fila) -> {
             modeloTablaDeResultados.addRow(fila);
@@ -376,7 +382,7 @@ public class ClientesGUI extends JInternalFrame {
                         .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txt_RazonSocialNombreFantasia)
                             .addComponent(txt_Id_Fiscal)
-                            .addComponent(cmb_Localidad, 0, 235, Short.MAX_VALUE)
+                            .addComponent(cmb_Localidad, 0, 276, Short.MAX_VALUE)
                             .addComponent(cmb_Provincia, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cmb_Pais, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(panelFiltrosLayout.createSequentialGroup()

@@ -117,7 +117,7 @@ public class FacturaController {
             soloPagas = false;
         }
         Proveedor proveedor = null;
-        if(idProveedor != null) {
+        if (idProveedor != null) {
             proveedor = proveedorService.getProveedorPorId(idProveedor);
         }
         BusquedaFacturaCompraCriteria criteria = BusquedaFacturaCompraCriteria.builder()
@@ -144,7 +144,8 @@ public class FacturaController {
                                                  @RequestParam(required = false) Long hasta,
                                                  @RequestParam(required = false) Long idCliente,
                                                  @RequestParam(required = false) Integer nroSerie,
-                                                 @RequestParam(required = false) Integer nroFactura,
+                                                 @RequestParam(required = false) Integer nroFactura,                                                 
+                                                 @RequestParam(required = false) Long idViajante,
                                                  @RequestParam(required = false) TipoDeComprobante tipoDeComprobante,
                                                  @RequestParam(required = false) Long idUsuario,
                                                  @RequestParam(required = false) Long nroPedido,
@@ -167,8 +168,12 @@ public class FacturaController {
             cliente = clienteService.getClientePorId(idCliente);
         }
         Usuario usuario = new Usuario();
-        if(idUsuario != null) {
+        if (idUsuario != null) {
             usuario = usuarioService.getUsuarioPorId(idUsuario);
+        }
+        Usuario viajante = new Usuario();
+        if (idViajante != null) {
+            viajante = usuarioService.getUsuarioPorId(idViajante);
         }
         BusquedaFacturaVentaCriteria criteria = BusquedaFacturaVentaCriteria.builder()
                                                  .empresa(empresaService.getEmpresaPorId(idEmpresa))
@@ -179,6 +184,8 @@ public class FacturaController {
                                                  .cliente(cliente)
                                                  .buscaUsuario(idUsuario != null)
                                                  .usuario(usuario)
+                                                 .buscaViajante(idViajante != null)
+                                                 .viajante(viajante)
                                                  .buscaPorNumeroFactura((nroSerie != null) && (nroFactura != null))
                                                  .numSerie((nroSerie != null)? nroSerie : 0)
                                                  .numFactura((nroFactura != null) ? nroFactura : 0)
@@ -328,13 +335,13 @@ public class FacturaController {
                                               @RequestParam(required = false) Long hasta,
                                               @RequestParam(required = false) Long idCliente,
                                               @RequestParam(required = false) Integer nroSerie,
-                                              @RequestParam(required = false) Integer nroFactura,
+                                              @RequestParam(required = false) Integer nroFactura,                                              
+                                              @RequestParam(required = false) Long idViajante,
                                               @RequestParam(required = false) TipoDeComprobante tipoDeComprobante,
                                               @RequestParam(required = false) Long idUsuario,
                                               @RequestParam(required = false) Long nroPedido,
                                               @RequestParam(required = false) Boolean soloImpagas,
                                               @RequestParam(required = false) Boolean soloPagas) {
-
         Calendar fechaDesde = Calendar.getInstance();
         Calendar fechaHasta = Calendar.getInstance();
         if ((desde != null) && (hasta != null)) {
@@ -355,6 +362,10 @@ public class FacturaController {
         if (idUsuario != null) {
             usuario = usuarioService.getUsuarioPorId(idUsuario);
         }
+        Usuario viajante = new Usuario();
+        if (idViajante != null) {
+            viajante = usuarioService.getUsuarioPorId(idViajante);
+        }
         BusquedaFacturaVentaCriteria criteria = BusquedaFacturaVentaCriteria.builder()
                                                  .empresa(empresaService.getEmpresaPorId(idEmpresa))
                                                  .buscaPorFecha((desde != null) && (hasta != null))
@@ -364,6 +375,8 @@ public class FacturaController {
                                                  .cliente(cliente)
                                                  .buscaUsuario(idUsuario != null)
                                                  .usuario(usuario)
+                                                 .buscaViajante(idViajante != null)
+                                                 .viajante(viajante)
                                                  .buscaPorNumeroFactura((nroSerie != null) && (nroFactura != null))
                                                  .numSerie((nroSerie != null)? nroSerie : 0)
                                                  .numFactura((nroFactura != null) ? nroFactura : 0)
@@ -428,7 +441,8 @@ public class FacturaController {
                                    @RequestParam(required = false) Long hasta,
                                    @RequestParam(required = false) Long idCliente,
                                    @RequestParam(required = false) Integer nroSerie,
-                                   @RequestParam(required = false) Integer nroFactura,
+                                   @RequestParam(required = false) Integer nroFactura,                                   
+                                   @RequestParam(required = false) Long idViajante,
                                    @RequestParam(required = false) TipoDeComprobante tipoComprobante,
                                    @RequestParam(required = false) Long idUsuario,
                                    @RequestParam(required = false) Long nroPedido,
@@ -454,6 +468,10 @@ public class FacturaController {
         if (idUsuario != null) {
             usuario = usuarioService.getUsuarioPorId(idUsuario);
         }
+        Usuario viajante = new Usuario();
+        if (idViajante != null) {
+            viajante = usuarioService.getUsuarioPorId(idViajante);
+        }
         BusquedaFacturaVentaCriteria criteria = BusquedaFacturaVentaCriteria.builder()
                 .empresa(empresaService.getEmpresaPorId(idEmpresa))
                 .buscaPorFecha((desde != null) && (hasta != null))
@@ -463,6 +481,8 @@ public class FacturaController {
                 .cliente(cliente)
                 .buscaUsuario(idUsuario != null)
                 .usuario(usuario)
+                .buscaViajante(idViajante != null)
+                .viajante(viajante)
                 .buscaPorNumeroFactura((nroSerie != null) && (nroFactura != null))
                 .numSerie((nroSerie != null) ? nroSerie : 0)
                 .numFactura((nroFactura != null) ? nroFactura : 0)
@@ -527,7 +547,8 @@ public class FacturaController {
                                         @RequestParam(required = false) Long hasta,
                                         @RequestParam(required = false) Long idCliente,
                                         @RequestParam(required = false) Integer nroSerie,
-                                        @RequestParam(required = false) Integer nroFactura,
+                                        @RequestParam(required = false) Integer nroFactura,                                        
+                                        @RequestParam(required = false) Long idViajante,
                                         @RequestParam(required = false) TipoDeComprobante tipoDeComprobante,
                                         @RequestParam(required = false) Long idUsuario,
                                         @RequestParam(required = false) Long nroPedido,
@@ -553,6 +574,10 @@ public class FacturaController {
         if (idUsuario != null) {
             usuario = usuarioService.getUsuarioPorId(idUsuario);
         }
+        Usuario viajante = new Usuario();
+        if (idViajante != null) {
+            viajante = usuarioService.getUsuarioPorId(idViajante);
+        }
         BusquedaFacturaVentaCriteria criteria = BusquedaFacturaVentaCriteria.builder()
                                                  .empresa(empresaService.getEmpresaPorId(idEmpresa))
                                                  .buscaPorFecha((desde != null) && (hasta != null))
@@ -562,6 +587,8 @@ public class FacturaController {
                                                  .cliente(cliente)
                                                  .buscaUsuario(idUsuario != null)
                                                  .usuario(usuario)
+                                                 .buscaViajante(idViajante != null)
+                                                 .viajante(viajante)
                                                  .buscaPorNumeroFactura((nroSerie != null) && (nroFactura != null))
                                                  .numSerie((nroSerie != null)? nroSerie : 0)
                                                  .numFactura((nroFactura != null) ? nroFactura : 0)

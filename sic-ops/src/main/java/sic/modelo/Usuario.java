@@ -1,6 +1,7 @@
 package sic.modelo;
 
 import java.io.Serializable;
+import java.util.List;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,7 +13,7 @@ public class Usuario implements Serializable {
     private String nombre;
     private String password;
     private String token;
-    private boolean permisosAdministrador;
+    private List<Rol> roles;
     private boolean eliminado;
 
     @Override

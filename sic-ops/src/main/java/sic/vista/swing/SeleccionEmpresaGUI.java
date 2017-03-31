@@ -7,6 +7,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import sic.modelo.Empresa;
 import sic.modelo.EmpresaActiva;
+import sic.modelo.Rol;
 import sic.modelo.UsuarioActivo;
 
 public class SeleccionEmpresaGUI extends JDialog {
@@ -33,7 +34,7 @@ public class SeleccionEmpresaGUI extends JDialog {
     }
 
     private void cargarComboBoxEmpresas() {
-        if (empresas.isEmpty() && UsuarioActivo.getInstance().getUsuario().isPermisosAdministrador()) {
+        if (empresas.isEmpty() && UsuarioActivo.getInstance().getUsuario().getRoles().contains(Rol.ADMINISTRADOR)) {
             EmpresasGUI gui_Empresas = new EmpresasGUI();
             gui_Empresas.setModal(true);
             gui_Empresas.setLocationRelativeTo(this);

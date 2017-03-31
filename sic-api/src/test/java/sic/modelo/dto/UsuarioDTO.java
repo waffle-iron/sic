@@ -11,7 +11,6 @@ public class UsuarioDTO implements Serializable {
     private long id_Usuario;
     private String nombre;
     private String password;
-    private boolean permisosAdministrador;
     private boolean eliminado;
 
     @Override
