@@ -1,5 +1,6 @@
 package sic.modelo;
 
+import com.querydsl.core.annotations.QueryInit;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -58,6 +59,7 @@ public class Proveedor implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "id_Localidad", referencedColumnName = "id_Localidad")
+    @QueryInit("provincia.pais")
     private Localidad localidad;
 
     @ManyToOne

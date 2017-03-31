@@ -128,7 +128,7 @@ public class PedidoServiceImpl implements IPedidoService {
             if (this.getFacturasDelPedido(pedido.getId_Pedido()).isEmpty()) {
                 pedido.setEstado(EstadoPedido.ABIERTO);
             }
-            if (facturaService.convertirRenglonesPedidoARenglonesFactura(pedido, "Factura " + f.getTipoFactura()).isEmpty()) {
+            if (facturaService.convertirRenglonesPedidoARenglonesFactura(pedido, f.getTipoComprobante()).isEmpty()) {
                 pedido.setEstado(EstadoPedido.CERRADO);
             }
         });
@@ -270,7 +270,7 @@ public class PedidoServiceImpl implements IPedidoService {
         List<RenglonFactura> renglonesDeFacturas = new ArrayList<>();
         this.getFacturasDelPedido(nroPedido).stream().forEach((f) -> {
             f.getRenglones().stream().forEach((r) -> {
-                renglonesDeFacturas.add(facturaService.calcularRenglon("Factura " + f.getTipoFactura(),
+                renglonesDeFacturas.add(facturaService.calcularRenglon(f.getTipoComprobante(),
                         Movimiento.VENTA, r.getCantidad(),r.getId_ProductoItem(), r.getDescuento_porcentaje()));
             });      
         });

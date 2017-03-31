@@ -35,6 +35,7 @@ import sic.service.IProveedorService;
 import sic.service.IUsuarioService;
 import sic.modelo.Movimiento;
 import sic.modelo.Proveedor;
+import sic.modelo.TipoDeComprobante;
 import sic.modelo.Usuario;
 
 @RestController
@@ -143,9 +144,9 @@ public class FacturaController {
                                                  @RequestParam(required = false) Long hasta,
                                                  @RequestParam(required = false) Long idCliente,
                                                  @RequestParam(required = false) Integer nroSerie,
-                                                 @RequestParam(required = false) Integer nroFactura,
-                                                 @RequestParam(required = false) Character tipoFactura,
+                                                 @RequestParam(required = false) Integer nroFactura,                                                 
                                                  @RequestParam(required = false) Long idViajante,
+                                                 @RequestParam(required = false) TipoDeComprobante tipoDeComprobante,
                                                  @RequestParam(required = false) Long idUsuario,
                                                  @RequestParam(required = false) Long nroPedido,
                                                  @RequestParam(required = false) Boolean soloImpagas,
@@ -190,8 +191,8 @@ public class FacturaController {
                                                  .numFactura((nroFactura != null) ? nroFactura : 0)
                                                  .buscarPorPedido(nroPedido != null)
                                                  .nroPedido((nroPedido != null) ? nroPedido : 0)
-                                                 .buscaPorTipoFactura(tipoFactura != null)
-                                                 .tipoFactura((tipoFactura != null) ? tipoFactura : '-')
+                                                 .buscaPorTipoComprobante(tipoDeComprobante != null)
+                                                 .tipoComprobante((tipoDeComprobante != null) ? tipoDeComprobante : null)
                                                  .buscaSoloImpagas(soloImpagas)
                                                  .buscaSoloPagadas(soloPagas)
                                                  .cantRegistros(0)
@@ -201,26 +202,26 @@ public class FacturaController {
     
     @GetMapping("/facturas/compra/tipos/empresas/{idEmpresa}/proveedores/{idProveedor}")
     @ResponseStatus(HttpStatus.OK)
-    public String[] getTipoFacturaCompra(@PathVariable long idEmpresa, @PathVariable long idProveedor) {
+    public TipoDeComprobante[] getTipoFacturaCompra(@PathVariable long idEmpresa, @PathVariable long idProveedor) {
         return facturaService.getTipoFacturaCompra(empresaService.getEmpresaPorId(idEmpresa), proveedorService.getProveedorPorId(idProveedor));
     }
     
     @GetMapping("/facturas/venta/tipos/empresas/{idEmpresa}/clientes/{idCliente}")
     @ResponseStatus(HttpStatus.OK)
-    public String[] getTipoFacturaVenta(@PathVariable long idEmpresa, @PathVariable long idCliente) {
+    public TipoDeComprobante[] getTipoFacturaVenta(@PathVariable long idEmpresa, @PathVariable long idCliente) {
         return facturaService.getTipoFacturaVenta(empresaService.getEmpresaPorId(idEmpresa), clienteService.getClientePorId(idCliente));
     }
     
     @GetMapping("/facturas/tipos/empresas/{idEmpresa}")
     @ResponseStatus(HttpStatus.OK)
-    public char[] getTiposFacturaSegunEmpresa(@PathVariable long idEmpresa) {
+    public TipoDeComprobante[] getTiposFacturaSegunEmpresa(@PathVariable long idEmpresa) {
         return facturaService.getTiposFacturaSegunEmpresa(empresaService.getEmpresaPorId(idEmpresa));
     }    
     
     @GetMapping("/facturas/{idFactura}/tipo")
     @ResponseStatus(HttpStatus.OK)
-    public String getTipoFactura(@PathVariable long idFactura) {
-        return facturaService.getTipoFactura(facturaService.getFacturaPorId(idFactura));
+    public TipoDeComprobante getTipoFactura(@PathVariable long idFactura) {
+        return facturaService.getFacturaPorId(idFactura).getTipoComprobante();
     }
     
     @GetMapping("/facturas/{idFactura}/reporte")
@@ -237,8 +238,8 @@ public class FacturaController {
     @GetMapping("/facturas/renglones/pedidos/{idPedido}") 
     @ResponseStatus(HttpStatus.OK)
     public List<RenglonFactura> getRenglonesPedidoParaFacturar(@PathVariable long idPedido,
-                                                               @RequestParam String tipoComprobante) {
-        return facturaService.convertirRenglonesPedidoARenglonesFactura(pedidoService.getPedidoPorId(idPedido), tipoComprobante);
+                                                               @RequestParam TipoDeComprobante tipoDeComprobante) {
+        return facturaService.convertirRenglonesPedidoARenglonesFactura(pedidoService.getPedidoPorId(idPedido), tipoDeComprobante);
     }    
      
     @GetMapping("/facturas/validaciones-pago-multiple")
@@ -268,11 +269,11 @@ public class FacturaController {
     @GetMapping("/facturas/renglon")
     @ResponseStatus(HttpStatus.OK)
     public RenglonFactura calcularRenglon(@RequestParam long idProducto,
-                                          @RequestParam String tipoComprobante,
+                                          @RequestParam TipoDeComprobante tipoDeComprobante,
                                           @RequestParam Movimiento movimiento,
                                           @RequestParam double cantidad, 
                                           @RequestParam double descuentoPorcentaje) {
-        return facturaService.calcularRenglon(tipoComprobante, movimiento, cantidad, idProducto, descuentoPorcentaje);
+        return facturaService.calcularRenglon(tipoDeComprobante, movimiento, cantidad, idProducto, descuentoPorcentaje);
     }
     
     @GetMapping("/facturas/subtotal")
@@ -305,12 +306,12 @@ public class FacturaController {
     
     @GetMapping("/facturas/impuesto-interno-neto")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularImpInterno_neto(@RequestParam String tipoFactura,
+    public double calcularImpInterno_neto(@RequestParam TipoDeComprobante tipoDeComprobante,
                                           @RequestParam double descuentoPorcentaje,
                                           @RequestParam double recargoPorcentaje,
                                           @RequestParam double[] importe,
                                           @RequestParam double[] impuestoPorcentaje) {
-        return facturaService.calcularImpInterno_neto(tipoFactura, descuentoPorcentaje,
+        return facturaService.calcularImpInterno_neto(tipoDeComprobante, descuentoPorcentaje,
                 recargoPorcentaje, importe, impuestoPorcentaje);
 
     }
@@ -334,14 +335,13 @@ public class FacturaController {
                                               @RequestParam(required = false) Long hasta,
                                               @RequestParam(required = false) Long idCliente,
                                               @RequestParam(required = false) Integer nroSerie,
-                                              @RequestParam(required = false) Integer nroFactura,
-                                              @RequestParam(required = false) Character tipoFactura,
+                                              @RequestParam(required = false) Integer nroFactura,                                              
                                               @RequestParam(required = false) Long idViajante,
+                                              @RequestParam(required = false) TipoDeComprobante tipoDeComprobante,
                                               @RequestParam(required = false) Long idUsuario,
                                               @RequestParam(required = false) Long nroPedido,
                                               @RequestParam(required = false) Boolean soloImpagas,
                                               @RequestParam(required = false) Boolean soloPagas) {
-
         Calendar fechaDesde = Calendar.getInstance();
         Calendar fechaHasta = Calendar.getInstance();
         if ((desde != null) && (hasta != null)) {
@@ -382,8 +382,8 @@ public class FacturaController {
                                                  .numFactura((nroFactura != null) ? nroFactura : 0)
                                                  .buscarPorPedido(nroPedido != null)
                                                  .nroPedido((nroPedido != null) ? nroPedido : 0)
-                                                 .buscaPorTipoFactura(tipoFactura != null)
-                                                 .tipoFactura((tipoFactura != null) ? tipoFactura : '-')
+                                                 .buscaPorTipoComprobante(tipoDeComprobante != null)
+                                                 .tipoComprobante((tipoDeComprobante != null) ? tipoDeComprobante : null)
                                                  .buscaSoloImpagas(soloImpagas)
                                                  .buscaSoloPagadas(soloPagas)
                                                  .cantRegistros(0)
@@ -441,9 +441,9 @@ public class FacturaController {
                                    @RequestParam(required = false) Long hasta,
                                    @RequestParam(required = false) Long idCliente,
                                    @RequestParam(required = false) Integer nroSerie,
-                                   @RequestParam(required = false) Integer nroFactura,
-                                   @RequestParam(required = false) Character tipoFactura,
+                                   @RequestParam(required = false) Integer nroFactura,                                   
                                    @RequestParam(required = false) Long idViajante,
+                                   @RequestParam(required = false) TipoDeComprobante tipoComprobante,
                                    @RequestParam(required = false) Long idUsuario,
                                    @RequestParam(required = false) Long nroPedido,
                                    @RequestParam(required = false) Boolean soloImpagas,
@@ -488,8 +488,8 @@ public class FacturaController {
                 .numFactura((nroFactura != null) ? nroFactura : 0)
                 .buscarPorPedido(nroPedido != null)
                 .nroPedido((nroPedido != null) ? nroPedido : 0)
-                .buscaPorTipoFactura(tipoFactura != null)
-                .tipoFactura((tipoFactura != null) ? tipoFactura : '-')
+                .buscaPorTipoComprobante(tipoComprobante != null)
+                .tipoComprobante((tipoComprobante != null) ? tipoComprobante : null)
                 .buscaSoloImpagas(soloImpagas)
                 .buscaSoloPagadas(soloPagas)
                 .cantRegistros(0)
@@ -547,9 +547,9 @@ public class FacturaController {
                                         @RequestParam(required = false) Long hasta,
                                         @RequestParam(required = false) Long idCliente,
                                         @RequestParam(required = false) Integer nroSerie,
-                                        @RequestParam(required = false) Integer nroFactura,
-                                        @RequestParam(required = false) Character tipoFactura,
+                                        @RequestParam(required = false) Integer nroFactura,                                        
                                         @RequestParam(required = false) Long idViajante,
+                                        @RequestParam(required = false) TipoDeComprobante tipoDeComprobante,
                                         @RequestParam(required = false) Long idUsuario,
                                         @RequestParam(required = false) Long nroPedido,
                                         @RequestParam(required = false) Boolean soloImpagas,
@@ -594,8 +594,8 @@ public class FacturaController {
                                                  .numFactura((nroFactura != null) ? nroFactura : 0)
                                                  .buscarPorPedido(nroPedido != null)
                                                  .nroPedido((nroPedido != null) ? nroPedido : 0)
-                                                 .buscaPorTipoFactura(tipoFactura != null)
-                                                 .tipoFactura((tipoFactura != null) ? tipoFactura : '-')
+                                                 .buscaPorTipoComprobante(tipoDeComprobante != null)
+                                                 .tipoComprobante((tipoDeComprobante != null) ? tipoDeComprobante : null)
                                                  .buscaSoloImpagas(soloImpagas)
                                                  .buscaSoloPagadas(soloPagas)
                                                  .cantRegistros(0)
@@ -605,13 +605,13 @@ public class FacturaController {
     
     @GetMapping("/facturas/iva-neto")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularIVA_neto(@RequestParam String tipoFactura,
+    public double calcularIVA_neto(@RequestParam TipoDeComprobante tipoDeComprobante,
                                    @RequestParam double descuentoPorcentaje,
                                    @RequestParam double recargoPorcentaje,
                                    @RequestParam double ivaPorcentaje,
                                    @RequestParam double[] importe, 
                                    @RequestParam double[] ivaRenglones) {       
-        return facturaService.calcularIva_neto(tipoFactura, descuentoPorcentaje,
+        return facturaService.calcularIva_neto(tipoDeComprobante, descuentoPorcentaje,
                 recargoPorcentaje, importe, ivaRenglones, ivaPorcentaje);
     }
     

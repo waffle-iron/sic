@@ -13,6 +13,7 @@ import sic.modelo.Pedido;
 import sic.modelo.Producto;
 import sic.modelo.Proveedor;
 import sic.modelo.RenglonFactura;
+import sic.modelo.TipoDeComprobante;
 
 public interface IFacturaService {
     
@@ -20,15 +21,13 @@ public interface IFacturaService {
     
     List<Factura> getFacturasDelPedido(Long idPedido);
 
-    String[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor);
+    TipoDeComprobante[] getTipoFacturaCompra(Empresa empresa, Proveedor proveedor);
 
-    String[] getTipoFacturaVenta(Empresa empresa, Cliente cliente);
+    TipoDeComprobante[] getTipoFacturaVenta(Empresa empresa, Cliente cliente);
 
-    char[] getTiposFacturaSegunEmpresa(Empresa empresa);
+    TipoDeComprobante[] getTiposFacturaSegunEmpresa(Empresa empresa);
 
     List<RenglonFactura> getRenglonesDeLaFactura(Long id_Factura);
-
-    String getTipoFactura(Factura factura);
 
     Movimiento getTipoMovimiento(Factura factura);
 
@@ -64,9 +63,9 @@ public interface IFacturaService {
 
     double calcularSubTotal_neto(double subtotal, double recargo_neto, double descuento_neto);
 
-    double calcularIva_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, double[] importe, double[] ivaPorcentaje, double iva_porcentaje);
+    double calcularIva_neto(TipoDeComprobante tipoDeComprobante, double descuento_porcentaje, double recargo_porcentaje, double[] importe, double[] ivaPorcentaje, double iva_porcentaje);
 
-    double calcularImpInterno_neto(String tipoDeFactura, double descuento_porcentaje, double recargo_porcentaje, double[] importes, double [] impuestoPorcentajes);
+    double calcularImpInterno_neto(TipoDeComprobante tipoDeComprobante, double descuento_porcentaje, double recargo_porcentaje, double[] importes, double [] impuestoPorcentajes);
 
     double calcularImpInterno_neto(Movimiento movimiento, Producto producto, double descuento_neto);
 
@@ -84,9 +83,9 @@ public interface IFacturaService {
 
     double calcularIVA_neto(Movimiento movimiento, Producto producto, double descuento_neto);
 
-    double calcularPrecioUnitario(Movimiento movimiento, String tipoDeFactura, Producto producto);
+    double calcularPrecioUnitario(Movimiento movimiento, TipoDeComprobante tipoDeComprobante, Producto producto);
 
-    long calcularNumeroFactura(char tipoDeFactura, long serie, long idEmpresa);
+    long calcularNumeroFactura(TipoDeComprobante tipoDeComprobante, long serie, long idEmpresa);
 
     double calcularVuelto(double importeAPagar, double importeAbonado);
 
@@ -96,8 +95,8 @@ public interface IFacturaService {
 
     List<Factura> dividirFactura(FacturaVenta factura, int[] indices);
 
-    List<RenglonFactura> convertirRenglonesPedidoARenglonesFactura(Pedido pedido, String tipoDeComprobante);
+    List<RenglonFactura> convertirRenglonesPedidoARenglonesFactura(Pedido pedido, TipoDeComprobante tipoDeComprobante);
 
-    RenglonFactura calcularRenglon(String tipoDeFactura, Movimiento movimiento, double cantidad, Long idProducto, double descuento_porcentaje);
+    RenglonFactura calcularRenglon(TipoDeComprobante tipoDeComprobante, Movimiento movimiento, double cantidad, Long idProducto, double descuento_porcentaje);
 
 }

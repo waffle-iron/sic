@@ -9,6 +9,7 @@ import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
+import sic.modelo.TipoDeComprobante;
 import sic.util.FormatterFechaHora;
 import sic.repository.FacturaRepositoryCustom;
 
@@ -31,8 +32,8 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
             query += " AND f.cliente = " + criteria.getCliente().getId_Cliente();
         }
         //Tipo de Factura
-        if (criteria.isBuscaPorTipoFactura() == true) {
-            query += " AND f.tipoFactura = '" + criteria.getTipoFactura() + "'";
+        if (criteria.isBuscaPorTipoComprobante() == true) {
+            query += " AND f.tipoComprobante = " + "\'" + criteria.getTipoComprobante() + "\'";
         }
         //Usuario
         if (criteria.isBuscaUsuario() == true) {
@@ -102,7 +103,7 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
     }
 
     @Override
-    public double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, char[] tipoFactura) {
+    public double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, TipoDeComprobante[] tipoComprobante) {
         String query = "SELECT SUM(r.iva_neto * r.cantidad) FROM FacturaVenta f LEFT JOIN f.renglones r "
                 + "WHERE f.empresa = :empresa AND f.eliminada = false";
         //Fecha
@@ -116,14 +117,14 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
             query += " AND f.cliente = " + criteria.getCliente().getId_Cliente();
         }
         //Tipo de Factura
-        if (criteria.isBuscaPorTipoFactura() == true) {
-            query += " AND f.tipoFactura = '" + criteria.getTipoFactura() + "'";
+        if (criteria.isBuscaPorTipoComprobante() == true) {
+            query += " AND f.tipoComprobante = " + "\'" + criteria.getTipoComprobante() + "\'";
         }
-        for (int i = 0; i < tipoFactura.length; i++) {
+        for (int i = 0; i < tipoComprobante.length; i++) {
             if (i == 0) {
-                query += " AND ( f.tipoFactura = '" + tipoFactura[i] + "'";
+                query += " AND ( f.tipoComprobante = \'" + tipoComprobante[i] + "\'";
             } else {
-                query += " OR f.tipoFactura = '" + tipoFactura[i] + "'";
+                query += " OR f.tipoComprobante = \'" + tipoComprobante[i] + "\'";
             }
         }
         query += " )";
@@ -161,7 +162,7 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
     }
 
     @Override
-    public double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria, char[] tipoFactura) {
+    public double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria, TipoDeComprobante[] tipoComprobante) {
         String query = "SELECT SUM(f.iva_105_neto + f.iva_21_neto) FROM FacturaCompra f "
                 + "WHERE f.empresa = :empresa AND f.eliminada = false";
         //Fecha Factura
@@ -174,11 +175,11 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
         if (criteria.isBuscaPorProveedor() == true) {
             query += " AND f.proveedor = " + criteria.getProveedor().getId_Proveedor();
         }
-        for (int i = 0; i < tipoFactura.length; i++) {
+        for (int i = 0; i < tipoComprobante.length; i++) {
             if (i == 0) {
-                query += " AND ( f.tipoFactura = '" + tipoFactura[i] + "'";
+                query += " AND ( f.tipoComprobante = \'" + tipoComprobante[i] + "\'";  
             } else {
-                query += " OR f.tipoFactura = '" + tipoFactura[i] + "'";
+                query += " OR f.tipoComprobante = \'" + tipoComprobante[i] + "\'";
             }
         }
         query += " )";
@@ -218,8 +219,8 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
             query += " AND f.cliente = " + criteria.getCliente().getId_Cliente();
         }
         //Tipo de Factura
-        if (criteria.isBuscaPorTipoFactura() == true) {
-            query += " AND f.tipoFactura = '" + criteria.getTipoFactura() + "'";
+        if (criteria.isBuscaPorTipoComprobante() == true) {
+            query += " AND f.tipoComprobante = " + "\'" + criteria.getTipoComprobante() + "\'";
         }
         //Usuario
         if (criteria.isBuscaUsuario() == true) {
@@ -267,8 +268,8 @@ public class FacturaRepositoryImpl implements FacturaRepositoryCustom {
             query += " AND f.cliente = " + criteria.getCliente().getId_Cliente();
         }
         //Tipo de Factura
-        if (criteria.isBuscaPorTipoFactura() == true) {
-            query += " AND f.tipoFactura = '" + criteria.getTipoFactura() + "'";
+        if (criteria.isBuscaPorTipoComprobante()== true) {
+            query += " AND f.tipoComprobante = " + "\'" + criteria.getTipoComprobante() + "\'";
         }
         //Usuario
         if (criteria.isBuscaUsuario() == true) {
