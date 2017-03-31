@@ -9,6 +9,7 @@ import sic.modelo.FacturaVenta;
 import sic.modelo.Pago;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
+import sic.modelo.TipoDeComprobante;
 import sic.modelo.Transportista;
 import sic.modelo.Usuario;
 
@@ -16,7 +17,7 @@ public class FacturaVentaBuilder {
     
     private long id_Factura = 0L;
     private Date fecha = new Date();
-    private char tipoFactura = 'A';
+    private TipoDeComprobante tipoFactura = TipoDeComprobante.FACTURA_A;
     private long numSerie = 0;
     private long numFactura = 1;
     private Date fechaVencimiento = new Date();    
@@ -74,8 +75,8 @@ public class FacturaVentaBuilder {
         return this;
     }
     
-    public FacturaVentaBuilder withTipoFactura(char tipoFactura) {
-        this.tipoFactura = tipoFactura;
+    public FacturaVentaBuilder withTipoFactura(TipoDeComprobante tipoDeComprobante) {
+        this.tipoFactura = tipoDeComprobante;
         return this;
     }
     

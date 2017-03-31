@@ -51,6 +51,7 @@ import sic.modelo.Proveedor;
 import sic.modelo.Provincia;
 import sic.modelo.RenglonFactura;
 import sic.modelo.Rubro;
+import sic.modelo.TipoDeComprobante;
 import sic.modelo.Transportista;
 import sic.modelo.Usuario;
 import sic.modelo.dto.FacturaVentaDTO;
@@ -166,14 +167,14 @@ public class FacturaBIntegrationTest {
         assertEquals(6, productoDos.getCantidad(), 0);
         RenglonFactura renglonUno = restTemplate.getForObject(apiPrefix + "/facturas/renglon?"
                 + "idProducto=" + productoUno.getId_Producto()
-                + "&tipoComprobante=" + 'B'
+                + "&tipoDeComprobante=" + TipoDeComprobante.FACTURA_B
                 + "&movimiento=" + Movimiento.VENTA
                 + "&cantidad=" + 5
                 + "&descuentoPorcentaje=" + 0,
                 RenglonFactura.class);
         RenglonFactura renglonDos = restTemplate.getForObject(apiPrefix + "/facturas/renglon?"
                 + "idProducto=" + productoDos.getId_Producto()
-                + "&tipoComprobante=" + 'B'
+                + "&tipoDeComprobante=" + TipoDeComprobante.FACTURA_B 
                 + "&movimiento=" + Movimiento.VENTA
                 + "&cantidad=" + 2
                 + "&descuentoPorcentaje=" + 0,
@@ -205,7 +206,7 @@ public class FacturaBIntegrationTest {
                     + "&descuentoNeto=0", double.class);
         assertEquals(1397.55, subTotal_neto, 0);
         double iva_105_neto = restTemplate.getRestTemplate().getForObject(apiPrefix +"/facturas/iva-neto?"
-                    + "tipoFactura=" + 'B'
+                    + "&tipoDeComprobante=" + TipoDeComprobante.FACTURA_B 
                     + "&descuentoPorcentaje=0"
                     + "&recargoPorcentaje=" + 10
                     + "&ivaPorcentaje=10.5"
@@ -214,7 +215,7 @@ public class FacturaBIntegrationTest {
                     double.class);
         assertEquals(0, iva_105_neto, 0);
         double iva_21_neto = restTemplate.getRestTemplate().getForObject(apiPrefix +"/facturas/iva-neto?"
-                    + "tipoFactura=" + 'B'
+                    + "&tipoDeComprobante=" + TipoDeComprobante.FACTURA_B 
                     + "&descuentoPorcentaje=0"
                     + "&recargoPorcentaje=" + 10
                     + "&ivaPorcentaje=21.0"
@@ -223,7 +224,7 @@ public class FacturaBIntegrationTest {
                     double.class);
         assertEquals(0, iva_21_neto, 0);
         double impInterno_neto = restTemplate.getRestTemplate().getForObject(apiPrefix +"/facturas/impuesto-interno-neto?"
-                    + "tipoFactura=" + 'B'
+                    + "&tipoDeComprobante=" + TipoDeComprobante.FACTURA_B  
                     + "&descuentoPorcentaje=0"
                     + "&recargoPorcentaje=" + 10
                     + "&importe=" + Arrays.toString(importes).substring(1, Arrays.toString(importes).length() - 1)
@@ -239,7 +240,7 @@ public class FacturaBIntegrationTest {
                     + "&impuestoInternoNeto=" + impInterno_neto, double.class);        
         assertEquals(1397.55, total, 0);
         FacturaVentaDTO facturaVentaB = new FacturaVentaDTO();
-        facturaVentaB.setTipoFactura('B');
+        facturaVentaB.setTipoComprobante(TipoDeComprobante.FACTURA_B);
         facturaVentaB.setCliente(cliente);
         facturaVentaB.setEmpresa(empresa);
         facturaVentaB.setTransportista(transportista);
@@ -259,7 +260,7 @@ public class FacturaBIntegrationTest {
             Assert.fail("No deberia existir mas de una factura");
         } 
         assertEquals(facturaVentaB.getEmpresa(), facturasRecuperadas[0].getEmpresa());
-        assertEquals(facturaVentaB.getTipoFactura(), facturasRecuperadas[0].getTipoFactura());
+        assertEquals(facturaVentaB.getTipoComprobante(), facturasRecuperadas[0].getTipoComprobante());
         assertEquals(facturaVentaB.getFecha(), facturasRecuperadas[0].getFecha());
         assertEquals(facturaVentaB.getSubTotal(), facturasRecuperadas[0].getSubTotal(), 0);
         assertEquals(facturaVentaB.getRecargo_neto(), facturasRecuperadas[0].getRecargo_neto(), 0);

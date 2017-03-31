@@ -50,21 +50,19 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
+                  <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="panelRenglones" alignment="0" max="32767" attributes="0"/>
-                      <Component id="panelEncabezado" max="32767" attributes="0"/>
+                      <Component id="panelEncabezado" alignment="1" max="32767" attributes="0"/>
                       <Component id="panelCliente" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Group type="102" attributes="0">
-                                  <Component id="panelObservaciones" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="225" max="-2" attributes="0"/>
-                                  <Component id="btn_Continuar" min="-2" max="-2" attributes="1"/>
-                              </Group>
-                              <Component id="panelResultados" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="panelObservaciones" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="32767" attributes="0"/>
+                          <Component id="btn_Continuar" min="-2" max="-2" attributes="1"/>
+                      </Group>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="panelResultados" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -77,16 +75,16 @@
               <Group type="102" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="panelEncabezado" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="panelCliente" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="panelRenglones" max="32767" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="panelObservaciones" min="-2" max="-2" attributes="1"/>
                       <Component id="btn_Continuar" min="-2" pref="38" max="-2" attributes="1"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="panelResultados" min="-2" max="-2" attributes="1"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -235,7 +233,7 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="103" groupAlignment="2" attributes="0">
                               <Component id="txt_CodigoProducto" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -248,8 +246,8 @@
                           </Group>
                           <Component id="btn_nuevoProducto" min="-2" pref="30" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="sp_Resultado" pref="251" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Component id="sp_Resultado" pref="220" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -478,96 +476,86 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="lbl_SubTotal" max="32767" attributes="1"/>
-                          <Component id="txt_Subtotal" linkSize="16" max="32767" attributes="1"/>
+                          <Component id="txt_Subtotal" max="32767" attributes="1"/>
+                          <Component id="lbl_SubTotal" pref="120" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="txt_Decuento_neto" linkSize="16" alignment="0" max="32767" attributes="0"/>
-                          <Component id="txt_Decuento_porcentaje" linkSize="16" alignment="0" max="32767" attributes="1"/>
-                          <Component id="lbl_DescuentoRecargo" alignment="0" max="32767" attributes="1"/>
+                          <Component id="txt_Decuento_porcentaje" pref="120" max="32767" attributes="1"/>
+                          <Component id="txt_Decuento_neto" alignment="0" max="32767" attributes="0"/>
+                          <Component id="lbl_DescuentoRecargo" alignment="0" min="-2" pref="112" max="-2" attributes="1"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lbl_recargoPorcentaje" min="-2" max="-2" attributes="0"/>
-                          <Component id="txt_Recargo_neto" linkSize="16" alignment="0" max="32767" attributes="0"/>
-                          <Component id="txt_Recargo_porcentaje" linkSize="16" alignment="0" min="-2" max="-2" attributes="1"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="txt_SubTotalNeto" linkSize="16" max="32767" attributes="0"/>
-                          <Component id="lbl_SubTotalNeto" min="-2" max="-2" attributes="0"/>
+                          <Component id="txt_Recargo_neto" max="32767" attributes="0"/>
+                          <Component id="txt_Recargo_porcentaje" alignment="0" max="32767" attributes="1"/>
+                          <Component id="lbl_recargoPorcentaje" alignment="0" pref="120" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="lbl_105" max="32767" attributes="0"/>
-                          <Component id="lbl_IVA105" max="32767" attributes="0"/>
-                          <Component id="txt_IVA105_neto" linkSize="16" min="-2" pref="100" max="-2" attributes="0"/>
+                          <Component id="txt_SubTotalNeto" max="32767" attributes="0"/>
+                          <Component id="lbl_SubTotalNeto" pref="120" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="txt_IVA21_neto" linkSize="16" max="32767" attributes="1"/>
-                          <Component id="lbl_IVA21" max="32767" attributes="0"/>
-                          <Component id="lbl_21" alignment="0" min="-2" pref="100" max="-2" attributes="0"/>
+                          <Component id="txt_IVA105_neto" max="32767" attributes="0"/>
+                          <Component id="lbl_105" alignment="0" pref="120" max="32767" attributes="0"/>
+                          <Component id="lbl_IVA105" alignment="0" max="32767" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="129" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="txt_IVA21_neto" max="32767" attributes="1"/>
+                          <Component id="lbl_21" alignment="0" max="32767" attributes="0"/>
+                          <Component id="lbl_IVA21" alignment="0" pref="120" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="txt_Total" max="32767" attributes="1"/>
-                          <Component id="lbl_Total" pref="208" max="32767" attributes="1"/>
+                          <Component id="lbl_Total" pref="270" max="32767" attributes="1"/>
                       </Group>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="lbl_DescuentoRecargo" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="lbl_SubTotal" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="lbl_Total" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="lbl_recargoPorcentaje" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="2" attributes="0">
+                          <Component id="lbl_SubTotal" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbl_DescuentoRecargo" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbl_recargoPorcentaje" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbl_SubTotalNeto" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbl_IVA105" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbl_IVA21" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbl_Total" alignment="2" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="txt_Decuento_porcentaje" linkSize="7" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="txt_Subtotal" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="txt_Decuento_neto" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="2" attributes="0">
+                                  <Component id="txt_Decuento_porcentaje" linkSize="7" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txt_Recargo_porcentaje" linkSize="7" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="lbl_105" linkSize="7" alignment="2" min="-2" pref="26" max="-2" attributes="0"/>
+                                  <Component id="lbl_21" linkSize="7" alignment="2" min="-2" pref="26" max="-2" attributes="0"/>
                               </Group>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Group type="103" groupAlignment="2" attributes="0">
+                                  <Component id="txt_Subtotal" linkSize="7" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txt_Decuento_neto" linkSize="7" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txt_Recargo_neto" linkSize="7" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txt_SubTotalNeto" linkSize="7" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
+                                  <Component id="txt_IVA105_neto" linkSize="7" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="txt_IVA21_neto" linkSize="7" alignment="2" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="txt_Total" max="32767" attributes="0"/>
-                          <Group type="102" attributes="0">
-                              <Component id="txt_Recargo_porcentaje" linkSize="7" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="txt_Recargo_neto" linkSize="7" min="-2" max="-2" attributes="0"/>
-                          </Group>
+                          <Component id="txt_Total" alignment="1" min="-2" pref="58" max="-2" attributes="0"/>
                       </Group>
-                  </Group>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
-                          <Component id="lbl_IVA21" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lbl_21" linkSize="7" min="-2" pref="26" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="txt_IVA21_neto" linkSize="7" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="1" attributes="0">
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="lbl_SubTotalNeto" alignment="3" min="-2" max="-2" attributes="0"/>
-                              <Component id="lbl_IVA105" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="lbl_105" linkSize="7" min="-2" pref="26" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="txt_SubTotalNeto" linkSize="7" alignment="3" min="-2" pref="25" max="-2" attributes="0"/>
-                              <Component id="txt_IVA105_neto" linkSize="7" alignment="3" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -683,7 +671,7 @@
             <Component class="javax.swing.JLabel" name="lbl_DescuentoRecargo">
               <Properties>
                 <Property name="horizontalAlignment" type="int" value="2"/>
-                <Property name="text" type="java.lang.String" value="Descuento(%)"/>
+                <Property name="text" type="java.lang.String" value="Descuento (%)"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JFormattedTextField" name="txt_SubTotalNeto">
@@ -742,7 +730,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_recargoPorcentaje">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Recargo(%)"/>
+                <Property name="text" type="java.lang.String" value="Recargo (%)"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JFormattedTextField" name="txt_Recargo_neto">
@@ -906,6 +894,9 @@
                 <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="cmb_TipoComprobanteItemStateChanged"/>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmb_TipoComprobanteActionPerformed"/>
               </Events>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value=""/>
+              </AuxValues>
             </Component>
             <Component class="javax.swing.JButton" name="btn_NuevoCliente">
               <Properties>

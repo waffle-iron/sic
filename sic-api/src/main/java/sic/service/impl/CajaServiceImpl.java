@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityNotFoundException;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -29,8 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaCajaCriteria;
 import sic.modelo.Caja;
 import sic.modelo.Empresa;
-import sic.modelo.FacturaCompra;
-import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Gasto;
 import sic.modelo.Pago;
@@ -92,11 +89,11 @@ public class CajaServiceImpl implements ICajaService {
         }
         //Una Caja por dia
         Caja ultimaCaja = this.getUltimaCaja(caja.getEmpresa().getId_Empresa());
-        if(ultimaCaja.getEstado() == EstadoCaja.ABIERTA) {
+        if(ultimaCaja != null && ultimaCaja.getEstado() == EstadoCaja.ABIERTA) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_anterior_abierta"));
         }
-        if (Validator.compararFechas(ultimaCaja.getFechaApertura(), caja.getFechaApertura()) <= 0) {
+        if (ultimaCaja != null && Validator.compararFechas(ultimaCaja.getFechaApertura(), caja.getFechaApertura()) <= 0) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_fecha_apertura_no_valida"));
         }
@@ -158,30 +155,12 @@ public class CajaServiceImpl implements ICajaService {
 
     @Override
     public int getUltimoNumeroDeCaja(long idEmpresa) {
-        return this.getUltimaCaja(idEmpresa).getNroCaja();        
-    }
- 
-    @Override
-    public double calcularTotalPagos(List<Pago> pagos) {
-        double total = 0.0;
-        for (Pago pago : pagos) {
-            if (pago.getFactura() instanceof FacturaVenta) {
-                total += pago.getMonto();
-            }
-            if (pago.getFactura() instanceof FacturaCompra) {
-                total -= pago.getMonto();
-            }
+        Caja caja = this.getUltimaCaja(idEmpresa);
+        if (caja == null) {
+            return 0;
+        } else {
+            return caja.getNroCaja();
         }
-        return total;
-    }
-    
-    @Override
-    public double calcularTotalGastos(List<Gasto> gastos) {
-        double total = 0.0;
-        for (Gasto gasto : gastos) {
-            total += gasto.getMonto();
-        }
-        return total;
     }
 
     @Override
@@ -271,7 +250,7 @@ public class CajaServiceImpl implements ICajaService {
                     caja.getFechaApertura(), fechaReporte);
             List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(idEmpresa, formaDePago.getId_FormaDePago(),
                     caja.getFechaApertura(), fechaReporte);
-            totalFormaDePago = this.calcularTotalPagos(pagos) - this.calcularTotalGastos(gastos);
+            totalFormaDePago = pagoService.calcularTotalPagos(pagos) - gastoService.calcularTotalGastos(gastos);
             if (totalFormaDePago > 0) {
                 if (formaDePago.isAfectaCaja()) {
                     dataSource.add(formaDePago.getNombre() + " (Afecta Caja)" + "-" + Utilidades.truncarDecimal(totalFormaDePago, CANTIDAD_DECIMALES_TRUNCAMIENTO));
@@ -298,17 +277,19 @@ public class CajaServiceImpl implements ICajaService {
     
     @Override
     @Transactional
-    public Caja cerrarCaja(long idCaja, double monto, long idUsuario) {
+    public Caja cerrarCaja(long idCaja, double monto, Long idUsuario) {
         Caja cajaACerrar = this.getCajaPorId(idCaja);
+        cajaACerrar.setSaldoFinal(this.getSaldoFinalCaja(cajaACerrar));
         cajaACerrar.setSaldoReal(monto);
         cajaACerrar.setFechaCierre(new Date());
-        cajaACerrar.setUsuarioCierraCaja(usuarioService.getUsuarioPorId(idUsuario));
+        if (idUsuario != null) {
+            cajaACerrar.setUsuarioCierraCaja(usuarioService.getUsuarioPorId(idUsuario));
+        }
         cajaACerrar.setEstado(EstadoCaja.CERRADA);
         this.actualizar(cajaACerrar);
         return cajaACerrar;
-    }
-    
-    @PostConstruct                      // Ejecutar al iniciar el contexto
+    }    
+
     @Scheduled(cron = "00 00 00 * * *") // Todos los dias a las 00:00:00
     public void cerrarCajas() {
         List<Empresa> empresas = this.empresaService.getEmpresas();
@@ -320,13 +301,22 @@ public class CajaServiceImpl implements ICajaService {
                 fechaHoraCaja.setTime(ultimaCajaDeEmpresa.getFechaApertura());
                 LocalDate fechaCaja = LocalDate.of(fechaHoraCaja.get(Calendar.YEAR), fechaHoraCaja.get(Calendar.MONTH) + 1, fechaHoraCaja.get(Calendar.DAY_OF_MONTH));
                 if (fechaCaja.compareTo(fechaActual) < 0) {
-                    ultimaCajaDeEmpresa.setFechaCierre(new Date());
-                    ultimaCajaDeEmpresa.setUsuarioCierraCaja(ultimaCajaDeEmpresa.getUsuarioAbreCaja());
-                    ultimaCajaDeEmpresa.setEstado(EstadoCaja.CERRADA);
-                    ultimaCajaDeEmpresa.setSaldoReal(ultimaCajaDeEmpresa.getSaldoFinal());
-                    this.actualizar(ultimaCajaDeEmpresa);
+                    this.cerrarCaja(ultimaCajaDeEmpresa.getId_Caja(), this.getSaldoFinalCaja(ultimaCajaDeEmpresa), ultimaCajaDeEmpresa.getUsuarioAbreCaja().getId_Usuario());
                 }
             }
         }
     }
+    
+    private double getSaldoFinalCaja(Caja cajaACerrar) {
+        List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(cajaACerrar.getEmpresa());
+        double saldoFinal = 0.0;
+        for (FormaDePago fp : formasDePago) {
+            List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(cajaACerrar.getEmpresa().getId_Empresa(), fp.getId_FormaDePago(), cajaACerrar.getFechaApertura(), new Date());
+            List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(cajaACerrar.getEmpresa().getId_Empresa(), fp.getId_FormaDePago(), cajaACerrar.getFechaApertura(), new Date());
+            saldoFinal = pagos.stream().map((p) -> p.getMonto()).reduce(saldoFinal, (accumulator, _item) -> accumulator + _item);
+            saldoFinal = gastos.stream().map((g) -> g.getMonto()).reduce(saldoFinal, (accumulator, _item) -> accumulator + _item);
+        }
+        return saldoFinal;
+    }
+    
 }

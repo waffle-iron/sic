@@ -15,10 +15,11 @@ import sic.modelo.Empresa;
 import sic.modelo.Pago;
 import sic.modelo.Pedido;
 import sic.modelo.RenglonFactura;
+import sic.modelo.TipoDeComprobante;
 import sic.modelo.Transportista;
 
 @Data
-@EqualsAndHashCode(of = {"fecha", "tipoFactura", "numSerie", "numFactura", "empresa"})
+@EqualsAndHashCode(of = {"fecha", "tipoComprobante", "numSerie", "numFactura", "empresa"})
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id_Factura", scope = FacturaDTO.class)
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
@@ -29,7 +30,7 @@ public abstract class FacturaDTO implements Serializable {
     
     private long id_Factura = 0L;
     private Date fecha = new Date();
-    private char tipoFactura = 'A';
+    private TipoDeComprobante tipoComprobante = TipoDeComprobante.FACTURA_A;
     private long numSerie = 0;
     private long numFactura = 1;
     private Date fechaVencimiento = new Date();    
