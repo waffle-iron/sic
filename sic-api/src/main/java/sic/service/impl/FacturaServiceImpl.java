@@ -274,38 +274,17 @@ public class FacturaServiceImpl implements IFacturaService {
             factura.setNumFactura(this.calcularNumeroFactura(factura.getTipoComprobante(),
                     factura.getNumSerie(), factura.getEmpresa().getId_Empresa()));
         }
-        this.validarFactura(factura);
-        this.procesarPagos(factura);     
+        this.validarFactura(factura);    
         return factura;
-    }
-    
-    private void procesarPagos(Factura factura) {
-        int i = 0;
-        double totalPagos = 0;
-        if (factura.getPagos() != null) {
-            for (Pago pago : factura.getPagos()) {
-                pago.setNroPago(pagoService.getSiguienteNroPago(pago.getEmpresa().getId_Empresa()) + i);
-                pago.setFactura(factura);
-                totalPagos += pago.getMonto();
-                i++;
-            }
-            if (factura.getTotal() < totalPagos) {
-                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                        .getString("mensaje_pagos_superan_total_factura"));
-            }
-        } else {
-            factura.setPagada(false);
-        }
     }
     
     @Override
     @Transactional
     public List<Factura> guardar(List<Factura> facturas, Long idPedido) {
         List<Factura> facturasProcesadas = new ArrayList<>();
-        for (Factura f : facturas) {
-            facturasProcesadas.add(this.procesarFactura(f));
-            productoService.actualizarStock(f, TipoDeOperacion.ALTA);            
-        }
+        facturas.forEach((f) -> {
+            productoService.actualizarStock(f, TipoDeOperacion.ALTA);
+        });
         if (idPedido != null) {
             Pedido pedido = pedidoService.getPedidoPorId(idPedido);
             facturas.forEach((f) -> {
@@ -321,10 +300,18 @@ public class FacturaServiceImpl implements IFacturaService {
         } else {
             facturasProcesadas = new ArrayList<>();
             for (Factura f : facturas) {
-                Factura facturaGuardada = facturaRepository.save(f);
-                this.actualizarFacturaEstadoPagada(facturaGuardada);
+                List<Pago> pagosFactura = f.getPagos();
+                f.setPagos(null);
+                Factura facturaGuardada = facturaRepository.save(this.procesarFactura(f));
                 facturasProcesadas.add(facturaGuardada);
                 LOGGER.warn("La Factura " + facturaGuardada + " se guardó correctamente.");
+                if (pagosFactura != null) {
+                    pagosFactura.forEach((p) -> {
+                        pagoService.guardar(p);
+                    });
+                    f.setPagos(pagosFactura);
+                }
+                this.actualizarFacturaEstadoPagada(facturaGuardada);
             }            
         }
         return facturasProcesadas;
