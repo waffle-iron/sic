@@ -69,8 +69,8 @@ public class UsuariosGUI extends JDialog {
         String[] encabezados = new String[4];
         encabezados[0] = "Usuario";
         encabezados[1] = "Administrador";
-        encabezados[2] = "Vendedor";
-        encabezados[3] = "Viajante";
+        encabezados[2] = "Viajante";
+        encabezados[3] = "Vendedor";
         modeloTablaResultados.setColumnIdentifiers(encabezados);
         tbl_Resultado.setModel(modeloTablaResultados);
 
@@ -104,10 +104,10 @@ public class UsuariosGUI extends JDialog {
                 if (Rol.ADMINISTRADOR.equals(rol)) {
                     fila[1] = true;
                 }
-                if (Rol.VENDEDOR.equals(rol)) {
+                if (Rol.VIAJANTE.equals(rol)) {
                     fila[2] = true;
                 }
-                if (Rol.VIAJANTE.equals(rol)) {
+                if (Rol.VENDEDOR.equals(rol)) {
                     fila[3] = true;
                 }
             }

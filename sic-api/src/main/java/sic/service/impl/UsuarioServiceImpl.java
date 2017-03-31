@@ -82,6 +82,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_vacio_password"));
         }
+        if (usuario.getRoles().isEmpty()) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_usuario_no_selecciono_rol"));
+        }
         //Duplicados
         //Nombre
         Usuario usuarioDuplicado = this.getUsuarioPorNombre(usuario.getNombre());
