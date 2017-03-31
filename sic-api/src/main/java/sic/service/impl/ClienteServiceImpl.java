@@ -114,27 +114,28 @@ public class ClienteServiceImpl implements IClienteService {
         return list;
     }
     
-    private BooleanBuilder buildPredicadoBusqueda(String razonSocial, String nombreFantasia, String idFiscal, QCliente qcliente, boolean buscarPorRazonSocial, boolean buscarPorNombreFantasia, boolean buscarPorIdFiscal) {
-        BooleanBuilder descripcionCliente = new BooleanBuilder();
+    private BooleanBuilder buildPredicadoBusqueda(String razonSocial, String nombreFantasia, String idFiscal,
+            QCliente qcliente, boolean buscarPorRazonSocial, boolean buscarPorNombreFantasia, boolean buscarPorIdFiscal) {
+        BooleanBuilder builder = new BooleanBuilder();
         if (buscarPorRazonSocial && buscarPorNombreFantasia && buscarPorIdFiscal && razonSocial.equals(nombreFantasia) && razonSocial.equals(idFiscal)) {
-            descripcionCliente.or(qcliente.razonSocial.containsIgnoreCase(razonSocial)
+            builder.or(qcliente.razonSocial.containsIgnoreCase(razonSocial)
                     .or(qcliente.nombreFantasia.containsIgnoreCase(nombreFantasia))
                     .or(qcliente.idFiscal.containsIgnoreCase(idFiscal)));
         } else if (buscarPorRazonSocial && buscarPorNombreFantasia && buscarPorIdFiscal && razonSocial.equals(nombreFantasia)) {
-            descripcionCliente.or(qcliente.razonSocial.containsIgnoreCase(razonSocial)
+            builder.or(qcliente.razonSocial.containsIgnoreCase(razonSocial)
                     .or(qcliente.nombreFantasia.containsIgnoreCase(nombreFantasia))
                     .and(qcliente.idFiscal.containsIgnoreCase(idFiscal)));
         } else if (buscarPorRazonSocial && buscarPorNombreFantasia && buscarPorIdFiscal) {
-            descripcionCliente.and(qcliente.razonSocial.containsIgnoreCase(razonSocial)
+            builder.and(qcliente.razonSocial.containsIgnoreCase(razonSocial)
                     .and(qcliente.nombreFantasia.containsIgnoreCase(nombreFantasia))
                     .and(qcliente.idFiscal.containsIgnoreCase(idFiscal)));
         } else if (buscarPorRazonSocial && buscarPorNombreFantasia) {
-            descripcionCliente.or(qcliente.razonSocial.containsIgnoreCase(razonSocial)
+            builder.or(qcliente.razonSocial.containsIgnoreCase(razonSocial)
                     .or(qcliente.nombreFantasia.containsIgnoreCase(nombreFantasia)));
         } else if (buscarPorIdFiscal) {
-            descripcionCliente.or(qcliente.idFiscal.containsIgnoreCase(idFiscal));
+            builder.or(qcliente.idFiscal.containsIgnoreCase(idFiscal));
         }
-        return descripcionCliente;
+        return builder;
     }
 
     @Override
