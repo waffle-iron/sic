@@ -182,20 +182,20 @@ public class CerrarVentaGUI extends JDialog {
        facturaVenta.setTransportista((Transportista) cmb_Transporte.getSelectedItem());
        facturaVenta = this.agregarPagosAFactura(facturaVenta);        
         try {
-            String idPedido = "";
-            if(gui_puntoDeVenta.getPedido() != null) {
-                    idPedido = "&idPedido=" + gui_puntoDeVenta.getPedido().getId_Pedido();
-                }
+            String idPedido = "/facturas?idPedido=";
+            if (gui_puntoDeVenta.getPedido() != null) {
+                idPedido += gui_puntoDeVenta.getPedido().getId_Pedido();
+            }
             if (dividir) {
-                String uri = "/facturas?indices="
+                String uri = "&indices="
                         + Arrays.toString(indicesParaDividir).substring(1, Arrays.toString(indicesParaDividir).length() - 1);
                 List<Factura> facturasDivididas = Arrays.asList(RestClient.getRestTemplate()
-                        .postForObject(uri + idPedido, facturaVenta, Factura[].class));
+                        .postForObject(idPedido + uri, facturaVenta, Factura[].class));
                 int indice = facturasDivididas.size();
                 for (int i = 0; i < indice; i++) {
                     facturasDivididas.get(i).setRenglones(Arrays.asList(RestClient.getRestTemplate()
                             .getForObject("/facturas/" + facturasDivididas.get(i).getId_Factura() + "/renglones",
-                                    RenglonFactura[].class)));  
+                                    RenglonFactura[].class)));
                     if (facturasDivididas.size() == 2 && !facturasDivididas.get(i).getRenglones().isEmpty()) {
                         if (i == 0) {
                             this.lanzarReporteFactura(facturasDivididas.get(i), "ComprobanteX");
@@ -207,10 +207,10 @@ public class CerrarVentaGUI extends JDialog {
                         this.lanzarReporteFactura(facturasDivididas.get(i), "Factura");
                     }
                 }
-            } else {                               
+            } else {
                 this.lanzarReporteFactura(Arrays.asList(RestClient.getRestTemplate()
-                                          .postForObject("/facturas?"+ idPedido,
-                                          facturaVenta, FacturaVenta[].class)).get(0), "Factura");
+                                         .postForObject(idPedido,
+                                         facturaVenta, FacturaVenta[].class)).get(0), "Factura");
                 exito = true;
             }
             if (gui_puntoDeVenta.getPedido() != null) {

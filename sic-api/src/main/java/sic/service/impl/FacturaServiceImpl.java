@@ -294,6 +294,10 @@ public class FacturaServiceImpl implements IFacturaService {
             facturas.forEach((f) -> {
                 f.setPedido(pedido);
             });
+            for (Factura f : facturas) {
+                Factura facturaGuardada = facturaRepository.save(this.procesarFactura(f));
+                facturasProcesadas.add(facturaGuardada);
+            }
             pedido.setFacturas(facturasProcesadas);
             pedidoService.actualizar(pedido);
             facturasProcesadas.stream().forEach((f) -> {
