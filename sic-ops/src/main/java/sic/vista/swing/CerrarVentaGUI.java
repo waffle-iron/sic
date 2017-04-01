@@ -208,7 +208,7 @@ public class CerrarVentaGUI extends JDialog {
                 }
             } else {
                 this.lanzarReporteFactura(Arrays.asList(RestClient.getRestTemplate()
-                        .postForObject("/facturas", facturaVenta, FacturaVenta[].class)).get(0), "Factura");
+                        .postForObject(uri, facturaVenta, FacturaVenta[].class)).get(0), "Factura");
                 exito = true;
             }
             if (gui_puntoDeVenta.getPedido() != null) {
