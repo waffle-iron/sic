@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sic.modelo.Caja;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
@@ -78,9 +79,9 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, long idCaja) {
-        // no se realiza una instancia de Caja para evitar el import y datos más concistentes.    
-        Date desde = cajaService.getCajaPorId(idCaja).getFechaApertura();
-        Date hasta = cajaService.getCajaPorId(idCaja).getFechaCierre() == null? new Date() : cajaService.getCajaPorId(idCaja).getFechaCierre();
+        Caja caja = cajaService.getCajaPorId(idCaja);
+        Date desde = caja.getFechaApertura();
+        Date hasta = caja.getFechaCierre() == null? new Date() : caja.getFechaCierre();
         return pagoRepository.findByFechaBetweenAndEmpresaAndFormaDePagoAndEliminado(desde, hasta, 
                 empresaService.getEmpresaPorId(id_Empresa), formaDePagoService.getFormasDePagoPorId(id_FormaDePago), false);
     }
