@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import sic.modelo.Factura;
 import sic.modelo.Pago;
+import sic.service.ICajaService;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IPagoService;
@@ -89,14 +90,8 @@ public class PagoController {
     @ResponseStatus(HttpStatus.OK)
     public List<Pago> getPagosEntreFechasYFormaDePago(@RequestParam long idEmpresa,
                                                       @RequestParam long idFormaDePago,
-                                                      @RequestParam long desde,
-                                                      @RequestParam long hasta) {
-        Calendar fechaDesde = Calendar.getInstance();
-        fechaDesde.setTimeInMillis(desde);
-        Calendar fechaHasta = Calendar.getInstance();
-        fechaHasta.setTimeInMillis(hasta);
-        return pagoService.getPagosEntreFechasYFormaDePago(idEmpresa, idFormaDePago,
-                fechaDesde.getTime(), fechaHasta.getTime());
+                                                      @RequestParam long idCaja) {
+        return pagoService.getPagosEntreFechasYFormaDePago(idEmpresa, idFormaDePago, idCaja);
     }
     
     @PutMapping("/pagos/pagar-multiples-facturas")

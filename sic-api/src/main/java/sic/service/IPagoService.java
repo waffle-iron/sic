@@ -18,7 +18,7 @@ public interface IPagoService {
     
     long getSiguienteNroPago(Long idEmpresa);
 
-    List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
+    List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, long idCaja);
     
     double calcularTotalPagos(List<Pago> pagos);
     

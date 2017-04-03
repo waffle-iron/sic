@@ -180,7 +180,7 @@ public class CajasGUI extends JInternalFrame {
             }
             fila[4] = (caja.getUsuarioCierraCaja() != null ? caja.getUsuarioCierraCaja() : "");
             fila[5] = caja.getSaldoInicial();
-            fila[6] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoFinal() : 0.0);
+            fila[6] = caja.getSaldoFinal();
             fila[7] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoReal() : 0.0);
             totalFinal += caja.getSaldoFinal();
             totalCierre += caja.getSaldoReal();
