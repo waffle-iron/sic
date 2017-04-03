@@ -287,7 +287,7 @@ public class CajaServiceImpl implements ICajaService {
         return cajaACerrar;
     }    
 
-    @Scheduled(cron = "00 48 08 * * *") // Todos los dias a las 00:00:00
+    @Scheduled(cron = "00 00 00 * * *") // Todos los dias a las 00:00:00
     public void cerrarCajas() {
         List<Empresa> empresas = this.empresaService.getEmpresas();
         for (Empresa empresa : empresas) {
