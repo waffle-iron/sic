@@ -32,6 +32,8 @@ import sic.modelo.FormaDePago;
 import sic.modelo.Gasto;
 import sic.modelo.Pago;
 import sic.modelo.EstadoCaja;
+import sic.modelo.FacturaCompra;
+import sic.modelo.FacturaVenta;
 import sic.modelo.QCaja;
 import sic.service.BusinessServiceException;
 import sic.service.IEmpresaService;
@@ -285,7 +287,7 @@ public class CajaServiceImpl implements ICajaService {
         return cajaACerrar;
     }    
 
-    @Scheduled(cron = "00 00 00 * * *") // Todos los dias a las 00:00:00
+    @Scheduled(cron = "00 48 08 * * *") // Todos los dias a las 00:00:00
     public void cerrarCajas() {
         List<Empresa> empresas = this.empresaService.getEmpresas();
         for (Empresa empresa : empresas) {
@@ -304,14 +306,22 @@ public class CajaServiceImpl implements ICajaService {
     
     private double getSaldoFinalCaja(Caja cajaACerrar) {
         List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(cajaACerrar.getEmpresa());
-        double saldoFinal = 0.0;
+        double pagosVentasTotal = 0.0;
+        double pagosComprasTotal = 0.0;
+        double gastosTotal = 0.0;
         for (FormaDePago fp : formasDePago) {
             List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(cajaACerrar.getEmpresa().getId_Empresa(), fp.getId_FormaDePago(), cajaACerrar.getId_Caja());
             List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(cajaACerrar.getEmpresa().getId_Empresa(), fp.getId_FormaDePago(), cajaACerrar.getId_Caja());
-            saldoFinal = pagos.stream().map((p) -> p.getMonto()).reduce(saldoFinal, (accumulator, _item) -> accumulator + _item);
-            saldoFinal = gastos.stream().map((g) -> g.getMonto()).reduce(saldoFinal, (accumulator, _item) -> accumulator + _item);
+            for (Pago pago : pagos) {
+                if(pago.getFactura() instanceof FacturaVenta){
+                    pagosVentasTotal += pago.getMonto();
+                } else if (pago.getFactura() instanceof FacturaCompra) {
+                    pagosComprasTotal += pago.getMonto();
+                }
+            }
+            gastosTotal = gastos.stream().map((gasto) -> gasto.getMonto()).reduce(gastosTotal, (accumulator, _item) -> accumulator + _item);
         }
-        return saldoFinal;
+        return pagosVentasTotal - pagosComprasTotal - gastosTotal;
     }
     
 }
