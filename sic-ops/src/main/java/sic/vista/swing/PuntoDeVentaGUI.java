@@ -578,13 +578,12 @@ public class PuntoDeVentaGUI extends JDialog {
         }
         if (this.pedido != null) {
             if (this.pedido.getId_Pedido() == 0) {
-                cmb_TipoComprobante.removeAllItems();
-                cmb_TipoComprobante.addItem("Pedido");
+                cmb_TipoComprobante.setSelectedItem(TipoDeComprobante.PEDIDO);
+                cmb_TipoComprobante.setEnabled(false);
             } else {
-                cmb_TipoComprobante.removeItem("Pedido");
                 if (this.modificandoPedido() == true) {
-                    cmb_TipoComprobante.removeAllItems();
-                    cmb_TipoComprobante.addItem("Pedido");
+                    cmb_TipoComprobante.setSelectedItem(TipoDeComprobante.PEDIDO);
+                    cmb_TipoComprobante.setEnabled(false);
                 }
             }
         }
@@ -1543,7 +1542,7 @@ public class PuntoDeVentaGUI extends JDialog {
         } else {
             this.calcularResultados();
             try {
-                if (!((TipoDeComprobante)cmb_TipoComprobante.getSelectedItem()).equals(TipoDeComprobante.PEDIDO)) {
+               if (!cmb_TipoComprobante.getSelectedItem().equals(TipoDeComprobante.PEDIDO)) {
                     List<RenglonFactura> productosFaltantes = new ArrayList();
                     for (RenglonFactura renglon : renglones) {
                         if (!RestClient.getRestTemplate().getForObject("/productos/" + renglon.getId_ProductoItem()
