@@ -576,15 +576,14 @@ public class PuntoDeVentaGUI extends JDialog {
         for (int i = 0; tiposDeComprobante.length > i; i++) {
             cmb_TipoComprobante.addItem(tiposDeComprobante[i]);
         }
-        if (this.pedido != null) {
-            if (this.pedido.getId_Pedido() == 0) {
-                cmb_TipoComprobante.removeAllItems();
-                cmb_TipoComprobante.addItem("Pedido");
-            } else {
-                cmb_TipoComprobante.removeItem("Pedido");
+        if (this.pedido != null) { 
+            if (this.pedido.getId_Pedido() == 0) { 
+                cmb_TipoComprobante.setSelectedItem(TipoDeComprobante.PEDIDO);
+                cmb_TipoComprobante.setEnabled(false);
+            } else { 
                 if (this.modificandoPedido() == true) {
-                    cmb_TipoComprobante.removeAllItems();
-                    cmb_TipoComprobante.addItem("Pedido");
+                    cmb_TipoComprobante.setSelectedItem(TipoDeComprobante.PEDIDO);
+                    cmb_TipoComprobante.setEnabled(false);
                 }
             }
         }
@@ -1543,7 +1542,7 @@ public class PuntoDeVentaGUI extends JDialog {
         } else {
             this.calcularResultados();
             try {
-                if (!((TipoDeComprobante)cmb_TipoComprobante.getSelectedItem()).equals(TipoDeComprobante.PEDIDO)) {
+               if (!cmb_TipoComprobante.getSelectedItem().equals(TipoDeComprobante.PEDIDO)) {
                     List<RenglonFactura> productosFaltantes = new ArrayList();
                     for (RenglonFactura renglon : renglones) {
                         if (!RestClient.getRestTemplate().getForObject("/productos/" + renglon.getId_ProductoItem()
@@ -1630,8 +1629,7 @@ public class PuntoDeVentaGUI extends JDialog {
     }//GEN-LAST:event_tbl_ResultadoFocusGained
 
     private void txt_Decuento_porcentajeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_Decuento_porcentajeKeyTyped
-        char c = evt.getKeyChar();
-        if ((c < '0' || c > '9') && (c != ',') && (c != '.') && (c != '-')) {
+        if (evt.getKeyChar() == KeyEvent.VK_MINUS) {
             evt.consume();
         }
     }//GEN-LAST:event_txt_Decuento_porcentajeKeyTyped
@@ -1689,8 +1687,7 @@ public class PuntoDeVentaGUI extends JDialog {
     }//GEN-LAST:event_txt_Recargo_porcentajeActionPerformed
 
     private void txt_Recargo_porcentajeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_Recargo_porcentajeKeyTyped
-        char c = evt.getKeyChar();
-        if ((c < '0' || c > '9') && (c != ',') && (c != '.') && (c != '-')) {
+        if (evt.getKeyChar() == KeyEvent.VK_MINUS) {
             evt.consume();
         }
     }//GEN-LAST:event_txt_Recargo_porcentajeKeyTyped
