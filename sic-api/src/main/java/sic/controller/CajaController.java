@@ -69,7 +69,7 @@ public class CajaController {
     public Caja cerrarCaja(@PathVariable long idCaja,
                            @RequestParam double monto,
                            @RequestParam long idUsuarioCierre) {
-        return cajaService.cerrarCaja(idCaja, monto, idUsuarioCierre);
+        return cajaService.cerrarCaja(idCaja, monto, idUsuarioCierre, false);
     }
     
     @GetMapping("/cajas/busqueda/criteria")
@@ -104,6 +104,12 @@ public class CajaController {
     @ResponseStatus(HttpStatus.OK)
     public Caja getUltimaCaja(@PathVariable long idEmpresa) {
         return cajaService.getUltimaCaja(idEmpresa);
+    }
+    
+    @GetMapping("/cajas/{idCaja}/total")
+    public double getTotalCaja(@PathVariable long idCaja, 
+                               @RequestParam(required = false) boolean soloAfectaCaja) {
+        return cajaService.getTotalCaja(cajaService.getCajaPorId(idCaja), soloAfectaCaja);
     }
   
     @GetMapping("/cajas/{idCaja}/empresas/{idEmpresa}/reporte")

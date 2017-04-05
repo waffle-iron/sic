@@ -72,11 +72,17 @@ public class CajaGUI extends JInternalFrame {
                 if (this.caja != null) {
                     this.listaMovimientos.clear();
                     try {
-                        List<Pago> pagos = this.getPagosPorFechaYFormaDePago(fdp.getId_FormaDePago());
+                        List<Pago> pagos = this.getPagosPorFormaDePago(fdp.getId_FormaDePago());
                         this.listaMovimientos.addAll(pagos);
-                        List<Gasto> gastos = this.getGastosPorFechaYFormaDePago(fdp.getId_FormaDePago());
+                        List<Gasto> gastos = this.getGastosPorFormaDePago(fdp.getId_FormaDePago());
                         this.listaMovimientos.addAll(gastos);
                         this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
+                        ftxt_saldoCaja.setValue(RestClient.getRestTemplate().getForObject("/cajas/" 
+                                + this.caja.getId_Caja()
+                                + "/total?soloAfectaCaja=true", double.class));
+                        ftxt_TotalGeneral.setValue(RestClient.getRestTemplate().getForObject("/cajas/" 
+                                + this.caja.getId_Caja()
+                                + "/total", double.class));
                     } catch (RestClientResponseException ex) {
                         JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     } catch (ResourceAccessException ex) {
@@ -85,7 +91,7 @@ public class CajaGUI extends JInternalFrame {
                                 ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                                 "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                }
+                } 
             } else {
                 this.limpiarTablaBalance();
             }
@@ -213,8 +219,8 @@ public class CajaGUI extends JInternalFrame {
             modeloTablaResumen.addRow(saldoInicial);
             try {
                 for (FormaDePago formaDePago : this.getFormasDePago()) {
-                    List<Pago> pagosPorFormaDePago = this.getPagosPorFechaYFormaDePago(formaDePago.getId_FormaDePago());
-                    List<Gasto> gastosPorFormaDePago = this.getGastosPorFechaYFormaDePago(formaDePago.getId_FormaDePago());
+                    List<Pago> pagosPorFormaDePago = this.getPagosPorFormaDePago(formaDePago.getId_FormaDePago());
+                    List<Gasto> gastosPorFormaDePago = this.getGastosPorFormaDePago(formaDePago.getId_FormaDePago());
                     if (pagosPorFormaDePago.size() > 0 || gastosPorFormaDePago.size() > 0) {
                         Object[] fila = new Object[3];
                         fila[0] = formaDePago;
@@ -392,7 +398,7 @@ public class CajaGUI extends JInternalFrame {
                         FormaDePago[].class)));
     }
 
-    private List<Pago> getPagosPorFechaYFormaDePago(long idFormaDePago) {
+    private List<Pago> getPagosPorFormaDePago(long idFormaDePago) {
         String criteriaPagos = "/pagos/busqueda?"
                 + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
                 + "&idFormaDePago=" + idFormaDePago
@@ -401,7 +407,7 @@ public class CajaGUI extends JInternalFrame {
                 .getForObject(criteriaPagos, Pago[].class)));
     }
 
-    private List<Gasto> getGastosPorFechaYFormaDePago(long idFormaDePago) {
+    private List<Gasto> getGastosPorFormaDePago(long idFormaDePago) {
         String criteriaGastos = "/gastos/busqueda?"
                 + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
                 + "&idFormaDePago=" + idFormaDePago

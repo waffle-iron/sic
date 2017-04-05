@@ -91,7 +91,7 @@ public class PagoController {
     public List<Pago> getPagosEntreFechasYFormaDePago(@RequestParam long idEmpresa,
                                                       @RequestParam long idFormaDePago,
                                                       @RequestParam long idCaja) {
-        return pagoService.getPagosEntreFechasYFormaDePago(idEmpresa, idFormaDePago, idCaja);
+        return pagoService.getPagosPorCajaYFormaDePago(idEmpresa, idFormaDePago, idCaja);
     }
     
     @PutMapping("/pagos/pagar-multiples-facturas")

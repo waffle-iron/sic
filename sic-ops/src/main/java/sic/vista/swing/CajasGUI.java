@@ -19,6 +19,7 @@ import sic.modelo.Caja;
 import sic.modelo.EmpresaActiva;
 import sic.modelo.Usuario;
 import sic.modelo.EstadoCaja;
+import sic.modelo.Rol;
 import sic.util.ColoresEstadosRenderer;
 import sic.util.FormatoFechasEnTablasRenderer;
 import sic.util.FormatterFechaHora;
@@ -537,7 +538,7 @@ public class CajasGUI extends JInternalFrame {
             if (chk_Usuario.isSelected() == true) {
                 cmb_Usuarios.setEnabled(true);
                 List<Usuario> usuarios = Arrays.asList(RestClient.getRestTemplate()
-                        .getForObject("/usuarios", Usuario[].class));
+                        .getForObject("/usuarios/roles?rol=" + Rol.ADMINISTRADOR, Usuario[].class));
                 usuarios.stream().forEach((usuario) -> {
                     cmb_Usuarios.addItem(usuario);
                 });

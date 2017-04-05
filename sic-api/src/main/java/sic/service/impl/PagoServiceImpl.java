@@ -78,7 +78,7 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     @Override
-    public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, long idCaja) {
+    public List<Pago> getPagosPorCajaYFormaDePago(long id_Empresa, long id_FormaDePago, long idCaja) {
         Caja caja = cajaService.getCajaPorId(idCaja);
         Date desde = caja.getFechaApertura();
         Date hasta = caja.getFechaCierre() == null? new Date() : caja.getFechaCierre();

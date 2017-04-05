@@ -54,7 +54,7 @@ public class GastoController {
     public List<Gasto> getGastosPorFechaYFormaDePago(@RequestParam long idEmpresa,
                                                      @RequestParam long idFormaDePago,
                                                      @RequestParam long idCaja) {
-        return gastoService.getGastosPorFechaYFormaDePago(idEmpresa, idFormaDePago, idCaja);
+        return gastoService.getGastosPorCajaYFormaDePago(idEmpresa, idFormaDePago, idCaja);
     }
     
     @GetMapping("/gastos/total")
