@@ -300,11 +300,13 @@ public class CajaServiceImpl implements ICajaService {
         }
         cajaACerrar.setEstado(EstadoCaja.CERRADA);
         this.actualizar(cajaACerrar);
+        LOGGER.warn("La Caja " + cajaACerrar + " se cerró correctamente." );
         return cajaACerrar;
     }    
 
     @Scheduled(cron = "00 00 00 * * *") // Todos los dias a las 00:00:00
     public void cerrarCajas() {
+        LOGGER.warn("Cierre automático de Cajas." + LocalDateTime.now());
         List<Empresa> empresas = this.empresaService.getEmpresas();
         for (Empresa empresa : empresas) {
             Caja ultimaCajaDeEmpresa = this.getUltimaCaja(empresa.getId_Empresa());
