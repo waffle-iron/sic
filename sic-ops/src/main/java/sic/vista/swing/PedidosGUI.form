@@ -62,16 +62,14 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="chk_Fecha" min="-2" pref="171" max="-2" attributes="0"/>
-                              <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="chk_NumeroPedido" alignment="0" max="32767" attributes="0"/>
-                                  <Component id="chk_Cliente" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="chk_Vendedor" alignment="1" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="chk_Vendedor" alignment="0" max="32767" attributes="0"/>
+                              <Component id="chk_Cliente" alignment="0" max="32767" attributes="0"/>
+                              <Component id="chk_NumeroPedido" alignment="0" max="32767" attributes="0"/>
+                              <Component id="chk_Fecha" alignment="0" min="-2" pref="171" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -88,7 +86,6 @@
                               </Group>
                               <Component id="cmb_Vendedor" min="-2" pref="383" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="btn_Buscar" min="-2" max="-2" attributes="0"/>
@@ -98,7 +95,7 @@
                           <Component id="pb_Filtro" min="-2" pref="100" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -204,7 +201,7 @@
         </Component>
         <Component class="javax.swing.JCheckBox" name="chk_Vendedor">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Usuario (Vendedor):"/>
+            <Property name="text" type="java.lang.String" value="Usuario:"/>
           </Properties>
           <Events>
             <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="chk_VendedorItemStateChanged"/>

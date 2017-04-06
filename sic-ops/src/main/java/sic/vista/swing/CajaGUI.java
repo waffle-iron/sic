@@ -71,28 +71,10 @@ public class CajaGUI extends JInternalFrame {
                 FormaDePago fdp = (FormaDePago) tbl_Resumen.getModel().getValueAt(row, 0);
                 if (this.caja != null) {
                     this.listaMovimientos.clear();
-                    Date hasta = new Date();
-                    if (this.caja.getEstado() == EstadoCaja.CERRADA) {
-                        hasta = this.caja.getFechaCierre();
-                    }
                     try {
-                        String criteriaPagos = "/pagos/busqueda?"
-                                + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
-                                + "&idFormaDePago=" + fdp.getId_FormaDePago()
-                                + "&desde=" + this.caja.getFechaApertura().getTime()
-                                + "&hasta=" + hasta.getTime();
-                        List<Pago> pagos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                                .getForObject(criteriaPagos,
-                                        Pago[].class)));
+                        List<Pago> pagos = this.getPagosPorFechaYFormaDePago(fdp.getId_FormaDePago());
                         this.listaMovimientos.addAll(pagos);
-                        String criteriaGastos = "/gastos/busqueda?"
-                                + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
-                                + "&idFormaDePago=" + fdp.getId_FormaDePago()
-                                + "&desde=" + this.caja.getFechaApertura().getTime()
-                                + "&hasta=" + hasta.getTime();
-                        List<Gasto> gastos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                                .getForObject(criteriaGastos,
-                                        Gasto[].class)));
+                        List<Gasto> gastos = this.getGastosPorFechaYFormaDePago(fdp.getId_FormaDePago());
                         this.listaMovimientos.addAll(gastos);
                         this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
                     } catch (RestClientResponseException ex) {
@@ -231,14 +213,8 @@ public class CajaGUI extends JInternalFrame {
             modeloTablaResumen.addRow(saldoInicial);
             try {
                 for (FormaDePago formaDePago : this.getFormasDePago()) {
-                    Date hasta = new Date();
-                    if (this.caja.getEstado() == EstadoCaja.CERRADA) {
-                        hasta = this.caja.getFechaCierre();
-                    }
-                    List<Pago> pagosPorFormaDePago = this.getPagosPorFechaYFormaDePago(formaDePago.getId_FormaDePago(),
-                            this.caja.getFechaApertura().getTime(), hasta.getTime());
-                    List<Gasto> gastosPorFormaDePago = this.getGastosPorFechaYFormaDePago(formaDePago.getId_FormaDePago(),
-                            this.caja.getFechaApertura().getTime(), hasta.getTime());
+                    List<Pago> pagosPorFormaDePago = this.getPagosPorFechaYFormaDePago(formaDePago.getId_FormaDePago());
+                    List<Gasto> gastosPorFormaDePago = this.getGastosPorFechaYFormaDePago(formaDePago.getId_FormaDePago());
                     if (pagosPorFormaDePago.size() > 0 || gastosPorFormaDePago.size() > 0) {
                         Object[] fila = new Object[3];
                         fila[0] = formaDePago;
@@ -287,6 +263,7 @@ public class CajaGUI extends JInternalFrame {
                 }
                 this.ftxt_saldoCaja.setValue(totalCaja);
                 this.ftxt_TotalGeneral.setValue(totalGeneral);
+                this.caja.setSaldoFinal(totalGeneral);
                 //Guarda el monto final del último calculo en la caja
                 RestClient.getRestTemplate().put("/cajas", this.caja);
                 if (totalGeneral < 0) {
@@ -415,22 +392,20 @@ public class CajaGUI extends JInternalFrame {
                         FormaDePago[].class)));
     }
 
-    private List<Pago> getPagosPorFechaYFormaDePago(long idFormaDePago, long fechaDesde, long fechaHasta) {
+    private List<Pago> getPagosPorFechaYFormaDePago(long idFormaDePago) {
         String criteriaPagos = "/pagos/busqueda?"
                 + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
                 + "&idFormaDePago=" + idFormaDePago
-                + "&desde=" + fechaDesde
-                + "&hasta=" + fechaHasta;
+                + "&idCaja=" + this.caja.getId_Caja();
         return new ArrayList(Arrays.asList(RestClient.getRestTemplate()
                 .getForObject(criteriaPagos, Pago[].class)));
     }
 
-    private List<Gasto> getGastosPorFechaYFormaDePago(long idFormaDePago, long fechaDesde, long fechaHasta) {
+    private List<Gasto> getGastosPorFechaYFormaDePago(long idFormaDePago) {
         String criteriaGastos = "/gastos/busqueda?"
                 + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
                 + "&idFormaDePago=" + idFormaDePago
-                + "&desde=" + fechaDesde
-                + "&hasta=" + fechaHasta;
+                + "&idCaja=" + this.caja.getId_Caja();
         return new ArrayList(Arrays.asList(RestClient.getRestTemplate()
                 .getForObject(criteriaGastos, Gasto[].class)));
     }

@@ -53,14 +53,8 @@ public class GastoController {
     @ResponseStatus(HttpStatus.OK)
     public List<Gasto> getGastosPorFechaYFormaDePago(@RequestParam long idEmpresa,
                                                      @RequestParam long idFormaDePago,
-                                                     @RequestParam long desde,
-                                                     @RequestParam long hasta) {
-        Calendar fechaDesde = Calendar.getInstance();
-        fechaDesde.setTimeInMillis(desde);
-        Calendar fechaHasta = Calendar.getInstance();
-        fechaHasta.setTimeInMillis(hasta);
-        return gastoService.getGastosPorFechaYFormaDePago(idEmpresa, idFormaDePago,
-                fechaDesde.getTime(), fechaHasta.getTime());
+                                                     @RequestParam long idCaja) {
+        return gastoService.getGastosPorFechaYFormaDePago(idEmpresa, idFormaDePago, idCaja);
     }
     
     @GetMapping("/gastos/total")

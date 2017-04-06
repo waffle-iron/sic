@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -26,9 +27,15 @@ public class AgregarGastoGUI extends JDialog {
     public AgregarGastoGUI(List<FormaDePago> formasDePago) {
         this.setModal(true);
         this.formasDePago = formasDePago;
-        initComponents();
+        this.initComponents();
+        this.setIcon();
     }
 
+    private void setIcon() {
+        ImageIcon iconoVentana = new ImageIcon(PuntoDeVentaGUI.class.getResource("/sic/icons/CoinsAdd_16x16.png"));
+        this.setIconImage(iconoVentana.getImage());
+    }
+    
     public Gasto construirGasto(String concepto, double monto, FormaDePago formaDePago) {
         Empresa empresa = EmpresaActiva.getInstance().getEmpresa();        
         Gasto gasto = new Gasto();

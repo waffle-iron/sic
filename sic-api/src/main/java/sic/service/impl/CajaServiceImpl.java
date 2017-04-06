@@ -32,6 +32,8 @@ import sic.modelo.FormaDePago;
 import sic.modelo.Gasto;
 import sic.modelo.Pago;
 import sic.modelo.EstadoCaja;
+import sic.modelo.FacturaCompra;
+import sic.modelo.FacturaVenta;
 import sic.modelo.QCaja;
 import sic.service.BusinessServiceException;
 import sic.service.IEmpresaService;
@@ -224,9 +226,9 @@ public class CajaServiceImpl implements ICajaService {
         for (FormaDePago formaDePago : formasDePago) {
             double totalPorCorteFormaDePago = 0.0;
             List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(idEmpresa,
-                    formaDePago.getId_FormaDePago(), caja.getFechaApertura(), caja.getFechaCorteInforme());
+                    formaDePago.getId_FormaDePago(), caja.getId_Caja());
             List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(idEmpresa,
-                    formaDePago.getId_FormaDePago(), caja.getFechaApertura(), caja.getFechaCorteInforme());
+                    formaDePago.getId_FormaDePago(), caja.getId_Caja());
             for (Pago pago : pagos) {
                 totalPorCorteFormaDePago += pago.getMonto();
             }
@@ -240,16 +242,11 @@ public class CajaServiceImpl implements ICajaService {
         }
         dataSource.add("Total hasta la hora de control:-" + String.valueOf(FormatterNumero.formatConRedondeo((Number) totalPorCorte)));
         dataSource.add("..........................Corte a las: " + formatoHora.format(caja.getFechaCorteInforme()) + "...........................-");
-        Date fechaReporte = new Date();
-        if (caja.getFechaCierre() != null) {
-            fechaReporte = caja.getFechaCierre();
-        }
         for (FormaDePago formaDePago : formasDePago) {
             double totalFormaDePago = 0.0;
             List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(idEmpresa, formaDePago.getId_FormaDePago(),
-                    caja.getFechaApertura(), fechaReporte);
-            List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(idEmpresa, formaDePago.getId_FormaDePago(),
-                    caja.getFechaApertura(), fechaReporte);
+                    caja.getId_Caja());
+            List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(idEmpresa, formaDePago.getId_FormaDePago(), caja.getId_Caja());
             totalFormaDePago = pagoService.calcularTotalPagos(pagos) - gastoService.calcularTotalGastos(gastos);
             if (totalFormaDePago > 0) {
                 if (formaDePago.isAfectaCaja()) {
@@ -309,14 +306,22 @@ public class CajaServiceImpl implements ICajaService {
     
     private double getSaldoFinalCaja(Caja cajaACerrar) {
         List<FormaDePago> formasDePago = formaDePagoService.getFormasDePago(cajaACerrar.getEmpresa());
-        double saldoFinal = 0.0;
+        double pagosVentasTotal = 0.0;
+        double pagosComprasTotal = 0.0;
+        double gastosTotal = 0.0;
         for (FormaDePago fp : formasDePago) {
-            List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(cajaACerrar.getEmpresa().getId_Empresa(), fp.getId_FormaDePago(), cajaACerrar.getFechaApertura(), new Date());
-            List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(cajaACerrar.getEmpresa().getId_Empresa(), fp.getId_FormaDePago(), cajaACerrar.getFechaApertura(), new Date());
-            saldoFinal = pagos.stream().map((p) -> p.getMonto()).reduce(saldoFinal, (accumulator, _item) -> accumulator + _item);
-            saldoFinal = gastos.stream().map((g) -> g.getMonto()).reduce(saldoFinal, (accumulator, _item) -> accumulator + _item);
+            List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(cajaACerrar.getEmpresa().getId_Empresa(), fp.getId_FormaDePago(), cajaACerrar.getId_Caja());
+            List<Gasto> gastos = gastoService.getGastosPorFechaYFormaDePago(cajaACerrar.getEmpresa().getId_Empresa(), fp.getId_FormaDePago(), cajaACerrar.getId_Caja());
+            for (Pago pago : pagos) {
+                if(pago.getFactura() instanceof FacturaVenta){
+                    pagosVentasTotal += pago.getMonto();
+                } else if (pago.getFactura() instanceof FacturaCompra) {
+                    pagosComprasTotal += pago.getMonto();
+                }
+            }
+            gastosTotal = gastos.stream().map((gasto) -> gasto.getMonto()).reduce(gastosTotal, (accumulator, _item) -> accumulator + _item);
         }
-        return saldoFinal;
+        return pagosVentasTotal - pagosComprasTotal - gastosTotal;
     }
     
 }
