@@ -24,6 +24,7 @@ import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestClientResponseException;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
+import org.springframework.test.annotation.DirtiesContext;
 import sic.builder.ClienteBuilder;
 import sic.builder.CondicionIVABuilder;
 import sic.builder.EmpresaBuilder;
@@ -60,6 +61,7 @@ import sic.repository.UsuarioRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class FacturaBIntegrationTest {
 
     @Autowired

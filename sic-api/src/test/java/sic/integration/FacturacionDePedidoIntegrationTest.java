@@ -19,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestClientResponseException;
@@ -64,6 +65,7 @@ import sic.repository.UsuarioRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class FacturacionDePedidoIntegrationTest {
     
     @Autowired
@@ -88,7 +90,7 @@ public class FacturacionDePedidoIntegrationTest {
         });        
         restTemplate.getRestTemplate().setInterceptors(interceptors);
         // ErrorHandler para RestTemplate        
-       restTemplate.getRestTemplate().setErrorHandler(new ResponseErrorHandler() {
+        restTemplate.getRestTemplate().setErrorHandler(new ResponseErrorHandler() {
             @Override
             public boolean hasError(ClientHttpResponse response) throws IOException {
                 HttpStatus.Series series = response.getStatusCode().series();
