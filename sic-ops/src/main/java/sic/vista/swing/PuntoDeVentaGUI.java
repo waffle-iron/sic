@@ -579,12 +579,12 @@ public class PuntoDeVentaGUI extends JDialog {
         if (this.pedido != null) {
             if (this.pedido.getId_Pedido() == 0) {
                 cmb_TipoComprobante.removeAllItems();
-                cmb_TipoComprobante.addItem("Pedido");
+                cmb_TipoComprobante.addItem(TipoDeComprobante.PEDIDO);
             } else {
-                cmb_TipoComprobante.removeItem("Pedido");
+                cmb_TipoComprobante.removeItem(TipoDeComprobante.PEDIDO);
                 if (this.modificandoPedido() == true) {
                     cmb_TipoComprobante.removeAllItems();
-                    cmb_TipoComprobante.addItem("Pedido");
+                    cmb_TipoComprobante.addItem(TipoDeComprobante.PEDIDO);
                 }
             }
         }
