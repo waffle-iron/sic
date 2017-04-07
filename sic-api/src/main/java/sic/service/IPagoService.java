@@ -1,6 +1,5 @@
 package sic.service;
 
-import java.util.Date;
 import java.util.List;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;

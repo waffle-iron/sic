@@ -86,7 +86,7 @@ public class PagoController {
     
     @GetMapping("/pagos/busqueda")
     @ResponseStatus(HttpStatus.OK)
-    public List<Pago> getPagosEntreFechasYFormaDePago(@RequestParam long idEmpresa,
+    public List<Pago> getPagosPorCajaYFormaDePago(@RequestParam long idEmpresa,
                                                       @RequestParam long idFormaDePago,
                                                       @RequestParam long idCaja) {
         return pagoService.getPagosPorCajaYFormaDePago(idEmpresa, idFormaDePago, idCaja);

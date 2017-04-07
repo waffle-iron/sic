@@ -51,7 +51,7 @@ public class GastoController {
     
     @GetMapping("/gastos/busqueda")
     @ResponseStatus(HttpStatus.OK)
-    public List<Gasto> getGastosPorFechaYFormaDePago(@RequestParam long idEmpresa,
+    public List<Gasto> getGastosPorCajaYFormaDePago(@RequestParam long idEmpresa,
                                                      @RequestParam long idFormaDePago,
                                                      @RequestParam long idCaja) {
         return gastoService.getGastosPorCajaYFormaDePago(idEmpresa, idFormaDePago, idCaja);

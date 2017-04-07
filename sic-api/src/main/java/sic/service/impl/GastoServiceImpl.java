@@ -1,5 +1,7 @@
 package sic.service.impl;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import sic.service.IGastoService;
 import java.util.Date;
 import java.util.List;
@@ -125,7 +127,11 @@ public class GastoServiceImpl implements IGastoService {
     public List<Gasto> getGastosPorCajaYFormaDePago(Long idEmpresa, Long idFormaDePago, long idCaja) {
         Caja caja = cajaService.getCajaPorId(idCaja);
         Date desde = caja.getFechaApertura();
-        Date hasta = caja.getFechaCierre() == null ? new Date() : caja.getFechaCierre();
+        LocalDateTime ldt = LocalDateTime.ofInstant(desde.toInstant(), ZoneId.systemDefault());
+        ldt = ldt.withHour(23);
+        ldt = ldt.withMinute(59);
+        ldt = ldt.minusSeconds(59);
+        Date hasta = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
         return gastoRepository.findAllByFechaBetweenAndEmpresaAndFormaDePagoAndEliminado(desde, hasta, empresaService.getEmpresaPorId(idEmpresa), 
                 formaDePagoService.getFormasDePagoPorId(idFormaDePago), false);
     }
