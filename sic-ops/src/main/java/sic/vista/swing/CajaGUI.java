@@ -67,33 +67,33 @@ public class CajaGUI extends JInternalFrame {
                     row++;
                 }
             }
-            if (row != 0) {
-                FormaDePago fdp = (FormaDePago) tbl_Resumen.getModel().getValueAt(row, 0);
-                if (this.caja != null) {
-                    this.listaMovimientos.clear();
-                    try {
+            try {
+                ftxt_saldoCaja.setValue(RestClient.getRestTemplate().getForObject("/cajas/"
+                        + this.caja.getId_Caja()
+                        + "/total?soloAfectaCaja=true", double.class));
+                ftxt_TotalGeneral.setValue(RestClient.getRestTemplate().getForObject("/cajas/"
+                        + this.caja.getId_Caja()
+                        + "/total", double.class));
+                if (row != 0) {
+                    FormaDePago fdp = (FormaDePago) tbl_Resumen.getModel().getValueAt(row, 0);
+                    if (this.caja != null) {
+                        this.listaMovimientos.clear();
                         List<Pago> pagos = this.getPagosPorFormaDePago(fdp.getId_FormaDePago());
                         this.listaMovimientos.addAll(pagos);
                         List<Gasto> gastos = this.getGastosPorFormaDePago(fdp.getId_FormaDePago());
                         this.listaMovimientos.addAll(gastos);
                         this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
-                        ftxt_saldoCaja.setValue(RestClient.getRestTemplate().getForObject("/cajas/" 
-                                + this.caja.getId_Caja()
-                                + "/total?soloAfectaCaja=true", double.class));
-                        ftxt_TotalGeneral.setValue(RestClient.getRestTemplate().getForObject("/cajas/" 
-                                + this.caja.getId_Caja()
-                                + "/total", double.class));
-                    } catch (RestClientResponseException ex) {
-                        JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                    } catch (ResourceAccessException ex) {
-                        LOGGER.error(ex.getMessage());
-                        JOptionPane.showMessageDialog(this,
-                                ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                                "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                } 
-            } else {
-                this.limpiarTablaBalance();
+                } else {
+                    this.limpiarTablaBalance();
+                }
+            } catch (RestClientResponseException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ResourceAccessException ex) {
+                LOGGER.error(ex.getMessage());
+                JOptionPane.showMessageDialog(this,
+                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -667,7 +667,7 @@ public class CajaGUI extends JInternalFrame {
                                 + "monto=" + Double.parseDouble(monto)
                                 + "&idUsuarioCierre=" + UsuarioActivo.getInstance().getUsuario().getId_Usuario(),
                                 Caja.class);
-                        this.lanzarReporteCaja();
+                       // this.lanzarReporteCaja(); //Temporalmente desactivado
                         this.dispose();
                     }
                 } catch (NumberFormatException e) {

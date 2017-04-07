@@ -76,12 +76,12 @@ public class CajasGUI extends JInternalFrame {
         tbl_Cajas.setDefaultRenderer(Double.class, new RenderTabla());
 
         //Tamanios de columnas
-        tbl_Cajas.getColumnModel().getColumn(0).setPreferredWidth(10);
+        tbl_Cajas.getColumnModel().getColumn(0).setPreferredWidth(0);
         tbl_Cajas.getColumnModel().getColumn(1).setPreferredWidth(80);
         tbl_Cajas.getColumnModel().getColumn(2).setPreferredWidth(30);
         tbl_Cajas.getColumnModel().getColumn(3).setPreferredWidth(80);
         tbl_Cajas.getColumnModel().getColumn(4).setPreferredWidth(40);
-        tbl_Cajas.getColumnModel().getColumn(5).setPreferredWidth(20);
+        tbl_Cajas.getColumnModel().getColumn(5).setPreferredWidth(25);
         tbl_Cajas.getColumnModel().getColumn(6).setPreferredWidth(20);
         tbl_Cajas.getColumnModel().getColumn(7).setPreferredWidth(20);
         //renderer fechas
