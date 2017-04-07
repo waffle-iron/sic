@@ -76,7 +76,7 @@ public class CajasGUI extends JInternalFrame {
         tbl_Cajas.setDefaultRenderer(Double.class, new RenderTabla());
 
         //Tamanios de columnas
-        tbl_Cajas.getColumnModel().getColumn(0).setPreferredWidth(20);
+        tbl_Cajas.getColumnModel().getColumn(0).setPreferredWidth(10);
         tbl_Cajas.getColumnModel().getColumn(1).setPreferredWidth(80);
         tbl_Cajas.getColumnModel().getColumn(2).setPreferredWidth(30);
         tbl_Cajas.getColumnModel().getColumn(3).setPreferredWidth(80);
@@ -242,6 +242,7 @@ public class CajasGUI extends JInternalFrame {
 
         setClosable(true);
         setMaximizable(true);
+        setResizable(true);
         setTitle("Administrar Cajas");
         setFrameIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Caja_16x16.png"))); // NOI18N
         addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
@@ -581,7 +582,7 @@ public class CajasGUI extends JInternalFrame {
 
     private void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_internalFrameOpened
         try {
-            this.setSize(850, 600);
+            this.setSize(940, 600);
             this.setMaximum(true);
             dc_FechaDesde.setDate(new Date());
             dc_FechaHasta.setDate(new Date());
