@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,6 @@ import sic.builder.EmpresaBuilder;
 import sic.builder.FormaDePagoBuilder;
 import sic.builder.LocalidadBuilder;
 import sic.builder.MedidaBuilder;
-import sic.builder.PedidoBuilder;
 import sic.builder.ProductoBuilder;
 import sic.builder.ProveedorBuilder;
 import sic.builder.RenglonPedidoBuilder;
@@ -64,7 +64,7 @@ import sic.modelo.dto.PedidoDTO;
 import sic.repository.UsuarioRepository;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class FacturacionDePedidoIntegrationTest {
     
