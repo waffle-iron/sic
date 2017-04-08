@@ -1,6 +1,7 @@
 package sic.vista.swing;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
 import sic.util.ColoresEstadosRenderer;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
@@ -36,11 +37,10 @@ public class PedidosGUI extends JInternalFrame {
     private ModeloTabla modeloTablaPedidos;
     private ModeloTabla modeloTablaRenglones;    
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private final Dimension sizeInternalFrame =  new Dimension(880, 600);
 
     public PedidosGUI() {
-        initComponents();
-        this.setSize(850, 600);
-        this.limpiarJTables();
+        this.initComponents();
     }
 
     public void buscar() {
@@ -842,15 +842,17 @@ public class PedidosGUI extends JInternalFrame {
     }//GEN-LAST:event_tbl_PedidosMouseClicked
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        this.setSize(sizeInternalFrame);
+        this.limpiarJTables();
+        txt_NumeroPedido.setEnabled(false);
+        dc_FechaDesde.setEnabled(false);
+        dc_FechaHasta.setEnabled(false);
+        cmb_Cliente.setEnabled(false);
+        cmb_Vendedor.setEnabled(false);
+        dc_FechaDesde.setDate(new Date());
+        dc_FechaHasta.setDate(new Date());
         try {
-            txt_NumeroPedido.setEnabled(false);
-            dc_FechaDesde.setEnabled(false);
-            dc_FechaHasta.setEnabled(false);
-            cmb_Cliente.setEnabled(false);
-            cmb_Vendedor.setEnabled(false);
             this.setMaximum(true);
-            dc_FechaDesde.setDate(new Date());
-            dc_FechaHasta.setDate(new Date());
         } catch (PropertyVetoException ex) {
             String mensaje = "Se produjo un error al intentar maximizar la ventana.";
             LOGGER.error(mensaje + " - " + ex.getMessage());

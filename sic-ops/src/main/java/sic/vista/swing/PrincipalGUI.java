@@ -23,22 +23,21 @@ import sic.util.Utilidades;
 public class PrincipalGUI extends JFrame {
     
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-
+    private final Dimension sizeFrame = new Dimension(1000, 700);
+    
     public PrincipalGUI() {
         this.initComponents();
-        ImageIcon iconoVentana = new ImageIcon(PrincipalGUI.class.getResource("/sic/icons/SIC_24_square.png"));
-        this.setIconImage(iconoVentana.getImage());
-        this.setTitle("S.I.C. Sistema de Información Comercial "
-                + ResourceBundle.getBundle("Mensajes").getString("version"));
-        this.setSize(new Dimension(1000, 720));
-        this.setExtendedState(MAXIMIZED_BOTH);
-        this.setLocationRelativeTo(null);
     }
 
     public JDesktopPane getDesktopPane() {
         return dp_Escritorio;
     }
 
+    private void setIcon() {
+        ImageIcon iconoVentana = new ImageIcon(PuntoDeVentaGUI.class.getResource("/sic/icons/SIC_24_square.png"));
+        this.setIconImage(iconoVentana.getImage());
+    }
+    
     private void llamarGUI_SeleccionEmpresa() {
         List<Empresa> empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
         if (empresas.isEmpty() || empresas.size() > 1) {
@@ -292,8 +291,8 @@ public class PrincipalGUI extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbl_EmpresaActiva)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lbl_Separador, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE))
-            .addComponent(dp_Escritorio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 851, Short.MAX_VALUE)
+                .addComponent(lbl_Separador, javax.swing.GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE))
+            .addComponent(dp_Escritorio, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 900, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -360,6 +359,11 @@ public class PrincipalGUI extends JFrame {
     }//GEN-LAST:event_mnuItm_CambiarUserActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        this.setLocationRelativeTo(null);
+        this.setSize(sizeFrame);
+        this.setIcon();        
+        this.setExtendedState(MAXIMIZED_BOTH);        
+        this.setTitle("S.I.C. Sistema de Información Comercial " + ResourceBundle.getBundle("Mensajes").getString("version"));
         lbl_UsuarioActivo.setText("Usuario: " + UsuarioActivo.getInstance().getUsuario().getNombre());       
         this.llamarGUI_SeleccionEmpresa();        
     }//GEN-LAST:event_formWindowOpened

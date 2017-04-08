@@ -205,9 +205,6 @@
         </Component>
         <Component class="javax.swing.JComboBox" name="cmb_TipoFactura">
           <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Ubuntu" size="15" style="1"/>
-            </Property>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="0"/>
             </Property>
@@ -251,7 +248,7 @@
                       <Component id="btn_QuitarDeLista" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="sp_Renglones" pref="194" max="32767" attributes="0"/>
+                  <Component id="sp_Renglones" pref="197" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

@@ -644,7 +644,6 @@ public class DetalleFacturaCompraGUI extends JDialog {
         lbl_TipoFactura.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_TipoFactura.setText("* Tipo de Factura:");
 
-        cmb_TipoFactura.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         cmb_TipoFactura.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmb_TipoFacturaItemStateChanged(evt);
@@ -762,7 +761,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
                     .addComponent(btn_NuevoProducto)
                     .addComponent(btn_QuitarDeLista))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Renglones, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE))
+                .addComponent(sp_Renglones, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE))
         );
 
         panelRenglonesLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_BuscarProducto, btn_NuevoProducto, btn_QuitarDeLista});

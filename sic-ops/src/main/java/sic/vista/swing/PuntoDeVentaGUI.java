@@ -54,7 +54,7 @@ public class PuntoDeVentaGUI extends JDialog {
     private Pedido pedido;
     private boolean modificarPedido;
     private int cantidadMaximaRenglones = 0;
-    private double totalComprobante;
+    private double totalComprobante;    
 
     public PuntoDeVentaGUI() {
         this.initComponents();        
@@ -81,11 +81,12 @@ public class PuntoDeVentaGUI extends JDialog {
         txt_CodigoProducto.addKeyListener(keyHandler);
         btn_BuscarPorCodigoProducto.addKeyListener(keyHandler);
         txt_Decuento_porcentaje.addKeyListener(keyHandler);
+        txt_Recargo_porcentaje.addKeyListener(keyHandler);
         btn_Continuar.addKeyListener(keyHandler);
         tbtn_marcarDesmarcar.addKeyListener(keyHandler);
         dc_fechaFactura.addKeyListener(keyHandler);
         dc_fechaVencimiento.addKeyListener(keyHandler);
-        btn_nuevoProducto.addKeyListener(keyHandler);
+        btn_nuevoProducto.addKeyListener(keyHandler);        
     }   
     
     public void cargarPedidoParaFacturar() {
@@ -740,16 +741,20 @@ public class PuntoDeVentaGUI extends JDialog {
 
         @Override
         public void keyPressed(KeyEvent evt) {
-            if (evt.getKeyCode() == KeyEvent.VK_F5) {
-                btn_NuevoClienteActionPerformed(null);
-            }
-
             if (evt.getKeyCode() == KeyEvent.VK_F2) {
                 btn_BuscarClienteActionPerformed(null);
             }
-
+            
             if (evt.getKeyCode() == KeyEvent.VK_F4) {
                 btn_BuscarProductosActionPerformed(null);
+            }
+            
+            if (evt.getKeyCode() == KeyEvent.VK_F5) {
+                btn_NuevoClienteActionPerformed(null);
+            }            
+            
+            if (evt.getKeyCode() == KeyEvent.VK_F7) {
+                btn_nuevoProductoActionPerformed(null);
             }
 
             if (evt.getKeyCode() == KeyEvent.VK_F9) {
@@ -760,8 +765,8 @@ public class PuntoDeVentaGUI extends JDialog {
                 btn_EliminarEntradaProductoActionPerformed(null);
             }
 
-            if (evt.getSource() == tbl_Resultado && evt.getKeyCode() == KeyEvent.VK_TAB) {
-                txt_CodigoProducto.requestFocus();
+            if (evt.getSource() == tbl_Resultado && evt.getKeyCode() == KeyEvent.VK_TAB) {                
+                txt_Decuento_porcentaje.requestFocus();
             }
         }
     };
@@ -837,16 +842,16 @@ public class PuntoDeVentaGUI extends JDialog {
 
         panelGeneral.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        lbl_NombreCliente.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_NombreCliente.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbl_NombreCliente.setText("Nombre:");
 
-        lbl_DomicilioCliente.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_DomicilioCliente.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbl_DomicilioCliente.setText("Domicilio:");
 
         lbl_IDFiscalCliente.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_IDFiscalCliente.setText("ID Fiscal:");
 
-        lbl_CondicionIVACliente.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_CondicionIVACliente.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbl_CondicionIVACliente.setText("Condición IVA:");
 
         txt_CondicionIVACliente.setEditable(false);
@@ -912,6 +917,7 @@ public class PuntoDeVentaGUI extends JDialog {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tbl_Resultado.setNextFocusableComponent(txt_Decuento_porcentaje);
         tbl_Resultado.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         tbl_Resultado.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
@@ -971,7 +977,8 @@ public class PuntoDeVentaGUI extends JDialog {
 
         btn_nuevoProducto.setForeground(java.awt.Color.blue);
         btn_nuevoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddProduct_16x16.png"))); // NOI18N
-        btn_nuevoProducto.setText("Nuevo Producto");
+        btn_nuevoProducto.setText("Nuevo Producto (F7)");
+        btn_nuevoProducto.setFocusable(false);
         btn_nuevoProducto.setMaximumSize(new java.awt.Dimension(163, 25));
         btn_nuevoProducto.setMinimumSize(new java.awt.Dimension(163, 25));
         btn_nuevoProducto.addActionListener(new java.awt.event.ActionListener() {
@@ -1108,6 +1115,7 @@ public class PuntoDeVentaGUI extends JDialog {
         txt_Decuento_porcentaje.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txt_Decuento_porcentaje.setText("0");
         txt_Decuento_porcentaje.setFont(new java.awt.Font("DejaVu Sans", 0, 17)); // NOI18N
+        txt_Decuento_porcentaje.setNextFocusableComponent(txt_Recargo_porcentaje);
         txt_Decuento_porcentaje.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 txt_Decuento_porcentajeFocusGained(evt);
@@ -1280,16 +1288,20 @@ public class PuntoDeVentaGUI extends JDialog {
             }
         });
 
-        lbl_fechaFactura.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lbl_fechaFactura.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbl_fechaFactura.setText("Fecha de Emisión:");
 
+        dc_fechaFactura.setFocusable(false);
+
+        lbl_fechaDeVencimiento.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         lbl_fechaDeVencimiento.setText("Fecha Vencimiento:");
 
-        lbl_TipoDeComprobante.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        dc_fechaVencimiento.setFocusable(false);
+
         lbl_TipoDeComprobante.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lbl_TipoDeComprobante.setText("Tipo de Comprobante:");
 
-        cmb_TipoComprobante.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        cmb_TipoComprobante.setNextFocusableComponent(txt_CodigoProducto);
         cmb_TipoComprobante.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmb_TipoComprobanteItemStateChanged(evt);
@@ -1339,10 +1351,9 @@ public class PuntoDeVentaGUI extends JDialog {
                         .addGap(0, 0, 0)
                         .addComponent(btn_BuscarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panelEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panelEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(panelEncabezadoLayout.createSequentialGroup()
-                        .addGap(30, 30, 30)
-                        .addComponent(lbl_fechaFactura)
+                        .addComponent(lbl_fechaFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(dc_fechaFactura, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelEncabezadoLayout.createSequentialGroup()
@@ -1386,12 +1397,12 @@ public class PuntoDeVentaGUI extends JDialog {
                     .addComponent(panelEncabezado, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(panelGeneralLayout.createSequentialGroup()
+                        .addComponent(panelResultados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(panelGeneralLayout.createSequentialGroup()
                         .addComponent(panelObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn_Continuar))
-                    .addGroup(panelGeneralLayout.createSequentialGroup()
-                        .addComponent(panelResultados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(btn_Continuar)))
                 .addContainerGap())
         );
         panelGeneralLayout.setVerticalGroup(
@@ -1406,7 +1417,7 @@ public class PuntoDeVentaGUI extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelGeneralLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelObservaciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_Continuar, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btn_Continuar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelResultados, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -1447,9 +1458,9 @@ public class PuntoDeVentaGUI extends JDialog {
     }//GEN-LAST:event_btn_NuevoClienteActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        try {            
-            this.setLocationRelativeTo(null);
-            this.setColumnas();            
+        this.setLocationRelativeTo(null);
+        this.setColumnas();  
+        try {                                  
             if (!UsuarioActivo.getInstance().getUsuario().getRoles().contains(Rol.ADMINISTRADOR)) {
                 List<Empresa> empresas = Arrays.asList(RestClient.getRestTemplate().getForObject("/empresas", Empresa[].class));
                 if (empresas.isEmpty() || empresas.size() > 1) {

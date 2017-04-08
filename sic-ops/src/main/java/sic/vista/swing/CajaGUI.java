@@ -2,6 +2,7 @@ package sic.vista.swing;
 
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
@@ -46,10 +47,10 @@ public class CajaGUI extends JInternalFrame {
     private final List<Object> listaMovimientos = new ArrayList<>();
     private Caja caja;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private final Dimension sizeInternalFrame =  new Dimension(880, 600);
 
     public CajaGUI(Caja caja) {
-        initComponents();
-        this.setSize(850, 600);
+        this.initComponents();        
         this.caja = caja;
         this.setTituloVentana();
         btn_Imprimir.setVisible(false); // Temporal hasta definir que hacer con el reporte
@@ -520,11 +521,11 @@ public class CajaGUI extends JInternalFrame {
         pnl_ResumenLayout.setVerticalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
-                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE)
+                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbl_movimientos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
+                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_VerDetalle)
@@ -533,11 +534,9 @@ public class CajaGUI extends JInternalFrame {
 
         pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_EliminarGasto, btn_VerDetalle});
 
-        lbl_estado.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         lbl_estado.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbl_estado.setText("Estado:");
 
-        lbl_aviso.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         lbl_aviso.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
 
         btn_CerrarCaja.setForeground(java.awt.Color.blue);
@@ -568,13 +567,11 @@ public class CajaGUI extends JInternalFrame {
         ftxt_saldoCaja.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         ftxt_saldoCaja.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         ftxt_saldoCaja.setText("0");
-        ftxt_saldoCaja.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
         ftxt_TotalGeneral.setEditable(false);
         ftxt_TotalGeneral.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         ftxt_TotalGeneral.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         ftxt_TotalGeneral.setText("0");
-        ftxt_TotalGeneral.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
         btn_Imprimir.setForeground(java.awt.Color.blue);
         btn_Imprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Printer_16x16.png"))); // NOI18N
@@ -763,6 +760,7 @@ public class CajaGUI extends JInternalFrame {
     }//GEN-LAST:event_tbl_ResumenMouseClicked
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        this.setSize(sizeInternalFrame);
         if (caja == null) {
             try {
                 caja = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
