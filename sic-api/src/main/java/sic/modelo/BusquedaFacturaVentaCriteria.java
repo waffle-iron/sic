@@ -17,10 +17,12 @@ public class BusquedaFacturaVentaCriteria {
     private Date fechaHasta;
     private boolean buscaCliente;
     private Cliente cliente;
-    private boolean buscaPorTipoFactura;
-    private char tipoFactura;
+    private boolean buscaPorTipoComprobante;
+    private TipoDeComprobante tipoComprobante;
     private boolean buscaUsuario;
     private Usuario usuario;
+    private boolean buscaViajante;
+    private Usuario viajante;
     private boolean buscaPorNumeroFactura;
     private long numSerie;
     private long numFactura;

@@ -1,5 +1,6 @@
 package sic.vista.swing;
 
+import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,15 +30,12 @@ public class CajasGUI extends JInternalFrame {
 
     private ModeloTabla modeloTablaCajas = new ModeloTabla();
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-    private final Usuario usuarioParaMostrar;
+    private final Usuario usuarioParaMostrar = new Usuario();
     private List<Caja> cajas;    
+    private final Dimension sizeInternalFrame =  new Dimension(880, 600);
 
     public CajasGUI() {
-        initComponents();        
-        this.setColumnasCaja();
-        usuarioParaMostrar = new Usuario();
-        cmb_Usuarios.addItem(usuarioParaMostrar);
-        cmb_Usuarios.setEnabled(false);
+        this.initComponents();        
     }
 
     private void setColumnasCaja() {
@@ -180,7 +178,7 @@ public class CajasGUI extends JInternalFrame {
             }
             fila[4] = (caja.getUsuarioCierraCaja() != null ? caja.getUsuarioCierraCaja() : "");
             fila[5] = caja.getSaldoInicial();
-            fila[6] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoFinal() : 0.0);
+            fila[6] = caja.getSaldoFinal();
             fila[7] = (caja.getEstado().equals(EstadoCaja.CERRADA) ? caja.getSaldoReal() : 0.0);
             totalFinal += caja.getSaldoFinal();
             totalCierre += caja.getSaldoReal();
@@ -203,10 +201,13 @@ public class CajasGUI extends JInternalFrame {
         AbrirCajaGUI abrirCaja = new AbrirCajaGUI(true);
         abrirCaja.setLocationRelativeTo(this);
         abrirCaja.setVisible(true);
-        this.abrirVentanaCaja(RestClient.getRestTemplate().getForObject("/cajas/empresas/"
+        Caja ultimaCaja = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
                     + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
-                    Caja.class));
-        this.limpiarResultados();        
+                    Caja.class);
+        if (ultimaCaja.getEstado().equals(EstadoCaja.ABIERTA)) {
+            this.abrirVentanaCaja(ultimaCaja);
+        }
+        this.limpiarResultados();
         this.buscar();        
     }
 
@@ -552,8 +553,9 @@ public class CajasGUI extends JInternalFrame {
     }//GEN-LAST:event_chk_UsuarioItemStateChanged
 
     private void btn_AbrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AbrirCajaActionPerformed
+        Caja cajaAbierta = null;
         try {
-            Caja cajaAbierta = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
+            cajaAbierta = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
                     + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
                     Caja.class);
             if (cajaAbierta == null) {
@@ -575,11 +577,14 @@ public class CajasGUI extends JInternalFrame {
     }//GEN-LAST:event_btn_AbrirCajaActionPerformed
 
     private void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_internalFrameOpened
+        this.setSize(sizeInternalFrame);
+        this.setColumnasCaja();
+        cmb_Usuarios.addItem(usuarioParaMostrar);
+        cmb_Usuarios.setEnabled(false);
+        dc_FechaDesde.setDate(new Date());
+        dc_FechaHasta.setDate(new Date());
         try {
-            this.setSize(850, 600);
-            this.setMaximum(true);
-            dc_FechaDesde.setDate(new Date());
-            dc_FechaHasta.setDate(new Date());
+            this.setMaximum(true);            
         } catch (PropertyVetoException ex) {
             String mensaje = "Se produjo un error al intentar maximizar la ventana.";
             LOGGER.error(mensaje + " - " + ex.getMessage());

@@ -73,11 +73,32 @@ public class GastoServiceImpl implements IGastoService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_gasto_usuario_vacio"));
         }
+        if (gasto.getMonto() <= 0) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_gasto_negativo_cero"));
+        }
+        if (gasto.getConcepto() == null || gasto.getConcepto().isEmpty()) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_gasto_concepto_vacio"));
+        }
+        if(gasto.getFormaDePago() == null) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_gasto_forma_de_pago_vacia"));
+        }
         //Duplicados
         if (gastoRepository.findOne(gasto.getId_Gasto()) != null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_gasto_duplicada"));
         }
+    }
+    
+    @Override
+    public double calcularTotalGastos(List<Gasto> gastos) {
+        double total = 0.0;
+        for (Gasto gasto : gastos) {
+            total += gasto.getMonto();
+        }
+        return total;
     }
 
     @Override
@@ -101,7 +122,10 @@ public class GastoServiceImpl implements IGastoService {
     }
 
     @Override
-    public List<Gasto> getGastosPorFechaYFormaDePago(Long idEmpresa, Long idFormaDePago, Date desde, Date hasta) {
+    public List<Gasto> getGastosPorFechaYFormaDePago(Long idEmpresa, Long idFormaDePago, long idCaja) {
+        Caja caja = cajaService.getCajaPorId(idCaja);
+        Date desde = caja.getFechaApertura();
+        Date hasta = caja.getFechaCierre() == null ? new Date() : caja.getFechaCierre();
         return gastoRepository.findAllByFechaBetweenAndEmpresaAndFormaDePagoAndEliminado(desde, hasta, empresaService.getEmpresaPorId(idEmpresa), 
                 formaDePagoService.getFormasDePagoPorId(idFormaDePago), false);
     }

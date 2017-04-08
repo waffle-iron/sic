@@ -2,10 +2,16 @@ package sic.modelo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
+import java.util.List;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,8 +36,16 @@ public class Usuario implements Serializable {
     @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-
-    private boolean permisosAdministrador;
+    
+    @Column(nullable = true)
+    private String token;
+    
+    @ElementCollection(targetClass = Rol.class)
+    @CollectionTable(name="rol",
+        joinColumns = @JoinColumn(name = "id_Usuario"))
+    @Enumerated(EnumType.STRING)
+    @Column(name="nombre")
+    private List<Rol> roles;
 
     private boolean eliminado;
 

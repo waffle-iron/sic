@@ -27,7 +27,7 @@ public class FormaDePagoServiceImpl implements IFormaDePagoService {
 
     @Override
     public List<FormaDePago> getFormasDePago(Empresa empresa) {
-        return formaDePagoRepository.findAllByAndEmpresaAndEliminada(empresa, false);
+        return formaDePagoRepository.findAllByAndEmpresaAndEliminadaOrderByNombreAsc(empresa, false);
     }
 
     @Override

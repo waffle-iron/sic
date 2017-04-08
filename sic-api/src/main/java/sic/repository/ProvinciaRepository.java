@@ -14,6 +14,6 @@ public interface ProvinciaRepository extends PagingAndSortingRepository<Provinci
     
       Provincia findByNombreAndPaisAndEliminadaOrderByNombreAsc(String nombre, Pais pais, boolean eliminada);
       
-      List<Provincia> findAllByAndPaisAndEliminada(Pais pais, boolean eliminada);
+      List<Provincia> findAllByAndPaisAndEliminadaOrderByNombreAsc(Pais pais, boolean eliminada);
 
 }

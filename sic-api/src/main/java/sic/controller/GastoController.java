@@ -1,5 +1,6 @@
 package sic.controller;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,19 +53,24 @@ public class GastoController {
     @ResponseStatus(HttpStatus.OK)
     public List<Gasto> getGastosPorFechaYFormaDePago(@RequestParam long idEmpresa,
                                                      @RequestParam long idFormaDePago,
-                                                     @RequestParam long desde,
-                                                     @RequestParam long hasta) {
-        Calendar fechaDesde = Calendar.getInstance();
-        fechaDesde.setTimeInMillis(desde);
-        Calendar fechaHasta = Calendar.getInstance();
-        fechaHasta.setTimeInMillis(hasta);
-        return gastoService.getGastosPorFechaYFormaDePago(idEmpresa, idFormaDePago,
-                fechaDesde.getTime(), fechaHasta.getTime());
+                                                     @RequestParam long idCaja) {
+        return gastoService.getGastosPorFechaYFormaDePago(idEmpresa, idFormaDePago, idCaja);
+    }
+    
+    @GetMapping("/gastos/total")
+    @ResponseStatus(HttpStatus.OK)
+    public double calcularTotalGastos(@RequestParam long[] idGasto) {
+        List<Gasto> gastos = new ArrayList<>();
+        for (long id : idGasto) {
+            gastos.add(gastoService.getGastoPorId(id));
+        }
+        return gastoService.calcularTotalGastos(gastos);
     }
     
     @PostMapping("/gastos")
     @ResponseStatus(HttpStatus.CREATED)
     public Gasto guardar(@RequestBody Gasto gasto) {
+        gastoService.validarGasto(gasto);
         return gastoService.guardar(gasto);
     }
 

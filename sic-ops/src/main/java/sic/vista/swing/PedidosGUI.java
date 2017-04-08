@@ -1,6 +1,7 @@
 package sic.vista.swing;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
 import sic.util.ColoresEstadosRenderer;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
@@ -36,11 +37,10 @@ public class PedidosGUI extends JInternalFrame {
     private ModeloTabla modeloTablaPedidos;
     private ModeloTabla modeloTablaRenglones;    
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private final Dimension sizeInternalFrame =  new Dimension(880, 600);
 
     public PedidosGUI() {
-        initComponents();
-        this.setSize(850, 600);
-        this.limpiarJTables();
+        this.initComponents();
     }
 
     public void buscar() {
@@ -245,7 +245,7 @@ public class PedidosGUI extends JInternalFrame {
         encabezados[1] = "Fecha Pedido";
         encabezados[2] = "Nº Pedido";
         encabezados[3] = "Cliente";
-        encabezados[4] = "Usuario (Vendedor)";
+        encabezados[4] = "Usuario";
         encabezados[5] = "Total Estimado";
         encabezados[6] = "Total Actual";
         modeloTablaPedidos.setColumnIdentifiers(encabezados);
@@ -474,7 +474,7 @@ public class PedidosGUI extends JInternalFrame {
 
         cmb_Cliente.setToolTipText("");
 
-        chk_Vendedor.setText("Usuario (Vendedor):");
+        chk_Vendedor.setText("Usuario:");
         chk_Vendedor.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 chk_VendedorItemStateChanged(evt);
@@ -509,11 +509,10 @@ public class PedidosGUI extends JInternalFrame {
                 .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panel_FiltrosLayout.createSequentialGroup()
                         .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chk_Fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(chk_NumeroPedido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(chk_Cliente, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(chk_Vendedor, javax.swing.GroupLayout.Alignment.TRAILING)))
+                            .addComponent(chk_Vendedor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chk_Cliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chk_NumeroPedido, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chk_Fecha, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(12, 12, 12)
                         .addGroup(panel_FiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(cmb_Cliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -526,8 +525,7 @@ public class PedidosGUI extends JInternalFrame {
                                 .addComponent(lbl_Hasta)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(dc_FechaHasta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(cmb_Vendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(cmb_Vendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 383, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(panel_FiltrosLayout.createSequentialGroup()
                         .addComponent(btn_Buscar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -844,15 +842,17 @@ public class PedidosGUI extends JInternalFrame {
     }//GEN-LAST:event_tbl_PedidosMouseClicked
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        this.setSize(sizeInternalFrame);
+        this.limpiarJTables();
+        txt_NumeroPedido.setEnabled(false);
+        dc_FechaDesde.setEnabled(false);
+        dc_FechaHasta.setEnabled(false);
+        cmb_Cliente.setEnabled(false);
+        cmb_Vendedor.setEnabled(false);
+        dc_FechaDesde.setDate(new Date());
+        dc_FechaHasta.setDate(new Date());
         try {
-            txt_NumeroPedido.setEnabled(false);
-            dc_FechaDesde.setEnabled(false);
-            dc_FechaHasta.setEnabled(false);
-            cmb_Cliente.setEnabled(false);
-            cmb_Vendedor.setEnabled(false);
             this.setMaximum(true);
-            dc_FechaDesde.setDate(new Date());
-            dc_FechaHasta.setDate(new Date());
         } catch (PropertyVetoException ex) {
             String mensaje = "Se produjo un error al intentar maximizar la ventana.";
             LOGGER.error(mensaje + " - " + ex.getMessage());

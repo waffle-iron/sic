@@ -5,6 +5,7 @@ import sic.modelo.BusquedaFacturaCompraCriteria;
 import sic.modelo.BusquedaFacturaVentaCriteria;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
+import sic.modelo.TipoDeComprobante;
 
 public interface FacturaRepositoryCustom {
 
@@ -12,9 +13,9 @@ public interface FacturaRepositoryCustom {
 
     double calcularTotalFacturadoCompra(BusquedaFacturaCompraCriteria criteria);
     
-    double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, char[] tipoFactura);
+    double calcularIVA_Venta(BusquedaFacturaVentaCriteria criteria, TipoDeComprobante[] tipoComprobante);
     
-    double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria, char[] tipoFactura);
+    double calcularIVA_Compra(BusquedaFacturaCompraCriteria criteria, TipoDeComprobante[] tipoComprobante);
     
     double calcularGananciaTotal(BusquedaFacturaVentaCriteria criteria);
 

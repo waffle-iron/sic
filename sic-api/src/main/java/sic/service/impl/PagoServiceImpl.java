@@ -7,8 +7,10 @@ import java.util.ResourceBundle;
 import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sic.modelo.Caja;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
@@ -18,6 +20,7 @@ import sic.service.IFacturaService;
 import sic.service.IPagoService;
 import sic.service.BusinessServiceException;
 import sic.repository.PagoRepository;
+import sic.service.ICajaService;
 import sic.service.IEmpresaService;
 import sic.service.IFormaDePagoService;
 import sic.util.Utilidades;
@@ -29,18 +32,22 @@ public class PagoServiceImpl implements IPagoService {
     private final IFacturaService facturaService;
     private final IEmpresaService empresaService;
     private final IFormaDePagoService formaDePagoService;
+    private final ICajaService cajaService;
     private static final Logger LOGGER = Logger.getLogger(PagoServiceImpl.class.getPackage().getName());
 
+    @Lazy
     @Autowired
     public PagoServiceImpl(PagoRepository pagoRepository,
             IEmpresaService empresaService,
             IFormaDePagoService formaDePagoService,
-            IFacturaService facturaService) {
+            IFacturaService facturaService,
+            ICajaService cajaService) {
 
         this.empresaService = empresaService;
         this.formaDePagoService = formaDePagoService;
         this.pagoRepository = pagoRepository;
         this.facturaService = facturaService;
+        this.cajaService = cajaService;
     }
 
     @Override
@@ -71,7 +78,10 @@ public class PagoServiceImpl implements IPagoService {
     }
 
     @Override
-    public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta) {
+    public List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, long idCaja) {
+        Caja caja = cajaService.getCajaPorId(idCaja);
+        Date desde = caja.getFechaApertura();
+        Date hasta = caja.getFechaCierre() == null? new Date() : caja.getFechaCierre();
         return pagoRepository.findByFechaBetweenAndEmpresaAndFormaDePagoAndEliminado(desde, hasta, 
                 empresaService.getEmpresaPorId(id_Empresa), formaDePagoService.getFormasDePagoPorId(id_FormaDePago), false);
     }
@@ -91,6 +101,7 @@ public class PagoServiceImpl implements IPagoService {
     public Pago guardar(Pago pago) {
         this.validarOperacion(pago);
         pago.setNroPago(this.getSiguienteNroPago(pago.getEmpresa().getId_Empresa()));
+        pago.setFecha(new Date());
         pago = pagoRepository.save(pago);
         facturaService.actualizarFacturaEstadoPagada(pago.getFactura());
         LOGGER.warn("El Pago " + pago + " se guardó correctamente.");
@@ -109,6 +120,20 @@ public class PagoServiceImpl implements IPagoService {
         pagoRepository.save(pago);
         facturaService.actualizarFacturaEstadoPagada(pago.getFactura());
         LOGGER.warn("El Pago " + pago + " se eliminó correctamente.");
+    }
+    
+    @Override
+    public double calcularTotalPagos(List<Pago> pagos) {
+        double total = 0.0;
+        for (Pago pago : pagos) {
+            if (pago.getFactura() instanceof FacturaVenta) {
+                total += pago.getMonto();
+            }
+            if (pago.getFactura() instanceof FacturaCompra) {
+                total -= pago.getMonto();
+            }
+        }
+        return total;
     }
 
     @Override
@@ -136,7 +161,7 @@ public class PagoServiceImpl implements IPagoService {
 
     @Override
     @Transactional
-    public void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota, Date fechaYHora) {
+    public void pagarMultiplesFacturas(List<Factura> facturas, double monto, FormaDePago formaDePago, String nota) {
         if (monto <= this.calcularTotalAdeudadoFacturas(facturas)) {
             List<Factura> facturasOrdenadas = facturaService.ordenarFacturasPorFechaAsc(facturas);
             for (Factura factura : facturasOrdenadas) {
@@ -145,7 +170,7 @@ public class PagoServiceImpl implements IPagoService {
                     Pago nuevoPago = new Pago();
                     nuevoPago.setFormaDePago(formaDePago);
                     nuevoPago.setFactura(factura);
-                    nuevoPago.setFecha(fechaYHora);
+                    nuevoPago.setFecha(new Date());
                     nuevoPago.setEmpresa(factura.getEmpresa());
                     nuevoPago.setNota(nota);
                     double saldoAPagar = this.getSaldoAPagar(factura);
@@ -173,10 +198,6 @@ public class PagoServiceImpl implements IPagoService {
         if (pago.getMonto() <= 0) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_mayorQueCero_monto"));
-        }
-        if (pago.getFecha() == null) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_pago_fecha_vacia"));
         }
         if (pago.getFactura() == null) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")

@@ -13,7 +13,7 @@ import sic.service.impl.AfipWebServiceSOAPClient;
 @EnableScheduling
 public class App extends WebMvcConfigurerAdapter {
     
-    @Bean
+    @Bean    
     public JwtInterceptor jwtInterceptor() {
         return new JwtInterceptor();
     }

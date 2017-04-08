@@ -14,9 +14,11 @@ public interface IGastoService {
 
     List<Gasto> getGastosPorFecha(Long id_Empresa, Date desde, Date hasta);
 
-    List<Gasto> getGastosPorFechaYFormaDePago(Long id_Empresa, Long id_FormaDePago, Date desde, Date hasta);
+    List<Gasto> getGastosPorFechaYFormaDePago(Long id_Empresa, Long id_FormaDePago, long idCaja);
     
     Gasto getGastosPorNroYEmpreas(Long nroPago, Long id_Empresa);
+    
+    double calcularTotalGastos(List<Gasto> gastos);
 
     Gasto guardar(Gasto gasto);
 

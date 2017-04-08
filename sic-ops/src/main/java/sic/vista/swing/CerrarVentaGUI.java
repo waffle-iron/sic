@@ -27,6 +27,7 @@ import sic.modelo.FacturaVenta;
 import sic.modelo.FormaDePago;
 import sic.modelo.Pago;
 import sic.modelo.RenglonFactura;
+import sic.modelo.TipoDeComprobante;
 import sic.modelo.Transportista;
 import sic.modelo.UsuarioActivo;
 
@@ -177,24 +178,23 @@ public class CerrarVentaGUI extends JDialog {
     }
 
     private void finalizarVenta() {
-       FacturaVenta facturaVenta = gui_puntoDeVenta.construirFactura();
-       facturaVenta.setTransportista((Transportista) cmb_Transporte.getSelectedItem());
-       facturaVenta = this.agregarPagosAFactura(facturaVenta);        
+        FacturaVenta facturaVenta = gui_puntoDeVenta.construirFactura();
+        facturaVenta.setTransportista((Transportista) cmb_Transporte.getSelectedItem());
+        facturaVenta = this.agregarPagosAFactura(facturaVenta);
         try {
-            String idPedido = "";
-            if(gui_puntoDeVenta.getPedido() != null) {
-                    idPedido = "&idPedido=" + gui_puntoDeVenta.getPedido().getId_Pedido();
-                }
+            String uri = "/facturas?idPedido=";
+            if (gui_puntoDeVenta.getPedido() != null) {
+                uri += gui_puntoDeVenta.getPedido().getId_Pedido();
+            }
             if (dividir) {
-                String uri = "/facturas?indices="
-                        + Arrays.toString(indicesParaDividir).substring(1, Arrays.toString(indicesParaDividir).length() - 1);
+                String indices = "&indices=" + Arrays.toString(indicesParaDividir).substring(1, Arrays.toString(indicesParaDividir).length() - 1);
                 List<Factura> facturasDivididas = Arrays.asList(RestClient.getRestTemplate()
-                        .postForObject(uri + idPedido, facturaVenta, Factura[].class));
+                        .postForObject(uri + indices, facturaVenta, Factura[].class));
                 int indice = facturasDivididas.size();
                 for (int i = 0; i < indice; i++) {
                     facturasDivididas.get(i).setRenglones(Arrays.asList(RestClient.getRestTemplate()
                             .getForObject("/facturas/" + facturasDivididas.get(i).getId_Factura() + "/renglones",
-                                    RenglonFactura[].class)));  
+                                    RenglonFactura[].class)));
                     if (facturasDivididas.size() == 2 && !facturasDivididas.get(i).getRenglones().isEmpty()) {
                         if (i == 0) {
                             this.lanzarReporteFactura(facturasDivididas.get(i), "ComprobanteX");
@@ -206,10 +206,9 @@ public class CerrarVentaGUI extends JDialog {
                         this.lanzarReporteFactura(facturasDivididas.get(i), "Factura");
                     }
                 }
-            } else {                               
+            } else {
                 this.lanzarReporteFactura(Arrays.asList(RestClient.getRestTemplate()
-                                          .postForObject("/facturas?"+ idPedido,
-                                          facturaVenta, FacturaVenta[].class)).get(0), "Factura");
+                        .postForObject(uri, facturaVenta, FacturaVenta[].class)).get(0), "Factura");
                 exito = true;
             }
             if (gui_puntoDeVenta.getPedido() != null) {
@@ -564,9 +563,9 @@ public class CerrarVentaGUI extends JDialog {
         txt_MontoPago1.setValue(gui_puntoDeVenta.getTotal());
         indicesParaDividir = new int[gui_puntoDeVenta.getModeloTabla().getRowCount()];
         if ((indicesParaDividir.length > 0) 
-                && (gui_puntoDeVenta.getTipoDeComprobante().equals("Factura A")
-                || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura B")
-                || gui_puntoDeVenta.getTipoDeComprobante().equals("Factura C"))) {            
+                && (gui_puntoDeVenta.getTipoDeComprobante().equals(TipoDeComprobante.FACTURA_A)
+                || gui_puntoDeVenta.getTipoDeComprobante().equals(TipoDeComprobante.FACTURA_B)
+                || gui_puntoDeVenta.getTipoDeComprobante().equals(TipoDeComprobante.FACTURA_C))) {            
             int j = 0;
             boolean tieneRenglonesMarcados = false;
             for (int i = 0; i < gui_puntoDeVenta.getModeloTabla().getRowCount(); i++) {
@@ -610,7 +609,7 @@ public class CerrarVentaGUI extends JDialog {
             if (chk_FormaDePago3.isSelected() && chk_FormaDePago3.isEnabled()) {
                 totalPagos += Double.parseDouble(txt_MontoPago3.getValue().toString());
             }
-            double totalAPagar = Double.parseDouble(lbl_TotalAPagar.getValue().toString());
+            double totalAPagar = Math.floor(Double.parseDouble(lbl_TotalAPagar.getValue().toString()) * 100) / 100; 
             if (totalPagos < totalAPagar) {
                 int reply = JOptionPane.showConfirmDialog(this,
                         ResourceBundle.getBundle("Mensajes").getString("mensaje_montos_insuficientes"),

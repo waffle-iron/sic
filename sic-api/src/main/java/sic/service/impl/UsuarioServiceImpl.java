@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import sic.modelo.Rol;
 import sic.modelo.Usuario;
 import sic.service.IUsuarioService;
 import sic.service.BusinessServiceException;
@@ -49,11 +50,16 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Override
     public List<Usuario> getUsuarios() {
         return usuarioRepository.findAllByAndEliminadoOrderByNombreAsc(false);
-    }    
+    }
+
+    @Override
+    public List<Usuario> getUsuariosPorRol(Rol rol) {
+        return usuarioRepository.findAllByAndEliminadoAndRolesOrderByNombreAsc(false, rol);
+    }
 
     @Override
     public List<Usuario> getUsuariosAdministradores() {
-        return usuarioRepository.findAllByAndPermisosAdministradorAndEliminadoOrderByNombreAsc(true, false);
+        return usuarioRepository.findAllByAndRolesAndEliminadoOrderByNombreAsc(Rol.ADMINISTRADOR, false);
     }
 
     @Override
@@ -76,6 +82,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_usuario_vacio_password"));
         }
+        if (usuario.getRoles().isEmpty()) {
+            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_usuario_no_selecciono_rol"));
+        }
         //Duplicados
         //Nombre
         Usuario usuarioDuplicado = this.getUsuarioPorNombre(usuario.getNombre());
@@ -90,8 +100,8 @@ public class UsuarioServiceImpl implements IUsuarioService {
             }
         }
         //Ultimo usuario administrador
-        if ((operacion == TipoDeOperacion.ACTUALIZACION && usuario.isPermisosAdministrador() == false)
-                || operacion == TipoDeOperacion.ELIMINACION && usuario.isPermisosAdministrador() == true) {
+        if ((operacion == TipoDeOperacion.ACTUALIZACION && usuario.getRoles().contains(Rol.ADMINISTRADOR) == false)
+                || operacion == TipoDeOperacion.ELIMINACION && usuario.getRoles().contains(Rol.ADMINISTRADOR) == true) {
             List<Usuario> adminitradores = this.getUsuariosAdministradores();
             if (adminitradores.size() == 1) {
                 if (adminitradores.get(0).getId_Usuario() == usuario.getId_Usuario()) {
@@ -106,7 +116,10 @@ public class UsuarioServiceImpl implements IUsuarioService {
     @Transactional
     public void actualizar(Usuario usuario) {
         this.validarOperacion(TipoDeOperacion.ACTUALIZACION, usuario);
-        usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
+        Usuario usuarioDB = usuarioRepository.findOne(usuario.getId_Usuario());
+        if (!usuario.getPassword().equals(usuarioDB.getPassword())) {
+            usuario.setPassword(Utilidades.encriptarConMD5(usuario.getPassword()));
+        }
         usuarioRepository.save(usuario);
     }
 

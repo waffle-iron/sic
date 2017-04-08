@@ -2,6 +2,7 @@ package sic.vista.swing;
 
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyVetoException;
 import java.io.File;
@@ -46,12 +47,13 @@ public class CajaGUI extends JInternalFrame {
     private final List<Object> listaMovimientos = new ArrayList<>();
     private Caja caja;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private final Dimension sizeInternalFrame =  new Dimension(880, 600);
 
     public CajaGUI(Caja caja) {
-        initComponents();
-        this.setSize(850, 600);
+        this.initComponents();        
         this.caja = caja;
         this.setTituloVentana();
+        btn_Imprimir.setVisible(false); // Temporal hasta definir que hacer con el reporte
     }
 
     private void cargarDatosBalance(java.awt.event.KeyEvent evt) {
@@ -70,28 +72,10 @@ public class CajaGUI extends JInternalFrame {
                 FormaDePago fdp = (FormaDePago) tbl_Resumen.getModel().getValueAt(row, 0);
                 if (this.caja != null) {
                     this.listaMovimientos.clear();
-                    Date hasta = new Date();
-                    if (this.caja.getEstado() == EstadoCaja.CERRADA) {
-                        hasta = this.caja.getFechaCierre();
-                    }
                     try {
-                        String criteriaPagos = "/pagos/busqueda?"
-                                + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
-                                + "&idFormaDePago=" + fdp.getId_FormaDePago()
-                                + "&desde=" + this.caja.getFechaApertura().getTime()
-                                + "&hasta=" + hasta.getTime();
-                        List<Pago> pagos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                                .getForObject(criteriaPagos,
-                                        Pago[].class)));
+                        List<Pago> pagos = this.getPagosPorFechaYFormaDePago(fdp.getId_FormaDePago());
                         this.listaMovimientos.addAll(pagos);
-                        String criteriaGastos = "/gastos/busqueda?"
-                                + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
-                                + "&idFormaDePago=" + fdp.getId_FormaDePago()
-                                + "&desde=" + this.caja.getFechaApertura().getTime()
-                                + "&hasta=" + hasta.getTime();
-                        List<Gasto> gastos = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                                .getForObject(criteriaGastos,
-                                        Gasto[].class)));
+                        List<Gasto> gastos = this.getGastosPorFechaYFormaDePago(fdp.getId_FormaDePago());
                         this.listaMovimientos.addAll(gastos);
                         this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
                     } catch (RestClientResponseException ex) {
@@ -171,7 +155,7 @@ public class CajaGUI extends JInternalFrame {
                     tipoFactura = "Venta";
                 }
                 fila[0] = "Pago por: Factura " + tipoFactura
-                        + " \"" + ((Pago) movimiento).getFactura().getTipoFactura() + "\""
+                        + " \"" + ((Pago) movimiento).getFactura().getTipoComprobante() + "\""
                         + " Nº " + ((Pago) movimiento).getFactura().getNumSerie()
                         + " - " + ((Pago) movimiento).getFactura().getNumFactura();
             }
@@ -230,14 +214,8 @@ public class CajaGUI extends JInternalFrame {
             modeloTablaResumen.addRow(saldoInicial);
             try {
                 for (FormaDePago formaDePago : this.getFormasDePago()) {
-                    Date hasta = new Date();
-                    if (this.caja.getEstado() == EstadoCaja.CERRADA) {
-                        hasta = this.caja.getFechaCierre();
-                    }
-                    List<Pago> pagosPorFormaDePago = this.getPagosPorFechaYFormaDePago(formaDePago.getId_FormaDePago(),
-                            this.caja.getFechaApertura().getTime(), hasta.getTime());
-                    List<Gasto> gastosPorFormaDePago = this.getGastosPorFechaYFormaDePago(formaDePago.getId_FormaDePago(),
-                            this.caja.getFechaApertura().getTime(), hasta.getTime());
+                    List<Pago> pagosPorFormaDePago = this.getPagosPorFechaYFormaDePago(formaDePago.getId_FormaDePago());
+                    List<Gasto> gastosPorFormaDePago = this.getGastosPorFechaYFormaDePago(formaDePago.getId_FormaDePago());
                     if (pagosPorFormaDePago.size() > 0 || gastosPorFormaDePago.size() > 0) {
                         Object[] fila = new Object[3];
                         fila[0] = formaDePago;
@@ -245,7 +223,7 @@ public class CajaGUI extends JInternalFrame {
                         this.listaMovimientos.addAll(pagosPorFormaDePago);
                         this.listaMovimientos.addAll(gastosPorFormaDePago);
 
-                        String uriPagos = "/cajas/total-pagos?idPago=";
+                        String uriPagos = "/pagos/total?idPago=";
                         long[] idsPagos = new long[pagosPorFormaDePago.size()];
                         int indice = 0;
                         for (Pago pago : pagosPorFormaDePago) {
@@ -253,7 +231,7 @@ public class CajaGUI extends JInternalFrame {
                             indice++;
                         }
 
-                        String uriGastos = "/cajas/total-gastos?idGasto=";
+                        String uriGastos = "/gastos/total?idGasto=";
                         indice = 0;
                         long[] idsGastos = new long[gastosPorFormaDePago.size()];
                         for (Gasto gasto : gastosPorFormaDePago) {
@@ -285,8 +263,8 @@ public class CajaGUI extends JInternalFrame {
                     }
                 }
                 this.ftxt_saldoCaja.setValue(totalCaja);
-                caja.setSaldoFinal(totalCaja);
                 this.ftxt_TotalGeneral.setValue(totalGeneral);
+                this.caja.setSaldoFinal(totalGeneral);
                 //Guarda el monto final del último calculo en la caja
                 RestClient.getRestTemplate().put("/cajas", this.caja);
                 if (totalGeneral < 0) {
@@ -310,6 +288,7 @@ public class CajaGUI extends JInternalFrame {
                 JOptionPane.showMessageDialog(this,
                         ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                         "Error", JOptionPane.ERROR_MESSAGE);
+                this.dispose();
             }
         }
     }
@@ -414,22 +393,20 @@ public class CajaGUI extends JInternalFrame {
                         FormaDePago[].class)));
     }
 
-    private List<Pago> getPagosPorFechaYFormaDePago(long idFormaDePago, long fechaDesde, long fechaHasta) {
+    private List<Pago> getPagosPorFechaYFormaDePago(long idFormaDePago) {
         String criteriaPagos = "/pagos/busqueda?"
                 + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
                 + "&idFormaDePago=" + idFormaDePago
-                + "&desde=" + fechaDesde
-                + "&hasta=" + fechaHasta;
+                + "&idCaja=" + this.caja.getId_Caja();
         return new ArrayList(Arrays.asList(RestClient.getRestTemplate()
                 .getForObject(criteriaPagos, Pago[].class)));
     }
 
-    private List<Gasto> getGastosPorFechaYFormaDePago(long idFormaDePago, long fechaDesde, long fechaHasta) {
+    private List<Gasto> getGastosPorFechaYFormaDePago(long idFormaDePago) {
         String criteriaGastos = "/gastos/busqueda?"
                 + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
                 + "&idFormaDePago=" + idFormaDePago
-                + "&desde=" + fechaDesde
-                + "&hasta=" + fechaHasta;
+                + "&idCaja=" + this.caja.getId_Caja();
         return new ArrayList(Arrays.asList(RestClient.getRestTemplate()
                 .getForObject(criteriaGastos, Gasto[].class)));
     }
@@ -438,23 +415,23 @@ public class CajaGUI extends JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        pnl_Tabla = new javax.swing.JPanel();
-        sp_Tabla = new javax.swing.JScrollPane();
-        tbl_Balance = new javax.swing.JTable();
-        btn_VerDetalle = new javax.swing.JButton();
-        btn_EliminarGasto = new javax.swing.JButton();
         pnl_Resumen = new javax.swing.JPanel();
         sp_TablaResumen = new javax.swing.JScrollPane();
         tbl_Resumen = new javax.swing.JTable();
+        sp_Tabla = new javax.swing.JScrollPane();
+        tbl_Balance = new javax.swing.JTable();
+        lbl_movimientos = new javax.swing.JLabel();
+        btn_VerDetalle = new javax.swing.JButton();
+        btn_EliminarGasto = new javax.swing.JButton();
         lbl_estado = new javax.swing.JLabel();
         lbl_aviso = new javax.swing.JLabel();
-        btn_Imprimir = new javax.swing.JButton();
         btn_CerrarCaja = new javax.swing.JButton();
         btn_AgregarGasto = new javax.swing.JButton();
         lbl_Total = new javax.swing.JLabel();
         lbl_totalCaja = new javax.swing.JLabel();
         ftxt_saldoCaja = new javax.swing.JFormattedTextField();
         ftxt_TotalGeneral = new javax.swing.JFormattedTextField();
+        btn_Imprimir = new javax.swing.JButton();
 
         setClosable(true);
         setMaximizable(true);
@@ -478,50 +455,6 @@ public class CajaGUI extends JInternalFrame {
             }
         });
 
-        pnl_Tabla.setBorder(javax.swing.BorderFactory.createTitledBorder("Movimientos por Forma de Pago"));
-
-        tbl_Balance.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        sp_Tabla.setViewportView(tbl_Balance);
-
-        btn_VerDetalle.setForeground(java.awt.Color.blue);
-        btn_VerDetalle.setText("Ver Detalle");
-        btn_VerDetalle.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_VerDetalleActionPerformed(evt);
-            }
-        });
-
-        btn_EliminarGasto.setForeground(java.awt.Color.blue);
-        btn_EliminarGasto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CoinsDel_16x16.png"))); // NOI18N
-        btn_EliminarGasto.setText("Eliminar Gasto");
-        btn_EliminarGasto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_EliminarGastoActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout pnl_TablaLayout = new javax.swing.GroupLayout(pnl_Tabla);
-        pnl_Tabla.setLayout(pnl_TablaLayout);
-        pnl_TablaLayout.setHorizontalGroup(
-            pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE)
-            .addGroup(pnl_TablaLayout.createSequentialGroup()
-                .addComponent(btn_VerDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(btn_EliminarGasto))
-        );
-        pnl_TablaLayout.setVerticalGroup(
-            pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnl_TablaLayout.createSequentialGroup()
-                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnl_TablaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_VerDetalle)
-                    .addComponent(btn_EliminarGasto)))
-        );
-
-        pnl_TablaLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_EliminarGasto, btn_VerDetalle});
-
         pnl_Resumen.setBorder(javax.swing.BorderFactory.createTitledBorder("Resumen General"));
 
         tbl_Resumen.setModel(new javax.swing.table.DefaultTableModel(
@@ -544,36 +477,67 @@ public class CajaGUI extends JInternalFrame {
             }
         });
         sp_TablaResumen.setViewportView(tbl_Resumen);
-        tbl_Resumen.getAccessibleContext().setAccessibleParent(sp_Tabla);
+
+        tbl_Balance.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        sp_Tabla.setViewportView(tbl_Balance);
+
+        lbl_movimientos.setText("Movimientos por Forma de Pago (Seleccione una de la lista superior)");
+
+        btn_VerDetalle.setForeground(java.awt.Color.blue);
+        btn_VerDetalle.setText("Ver Detalle");
+        btn_VerDetalle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_VerDetalleActionPerformed(evt);
+            }
+        });
+
+        btn_EliminarGasto.setForeground(java.awt.Color.blue);
+        btn_EliminarGasto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CoinsDel_16x16.png"))); // NOI18N
+        btn_EliminarGasto.setText("Eliminar Gasto");
+        btn_EliminarGasto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_EliminarGastoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnl_ResumenLayout = new javax.swing.GroupLayout(pnl_Resumen);
         pnl_Resumen.setLayout(pnl_ResumenLayout);
         pnl_ResumenLayout.setHorizontalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp_TablaResumen)
+            .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE)
+            .addComponent(sp_Tabla, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(pnl_ResumenLayout.createSequentialGroup()
+                .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lbl_movimientos)
+                    .addGroup(pnl_ResumenLayout.createSequentialGroup()
+                        .addComponent(btn_VerDetalle, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_EliminarGasto)))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
+
+        pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_EliminarGasto, btn_VerDetalle});
+
         pnl_ResumenLayout.setVerticalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
-                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lbl_movimientos)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_VerDetalle)
+                    .addComponent(btn_EliminarGasto)))
         );
 
-        lbl_estado.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+        pnl_ResumenLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_EliminarGasto, btn_VerDetalle});
+
         lbl_estado.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbl_estado.setText("Estado:");
 
-        lbl_aviso.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
         lbl_aviso.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-
-        btn_Imprimir.setForeground(java.awt.Color.blue);
-        btn_Imprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Printer_16x16.png"))); // NOI18N
-        btn_Imprimir.setText("Imprimir");
-        btn_Imprimir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_ImprimirActionPerformed(evt);
-            }
-        });
 
         btn_CerrarCaja.setForeground(java.awt.Color.blue);
         btn_CerrarCaja.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/CerrarCaja_16x16.png"))); // NOI18N
@@ -603,13 +567,20 @@ public class CajaGUI extends JInternalFrame {
         ftxt_saldoCaja.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         ftxt_saldoCaja.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         ftxt_saldoCaja.setText("0");
-        ftxt_saldoCaja.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
         ftxt_TotalGeneral.setEditable(false);
         ftxt_TotalGeneral.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         ftxt_TotalGeneral.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         ftxt_TotalGeneral.setText("0");
-        ftxt_TotalGeneral.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
+
+        btn_Imprimir.setForeground(java.awt.Color.blue);
+        btn_Imprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Printer_16x16.png"))); // NOI18N
+        btn_Imprimir.setText("Imprimir");
+        btn_Imprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ImprimirActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -618,19 +589,12 @@ public class CajaGUI extends JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(pnl_Resumen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnl_Tabla, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lbl_estado)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btn_Imprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
                         .addComponent(btn_AgregarGasto)
                         .addGap(0, 0, 0)
                         .addComponent(btn_CerrarCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_Imprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createSequentialGroup()
@@ -640,39 +604,40 @@ public class CajaGUI extends JInternalFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lbl_totalCaja)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ftxt_saldoCaja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(ftxt_saldoCaja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(pnl_Resumen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lbl_estado)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {ftxt_TotalGeneral, ftxt_saldoCaja});
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_CerrarCaja, btn_Imprimir});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AgregarGasto, btn_CerrarCaja, btn_Imprimir});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(6, 6, 6)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_aviso, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbl_estado, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnl_Resumen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(pnl_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(pnl_Resumen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lbl_totalCaja)
-                            .addComponent(ftxt_saldoCaja, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lbl_Total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(ftxt_TotalGeneral)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_CerrarCaja)
-                        .addComponent(btn_Imprimir)
-                        .addComponent(btn_AgregarGasto)))
+                    .addComponent(lbl_totalCaja, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(ftxt_saldoCaja, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(btn_AgregarGasto)
+                    .addComponent(btn_CerrarCaja)
+                    .addComponent(lbl_Total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(ftxt_TotalGeneral)
+                    .addComponent(btn_Imprimir))
                 .addContainerGap())
         );
 
@@ -735,16 +700,27 @@ public class CajaGUI extends JInternalFrame {
     }//GEN-LAST:event_btn_VerDetalleActionPerformed
 
     private void btn_AgregarGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AgregarGastoActionPerformed
-        if (this.caja.getEstado().equals(EstadoCaja.ABIERTA)) {
-            AgregarGastoGUI agregarGasto = new AgregarGastoGUI();
-            agregarGasto.setLocationRelativeTo(null);
-            agregarGasto.setEnabled(true);
-            agregarGasto.setVisible(true);
-            this.limpiarYCargarTablas();
-        } else if(this.caja.getEstado().equals(EstadoCaja.CERRADA)) {
+        try {
+            if (this.caja.getEstado().equals(EstadoCaja.ABIERTA)) {
+                List<FormaDePago> formasDePago = Arrays.asList(RestClient.getRestTemplate().getForObject("/formas-de-pago/empresas/"
+                        + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(), FormaDePago[].class));
+                AgregarGastoGUI agregarGasto = new AgregarGastoGUI(formasDePago);
+                agregarGasto.setLocationRelativeTo(null);
+                agregarGasto.setEnabled(true);
+                agregarGasto.setVisible(true);
+                this.limpiarYCargarTablas();
+            } else if (this.caja.getEstado().equals(EstadoCaja.CERRADA)) {
                 JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_cerrada"),
                         "Aviso", JOptionPane.INFORMATION_MESSAGE);
             }
+        } catch (RestClientResponseException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (ResourceAccessException ex) {
+            LOGGER.error(ex.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btn_AgregarGastoActionPerformed
 
     private void btn_ImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ImprimirActionPerformed
@@ -762,6 +738,7 @@ public class CajaGUI extends JInternalFrame {
                     Gasto gasto = (Gasto) movimientoDeTabla;
                     try {
                         RestClient.getRestTemplate().delete("/gastos/" + gasto.getId_Gasto());
+                        this.limpiarYCargarTablas();
                     } catch (RestClientResponseException ex) {
                         JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     } catch (ResourceAccessException ex) {
@@ -770,7 +747,6 @@ public class CajaGUI extends JInternalFrame {
                                 ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
                                 "Error", JOptionPane.ERROR_MESSAGE);
                     }
-                    this.limpiarYCargarTablas();
                 }
             } else if(this.caja.getEstado().equals(EstadoCaja.CERRADA)) {
                 JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes").getString("mensaje_caja_cerrada"),
@@ -784,6 +760,7 @@ public class CajaGUI extends JInternalFrame {
     }//GEN-LAST:event_tbl_ResumenMouseClicked
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        this.setSize(sizeInternalFrame);
         if (caja == null) {
             try {
                 caja = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
@@ -812,7 +789,6 @@ public class CajaGUI extends JInternalFrame {
             String mensaje = "Se produjo un error al intentar maximizar la ventana.";
             LOGGER.error(mensaje + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
-            this.dispose();
         }
     }//GEN-LAST:event_formInternalFrameOpened
 
@@ -833,9 +809,9 @@ public class CajaGUI extends JInternalFrame {
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_aviso;
     private javax.swing.JLabel lbl_estado;
+    private javax.swing.JLabel lbl_movimientos;
     private javax.swing.JLabel lbl_totalCaja;
     private javax.swing.JPanel pnl_Resumen;
-    private javax.swing.JPanel pnl_Tabla;
     private javax.swing.JScrollPane sp_Tabla;
     private javax.swing.JScrollPane sp_TablaResumen;
     javax.swing.JTable tbl_Balance;

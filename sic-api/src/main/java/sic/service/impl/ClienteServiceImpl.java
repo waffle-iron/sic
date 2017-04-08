@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import javax.persistence.EntityNotFoundException;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sic.modelo.BusquedaClienteCriteria;
@@ -42,7 +43,7 @@ public class ClienteServiceImpl implements IClienteService {
 
     @Override
     public List<Cliente> getClientes(Empresa empresa) {        
-        return clienteRepository.findAllByAndEmpresaAndEliminado(empresa, false);                   
+        return clienteRepository.findAllByAndEmpresaAndEliminadoOrderByRazonSocialAsc(empresa, false);                   
     }
 
     @Override
@@ -97,7 +98,8 @@ public class ClienteServiceImpl implements IClienteService {
         QCliente qcliente = QCliente.cliente;
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(qcliente.empresa.eq(criteria.getEmpresa()).and(qcliente.eliminado.eq(false)))
-               .and(this.buildPredicadoDescripcion(criteria.getRazonSocial(), qcliente, criteria.isBuscaPorRazonSocial(), criteria.isBuscaPorRazonSocial(), criteria.isBuscaPorRazonSocial()));
+               .and(this.buildPredicadoBusqueda(criteria.getRazonSocial(), criteria.getNombreFantasia(), criteria.getIdFiscal(), 
+                       qcliente, criteria.isBuscaPorRazonSocial(), criteria.isBuscaPorNombreFantasia(), criteria.isBuscaPorId_Fiscal()));
         if (criteria.isBuscaPorLocalidad() == true) {
             builder.and(qcliente.localidad.eq(criteria.getLocalidad()));
         }
@@ -108,30 +110,32 @@ public class ClienteServiceImpl implements IClienteService {
             builder.and(qcliente.localidad.provincia.pais.eq(criteria.getPais()));
         }
         List<Cliente> list = new ArrayList<>();
-        clienteRepository.findAll(builder).iterator().forEachRemaining(list::add);
+        clienteRepository.findAll(builder,  new Sort(Sort.Direction.ASC, "razonSocial")).iterator().forEachRemaining(list::add);
         return list;
     }
     
-    private BooleanBuilder buildPredicadoDescripcion(String stringRazonSocial, QCliente qcliente, boolean razonSocial, boolean nombreFantasia, boolean idFiscal) {
-        String[] terminos = stringRazonSocial.split(" ");
-        BooleanBuilder descripcionProducto = new BooleanBuilder();
-        if (razonSocial && nombreFantasia && idFiscal) {
-            for (String termino : terminos) {
-                descripcionProducto.or(qcliente.razonSocial.containsIgnoreCase(termino)
-                        .or(qcliente.nombreFantasia.containsIgnoreCase(termino))
-                        .or(qcliente.idFiscal.containsIgnoreCase(termino)));
-            }
-        } else if (razonSocial && nombreFantasia) {
-            for (String termino : terminos) {
-                descripcionProducto.or(qcliente.razonSocial.containsIgnoreCase(termino)
-                        .or(qcliente.nombreFantasia.containsIgnoreCase(termino)));
-            }
-        } else if (idFiscal) {
-            for (String termino : terminos) {
-                descripcionProducto.or(qcliente.idFiscal.containsIgnoreCase(termino));
-            }
+    private BooleanBuilder buildPredicadoBusqueda(String razonSocial, String nombreFantasia, String idFiscal,
+            QCliente qcliente, boolean buscarPorRazonSocial, boolean buscarPorNombreFantasia, boolean buscarPorIdFiscal) {
+        BooleanBuilder builder = new BooleanBuilder();
+        if (buscarPorRazonSocial && buscarPorNombreFantasia && buscarPorIdFiscal && razonSocial.equals(nombreFantasia) && razonSocial.equals(idFiscal)) {
+            builder.or(qcliente.razonSocial.containsIgnoreCase(razonSocial)
+                    .or(qcliente.nombreFantasia.containsIgnoreCase(nombreFantasia))
+                    .or(qcliente.idFiscal.containsIgnoreCase(idFiscal)));
+        } else if (buscarPorRazonSocial && buscarPorNombreFantasia && buscarPorIdFiscal && razonSocial.equals(nombreFantasia)) {
+            builder.or(qcliente.razonSocial.containsIgnoreCase(razonSocial)
+                    .or(qcliente.nombreFantasia.containsIgnoreCase(nombreFantasia))
+                    .and(qcliente.idFiscal.containsIgnoreCase(idFiscal)));
+        } else if (buscarPorRazonSocial && buscarPorNombreFantasia && buscarPorIdFiscal) {
+            builder.and(qcliente.razonSocial.containsIgnoreCase(razonSocial)
+                    .and(qcliente.nombreFantasia.containsIgnoreCase(nombreFantasia))
+                    .and(qcliente.idFiscal.containsIgnoreCase(idFiscal)));
+        } else if (buscarPorRazonSocial && buscarPorNombreFantasia) {
+            builder.or(qcliente.razonSocial.containsIgnoreCase(razonSocial)
+                    .or(qcliente.nombreFantasia.containsIgnoreCase(nombreFantasia)));
+        } else if (buscarPorIdFiscal) {
+            builder.or(qcliente.idFiscal.containsIgnoreCase(idFiscal));
         }
-        return descripcionProducto;
+        return builder;
     }
 
     @Override

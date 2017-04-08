@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import sic.modelo.Rol;
 import sic.modelo.Usuario;
 import sic.service.IUsuarioService;
 
@@ -43,6 +44,12 @@ public class UsuarioController {
     @ResponseStatus(HttpStatus.OK)
     public List<Usuario> getUsuarios() {
         return usuarioService.getUsuarios();
+    }
+    
+    @GetMapping("/usuarios/roles")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Usuario> getUsuariosPorRol(@RequestParam Rol rol) {
+        return usuarioService.getUsuariosPorRol(rol);
     }
     
     @PostMapping("/usuarios")

@@ -5,6 +5,7 @@ import sic.modelo.Cliente;
 import sic.modelo.CondicionIVA;
 import sic.modelo.Empresa;
 import sic.modelo.Localidad;
+import sic.modelo.Usuario;
 
 public class ClienteBuilder {
 
@@ -21,13 +22,15 @@ public class ClienteBuilder {
     private String contacto = "Facundo Pastore";
     private Date fechaAlta = new Date(1342580400000L); // 18/07/2012
     private Empresa empresa = new EmpresaBuilder().build();
+    private Usuario viajante = new UsuarioBuilder().build();
+    private Usuario credencial = new UsuarioBuilder().build();
     private boolean eliminado = false;
     private boolean predeterminado = false;
     
     public Cliente build() {
         return new Cliente(id_Cliente, razonSocial, nombreFantasia, direccion, condicionIVA,
                 idFiscal, email, telPrimario, telSecundario, localidad, contacto, fechaAlta,
-                empresa, eliminado, predeterminado);
+                empresa, viajante, credencial, eliminado, predeterminado);
     }
     
     public ClienteBuilder withId_Cliente(long id_Cliente) {
@@ -92,6 +95,16 @@ public class ClienteBuilder {
     
     public ClienteBuilder withEmpresa(Empresa empresa) {
         this.empresa = empresa;
+        return this;
+    }
+    
+    public ClienteBuilder withViajante(Usuario viajante) {
+        this.viajante = viajante;
+        return this;
+    }
+    
+    public ClienteBuilder withCredencial(Usuario credencial) {
+        this.credencial = credencial;
         return this;
     }
     

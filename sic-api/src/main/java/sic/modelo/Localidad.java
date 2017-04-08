@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(of = {"nombre"})
 public class Localidad implements Serializable {
-
+    
     @Id
     @GeneratedValue
     private long id_Localidad;

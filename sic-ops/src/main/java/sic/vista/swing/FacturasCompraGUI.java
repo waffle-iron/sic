@@ -1,5 +1,6 @@
 package sic.vista.swing;
 
+import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +21,7 @@ import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
 import sic.modelo.Movimiento;
 import sic.modelo.Proveedor;
+import sic.modelo.TipoDeOperacion;
 import sic.util.RenderTabla;
 import sic.util.Utilidades;
 
@@ -28,6 +30,7 @@ public class FacturasCompraGUI extends JInternalFrame {
     private ModeloTabla modeloTablaFacturas = new ModeloTabla();
     private List<FacturaCompra> facturas;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private final Dimension sizeInternalFrame =  new Dimension(880, 600);
 
     public FacturasCompraGUI() {
         this.initComponents();        
@@ -60,7 +63,7 @@ public class FacturasCompraGUI extends JInternalFrame {
         //tipo de dato columnas
         Class[] tipos = new Class[modeloTablaFacturas.getColumnCount()];
         tipos[0] = Date.class;
-        tipos[1] = String.class;
+        tipos[1] = TipoDeOperacion.class;
         tipos[2] = String.class;
         tipos[3] = Date.class;
         tipos[4] = String.class;
@@ -83,8 +86,8 @@ public class FacturasCompraGUI extends JInternalFrame {
 
         //Tamanios de columnas
         tbl_Resultados.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tbl_Resultados.getColumnModel().getColumn(1).setPreferredWidth(60);
-        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(150);
+        tbl_Resultados.getColumnModel().getColumn(1).setPreferredWidth(80);
+        tbl_Resultados.getColumnModel().getColumn(2).setPreferredWidth(100);
         tbl_Resultados.getColumnModel().getColumn(3).setPreferredWidth(130);
         tbl_Resultados.getColumnModel().getColumn(4).setPreferredWidth(200);
         tbl_Resultados.getColumnModel().getColumn(5).setPreferredWidth(200);
@@ -215,7 +218,7 @@ public class FacturasCompraGUI extends JInternalFrame {
         facturas.stream().map((factura) -> {
             Object[] fila = new Object[15];
             fila[0] = factura.getFecha();
-            fila[1] = String.valueOf(factura.getTipoFactura());
+            fila[1] = factura.getTipoComprobante();
             fila[2] = factura.getNumSerie() + " - " + factura.getNumFactura();
             fila[3] = factura.getFechaVencimiento();
             fila[4] = factura.getProveedor().getRazonSocial();
@@ -746,13 +749,13 @@ public class FacturasCompraGUI extends JInternalFrame {
 }//GEN-LAST:event_btn_VerPagosActionPerformed
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        this.setSize(sizeInternalFrame);
+        this.setColumnas();
+        dc_FechaDesde.setDate(new Date());
+        dc_FechaHasta.setDate(new Date());
+        rb_soloImpagas.setSelected(true);
         try {
-            this.setSize(940, 600);
-            this.setColumnas();
-            this.setMaximum(true);
-            dc_FechaDesde.setDate(new Date());
-            dc_FechaHasta.setDate(new Date());
-            rb_soloImpagas.setSelected(true);
+            this.setMaximum(true);            
         } catch (PropertyVetoException ex) {
             LOGGER.error(ex.getMessage());
         }
