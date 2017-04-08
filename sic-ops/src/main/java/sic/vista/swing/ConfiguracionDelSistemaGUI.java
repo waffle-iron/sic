@@ -24,8 +24,7 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     
     public ConfiguracionDelSistemaGUI() {
-        this.initComponents();
-        this.setIcon();
+        this.initComponents();        
     }
 
     private void setIcon() {
@@ -252,6 +251,7 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        this.setIcon();
         try {
             cdsModificar = RestClient.getRestTemplate().getForObject("/configuraciones-del-sistema/empresas/"
                     + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),

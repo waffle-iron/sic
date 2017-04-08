@@ -37,9 +37,9 @@ public class AfipServiceImpl implements IAfipService {
     private final FormatterFechaHora formatterFechaHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHA_INTERNACIONAL);
 
     @Autowired
-    public AfipServiceImpl(AfipWebServiceSOAPClient afipWebServiceSOAPClient, IConfiguracionDelSistemaService configuracionDelSistemaService) {
+    public AfipServiceImpl(AfipWebServiceSOAPClient afipWebServiceSOAPClient, IConfiguracionDelSistemaService cds) {
         this.afipWebServiceSOAPClient = afipWebServiceSOAPClient;
-        this.configuracionDelSistemaService = configuracionDelSistemaService;
+        this.configuracionDelSistemaService = cds;
     }
 
     @Override
@@ -81,40 +81,32 @@ public class AfipServiceImpl implements IAfipService {
     public FECAERequest transformFacturaVentaToFECAERequest(FacturaVenta factura) {
         FECAERequest fecaeRequest = new FECAERequest();        
         FECAECabRequest cabecera = new FECAECabRequest();
-        cabecera.setCantReg(1); // Cantidad de registros del detalle del comprobante o lote de comprobantes de ingreso
-        cabecera.setPtoVta(1); // Punto de Venta del comprobante que se está informando. Si se informa más de un comprobante, todos deben corresponder al mismo punto de venta
+        FECAEDetRequest detalle = new FECAEDetRequest();        
         // 1: Factura A, 2: Nota de Débito A, 3: Nota de Crédito A, 6: Factura B, 7: Nota de Débito B, 8: Nota de Crédito B. 11: Factura C
-        switch (factura.getTipoFactura()) {
-            case 'A':
+        switch (factura.getTipoComprobante()) {
+            case FACTURA_A:
                 cabecera.setCbteTipo(1);
-                break;
-            case 'B':
-                cabecera.setCbteTipo(6);
-                break;
-            case 'C':
-                cabecera.setCbteTipo(11);
-                break;
-        }
-        fecaeRequest.setFeCabReq(cabecera);
-        ArrayOfFECAEDetRequest arrayDetalle = new ArrayOfFECAEDetRequest();
-        FECAEDetRequest detalle = new FECAEDetRequest();
-        detalle.setCbteDesde(2); // numero de comprobante ???
-        detalle.setCbteHasta(2); // numero de comprobante ???
-        detalle.setConcepto(1); // Concepto del Comprobante. Valores permitidos: 1 Productos, 2 Servicios, 3 Productos y Servicios
-        switch (factura.getTipoFactura()) {
-            case 'A':
                 detalle.setDocTipo(80);
                 detalle.setDocNro(Long.valueOf(factura.getCliente().getIdFiscal().replace("-", "")));
                 break;
-            case 'B':
+            case FACTURA_B:
+                cabecera.setCbteTipo(6);
                 detalle.setDocTipo(99);
                 detalle.setDocNro(0);
                 break;
-            case 'C':
+            case FACTURA_C:
+                cabecera.setCbteTipo(11);
                 detalle.setDocTipo(0);
                 detalle.setDocNro(0);
                 break;
         }
+        cabecera.setCantReg(1); // Cantidad de registros del detalle del comprobante o lote de comprobantes de ingreso
+        cabecera.setPtoVta(1); // Punto de Venta del comprobante que se está informando. Si se informa más de un comprobante, todos deben corresponder al mismo punto de venta
+        fecaeRequest.setFeCabReq(cabecera);
+        ArrayOfFECAEDetRequest arrayDetalle = new ArrayOfFECAEDetRequest();        
+        detalle.setCbteDesde(2); // numero de comprobante ???
+        detalle.setCbteHasta(2); // numero de comprobante ???
+        detalle.setConcepto(1); // Concepto del Comprobante. Valores permitidos: 1 Productos, 2 Servicios, 3 Productos y Servicios        
         detalle.setCbteFch(formatterFechaHora.format(factura.getFecha()).replace("/", "")); // Fecha del comprobante (yyyymmdd)
         detalle.setImpTotal(Utilidades.round(factura.getTotal(), 2)); // Importe total del comprobante, Debe ser igual a Importe neto no gravado + Importe exento + Importe neto gravado + todos los campos de IVA al XX% + Importe de tributos        
         detalle.setImpNeto(Utilidades.round(factura.getSubTotal_neto(),2)); // Importe neto gravado. Debe ser menor o igual a Importe total y no puede ser menor a cero. Para comprobantes tipo C este campo corresponde al Importe del Sub Total        
