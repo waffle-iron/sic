@@ -10,15 +10,13 @@ import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
-import javax.swing.RowSorter;
-import javax.swing.SortOrder;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.ResourceAccessException;
@@ -43,16 +41,44 @@ public class CajaGUI extends JInternalFrame {
     private final FormatterFechaHora formatter = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_HISPANO);
     private ModeloTabla modeloTablaBalance;
     private ModeloTabla modeloTablaResumen;
-    private final List<Object> listaMovimientos = new ArrayList<>();
+    private final List<Movimiento> listaMovimientos = new ArrayList<>();
     private Caja caja;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    
+    @Data
+    class Movimiento implements Comparable<Movimiento>{
+ 
+        private TipoAbono tipoMovimiento;
+        private String descripcion;
+        private Date fecha;
+        private double monto;
+        
+        public Movimiento(Pago pago) {
+            this.tipoMovimiento = TipoAbono.PAGO;
+            this.descripcion = pago.getFactura().getTipoComprobante() + " " + pago.getFactura().getNumSerie() + "-" + pago.getFactura().getNumFactura();
+            this.fecha = pago.getFecha();
+            this.monto = pago.getMonto();
+        }
+        
+        public Movimiento(Gasto gasto) {
+            this.tipoMovimiento = TipoAbono.GASTO;
+            this.descripcion = gasto.getConcepto();
+            this.fecha = gasto.getFecha();
+            this.monto = gasto.getMonto();
+        }
+
+        @Override
+        public int compareTo(Movimiento o) {
+            return o.getFecha().compareTo(this.fecha);
+        }      
+        
+    }
 
     public CajaGUI(Caja caja) {
         initComponents();
         this.setSize(850, 600);
         this.caja = caja;
         this.setTituloVentana();
-        btn_Imprimir.setVisible(false); // Temporal hasta definir que hacer con el reporte
     }
 
     private void cargarDatosBalance(java.awt.event.KeyEvent evt) {
@@ -79,9 +105,13 @@ public class CajaGUI extends JInternalFrame {
                     if (this.caja != null) {
                         this.listaMovimientos.clear();
                         List<Pago> pagos = this.getPagosPorFormaDePago(fdp.getId_FormaDePago());
-                        this.listaMovimientos.addAll(pagos);
+                        for (Pago pago : pagos) {
+                            this.listaMovimientos.add(new Movimiento(pago));
+                        }
                         List<Gasto> gastos = this.getGastosPorFormaDePago(fdp.getId_FormaDePago());
-                        this.listaMovimientos.addAll(gastos);
+                        for (Gasto gasto : gastos) {
+                            this.listaMovimientos.add(new Movimiento(gasto));
+                        }
                         this.cargarMovimientosEnLaTablaBalance(this.listaMovimientos);
                     }
                 } else {
@@ -139,44 +169,17 @@ public class CajaGUI extends JInternalFrame {
 
     }
 
-    private void cargarMovimientosEnLaTablaBalance(List<Object> movimientos) {
+    private void cargarMovimientosEnLaTablaBalance(List<Movimiento> movimientos) {
         this.limpiarTablaBalance();
-        movimientos.stream().map((movimiento) -> {
-            Object[] fila = new Object[5];
-            if (movimiento instanceof Gasto) {
-                fila[0] = "Gasto: " + ((Gasto) movimiento).getConcepto();
-                fila[1] = ((Gasto) movimiento).getFecha();
-                fila[2] = -((Gasto) movimiento).getMonto();
-            }
-            if (movimiento instanceof Pago) {
-                String tipoFactura = "";
-                fila[1] = ((Pago) movimiento).getFecha();
-                if ((((Pago) movimiento).getFactura() instanceof FacturaCompra)) {
-                    fila[2] = -((Pago) movimiento).getMonto();
-                    tipoFactura = "Compra";
-                }
-                if ((((Pago) movimiento).getFactura() instanceof FacturaVenta)) {
-                    fila[2] = ((Pago) movimiento).getMonto();
-                    tipoFactura = "Venta";
-                }
-                fila[0] = "Pago por: Factura " + tipoFactura
-                        + " \"" + ((Pago) movimiento).getFactura().getTipoComprobante() + "\""
-                        + " Nº " + ((Pago) movimiento).getFactura().getNumSerie()
-                        + " - " + ((Pago) movimiento).getFactura().getNumFactura();
-            }
-            return fila;
-        }).forEach((fila) -> {
+        Collections.sort(movimientos);
+        for(Movimiento movimiento : this.listaMovimientos) {
+            Object[] fila = new Object[3];
+            fila[0] = movimiento.tipoMovimiento + " por: " + movimiento.getDescripcion();
+            fila[1] = movimiento.getFecha();
+            fila[2] = movimiento.getMonto();
             modeloTablaBalance.addRow(fila);
-        });
+        }
         tbl_Balance.setModel(modeloTablaBalance);
-        //Ordena la tabla segun la Fecha
-        TableRowSorter<TableModel> sorter = new TableRowSorter<>(tbl_Balance.getModel());
-        tbl_Balance.setRowSorter(sorter);
-        List<RowSorter.SortKey> sortKeys = new ArrayList<>();
-        int columnIndexToSort = 1;
-        sortKeys.add(new RowSorter.SortKey(columnIndexToSort, SortOrder.DESCENDING));
-        sorter.setSortKeys(sortKeys);
-        sorter.sort();
     }
 
     private void setColumnasDeTablaResumenGeneral() {
@@ -218,60 +221,16 @@ public class CajaGUI extends JInternalFrame {
             double totalCaja = this.caja.getSaldoInicial();
             modeloTablaResumen.addRow(saldoInicial);
             try {
-                for (FormaDePago formaDePago : this.getFormasDePago()) {
-                    List<Pago> pagosPorFormaDePago = this.getPagosPorFormaDePago(formaDePago.getId_FormaDePago());
-                    List<Gasto> gastosPorFormaDePago = this.getGastosPorFormaDePago(formaDePago.getId_FormaDePago());
-                    if (pagosPorFormaDePago.size() > 0 || gastosPorFormaDePago.size() > 0) {
-                        Object[] fila = new Object[3];
-                        fila[0] = formaDePago;
-                        this.listaMovimientos.clear();
-                        this.listaMovimientos.addAll(pagosPorFormaDePago);
-                        this.listaMovimientos.addAll(gastosPorFormaDePago);
-
-                        String uriPagos = "/pagos/total?idPago=";
-                        long[] idsPagos = new long[pagosPorFormaDePago.size()];
-                        int indice = 0;
-                        for (Pago pago : pagosPorFormaDePago) {
-                            idsPagos[indice] = pago.getId_Pago();
-                            indice++;
-                        }
-
-                        String uriGastos = "/gastos/total?idGasto=";
-                        indice = 0;
-                        long[] idsGastos = new long[gastosPorFormaDePago.size()];
-                        for (Gasto gasto : gastosPorFormaDePago) {
-                            idsGastos[indice] = gasto.getId_Gasto();
-                            indice++;
-                        }
-                        double totalPagos = 0;
-                        if (!pagosPorFormaDePago.isEmpty()) {
-                            totalPagos += RestClient.getRestTemplate()
-                                    .getForObject(uriPagos
-                                            + Arrays.toString(idsPagos).substring(1, Arrays.toString(idsPagos).length() - 1),
-                                            double.class);
-                        }
-                        double totalGastos = 0;
-                        if (!gastosPorFormaDePago.isEmpty()) {
-                            totalGastos = RestClient.getRestTemplate()
-                                    .getForObject(uriGastos
-                                            + Arrays.toString(idsGastos).substring(1, Arrays.toString(idsGastos).length() - 1),
-                                            double.class);
-                        }
-                        double totalParcial = totalPagos - totalGastos;
-                        fila[1] = formaDePago.isAfectaCaja();
-                        fila[2] = totalParcial;
-                        totalGeneral += totalParcial;
-                        if (formaDePago.isAfectaCaja()) {
-                            totalCaja += totalParcial;
-                        }
+                for (Long key : this.caja.getTotalesPorFomaDePago().keySet()) {
+                    FormaDePago fdp = RestClient.getRestTemplate().getForObject("/formas-de-pago/" + key, FormaDePago.class);
+                    Object[] fila = new Object[3];
+                        fila[0] = fdp;
+                        fila[1] = fdp.isAfectaCaja();
+                        fila[2] = this.caja.getTotalesPorFomaDePago().get(key);
                         modeloTablaResumen.addRow(fila);
-                    }
                 }
-                this.ftxt_saldoCaja.setValue(totalCaja);
-                this.ftxt_TotalGeneral.setValue(totalGeneral);
-                this.caja.setSaldoFinal(totalGeneral);
-                //Guarda el monto final del último calculo en la caja
-                RestClient.getRestTemplate().put("/cajas", this.caja);
+                this.ftxt_saldoCaja.setValue(this.caja.getTotalAfectaCaja());
+                this.ftxt_TotalGeneral.setValue(this.caja.getTotalGeneral());
                 if (totalGeneral < 0) {
                     ftxt_TotalGeneral.setBackground(Color.PINK);
                 }
@@ -303,36 +262,6 @@ public class CajaGUI extends JInternalFrame {
         this.cargarTablaResumenGeneral();
         this.limpiarTablaBalance();
         this.cargarDatosBalance(null);
-    }
-
-    private void lanzarReporteCaja() {
-        if (Desktop.isDesktopSupported()) {
-            try {
-                byte[] reporte = RestClient.getRestTemplate()
-                        .getForObject("/cajas/" + this.caja.getId_Caja() + "/empresas/"
-                                + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/reporte",
-                                byte[].class);
-                File f = new File("Caja.pdf");
-                Files.write(f.toPath(), reporte);
-                Desktop.getDesktop().open(f);
-            } catch (IOException ex) {
-                LOGGER.error(ex.getMessage());
-                JOptionPane.showMessageDialog(this,
-                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_IOException"),
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (RestClientResponseException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (ResourceAccessException ex) {
-                LOGGER.error(ex.getMessage());
-                JOptionPane.showMessageDialog(this,
-                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } else {
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_plataforma_no_soportada"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     private void setTituloVentana() {
@@ -392,12 +321,6 @@ public class CajaGUI extends JInternalFrame {
         gui_DetalleFacturaCompra.setVisible(true);
     }
 
-    private List<FormaDePago> getFormasDePago() {
-        return new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                .getForObject("/formas-de-pago/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
-                        FormaDePago[].class)));
-    }
-
     private List<Pago> getPagosPorFormaDePago(long idFormaDePago) {
         String criteriaPagos = "/pagos/busqueda?"
                 + "idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa()
@@ -436,7 +359,6 @@ public class CajaGUI extends JInternalFrame {
         lbl_totalCaja = new javax.swing.JLabel();
         ftxt_saldoCaja = new javax.swing.JFormattedTextField();
         ftxt_TotalGeneral = new javax.swing.JFormattedTextField();
-        btn_Imprimir = new javax.swing.JButton();
 
         setClosable(true);
         setMaximizable(true);
@@ -582,15 +504,6 @@ public class CajaGUI extends JInternalFrame {
         ftxt_TotalGeneral.setText("0");
         ftxt_TotalGeneral.setFont(new java.awt.Font("Ubuntu", 1, 15)); // NOI18N
 
-        btn_Imprimir.setForeground(java.awt.Color.blue);
-        btn_Imprimir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Printer_16x16.png"))); // NOI18N
-        btn_Imprimir.setText("Imprimir");
-        btn_Imprimir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_ImprimirActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -602,8 +515,6 @@ public class CajaGUI extends JInternalFrame {
                         .addComponent(btn_AgregarGasto)
                         .addGap(0, 0, 0)
                         .addComponent(btn_CerrarCaja, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, 0)
-                        .addComponent(btn_Imprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createSequentialGroup()
@@ -625,7 +536,7 @@ public class CajaGUI extends JInternalFrame {
 
         layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {ftxt_TotalGeneral, ftxt_saldoCaja});
 
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AgregarGasto, btn_CerrarCaja, btn_Imprimir});
+        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_AgregarGasto, btn_CerrarCaja});
 
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -645,8 +556,7 @@ public class CajaGUI extends JInternalFrame {
                     .addComponent(btn_AgregarGasto)
                     .addComponent(btn_CerrarCaja)
                     .addComponent(lbl_Total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ftxt_TotalGeneral)
-                    .addComponent(btn_Imprimir))
+                    .addComponent(ftxt_TotalGeneral))
                 .addContainerGap())
         );
 
@@ -732,10 +642,6 @@ public class CajaGUI extends JInternalFrame {
         }
     }//GEN-LAST:event_btn_AgregarGastoActionPerformed
 
-    private void btn_ImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ImprimirActionPerformed
-        this.lanzarReporteCaja();
-    }//GEN-LAST:event_btn_ImprimirActionPerformed
-
     private void btn_EliminarGastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarGastoActionPerformed
         if (tbl_Balance.getSelectedRow() != -1) {
             Object movimientoDeTabla = this.listaMovimientos.get(Utilidades.getSelectedRowModelIndice(tbl_Balance));
@@ -810,7 +716,6 @@ public class CajaGUI extends JInternalFrame {
     private javax.swing.JButton btn_AgregarGasto;
     private javax.swing.JButton btn_CerrarCaja;
     private javax.swing.JButton btn_EliminarGasto;
-    private javax.swing.JButton btn_Imprimir;
     private javax.swing.JButton btn_VerDetalle;
     private javax.swing.JFormattedTextField ftxt_TotalGeneral;
     private javax.swing.JFormattedTextField ftxt_saldoCaja;

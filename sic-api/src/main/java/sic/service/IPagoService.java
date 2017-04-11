@@ -1,5 +1,6 @@
 package sic.service;
 
+import java.util.Date;
 import java.util.List;
 import sic.modelo.Factura;
 import sic.modelo.FacturaCompra;
@@ -17,7 +18,7 @@ public interface IPagoService {
     
     long getSiguienteNroPago(Long idEmpresa);
 
-    List<Pago> getPagosPorCajaYFormaDePago(long id_Empresa, long id_FormaDePago, long idCaja);
+    List<Pago> getPagosEntreFechasYFormaDePago(long id_Empresa, long id_FormaDePago, Date desde, Date hasta);
     
     double calcularTotalPagos(List<Pago> pagos);
     

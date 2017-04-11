@@ -31,7 +31,7 @@ public class AbrirCajaGUI extends JDialog {
     }
     
     private void setModelSpinner() {
-        SpinnerModel spinnerModel = new SpinnerNumberModel(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 00, 23, 1);
+        SpinnerModel spinnerModel = new SpinnerNumberModel(Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), 23, 1);
         this.spinner_Hora.setModel(spinnerModel);
         spinnerModel = new SpinnerNumberModel(Calendar.getInstance().get(Calendar.MINUTE), 00, 59, 1);
         this.spinner_Minutos.setModel(spinnerModel);
@@ -47,7 +47,7 @@ public class AbrirCajaGUI extends JDialog {
         corte.set(Calendar.MINUTE, (int) spinner_Minutos.getValue());
         caja.setFechaCorteInforme(corte.getTime());
         caja.setSaldoInicial(monto);
-        caja.setSaldoFinal(0);
+        caja.setSaldoFinal(monto);
         caja.setSaldoReal(0);
         caja.setUsuarioAbreCaja(UsuarioActivo.getInstance().getUsuario());
         return caja;

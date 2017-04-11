@@ -100,27 +100,11 @@ public class CajaController {
         return cajaService.getCajasCriteria(criteria);        
     }
     
-    @GetMapping("/cajas/empresas/{idEmpresa}/ultima")
-    @ResponseStatus(HttpStatus.OK)
-    public Caja getUltimaCaja(@PathVariable long idEmpresa) {
-        return cajaService.getUltimaCaja(idEmpresa);
-    }
     
     @GetMapping("/cajas/{idCaja}/total")
     public double getTotalCaja(@PathVariable long idCaja, 
                                @RequestParam(required = false) boolean soloAfectaCaja) {
         return cajaService.getTotalCaja(cajaService.getCajaPorId(idCaja), soloAfectaCaja);
-    }
-  
-    @GetMapping("/cajas/{idCaja}/empresas/{idEmpresa}/reporte")
-    public ResponseEntity<byte[]> getReporteCaja(@PathVariable long idCaja,
-                                                 @PathVariable long idEmpresa) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);        
-        headers.add("content-disposition", "inline; filename=Caja.pdf");
-        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-        byte[] reportePDF = cajaService.getReporteCaja(cajaService.getCajaPorId(idCaja), idEmpresa);
-        return new ResponseEntity<>(reportePDF, headers, HttpStatus.OK);
     }
     
 }

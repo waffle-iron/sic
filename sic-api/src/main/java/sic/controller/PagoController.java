@@ -1,6 +1,9 @@
 package sic.controller;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import sic.modelo.Caja;
 import sic.modelo.Factura;
 import sic.modelo.Pago;
+import sic.service.ICajaService;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IPagoService;
@@ -27,13 +32,15 @@ public class PagoController {
     private final IPagoService pagoService;
     private final IFacturaService facturaService;
     private final IFormaDePagoService formaDePagoService;
+    private final ICajaService cajaService;
     
     @Autowired
     public PagoController(IPagoService pagoService, IFacturaService facturaService,
-                          IFormaDePagoService formaDePago) {
+                          IFormaDePagoService formaDePago, ICajaService cajaService) {
         this.pagoService = pagoService;
         this.facturaService = facturaService;
         this.formaDePagoService = formaDePago;
+        this.cajaService = cajaService;
     }
     
     @GetMapping("/pagos/{idPago}")
@@ -87,9 +94,14 @@ public class PagoController {
     @GetMapping("/pagos/busqueda")
     @ResponseStatus(HttpStatus.OK)
     public List<Pago> getPagosPorCajaYFormaDePago(@RequestParam long idEmpresa,
-                                                      @RequestParam long idFormaDePago,
-                                                      @RequestParam long idCaja) {
-        return pagoService.getPagosPorCajaYFormaDePago(idEmpresa, idFormaDePago, idCaja);
+                                                  @RequestParam long idFormaDePago,
+                                                  @RequestParam long idCaja) {
+        Caja caja = cajaService.getCajaPorId(idCaja);
+        LocalDateTime hasta = caja.getFechaApertura().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        hasta = hasta.withHour(23);
+        hasta = hasta.minusMinutes(59);
+        hasta = hasta.minusSeconds(59);
+        return pagoService.getPagosEntreFechasYFormaDePago(idEmpresa, idFormaDePago, caja.getFechaApertura(), Date.from(hasta.atZone(ZoneId.systemDefault()).toInstant()));
     }
     
     @PutMapping("/pagos/pagar-multiples-facturas")

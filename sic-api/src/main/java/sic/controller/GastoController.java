@@ -1,7 +1,10 @@
 package sic.controller;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import sic.modelo.Caja;
 import sic.modelo.Gasto;
+import sic.service.ICajaService;
 import sic.service.IGastoService;
 
 @RestController
@@ -23,10 +28,12 @@ import sic.service.IGastoService;
 public class GastoController {
     
     private final IGastoService gastoService;
+    private final ICajaService cajaService;
     
     @Autowired
-    public GastoController(IGastoService gastoService) {
+    public GastoController(IGastoService gastoService, ICajaService cajaService) {
         this.gastoService = gastoService;
+        this.cajaService = cajaService;
     }
     
     @GetMapping("/gastos/{idGasto}")
@@ -52,9 +59,14 @@ public class GastoController {
     @GetMapping("/gastos/busqueda")
     @ResponseStatus(HttpStatus.OK)
     public List<Gasto> getGastosPorCajaYFormaDePago(@RequestParam long idEmpresa,
-                                                     @RequestParam long idFormaDePago,
-                                                     @RequestParam long idCaja) {
-        return gastoService.getGastosPorCajaYFormaDePago(idEmpresa, idFormaDePago, idCaja);
+                                                    @RequestParam long idFormaDePago,
+                                                    @RequestParam long idCaja) {
+        Caja caja = cajaService.getCajaPorId(idCaja);
+        LocalDateTime hasta = caja.getFechaApertura().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        hasta = hasta.withHour(23);
+        hasta = hasta.minusMinutes(59);
+        hasta = hasta.minusSeconds(59);       
+        return gastoService.getGastosEntreFechasYFormaDePago(idEmpresa, idFormaDePago, caja.getFechaApertura(), Date.from(hasta.atZone(ZoneId.systemDefault()).toInstant()));
     }
     
     @GetMapping("/gastos/total")

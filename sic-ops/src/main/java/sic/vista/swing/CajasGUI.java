@@ -204,12 +204,6 @@ public class CajasGUI extends JInternalFrame {
         AbrirCajaGUI abrirCaja = new AbrirCajaGUI(true);
         abrirCaja.setLocationRelativeTo(this);
         abrirCaja.setVisible(true);
-        Caja ultimaCaja = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
-                    + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
-                    Caja.class);
-        if (ultimaCaja.getEstado().equals(EstadoCaja.ABIERTA)) {
-            this.abrirVentanaCaja(ultimaCaja);
-        }
         this.limpiarResultados();
         this.buscar();        
     }
@@ -504,8 +498,17 @@ public class CajasGUI extends JInternalFrame {
     private void btn_verDetalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_verDetalleActionPerformed
         if (tbl_Cajas.getSelectedRow() != -1) {
             int indiceDelModel = Utilidades.getSelectedRowModelIndice(tbl_Cajas);
-            Caja caja = this.cajas.get(indiceDelModel);
-            this.abrirVentanaCaja(caja);
+            try {
+              this.abrirVentanaCaja(RestClient.getRestTemplate()
+                        .getForObject("/cajas/ " + this.cajas.get(indiceDelModel).getId_Caja(), Caja.class));
+            } catch (RestClientResponseException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ResourceAccessException ex) {
+                LOGGER.error(ex.getMessage());
+                JOptionPane.showMessageDialog(this,
+                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_btn_verDetalleActionPerformed
 
@@ -557,27 +560,7 @@ public class CajasGUI extends JInternalFrame {
     }//GEN-LAST:event_chk_UsuarioItemStateChanged
 
     private void btn_AbrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AbrirCajaActionPerformed
-        Caja cajaAbierta = null;
-        try {
-            cajaAbierta = RestClient.getRestTemplate().getForObject("/cajas/empresas/"
-                    + EmpresaActiva.getInstance().getEmpresa().getId_Empresa() + "/ultima",
-                    Caja.class);
-            if (cajaAbierta == null) {
-                this.abrirCaja();
-            } else if (cajaAbierta.getEstado() == EstadoCaja.CERRADA) {
-                this.abrirCaja();
-            } else {
-                JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes")
-                        .getString("mensaje_caja_anterior_abierta"), "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (RestClientResponseException ex) {
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        } catch (ResourceAccessException ex) {
-            LOGGER.error(ex.getMessage());
-            JOptionPane.showMessageDialog(this,
-                    ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                    "Error", JOptionPane.ERROR_MESSAGE);
-        }
+        this.abrirCaja();
     }//GEN-LAST:event_btn_AbrirCajaActionPerformed
 
     private void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_internalFrameOpened
@@ -591,7 +574,7 @@ public class CajasGUI extends JInternalFrame {
             LOGGER.error(mensaje + " - " + ex.getMessage());
             JOptionPane.showInternalMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
             this.dispose();
-        } 
+        }
     }//GEN-LAST:event_internalFrameOpened
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

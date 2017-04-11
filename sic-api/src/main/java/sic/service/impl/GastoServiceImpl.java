@@ -124,14 +124,7 @@ public class GastoServiceImpl implements IGastoService {
     }
 
     @Override
-    public List<Gasto> getGastosPorCajaYFormaDePago(Long idEmpresa, Long idFormaDePago, long idCaja) {
-        Caja caja = cajaService.getCajaPorId(idCaja);
-        Date desde = caja.getFechaApertura();
-        LocalDateTime ldt = LocalDateTime.ofInstant(desde.toInstant(), ZoneId.systemDefault());
-        ldt = ldt.withHour(23);
-        ldt = ldt.withMinute(59);
-        ldt = ldt.minusSeconds(59);
-        Date hasta = Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant());
+    public List<Gasto> getGastosEntreFechasYFormaDePago(Long idEmpresa, Long idFormaDePago, Date desde, Date hasta) {
         return gastoRepository.findAllByFechaBetweenAndEmpresaAndFormaDePagoAndEliminado(desde, hasta, empresaService.getEmpresaPorId(idEmpresa), 
                 formaDePagoService.getFormasDePagoPorId(idFormaDePago), false);
     }
