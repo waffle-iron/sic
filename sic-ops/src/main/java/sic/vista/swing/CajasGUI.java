@@ -199,7 +199,7 @@ public class CajasGUI extends JInternalFrame {
     }
 
     private void abrirCaja() {
-        AbrirCajaGUI abrirCaja = new AbrirCajaGUI(true);
+        AbrirCajaGUI abrirCaja = new AbrirCajaGUI();
         abrirCaja.setLocationRelativeTo(this);
         abrirCaja.setVisible(true);
         this.limpiarResultados();

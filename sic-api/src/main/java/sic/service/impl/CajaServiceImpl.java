@@ -33,7 +33,6 @@ import sic.modelo.FacturaCompra;
 import sic.modelo.FacturaVenta;
 import sic.modelo.QCaja;
 import sic.modelo.Rol;
-import sic.modelo.TipoDeOperacion;
 import sic.service.BusinessServiceException;
 import sic.service.IEmpresaService;
 import sic.service.IFormaDePagoService;
@@ -52,10 +51,8 @@ public class CajaServiceImpl implements ICajaService {
     private final IPagoService pagoService;
     private final IGastoService gastoService;
     private final IEmpresaService empresaService;
-    private final IUsuarioService usuarioService;
-    private final FormatterFechaHora formatoHora = new FormatterFechaHora(FormatterFechaHora.FORMATO_HORA_INTERNACIONAL);
-    private static final Logger LOGGER = Logger.getLogger(CajaServiceImpl.class.getPackage().getName());
-    private static final int CANTIDAD_DECIMALES_TRUNCAMIENTO = 2;
+    private final IUsuarioService usuarioService;    
+    private static final Logger LOGGER = Logger.getLogger(CajaServiceImpl.class.getPackage().getName());    
 
     @Autowired
     public CajaServiceImpl(CajaRepository cajaRepository, IFormaDePagoService formaDePagoService,
@@ -153,7 +150,7 @@ public class CajaServiceImpl implements ICajaService {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_no_existente"));
         }
-        this.completarConPagosyGastos(caja);
+        caja = this.cargarPagosyGastos(caja);
         caja.setTotalAfectaCaja(this.getTotalCaja(caja, true));
         caja.setTotalGeneral(this.getTotalCaja(caja, false));
         return caja;
@@ -268,15 +265,15 @@ public class CajaServiceImpl implements ICajaService {
         double total = caja.getSaldoInicial();        
         for (FormaDePago fp : formasDePago) {
             if (soloAfectaCaja && fp.isAfectaCaja()) {
-                total += this.getTotalMovimientoCaja(caja, fp);                
+                total += this.getTotalMovimientosPorFormaDePago(caja, fp);                
             } else if (!soloAfectaCaja) {
-                total += this.getTotalMovimientoCaja(caja, fp);
+                total += this.getTotalMovimientosPorFormaDePago(caja, fp);
             }
         }
         return total;
     }
     
-    private double getTotalMovimientoCaja(Caja caja, FormaDePago fp) {
+    private double getTotalMovimientosPorFormaDePago(Caja caja, FormaDePago fdp) {
         double pagosVentasTotal = 0.0;
         double pagosComprasTotal = 0.0;
         double gastosTotal = 0.0;
@@ -288,9 +285,9 @@ public class CajaServiceImpl implements ICajaService {
         } else {
             ldt = caja.getFechaCierre().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         }
-        List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(caja.getEmpresa().getId_Empresa(), fp.getId_FormaDePago(),
+        List<Pago> pagos = pagoService.getPagosEntreFechasYFormaDePago(caja.getEmpresa().getId_Empresa(), fdp.getId_FormaDePago(),
                 caja.getFechaApertura(), Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant()));
-        List<Gasto> gastos = gastoService.getGastosEntreFechasYFormaDePago(caja.getEmpresa().getId_Empresa(), fp.getId_FormaDePago(),
+        List<Gasto> gastos = gastoService.getGastosEntreFechasYFormaDePago(caja.getEmpresa().getId_Empresa(), fdp.getId_FormaDePago(),
                 caja.getFechaApertura(), Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant()));
         for (Pago pago : pagos) {
             if (pago.getFactura() instanceof FacturaVenta) {
@@ -299,28 +296,33 @@ public class CajaServiceImpl implements ICajaService {
                 pagosComprasTotal += pago.getMonto();
             }
         }
-        gastosTotal = gastos.stream().map((gasto) -> gasto.getMonto()).reduce(gastosTotal, (accumulator, _item) -> accumulator + _item);
+        gastosTotal = gastos.stream()
+                            .map((gasto) -> gasto.getMonto())
+                            .reduce(gastosTotal, (accumulator, _item) -> accumulator + _item);
         return pagosVentasTotal - pagosComprasTotal - gastosTotal;
     }
 
-    private void completarConPagosyGastos(Caja caja) {
-        LocalDateTime ldt = caja.getFechaApertura().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        if (caja.getFechaCierre() == null) {
-            ldt = ldt.withHour(23);
-            ldt = ldt.withMinute(59);
-            ldt = ldt.withSecond(59);
-        } else {
-            ldt = caja.getFechaCierre().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        }
+    private Caja cargarPagosyGastos(Caja caja) {
+//        LocalDateTime ldt = caja.getFechaApertura().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+//        if (caja.getFechaCierre() == null) {
+//            ldt = ldt.withHour(23);
+//            ldt = ldt.withMinute(59);
+//            ldt = ldt.withSecond(59);
+//        } else {
+//            ldt = caja.getFechaCierre().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+//        }
         Map<Long, Double> totalesPorFomaDePago = new HashMap<>();
         for (FormaDePago fdp : formaDePagoService.getFormasDePago(caja.getEmpresa())) {
-            double total = this.getTotalPorFormaDePagoYFechas(caja.getEmpresa().getId_Empresa(), fdp.getId_FormaDePago(), caja.getFechaApertura(),
-                    Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant()));
+//            double total = this.getTotalPorFormaDePagoYFechas(caja.getEmpresa().getId_Empresa(),
+//                    fdp.getId_FormaDePago(), caja.getFechaApertura(),
+//                    Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant()));
+              double total = this.getTotalMovimientosPorFormaDePago(caja, fdp);
             if (total != 0) {
                 totalesPorFomaDePago.put(fdp.getId_FormaDePago(), total);
             }
         }
         caja.setTotalesPorFomaDePago(totalesPorFomaDePago);
+        return caja;
     }
     
     private double getTotalPorFormaDePagoYFechas(Long idEmpresa, Long idFormaDePago, Date desde, Date hasta) {
@@ -339,9 +341,9 @@ public class CajaServiceImpl implements ICajaService {
         }
         List<Gasto> listaGastos = gastoService.getGastosEntreFechasYFormaDePago(idEmpresa, idFormaDePago, desde, hasta);
         if (!listaGastos.isEmpty()) {
-            for (Gasto gasto : listaGastos) {
-                gastos += gasto.getMonto();
-            }
+            gastos = listaGastos.stream()
+                                .map((gasto) -> gasto.getMonto())
+                                .reduce(gastos, (accumulator, _item) -> accumulator + _item);
         }
         return pagos - gastos;
     }

@@ -2,7 +2,6 @@ package sic.util;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -31,10 +30,10 @@ public class ColoresEstadosRenderer extends DefaultTableCellRenderer {
         }
         if (valor instanceof EstadoCaja) {
             EstadoCaja estado = (EstadoCaja) valor;
-            if (estado == estado.ABIERTA) {
+            if (estado == EstadoCaja.ABIERTA) {
                 cell.setBackground(Color.GREEN);
             }
-            if (estado == estado.CERRADA) {
+            if (estado == EstadoCaja.CERRADA) {
                 cell.setBackground(Color.PINK);
             }
         }
