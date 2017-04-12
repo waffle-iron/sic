@@ -62,16 +62,16 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="chk_Nombre" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="chk_Ubicacion" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Component id="chk_Ubicacion" max="32767" attributes="0"/>
+                              <Component id="chk_Nombre" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                              <Component id="cmb_Provincia" alignment="0" pref="262" max="32767" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="cmb_Provincia" alignment="0" pref="351" max="32767" attributes="0"/>
                               <Component id="cmb_Pais" alignment="0" max="32767" attributes="0"/>
                               <Component id="cmb_Localidad" max="32767" attributes="0"/>
                               <Component id="txt_Nombre" alignment="0" max="32767" attributes="2"/>
@@ -83,7 +83,7 @@
                           <Component id="lbl_cantResultados" max="32767" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -116,7 +116,7 @@
       <SubComponents>
         <Component class="javax.swing.JCheckBox" name="chk_Nombre">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Nombre"/>
+            <Property name="text" type="java.lang.String" value="Nombre:"/>
           </Properties>
           <Events>
             <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="chk_NombreItemStateChanged"/>
@@ -198,7 +198,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="sp_Resultados" pref="612" max="32767" attributes="0"/>
+              <Component id="sp_Resultados" pref="588" max="32767" attributes="0"/>
               <Group type="102" attributes="0">
                   <Component id="btn_Nuevo" linkSize="1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>

@@ -1,5 +1,6 @@
 package sic.vista.swing;
 
+import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,11 +26,10 @@ public class ProveedoresGUI extends JInternalFrame {
     private List<Proveedor> proveedores;
     private Proveedor proveedorSeleccionado;    
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private final Dimension sizeInternalFrame = new Dimension(880, 600);
 
     public ProveedoresGUI() {
-        this.initComponents();
-        this.setSize(750, 450);        
-        btn_Seleccionar.setVisible(false);
+        this.initComponents();        
     }
 
     public Proveedor getProvSeleccionado() {
@@ -686,9 +686,11 @@ public class ProveedoresGUI extends JInternalFrame {
     }//GEN-LAST:event_chk_Id_FiscalItemStateChanged
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
-        try {
-            this.cargarComboBoxPaises();
-            this.setColumnas();
+        this.setSize(sizeInternalFrame);        
+        btn_Seleccionar.setVisible(false);
+        this.cargarComboBoxPaises();
+        this.setColumnas();
+        try {            
             this.setMaximum(true);
         } catch (PropertyVetoException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";

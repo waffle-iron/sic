@@ -1,6 +1,7 @@
 package sic.vista.swing;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
@@ -32,14 +33,13 @@ import sic.util.Utilidades;
 
 public class FacturasVentaGUI extends JInternalFrame {
 
-    private ModeloTabla modeloTablaFacturas;
+    private ModeloTabla modeloTablaFacturas = new ModeloTabla();
     private List<FacturaVenta> facturas;    
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private final Dimension sizeInternalFrame =  new Dimension(880, 600);
 
     public FacturasVentaGUI() {
-        this.initComponents();
-        modeloTablaFacturas = new ModeloTabla();        
-        rb_soloImpagas.setSelected(true);
+        this.initComponents();                
     }
 
     public void buscarPorNroPedido(long nroPedido) {
@@ -1013,9 +1013,10 @@ public class FacturasVentaGUI extends JInternalFrame {
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
         try {
-            this.setSize(940, 600);
+            this.setSize(sizeInternalFrame);
             this.setColumnas();
             this.setMaximum(true);
+            rb_soloImpagas.setSelected(true);
             dc_FechaDesde.setDate(new Date());
             dc_FechaHasta.setDate(new Date());
         } catch (PropertyVetoException ex) {

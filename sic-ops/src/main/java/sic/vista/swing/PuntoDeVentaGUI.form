@@ -56,14 +56,14 @@
                       <Component id="panelRenglones" alignment="0" max="32767" attributes="0"/>
                       <Component id="panelEncabezado" alignment="1" max="32767" attributes="0"/>
                       <Component id="panelCliente" alignment="0" max="32767" attributes="0"/>
+                      <Group type="102" attributes="0">
+                          <Component id="panelResultados" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="panelObservaciones" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="32767" attributes="0"/>
                           <Component id="btn_Continuar" min="-2" max="-2" attributes="1"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="panelResultados" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -82,9 +82,9 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="panelObservaciones" min="-2" max="-2" attributes="1"/>
-                      <Component id="btn_Continuar" min="-2" pref="38" max="-2" attributes="1"/>
+                      <Component id="btn_Continuar" min="-2" max="-2" attributes="1"/>
                   </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
                   <Component id="panelResultados" min="-2" max="-2" attributes="1"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -147,13 +147,13 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="lbl_NombreCliente">
               <Properties>
-                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="horizontalAlignment" type="int" value="2"/>
                 <Property name="text" type="java.lang.String" value="Nombre:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_DomicilioCliente">
               <Properties>
-                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="horizontalAlignment" type="int" value="2"/>
                 <Property name="text" type="java.lang.String" value="Domicilio:"/>
               </Properties>
             </Component>
@@ -165,7 +165,7 @@
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_CondicionIVACliente">
               <Properties>
-                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="horizontalAlignment" type="int" value="2"/>
                 <Property name="text" type="java.lang.String" value="Condici&#xf3;n IVA:"/>
               </Properties>
             </Component>
@@ -295,6 +295,9 @@
                         </Column>
                       </TableColumnModel>
                     </Property>
+                    <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                      <ComponentRef name="txt_Decuento_porcentaje"/>
+                    </Property>
                     <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
                       <JTableSelectionModel selectionMode="2"/>
                     </Property>
@@ -382,7 +385,8 @@
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/sic/icons/AddProduct_16x16.png"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Nuevo Producto"/>
+                <Property name="text" type="java.lang.String" value="Nuevo Producto (F7)"/>
+                <Property name="focusable" type="boolean" value="false"/>
                 <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[163, 25]"/>
                 </Property>
@@ -643,6 +647,9 @@
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                   <Font name="DejaVu Sans" size="17" style="0"/>
                 </Property>
+                <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                  <ComponentRef name="txt_Recargo_porcentaje"/>
+                </Property>
               </Properties>
               <Events>
                 <EventHandler event="focusGained" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="txt_Decuento_porcentajeFocusGained"/>
@@ -808,10 +815,9 @@
                           </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="30" pref="30" max="-2" attributes="0"/>
-                              <Component id="lbl_fechaFactura" min="-2" max="-2" attributes="0"/>
+                              <Component id="lbl_fechaFactura" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="dc_fechaFactura" min="-2" pref="132" max="-2" attributes="0"/>
                           </Group>
@@ -859,35 +865,39 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="lbl_fechaFactura">
               <Properties>
-                <Property name="horizontalAlignment" type="int" value="4"/>
+                <Property name="horizontalAlignment" type="int" value="2"/>
                 <Property name="text" type="java.lang.String" value="Fecha de Emisi&#xf3;n:"/>
               </Properties>
             </Component>
             <Component class="com.toedter.calendar.JDateChooser" name="dc_fechaFactura">
+              <Properties>
+                <Property name="focusable" type="boolean" value="false"/>
+              </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_fechaDeVencimiento">
               <Properties>
+                <Property name="horizontalAlignment" type="int" value="2"/>
                 <Property name="text" type="java.lang.String" value="Fecha Vencimiento:"/>
               </Properties>
             </Component>
             <Component class="com.toedter.calendar.JDateChooser" name="dc_fechaVencimiento">
+              <Properties>
+                <Property name="focusable" type="boolean" value="false"/>
+              </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_TipoDeComprobante">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Ubuntu" size="15" style="1"/>
-                </Property>
                 <Property name="horizontalAlignment" type="int" value="4"/>
                 <Property name="text" type="java.lang.String" value="Tipo de Comprobante:"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JComboBox" name="cmb_TipoComprobante">
               <Properties>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Ubuntu" size="15" style="1"/>
-                </Property>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
                   <StringArray count="0"/>
+                </Property>
+                <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                  <ComponentRef name="txt_CodigoProducto"/>
                 </Property>
               </Properties>
               <Events>

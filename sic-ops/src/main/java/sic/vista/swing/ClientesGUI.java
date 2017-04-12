@@ -1,5 +1,6 @@
 package sic.vista.swing;
 
+import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,10 +26,10 @@ public class ClientesGUI extends JInternalFrame {
     private List<Cliente> clientes;
     private ModeloTabla modeloTablaDeResultados = new ModeloTabla();
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private final Dimension sizeInternalFrame =  new Dimension(880, 600);
 
     public ClientesGUI() {
-        this.initComponents();
-        this.setSize(750, 450);
+        this.initComponents();        
     }
 
     private void cargarComboBoxPaises() {
@@ -641,6 +642,7 @@ public class ClientesGUI extends JInternalFrame {
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
         try {
+            this.setSize(sizeInternalFrame);
             this.cargarComboBoxPaises();
             this.setColumnas();
             this.setMaximum(true);

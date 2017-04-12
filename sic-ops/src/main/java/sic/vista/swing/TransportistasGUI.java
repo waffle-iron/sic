@@ -1,5 +1,6 @@
 package sic.vista.swing;
 
+import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,10 +26,10 @@ public class TransportistasGUI extends JInternalFrame {
     private List<Transportista> transportistas;
     private Transportista transSeleccionado; 
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private final Dimension sizeInternalFrame = new Dimension(880, 600);
 
     public TransportistasGUI() {
-        this.initComponents();
-        this.setSize(750, 450);        
+        this.initComponents();                
     }
 
     public Transportista getTransSeleccionado() {
@@ -271,7 +272,7 @@ public class TransportistasGUI extends JInternalFrame {
 
         panelFiltros.setBorder(javax.swing.BorderFactory.createTitledBorder("Filtros"));
 
-        chk_Nombre.setText("Nombre");
+        chk_Nombre.setText("Nombre:");
         chk_Nombre.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 chk_NombreItemStateChanged(evt);
@@ -320,22 +321,22 @@ public class TransportistasGUI extends JInternalFrame {
             panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelFiltrosLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelFiltrosLayout.createSequentialGroup()
-                        .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(chk_Nombre)
-                            .addComponent(chk_Ubicacion))
+                        .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(chk_Ubicacion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(chk_Nombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(cmb_Provincia, javax.swing.GroupLayout.Alignment.LEADING, 0, 262, Short.MAX_VALUE)
-                            .addComponent(cmb_Pais, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cmb_Provincia, 0, 351, Short.MAX_VALUE)
+                            .addComponent(cmb_Pais, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(cmb_Localidad, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txt_Nombre, javax.swing.GroupLayout.Alignment.LEADING)))
+                            .addComponent(txt_Nombre)))
                     .addGroup(panelFiltrosLayout.createSequentialGroup()
                         .addComponent(btn_Buscar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbl_cantResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         panelFiltrosLayout.setVerticalGroup(
             panelFiltrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -406,7 +407,7 @@ public class TransportistasGUI extends JInternalFrame {
         panelResultados.setLayout(panelResultadosLayout);
         panelResultadosLayout.setHorizontalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)
+            .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
             .addGroup(panelResultadosLayout.createSequentialGroup()
                 .addComponent(btn_Nuevo)
                 .addGap(0, 0, 0)
@@ -558,9 +559,10 @@ public class TransportistasGUI extends JInternalFrame {
     }//GEN-LAST:event_btn_ModificarActionPerformed
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        this.setSize(sizeInternalFrame);
+        this.cargarComboBoxPaises();
+        this.setColumnas();
         try {
-            this.cargarComboBoxPaises();
-            this.setColumnas();
             this.setMaximum(true);
         } catch (PropertyVetoException ex) {
             String msjError = "Se produjo un error al intentar maximizar la ventana.";

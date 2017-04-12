@@ -247,9 +247,9 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lbl_EmpresaActiva" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="lbl_Separador" pref="456" max="32767" attributes="0"/>
+              <Component id="lbl_Separador" pref="505" max="32767" attributes="0"/>
           </Group>
-          <Component id="dp_Escritorio" alignment="1" pref="851" max="32767" attributes="0"/>
+          <Component id="dp_Escritorio" alignment="1" pref="900" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">

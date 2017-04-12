@@ -1,6 +1,7 @@
 package sic.vista.swing;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.IOException;
@@ -28,26 +29,25 @@ import sic.util.Utilidades;
 
 public class ProductosGUI extends JInternalFrame {
 
-    private ModeloTabla modeloTablaResultados;
-    private List<Producto> productos; 
+    private ModeloTabla modeloTablaResultados = new ModeloTabla();
+    private List<Producto> productos;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
+    private final Dimension sizeInternalFrame = new Dimension(880, 600);
 
     public ProductosGUI() {
-        this.initComponents();        
-        modeloTablaResultados = new ModeloTabla();
-        rb_Todos.setSelected(true);
+        this.initComponents();
     }
 
     private void cargarRubros() {
         try {
             List<Rubro> rubros = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                .getForObject("/rubros/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
-                Rubro[].class)));
+                    .getForObject("/rubros/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
+                            Rubro[].class)));
             cmb_Rubro.removeAllItems();
             rubros.stream().forEach((r) -> {
                 cmb_Rubro.addItem(r);
             });
-            if (cmb_Rubro.getSelectedItem() != null && rubros.contains((Rubro)cmb_Rubro.getSelectedItem())) {
+            if (cmb_Rubro.getSelectedItem() != null && rubros.contains((Rubro) cmb_Rubro.getSelectedItem())) {
                 cmb_Rubro.setSelectedItem(cmb_Rubro.getSelectedItem());
             }
         } catch (RestClientResponseException ex) {
@@ -63,13 +63,13 @@ public class ProductosGUI extends JInternalFrame {
     private void cargarProveedores() {
         try {
             List<Proveedor> proveedores = new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                .getForObject("/proveedores/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
-                Proveedor[].class)));
+                    .getForObject("/proveedores/empresas/" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
+                            Proveedor[].class)));
             cmb_Proveedor.removeAllItems();
             proveedores.stream().forEach((p) -> {
                 cmb_Proveedor.addItem(p);
             });
-            if (cmb_Proveedor.getSelectedItem() != null && proveedores.contains((Proveedor)cmb_Proveedor.getSelectedItem())) {
+            if (cmb_Proveedor.getSelectedItem() != null && proveedores.contains((Proveedor) cmb_Proveedor.getSelectedItem())) {
                 cmb_Proveedor.setSelectedItem(cmb_Proveedor.getSelectedItem());
             }
         } catch (RestClientResponseException ex) {
@@ -206,7 +206,7 @@ public class ProductosGUI extends JInternalFrame {
         tbl_Resultados.setModel(modeloTablaResultados);
         lbl_cantResultados.setText(productos.size() + " productos encontrados");
     }
-    
+
     private void limpiarJTable() {
         modeloTablaResultados = new ModeloTabla();
         tbl_Resultados.setModel(modeloTablaResultados);
@@ -242,11 +242,11 @@ public class ProductosGUI extends JInternalFrame {
         if (status == true && chk_Disponibilidad.isSelected() == true) {
             rb_Todos.setEnabled(true);
             rb_Faltantes.setEnabled(true);
-        } else {        
+        } else {
             rb_Todos.setEnabled(false);
             rb_Faltantes.setEnabled(false);
         }
-        btn_Buscar.setEnabled(status);        
+        btn_Buscar.setEnabled(status);
         tbl_Resultados.setEnabled(status);
         btn_Nuevo.setEnabled(status);
         btn_Modificar.setEnabled(status);
@@ -258,7 +258,7 @@ public class ProductosGUI extends JInternalFrame {
         cambiarEstadoEnabled(false);
         pg_progreso.setIndeterminate(true);
         SwingWorker<List<Producto>, Void> worker = new SwingWorker<List<Producto>, Void>() {
-            
+
             @Override
             protected List<Producto> doInBackground() throws Exception {
                 long idEmpresa = EmpresaActiva.getInstance().getEmpresa().getId_Empresa();
@@ -338,7 +338,7 @@ public class ProductosGUI extends JInternalFrame {
             if (Desktop.isDesktopSupported()) {
                 try {
                     String uriReporteListaProductosCriteria = "/productos/reporte/criteria?"
-                        + "&idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa();
+                            + "&idEmpresa=" + EmpresaActiva.getInstance().getEmpresa().getId_Empresa();
                     if (chk_Codigo.isSelected()) {
                         uriReporteListaProductosCriteria += "&codigo=" + txt_Codigo.getText().trim();
                     }
@@ -351,15 +351,15 @@ public class ProductosGUI extends JInternalFrame {
                     if (chk_Proveedor.isSelected()) {
                         uriReporteListaProductosCriteria += "&idProveedor=" + ((Proveedor) cmb_Proveedor.getSelectedItem()).getId_Proveedor();
                     }
-                    if(chk_Disponibilidad.isSelected()) {
-                        uriReporteListaProductosCriteria += "&soloFantantes="+ rb_Faltantes.isSelected();
+                    if (chk_Disponibilidad.isSelected()) {
+                        uriReporteListaProductosCriteria += "&soloFantantes=" + rb_Faltantes.isSelected();
                     }
                     byte[] reporte = RestClient.getRestTemplate()
-                        .getForObject(uriReporteListaProductosCriteria,
-                        byte[].class);
-                File f = new File("ListaPrecios.pdf");
-                Files.write(f.toPath(), reporte);
-                Desktop.getDesktop().open(f);
+                            .getForObject(uriReporteListaProductosCriteria,
+                                    byte[].class);
+                    File f = new File("ListaPrecios.pdf");
+                    Files.write(f.toPath(), reporte);
+                    Desktop.getDesktop().open(f);
                 } catch (IOException ex) {
                     LOGGER.error(ex.getMessage());
                     JOptionPane.showMessageDialog(this,
@@ -806,8 +806,10 @@ public class ProductosGUI extends JInternalFrame {
     }//GEN-LAST:event_chk_RubroItemStateChanged
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
-        try { 
-            this.setColumnas();
+        this.setSize(sizeInternalFrame);
+        rb_Todos.setSelected(true);
+        this.setColumnas();
+        try {
             this.setMaximum(true);
         } catch (PropertyVetoException ex) {
             String mensaje = "Se produjo un error al intentar maximizar la ventana.";
@@ -824,10 +826,10 @@ public class ProductosGUI extends JInternalFrame {
     private void chk_DisponibilidadItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_DisponibilidadItemStateChanged
         if (chk_Disponibilidad.isSelected() == true) {
             rb_Todos.setEnabled(true);
-            rb_Faltantes.setEnabled(true);            
+            rb_Faltantes.setEnabled(true);
         } else {
             rb_Todos.setEnabled(false);
-            rb_Faltantes.setEnabled(false);            
+            rb_Faltantes.setEnabled(false);
         }
     }//GEN-LAST:event_chk_DisponibilidadItemStateChanged
 
