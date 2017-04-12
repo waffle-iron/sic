@@ -4,12 +4,16 @@ import sic.service.IAfipService;
 import afip.wsaa.wsdl.LoginCms;
 import afip.wsfe.wsdl.AlicIva;
 import afip.wsfe.wsdl.ArrayOfAlicIva;
+import afip.wsfe.wsdl.ArrayOfErr;
 import afip.wsfe.wsdl.ArrayOfFECAEDetRequest;
 import afip.wsfe.wsdl.FEAuthRequest;
 import afip.wsfe.wsdl.FECAECabRequest;
 import afip.wsfe.wsdl.FECAEDetRequest;
 import afip.wsfe.wsdl.FECAERequest;
+import afip.wsfe.wsdl.FECAEResponse;
 import afip.wsfe.wsdl.FECAESolicitar;
+import afip.wsfe.wsdl.FECompUltimoAutorizado;
+import afip.wsfe.wsdl.FERecuperaLastCbteResponse;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Base64;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Service;
 import sic.modelo.AfipWSAACredencial;
 import sic.modelo.Empresa;
 import sic.modelo.FacturaVenta;
+import sic.modelo.TipoDeComprobante;
 import sic.service.BusinessServiceException;
 import sic.service.IConfiguracionDelSistemaService;
 import sic.util.FormatterFechaHora;
@@ -58,6 +63,7 @@ public class AfipServiceImpl implements IAfipService {
             Document tokenDoc = new SAXReader(false).read(tokenReader);
             afipCred.setToken(tokenDoc.valueOf("/loginTicketResponse/credentials/token"));
             afipCred.setSign(tokenDoc.valueOf("/loginTicketResponse/credentials/sign"));
+            afipCred.setCuit(empresa.getCuip());
         } catch (DocumentException ex) {
             LOGGER.error(ex.getMessage());
             throw new BusinessServiceException("Error procesando el XML de la respuesta");
@@ -69,15 +75,55 @@ public class AfipServiceImpl implements IAfipService {
     public void autorizarFacturaVenta(FacturaVenta factura) {
         AfipWSAACredencial afipCredencial = this.getAfipWSAACredencial("wsfe", factura.getEmpresa());        
         FEAuthRequest feAuthRequest = new FEAuthRequest();
-        feAuthRequest.setCuit(factura.getEmpresa().getCuip());
+        feAuthRequest.setCuit(afipCredencial.getCuit());
         feAuthRequest.setSign(afipCredencial.getSign());
         feAuthRequest.setToken(afipCredencial.getToken());        
         FECAESolicitar fecaeSolicitud = new FECAESolicitar();
         fecaeSolicitud.setAuth(feAuthRequest);
-        fecaeSolicitud.setFeCAEReq(this.transformFacturaVentaToFECAERequest(factura));
-        afipWebServiceSOAPClient.FECAESolicitar(fecaeSolicitud);
-    }    
+        fecaeSolicitud.setFeCAEReq(this.transformFacturaVentaToFECAERequest(factura));        
+        int nroPuntoDeVentaAfip = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(factura.getEmpresa()).getNroPuntoDeVentaAfip();
+        this.obtenerSiguienteNroComprobante(afipCredencial, factura.getTipoComprobante(), nroPuntoDeVentaAfip);
+        FECAEResponse response = afipWebServiceSOAPClient.FECAESolicitar(fecaeSolicitud);     
+        ArrayOfErr errores = response.getErrors();
+        if (errores != null) {
+            errores.getErr().stream().forEach((err) -> {
+                LOGGER.error(err.getCode() + " - " + err.getMsg());
+            });
+            throw new BusinessServiceException("Con errores!");
+        }
+        if (response.getFeDetResp().getFECAEDetResponse().get(0).getResultado().equals("R")) {
+            throw new BusinessServiceException("Rechazada!");
+        }
+        response.getFeDetResp().getFECAEDetResponse().get(0).getCAE();
+        response.getFeDetResp().getFECAEDetResponse().get(0).getCAEFchVto();
+    }
     
+    @Override
+    public int obtenerSiguienteNroComprobante(AfipWSAACredencial afipCredencial, TipoDeComprobante tipo, int nroPuntoDeVentaAfip) {
+        FECompUltimoAutorizado solicitud = new FECompUltimoAutorizado();
+        FEAuthRequest feAuthRequest = new FEAuthRequest();
+        feAuthRequest.setCuit(afipCredencial.getCuit());
+        feAuthRequest.setSign(afipCredencial.getSign());
+        feAuthRequest.setToken(afipCredencial.getToken());
+        // 1: Factura A, 2: Nota de Débito A, 3: Nota de Crédito A, 6: Factura B, 7: Nota de Débito B, 8: Nota de Crédito B. 11: Factura C
+        solicitud.setAuth(feAuthRequest);
+        switch (tipo) {
+            case FACTURA_A:
+                solicitud.setCbteTipo(1);
+                break;
+            case FACTURA_B:                
+                solicitud.setCbteTipo(6);
+                break;
+            case FACTURA_C:                
+                solicitud.setCbteTipo(11);
+                break;
+        }
+        solicitud.setPtoVta(nroPuntoDeVentaAfip);
+        FERecuperaLastCbteResponse response = afipWebServiceSOAPClient.FECompUltimoAutorizado(solicitud);
+        return 0;
+    }
+    
+    @Override
     public FECAERequest transformFacturaVentaToFECAERequest(FacturaVenta factura) {
         FECAERequest fecaeRequest = new FECAERequest();        
         FECAECabRequest cabecera = new FECAECabRequest();

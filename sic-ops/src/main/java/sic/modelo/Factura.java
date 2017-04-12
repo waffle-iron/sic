@@ -45,4 +45,6 @@ public abstract class Factura implements Serializable {
     private boolean pagada;    
     private Empresa empresa;
     private boolean eliminada;   
+    private String CAE;
+    private Date vencimientoCAE;
 }

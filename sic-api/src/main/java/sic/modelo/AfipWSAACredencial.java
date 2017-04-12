@@ -11,5 +11,6 @@ public class AfipWSAACredencial {
     
     private String token;
     private String sign;
+    private long cuit;
     
 }

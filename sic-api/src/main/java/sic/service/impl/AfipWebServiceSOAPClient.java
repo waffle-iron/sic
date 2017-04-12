@@ -2,9 +2,12 @@ package sic.service.impl;
 
 import afip.wsaa.wsdl.LoginCms;
 import afip.wsaa.wsdl.LoginCmsResponse;
-import afip.wsfe.wsdl.ArrayOfErr;
+import afip.wsfe.wsdl.FECAEResponse;
 import afip.wsfe.wsdl.FECAESolicitar;
 import afip.wsfe.wsdl.FECAESolicitarResponse;
+import afip.wsfe.wsdl.FECompUltimoAutorizado;
+import afip.wsfe.wsdl.FECompUltimoAutorizadoResponse;
+import afip.wsfe.wsdl.FERecuperaLastCbteResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ws.client.core.support.WebServiceGatewaySupport;
@@ -39,6 +42,7 @@ import org.springframework.oxm.XmlMappingException;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.client.WebServiceClientException;
 import org.springframework.ws.soap.SoapMessage;
+import sic.service.BusinessServiceException;
 
 public class AfipWebServiceSOAPClient extends WebServiceGatewaySupport {
 
@@ -48,6 +52,7 @@ public class AfipWebServiceSOAPClient extends WebServiceGatewaySupport {
     private final String WSFE_TESTING = "https://wswhomo.afip.gov.ar/wsfev1/service.asmx";
     private final String WSFE_PRODUCTION = "https://servicios1.afip.gov.ar/wsfev1/service.asmx";
     private final String SOAP_ACTION_FECAESolicitar = "http://ar.gov.afip.dif.FEV1/FECAESolicitar";
+    private final String SOAP_ACTION_FECompUltimoAutorizado = "http://ar.gov.afip.dif.FEV1/FECompUltimoAutorizado";
 
     public String loginCMS(LoginCms loginCMS) {
         try {
@@ -56,7 +61,7 @@ public class AfipWebServiceSOAPClient extends WebServiceGatewaySupport {
             return response.getLoginCmsReturn();
         } catch (WebServiceClientException | XmlMappingException ex) {
             LOGGER.error(ex.getMessage());
-            return ""; // lanzar la exception correspondiente
+            throw new BusinessServiceException("Error obteniendo token en WSAA");            
         }
     }
 
@@ -122,17 +127,19 @@ public class AfipWebServiceSOAPClient extends WebServiceGatewaySupport {
         return LoginTicketRequest_xml;
     }
 
-    public String FECAESolicitar(FECAESolicitar solicitud) {
+    public FERecuperaLastCbteResponse FECompUltimoAutorizado(FECompUltimoAutorizado solicitud) {
+        FECompUltimoAutorizadoResponse response = (FECompUltimoAutorizadoResponse) this.getWebServiceTemplate()
+                .marshalSendAndReceive(WSFE_TESTING, solicitud, (WebServiceMessage message) -> {
+                    ((SoapMessage) message).setSoapAction(SOAP_ACTION_FECompUltimoAutorizado);
+        });        
+        return response.getFECompUltimoAutorizadoResult();
+    }
+    
+    public FECAEResponse FECAESolicitar(FECAESolicitar solicitud) {
         FECAESolicitarResponse response = (FECAESolicitarResponse) this.getWebServiceTemplate()
                 .marshalSendAndReceive(WSFE_TESTING, solicitud, (WebServiceMessage message) -> {
                     ((SoapMessage) message).setSoapAction(SOAP_ACTION_FECAESolicitar);
         });        
-        ArrayOfErr errores = response.getFECAESolicitarResult().getErrors();
-        if (errores != null) {
-            errores.getErr().stream().forEach((err) -> {
-                LOGGER.error(err.getCode() + " - " + err.getMsg());
-            });
-        }
-        return response.getFECAESolicitarResult().getFeDetResp().getFECAEDetResponse().get(0).getCAE();
+        return response.getFECAESolicitarResult();
     }
 }

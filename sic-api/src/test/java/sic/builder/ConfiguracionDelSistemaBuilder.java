@@ -12,12 +12,13 @@ public class ConfiguracionDelSistemaBuilder {
     private String pathCertificadoAfip = "certs/MiEmpresaTesting.p12";
     private String firmanteCertificadoAfip = "test";
     private String passwordCertificadoAfip = "test123";
+    private int nroPuntoDeVentaAfip = 1;
     private Empresa empresa = new EmpresaBuilder().build();
 
     public ConfiguracionDelSistema build() {
         return new ConfiguracionDelSistema(id_ConfiguracionDelSistema, usarFacturaVentaPreImpresa,
                 cantidadMaximaDeRenglonesEnFactura, facturaElectronicaHabilitada, pathCertificadoAfip,
-                firmanteCertificadoAfip, passwordCertificadoAfip, empresa);
+                firmanteCertificadoAfip, passwordCertificadoAfip, nroPuntoDeVentaAfip, empresa);
     }
 
     public ConfiguracionDelSistemaBuilder withIdConfiguracionDelSistema(long idCds) {
@@ -52,6 +53,11 @@ public class ConfiguracionDelSistemaBuilder {
     
     public ConfiguracionDelSistemaBuilder withPasswordCertificadoAfip(String passwordCertificadoAfip) {
         this.passwordCertificadoAfip = passwordCertificadoAfip;
+        return this;
+    }
+    
+    public ConfiguracionDelSistemaBuilder withNroPuntoDeVentaAfip(int nroPuntoDeVentaAfip) {
+        this.nroPuntoDeVentaAfip = nroPuntoDeVentaAfip;
         return this;
     }
     

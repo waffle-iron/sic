@@ -33,6 +33,8 @@ public class ConfiguracionDelSistema implements Serializable {
     private String firmanteCertificadoAfip;
     
     private String passwordCertificadoAfip;
+    
+    private int nroPuntoDeVentaAfip;
 
     @ManyToOne
     @JoinColumn(name = "id_Empresa", referencedColumnName = "id_Empresa")

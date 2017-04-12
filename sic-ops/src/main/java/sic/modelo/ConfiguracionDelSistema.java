@@ -13,5 +13,6 @@ public class ConfiguracionDelSistema implements Serializable {
     private String pathCertificadoAfip;    
     private String firmanteCertificadoAfip;    
     private String passwordCertificadoAfip;
+    private int nroPuntoDeVentaAfip;
     private Empresa empresa;
 }
