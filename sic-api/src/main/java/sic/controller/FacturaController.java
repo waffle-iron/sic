@@ -80,14 +80,15 @@ public class FacturaController {
         } else {
             List<Factura> facturas = new ArrayList<>();
             facturas.add(factura);
-            
-            facturas = facturaService.guardar(facturas, idPedido);
-            afipService.autorizarFacturaVenta((FacturaVenta) facturas.get(0));
-            return facturas;
-            
-            //return facturaService.guardar(facturas, idPedido);         
+            return facturaService.guardar(facturas, idPedido);         
         }
     }   
+    
+    @PostMapping("/facturas/{idFactura}/autorizacion")
+    @ResponseStatus(HttpStatus.CREATED)
+    public FacturaVenta autorizarFactura(@PathVariable long idFactura) {
+        return afipService.autorizarFacturaVenta((FacturaVenta) facturaService.getFacturaPorId(idFactura));        
+    }
     
     @DeleteMapping("/facturas")
     @ResponseStatus(HttpStatus.NO_CONTENT)

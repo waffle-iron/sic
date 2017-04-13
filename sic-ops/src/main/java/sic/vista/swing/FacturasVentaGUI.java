@@ -285,6 +285,7 @@ public class FacturasVentaGUI extends JInternalFrame {
         btn_Eliminar.setEnabled(status);
         btn_VerDetalle.setEnabled(status);
         btn_VerPagos.setEnabled(status);
+        btn_Autorizar.setEnabled(status);
     }
 
     private void cargarResultadosAlTable() {
@@ -474,6 +475,7 @@ public class FacturasVentaGUI extends JInternalFrame {
         txt_ResultTotalIVAVenta = new javax.swing.JFormattedTextField();
         btn_Nueva = new javax.swing.JButton();
         btn_VerPagos = new javax.swing.JButton();
+        btn_Autorizar = new javax.swing.JButton();
         panelFiltros = new javax.swing.JPanel();
         subPanelFiltros1 = new javax.swing.JPanel();
         chk_Fecha = new javax.swing.JCheckBox();
@@ -627,37 +629,54 @@ public class FacturasVentaGUI extends JInternalFrame {
             }
         });
 
+        btn_Autorizar.setForeground(java.awt.Color.blue);
+        btn_Autorizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Certificate_16x16.png"))); // NOI18N
+        btn_Autorizar.setText("Autorizar");
+        btn_Autorizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_AutorizarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelResultadosLayout = new javax.swing.GroupLayout(panelResultados);
         panelResultados.setLayout(panelResultadosLayout);
         panelResultadosLayout.setHorizontalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelResultadosLayout.createSequentialGroup()
-                .addComponent(btn_Nueva, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addComponent(btn_Eliminar)
-                .addGap(0, 0, 0)
-                .addComponent(btn_VerDetalle)
-                .addGap(0, 0, 0)
-                .addComponent(btn_VerPagos)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 203, Short.MAX_VALUE)
+                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelResultadosLayout.createSequentialGroup()
+                        .addComponent(btn_Nueva, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_Eliminar)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_VerPagos))
+                    .addGroup(panelResultadosLayout.createSequentialGroup()
+                        .addComponent(btn_Autorizar)
+                        .addGap(0, 0, 0)
+                        .addComponent(btn_VerDetalle)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(sp_Resultados)
         );
 
-        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_VerDetalle, btn_VerPagos});
+        panelResultadosLayout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {btn_Autorizar, btn_Eliminar, btn_Nueva, btn_VerDetalle, btn_VerPagos});
 
         panelResultadosLayout.setVerticalGroup(
             panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelResultadosLayout.createSequentialGroup()
-                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addComponent(sp_Resultados, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                .addGap(7, 7, 7)
+                .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(panelNumeros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_Eliminar)
-                        .addComponent(btn_VerDetalle)
-                        .addComponent(btn_Nueva)
-                        .addComponent(btn_VerPagos))))
+                    .addGroup(panelResultadosLayout.createSequentialGroup()
+                        .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btn_Autorizar)
+                            .addComponent(btn_VerDetalle))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btn_Eliminar)
+                            .addComponent(btn_Nueva)
+                            .addComponent(btn_VerPagos)))))
         );
 
         panelResultadosLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_Eliminar, btn_Nueva, btn_VerDetalle, btn_VerPagos});
@@ -934,7 +953,7 @@ public class FacturasVentaGUI extends JInternalFrame {
             .addComponent(panelResultados, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(panelFiltros, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 87, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -970,32 +989,36 @@ public class FacturasVentaGUI extends JInternalFrame {
 }//GEN-LAST:event_btn_BuscarActionPerformed
 
     private void btn_VerDetalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VerDetalleActionPerformed
-        this.lanzarReporteFactura();
+        if (tbl_Resultados.getSelectedRow() != -1) {        
+            this.lanzarReporteFactura();
+        }
 }//GEN-LAST:event_btn_VerDetalleActionPerformed
 
     private void btn_EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_EliminarActionPerformed
-        int respuesta = JOptionPane.showConfirmDialog(this, ResourceBundle.getBundle("Mensajes")
-                .getString("mensaje_eliminar_multiples_facturas"),
-                "Eliminar", JOptionPane.YES_NO_OPTION);
-        if (respuesta == JOptionPane.YES_OPTION) {
-            int[] indexFilasSeleccionadas = Utilidades.getSelectedRowsModelIndices(tbl_Resultados);
-            long [] idsFacturas = new long[indexFilasSeleccionadas.length];
-            int i = 0;
-            for (int indice : indexFilasSeleccionadas) {
-                idsFacturas[i] = facturas.get(indice).getId_Factura();
-                i++;
-            }
-            try {
-                RestClient.getRestTemplate().delete("/facturas?idFactura="
-                        + Arrays.toString(idsFacturas).substring(1, Arrays.toString(idsFacturas).length() - 1));
-                this.buscar();
-            } catch (RestClientResponseException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (ResourceAccessException ex) {
-                LOGGER.error(ex.getMessage());
-                JOptionPane.showMessageDialog(this,
-                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
-                        "Error", JOptionPane.ERROR_MESSAGE);
+        if (tbl_Resultados.getSelectedRow() != -1) {
+            int respuesta = JOptionPane.showConfirmDialog(this, ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_eliminar_multiples_facturas"),
+                    "Eliminar", JOptionPane.YES_NO_OPTION);
+            if (respuesta == JOptionPane.YES_OPTION) {
+                int[] indexFilasSeleccionadas = Utilidades.getSelectedRowsModelIndices(tbl_Resultados);
+                long[] idsFacturas = new long[indexFilasSeleccionadas.length];
+                int i = 0;
+                for (int indice : indexFilasSeleccionadas) {
+                    idsFacturas[i] = facturas.get(indice).getId_Factura();
+                    i++;
+                }
+                try {
+                    RestClient.getRestTemplate().delete("/facturas?idFactura="
+                            + Arrays.toString(idsFacturas).substring(1, Arrays.toString(idsFacturas).length() - 1));
+                    this.buscar();
+                } catch (RestClientResponseException ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                } catch (ResourceAccessException ex) {
+                    LOGGER.error(ex.getMessage());
+                    JOptionPane.showMessageDialog(this,
+                            ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                            "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
 }//GEN-LAST:event_btn_EliminarActionPerformed
@@ -1128,8 +1151,27 @@ public class FacturasVentaGUI extends JInternalFrame {
         this.cargarUsuarios();
     }//GEN-LAST:event_chk_VendedorItemStateChanged
 
+    private void btn_AutorizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AutorizarActionPerformed
+        if (tbl_Resultados.getSelectedRow() != -1) {
+            int indexFilaSeleccionada = Utilidades.getSelectedRowModelIndice(tbl_Resultados);
+            long idFacturaSeleccionada = facturas.get(indexFilaSeleccionada).getId_Factura();
+            try {
+                RestClient.getRestTemplate().postForObject("/facturas/" + idFacturaSeleccionada + "/autorizacion",
+                        null, FacturaVenta.class);
+            } catch (RestClientResponseException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ResourceAccessException ex) {
+                LOGGER.error(ex.getMessage());
+                JOptionPane.showMessageDialog(this,
+                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btn_AutorizarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bg_estadoFactura;
+    private javax.swing.JButton btn_Autorizar;
     private javax.swing.JButton btn_Buscar;
     private javax.swing.JButton btn_Eliminar;
     private javax.swing.JButton btn_Nueva;

@@ -38,11 +38,8 @@ import org.bouncycastle.cms.CMSProcessableByteArray;
 import org.bouncycastle.cms.CMSSignedData;
 import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.springframework.oxm.XmlMappingException;
 import org.springframework.ws.WebServiceMessage;
-import org.springframework.ws.client.WebServiceClientException;
 import org.springframework.ws.soap.SoapMessage;
-import sic.service.BusinessServiceException;
 
 public class AfipWebServiceSOAPClient extends WebServiceGatewaySupport {
 
@@ -55,14 +52,9 @@ public class AfipWebServiceSOAPClient extends WebServiceGatewaySupport {
     private final String SOAP_ACTION_FECompUltimoAutorizado = "http://ar.gov.afip.dif.FEV1/FECompUltimoAutorizado";
 
     public String loginCMS(LoginCms loginCMS) {
-        try {
-            LoginCmsResponse response = (LoginCmsResponse) this.getWebServiceTemplate()
-                    .marshalSendAndReceive(WSAA_TESTING, loginCMS);
-            return response.getLoginCmsReturn();
-        } catch (WebServiceClientException | XmlMappingException ex) {
-            LOGGER.error(ex.getMessage());
-            throw new BusinessServiceException("Error obteniendo token en WSAA");            
-        }
+        LoginCmsResponse response = (LoginCmsResponse) this.getWebServiceTemplate()
+                .marshalSendAndReceive(WSAA_TESTING, loginCMS);
+        return response.getLoginCmsReturn();
     }
 
     public byte[] crearCMS(String p12file, String p12pass, String signer, String service, Long ticketTime) {
@@ -101,7 +93,7 @@ public class AfipWebServiceSOAPClient extends WebServiceGatewaySupport {
         return asn1_cms;
     }
 
-    private String crearTicketRequerimientoAcceso(String service, Long ticketTime) {
+    public String crearTicketRequerimientoAcceso(String service, Long ticketTime) {
         Date now = new Date();
         GregorianCalendar genenerationTime = new GregorianCalendar();
         GregorianCalendar expirationTime = new GregorianCalendar();

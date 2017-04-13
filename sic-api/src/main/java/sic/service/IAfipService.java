@@ -10,10 +10,10 @@ public interface IAfipService {
 
     AfipWSAACredencial getAfipWSAACredencial(String afipNombreServicio, Empresa empresa);
     
-    void autorizarFacturaVenta(FacturaVenta factura);
+    FacturaVenta autorizarFacturaVenta(FacturaVenta factura);
     
-    int obtenerSiguienteNroComprobante(AfipWSAACredencial afipCredencial, TipoDeComprobante tipo, int nroPuntoDeVentaAfip);
+    int getSiguienteNroComprobante(AfipWSAACredencial afipCredencial, TipoDeComprobante tipo, int nroPuntoDeVentaAfip);
     
-    FECAERequest transformFacturaVentaToFECAERequest(FacturaVenta factura);
+    FECAERequest transformFacturaVentaToFECAERequest(FacturaVenta factura, int siguienteNroComprobante);
     
 }
