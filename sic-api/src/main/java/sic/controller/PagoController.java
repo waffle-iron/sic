@@ -95,13 +95,11 @@ public class PagoController {
     @ResponseStatus(HttpStatus.OK)
     public List<Pago> getPagosPorCajaYFormaDePago(@RequestParam long idEmpresa,
                                                   @RequestParam long idFormaDePago,
-                                                  @RequestParam long idCaja) {
-        Caja caja = cajaService.getCajaPorId(idCaja);
-        LocalDateTime hasta = caja.getFechaApertura().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        hasta = hasta.withHour(23);
-        hasta = hasta.minusMinutes(59);
-        hasta = hasta.minusSeconds(59);
-        return pagoService.getPagosEntreFechasYFormaDePago(idEmpresa, idFormaDePago, caja.getFechaApertura(), Date.from(hasta.atZone(ZoneId.systemDefault()).toInstant()));
+                                                  @RequestParam long desde,
+                                                  @RequestParam long hasta) {
+        Date fechaDesde = new Date(desde);
+        Date fechaHasta = new Date(hasta);
+        return pagoService.getPagosEntreFechasYFormaDePago(idEmpresa, idFormaDePago, fechaDesde, fechaHasta);
     }
     
     @PutMapping("/pagos/pagar-multiples-facturas")

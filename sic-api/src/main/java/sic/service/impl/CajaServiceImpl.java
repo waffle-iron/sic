@@ -153,6 +153,8 @@ public class CajaServiceImpl implements ICajaService {
         caja = this.cargarPagosyGastos(caja);
         caja.setTotalAfectaCaja(this.getTotalCaja(caja, true));
         caja.setTotalGeneral(this.getTotalCaja(caja, false));
+        caja.setSaldoFinal(caja.getTotalGeneral());
+        this.actualizar(caja);
         return caja;
     }
     
@@ -303,20 +305,9 @@ public class CajaServiceImpl implements ICajaService {
     }
 
     private Caja cargarPagosyGastos(Caja caja) {
-//        LocalDateTime ldt = caja.getFechaApertura().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//        if (caja.getFechaCierre() == null) {
-//            ldt = ldt.withHour(23);
-//            ldt = ldt.withMinute(59);
-//            ldt = ldt.withSecond(59);
-//        } else {
-//            ldt = caja.getFechaCierre().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//        }
         Map<Long, Double> totalesPorFomaDePago = new HashMap<>();
         for (FormaDePago fdp : formaDePagoService.getFormasDePago(caja.getEmpresa())) {
-//            double total = this.getTotalPorFormaDePagoYFechas(caja.getEmpresa().getId_Empresa(),
-//                    fdp.getId_FormaDePago(), caja.getFechaApertura(),
-//                    Date.from(ldt.atZone(ZoneId.systemDefault()).toInstant()));
-              double total = this.getTotalMovimientosPorFormaDePago(caja, fdp);
+            double total = this.getTotalMovimientosPorFormaDePago(caja, fdp);
             if (total != 0) {
                 totalesPorFomaDePago.put(fdp.getId_FormaDePago(), total);
             }
@@ -324,28 +315,5 @@ public class CajaServiceImpl implements ICajaService {
         caja.setTotalesPorFomaDePago(totalesPorFomaDePago);
         return caja;
     }
-    
-    private double getTotalPorFormaDePagoYFechas(Long idEmpresa, Long idFormaDePago, Date desde, Date hasta) {
-        double pagos = 0.0;
-        double gastos = 0.0;
-        List<Pago> listaPagos = pagoService.getPagosEntreFechasYFormaDePago(idEmpresa, idFormaDePago, desde, hasta);
-        if (!listaPagos.isEmpty()) {
-            for (Pago pago : listaPagos) {
-                if(pago.getFactura() instanceof FacturaVenta) {
-                    pagos += pago.getMonto();
-                }
-                if (pago.getFactura() instanceof FacturaCompra) {
-                    pagos -= pago.getMonto();
-                }
-            }
-        }
-        List<Gasto> listaGastos = gastoService.getGastosEntreFechasYFormaDePago(idEmpresa, idFormaDePago, desde, hasta);
-        if (!listaGastos.isEmpty()) {
-            gastos = listaGastos.stream()
-                                .map((gasto) -> gasto.getMonto())
-                                .reduce(gastos, (accumulator, _item) -> accumulator + _item);
-        }
-        return pagos - gastos;
-    }
-    
+
 }

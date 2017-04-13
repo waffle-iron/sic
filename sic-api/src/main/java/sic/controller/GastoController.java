@@ -59,13 +59,11 @@ public class GastoController {
     @ResponseStatus(HttpStatus.OK)
     public List<Gasto> getGastosPorCajaYFormaDePago(@RequestParam long idEmpresa,
                                                     @RequestParam long idFormaDePago,
-                                                    @RequestParam long idCaja) {
-        Caja caja = cajaService.getCajaPorId(idCaja);
-        LocalDateTime hasta = caja.getFechaApertura().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        hasta = hasta.withHour(23);
-        hasta = hasta.minusMinutes(59);
-        hasta = hasta.minusSeconds(59);       
-        return gastoService.getGastosEntreFechasYFormaDePago(idEmpresa, idFormaDePago, caja.getFechaApertura(), Date.from(hasta.atZone(ZoneId.systemDefault()).toInstant()));
+                                                    @RequestParam long desde,
+                                                    @RequestParam long hasta) {
+        Date fechaDesde = new Date(desde);
+        Date fechaHasta = new Date(hasta);
+        return gastoService.getGastosEntreFechasYFormaDePago(idEmpresa, idFormaDePago, fechaDesde, fechaHasta);
     }
     
     @GetMapping("/gastos/total")
