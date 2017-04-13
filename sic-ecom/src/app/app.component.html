@@ -1,3 +1,43 @@
-<h1>
-  {{title}}
-</h1>
+<md-sidenav-container fullscreen>
+  <md-sidenav #start>
+    <md-nav-list>
+      <a md-list-item routeLink="/productos">Productos</a>
+    </md-nav-list>
+    <hr>
+    <button md-button (click)="start.close()">Cerrar</button>
+  </md-sidenav>
+  
+  <div class="container" fxLayout="row">
+    <md-toolbar color="primary">
+      <div class="blocks" fxFlex="100%" fxLayoutAlign="center start">
+        <app-search (click)="cargarProductos($event)">
+
+        </app-search>
+      </div>
+      <div class="blocks" fxFlex fxLayoutAlign="end center">
+        <button md-icon-button (click)="start.open()">
+          <md-icon class="menu-icon">menu</md-icon>
+        </button>
+      </div>
+    </md-toolbar>
+  </div>
+
+
+  <navbar-navbar></navbar-navbar>
+  <div class="container">
+    <md-card fxLayout="row" fxLayoutAlign="center start" *ngFor="let product of productos">
+      <div class="blocks" fxFlex="30%" fxLayoutAlign="start stretch">
+        <img src="assets/placeholderProducto.png">
+        <!--<md-icon svgIcon="avatars:{{selectedUser.avatar}}" class="avatar"></md-icon>-->
+      </div>
+      <div class="blocks" fxFlex="70%" fxLayoutAlign="start start">
+        <button md-icon-button (click)="showPlanetInfo(planet)">
+                      <p>{{product.codigo}}</p>
+                      <p>{{product.descripcion}}</p>
+                      <p>{{product.cantidad}}</p>
+                      <p>{{product.precio}}</p>
+                </button>
+      </div>
+    </md-card>
+  </div>
+</md-sidenav-container>
