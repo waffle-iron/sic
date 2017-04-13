@@ -120,7 +120,7 @@ public class CajaGUI extends JInternalFrame {
                 modeloTablaBalance.addRow(fila);
             }
             tbl_Movimientos.setModel(modeloTablaBalance);
-            tbl_Resumen.getModel().setValueAt(total, row , 2);
+            tbl_Resumen.getModel().setValueAt(total, row , 3);
         }
     }   
     
