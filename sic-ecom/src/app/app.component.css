@@ -27,3 +27,9 @@ md-toolbar-row {
 .menu-icon {
   padding: 0 14px;
 }
+
+.alinear-derecha {
+  position: absolute;
+  right: 0px;
+  bottom: 10px;
+}

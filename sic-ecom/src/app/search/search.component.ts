@@ -28,8 +28,6 @@ export class SearchComponent {
   }
 
   cargarProductos() {
-    debugger
-    console.log(1);
     //this.productos = this.productoService.getProductos().productos;//.subscribe(data => this.states = data);
   }
 }

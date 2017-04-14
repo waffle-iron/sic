@@ -1,12 +1,12 @@
 <md-sidenav-container fullscreen>
-  <md-sidenav #start>
+  <md-sidenav #start class="alinear-derecha">
     <md-nav-list>
-      <a md-list-item routeLink="/productos">Productos</a>
+      <a md-list-item routeLink="/miCuenta">Mi Cuenta</a>
     </md-nav-list>
     <hr>
     <button md-button (click)="start.close()">Cerrar</button>
   </md-sidenav>
-  
+
   <div class="container" fxLayout="row">
     <md-toolbar color="primary">
       <div class="blocks" fxFlex="100%" fxLayoutAlign="center start">
@@ -31,12 +31,26 @@
         <!--<md-icon svgIcon="avatars:{{selectedUser.avatar}}" class="avatar"></md-icon>-->
       </div>
       <div class="blocks" fxFlex="70%" fxLayoutAlign="start start">
-        <button md-icon-button (click)="showPlanetInfo(planet)">
-                      <p>{{product.codigo}}</p>
-                      <p>{{product.descripcion}}</p>
-                      <p>{{product.cantidad}}</p>
-                      <p>{{product.precio}}</p>
-                </button>
+        <md-list>
+          <h3 md-subheader>Informacion</h3>
+          <md-list-item>
+            <h3><span>Codigo: {{product.codigo}}</span></h3>
+          </md-list-item>
+          <md-divider></md-divider>
+          <md-list-item>
+            <h3><span>Descripcion: {{product.descripcion}}</span></h3>
+          </md-list-item>
+          <md-divider></md-divider>
+          <md-list-item>
+            <h3><span>Cantidad: {{product.cantidad}}</span></h3>
+          </md-list-item>
+          <md-divider></md-divider>
+          <md-list-item>
+            <h3><span>Precio: {{product.precio}}</span></h3>
+          </md-list-item>
+          <md-divider></md-divider>
+        </md-list>
+
       </div>
     </md-card>
   </div>

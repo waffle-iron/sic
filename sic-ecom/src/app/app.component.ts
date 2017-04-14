@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormControl} from '@angular/forms';
+import { FormControl } from '@angular/forms';
 
 import { ProductoService } from './servicios/producto.service';
 
@@ -10,11 +10,11 @@ import { ProductoService } from './servicios/producto.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-    ngOnInit() {
-      
-    }
+  ngOnInit() {
 
-    stateCtrl: FormControl;
+  }
+
+  stateCtrl: FormControl;
   filteredStates: any;
 
   productos: Array<any>;
@@ -24,10 +24,6 @@ export class AppComponent implements OnInit {
   }
 
   cargarProductos() {
-    debugger
-    console.log(2);
     this.productos = this.productoService.getProductos().productos;
   }
-
-  title = 'app works!';
 }

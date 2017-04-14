@@ -2,3 +2,21 @@
     color: rgba(0,0,0,.87);
     background-color: #141D28;
 }
+
+.mat-icon-button.mat-accent {
+    color: #141D28;
+}
+
+.mat-input-element {
+    font: inherit;
+    color: #666;
+    border: 0;
+    outline: none;
+    padding: 7px 120px 7px 10px;
+    width: 100%;
+    display: block;
+    box-sizing: border-box;
+    height: 30px;
+    background-color: #fff;
+    font-size: 14;
+}
