@@ -81,7 +81,7 @@ public class FacturacionIntegrationTest {
    
     @Before
     public void setup() {
-           String md5Test = "098f6bcd4621d373cade4e832627b4f6";
+        String md5Test = "098f6bcd4621d373cade4e832627b4f6";
         usuarioRepository.save(new UsuarioBuilder().withNombre("test").withPassword(md5Test).build());
         // Interceptor de RestTemplate para JWT
         List<ClientHttpRequestInterceptor> interceptors = new ArrayList<>();
@@ -107,10 +107,10 @@ public class FacturacionIntegrationTest {
             }
         });
     }
-
+    
     @Test
     public void testFacturarConComprobanteB() {
-         this.token = restTemplate.postForEntity(apiPrefix + "/login", new Credencial("test", "test"), String.class).getBody();
+        this.token = restTemplate.postForEntity(apiPrefix + "/login", new Credencial("test", "test"), String.class).getBody();
         Localidad localidad = new LocalidadBuilder().build();
         localidad.getProvincia().setPais(restTemplate.postForObject(apiPrefix + "/paises", localidad.getProvincia().getPais(), Pais.class));
         localidad.setProvincia(restTemplate.postForObject(apiPrefix + "/provincias", localidad.getProvincia(), Provincia.class));
@@ -176,12 +176,11 @@ public class FacturacionIntegrationTest {
                 .withProveedor(proveedor)
                 .withRubro(rubro)
                 .build();
-
-        Producto productoDos = (new ProductoBuilder())
-                .withIva_porcentaje(10.5)
+        Producto productoDos = (new ProductoBuilder())                
                 .withCodigo("2")
                 .withDescripcion("dos")
                 .withCantidad(6)
+                .withIva_porcentaje(10.5)
                 .withEmpresa(empresa)
                 .withMedida(medida)
                 .withProveedor(proveedor)
@@ -189,8 +188,8 @@ public class FacturacionIntegrationTest {
                 .build();
         productoUno = restTemplate.postForObject(apiPrefix + "/productos", productoUno, Producto.class);
         productoDos = restTemplate.postForObject(apiPrefix + "/productos", productoDos, Producto.class);
-        assertEquals(10, productoUno.getCantidad(), 0);
-        assertEquals(6, productoDos.getCantidad(), 0);
+        Assert.assertTrue(restTemplate.getForObject(apiPrefix + "/productos/" + productoUno.getId_Producto() + "/stock/disponibilidad?cantidad=10", Boolean.class));
+        Assert.assertTrue(restTemplate.getForObject(apiPrefix + "/productos/" + productoDos.getId_Producto() + "/stock/disponibilidad?cantidad=6", Boolean.class));
         RenglonFactura renglonUno = restTemplate.getForObject(apiPrefix + "/facturas/renglon?"
                 + "idProducto=" + productoUno.getId_Producto()
                 + "&tipoDeComprobante=" + TipoDeComprobante.FACTURA_B
@@ -298,16 +297,17 @@ public class FacturacionIntegrationTest {
         RenglonFactura[] renglonesDeFacturaRecuperada = restTemplate.getForObject(apiPrefix + "/facturas/" + facturasRecuperadas[0].getId_Factura() + "/renglones", RenglonFactura[].class);
         if (renglonesDeFacturaRecuperada.length != 2) {
             Assert.fail("La factura no deberia tener mas de dos renglones");
-        } 
+        }
+        // Validar consistencia de los objetos renglonFactura
         long[] idsProductos = new long[renglonesDeFacturaRecuperada.length];
         indice = 0;
-        for(RenglonFactura renglon : renglonesDeFacturaRecuperada) {
+        for (RenglonFactura renglon : renglonesDeFacturaRecuperada) {
             idsProductos[indice] = renglon.getId_ProductoItem();
             indice++;
-        }
+        }        
         restTemplate.getForObject(apiPrefix + "/facturas/"+ facturasRecuperadas[0].getId_Factura() + "/reporte", byte[].class);        
-        assertEquals(5, restTemplate.getForObject(apiPrefix + "/productos/" + idsProductos[0], Producto.class).getCantidad(), 0);
-        assertEquals(4, restTemplate.getForObject(apiPrefix + "/productos/" + idsProductos[1], Producto.class).getCantidad(), 0);
+        Assert.assertTrue(restTemplate.getForObject(apiPrefix + "/productos/" + productoUno.getId_Producto() + "/stock/disponibilidad?cantidad=5", Boolean.class));
+        Assert.assertTrue(restTemplate.getForObject(apiPrefix + "/productos/" + productoDos.getId_Producto() + "/stock/disponibilidad?cantidad=4", Boolean.class));                
     }
     
     @Test
@@ -337,21 +337,13 @@ public class FacturacionIntegrationTest {
                 .withToken("yJhbGci1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJjZWNpbGlvIn0.MCfaorSC7Wdc8rSW7BJizasfzsa")
                 .withRol(new ArrayList<>())
                 .build();
-        Usuario viajante = new UsuarioBuilder()
-                .withId_Usuario(1)
-                .withEliminado(false)
-                .withNombre("Fernando Aguirre")
-                .withPassword("fernando")
-                .withToken("yJhbGci1NiIsInR5cCI6IkpXVCJ9.eyJub21icmUiOiJjZWNpbGlvIn0.MCfaorSC7Wdc8rSW7BJizasfzsb")
-                .withRol(new ArrayList<>(Arrays.asList(Rol.VIAJANTE)))
-                .build();
         Cliente cliente = new ClienteBuilder()
                 .withEmpresa(empresa)
                 .withCondicionIVA(empresa.getCondicionIVA())
                 .withLocalidad(empresa.getLocalidad())
                 .withPredeterminado(true)
                 .withCredencial(credencial)
-                .withViajante(viajante)
+                .withViajante(null)
                 .build();
         cliente = restTemplate.postForObject(apiPrefix + "/clientes", cliente, Cliente.class);
         Transportista transportista = new TransportistaBuilder()
@@ -378,12 +370,11 @@ public class FacturacionIntegrationTest {
                 .withProveedor(proveedor)
                 .withRubro(rubro)
                 .build();
-
         Producto productoDos = (new ProductoBuilder())
-                .withIva_porcentaje(10.5)
                 .withCodigo("2")
                 .withDescripcion("dos")
                 .withCantidad(6)
+                .withIva_porcentaje(10.5)
                 .withEmpresa(empresa)
                 .withMedida(medida)
                 .withProveedor(proveedor)
@@ -391,25 +382,22 @@ public class FacturacionIntegrationTest {
                 .build();
         productoUno = restTemplate.postForObject(apiPrefix + "/productos", productoUno, Producto.class);
         productoDos = restTemplate.postForObject(apiPrefix + "/productos", productoDos, Producto.class);
-        assertEquals(10, productoUno.getCantidad(), 0);
-        assertEquals(6, productoDos.getCantidad(), 0);
-        
+        Assert.assertTrue(restTemplate.getForObject(apiPrefix + "/productos/" + productoUno.getId_Producto() + "/stock/disponibilidad?cantidad=10", Boolean.class));
+        Assert.assertTrue(restTemplate.getForObject(apiPrefix + "/productos/" + productoDos.getId_Producto() + "/stock/disponibilidad?cantidad=6", Boolean.class));        
         RenglonFactura renglonUno = restTemplate.getForObject(apiPrefix + "/facturas/renglon?"
                 + "idProducto=" + productoUno.getId_Producto()
                 + "&tipoDeComprobante=" + TipoDeComprobante.FACTURA_B
                 + "&movimiento=" + Movimiento.VENTA
                 + "&cantidad=" + 5
                 + "&descuentoPorcentaje=" + 0,
-                RenglonFactura.class);
-        
+                RenglonFactura.class);        
         RenglonPedido renglonPedidoUno = (new RenglonPedidoBuilder())
                 .withCantidad(renglonUno.getCantidad())
                 .withDescuentoPorcentaje(renglonUno.getDescuento_porcentaje())
                 .withDescuentoNeto(renglonUno.getDescuento_neto())
                 .withProducto(productoUno)
                 .withSubTotal(renglonUno.getImporte())
-                .build();
-                
+                .build();                
         RenglonFactura renglonDos = restTemplate.getForObject(apiPrefix + "/facturas/renglon?"
                 + "idProducto=" + productoDos.getId_Producto()
                 + "&tipoDeComprobante=" + TipoDeComprobante.FACTURA_B 
@@ -417,30 +405,22 @@ public class FacturacionIntegrationTest {
                 + "&cantidad=" + 2
                 + "&descuentoPorcentaje=" + 0,
                 RenglonFactura.class);
-        
         RenglonPedido renglonPedidoDos = (new RenglonPedidoBuilder())
                 .withCantidad(renglonDos.getCantidad())
                 .withDescuentoPorcentaje(renglonDos.getDescuento_porcentaje())
                 .withDescuentoNeto(renglonDos.getDescuento_neto())
                 .withProducto(productoDos)
                 .withSubTotal(renglonDos.getImporte())
-                .build();
-        
-        List<RenglonFactura> renglonesFactura = new ArrayList<>();
-        renglonesFactura.add(renglonUno);
-        renglonesFactura.add(renglonDos);
-        
+                .build();             
         List<RenglonPedido> renglonesPedido = new ArrayList<>();
         renglonesPedido.add(renglonPedidoUno);
-        renglonesPedido.add(renglonPedidoDos);
-        
+        renglonesPedido.add(renglonPedidoDos);        
         double[] importes = new double[renglonesPedido.size()];
         int indice = 0;
-        for (RenglonFactura renglon : renglonesFactura) {
-            importes[indice] = renglon.getImporte();
+        for (RenglonPedido renglon : renglonesPedido) {
+            importes[indice] = renglon.getSubTotal();
             indice++;
-        }
-        
+        }       
         PedidoDTO pedido = new PedidoDTO();
         pedido.setCliente(cliente);
         pedido.setEmpresa(empresa);
@@ -451,21 +431,17 @@ public class FacturacionIntegrationTest {
                         + "importe=" + Arrays.toString(importes).substring(1, Arrays.toString(importes).length() - 1),
                         double.class));
         pedido.setObservaciones("Pedido Test");
-        pedido.setEstado(EstadoPedido.ABIERTO);
-        
+        pedido.setEstado(EstadoPedido.ABIERTO);        
         Pedido pedidoRecuperado = restTemplate.postForObject(apiPrefix + "/pedidos", pedido, Pedido.class);
-
+        //Comparar PedidoDTO con el Pedido recuperado, incluyendo sus renglones
         RenglonFactura[] renglonesParaFacturar = restTemplate.getForObject(apiPrefix + "/facturas/renglones/pedidos/" + pedidoRecuperado.getId_Pedido()
-                + "?tipoDeComprobante=" + TipoDeComprobante.FACTURA_A.name(), RenglonFactura[].class);
-        
+                + "?tipoDeComprobante=" + TipoDeComprobante.FACTURA_A, RenglonFactura[].class);        
         importes = new double[1];
         double[] ivaRenglones = new double[1];
         double[] impuestoPorcentajes = new double[1];
-
         importes[0] = renglonesParaFacturar[0].getImporte();
         ivaRenglones[0] = renglonesParaFacturar[0].getIva_porcentaje();
         impuestoPorcentajes[0] = renglonesParaFacturar[0].getImpuesto_porcentaje();
-        
         double subTotal = restTemplate.getRestTemplate().getForObject(apiPrefix +"/facturas/subtotal?"
                     + "importe=" + Arrays.toString(importes).substring(1, Arrays.toString(importes).length() - 1),
                     double.class);
@@ -519,9 +495,9 @@ public class FacturacionIntegrationTest {
         facturaVentaA.setEmpresa(empresa);
         facturaVentaA.setTransportista(transportista);
         facturaVentaA.setUsuario(restTemplate.getForObject(apiPrefix + "/usuarios/busqueda?nombre=test", Usuario.class));
-        List<RenglonFactura>  renglon = new ArrayList<>();
-        renglon.add(renglonesParaFacturar[0]);
-        facturaVentaA.setRenglones(renglon);
+        List<RenglonFactura> renglones = new ArrayList<>();
+        renglones.add(renglonesParaFacturar[0]);
+        facturaVentaA.setRenglones(renglones);
         facturaVentaA.setSubTotal(subTotal);
         facturaVentaA.setRecargo_neto(recargo_neto);
         facturaVentaA.setSubTotal_neto(subTotal_neto);
@@ -532,24 +508,21 @@ public class FacturacionIntegrationTest {
         facturaVentaA.setFecha(new Date());
         facturaVentaA.setPedido(pedidoRecuperado);
         restTemplate.postForObject(apiPrefix + "/facturas?idPedido=" + pedidoRecuperado.getId_Pedido(), facturaVentaA, Factura[].class);
-        FacturaVenta[] facturasRecuperadas = restTemplate.getForObject(apiPrefix + "/facturas/venta/busqueda/criteria?idEmpresa=1&nroPedido=1", FacturaVenta[].class);
-        
-        assertEquals(1, facturasRecuperadas.length, 0);
-        
+        FacturaVenta[] facturasRecuperadas = restTemplate.getForObject(apiPrefix + "/facturas/venta/busqueda/criteria?"
+                + "idEmpresa=" + pedidoRecuperado.getEmpresa().getId_Empresa()
+                + "&nroPedido=" + pedidoRecuperado.getNroPedido(), FacturaVenta[].class);        
+        assertEquals(1, facturasRecuperadas.length, 0);        
         pedidoRecuperado = restTemplate.getForObject(apiPrefix + "/pedidos/" + pedidoRecuperado.getId_Pedido(), Pedido.class);
         assertEquals(EstadoPedido.ACTIVO, pedidoRecuperado.getEstado());
-
         renglonesParaFacturar = restTemplate.getForObject(apiPrefix + "/facturas/renglones/pedidos/" + pedidoRecuperado.getId_Pedido()
-                + "?tipoDeComprobante=" + TipoDeComprobante.FACTURA_B.name(), RenglonFactura[].class);
-        
+                + "?tipoDeComprobante=" + TipoDeComprobante.FACTURA_B, RenglonFactura[].class);
+        //Controlar que los renglones para facturar sean los esperados
         importes = new double[1];
         ivaRenglones = new double[1];
         impuestoPorcentajes = new double[1];
-
         importes[0] = renglonesParaFacturar[0].getImporte();
         ivaRenglones[0] = renglonesParaFacturar[0].getIva_porcentaje();
-        impuestoPorcentajes[0] = renglonesParaFacturar[0].getImpuesto_porcentaje();
-        
+        impuestoPorcentajes[0] = renglonesParaFacturar[0].getImpuesto_porcentaje();        
         subTotal = restTemplate.getRestTemplate().getForObject(apiPrefix +"/facturas/subtotal?"
                     + "importe=" + Arrays.toString(importes).substring(1, Arrays.toString(importes).length() - 1),
                     double.class);
@@ -603,9 +576,9 @@ public class FacturacionIntegrationTest {
         facturaVentaB.setEmpresa(empresa);
         facturaVentaB.setTransportista(transportista);
         facturaVentaB.setUsuario(restTemplate.getForObject(apiPrefix + "/usuarios/busqueda?nombre=test", Usuario.class));
-        renglon = new ArrayList<>();
-        renglon.add(renglonesParaFacturar[0]);
-        facturaVentaB.setRenglones(renglon);
+        renglones = new ArrayList<>();
+        renglones.add(renglonesParaFacturar[0]);
+        facturaVentaB.setRenglones(renglones);
         facturaVentaB.setSubTotal(subTotal);
         facturaVentaB.setRecargo_neto(recargo_neto);
         facturaVentaB.setSubTotal_neto(subTotal_neto);
@@ -616,13 +589,13 @@ public class FacturacionIntegrationTest {
         facturaVentaB.setFecha(new Date());
         facturaVentaB.setPedido(pedidoRecuperado);
         restTemplate.postForObject(apiPrefix + "/facturas?idPedido=" + pedidoRecuperado.getId_Pedido(), facturaVentaB, Factura[].class);
-        facturasRecuperadas = restTemplate.getForObject(apiPrefix + "/facturas/venta/busqueda/criteria?idEmpresa=1&nroPedido=1", FacturaVenta[].class);
-        
-        assertEquals(2, facturasRecuperadas.length, 0);
-        
+        facturasRecuperadas = restTemplate.getForObject(apiPrefix + "/facturas/venta/busqueda/criteria?"
+                + "idEmpresa=" + pedidoRecuperado.getEmpresa().getId_Empresa()
+                + "&nroPedido=" + pedidoRecuperado.getNroPedido(), FacturaVenta[].class);           
+        assertEquals(2, facturasRecuperadas.length, 0);        
         pedidoRecuperado = restTemplate.getForObject(apiPrefix + "/pedidos/" + pedidoRecuperado.getId_Pedido(), Pedido.class);
         assertEquals(EstadoPedido.CERRADO, pedidoRecuperado.getEstado());
-        
+        //Borrar las facturas de a una para pasar para los saltos de estado
         restTemplate.delete(apiPrefix + "/facturas?idFactura=1,2");
         pedidoRecuperado = restTemplate.getForObject(apiPrefix + "/pedidos/" + pedidoRecuperado.getId_Pedido(), Pedido.class);
         assertEquals(EstadoPedido.ABIERTO, pedidoRecuperado.getEstado());
