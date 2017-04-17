@@ -298,13 +298,20 @@ public class FacturacionIntegrationTest {
         if (renglonesDeFacturaRecuperada.length != 2) {
             Assert.fail("La factura no deberia tener mas de dos renglones");
         }
-        // Validar consistencia de los objetos renglonFactura
-        long[] idsProductos = new long[renglonesDeFacturaRecuperada.length];
-        indice = 0;
-        for (RenglonFactura renglon : renglonesDeFacturaRecuperada) {
-            idsProductos[indice] = renglon.getId_ProductoItem();
-            indice++;
-        }        
+        assertEquals(renglonesDeFacturaRecuperada[0].getCantidad(), renglones.get(0).getCantidad(), 0);
+        assertEquals(renglonesDeFacturaRecuperada[0].getCodigoItem(), renglones.get(0).getCodigoItem());
+        assertEquals(renglonesDeFacturaRecuperada[0].getDescripcionItem(), renglones.get(0).getDescripcionItem());
+        assertEquals(renglonesDeFacturaRecuperada[0].getDescuento_neto(), renglones.get(0).getDescuento_neto(), 0);
+        assertEquals(renglonesDeFacturaRecuperada[0].getDescuento_porcentaje(), renglones.get(0).getDescuento_porcentaje(), 0);
+        assertEquals(renglonesDeFacturaRecuperada[0].getGanancia_neto(), renglones.get(0).getGanancia_neto(), 0);
+        assertEquals(renglonesDeFacturaRecuperada[0].getGanancia_porcentaje(), renglones.get(0).getGanancia_porcentaje(), 0);
+        assertEquals(renglonesDeFacturaRecuperada[0].getImporte(), renglones.get(0).getImporte(), 0);
+        assertEquals(renglonesDeFacturaRecuperada[0].getImpuesto_neto(), renglones.get(0).getImpuesto_neto(), 0);
+        assertEquals(renglonesDeFacturaRecuperada[0].getImpuesto_porcentaje(), renglones.get(0).getImpuesto_porcentaje(), 0);
+        assertEquals(renglonesDeFacturaRecuperada[0].getIva_neto(), renglones.get(0).getIva_neto(), 0);
+        assertEquals(renglonesDeFacturaRecuperada[0].getIva_porcentaje(), renglones.get(0).getIva_porcentaje(), 0);
+        assertEquals(renglonesDeFacturaRecuperada[0].getMedidaItem(), renglones.get(0).getMedidaItem());
+        assertEquals(renglonesDeFacturaRecuperada[0].getPrecioUnitario(), renglones.get(0).getPrecioUnitario(), 0); 
         restTemplate.getForObject(apiPrefix + "/facturas/"+ facturasRecuperadas[0].getId_Factura() + "/reporte", byte[].class);        
         Assert.assertTrue(restTemplate.getForObject(apiPrefix + "/productos/" + productoUno.getId_Producto() + "/stock/disponibilidad?cantidad=5", Boolean.class));
         Assert.assertTrue(restTemplate.getForObject(apiPrefix + "/productos/" + productoDos.getId_Producto() + "/stock/disponibilidad?cantidad=4", Boolean.class));                
@@ -433,9 +440,21 @@ public class FacturacionIntegrationTest {
         pedido.setObservaciones("Pedido Test");
         pedido.setEstado(EstadoPedido.ABIERTO);        
         Pedido pedidoRecuperado = restTemplate.postForObject(apiPrefix + "/pedidos", pedido, Pedido.class);
-        //Comparar PedidoDTO con el Pedido recuperado, incluyendo sus renglones
+        assertEquals(pedido.getCliente(), pedidoRecuperado.getCliente());
+        assertEquals(pedido.getEmpresa(), pedidoRecuperado.getEmpresa());
+        assertEquals(pedido.getFecha(), pedidoRecuperado.getFecha());
+        assertEquals(pedido.getUsuario(), pedidoRecuperado.getUsuario());
+        assertEquals(pedido.getTotalEstimado(), pedidoRecuperado.getTotalEstimado(), 0);
+        assertEquals(pedido.getObservaciones(), pedidoRecuperado.getObservaciones());
+        assertEquals(pedido.getEstado(), EstadoPedido.ABIERTO);
+        RenglonPedido[] renglonesDelPedido = restTemplate.getForObject(apiPrefix + "/pedidos/" + pedidoRecuperado.getId_Pedido() +"/renglones", RenglonPedido[].class);
+        assertEquals(renglonesPedido.get(0).getCantidad(), renglonesDelPedido[0].getCantidad(), 0);
+        assertEquals(renglonesPedido.get(0).getDescuento_neto(), renglonesDelPedido[0].getDescuento_neto(), 0);
+        assertEquals(renglonesPedido.get(0).getDescuento_porcentaje(), renglonesDelPedido[0].getDescuento_porcentaje(), 0);
+        assertEquals(renglonesPedido.get(0).getProducto(), renglonesDelPedido[0].getProducto());
+        assertEquals(renglonesPedido.get(0).getSubTotal(), renglonesDelPedido[0].getSubTotal(), 0);
         RenglonFactura[] renglonesParaFacturar = restTemplate.getForObject(apiPrefix + "/facturas/renglones/pedidos/" + pedidoRecuperado.getId_Pedido()
-                + "?tipoDeComprobante=" + TipoDeComprobante.FACTURA_A, RenglonFactura[].class);        
+                + "?tipoDeComprobante=" + TipoDeComprobante.FACTURA_A, RenglonFactura[].class);
         importes = new double[1];
         double[] ivaRenglones = new double[1];
         double[] impuestoPorcentajes = new double[1];
@@ -514,9 +533,12 @@ public class FacturacionIntegrationTest {
         assertEquals(1, facturasRecuperadas.length, 0);        
         pedidoRecuperado = restTemplate.getForObject(apiPrefix + "/pedidos/" + pedidoRecuperado.getId_Pedido(), Pedido.class);
         assertEquals(EstadoPedido.ACTIVO, pedidoRecuperado.getEstado());
+        renglonesDelPedido = restTemplate.getForObject(apiPrefix + "/pedidos/"+ pedidoRecuperado.getId_Pedido() +"/renglones", RenglonPedido[].class);
+        assertEquals(renglones.get(0).getCantidad(), renglonesDelPedido[0].getCantidad(), 0);
+        assertEquals(renglones.get(0).getDescuento_porcentaje(), renglonesDelPedido[0].getDescuento_porcentaje(), 0);
+        assertEquals(renglones.get(0).getDescuento_neto(), renglonesDelPedido[0].getDescuento_neto(), 0);        
         renglonesParaFacturar = restTemplate.getForObject(apiPrefix + "/facturas/renglones/pedidos/" + pedidoRecuperado.getId_Pedido()
                 + "?tipoDeComprobante=" + TipoDeComprobante.FACTURA_B, RenglonFactura[].class);
-        //Controlar que los renglones para facturar sean los esperados
         importes = new double[1];
         ivaRenglones = new double[1];
         impuestoPorcentajes = new double[1];
@@ -595,8 +617,10 @@ public class FacturacionIntegrationTest {
         assertEquals(2, facturasRecuperadas.length, 0);        
         pedidoRecuperado = restTemplate.getForObject(apiPrefix + "/pedidos/" + pedidoRecuperado.getId_Pedido(), Pedido.class);
         assertEquals(EstadoPedido.CERRADO, pedidoRecuperado.getEstado());
-        //Borrar las facturas de a una para pasar para los saltos de estado
-        restTemplate.delete(apiPrefix + "/facturas?idFactura=1,2");
+        restTemplate.delete(apiPrefix + "/facturas?idFactura=" + facturasRecuperadas[0].getId_Factura());
+        pedidoRecuperado = restTemplate.getForObject(apiPrefix + "/pedidos/" + pedidoRecuperado.getId_Pedido(), Pedido.class);
+        assertEquals(EstadoPedido.ACTIVO, pedidoRecuperado.getEstado());
+        restTemplate.delete(apiPrefix + "/facturas?idFactura=" + facturasRecuperadas[1].getId_Factura());
         pedidoRecuperado = restTemplate.getForObject(apiPrefix + "/pedidos/" + pedidoRecuperado.getId_Pedido(), Pedido.class);
         assertEquals(EstadoPedido.ABIERTO, pedidoRecuperado.getEstado());
     }
