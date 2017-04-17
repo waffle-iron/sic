@@ -6,13 +6,10 @@
     <hr>
     <button md-button (click)="start.close()">Cerrar</button>
   </md-sidenav>
-
   <div class="container" fxLayout="row">
     <md-toolbar color="primary">
       <div class="blocks" fxFlex="100%" fxLayoutAlign="center start">
-        <app-search (click)="cargarProductos($event)">
-
-        </app-search>
+        <app-search (click)="cargarProductos($event)"></app-search>
       </div>
       <div class="blocks" fxFlex fxLayoutAlign="end center">
         <button md-icon-button (click)="start.open()">
@@ -21,9 +18,7 @@
       </div>
     </md-toolbar>
   </div>
-
-
-  <navbar-navbar></navbar-navbar>
+  <app-navbar></app-navbar>
   <div class="container">
     <md-card fxLayout="row" fxLayoutAlign="center start" *ngFor="let product of productos">
       <div class="blocks" fxFlex="30%" fxLayoutAlign="start stretch">
@@ -50,7 +45,6 @@
           </md-list-item>
           <md-divider></md-divider>
         </md-list>
-
       </div>
     </md-card>
   </div>

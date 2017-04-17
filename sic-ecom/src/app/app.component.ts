@@ -10,17 +10,16 @@ import { ProductoService } from './servicios/producto.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  ngOnInit() {
-
-  }
 
   stateCtrl: FormControl;
   filteredStates: any;
-
   productos: Array<any>;
 
   constructor(private productoService: ProductoService) {
     this.stateCtrl = new FormControl();
+  }
+
+  ngOnInit() {
   }
 
   cargarProductos() {

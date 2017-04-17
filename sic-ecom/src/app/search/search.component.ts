@@ -12,11 +12,11 @@ import { ProductoService } from '../servicios/producto.service';
 })
 export class SearchComponent {
 
-  @Output() buscarClick = new EventEmitter<any>();
+  @Output()
+  buscarClick = new EventEmitter<any>();
 
   stateCtrl: FormControl;
   filteredStates: any;
-
   productos: Array<any>;
 
   constructor(private productoService: ProductoService) {
@@ -27,7 +27,7 @@ export class SearchComponent {
     this.buscarClick.emit(this.productos);
   }
 
-  cargarProductos() {
+  private cargarProductos() {
     //this.productos = this.productoService.getProductos().productos;//.subscribe(data => this.states = data);
   }
 }
