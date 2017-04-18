@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
@@ -45,10 +47,11 @@ public class CajaGUI extends JInternalFrame {
     private final FormatterFechaHora formatter = new FormatterFechaHora(FormatterFechaHora.FORMATO_FECHAHORA_HISPANO);
     private ModeloTabla modeloTablaBalance = new ModeloTabla();
     private ModeloTabla modeloTablaResumen = new ModeloTabla();
-    private final List<Movimiento> listaMovimientos = new ArrayList<>();
+    private List<Movimiento> listaMovimientos = new ArrayList<>();
+    private Map<Long, List<Movimiento>> mapMovimientos = new HashMap<>();
     private Caja caja;
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-    private final Dimension sizeInternalFrame = new Dimension(880, 600);
+    private final Dimension sizeInternalFrame = new Dimension(880, 600);    
 
     @Data
     class Movimiento implements Comparable<Movimiento> {
@@ -62,10 +65,10 @@ public class CajaGUI extends JInternalFrame {
         public Movimiento(Pago pago) {
             this.idMovimiento = pago.getId_Pago();
             this.tipoMovimientoCaja = TipoMovimientoCaja.PAGO;
-            this.concepto = this.tipoMovimientoCaja + " por: " + pago.getFactura().getTipoComprobante() + " " + ((pago.getFactura() instanceof FacturaVenta)?"Venta ":"Compra ") 
+            this.concepto = this.tipoMovimientoCaja + " por: " + pago.getFactura().getTipoComprobante() + " " + ((pago.getFactura() instanceof FacturaVenta) ? "Venta " : "Compra ")
                     + pago.getFactura().getNumSerie() + "-" + pago.getFactura().getNumFactura();
             this.fecha = pago.getFecha();
-            this.monto = pago.getMonto();
+            this.monto = (pago.getFactura() instanceof FacturaCompra)? - pago.getMonto(): pago.getMonto();
         }
 
         public Movimiento(Gasto gasto) {
@@ -73,7 +76,7 @@ public class CajaGUI extends JInternalFrame {
             this.tipoMovimientoCaja = TipoMovimientoCaja.GASTO;
             this.concepto = this.tipoMovimientoCaja + " por: " + gasto.getConcepto();
             this.fecha = gasto.getFecha();
-            this.monto = gasto.getMonto();
+            this.monto = - gasto.getMonto();
         }
 
         @Override
@@ -86,51 +89,7 @@ public class CajaGUI extends JInternalFrame {
     public CajaGUI(Caja caja) {
         this.initComponents();
         this.caja = caja;        
-    }
-
-    private void cargarMovimientos(long idFormaDePago, int row) {
-        this.limpiarMovimientos();
-        listaMovimientos.clear();
-        if (idFormaDePago != 0) {
-            List<Pago> pagos = this.getPagosPorFormaDePago(idFormaDePago);
-            pagos.stream().forEach((pago) -> {
-                listaMovimientos.add(new Movimiento(pago));
-            });
-            List<Gasto> gastos = this.getGastosPorFormaDePago(idFormaDePago);
-            gastos.stream().forEach((gasto) -> {
-                listaMovimientos.add(new Movimiento(gasto));
-            });
-            Collections.sort(listaMovimientos);
-            double total = 0.0;
-            for(Movimiento movimiento : listaMovimientos) {
-                Object[] fila = new Object[3];
-                fila[0] = movimiento.getConcepto();
-                fila[1] = movimiento.getFecha();
-                switch (movimiento.getTipoMovimientoCaja()) {
-                    case GASTO:
-                        fila[2] = -movimiento.getMonto();
-                        total -= movimiento.getMonto();
-                        break;
-                    case PAGO:
-                        double monto = this.getMontoPago(RestClient.getRestTemplate().getForObject("/pagos/" + movimiento.getIdMovimiento(), Pago.class));
-                        fila[2] = monto;
-                        total += monto;
-                        break;
-                }
-                modeloTablaBalance.addRow(fila);
-            }
-            tbl_Movimientos.setModel(modeloTablaBalance);
-            tbl_Resumen.getModel().setValueAt(total, row , 3);
-        }
-    }   
-    
-    private double getMontoPago(Pago pago) {
-        double monto = pago.getMonto();
-        if(pago.getFactura() instanceof FacturaCompra){
-            return monto = - monto;
-        }
-        return monto;
-    }
+    }  
   
     private void cargarMovimientosDeFormaDePago(KeyEvent evt) {
         int row = tbl_Resumen.getSelectedRow();
@@ -145,12 +104,11 @@ public class CajaGUI extends JInternalFrame {
                 }
             }
             try {
-                this.cargarResultados();
                 if (row != 0) {
                     long idFormaDePago = (long) tbl_Resumen.getModel().getValueAt(row, 0);
-                    this.cargarMovimientos(idFormaDePago, row);                  
+                    this.cargarTablaMovimientos(idFormaDePago);                  
                 } else {
-                    this.limpiarMovimientos();
+                    this.limpiarTablaMovimientos();
                 }
             } catch (RestClientResponseException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -162,17 +120,17 @@ public class CajaGUI extends JInternalFrame {
             }
         }
     }
-
-    private void limpiarMovimientos() {
-        modeloTablaBalance.setRowCount(0);
-        tbl_Movimientos.setModel(modeloTablaBalance);
-        this.setColumnasTablaMovimientos();
-    }
-
+    
     private void limpiarTablaResumen() {
         modeloTablaResumen.setRowCount(0);
         tbl_Resumen.setModel(modeloTablaResumen);
         this.setColumnasTablaResumen();
+    }
+    
+    private void limpiarTablaMovimientos() {
+        modeloTablaBalance.setRowCount(0);
+        tbl_Movimientos.setModel(modeloTablaBalance);
+        this.setColumnasTablaMovimientos();
     }
 
     private void setColumnasTablaMovimientos() {
@@ -231,26 +189,37 @@ public class CajaGUI extends JInternalFrame {
         tbl_Resumen.getColumnModel().getColumn(1).setPreferredWidth(5);
     }
 
-    //revisar
     private void cargarTablaResumen() {
-        this.limpiarTablaResumen();
-        Object[] saldoInicial = new Object[4];
-        FormaDePago saldoApertura = new FormaDePago();
-        saldoApertura.setNombre("Saldo Apertura");
-        saldoInicial[0] = 0L;
-        saldoInicial[1] = saldoApertura;
-        saldoInicial[2] = true;
-        saldoInicial[3] = caja.getSaldoInicial();
-        modeloTablaResumen.addRow(saldoInicial);
+        this.caja = RestClient.getRestTemplate().getForObject("/cajas/" + this.caja.getId_Caja(), Caja.class);
+        Object[] renglonSaldoApertura = new Object[4];
+        renglonSaldoApertura[0] = 0L;
+        renglonSaldoApertura[1] = "Saldo Apertura";
+        renglonSaldoApertura[2] = true;
+        renglonSaldoApertura[3] = caja.getSaldoInicial();
+        modeloTablaResumen.addRow(renglonSaldoApertura);
+        List<Pago> pagos;
+        List<Gasto> gastos;
+//        listaMovimientos.clear();
         try {
-            for (long key : caja.getTotalesPorFomaDePago().keySet()) {
-                FormaDePago fdp = RestClient.getRestTemplate().getForObject("/formas-de-pago/" + key, FormaDePago.class);
+            for (long idFormaDePago : caja.getTotalesPorFomaDePago().keySet()) {
+                listaMovimientos.clear();
+                FormaDePago fdp = RestClient.getRestTemplate().getForObject("/formas-de-pago/" + idFormaDePago, FormaDePago.class);
                 Object[] fila = new Object[4];
                 fila[0] = fdp.getId_FormaDePago();
                 fila[1] = fdp.getNombre();
                 fila[2] = fdp.isAfectaCaja();
-                fila[3] = caja.getTotalesPorFomaDePago().get(key);
+                fila[3] = caja.getTotalesPorFomaDePago().get(idFormaDePago);
                 modeloTablaResumen.addRow(fila);
+                pagos = this.getPagosPorFormaDePago(idFormaDePago);                
+                pagos.stream().forEach((pago) -> {
+                    listaMovimientos.add(new Movimiento(pago));
+                });
+                gastos = this.getGastosPorFormaDePago(idFormaDePago);
+                gastos.stream().forEach((gasto) -> {
+                    listaMovimientos.add(new Movimiento(gasto));
+                });
+                Collections.sort(listaMovimientos);
+                mapMovimientos.put(idFormaDePago, new ArrayList<>(listaMovimientos));
             }
             this.cargarResultados();
             tbl_Resumen.setModel(modeloTablaResumen);
@@ -266,15 +235,28 @@ public class CajaGUI extends JInternalFrame {
             this.dispose();
         }
     }
+      
+    private void cargarTablaMovimientos(Long idFormaDePago) {
+        this.limpiarTablaMovimientos();
+        if (idFormaDePago != 0) {
+            Object[] renglonMovimiento = new Object[3];
+            listaMovimientos = mapMovimientos.get(idFormaDePago);
+            listaMovimientos.forEach((movimiento) -> {
+                renglonMovimiento[0] = movimiento.getConcepto();
+                renglonMovimiento[1] = movimiento.getFecha();
+                renglonMovimiento[2] = movimiento.getMonto();
+                modeloTablaBalance.addRow(renglonMovimiento);
+            });
+            tbl_Movimientos.setModel(modeloTablaBalance);
+        }
+    }
   
     private void cargarResultados() {   
         caja.setTotalAfectaCaja(RestClient.getRestTemplate()
-                .getForObject("/cajas/" + this.caja.getId_Caja() + "/total?soloAfectaCaja=true",
-                        double.class));
+                .getForObject("/cajas/" + this.caja.getId_Caja() + "/total?soloAfectaCaja=true", double.class));
         ftxt_TotalAfectaCaja.setValue(caja.getTotalAfectaCaja());
         caja.setTotalGeneral(RestClient.getRestTemplate()
-                .getForObject("/cajas/" + this.caja.getId_Caja() + "/total",
-                        double.class));
+                .getForObject("/cajas/" + this.caja.getId_Caja() + "/total", double.class));
         ftxt_TotalGeneral.setValue(caja.getTotalGeneral());              
         if (caja.getTotalAfectaCaja() > 0) {
             ftxt_TotalAfectaCaja.setBackground(Color.GREEN);
@@ -293,7 +275,7 @@ public class CajaGUI extends JInternalFrame {
     private void limpiarYCargarTablas() {
         this.limpiarTablaResumen();
         this.cargarTablaResumen();
-        this.limpiarMovimientos();
+        this.limpiarTablaMovimientos();
     }
 
     private void lanzarReporteFacturaVenta(Factura facturaVenta) {
@@ -350,8 +332,7 @@ public class CajaGUI extends JInternalFrame {
                 + "&idFormaDePago=" + idFormaDePago
                 + "&desde=" + caja.getFechaApertura().getTime()
                 + "&hasta=" + this.getFechaHastaCaja(caja);
-        return new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                .getForObject(criteriaPagos, Pago[].class)));
+        return new ArrayList(Arrays.asList(RestClient.getRestTemplate().getForObject(criteriaPagos, Pago[].class)));
     }
 
     private List<Gasto> getGastosPorFormaDePago(long idFormaDePago) {
@@ -360,11 +341,9 @@ public class CajaGUI extends JInternalFrame {
                 + "&idFormaDePago=" + idFormaDePago
                 + "&desde=" + caja.getFechaApertura().getTime()
                 + "&hasta=" + this.getFechaHastaCaja(caja);
-        return new ArrayList(Arrays.asList(RestClient.getRestTemplate()
-                .getForObject(criteriaGastos, Gasto[].class)));
+        return new ArrayList(Arrays.asList(RestClient.getRestTemplate().getForObject(criteriaGastos, Gasto[].class)));
     }
-    
-    
+        
     private long getFechaHastaCaja(Caja caja) {
         LocalDateTime hasta = caja.getFechaApertura().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
         hasta = hasta.withHour(23);
@@ -539,6 +518,11 @@ public class CajaGUI extends JInternalFrame {
 
         btn_Refresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Refresh_16x16.png"))); // NOI18N
         btn_Refresh.setFocusable(false);
+        btn_Refresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_RefreshActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -640,20 +624,29 @@ public class CajaGUI extends JInternalFrame {
         if (tbl_Movimientos.getSelectedRow() != -1) {
             long id = this.listaMovimientos.get(Utilidades.getSelectedRowModelIndice(tbl_Movimientos)).getIdMovimiento();
             TipoMovimientoCaja tipoMovimientoCaja = this.listaMovimientos.get(Utilidades.getSelectedRowModelIndice(tbl_Movimientos)).getTipoMovimientoCaja();
-            if (tipoMovimientoCaja.equals(TipoMovimientoCaja.PAGO)) {
-                Pago pago = RestClient.getRestTemplate().getForObject("/pagos/" + id, Pago.class);
-                if (pago.getFactura() instanceof FacturaVenta) {
-                    this.lanzarReporteFacturaVenta(pago.getFactura());
+            try {
+                if (tipoMovimientoCaja.equals(TipoMovimientoCaja.PAGO)) {
+                    Pago pago = RestClient.getRestTemplate().getForObject("/pagos/" + id, Pago.class);
+                    if (pago.getFactura() instanceof FacturaVenta) {
+                        this.lanzarReporteFacturaVenta(pago.getFactura());
+                    }
+                    if (pago.getFactura() instanceof FacturaCompra) {
+                        this.verDetalleFacturaCompra(pago.getFactura());
+                    }
                 }
-                if (pago.getFactura() instanceof FacturaCompra) {
-                    this.verDetalleFacturaCompra(pago.getFactura());
+                if (tipoMovimientoCaja.equals(TipoMovimientoCaja.GASTO)) {
+                    Gasto gasto = RestClient.getRestTemplate().getForObject("/gastos/" + id, Gasto.class);
+                    String mensaje = "En Concepto de: " + gasto.getConcepto()
+                            + "\nMonto: " + gasto.getMonto() + "\nUsuario: " + gasto.getUsuario().getNombre();
+                    JOptionPane.showMessageDialog(this, mensaje, "Resumen de Gasto", JOptionPane.INFORMATION_MESSAGE);
                 }
-            }
-            if (tipoMovimientoCaja.equals(TipoMovimientoCaja.GASTO)) {
-                Gasto gasto = RestClient.getRestTemplate().getForObject("/gastos/" + id, Gasto.class);
-                String mensaje = "En Concepto de: " + gasto.getConcepto()
-                        + "\nMonto: " + gasto.getMonto() + "\nUsuario: " + gasto.getUsuario().getNombre();
-                JOptionPane.showMessageDialog(this, mensaje, "Resumen de Gasto", JOptionPane.INFORMATION_MESSAGE);
+            } catch (RestClientResponseException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (ResourceAccessException ex) {
+                LOGGER.error(ex.getMessage());
+                JOptionPane.showMessageDialog(this,
+                        ResourceBundle.getBundle("Mensajes").getString("mensaje_error_conexion"),
+                        "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }//GEN-LAST:event_btn_VerDetalleActionPerformed
@@ -711,8 +704,7 @@ public class CajaGUI extends JInternalFrame {
     }//GEN-LAST:event_btn_EliminarGastoActionPerformed
 
     private void tbl_ResumenMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_ResumenMouseClicked
-        this.cargarMovimientos((long) tbl_Resumen.getModel().getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Resumen), 0),
-                Utilidades.getSelectedRowModelIndice(tbl_Resumen));
+        this.cargarTablaMovimientos((long) tbl_Resumen.getModel().getValueAt(Utilidades.getSelectedRowModelIndice(tbl_Resumen),0));
     }//GEN-LAST:event_tbl_ResumenMouseClicked
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
@@ -730,8 +722,7 @@ public class CajaGUI extends JInternalFrame {
                 break;
             }
         }
-        this.limpiarTablaResumen();
-        this.cargarTablaResumen();
+        this.limpiarYCargarTablas();
         try {
             this.setMaximum(true);
         } catch (PropertyVetoException ex) {
@@ -746,6 +737,10 @@ public class CajaGUI extends JInternalFrame {
             this.cargarMovimientosDeFormaDePago(evt);
         }
     }//GEN-LAST:event_tbl_ResumenKeyPressed
+
+    private void btn_RefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_RefreshActionPerformed
+        this.limpiarYCargarTablas();
+    }//GEN-LAST:event_btn_RefreshActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_AgregarGasto;

@@ -19,7 +19,6 @@ import sic.service.IFacturaService;
 import sic.service.IPagoService;
 import sic.service.BusinessServiceException;
 import sic.repository.PagoRepository;
-import sic.service.ICajaService;
 import sic.service.IEmpresaService;
 import sic.service.IFormaDePagoService;
 import sic.util.Utilidades;
@@ -31,7 +30,6 @@ public class PagoServiceImpl implements IPagoService {
     private final IFacturaService facturaService;
     private final IEmpresaService empresaService;
     private final IFormaDePagoService formaDePagoService;
-    private final ICajaService cajaService;
     private static final Logger LOGGER = Logger.getLogger(PagoServiceImpl.class.getPackage().getName());
 
     @Lazy
@@ -39,19 +37,17 @@ public class PagoServiceImpl implements IPagoService {
     public PagoServiceImpl(PagoRepository pagoRepository,
             IEmpresaService empresaService,
             IFormaDePagoService formaDePagoService,
-            IFacturaService facturaService,
-            ICajaService cajaService) {
+            IFacturaService facturaService) {
 
         this.empresaService = empresaService;
         this.formaDePagoService = formaDePagoService;
         this.pagoRepository = pagoRepository;
         this.facturaService = facturaService;
-        this.cajaService = cajaService;
     }
 
     @Override
     public Pago getPagoPorId(long idPago) {
-        Pago pago = this.pagoRepository.findOne(idPago);
+        Pago pago = this.pagoRepository.findById(idPago);
         if (pago == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_pago_inexistente_eliminado"));

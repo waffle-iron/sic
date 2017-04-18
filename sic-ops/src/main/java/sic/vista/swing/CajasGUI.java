@@ -198,12 +198,32 @@ public class CajasGUI extends JInternalFrame {
         this.setColumnasCaja();
     }
 
-    private void abrirCaja() {
+    private void abrirNuevaCaja() {
         AbrirCajaGUI abrirCaja = new AbrirCajaGUI();
+        abrirCaja.setModal(true);
         abrirCaja.setLocationRelativeTo(this);
         abrirCaja.setVisible(true);
         this.limpiarResultados();
         this.buscar();        
+    }
+    
+    private void verDetalle(Caja caja) {
+        JInternalFrame iFrameCaja = Utilidades.estaEnDesktop(getDesktopPane(), CajaGUI.class);
+        if (iFrameCaja != null) {
+            iFrameCaja.dispose();
+        }
+        iFrameCaja = new CajaGUI(caja);
+        iFrameCaja.setLocation(getDesktopPane().getWidth() / 2 - iFrameCaja.getWidth() / 2,
+                getDesktopPane().getHeight() / 2 - iFrameCaja.getHeight() / 2);
+        getDesktopPane().add(iFrameCaja);
+        iFrameCaja.setVisible(true);
+        try {
+            iFrameCaja.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            String msjError = "No se pudo seleccionar la ventana requerida.";
+            LOGGER.error(msjError + " - " + ex.getMessage());
+            JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -492,12 +512,12 @@ public class CajasGUI extends JInternalFrame {
         this.limpiarResultados();
         this.buscar();        
     }//GEN-LAST:event_btn_buscarActionPerformed
-
+    
     private void btn_verDetalleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_verDetalleActionPerformed
         if (tbl_Cajas.getSelectedRow() != -1) {
             int indiceDelModel = Utilidades.getSelectedRowModelIndice(tbl_Cajas);
             try {
-              this.abrirVentanaCaja(RestClient.getRestTemplate()
+              this.verDetalle(RestClient.getRestTemplate()
                         .getForObject("/cajas/ " + this.cajas.get(indiceDelModel).getId_Caja(), Caja.class));
             } catch (RestClientResponseException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -558,7 +578,7 @@ public class CajasGUI extends JInternalFrame {
     }//GEN-LAST:event_chk_UsuarioItemStateChanged
 
     private void btn_AbrirCajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_AbrirCajaActionPerformed
-        this.abrirCaja();
+        this.abrirNuevaCaja();
     }//GEN-LAST:event_btn_AbrirCajaActionPerformed
 
     private void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_internalFrameOpened
@@ -602,22 +622,4 @@ public class CajasGUI extends JInternalFrame {
     private javax.swing.JTable tbl_Cajas;
     // End of variables declaration//GEN-END:variables
 
-    private void abrirVentanaCaja(Caja caja) {
-        JInternalFrame iFrameCaja = Utilidades.estaEnDesktop(getDesktopPane(), CajaGUI.class);
-        if (iFrameCaja != null) {
-            iFrameCaja.dispose();
-        }
-        iFrameCaja = new CajaGUI(caja);
-        iFrameCaja.setLocation(getDesktopPane().getWidth() / 2 - iFrameCaja.getWidth() / 2,
-                getDesktopPane().getHeight() / 2 - iFrameCaja.getHeight() / 2);
-        getDesktopPane().add(iFrameCaja);
-        iFrameCaja.setVisible(true);
-        try {
-            iFrameCaja.setSelected(true);
-        } catch (PropertyVetoException ex) {
-            String msjError = "No se pudo seleccionar la ventana requerida.";
-            LOGGER.error(msjError + " - " + ex.getMessage());
-            JOptionPane.showInternalMessageDialog(this.getDesktopPane(), msjError, "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
 }

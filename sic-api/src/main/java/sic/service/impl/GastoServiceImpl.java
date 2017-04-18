@@ -40,7 +40,7 @@ public class GastoServiceImpl implements IGastoService {
     
     @Override
     public Gasto getGastoPorId(Long idGasto) {
-        Gasto gasto = gastoRepository.findOne(idGasto);
+        Gasto gasto = gastoRepository.findById(idGasto);
         if (gasto == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_gasto_no_existente"));

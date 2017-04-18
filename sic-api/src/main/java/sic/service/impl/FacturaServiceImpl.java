@@ -72,7 +72,7 @@ public class FacturaServiceImpl implements IFacturaService {
     
     @Override
     public Factura getFacturaPorId(Long id_Factura) {
-        Factura factura = facturaRepository.findOne(id_Factura);
+        Factura factura = facturaRepository.findById(id_Factura);
         if (factura == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_eliminada"));
@@ -336,8 +336,8 @@ public class FacturaServiceImpl implements IFacturaService {
     public void eliminar(long[] idsFactura) {
         for (long idFactura : idsFactura) {
             Factura factura = this.getFacturaPorId(idFactura);
-            factura.setEliminada(true);
             this.eliminarPagosDeFactura(factura);
+            factura.setEliminada(true);
             productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);            
             if (factura.getPedido() != null) {
                 List<Factura> facturas = new ArrayList<>();
