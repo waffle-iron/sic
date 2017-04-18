@@ -393,6 +393,7 @@ public class CajaGUI extends JInternalFrame {
         lbl_totalCaja = new javax.swing.JLabel();
         ftxt_TotalAfectaCaja = new javax.swing.JFormattedTextField();
         ftxt_TotalGeneral = new javax.swing.JFormattedTextField();
+        btn_Refresh = new javax.swing.JButton();
 
         setClosable(true);
         setMaximizable(true);
@@ -482,11 +483,11 @@ public class CajaGUI extends JInternalFrame {
         pnl_ResumenLayout.setVerticalGroup(
             pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_ResumenLayout.createSequentialGroup()
-                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE)
+                .addComponent(sp_TablaResumen, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbl_movimientos)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
+                .addComponent(sp_Tabla, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(pnl_ResumenLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_VerDetalle)
@@ -528,11 +529,16 @@ public class CajaGUI extends JInternalFrame {
         ftxt_TotalAfectaCaja.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         ftxt_TotalAfectaCaja.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         ftxt_TotalAfectaCaja.setText("0");
+        ftxt_TotalAfectaCaja.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
 
         ftxt_TotalGeneral.setEditable(false);
         ftxt_TotalGeneral.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
         ftxt_TotalGeneral.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         ftxt_TotalGeneral.setText("0");
+        ftxt_TotalGeneral.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+
+        btn_Refresh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Refresh_16x16.png"))); // NOI18N
+        btn_Refresh.setFocusable(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -560,7 +566,8 @@ public class CajaGUI extends JInternalFrame {
                         .addComponent(lbl_estadoEstatico)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lbl_estadoDinamico, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btn_Refresh)))
                 .addContainerGap())
         );
 
@@ -574,7 +581,8 @@ public class CajaGUI extends JInternalFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_estadoDinamico, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbl_estadoEstatico, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lbl_estadoEstatico, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_Refresh))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(pnl_Resumen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -743,6 +751,7 @@ public class CajaGUI extends JInternalFrame {
     private javax.swing.JButton btn_AgregarGasto;
     private javax.swing.JButton btn_CerrarCaja;
     private javax.swing.JButton btn_EliminarGasto;
+    private javax.swing.JButton btn_Refresh;
     private javax.swing.JButton btn_VerDetalle;
     private javax.swing.JFormattedTextField ftxt_TotalAfectaCaja;
     private javax.swing.JFormattedTextField ftxt_TotalGeneral;
