@@ -98,7 +98,7 @@ public class CajaServiceImpl implements ICajaService {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_caja_anterior_abierta"));
         }
-        if (ultimaCaja != null && Validator.compararFechas(ultimaCaja.getFechaApertura(), caja.getFechaApertura()) <= 0) {
+        if (ultimaCaja != null && Validator.compararDias(ultimaCaja.getFechaApertura(), caja.getFechaApertura()) >= 0) {
             throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_fecha_apertura_no_valida"));
         }
