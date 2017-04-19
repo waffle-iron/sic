@@ -4,6 +4,7 @@ import { FormControl } from '@angular/forms';
 import { ProductoService } from './servicios/producto.service';
 
 @Component({
+  moduleId: module.id,
   selector: 'app-root',
   providers: [ProductoService],
   templateUrl: './app.component.html',

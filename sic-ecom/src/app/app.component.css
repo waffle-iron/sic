@@ -7,6 +7,11 @@ md-card {
   max-width: 80%;
   margin: 2em auto;
   text-align: center;
+  padding: 5px;
+}
+
+.mat-card-content>:first-child, .mat-card>:first-child {
+    max-width: 35%;
 }
 
 md-toolbar-row {
@@ -32,4 +37,25 @@ md-toolbar-row {
   position: absolute;
   right: 0px;
   bottom: 10px;
+}
+
+.container {
+  flex-direction: row; /*| row-reverse | column | column-reverse;*/
+  margin-bottom: 20px;
+  padding: 5px;
+}
+
+.micontenido {
+  width: 1110px;
+}
+
+.app-content {
+  flex-direction: row;
+}
+
+@media all and (max-width: 500px) {
+  .navigation {
+    /* On small screens, we are no longer using row direction but column */
+    flex-direction: column;
+  }
 }

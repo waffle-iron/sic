@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
-import { AuthHttp } from 'angular2-jwt';
 import 'rxjs/add/operator/map';
 
 @Injectable()
@@ -46,12 +45,23 @@ export class ProductoService {
         ]
     }
 
+    respuestaJ = [];
+
+    private url1: string = "";
+    private urlHttp : string = "http://echo.jsontest.com/key/value/one/two";
+
     constructor(
-        private http: Http,
-        public authHttp: AuthHttp
+        private http: Http
     ) { }
 
     getProductos() {
+        debugger
+        this.http.get(this.urlHttp).do
+        ((res) => console.log(res));
+        this.http.get(this.urlHttp)
+                        // ...and calling .json() on the response to return data
+                         .map((res:Response) => console.log(res.json()));
+        //console.log(this.respuestaJ);
         return this.productoJson;
     }
 }
