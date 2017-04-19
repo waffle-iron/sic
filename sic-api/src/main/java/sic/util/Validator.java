@@ -67,12 +67,14 @@ public class Validator {
         siguiente.setTime(fechaSiguiente);
         return siguiente.compareTo(anterior);
     }
+    
     /**
+     * Compara dos fechas teniendo en cuenta solo los dias sin hora
      * 
      * @param fechaAnterior
      * @param fechaSiguiente
-     * @return -1 si la fecha anterior es ANTERIOR a la fecha siguiente, 0 si son iguales, y 1 si la fecha Anterior 
-     * posterior a la fecha siguiente.
+     * @return -1 si la fechaAnterior esta antes de la fechaSiguiente, 0 si son iguales,
+     * o 1 si la fechaAnterior esta despues de la fechaSiguiente
      */
     public static int compararDias(Date fechaAnterior, Date fechaSiguiente) {
         LocalDate diaAnterior = fechaAnterior.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
