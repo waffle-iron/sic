@@ -199,7 +199,6 @@ public class CajaGUI extends JInternalFrame {
         modeloTablaResumen.addRow(renglonSaldoApertura);
         List<Pago> pagos;
         List<Gasto> gastos;
-//        listaMovimientos.clear();
         try {
             for (long idFormaDePago : caja.getTotalesPorFomaDePago().keySet()) {
                 listaMovimientos.clear();

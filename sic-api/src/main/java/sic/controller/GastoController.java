@@ -1,7 +1,5 @@
 package sic.controller;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,22 +15,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import sic.modelo.Caja;
 import sic.modelo.Gasto;
-import sic.service.ICajaService;
 import sic.service.IGastoService;
 
 @RestController
 @RequestMapping("/api/v1")
 public class GastoController {
     
-    private final IGastoService gastoService;
-    private final ICajaService cajaService;
+    private final IGastoService gastoService;    
     
     @Autowired
-    public GastoController(IGastoService gastoService, ICajaService cajaService) {
-        this.gastoService = gastoService;
-        this.cajaService = cajaService;
+    public GastoController(IGastoService gastoService) {
+        this.gastoService = gastoService;        
     }
     
     @GetMapping("/gastos/{idGasto}")
