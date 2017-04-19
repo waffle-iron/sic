@@ -739,7 +739,12 @@ public class CajaGUI extends JInternalFrame {
     }//GEN-LAST:event_tbl_ResumenKeyPressed
 
     private void btn_RefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_RefreshActionPerformed
-        this.limpiarYCargarTablas();
+        if (caja.getEstado().equals(EstadoCaja.CERRADA)) {
+            JOptionPane.showMessageDialog(this, ResourceBundle.getBundle("Mensajes")
+                    .getString("mensaje_caja_cerrada"), "Aviso", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            this.limpiarYCargarTablas();
+        }
     }//GEN-LAST:event_btn_RefreshActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

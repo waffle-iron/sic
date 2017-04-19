@@ -50,7 +50,7 @@ public class PagoServiceImpl implements IPagoService {
         Pago pago = this.pagoRepository.findById(idPago);
         if (pago == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_pago_inexistente_eliminado"));
+                    .getString("mensaje_pago_no_existente"));
         }
         return pago;
     }
@@ -104,10 +104,6 @@ public class PagoServiceImpl implements IPagoService {
     @Transactional
     public void eliminar(long idPago) {
         Pago pago = this.getPagoPorId(idPago);
-        if (pago == null) {
-            throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
-                    .getString("mensaje_pago_inexistente_eliminado"));
-        }
         pago.setEliminado(true);
         pagoRepository.save(pago);
         facturaService.actualizarFacturaEstadoPagada(pago.getFactura());

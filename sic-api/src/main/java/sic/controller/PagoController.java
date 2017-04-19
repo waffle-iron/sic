@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import sic.modelo.Factura;
 import sic.modelo.Pago;
-import sic.service.ICajaService;
 import sic.service.IFacturaService;
 import sic.service.IFormaDePagoService;
 import sic.service.IPagoService;
@@ -28,16 +27,14 @@ public class PagoController {
     
     private final IPagoService pagoService;
     private final IFacturaService facturaService;
-    private final IFormaDePagoService formaDePagoService;
-    private final ICajaService cajaService;
+    private final IFormaDePagoService formaDePagoService;    
     
     @Autowired
     public PagoController(IPagoService pagoService, IFacturaService facturaService,
-                          IFormaDePagoService formaDePago, ICajaService cajaService) {
+                          IFormaDePagoService formaDePago) {
         this.pagoService = pagoService;
         this.facturaService = facturaService;
-        this.formaDePagoService = formaDePago;
-        this.cajaService = cajaService;
+        this.formaDePagoService = formaDePago;        
     }
     
     @GetMapping("/pagos/{idPago}")
