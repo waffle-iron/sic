@@ -17,9 +17,7 @@ import { AuthenticationService } from './servicios/authentication.service';
 import { AlertService } from './servicios/alert.service';
 
 const appRoutes = [
-  { path: '', component: LoginComponent, canActivate: [AuthGuard] },
-  { path: 'productos', component: AppComponent },
-  { path: 'login', component: LoginComponent }
+  //{ path: '', component: AppComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

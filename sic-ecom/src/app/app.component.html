@@ -12,18 +12,8 @@
   </div>
 
 <md-sidenav-container>
-  <md-sidenav #start class="alinear-derecha">
-    <md-nav-list>
-      <a md-list-item routeLink="/miCuenta">Mi Cuenta</a>
-      <a md-list-item routerLink="/productos" routerLinkActive="active">Productos</a>
-      <a md-list-item routerLink="/login" routerLinkActive="active">login</a>
-    </md-nav-list>
-    <hr>
-    <button md-button (click)="start.close()">Cerrar</button>
-  </md-sidenav>
-<router-outlet></router-outlet>
-</md-sidenav-container>
-  <app-navbar></app-navbar>
+
+  
   <div class="container">
     <div class="micontenido">
     <md-card fxLayout="row" fxLayoutAlign="start start" *ngFor="let product of productos">
@@ -31,7 +21,7 @@
         <img src="assets/placeholderProducto.png" class="avatar">
        <!--<md-icon svgIcon="avatars:{{selectedUser.avatar}}" class="avatar"></md-icon>-->
       </div>
-      <div class="blocks" fxLayout="column" fxFlex="70%">
+      <div class="blocks detalle" fxLayout="column" fxFlex="70%">
           <div fxFlex="20%" fxLayoutAlign="start start">
           
             <h3><span>Codigo: {{product.codigo}}</span></h3>
@@ -55,63 +45,18 @@
 
       </div>
     </md-card>
+    <app-navbar></app-navbar>
     </div>
   </div>
-  
-
-<!--<md-sidenav-container>
-  <md-sidenav #start class="alinear-derecha">
+  <md-sidenav mode="side" opened>
     <md-nav-list>
       <a md-list-item routeLink="/miCuenta">Mi Cuenta</a>
-      <a md-list-item routerLink="/productos" routerLinkActive="active">Productos</a>
-      <a md-list-item routerLink="/login" routerLinkActive="active">login</a>
+      <!--<a md-list-item routerLink="/login" routerLinkActive="active">login</a>-->
+      <a md-list-item >Electricidad</a>
+      <a md-list-item >Sanitarios</a>
+      <a md-list-item >Pinturas</a>
+      <a md-list-item >Herrajes</a>
     </md-nav-list>
     <hr>
-    <button md-button (click)="start.close()">Cerrar</button>
   </md-sidenav>
-  <div class="container" fxLayout="row">
-    <md-toolbar color="primary">
-      <div class="blocks" fxFlex="100%" fxLayoutAlign="center start">
-        <app-search (click)="cargarProductos($event)"></app-search>
-      </div>
-      <div class="blocks" fxFlex fxLayoutAlign="end center">
-        <button md-icon-button (click)="start.open()">
-          <md-icon class="menu-icon">menu</md-icon>
-        </button>
-      </div>
-    </md-toolbar>
-  </div>
-  <app-navbar></app-navbar>
-  <div class="container">
-    <md-card fxLayout="row" fxLayoutAlign="center start" *ngFor="let product of productos">
-      <div class="blocks"  [fxLayout]="row" fxFlex="30%" fxLayoutAlign="start stretch">
-        <img src="assets/placeholderProducto.png">
-        <md-icon svgIcon="avatars:{{selectedUser.avatar}}" class="avatar"></md-icon>
-      </div>
-      <div class="blocks" fxLayout="column" fxFlex="70%">
-          <div fxFlex="20%" fxLayoutAlign="start start">
-          
-            <h3><span>Codigo: {{product.codigo}}</span></h3>
-          
-          
-          </div>
-          <div fxFlex="50%" fxLayoutAlign="start start">
-          
-            <h3><span>Descripcion: {{product.descripcion}}</span></h3>
-          
-          
-          </div>
-          <div fxFlex="15%" fxLayoutAlign="start start">
-            <h3><span>Cantidad: {{product.cantidad}}</span></h3>
-          </div>
-          <div fxFlex="15%" fxLayoutAlign="center end">
-            <h3><span>Precio: {{product.precio}}</span></h3>
-
-          </div>
-          
-
-      </div>
-    </md-card>
-  </div>
-  <router-outlet></router-outlet>
-</md-sidenav-container>-->
+  </md-sidenav-container>

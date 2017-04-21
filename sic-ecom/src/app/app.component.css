@@ -33,6 +33,10 @@ md-toolbar-row {
   padding: 0 14px;
 }
 
+md-sidenav {
+  width: 320px;
+}
+
 .alinear-derecha {
   position: absolute;
   right: 0px;
@@ -46,11 +50,19 @@ md-toolbar-row {
 }
 
 .micontenido {
-  width: 1110px;
+  width: 1000px;
+}
+
+.detalle {
+  padding: 2em 2em 2em 4em;
 }
 
 .app-content {
   flex-direction: row;
+}
+
+.mat-card {
+  margin: -1em auto 2em 1cm
 }
 
 @media all and (max-width: 500px) {
