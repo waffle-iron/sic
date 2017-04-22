@@ -8,13 +8,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
-import { NavbarComponent } from './navbar/navbar.component';
-import { SearchComponent } from './search/search.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './_guards/auth.guard';
 import { AlertComponent } from './alert/alert.component';
-import { AuthenticationService } from './servicios/authentication.service';
-import { AlertService } from './servicios/alert.service';
+import { NavbarComponent } from './components/commons/navbar/navbar.component';
+import { SidebarComponent } from './components/commons/sidebar/sidebar.component';
+import { ProductsComponent } from './components/products/products.component';
+
+import { ProductService } from './services/product.service';
+import { AuthenticationService } from './services/authentication.service';
+import { AlertService } from './services/alert.service';
 
 const appRoutes = [
   //{ path: '', component: AppComponent, canActivate: [AuthGuard] },
@@ -24,9 +27,10 @@ const appRoutes = [
   declarations: [
     AppComponent,
     NavbarComponent,
-    SearchComponent,
     LoginComponent,
-    AlertComponent
+    AlertComponent,
+    SidebarComponent,
+    ProductsComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,7 +44,8 @@ const appRoutes = [
   providers: [
     AuthGuard,
     AlertService,
-    AuthenticationService
+    AuthenticationService,
+    ProductService
   ],
   bootstrap: [AppComponent]
 })
