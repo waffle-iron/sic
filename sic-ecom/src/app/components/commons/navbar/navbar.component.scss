@@ -1,0 +1,15 @@
+md-toolbar-row {
+  justify-content: space-between;
+}
+
+.navbar-search {
+  width: 40%;
+
+  & md-input-container {
+    width: 100%;
+  }
+
+  & md-icon {
+    vertical-align: middle !important;
+  }
+}

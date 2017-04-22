@@ -1,0 +1,16 @@
+<md-card *ngFor="let product of products">
+   <md-card-title-group>
+      <img md-card-avatar class="product-image" src="{{product.imageUrl}}">
+      <md-card-title>
+        {{product.descripcion}}
+      </md-card-title>
+      <md-card-subtitle>
+        <p>
+          <span>Medida: </span>
+          {{product.medida}}
+          <span>Precio: </span>
+          {{product.precio}}
+        </p>
+      </md-card-subtitle>
+   </md-card-title-group>
+</md-card>
