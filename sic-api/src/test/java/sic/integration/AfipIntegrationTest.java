@@ -1,5 +1,6 @@
 package sic.integration;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -29,7 +30,8 @@ public class AfipIntegrationTest {
     @Autowired
     private AfipServiceImpl afipService;
     
-    @Test    
+    @Ignore
+    @Test
     public void testAutorizarFacturaVenta() {
         
         // Save Empresa con Localidad, Provincia y Pais

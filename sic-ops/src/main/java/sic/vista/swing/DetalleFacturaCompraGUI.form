@@ -35,7 +35,7 @@
                           <Component id="panelMisc" alignment="0" max="32767" attributes="0"/>
                           <Component id="panelResultados" alignment="0" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="12" max="32767" attributes="0"/>
+                      <EmptySpace pref="40" max="32767" attributes="0"/>
                       <Component id="btn_Guardar" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -248,7 +248,7 @@
                       <Component id="btn_QuitarDeLista" linkSize="6" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="sp_Renglones" pref="197" max="32767" attributes="0"/>
+                  <Component id="sp_Renglones" pref="217" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -301,7 +301,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/sic/icons/AddProduct_16x16.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Nuevo Producto"/>
+            <Property name="text" type="java.lang.String" value="Nuevo Producto (F7)"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_NuevoProductoActionPerformed"/>
@@ -315,7 +315,7 @@
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/sic/icons/DeleteProduct_16x16.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Quitar de la lista (DEL)"/>
+            <Property name="text" type="java.lang.String" value="Quitar Producto (DEL)"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_QuitarDeListaActionPerformed"/>
@@ -327,7 +327,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Resultados"/>
+            <TitledBorder/>
           </Border>
         </Property>
       </Properties>

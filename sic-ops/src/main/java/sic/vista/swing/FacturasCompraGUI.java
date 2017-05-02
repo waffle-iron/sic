@@ -227,7 +227,7 @@ public class FacturasCompraGUI extends JInternalFrame {
             fila[7] = factura.getSubTotal();
             fila[8] = factura.getDescuento_porcentaje();
             fila[9] = factura.getDescuento_neto();
-            fila[10] = factura.getSubTotal_neto();
+            fila[10] = factura.getSubTotal_bruto();
             fila[11] = factura.getIva_105_neto();
             fila[12] = factura.getIva_21_neto();
             fila[13] = factura.getImpuestoInterno_neto();

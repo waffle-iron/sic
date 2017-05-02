@@ -197,7 +197,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
         facturaCompra.setRecargo_neto(0);
         facturaCompra.setDescuento_porcentaje(Double.parseDouble(txt_Descuento_Porcentaje.getValue().toString()));
         facturaCompra.setDescuento_neto(Double.parseDouble(txt_Descuento_Neto.getValue().toString()));
-        facturaCompra.setSubTotal_neto(Double.parseDouble(txt_SubTotal_Neto.getValue().toString()));
+        facturaCompra.setSubTotal_bruto(Double.parseDouble(txt_SubTotal_Neto.getValue().toString()));
         facturaCompra.setIva_105_neto(Double.parseDouble(txt_IVA_105.getValue().toString()));
         facturaCompra.setIva_21_neto(Double.parseDouble(txt_IVA_21.getValue().toString()));
         facturaCompra.setImpuestoInterno_neto(Double.parseDouble(txt_ImpInterno_Neto.getValue().toString()));
@@ -262,84 +262,66 @@ public class DetalleFacturaCompraGUI extends JDialog {
         double subTotal;
         double descuento_porcentaje;
         double descuento_neto;
-        double subTotal_neto;
-        double iva105_neto;
-        double iva21_neto;
-        double impInterno_neto;
+        double subTotalBruto;
+        double iva105_netoFactura;
+        double iva21_netoFactura;        
         double total;
         this.validarComponentesDeResultados();
         //subtotal        
-        double[] importe = new double[renglones.size()];
-        double[] ivaRenglones = new double[renglones.size()];
-        double[] impuestoPorcentaje = new double[renglones.size()];
+        double[] importes = new double[renglones.size()];
+        double[] cantidades = new double[renglones.size()];
+        double[] ivaPorcentajeRenglones = new double[renglones.size()];
+        double[] ivaNetoRenglones = new double[renglones.size()];
         int indice = 0;
         for (RenglonFactura renglon : renglones) {
-            importe[indice] = renglon.getImporte();
-            ivaRenglones[indice] = renglon.getIva_porcentaje();
-            impuestoPorcentaje[indice] = renglon.getImpuesto_porcentaje();
+            importes[indice] = renglon.getImporte();
+            cantidades[indice] = renglon.getCantidad();
+            ivaPorcentajeRenglones[indice] = renglon.getIva_porcentaje();
+            ivaNetoRenglones[indice] = renglon.getIva_neto();            
             indice++;
         }
         try {
             subTotal = RestClient.getRestTemplate()
-                    .getForObject("/facturas/subtotal?importe=" + Arrays.toString(importe).substring(1, Arrays.toString(importe).length() - 1),
+                    .getForObject("/facturas/subtotal?importe=" + Arrays.toString(importes).substring(1, Arrays.toString(importes).length() - 1),
                     double.class); 
             txt_SubTotal.setValue(subTotal);
-
             //descuento
             descuento_porcentaje = Double.parseDouble(txt_Descuento_Porcentaje.getValue().toString());
             descuento_neto = RestClient.getRestTemplate().getForObject("/facturas/descuento-neto?subTotal=" + subTotal
                            + "&descuentoPorcentaje=" + descuento_porcentaje,
                            double.class);
             txt_Descuento_Neto.setValue(descuento_neto);
-
-            //subtotal neto
-            subTotal_neto = RestClient.getRestTemplate().getForObject("/facturas/subtotal-neto?subTotal=" + subTotal
-                           + "&recargoNeto=0"
-                           + "&descuentoNeto=" + descuento_neto,
-                           double.class);
-
-            txt_SubTotal_Neto.setValue(subTotal_neto);
-            
             //IVA 10,5% neto
-            iva105_neto = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?" 
-                    + "tipoDeComprobante=" + tipoDeComprobante.name()
-                    + "&descuentoPorcentaje=" + descuento_porcentaje
-                    + "&recargoPorcentaje=0"
-                    + "&ivaPorcentaje=10.5"
-                    + "&importe=" + Arrays.toString(importe).substring(1, Arrays.toString(importe).length() - 1)
-                    + "&ivaRenglones=" + Arrays.toString(ivaRenglones).substring(1, Arrays.toString(ivaRenglones).length() - 1),
+            iva105_netoFactura = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?" 
+                    + "cantidades=" + Arrays.toString(cantidades).substring(1, Arrays.toString(cantidades).length() - 1)
+                    + "&ivaPorcentajeRenglones=" + Arrays.toString(ivaPorcentajeRenglones).substring(1, Arrays.toString(ivaPorcentajeRenglones).length() - 1)
+                    + "&ivaNetoRenglones=" + Arrays.toString(ivaNetoRenglones).substring(1, Arrays.toString(ivaNetoRenglones).length() - 1)
+                    + "&ivaPorcentaje=10.5",
                     double.class);
-            txt_IVA_105.setValue(iva105_neto);
-
+            txt_IVA_105.setValue(iva105_netoFactura);
             //IVA 21% neto
-            iva21_neto = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?" 
-                    + "tipoDeComprobante=" + tipoDeComprobante.name()
-                    + "&descuentoPorcentaje=" + descuento_porcentaje
-                    + "&recargoPorcentaje=0"
-                    + "&ivaPorcentaje=21.0"
-                    + "&importe=" + Arrays.toString(importe).substring(1, Arrays.toString(importe).length() - 1)
-                    + "&ivaRenglones=" + Arrays.toString(ivaRenglones).substring(1, Arrays.toString(ivaRenglones).length() - 1),
+            iva21_netoFactura = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?" 
+                    + "cantidades=" + Arrays.toString(cantidades).substring(1, Arrays.toString(cantidades).length() - 1)
+                    + "&ivaPorcentajeRenglones=" + Arrays.toString(ivaPorcentajeRenglones).substring(1, Arrays.toString(ivaPorcentajeRenglones).length() - 1)
+                    + "&ivaNetoRenglones=" + Arrays.toString(ivaNetoRenglones).substring(1, Arrays.toString(ivaNetoRenglones).length() - 1)
+                    + "&ivaPorcentaje=21",
                     double.class);
-            txt_IVA_21.setValue(iva21_neto);
-
-            //imp. Interno
-            impInterno_neto = RestClient.getRestTemplate().getForObject("/facturas/impuesto-interno-neto?"
+            txt_IVA_21.setValue(iva21_netoFactura);            
+            //subtotal bruto
+            subTotalBruto = RestClient.getRestTemplate().getForObject("/facturas/subtotal-bruto?"
                     + "tipoDeComprobante=" + tipoDeComprobante.name()
-                    + "&descuentoPorcentaje=" + descuento_porcentaje
-                    + "&recargoPorcentaje=0"
-                    + "&importe=" + Arrays.toString(importe).substring(1, Arrays.toString(importe).length() - 1)
-                    + "&impuestoPorcentaje=" + Arrays.toString(impuestoPorcentaje).substring(1, Arrays.toString(impuestoPorcentaje).length() -1),
+                    + "&subTotal=" + subTotal
+                    + "&recargoNeto=0"
+                    + "&descuentoNeto=" + descuento_neto                    
+                    + "&iva105Neto=" + iva105_netoFactura
+                    + "&iva21Neto=" + iva21_netoFactura,
                     double.class);
-            txt_ImpInterno_Neto.setValue(impInterno_neto);
-
+            txt_SubTotal_Neto.setValue(subTotalBruto);            
             //total
             total = RestClient.getRestTemplate().getForObject("/facturas/total?"
-                    + "subTotal=" + subTotal
-                    + "&descuentoNeto=" + descuento_neto
-                    + "&recargoNeto=0"
-                    + "&iva105Neto=" + iva105_neto
-                    + "&iva21Neto=" + iva21_neto
-                    + "&impuestoInternoNeto=" + impInterno_neto,
+                    + "subTotalBruto=" + subTotalBruto                    
+                    + "&iva105Neto=" + iva105_netoFactura
+                    + "&iva21Neto=" + iva21_netoFactura,                    
                     double.class);
             txt_Total.setValue(total);
         } catch (RestClientResponseException ex) {
@@ -424,7 +406,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
         txt_SubTotal.setValue(facturaParaMostrar.getSubTotal());
         txt_Descuento_Porcentaje.setValue(facturaParaMostrar.getDescuento_porcentaje());
         txt_Descuento_Neto.setValue(facturaParaMostrar.getDescuento_neto());
-        txt_SubTotal_Neto.setValue(facturaParaMostrar.getSubTotal_neto());
+        txt_SubTotal_Neto.setValue(facturaParaMostrar.getSubTotal_bruto());
         txt_IVA_105.setValue(facturaParaMostrar.getIva_105_neto());
         txt_IVA_21.setValue(facturaParaMostrar.getIva_21_neto());
         txt_ImpInterno_Neto.setValue(facturaParaMostrar.getRecargo_neto());
@@ -536,6 +518,10 @@ public class DetalleFacturaCompraGUI extends JDialog {
 
             if (evt.getKeyCode() == KeyEvent.VK_F4) {
                 btn_BuscarProductoActionPerformed(null);
+            }
+            
+            if (evt.getKeyCode() == KeyEvent.VK_F7) {
+                btn_NuevoProductoActionPerformed(null);
             }
 
             if (evt.getSource() == tbl_Renglones && evt.getKeyCode() == 127) {
@@ -720,7 +706,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
 
         btn_NuevoProducto.setForeground(java.awt.Color.blue);
         btn_NuevoProducto.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/AddProduct_16x16.png"))); // NOI18N
-        btn_NuevoProducto.setText("Nuevo Producto");
+        btn_NuevoProducto.setText("Nuevo Producto (F7)");
         btn_NuevoProducto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_NuevoProductoActionPerformed(evt);
@@ -729,7 +715,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
 
         btn_QuitarDeLista.setForeground(java.awt.Color.blue);
         btn_QuitarDeLista.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/DeleteProduct_16x16.png"))); // NOI18N
-        btn_QuitarDeLista.setText("Quitar de la lista (DEL)");
+        btn_QuitarDeLista.setText("Quitar Producto (DEL)");
         btn_QuitarDeLista.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_QuitarDeListaActionPerformed(evt);
@@ -761,12 +747,12 @@ public class DetalleFacturaCompraGUI extends JDialog {
                     .addComponent(btn_NuevoProducto)
                     .addComponent(btn_QuitarDeLista))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(sp_Renglones, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE))
+                .addComponent(sp_Renglones, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE))
         );
 
         panelRenglonesLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_BuscarProducto, btn_NuevoProducto, btn_QuitarDeLista});
 
-        panelResultados.setBorder(javax.swing.BorderFactory.createTitledBorder("Resultados"));
+        panelResultados.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         lbl_SubTotal.setText("SubTotal");
 
@@ -1025,7 +1011,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(panelMisc, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(panelResultados, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
                         .addComponent(btn_Guardar))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(panelDatosComprobanteDerecho, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)

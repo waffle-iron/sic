@@ -304,7 +304,7 @@ public class FacturasVentaGUI extends JInternalFrame {
             fila[10] = factura.getDescuento_neto();            
             fila[11] = factura.getRecargo_porcentaje();
             fila[12] = factura.getRecargo_neto();
-            fila[13] = factura.getSubTotal_neto();
+            fila[13] = factura.getSubTotal_bruto();
             fila[14] = factura.getIva_105_neto();
             fila[15] = factura.getIva_21_neto();
             fila[16] = factura.getTotal();

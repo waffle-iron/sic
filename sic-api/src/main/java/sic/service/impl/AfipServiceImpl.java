@@ -176,7 +176,7 @@ public class AfipServiceImpl implements IAfipService {
         // arrayIVA.getAlicIva().add(alicIVA105);
         detalle.setIva(arrayIVA); // Array para informar las alícuotas y sus importes asociados a un comprobante <AlicIva>. Para comprobantes tipo C y Bienes Usados – Emisor Monotributista no debe informar el array.
         detalle.setImpIVA(Utilidades.round(factura.getIva_105_neto() + factura.getIva_21_neto(), 2)); // Suma de los importes del array de IVA. Para comprobantes tipo C debe ser igual a cero (0).
-        detalle.setImpNeto(Utilidades.round(factura.getSubTotal_neto(), 2)); // Importe neto gravado. Debe ser menor o igual a Importe total y no puede ser menor a cero. Para comprobantes tipo C este campo corresponde al Importe del Sub Total                
+        detalle.setImpNeto(Utilidades.round(factura.getSubTotal_bruto(), 2)); // Importe neto gravado. Debe ser menor o igual a Importe total y no puede ser menor a cero. Para comprobantes tipo C este campo corresponde al Importe del Sub Total                
         detalle.setImpTotal(Utilidades.round(factura.getTotal(), 2)); // Importe total del comprobante, Debe ser igual a Importe neto no gravado + Importe exento + Importe neto gravado + todos los campos de IVA al XX% + Importe de tributos                
         detalle.setImpTrib(0); // Suma de los importes del array de tributos
         detalle.setMonId("PES"); // Código de moneda del comprobante. Consultar método FEParamGetTiposMonedas para valores posibles
