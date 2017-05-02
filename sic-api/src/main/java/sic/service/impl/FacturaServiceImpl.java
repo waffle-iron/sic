@@ -889,6 +889,10 @@ public class FacturaServiceImpl implements IFacturaService {
                                   .map((pago) -> pago.getFormaDePago().getNombre() + " -")
                                   .reduce(formasDePago, String::concat);
         params.put("formasDePago", formasDePago);
+        if (factura.getTipoComprobante().equals(TipoDeComprobante.FACTURA_B)) {
+            factura.setIva_105_neto(0);
+            factura.setIva_21_neto(0);
+        }
         params.put("facturaVenta", factura);
         params.put("nroComprobante", factura.getNumSerie() + "-" + factura.getNumFactura());
         params.put("logo", Utilidades.convertirByteArrayIntoImage(factura.getEmpresa().getLogo()));

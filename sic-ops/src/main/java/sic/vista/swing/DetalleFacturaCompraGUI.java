@@ -758,7 +758,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
 
         panelRenglonesLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {btn_BuscarProducto, btn_NuevoProducto, btn_QuitarDeLista});
 
-        panelResultados.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        panelResultados.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
 
         lbl_SubTotal.setText("SubTotal");
 
