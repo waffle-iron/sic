@@ -98,7 +98,7 @@ public class FacturasVentaGUI extends JInternalFrame {
         encabezados[10] = "Descuento Neto";
         encabezados[11] = "% Recargo";
         encabezados[12] = "Recargo neto";
-        encabezados[13] = "SubTotal neto";
+        encabezados[13] = "SubTotal Bruto";
         encabezados[14] = "IVA 10.5% neto";
         encabezados[15] = "IVA 21% neto";
         encabezados[16] = "Total";

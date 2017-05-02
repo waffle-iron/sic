@@ -52,7 +52,7 @@ public class FacturasCompraGUI extends JInternalFrame {
         encabezados[7] = "SubTotal";
         encabezados[8] = "% Descuento";
         encabezados[9] = "Descuento neto";
-        encabezados[10] = "SubTotal neto";
+        encabezados[10] = "SubTotal bruto";
         encabezados[11] = "IVA 10.5% neto";
         encabezados[12] = "IVA 21% neto";
         encabezados[13] = "Imp. Interno neto";

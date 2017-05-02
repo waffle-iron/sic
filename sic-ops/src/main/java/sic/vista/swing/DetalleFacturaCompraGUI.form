@@ -35,7 +35,7 @@
                           <Component id="panelMisc" alignment="0" max="32767" attributes="0"/>
                           <Component id="panelResultados" alignment="0" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="40" max="32767" attributes="0"/>
+                      <EmptySpace pref="38" max="32767" attributes="0"/>
                       <Component id="btn_Guardar" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -350,7 +350,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="txt_SubTotal_Neto" max="32767" attributes="0"/>
-                      <Component id="lbl_SubTotalNeto" pref="104" max="32767" attributes="0"/>
+                      <Component id="lbl_SubTotalBruto" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -384,7 +384,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="lbl_SubTotal" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="lbl_Descuento" alignment="1" min="-2" max="-2" attributes="0"/>
-                      <Component id="lbl_SubTotalNeto" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="lbl_SubTotalBruto" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="lbl_IVA_105" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="lbl_IVA_21" alignment="1" min="-2" max="-2" attributes="0"/>
                       <Component id="lbl_ImpInterno" alignment="1" min="-2" max="-2" attributes="0"/>
@@ -524,9 +524,9 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="lbl_SubTotalNeto">
+        <Component class="javax.swing.JLabel" name="lbl_SubTotalBruto">
           <Properties>
-            <Property name="text" type="java.lang.String" value="SubTotal Neto"/>
+            <Property name="text" type="java.lang.String" value="SubTotal Bruto"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JFormattedTextField" name="txt_SubTotal_Neto">

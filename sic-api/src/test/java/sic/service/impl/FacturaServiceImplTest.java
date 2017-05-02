@@ -319,7 +319,8 @@ public class FacturaServiceImplTest {
             ivaNetos[i] = r.getIva_neto();
             i++;
         }       
-        double resultadoObtenido = facturaService.calcularIvaNetoFactura(cantidades, ivaPorcentajes, ivaNetos, 21);
+        double resultadoObtenido = facturaService.calcularIvaNetoFactura(TipoDeComprobante.FACTURA_A,
+                cantidades, ivaPorcentajes, ivaNetos, 21, 0, 0);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 
@@ -350,7 +351,8 @@ public class FacturaServiceImplTest {
             ivaNetos[i] = r.getIva_neto();
             i++;
         } 
-        double resultadoObtenido = facturaService.calcularIvaNetoFactura(cantidades, ivaPorcentajes, ivaNetos, 21);
+        double resultadoObtenido = facturaService.calcularIvaNetoFactura(TipoDeComprobante.FACTURA_X, 
+                cantidades, ivaPorcentajes, ivaNetos, 21, 0, 0);
         assertEquals(resultadoEsperado, resultadoObtenido, 0);
     }
 

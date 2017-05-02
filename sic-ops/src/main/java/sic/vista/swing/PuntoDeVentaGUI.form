@@ -475,7 +475,7 @@
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="txt_SubTotalNeto" max="32767" attributes="0"/>
-                          <Component id="lbl_SubTotalNeto" pref="120" max="32767" attributes="0"/>
+                          <Component id="lbl_SubTotalBruto" pref="120" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -506,7 +506,7 @@
                           <Component id="lbl_SubTotal" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="lbl_DescuentoRecargo" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="lbl_recargoPorcentaje" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="lbl_SubTotalNeto" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="lbl_SubTotalBruto" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="lbl_IVA105" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="lbl_IVA21" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="lbl_Total" alignment="2" max="32767" attributes="0"/>
@@ -672,9 +672,9 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="javax.swing.JLabel" name="lbl_SubTotalNeto">
+            <Component class="javax.swing.JLabel" name="lbl_SubTotalBruto">
               <Properties>
-                <Property name="text" type="java.lang.String" value="SubTotal Neto"/>
+                <Property name="text" type="java.lang.String" value="SubTotal Bruto"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JFormattedTextField" name="txt_IVA105_neto">

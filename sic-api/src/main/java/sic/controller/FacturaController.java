@@ -613,11 +613,15 @@ public class FacturaController {
     
     @GetMapping("/facturas/iva-neto")
     @ResponseStatus(HttpStatus.OK)
-    public double calcularIVA_neto(@RequestParam double[] cantidades,
+    public double calcularIVA_neto(@RequestParam TipoDeComprobante tipoDeComprobante,
+                                   @RequestParam double[] cantidades,
                                    @RequestParam double[] ivaPorcentajeRenglones,
                                    @RequestParam double[] ivaNetoRenglones,
-                                   @RequestParam double ivaPorcentaje) {
-        return facturaService.calcularIvaNetoFactura(cantidades, ivaPorcentajeRenglones, ivaNetoRenglones, ivaPorcentaje);
+                                   @RequestParam double ivaPorcentaje,
+                                   @RequestParam double descuentoPorcentaje, 
+                                   @RequestParam double recargoPorcentaje) {
+        return facturaService.calcularIvaNetoFactura(tipoDeComprobante, cantidades, ivaPorcentajeRenglones,
+                ivaNetoRenglones, ivaPorcentaje, descuentoPorcentaje, recargoPorcentaje);
     }
     
     @GetMapping("/facturas/calculo-vuelto")

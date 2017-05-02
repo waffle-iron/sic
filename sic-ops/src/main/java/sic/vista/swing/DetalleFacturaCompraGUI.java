@@ -293,18 +293,24 @@ public class DetalleFacturaCompraGUI extends JDialog {
             txt_Descuento_Neto.setValue(descuento_neto);
             //IVA 10,5% neto
             iva105_netoFactura = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?" 
+                    + "tipoDeComprobante=" + this.tipoDeComprobante.name()
                     + "cantidades=" + Arrays.toString(cantidades).substring(1, Arrays.toString(cantidades).length() - 1)
                     + "&ivaPorcentajeRenglones=" + Arrays.toString(ivaPorcentajeRenglones).substring(1, Arrays.toString(ivaPorcentajeRenglones).length() - 1)
                     + "&ivaNetoRenglones=" + Arrays.toString(ivaNetoRenglones).substring(1, Arrays.toString(ivaNetoRenglones).length() - 1)
-                    + "&ivaPorcentaje=10.5",
+                    + "&ivaPorcentaje=10.5"
+                    + "&descuentoPorcentaje=" + descuento_porcentaje
+                    + "&recargoPorcentaje=0",
                     double.class);
             txt_IVA_105.setValue(iva105_netoFactura);
             //IVA 21% neto
             iva21_netoFactura = RestClient.getRestTemplate().getForObject("/facturas/iva-neto?" 
+                    + "tipoDeComprobante=" + this.tipoDeComprobante.name()
                     + "cantidades=" + Arrays.toString(cantidades).substring(1, Arrays.toString(cantidades).length() - 1)
                     + "&ivaPorcentajeRenglones=" + Arrays.toString(ivaPorcentajeRenglones).substring(1, Arrays.toString(ivaPorcentajeRenglones).length() - 1)
                     + "&ivaNetoRenglones=" + Arrays.toString(ivaNetoRenglones).substring(1, Arrays.toString(ivaNetoRenglones).length() - 1)
-                    + "&ivaPorcentaje=21",
+                    + "&ivaPorcentaje=21"
+                    + "&descuentoPorcentaje=" + descuento_porcentaje
+                    + "&recargoPorcentaje=0",
                     double.class);
             txt_IVA_21.setValue(iva21_netoFactura);            
             //subtotal bruto
@@ -565,7 +571,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
         lbl_Descuento = new javax.swing.JLabel();
         txt_Descuento_Porcentaje = new javax.swing.JFormattedTextField();
         txt_Descuento_Neto = new javax.swing.JFormattedTextField();
-        lbl_SubTotalNeto = new javax.swing.JLabel();
+        lbl_SubTotalBruto = new javax.swing.JLabel();
         txt_SubTotal_Neto = new javax.swing.JFormattedTextField();
         lbl_105 = new javax.swing.JLabel();
         lbl_IVA_21 = new javax.swing.JLabel();
@@ -815,7 +821,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
         txt_Descuento_Neto.setFocusable(false);
         txt_Descuento_Neto.setFont(new java.awt.Font("DejaVu Sans", 1, 13)); // NOI18N
 
-        lbl_SubTotalNeto.setText("SubTotal Neto");
+        lbl_SubTotalBruto.setText("SubTotal Bruto");
 
         txt_SubTotal_Neto.setEditable(false);
         txt_SubTotal_Neto.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getCurrencyInstance())));
@@ -854,7 +860,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txt_SubTotal_Neto)
-                    .addComponent(lbl_SubTotalNeto, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE))
+                    .addComponent(lbl_SubTotalBruto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(lbl_105, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE)
@@ -881,7 +887,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
                 .addGroup(panelResultadosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lbl_SubTotal, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lbl_Descuento, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lbl_SubTotalNeto, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lbl_SubTotalBruto, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lbl_IVA_105, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lbl_IVA_21, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lbl_ImpInterno, javax.swing.GroupLayout.Alignment.TRAILING)
@@ -1011,7 +1017,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(panelMisc, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(panelResultados, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                         .addComponent(btn_Guardar))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(panelDatosComprobanteDerecho, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1146,7 +1152,7 @@ public class DetalleFacturaCompraGUI extends JDialog {
     private javax.swing.JLabel lbl_NumComprobante;
     private javax.swing.JLabel lbl_Proveedor;
     private javax.swing.JLabel lbl_SubTotal;
-    private javax.swing.JLabel lbl_SubTotalNeto;
+    private javax.swing.JLabel lbl_SubTotalBruto;
     private javax.swing.JLabel lbl_TipoFactura;
     private javax.swing.JLabel lbl_Total;
     private javax.swing.JLabel lbl_Transporte;
