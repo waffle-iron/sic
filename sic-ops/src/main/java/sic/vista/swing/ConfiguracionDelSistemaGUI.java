@@ -65,6 +65,8 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
         lbl_Contrasenia = new javax.swing.JLabel();
         txt_contraseniaCert = new javax.swing.JPasswordField();
         lbl_certEstado = new javax.swing.JLabel();
+        lbl_PuntoDeVenta = new javax.swing.JLabel();
+        txt_FirmanteCert1 = new javax.swing.JTextField();
         lbl_Leyenda = new javax.swing.JLabel();
         btn_Guardar = new javax.swing.JButton();
 
@@ -100,7 +102,7 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelReportesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(chk_PreImpresas)
-                    .addComponent(txt_CantMaximaRenglones, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_CantMaximaRenglones, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelReportesLayout.setVerticalGroup(
@@ -125,6 +127,7 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
         lbl_Certificado.setText("Certificado Digital AFIP:");
 
         btn_BuscarCertificado.setForeground(java.awt.Color.blue);
+        btn_BuscarCertificado.setIcon(new javax.swing.ImageIcon(getClass().getResource("/sic/icons/Certificate_16x16.png"))); // NOI18N
         btn_BuscarCertificado.setText("Buscar");
         btn_BuscarCertificado.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -140,17 +143,21 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
         lbl_certEstado.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbl_certEstado.setText("No cargado");
 
+        lbl_PuntoDeVenta.setText("Punto de Venta Nro:");
+
         javax.swing.GroupLayout panelFELayout = new javax.swing.GroupLayout(panelFE);
         panelFE.setLayout(panelFELayout);
         panelFELayout.setHorizontalGroup(
             panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelFELayout.createSequentialGroup()
+            .addGroup(panelFELayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(lbl_UsarFE, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
-                    .addComponent(lbl_Certificado, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_Firmante, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(lbl_Contrasenia, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(lbl_UsarFE, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                        .addComponent(lbl_Certificado, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lbl_Firmante, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lbl_Contrasenia, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lbl_PuntoDeVenta, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(txt_FirmanteCert, javax.swing.GroupLayout.Alignment.LEADING)
@@ -160,7 +167,8 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
                             .addComponent(btn_BuscarCertificado)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(lbl_certEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(txt_contraseniaCert))
+                    .addComponent(txt_contraseniaCert)
+                    .addComponent(txt_FirmanteCert1, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelFELayout.setVerticalGroup(
@@ -183,7 +191,11 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
                 .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_Contrasenia)
                     .addComponent(txt_contraseniaCert, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(lbl_PuntoDeVenta)
+                    .addComponent(txt_FirmanteCert1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panelGeneralLayout = new javax.swing.GroupLayout(panelGeneral);
@@ -228,7 +240,7 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lbl_Leyenda)
-                        .addGap(0, 29, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(panelGeneral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -242,9 +254,9 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
                 .addComponent(lbl_Leyenda)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btn_Guardar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -321,6 +333,7 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
     private javax.swing.JLabel lbl_Firmante;
     private javax.swing.JLabel lbl_Leyenda;
     private javax.swing.JLabel lbl_PreImpresas;
+    private javax.swing.JLabel lbl_PuntoDeVenta;
     private javax.swing.JLabel lbl_UsarFE;
     private javax.swing.JLabel lbl_certEstado;
     private javax.swing.JPanel panelFE;
@@ -328,6 +341,7 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
     private javax.swing.JPanel panelReportes;
     private javax.swing.JFormattedTextField txt_CantMaximaRenglones;
     private javax.swing.JTextField txt_FirmanteCert;
+    private javax.swing.JTextField txt_FirmanteCert1;
     private javax.swing.JPasswordField txt_contraseniaCert;
     // End of variables declaration//GEN-END:variables
 }

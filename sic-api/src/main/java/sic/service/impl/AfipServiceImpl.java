@@ -142,12 +142,13 @@ public class AfipServiceImpl implements IAfipService {
             case FACTURA_A:
                 cabecera.setCbteTipo(1);
                 detalle.setDocTipo(80);
-                detalle.setDocNro(Long.valueOf(factura.getCliente().getIdFiscal().replace("-", "")));                
+                detalle.setDocNro(Long.valueOf(factura.getCliente().getIdFiscal().replace("-", "")));
                 break;
             case FACTURA_B:
+                // menor a $1000, si DocTipo = 99 DocNro debe ser igual a 0
                 cabecera.setCbteTipo(6);
-                detalle.setDocTipo(99);
-                detalle.setDocNro(0);                
+                detalle.setDocTipo(80); // 80: CUIT, 86: CUIL, 96: DNI, 99: Doc.(Otro)
+                detalle.setDocNro(Long.valueOf(factura.getCliente().getIdFiscal().replace("-", "")));
                 break;
             case FACTURA_C:
                 cabecera.setCbteTipo(11);
@@ -164,16 +165,20 @@ public class AfipServiceImpl implements IAfipService {
         detalle.setConcepto(1); // Concepto del Comprobante. Valores permitidos: 1 Productos, 2 Servicios, 3 Productos y Servicios        
         detalle.setCbteFch(formatterFechaHora.format(factura.getFecha()).replace("/", "")); // Fecha del comprobante (yyyymmdd)        
         ArrayOfAlicIva arrayIVA = new ArrayOfAlicIva();
-        AlicIva alicIVA21 = new AlicIva();
-        alicIVA21.setId(5); // Valores: 5 (21%), 4 (10.5%)
-        alicIVA21.setBaseImp(Utilidades.round((100 * factura.getIva_21_neto()) / 21, 2)); // Se calcula con: (100 * IVA_neto) / %IVA
-        alicIVA21.setImporte(Utilidades.round(factura.getIva_21_neto(), 2));
-        arrayIVA.getAlicIva().add(alicIVA21);
-        // AlicIva alicIVA105 = new AlicIva();
-        // alicIVA105.setId(4); // Valores: 5 (21%), 4 (10.5%)
-        // alicIVA105.setBaseImp(Utilidades.round((100 * factura.getIva_105_neto()) / 10.5, 2)); // Se calcula con: (100 * IVA_neto) / %IVA
-        // alicIVA105.setImporte(Utilidades.round(factura.getIva_105_neto(),2));
-        // arrayIVA.getAlicIva().add(alicIVA105);
+        if (factura.getIva_21_neto() != 0) {
+            AlicIva alicIVA21 = new AlicIva();
+            alicIVA21.setId(5); // Valores: 5 (21%), 4 (10.5%)
+            alicIVA21.setBaseImp(Utilidades.round((100 * factura.getIva_21_neto()) / 21, 2)); // Se calcula con: (100 * IVA_neto) / %IVA
+            alicIVA21.setImporte(Utilidades.round(factura.getIva_21_neto(), 2));
+            arrayIVA.getAlicIva().add(alicIVA21);
+        }
+        if (factura.getIva_105_neto() != 0) {
+            AlicIva alicIVA105 = new AlicIva();
+            alicIVA105.setId(4); // Valores: 5 (21%), 4 (10.5%)
+            alicIVA105.setBaseImp(Utilidades.round((100 * factura.getIva_105_neto()) / 10.5, 2)); // Se calcula con: (100 * IVA_neto) / %IVA
+            alicIVA105.setImporte(Utilidades.round(factura.getIva_105_neto(), 2));
+            arrayIVA.getAlicIva().add(alicIVA105);
+        }
         detalle.setIva(arrayIVA); // Array para informar las alícuotas y sus importes asociados a un comprobante <AlicIva>. Para comprobantes tipo C y Bienes Usados – Emisor Monotributista no debe informar el array.
         detalle.setImpIVA(Utilidades.round(factura.getIva_105_neto() + factura.getIva_21_neto(), 2)); // Suma de los importes del array de IVA. Para comprobantes tipo C debe ser igual a cero (0).
         detalle.setImpNeto(Utilidades.round(factura.getSubTotal_bruto(), 2)); // Importe neto gravado. Debe ser menor o igual a Importe total y no puede ser menor a cero. Para comprobantes tipo C este campo corresponde al Importe del Sub Total                
