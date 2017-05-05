@@ -202,7 +202,7 @@
                               </Group>
                           </Group>
                           <Component id="txt_contraseniaCert" max="32767" attributes="0"/>
-                          <Component id="txt_FirmanteCert1" alignment="0" max="32767" attributes="0"/>
+                          <Component id="txt_PuntoDeVentaNro" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -235,7 +235,7 @@
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="2" attributes="0">
                           <Component id="lbl_PuntoDeVenta" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="txt_FirmanteCert1" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="txt_PuntoDeVentaNro" alignment="2" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="9" max="32767" attributes="0"/>
                   </Group>
@@ -249,6 +249,9 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JCheckBox" name="chk_UsarFE">
+              <Events>
+                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="chk_UsarFEItemStateChanged"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lbl_Certificado">
               <Properties>
@@ -297,7 +300,7 @@
                 <Property name="text" type="java.lang.String" value="Punto de Venta Nro:"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JTextField" name="txt_FirmanteCert1">
+            <Component class="javax.swing.JTextField" name="txt_PuntoDeVentaNro">
             </Component>
           </SubComponents>
         </Container>

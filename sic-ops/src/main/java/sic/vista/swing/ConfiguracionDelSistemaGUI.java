@@ -15,6 +15,7 @@ import org.springframework.web.client.RestClientResponseException;
 import sic.RestClient;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.EmpresaActiva;
+import sic.util.FiltroCertificados;
 import sic.util.FiltroImagenes;
 import sic.util.Utilidades;
 
@@ -24,9 +25,18 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
     
     public ConfiguracionDelSistemaGUI() {
-        this.initComponents();        
+        this.initComponents();    
+        this.setEstadoComponentes(false);
     }
 
+    private void setEstadoComponentes(boolean estado) {
+        btn_BuscarCertificado.setEnabled(estado);
+        lbl_certEstado.setEnabled(estado);
+        txt_FirmanteCert.setEnabled(estado);
+        txt_contraseniaCert.setEnabled(estado);
+        txt_PuntoDeVentaNro.setEnabled(estado);
+    }
+        
     private void setIcon() {
         ImageIcon iconoVentana = new ImageIcon(ConfiguracionDelSistemaGUI.class
                 .getResource("/sic/icons/Gears_16x16.png"));
@@ -66,7 +76,7 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
         txt_contraseniaCert = new javax.swing.JPasswordField();
         lbl_certEstado = new javax.swing.JLabel();
         lbl_PuntoDeVenta = new javax.swing.JLabel();
-        txt_FirmanteCert1 = new javax.swing.JTextField();
+        txt_PuntoDeVentaNro = new javax.swing.JTextField();
         lbl_Leyenda = new javax.swing.JLabel();
         btn_Guardar = new javax.swing.JButton();
 
@@ -124,6 +134,12 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
 
         lbl_UsarFE.setText("Usar AFIP Factura Electronica:");
 
+        chk_UsarFE.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                chk_UsarFEItemStateChanged(evt);
+            }
+        });
+
         lbl_Certificado.setText("Certificado Digital AFIP:");
 
         btn_BuscarCertificado.setForeground(java.awt.Color.blue);
@@ -168,7 +184,7 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(lbl_certEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(txt_contraseniaCert)
-                    .addComponent(txt_FirmanteCert1, javax.swing.GroupLayout.Alignment.LEADING))
+                    .addComponent(txt_PuntoDeVentaNro, javax.swing.GroupLayout.Alignment.LEADING))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panelFELayout.setVerticalGroup(
@@ -194,7 +210,7 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelFELayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(lbl_PuntoDeVenta)
-                    .addComponent(txt_FirmanteCert1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txt_PuntoDeVentaNro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(9, Short.MAX_VALUE))
         );
 
@@ -295,15 +311,15 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
     }//GEN-LAST:event_btn_GuardarActionPerformed
 
     private void btn_BuscarCertificadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_BuscarCertificadoActionPerformed
-        JFileChooser menuElegirLogo = new JFileChooser();
-        menuElegirLogo.setAcceptAllFileFilterUsed(false);
-        menuElegirLogo.addChoosableFileFilter(new FiltroImagenes());
+        JFileChooser menuElegirCertificado = new JFileChooser();
+        menuElegirCertificado.setAcceptAllFileFilterUsed(false);
+        menuElegirCertificado.addChoosableFileFilter(new FiltroCertificados());
         try {
-            if (menuElegirLogo.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                if (Utilidades.esTamanioValido(menuElegirLogo.getSelectedFile(), 512000)) {
-                    File file = menuElegirLogo.getSelectedFile();
+            if (menuElegirCertificado.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                if (Utilidades.esTamanioValido(menuElegirCertificado.getSelectedFile(), 512000)) {
+                    File file = menuElegirCertificado.getSelectedFile();
                     //logo = Utilidades.convertirFileIntoByteArray(file);
-                    ImageIcon logoProvisional = new ImageIcon(menuElegirLogo.getSelectedFile().getAbsolutePath());
+                    ImageIcon logoProvisional = new ImageIcon(menuElegirCertificado.getSelectedFile().getAbsolutePath());
                     ImageIcon logoRedimensionado = new ImageIcon(logoProvisional.getImage().getScaledInstance(114, 114, Image.SCALE_SMOOTH));
                     //lbl_Logo.setIcon(logoRedimensionado);
                     //lbl_Logo.setText("");
@@ -321,6 +337,14 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
             JOptionPane.showMessageDialog(this, mensaje, "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_BuscarCertificadoActionPerformed
+
+    private void chk_UsarFEItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_chk_UsarFEItemStateChanged
+        if (chk_UsarFE.isSelected()) {
+            this.setEstadoComponentes(true);
+        } else {                       
+            this.setEstadoComponentes(false);
+        }
+    }//GEN-LAST:event_chk_UsarFEItemStateChanged
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_BuscarCertificado;
@@ -341,7 +365,7 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
     private javax.swing.JPanel panelReportes;
     private javax.swing.JFormattedTextField txt_CantMaximaRenglones;
     private javax.swing.JTextField txt_FirmanteCert;
-    private javax.swing.JTextField txt_FirmanteCert1;
+    private javax.swing.JTextField txt_PuntoDeVentaNro;
     private javax.swing.JPasswordField txt_contraseniaCert;
     // End of variables declaration//GEN-END:variables
 }

@@ -17,6 +17,7 @@ import afip.wsfe.wsdl.FERecuperaLastCbteResponse;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.Base64;
+import java.util.ResourceBundle;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.io.SAXReader;
@@ -81,29 +82,33 @@ public class AfipServiceImpl implements IAfipService {
 
     @Override
     public FacturaVenta autorizarFacturaVenta(FacturaVenta factura) {
-        AfipWSAACredencial afipCredencial = this.getAfipWSAACredencial("wsfe", factura.getEmpresa());        
-        FEAuthRequest feAuthRequest = new FEAuthRequest();
-        feAuthRequest.setCuit(afipCredencial.getCuit());
-        feAuthRequest.setSign(afipCredencial.getSign());
-        feAuthRequest.setToken(afipCredencial.getToken());        
-        FECAESolicitar fecaeSolicitud = new FECAESolicitar();
-        fecaeSolicitud.setAuth(feAuthRequest);
-        int nroPuntoDeVentaAfip = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(factura.getEmpresa()).getNroPuntoDeVentaAfip();
-        int siguienteNroComprobante = this.getSiguienteNroComprobante(afipCredencial, factura.getTipoComprobante(), nroPuntoDeVentaAfip);
-        fecaeSolicitud.setFeCAEReq(this.transformFacturaVentaToFECAERequest(factura, siguienteNroComprobante));
-        FECAEResponse response = afipWebServiceSOAPClient.FECAESolicitar(fecaeSolicitud);     
-        ArrayOfErr errores = response.getErrors();
-        if (errores != null) {
-            errores.getErr().stream().forEach((err) -> {
-                LOGGER.error(err.getCode() + " - " + err.getMsg());
-            });
-            throw new BusinessServiceException("Con errores!");
+        if (factura.getTipoComprobante().equals(TipoDeComprobante.FACTURA_A) || factura.getTipoComprobante().equals(TipoDeComprobante.FACTURA_B)) {
+            AfipWSAACredencial afipCredencial = this.getAfipWSAACredencial("wsfe", factura.getEmpresa());
+            FEAuthRequest feAuthRequest = new FEAuthRequest();
+            feAuthRequest.setCuit(afipCredencial.getCuit());
+            feAuthRequest.setSign(afipCredencial.getSign());
+            feAuthRequest.setToken(afipCredencial.getToken());
+            FECAESolicitar fecaeSolicitud = new FECAESolicitar();
+            fecaeSolicitud.setAuth(feAuthRequest);
+            int nroPuntoDeVentaAfip = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(factura.getEmpresa()).getNroPuntoDeVentaAfip();
+            int siguienteNroComprobante = this.getSiguienteNroComprobante(afipCredencial, factura.getTipoComprobante(), nroPuntoDeVentaAfip);
+            fecaeSolicitud.setFeCAEReq(this.transformFacturaVentaToFECAERequest(factura, siguienteNroComprobante));
+            FECAEResponse response = afipWebServiceSOAPClient.FECAESolicitar(fecaeSolicitud);
+            ArrayOfErr errores = response.getErrors();
+            if (errores != null) {
+                errores.getErr().stream().forEach((err) -> {
+                    LOGGER.error(err.getCode() + " - " + err.getMsg());
+                });
+                throw new BusinessServiceException("Con errores!");
+            }
+            if (response.getFeDetResp().getFECAEDetResponse().get(0).getResultado().equals("R")) {
+                throw new BusinessServiceException("Rechazada!");
+            }
+            response.getFeDetResp().getFECAEDetResponse().get(0).getCAE();
+            response.getFeDetResp().getFECAEDetResponse().get(0).getCAEFchVto();
+        } else {
+            throw new BusinessServiceException( ResourceBundle.getBundle("Mensajes").getString("mensaje_factura_tipo_no_valido"));
         }
-        if (response.getFeDetResp().getFECAEDetResponse().get(0).getResultado().equals("R")) {
-            throw new BusinessServiceException("Rechazada!");
-        }
-        response.getFeDetResp().getFECAEDetResponse().get(0).getCAE();
-        response.getFeDetResp().getFECAEDetResponse().get(0).getCAEFchVto();
         return null;
     }
     
