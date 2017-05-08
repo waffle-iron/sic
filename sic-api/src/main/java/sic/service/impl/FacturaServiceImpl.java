@@ -72,7 +72,7 @@ public class FacturaServiceImpl implements IFacturaService {
     
     @Override
     public Factura getFacturaPorId(Long id_Factura) {
-        Factura factura = facturaRepository.findOne(id_Factura);
+        Factura factura = facturaRepository.findById(id_Factura);
         if (factura == null) {
             throw new EntityNotFoundException(ResourceBundle.getBundle("Mensajes")
                     .getString("mensaje_factura_eliminada"));
@@ -336,8 +336,8 @@ public class FacturaServiceImpl implements IFacturaService {
     public void eliminar(long[] idsFactura) {
         for (long idFactura : idsFactura) {
             Factura factura = this.getFacturaPorId(idFactura);
-            factura.setEliminada(true);
             this.eliminarPagosDeFactura(factura);
+            factura.setEliminada(true);
             productoService.actualizarStock(factura, TipoDeOperacion.ELIMINACION);            
             if (factura.getPedido() != null) {
                 List<Factura> facturas = new ArrayList<>();
@@ -942,7 +942,7 @@ public class FacturaServiceImpl implements IFacturaService {
     }
 
     @Override
-    public RenglonFactura calcularRenglon(TipoDeComprobante tipoDeComprobante, Movimiento movimiento,
+    public RenglonFactura calcularRenglon(TipoDeComprobante tipo, Movimiento movimiento,
             double cantidad, Long idProducto, double descuento_porcentaje) {
 
         Producto producto = productoService.getProductoPorId(idProducto);
@@ -952,11 +952,11 @@ public class FacturaServiceImpl implements IFacturaService {
         nuevoRenglon.setDescripcionItem(producto.getDescripcion());
         nuevoRenglon.setMedidaItem(producto.getMedida().getNombre());
         nuevoRenglon.setCantidad(cantidad);
-        nuevoRenglon.setPrecioUnitario(this.calcularPrecioUnitario(movimiento, tipoDeComprobante, producto));
+        nuevoRenglon.setPrecioUnitario(this.calcularPrecioUnitario(movimiento, tipo, producto));
         nuevoRenglon.setDescuento_porcentaje(descuento_porcentaje);
         nuevoRenglon.setDescuento_neto(this.calcularDescuento_neto(nuevoRenglon.getPrecioUnitario(), descuento_porcentaje));
         nuevoRenglon.setIva_porcentaje(producto.getIva_porcentaje());
-        if (tipoDeComprobante.equals(tipoDeComprobante.FACTURA_Y)) {
+        if (tipo.equals(TipoDeComprobante.FACTURA_Y)) {
             nuevoRenglon.setIva_porcentaje(producto.getIva_porcentaje() / 2);
         }
         nuevoRenglon.setIva_neto(this.calcularIVA_neto(movimiento, producto, nuevoRenglon.getDescuento_neto()));
