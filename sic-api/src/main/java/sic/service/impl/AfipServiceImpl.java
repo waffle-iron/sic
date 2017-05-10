@@ -54,11 +54,12 @@ public class AfipServiceImpl implements IAfipService {
     public AfipWSAACredencial getAfipWSAACredencial(String afipNombreServicio, Empresa empresa) {
         AfipWSAACredencial afipCred = new AfipWSAACredencial();
         String loginTicketResponse = "";
-        String p12file = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(empresa).getPathCertificadoAfip();
+        //String p12file = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(empresa).getPathCertificadoAfip();
         String p12signer = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(empresa).getFirmanteCertificadoAfip();
         String p12pass = configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(empresa).getPasswordCertificadoAfip();
         Long ticketTime = 3600000L; //siempre devuelve por 12hs
-        byte[] loginTicketRequest_xml_cms = afipWebServiceSOAPClient.crearCMS(p12file, p12pass, p12signer, afipNombreServicio, ticketTime);
+        byte[] loginTicketRequest_xml_cms = afipWebServiceSOAPClient.crearCMS(configuracionDelSistemaService.getConfiguracionDelSistemaPorEmpresa(empresa).getCertificadoAfip()
+                , p12pass, p12signer, afipNombreServicio, ticketTime);
         LoginCms loginCms = new LoginCms();
         loginCms.setIn0(Base64.getEncoder().encodeToString(loginTicketRequest_xml_cms));
         try {

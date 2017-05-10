@@ -10,7 +10,7 @@ public class ConfiguracionDelSistema implements Serializable {
     private boolean usarFacturaVentaPreImpresa;
     private int cantidadMaximaDeRenglonesEnFactura; 
     private boolean facturaElectronicaHabilitada;    
-    private String pathCertificadoAfip;    
+    private byte[] certificadoAfip;    
     private String firmanteCertificadoAfip;    
     private String passwordCertificadoAfip;
     private int nroPuntoDeVentaAfip;

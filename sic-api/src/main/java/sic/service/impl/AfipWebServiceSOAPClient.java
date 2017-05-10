@@ -40,6 +40,7 @@ import org.bouncycastle.cms.CMSSignedDataGenerator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.ws.WebServiceMessage;
 import org.springframework.ws.soap.SoapMessage;
+import sic.util.Utilidades;
 
 public class AfipWebServiceSOAPClient extends WebServiceGatewaySupport {
 
@@ -57,14 +58,14 @@ public class AfipWebServiceSOAPClient extends WebServiceGatewaySupport {
         return response.getLoginCmsReturn();
     }
 
-    public byte[] crearCMS(String p12file, String p12pass, String signer, String service, Long ticketTime) {
+    public byte[] crearCMS(byte[] p12file, String p12pass, String signer, String service, Long ticketTime) {
         PrivateKey pKey = null;
         X509Certificate pCertificate = null;
         byte[] asn1_cms = null;
         CertStore cstore = null;
         try {
             KeyStore ks = KeyStore.getInstance("pkcs12");
-            InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream(p12file);
+            InputStream is = Utilidades.convertirByteArrayToInputStream(p12file);
             ks.load(is, p12pass.toCharArray());
             is.close();
             pKey = (PrivateKey) ks.getKey(signer, p12pass.toCharArray());

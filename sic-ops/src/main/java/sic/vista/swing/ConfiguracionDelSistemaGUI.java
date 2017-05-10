@@ -1,5 +1,6 @@
 package sic.vista.swing;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
     private void cargarConfiguracionParaModificar() {
         chk_PreImpresas.setSelected(cdsModificar.isUsarFacturaVentaPreImpresa());
         txt_CantMaximaRenglones.setValue(cdsModificar.getCantidadMaximaDeRenglonesEnFactura());
+        chk_UsarFE.setSelected(cdsModificar.isFacturaElectronicaHabilitada());
     }
 
     private ConfiguracionDelSistema getConfiguracionDelSistema() {
@@ -316,20 +318,28 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
         menuElegirCertificado.addChoosableFileFilter(new FiltroCertificados());
         try {
             if (menuElegirCertificado.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                if (Utilidades.esTamanioValido(menuElegirCertificado.getSelectedFile(), 512000)) {
+                if (Utilidades.esTamanioValido(menuElegirCertificado.getSelectedFile(), 100000)) {
                     File file = menuElegirCertificado.getSelectedFile();
+                    this.getConfiguracionDelSistema().setFacturaElectronicaHabilitada(true);
+                    this.getConfiguracionDelSistema().setCertificadoAfip(Utilidades.convertirFileIntoByteArray(file));
+                    //RestClient.getRestTemplate().put("/configuraciones-del-sistema", this.getConfiguracionDelSistema());
+                    lbl_certEstado.setText("Cargado");
+                    lbl_certEstado.setForeground(Color.GREEN);
+                    
+//                    byte[] certificado = 
+//                    RestClient.getRestTemplate().getForObject("/configuraciones-del-sistema/empresas/"
+//                            + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
+//                            ConfiguracionDelSistema.class).getCertificadoAfip();
+//                    System.out.println(certificado.length);
                     //logo = Utilidades.convertirFileIntoByteArray(file);
-                    ImageIcon logoProvisional = new ImageIcon(menuElegirCertificado.getSelectedFile().getAbsolutePath());
-                    ImageIcon logoRedimensionado = new ImageIcon(logoProvisional.getImage().getScaledInstance(114, 114, Image.SCALE_SMOOTH));
+                    //ImageIcon logoProvisional = new ImageIcon(menuElegirCertificado.getSelectedFile().getAbsolutePath());
+                    //ImageIcon logoRedimensionado = new ImageIcon(logoProvisional.getImage().getScaledInstance(114, 114, Image.SCALE_SMOOTH));
                     //lbl_Logo.setIcon(logoRedimensionado);
                     //lbl_Logo.setText("");
                 } else {
                     JOptionPane.showMessageDialog(this, "El tamaño del archivo seleccionado, supera el límite de 512kb.",
                         "Error", JOptionPane.ERROR_MESSAGE);
-                    //logo = null;
                 }
-            } else {
-                //logo = null;
             }
         } catch (IOException ex) {
             String mensaje = ResourceBundle.getBundle("Mensajes").getString("mensaje_error_IOException");

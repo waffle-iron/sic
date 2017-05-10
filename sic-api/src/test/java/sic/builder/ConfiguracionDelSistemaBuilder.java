@@ -9,7 +9,7 @@ public class ConfiguracionDelSistemaBuilder {
     private boolean usarFacturaVentaPreImpresa = true;
     private int cantidadMaximaDeRenglonesEnFactura = 28;
     private boolean facturaElectronicaHabilitada = false;    
-    private String pathCertificadoAfip = "certs/MiEmpresaTesting.p12";
+//    private String pathCertificadoAfip = "certs/MiEmpresaTesting.p12";
     private String firmanteCertificadoAfip = "test";
     private String passwordCertificadoAfip = "test123";
     private int nroPuntoDeVentaAfip = 1;
@@ -17,7 +17,7 @@ public class ConfiguracionDelSistemaBuilder {
 
     public ConfiguracionDelSistema build() {
         return new ConfiguracionDelSistema(id_ConfiguracionDelSistema, usarFacturaVentaPreImpresa,
-                cantidadMaximaDeRenglonesEnFactura, facturaElectronicaHabilitada, pathCertificadoAfip,
+                cantidadMaximaDeRenglonesEnFactura, facturaElectronicaHabilitada, null,
                 firmanteCertificadoAfip, passwordCertificadoAfip, nroPuntoDeVentaAfip, empresa);
     }
 
@@ -41,10 +41,10 @@ public class ConfiguracionDelSistemaBuilder {
         return this;
     }
     
-    public ConfiguracionDelSistemaBuilder withPathCertificadoAfip(String pathCertificadoAfip) {
-        this.pathCertificadoAfip = pathCertificadoAfip;
-        return this;
-    }
+//    public ConfiguracionDelSistemaBuilder withPathCertificadoAfip(String pathCertificadoAfip) {
+//        this.pathCertificadoAfip = pathCertificadoAfip;
+//        return this;
+//    }
     
     public ConfiguracionDelSistemaBuilder withFirmanteCertificadoAfip(String firmanteCertificadoAfip) {
         this.firmanteCertificadoAfip = firmanteCertificadoAfip;
