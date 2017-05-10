@@ -13,4 +13,6 @@ public interface IConfiguracionDelSistemaService {
 
     ConfiguracionDelSistema guardar(ConfiguracionDelSistema cds);
     
+    void validarCds(ConfiguracionDelSistema cds);
+    
 }

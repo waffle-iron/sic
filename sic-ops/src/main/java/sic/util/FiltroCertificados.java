@@ -22,7 +22,7 @@ public class FiltroCertificados extends FileFilter {
 
     @Override
     public String getDescription() {
-        return "Archivo de Cerfificado (*.p12)";
+        return "Archivo de Certificado (*.p12)";
     }
     
 }

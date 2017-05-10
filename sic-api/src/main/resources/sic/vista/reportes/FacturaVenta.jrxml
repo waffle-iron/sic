@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2017-05-02T15:59:03 -->
+<!-- 2017-05-10T05:10:51 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="FacturaVenta" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e47a212f-3954-4de9-aca2-5bd71a6098c5">
 	<property name="ireport.zoom" value="3.0"/>
 	<property name="ireport.x" value="0"/>
@@ -393,7 +393,7 @@ $P{facturaVenta}.getTipoComprobante().toString().equals("FACTURA_X")? "X" : "?"]
 	<detail>
 		<band height="15" splitType="Stretch">
 			<textField>
-				<reportElement x="0" y="0" width="75" height="15" uuid="d32cfb1e-b7ea-4c1b-a643-4cfa7fb8e616">
+				<reportElement x="0" y="0" width="80" height="15" uuid="d32cfb1e-b7ea-4c1b-a643-4cfa7fb8e616">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -403,7 +403,7 @@ $P{facturaVenta}.getTipoComprobante().toString().equals("FACTURA_X")? "X" : "?"]
 				<textFieldExpression><![CDATA[$F{codigoItem}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="75" y="0" width="263" height="15" uuid="f2bfc27d-700e-40b7-a73b-6303c546d09a">
+				<reportElement x="80" y="0" width="258" height="15" uuid="f2bfc27d-700e-40b7-a73b-6303c546d09a">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="local_mesure_unitwidth" value="pixel"/>
@@ -642,7 +642,7 @@ $P{facturaVenta}.getTipoComprobante().toString().equals("FACTURA_X")? "X" : "?"]
 				<text><![CDATA[Observaciones:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="80" y="30" width="250" height="75" uuid="7d4cd7c6-3ef8-449b-b63b-9d16f6eb9934"/>
+				<reportElement x="80" y="30" width="250" height="60" uuid="7d4cd7c6-3ef8-449b-b63b-9d16f6eb9934"/>
 				<textElement>
 					<font size="8"/>
 				</textElement>
@@ -696,6 +696,44 @@ $P{facturaVenta}.getTipoComprobante().toString().equals("FACTURA_X")? "X" : "?"]
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{facturaVenta}.getRecargo_neto()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="90" width="80" height="15" uuid="955ced8c-6c45-4613-bd41-a4841d1ce14c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CAE:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="80" y="90" width="90" height="15" uuid="9661ecd4-ae41-44b4-b5ab-501560541e44">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{facturaVenta}.getCAE()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="170" y="90" width="80" height="15" uuid="b7c48ba3-4b58-4225-a5fe-356a8b52d285">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Vencimiento CAE:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="250" y="90" width="90" height="15" uuid="c76bf386-4a1c-4295-9d8e-bbf0dcf2b951">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{facturaVenta}.getVencimientoCAE()]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>

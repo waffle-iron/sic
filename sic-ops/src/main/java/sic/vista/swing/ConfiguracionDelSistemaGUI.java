@@ -1,7 +1,6 @@
 package sic.vista.swing;
 
 import java.awt.Color;
-import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.util.ResourceBundle;
@@ -17,7 +16,6 @@ import sic.RestClient;
 import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.EmpresaActiva;
 import sic.util.FiltroCertificados;
-import sic.util.FiltroImagenes;
 import sic.util.Utilidades;
 
 public class ConfiguracionDelSistemaGUI extends JDialog {
@@ -36,6 +34,7 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
         txt_FirmanteCert.setEnabled(estado);
         txt_contraseniaCert.setEnabled(estado);
         txt_PuntoDeVentaNro.setEnabled(estado);
+        txt_PuntoDeVentaNro.setEnabled(estado);
     }
         
     private void setIcon() {
@@ -47,13 +46,22 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
     private void cargarConfiguracionParaModificar() {
         chk_PreImpresas.setSelected(cdsModificar.isUsarFacturaVentaPreImpresa());
         txt_CantMaximaRenglones.setValue(cdsModificar.getCantidadMaximaDeRenglonesEnFactura());
-        chk_UsarFE.setSelected(cdsModificar.isFacturaElectronicaHabilitada());
+        if (cdsModificar.isFacturaElectronicaHabilitada()) {
+              chk_UsarFE.setSelected(true);
+              lbl_certEstado.setText("Cargado");
+              lbl_certEstado.setForeground(Color.GREEN);
+              txt_FirmanteCert.setText(cdsModificar.getFirmanteCertificadoAfip());
+              txt_PuntoDeVentaNro.setText("" + cdsModificar.getNroPuntoDeVentaAfip());
+        }
     }
 
     private ConfiguracionDelSistema getConfiguracionDelSistema() {
         cdsModificar.setUsarFacturaVentaPreImpresa(chk_PreImpresas.isSelected());
         cdsModificar.setCantidadMaximaDeRenglonesEnFactura(
                 Integer.parseInt(txt_CantMaximaRenglones.getValue().toString()));
+        cdsModificar.setFirmanteCertificadoAfip(txt_FirmanteCert.getText());
+        cdsModificar.setPasswordCertificadoAfip(new String(txt_contraseniaCert.getPassword()));
+        cdsModificar.setNroPuntoDeVentaAfip(Integer.parseInt(txt_PuntoDeVentaNro.getText()));
         return cdsModificar;
     }
 
@@ -162,6 +170,12 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
         lbl_certEstado.setText("No cargado");
 
         lbl_PuntoDeVenta.setText("Punto de Venta Nro:");
+
+        txt_PuntoDeVentaNro.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_PuntoDeVentaNroKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelFELayout = new javax.swing.GroupLayout(panelFE);
         panelFE.setLayout(panelFELayout);
@@ -320,22 +334,10 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
             if (menuElegirCertificado.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 if (Utilidades.esTamanioValido(menuElegirCertificado.getSelectedFile(), 100000)) {
                     File file = menuElegirCertificado.getSelectedFile();
-                    this.getConfiguracionDelSistema().setFacturaElectronicaHabilitada(true);
-                    this.getConfiguracionDelSistema().setCertificadoAfip(Utilidades.convertirFileIntoByteArray(file));
-                    //RestClient.getRestTemplate().put("/configuraciones-del-sistema", this.getConfiguracionDelSistema());
+                    cdsModificar.setFacturaElectronicaHabilitada(true);
+                    cdsModificar.setCertificadoAfip(Utilidades.convertirFileIntoByteArray(file));
                     lbl_certEstado.setText("Cargado");
                     lbl_certEstado.setForeground(Color.GREEN);
-                    
-//                    byte[] certificado = 
-//                    RestClient.getRestTemplate().getForObject("/configuraciones-del-sistema/empresas/"
-//                            + EmpresaActiva.getInstance().getEmpresa().getId_Empresa(),
-//                            ConfiguracionDelSistema.class).getCertificadoAfip();
-//                    System.out.println(certificado.length);
-                    //logo = Utilidades.convertirFileIntoByteArray(file);
-                    //ImageIcon logoProvisional = new ImageIcon(menuElegirCertificado.getSelectedFile().getAbsolutePath());
-                    //ImageIcon logoRedimensionado = new ImageIcon(logoProvisional.getImage().getScaledInstance(114, 114, Image.SCALE_SMOOTH));
-                    //lbl_Logo.setIcon(logoRedimensionado);
-                    //lbl_Logo.setText("");
                 } else {
                     JOptionPane.showMessageDialog(this, "El tamaño del archivo seleccionado, supera el límite de 512kb.",
                         "Error", JOptionPane.ERROR_MESSAGE);
@@ -355,6 +357,13 @@ public class ConfiguracionDelSistemaGUI extends JDialog {
             this.setEstadoComponentes(false);
         }
     }//GEN-LAST:event_chk_UsarFEItemStateChanged
+
+    private void txt_PuntoDeVentaNroKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_PuntoDeVentaNroKeyTyped
+        char keyChar = evt.getKeyChar();
+        if (!Character.isDigit(keyChar) || keyChar == '0') {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_PuntoDeVentaNroKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_BuscarCertificado;

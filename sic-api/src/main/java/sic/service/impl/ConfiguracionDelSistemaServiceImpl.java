@@ -10,6 +10,7 @@ import sic.modelo.ConfiguracionDelSistema;
 import sic.modelo.Empresa;
 import sic.service.IConfiguracionDelSistemaService;
 import sic.repository.ConfiguracionDelSistemaRepository;
+import sic.service.BusinessServiceException;
 
 @Service
 public class ConfiguracionDelSistemaServiceImpl implements IConfiguracionDelSistemaService {
@@ -39,7 +40,8 @@ public class ConfiguracionDelSistemaServiceImpl implements IConfiguracionDelSist
 
     @Override
     @Transactional
-    public ConfiguracionDelSistema guardar(ConfiguracionDelSistema cds) {        
+    public ConfiguracionDelSistema guardar(ConfiguracionDelSistema cds) {    
+        this.validarCds(cds);
         cds = configuracionRepository.save(cds);        
         LOGGER.warn("La Configuracion del Sistema " + cds + " se guardó correctamente." );
         return cds;
@@ -47,7 +49,30 @@ public class ConfiguracionDelSistemaServiceImpl implements IConfiguracionDelSist
 
     @Override
     @Transactional
-    public void actualizar(ConfiguracionDelSistema cds) {        
+    public void actualizar(ConfiguracionDelSistema cds) {    
+        this.validarCds(cds);
         configuracionRepository.save(cds);        
+    }
+    
+    @Override
+    public void validarCds(ConfiguracionDelSistema cds) {
+        if (cds.isFacturaElectronicaHabilitada()) {
+            if (cds.getCertificadoAfip() == null) {
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_cds_certificado_vacio"));
+            }
+            if (cds.getFirmanteCertificadoAfip().isEmpty()) {
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_cds_firmante_vacio"));
+            }
+            if (cds.getNroPuntoDeVentaAfip() < 0) {
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_cds_firmante_vacio"));
+            }
+            if (cds.getPasswordCertificadoAfip().isEmpty()) {
+                throw new BusinessServiceException(ResourceBundle.getBundle("Mensajes")
+                        .getString("mensaje_cds_password_vacio"));
+            }
+        }
     }
 }
