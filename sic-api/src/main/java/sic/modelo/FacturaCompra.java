@@ -28,7 +28,7 @@ public class FacturaCompra extends Factura implements Serializable {
             double recargo_porcentaje, double recargo_neto, double descuento_porcentaje,
             double descuento_neto, double subTotal_neto, double iva_105_neto, double iva_21_neto,
             double impuestoInterno_neto, double total, String observaciones, boolean pagada, Empresa empresa, boolean eliminada,
-            String CAE, Date vencimientoCAE, Proveedor proveedor) {
+            long CAE, Date vencimientoCAE, Proveedor proveedor) {
         super(id_Factura, fecha, tipoComprobante, numSerie, numFactura, fechaVencimiento, 
                 pedido, transportista, renglones, pagos, subTotal, recargo_porcentaje,
                 recargo_neto, descuento_porcentaje, descuento_neto, subTotal_neto, iva_105_neto,
