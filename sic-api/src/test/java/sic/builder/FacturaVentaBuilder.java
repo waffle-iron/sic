@@ -41,7 +41,7 @@ public class FacturaVentaBuilder {
     private boolean pagada = false;
     private Empresa empresa = new EmpresaBuilder().build();
     private boolean eliminada = false;
-    private String CAE = "";
+    private long CAE = 21064126523746l;
     private Date vencimientoCAE = null;
       
     public FacturaVenta build() {
@@ -197,7 +197,7 @@ public class FacturaVentaBuilder {
         return this;
     }
     
-    public FacturaVentaBuilder withCAE(String CAE) {
+    public FacturaVentaBuilder withCAE(long CAE) {
         this.CAE = CAE;
         return this;
     }
